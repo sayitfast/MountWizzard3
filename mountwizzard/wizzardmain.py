@@ -25,7 +25,7 @@ from PyQt5.QtCore import *
 # commands to threads
 from queue import Queue
 # import the UI part, which is done via QT Designer and exported
-import m
+import Ui
 # import mount functions of other classes
 from weather_thread import Weather
 from stick_thread import Stick
