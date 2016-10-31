@@ -10,7 +10,7 @@ setup(
     author_email='michael@wuertenberger.org',
     description='tooling for a 10micron mount',
     install_requires=[
-        'pyqt5',
+        'PyQt5',
         'pypiwin32',
         'matplotlib'
         'astropy'

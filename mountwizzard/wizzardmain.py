@@ -25,88 +25,91 @@ from PyQt5.QtCore import *
 # commands to threads
 from queue import Queue
 # import the UI part, which is done via QT Designer and exported
-import Ui
+from mountwizzard.mount_ui.mount_ui import Ui_MountDialog
 # import mount functions of other classes
-from weather_thread import Weather
-from stick_thread import Stick
-from mount_thread import Mount
-from model_thread import Model
-from analyse import Analyse
-from relays import Relays
+from mountwizzard.weather_thread.weather_thread import Weather
+from mountwizzard.stick_thread.stick_thread import Stick
+from mountwizzard.mount_thread.mount_thread import Mount
+from mountwizzard.model_thread.model_thread import Model
+from mountwizzard.analyse.analyse import Analyse
+from mountwizzard.relays.relays import Relays
 
-#
-# inside class MountForm all task where GUI is managing workflows are concentrated
-#
+
+def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse
+    x = border - esize / 2 + int(az / 360 * (width - 2 * border))
+    y = height - border - esize / 2 - int(alt / 90 * (height - 2 * border))
+    return x, y
+
+
+def constructHorizon(scene, horizon, height, width, border):
+    for i, p in enumerate(horizon):
+        if (i != len(horizon)) and (i != 0):                                                                                # horizon in between
+            pen = QPen(QColor(0, 96, 0), 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # define the pen style thickness 3
+            scene.addLine(border + int(p[0] / 360 * (width - 2 * border)),
+                          height - border - int(p[1] * (height - 2 * border) / 90),
+                          border + int(horizon[i - 1][0] / 360 * (width - 2 * border)),
+                          height - border - int(horizon[i - 1][1] * (height - 2 * border) / 90),
+                          pen)
+    return scene
+
+
 class MountForm(QDialog, QObject):
-    logger = logging.getLogger('MountForm:')                             # logging enabling
+    logger = logging.getLogger('MountForm:')                                                                                # logging enabling
+
     def __init__(self):
-        super(MountForm, self).__init__()                                   # Initialize Classe for UI
-        self.config = {}                                                    # configuration data, which is stored
-        self.borderModelPointsView = 20                                     # border from rectangle to plot
-        self.textheightModelPointsView = 10                                 # size of text for positioning
-        self.ellipseSizeModelPointsView = 12                                # diameter of ellipse / circle for points
-        # colors
-        self.blueColor = QColor(32, 144, 192)                               # blue astro color
+        super(MountForm, self).__init__()                                                                                   # Initialize Class for UI
+        self.modifiers = None
+        self.sceneRefinementPoints = None
+        self.config = {}                                                                                                    # configuration data, which is stored
+        self.borderModelPointsView = 20                                                                                     # border from rectangle to plot
+        self.textheightModelPointsView = 10                                                                                 # size of text for positioning
+        self.ellipseSizeModelPointsView = 12                                                                                # diameter of ellipse / circle for points
+        self.blueColor = QColor(32, 144, 192)                                                                               # blue astro color
         self.yellowColor = QColor(192, 192, 0)
         self.greenColor = QColor(0, 255, 0)
         self.whiteColor = QColor(192, 192, 192)
         self.pointerColor = QColor(255, 0, 255)
-        # Status for moving Window without Title Bar therefore we need some variables for managing mousepress to move the window
-        self.moving = False                                                 # check if window moves with mouse pointer
-        self.offset = None                                                  # check offset from mouse pick point to window 0,0 reference point
-        #
-        self.ui = Ui_MountDialog()                                          # load the dialog from "DESIGNER"
-        self.ui.setupUi(self)                                               # initialising the GUI
-        self.initUI()                                                       # adapt the window to our purpose
-        self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)   # Reference Widget for Pointing
-        self.pointerRefinementTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)   # Reference Widget for Pointing
-        # use all the necessary queues
-        self.commandQueue = Queue()                                         # queue for sending command to mount
-        self.mountDataQueue = Queue()                                       # queue for sending data back to gui
-        self.modelLogQueue = Queue()                                        # queue for showing the modeling progress
-        self.messageQueue = Queue()                                         # queue for showing messages in Gui from threads
-        # use necessary classes
-        self.Analyse = Analyse()                                            # plottting and visualizing model measurements
-        self.Relays = Relays(self.ui)                                       # Web base relais box for Booting and CCD / Heater On / OFF
-        self.mount = Mount(self.ui,
-                           self.messageQueue,
-                           self.commandQueue,
-                           self.mountDataQueue)                             # Mount -> erverything with mount and alignment
-        self.weather = Weather(self.messageQueue)                           # Stickstation Thread
-        self.stick = Stick(self.messageQueue)                               # Stickstation Thread
-        self.model = Model(self.ui,
-                           self.mount,
-                           self.messageQueue,
-                           self.commandQueue,
-                           self.mountDataQueue,
-                           self.modelLogQueue)                              # transferring ui and mount object as well
-        # preparation of
-        self.mappingFunctions()                                             # mapping the functions to ui
-        self.loadConfig()                                                   # loading configuration
-        self.showBasePoints()                                               # populate gui with data for base model
-        self.showRefinementPoints()                                         # same for refinement
-        self.mainLoop()                                                     # starting loop for cyclic data to gui from threads
-        # starting threads
-        self.mount.signalMountConnected.connect(self.setMountStatus)        # status from thread
-        self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)    # set AzAltPointer in Gui
-        self.mount.start()                                                  # startung polling thread
-        self.weather.signalWeatherData.connect(self.fillWeatherData)        # connecting the signal
-        self.weather.signalWeatherConnected.connect(self.setWeatherStatus)  # status from thread
-        self.weather.start()                                                # startung polling thread
-        self.stick.signalStickData.connect(self.fillStickData)              # connecting the signal for data
-        self.stick.signalStickConnected.connect(self.setStickStatus)        # status from thread
-        self.stick.start()                                                  # startung polling thread
-        self.model.signalModelConnected.connect(self.setSGProStatus)        # status from thread
-        self.model.signalModelAzAltPointer.connect(self.setAzAltPointer)    # set AzAltPointer in Gui
-        self.model.signalModelRedrawRefinement.\
-            connect(self.showRefinementPoints)                              # trigger redraw refinement chart
-        self.model.signalModelRedrawBase.connect(self.showBasePoints)       # trigger base chart
-        self.model.start()                                                  # startung polling thread
+        self.moving = False                                                                                                 # check if window moves with mouse pointer
+        self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
+        self.ui = Ui_MountDialog()                                                                                          # load the dialog from "DESIGNER"
+        self.ui.setupUi(self)                                                                                               # initialising the GUI
+        self.initUI()                                                                                                       # adapt the window to our purpose
+        self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing
+        self.pointerRefinementTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                             # Reference Widget for Pointing
+        self.commandQueue = Queue()                                                                                         # queue for sending command to mount
+        self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
+        self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
+        self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
+        self.Analyse = Analyse()                                                                                            # plotting and visualizing model measurements
+        self.Relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
+        self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
+        self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
+        self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
+        self.model = Model(self.ui, self.mount, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
+        self.mappingFunctions()                                                                                             # mapping the functions to ui
+        self.loadConfig()                                                                                                   # loading configuration
+        self.showBasePoints()                                                                                               # populate gui with data for base model
+        self.showRefinementPoints()                                                                                         # same for refinement
+        self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
+        self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
+        self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
+        self.mount.start()                                                                                                  # starting polling thread
+        self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
+        self.weather.signalWeatherConnected.connect(self.setWeatherStatus)                                                  # status from thread
+        self.weather.start()                                                                                                # starting polling thread
+        self.stick.signalStickData.connect(self.fillStickData)                                                              # connecting the signal for data
+        self.stick.signalStickConnected.connect(self.setStickStatus)                                                        # status from thread
+        self.stick.start()                                                                                                  # starting polling thread
+        self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
+        self.model.signalModelAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
+        self.model.signalModelRedrawRefinement. connect(self.showRefinementPoints)                                          # trigger redraw refinement chart
+        self.model.signalModelRedrawBase.connect(self.showBasePoints)                                                       # trigger base chart
+        self.model.start()                                                                                                  # starting polling thread
 
     def mappingFunctions(self):
         #
         # defining all the function against Dialog
-        # here are the wrapper for coommands
+        # here are the wrapper for commands
         #
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
@@ -180,16 +183,9 @@ class MountForm(QDialog, QObject):
     def setParkPos4Text(self):
         self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
 
-    def getXYEllipse(self, az, alt, height, width, border, esize):
-        x = border - esize / 2 + int(az / 360 * (width - 2 * border))
-        y = height - border - esize / 2 - int(alt / 90 * (height - 2 * border))
-        return x,y
-
     def setAzAltPointer(self, az, alt):
-        x, y = self.getXYEllipse(az, alt,
-                                 self.ui.modelBasePointsPlot.height(), self.ui.modelBasePointsPlot.width(),
-                                 self.borderModelPointsView, 2* self.ellipseSizeModelPointsView)
-        self.pointerBaseTrackingWidget.setPos(int(x),int(y))
+        x, y = getXYEllipse(az, alt, self.ui.modelBasePointsPlot.height(), self.ui.modelBasePointsPlot.width(), self.borderModelPointsView, 2 * self.ellipseSizeModelPointsView)
+        self.pointerBaseTrackingWidget.setPos(int(x), int(y))
         self.pointerBaseTrackingWidget.update()
         self.pointerRefinementTrackingWidget.setPos(int(x), int(y))
         self.pointerRefinementTrackingWidget.update()
@@ -200,7 +196,7 @@ class MountForm(QDialog, QObject):
             self.moving = True
             self.offset = mouseEvent.pos()
 
-    def mouseMoveEvent(self,mouseEvent):
+    def mouseMoveEvent(self, mouseEvent):
         if self.moving:
             cursor = QCursor()
             self.move(cursor.pos() - self.offset)
@@ -245,72 +241,61 @@ class MountForm(QDialog, QObject):
         border = self.borderModelPointsView
         textheight = self.textheightModelPointsView
         esize = self.ellipseSizeModelPointsView
-        scene = QGraphicsScene(0,0,width-2,height-2)
-        scene.setBackgroundBrush(QColor(32,32,32))
+        scene = QGraphicsScene(0, 0, width-2, height-2)
+        scene.setBackgroundBrush(QColor(32, 32, 32))
         #
         # bulding the grid of the plot and the axes
         #
         pen = QPen(QColor(64, 64, 64), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        for i in range(0,361,30):
-            scene.addLine(border + int(i/360*(width-2*border)), height - border, border + int(i/360*(width-2*border)), border , pen)
-        for i in range(0,91,10):
-            scene.addLine(border, height - border - int(i * (height - 2*border) / 90), width - border, height - border - int(i * (height - 2*border) / 90), pen)
+        for i in range(0, 361, 30):
+            scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border, border + int(i / 360 * (width - 2 * border)), border, pen)
+        for i in range(0, 91, 10):
+            scene.addLine(border, height - border - int(i * (height - 2 * border) / 90), width - border, height - border - int(i * (height - 2*border) / 90), pen)
         scene.addRect(border, border, width - 2*border, height - 2*border, pen)
         # now the texts at the plot x
-        for i in range(0,361,30):
+        for i in range(0, 361, 30):
             text_item = QGraphicsTextItem('{0:03d}'.format(i), None)
             text_item.setDefaultTextColor(self.blueColor)
-            text_item.setPos(int(border/2) + int(i/360*(width-2*border)), height - border)
+            text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)
             scene.addItem(text_item)
         # now the texts at the plot y
-        for i in range(10,91,10):
+        for i in range(10, 91, 10):
             text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
             text_item.setDefaultTextColor(self.blueColor)
-            text_item.setPos(width - border, height - border - textheight - int(i * (height - 2*border) / 90))
+            text_item.setPos(width - border, height - border - textheight - int(i * (height - 2 * border) / 90))
             scene.addItem(text_item)
             text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
             text_item.setDefaultTextColor(self.blueColor)
-            text_item.setPos(0, height - border - textheight - int(i * (height - 2*border) / 90))
+            text_item.setPos(0, height - border - textheight - int(i * (height - 2 * border) / 90))
             scene.addItem(text_item)
         return scene, esize, height, width, border
-
-    def constructHorizon(self, scene, horizon, height, width, border):
-        for i, p in enumerate(horizon):
-            if (i != len(horizon)) and (i != 0):                   # horizon in between
-                pen = QPen(QColor(0, 96, 0), 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-                scene.addLine(border + int(p[0]/360*(width-2*border)),
-                              height - border - int(p[1] * (height - 2*border) / 90),
-                              border + int(horizon[i-1][0] / 360 * (width - 2 * border)),
-                              height - border - int(horizon[i-1][1] * (height - 2*border) / 90),
-                              pen)
-        return scene
 
     def showBasePoints(self):
         scene, esize, height, width, border = self.constructModelGrid()
         for i, p in enumerate(self.model.BasePoints):                                   # show the base points
             # outer circle is white
             pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            x,y = self.getXYEllipse(p[0], p[1], height, width, border, esize)
+            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
             scene.addEllipse(x, y, esize, esize, pen)
             # inner circle -> after modelling green or red
             pen = QPen(self.yellowColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            x,y = self.getXYEllipse(p[0], p[1], height, width, border, esize/2)
+            x, y = getXYEllipse(p[0], p[1], height, width, border, esize/2)
             item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
             item.setPos(x, y)
             # put the enumerating number to the circle
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)
             text_item.setDefaultTextColor(self.whiteColor)
-            text_item.setPos(x,y)
+            text_item.setPos(x, y)
             scene.addItem(text_item)
             # storing the objects in the list
             self.model.BasePoints[i] = (p[0], p[1], item)
-        scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)
+        scene = constructHorizon(scene, self.model.horizonPoints, height, width, border)
         # just to make the ellipses reactive:
         # item.setAcceptHoverEvents(True)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         # if you would like to move items, the have to be set in the scene at 0,0 otherwise thats their reference point
         # therefore the ellipse is set to 0,0 origin
-        self.pointerBaseTrackingWidget = scene.addEllipse(0, 0, 2*esize, 2*esize, pen)
+        self.pointerBaseTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         self.ui.modelBasePointsPlot.setScene(scene)
 
     def showRefinementPoints(self):
@@ -318,34 +303,34 @@ class MountForm(QDialog, QObject):
         for i, p in enumerate(self.model.RefinementPoints):                         # show the refinement points
             # outer circle
             pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            x,y = self.getXYEllipse(p[0], p[1], height, width, border, esize)
+            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
             scene.addEllipse(x, y, esize, esize, pen)
             # inner circle is yellow -> after modelling green or red
             pen = QPen(self.yellowColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            x,y = self.getXYEllipse(p[0], p[1], height, width, border, esize/2)
-            item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
-            item.setPos(x,y)
+            x, y = getXYEllipse(p[0], p[1], height, width, border, esize / 2)
+            item = scene.addEllipse(0, 0, esize / 2, esize / 2, pen)
+            item.setPos(x, y)
             # put the enumerating number to the circle
-            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)
+            text_item = QGraphicsTextItem('{0:02d}'.format(i + 1), None)
             text_item.setDefaultTextColor(self.whiteColor)
-            text_item.setPos(x,y)
+            text_item.setPos(x, y)
             scene.addItem(text_item)
             # storing the objects in the list
-            self.model.RefinementPoints[i] = ( p[0], p[1], item)
-        scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)
+            self.model.RefinementPoints[i] = (p[0], p[1], item)
+        scene = constructHorizon(scene, self.model.horizonPoints, height, width, border)
         # just to make the ellipses reactive:
         # item.setAcceptHoverEvents(True)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         # if you would like to move items, the have to be set in the scene at 0,0 otherwise thats their reference point
         # therefore the ellipse is set to 0,0 origin
-        self.pointerRefinementTrackingWidget = scene.addEllipse(0, 0, 2*esize, 2*esize, pen)
+        self.pointerRefinementTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         self.sceneRefinementPoints = scene
         self.ui.modelRefinementPointsPlot.setScene(self.sceneRefinementPoints)
 
     def loadConfig(self):
         # load the config file
         try:
-            with open('config\\config.cfg','r') as data_file:
+            with open('config\\config.cfg', 'r') as data_file:
                 self.config = json.load(data_file)
             data_file.close()
             self.model.loadHorizonPoints(str(self.config['HorizonPointsFileName']))
@@ -386,10 +371,10 @@ class MountForm(QDialog, QObject):
             self.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
-            self.move(self.config['WindowPositionX'],self.config['WindowPositionY'])
-        except:
+            self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+        except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
-            self.logger.error('loadConfig -> item in config.cfg not loaded')
+            self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
             return
 
     def saveConfig(self):
@@ -440,9 +425,9 @@ class MountForm(QDialog, QObject):
             with open('config\\config.cfg', 'w') as outfile:
                 json.dump(self.config, outfile)
             outfile.close()
-        except:
+        except Exception as e:
             self.messageQueue.put('Config.cfg could not be saved !')
-            self.logger.error('loadConfig -> item in config.cfg not saved')
+            self.logger.error('loadConfig -> item in config.cfg not saved error {0}'.format(e))
             return
 
     def saveConfigQuit(self):
@@ -452,8 +437,10 @@ class MountForm(QDialog, QObject):
 
     def selectModelPointsFileName(self):
         dlg = QFileDialog()
+        dlg.setViewMode(QFileDialog.List)
+        dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.ExistingFile)
-        a=dlg.getOpenFileName(self, 'Open file', '', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
         else:
@@ -461,8 +448,10 @@ class MountForm(QDialog, QObject):
 
     def selectAnalyseFileName(self):
         dlg = QFileDialog()
+        dlg.setViewMode(QFileDialog.List)
+        dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.AnyFile)
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\analyse', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\analysedata', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
         else:
@@ -470,18 +459,20 @@ class MountForm(QDialog, QObject):
 
     def selectImageDirectoryName(self):
         dlg = QFileDialog()
-        dlg.setFileMode(QFileDialog.ExistingFile)
-        a=dlg.getOpenFileName(self, 'Open file', '', 'Directories (*.)')
-        if a[0] != '':
-            print(a[0])
-            self.ui.le_imageDirectoryName.setText(a[0])
+        dlg.setViewMode(QFileDialog.List)
+        dlg.setFileMode(QFileDialog.DirectoryOnly)
+        a = dlg.getExistingDirectory(self, 'Select directory', os.getcwd())
+        if len(a) > 0:
+            self.ui.le_imageDirectoryName.setText(a)
         else:
             self.logger.warning('selectModelPointsFile -> no file selected')
 
     def selectHorizonPointsFileName(self):
         dlg = QFileDialog()
+        dlg.setViewMode(QFileDialog.List)
+        dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.ExistingFile)
-        a=dlg.getOpenFileName(self, 'Open file', '', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
 
@@ -568,39 +559,32 @@ class MountForm(QDialog, QObject):
         self.commandQueue.put('SetRefractionParameter')
 
     def mountPosition1(self):
-        self.commandQueue.put('PO')                                             # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'
-                              .format(int(self.ui.le_azParkPos1.text())))       # set az
-        self.commandQueue.put('Sa+{0:02d}*00'
-                              .format(int(self.ui.le_altParkPos1.text())))      # set alt
-        self.commandQueue.put('MA')                                             # start Slewing
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos1.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition2(self):
-        self.commandQueue.put('PO')                                             # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'
-                              .format(int(self.ui.le_azParkPos2.text())))       # set az
-        self.commandQueue.put('Sa+{0:02d}*00'
-                              .format(int(self.ui.le_altParkPos2.text())))      # set alt
-        self.commandQueue.put('MA')                                             # start Slewing
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos2.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos2.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition3(self):
-        self.commandQueue.put('PO')                                             # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'
-                              .format(int(self.ui.le_azParkPos3.text())))       # set az
-        self.commandQueue.put('Sa+{0:02d}*00'
-                              .format(int(self.ui.le_altParkPos3.text())))      # set alt
-        self.commandQueue.put('MA')                                             # start Slewing
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos3.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos3.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition4(self):
-        self.commandQueue.put('PO')                                             # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'
-                              .format(int(self.ui.le_azParkPos4.text())))       # set az
-        self.commandQueue.put('Sa+{0:02d}*00'
-                              .format(int(self.ui.le_altParkPos4.text())))      # set alt
-        self.commandQueue.put('MA')                                             # start Slewing
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
     #
     # mount handling
     #
+
     def setMountStatus(self, status):
         if status:
             self.ui.le_driverMountConnected.setStyleSheet('QLineEdit {background-color: green;}')
@@ -631,7 +615,7 @@ class MountForm(QDialog, QObject):
     def fillMountData(self, data):
         if data['Name'] == 'Reply':
             pass
-            #print(data['Value'])
+            # print(data['Value'])
         if data['Name'] == 'GetDualAxisTracking':
             if data['Value'] == '1':
                 self.ui.le_telescopeDualTrack.setText('ON')
@@ -764,6 +748,7 @@ class MountForm(QDialog, QObject):
     #
     # Relaisbox Handling
     #
+
     def bootMount(self):
         self.Relays.bootMount()
 
@@ -775,6 +760,7 @@ class MountForm(QDialog, QObject):
     #
     # SGPRO and Modelling handling
     #
+
     def setSGProStatus(self, status):
         if status:
             self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: green;}')
@@ -835,12 +821,13 @@ class MountForm(QDialog, QObject):
         self.model.signalModelCommand.emit('CancelAnalyseModel')
 
     def runPlotAnalyse(self):
-        data = self.Analyse.loadData(self.ui.le_analyseFileName.text())                                                    # load data file
+        data = self.Analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file
         if len(data) > 0:                                                                                                   # if data is in the file‚
-            self.Analyse.plotData(data, self.ui.scalePlotRA.value() ,self.ui.scalePlotDEC.value())                         # show plots
+            self.Analyse.plotData(data, self.ui.scalePlotRA.value(), self.ui.scalePlotDEC.value())                          # show plots
     #
     # basis loop for cyclic topic in gui
     #
+
     def mainLoop(self):
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
             text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
@@ -856,26 +843,23 @@ class MountForm(QDialog, QObject):
             text = self.messageQueue.get()                                                                                  # get the message
             self.ui.errorStatus.setText(text)                                                                               # write it to window
         self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
-        QTimer.singleShot(200, self.mainLoop)                                                                               # 200mxs repeate time cyclic
+        QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeate time cyclic
 
 if __name__ == "__main__":
 
-    def except_hook(type, value, tback):
-        # manage unhandled exception here
-        logging.ERROR('Exception: type:{0} value:{1} tback:{2}'.format(type,value,tback))
-        sys.__excepthook__(type, value, tback)  # then call the default handler
+    def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
+        logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
+        sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    if len(sys.argv) > 1:
-        if sys.argv[1] == '-d':
-            logging.basicConfig(filename='mount.log',level=logging.DEBUG, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
-    else:
-        logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s -> %(message)s',datefmt='%Y-%m-%d %I:%M:%S')
-    logging.error('Mount wizard started !')
+    if len(sys.argv) > 1:                                                                                                   # some arguments are given, at least 1
+        if sys.argv[1] == '-d':                                                                                             # than we can check for debug option
+            logging.basicConfig(filename='mount.log', level=logging.DEBUG, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
+    else:                                                                                                                   # set loglevel accordingly
+        logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
+    logging.error('Mount wizard started !')                                                                                 # start message logger
     app = QApplication(sys.argv)
     sys.excepthook = except_hook
-    # noinspection PyCallByClass
     app.setStyle(QStyleFactory.create('Fusion'))
     mountApp = MountForm()
-    logging.error('Mount wizard stopped !')
+    logging.error('Mount wizard stopped !')                                                                                 # stop message logger
     sys.exit(app.exec_())
-

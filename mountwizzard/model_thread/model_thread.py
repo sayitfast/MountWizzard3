@@ -29,8 +29,8 @@ from astropy.time import Time
 # for the sorting
 from operator import itemgetter
 # for handling SGPro interface
-from sgpro import SGPro
-from analyse import Analyse
+from mountwizzard.sgpro.sgpro import SGPro
+from mountwizzard.analyse.analyse import Analyse
 
 
 class Model(QtCore.QThread):

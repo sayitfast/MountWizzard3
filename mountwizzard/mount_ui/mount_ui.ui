@@ -1236,7 +1236,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>230</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1252,7 +1252,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>180</y>
+       <y>130</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1268,7 +1268,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>270</y>
+       <y>220</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -1315,7 +1315,7 @@
     <widget class="QPushButton" name="btn_clearAlignmentModel">
      <property name="geometry">
       <rect>
-       <x>480</x>
+       <x>620</x>
        <y>10</y>
        <width>131</width>
        <height>31</height>
@@ -1332,7 +1332,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>60</y>
+       <y>10</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1344,27 +1344,11 @@
       <string>Show Base Points</string>
      </property>
     </widget>
-    <widget class="Line" name="line_23">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>40</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
     <widget class="Line" name="line_24">
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>160</y>
+       <y>110</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -1380,7 +1364,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>210</y>
+       <y>160</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -1396,7 +1380,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>90</y>
+       <y>40</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -1412,7 +1396,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>110</y>
+       <y>60</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1428,7 +1412,7 @@
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>140</y>
+       <y>90</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -1453,7 +1437,7 @@
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>110</y>
+       <y>60</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -1481,7 +1465,7 @@
      <property name="geometry">
       <rect>
        <x>630</x>
-       <y>110</y>
+       <y>60</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -1499,7 +1483,7 @@
      <property name="geometry">
       <rect>
        <x>630</x>
-       <y>140</y>
+       <y>90</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -1517,7 +1501,7 @@
      <property name="geometry">
       <rect>
        <x>620</x>
-       <y>230</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -6818,7 +6802,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Mount Tooling  (v0.92 beta)</string>
+    <string>Mount Wizzard  (v0.1 beta)</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

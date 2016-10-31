@@ -25,11 +25,11 @@ class Analyse:
     logger = logging.getLogger('Analyse')                                                                                   # logging enabling
 
     def __init__(self):
-        self.filepath = '\\analyse'                                                                                         # define filepath for storing the analyse files
+        self.filepath = '\\analysedata'                                                                                     # define file path for storing the analyse files
 
     def saveData(self, data, name):                                                                                         # saving data from list to file
         if not os.path.isdir(os.getcwd() + self.filepath):                                                                  # if analyse dir doesn't exist, make it
-            os.makedirs(os.getcwd() + self.filepath)                                                                        # if path dowsn't exist, generate is
+            os.makedirs(os.getcwd() + self.filepath)                                                                        # if path doesn't exist, generate is
         filename = os.getcwd() + self.filepath + '\\' +name                                                                 # built the filename
         try:                                                                                                                # write data to disk
             outfile = open(filename, 'w')                                                                                   # open for write
@@ -47,12 +47,12 @@ class Analyse:
             with open(filename) as infile:                                                                                  # open
                 lines = infile.read().splitlines()                                                                          # read over all the lines
             infile.close()                                                                                                  # close
-            for i in range(len(lines)):                                                                                     # convert from text to array of floeats
+            for i in range(len(lines)):                                                                                     # convert from text to array of floats
                 lst1 = lines[i].strip(')').strip('(').split(',')                                                            # shorten the text and split to items
                 lst2 = [float(i) for i in lst1]                                                                             # convert to float
                 data.append(lst2)                                                                                           # add element to list
         except Exception as e:                                                                                              # exception handling
-            self.logger.error('loadData -> item in analyse data could not be loaded from file {0}, Error : {1}'.format(filename,e))
+            self.logger.error('loadData -> item in analyse data could not be loaded from file {0}, Error : {1}'.format(filename, e))
             return []                                                                                                       # loading doesn't work
         return data                                                                                                         # successful loading
 

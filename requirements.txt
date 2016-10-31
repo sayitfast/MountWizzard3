@@ -1,0 +1,4 @@
+PyQt5==5.7
+astropy==1.2.1
+matplotlib==1.5.3
+pypiwin32==219

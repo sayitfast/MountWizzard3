@@ -27,7 +27,7 @@ from astropy.time import Time
 # for the sorting
 from operator import itemgetter
 # testing refraction capabilitiy
-from sgpro import SGPro
+from mountwizzard.sgpro.sgpro import SGPro
 
 
 class Mount(QtCore.QThread):
