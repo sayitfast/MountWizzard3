@@ -14,7 +14,7 @@
 
 # import basic stuff
 import logging
-import time, datetime
+import time
 import math
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
@@ -22,11 +22,10 @@ from win32com.client import Dispatch
 import pythoncom
 # for coordinate transformation
 from astropy import units as u
-from astropy.coordinates import SkyCoord, FK5, GCRS, EarthLocation, Angle, PrecessedGeocentric, GeocentricTrueEcliptic, ICRS, BarycentricTrueEcliptic
-from astropy.time import Time
+from astropy.coordinates import SkyCoord, EarthLocation, Angle
 # for the sorting
 from operator import itemgetter
-# testing refraction capabilitiy
+# testing refraction capability
 from mountwizzard.sgpro.sgpro import SGPro
 
 
@@ -60,22 +59,38 @@ class Mount(QtCore.QThread):
         self.mountStatusTimeOut = 0
         self.ra = 0
         self.dec = 0
+        self.az = 0
+        self.alt = 0
+        self.stat = 0
         self.location =  EarthLocation(lat=0, lon=0, height=0, ellipsoid='WGS84')
         self.site_lat = 49
         self.site_lon = 0
         self.site_height = 0
         self.jd = 2451544.5
+        self.slew = 0
         self.pierside = 0
+        self.transform = None
+        self.ascom = None
         # values for getting mount model
         self.mountAlignRmssum = 0                                       # variable for counting RMS over stars
+        self.mountAlignmentPoints = []                                  # alignment point for modeling
         self.mountAlignNumberStars = 0                                  # number of stars
         # variable for handling the polling queue                       Align is part of struct is part of main
         self.mountCycleCounterMain = 0                                  # cycle counter for main loop
         self.mountCycleCounterStruct = 0                                # cycle counter for loop through struct items
+        self.counter = 0                                                # counter im main loop
+        self.connected = False
 
     # runnable for doing the work
     def run(self):
         pythoncom.CoInitialize()                                        # needed for doing COM objects in threads
+        try:
+            self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')
+        except Exception as e:
+            self.logger.error('run -> load ASCOM transform error:{0}'.format(e))                                            # write logfile
+            print('fehler !')
+        finally:
+            pass
         # main cycle in thread
         self.connected = False                                          # init of connection status
         self.counter = 0                                                # init count for managing different cycle times
@@ -174,22 +189,22 @@ class Mount(QtCore.QThread):
         if self.mountAlignNumberStars == 0:
             self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
             return
-        for i in range(1,self.mountAlignNumberStars+1):
+        for i in range(1, self.mountAlignNumberStars+1):
             try:
                 reply = self.ascom.CommandString('getalp{0:d}'.format(i)).split(',')
             except pythoncom.com_error as e:
                 self.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-                return (0, 0)
+                return 0, 0
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             errorRMS = float(reply[2].strip())
             errorAngle = reply[3].strip().rstrip('#')
             self.mountAlignRmssum += errorRMS ** 2
             self.mountAlignmentPoints.append((i,errorRMS))
-            dec=dec.replace('*',':')
+            dec = dec.replace('*',':')
             a = SkyCoord(ra= Angle(ha, unit=u.hour), dec=Angle(dec, unit=u.degree), location=self.location, frame='fk5')
             b = a.transform_to('altaz')
-            az =  int(float(b.az.to_string(unit='deg', decimal=True)))
+            az = int(float(b.az.to_string(unit='deg', decimal=True)))
             alt = int(float(b.alt.to_string(unit='deg', decimal=True)))
             self.mountDataQueue.put({'Name': 'ModelStarError',
                                      'Value': '#{0:02d} Az: {1:3d} Alt: {2:2d} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'.format(i, az,
@@ -262,59 +277,32 @@ class Mount(QtCore.QThread):
             self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS')})
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
-        reply =  self.sendCommand('Ginfo')                                                                                  # use command "Ginfo" for fast topics
-        ra_dri = self.ascom.RightAscension
-        dec_dri = self.ascom.Declination
+        reply = self.sendCommand('Ginfo')                                                                                  # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, self.slew = reply.rstrip('#').strip().split(',')                # split the response to its parts
             self.jd = self.jd.rstrip('#')
-            now = Time(float(self.jd), format='jd', location=self.location)                                                 # set actual time for conversion
-            '''
-            a = SkyCoord(ra=float(ra) * u.hour, dec=float(dec) * u.deg, frame=FK5(equinox=now))                             # Mount is JNow
-            d = a.transform_to(FK5(equinox='J2000'))                                                                        # convert it to J2000
-            '''
-            aloc, avel = self.location.get_gcrs_posvel(now)                                                                 # need to transform location to 3D samples
-            a = SkyCoord(ra=float(ra) * u.hour, dec=float(dec) * u.deg, frame=PrecessedGeocentric(equinox=now, obstime = now, obsgeoloc = aloc, obsgeovel = avel))
-            d = a.transform_to(ICRS)                                                                                        # put it to heliocentric system
-            self.ra = float(d.ra.to_string(unit=u.hour, decimal=True, precision = 8))                                       # convert to float decimal
-            self.dec = float(d.dec.to_string(unit='deg', decimal=True, precision = 8))                                      # convert to float decimal
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
             self.stat = int(stat)                                                                                           # status should be int for referencing list
-            # begin test
-            # alternative using not ICRS, but the true BarycentricTrueEcliptic as new eclitic, because there you
-            # can give an explicit equinox
-            # d = a.transform_to(BarycentricTrueEcliptic(equinox = 'J2000'))
-            '''
-            # alternative Skyoord setting
-            # still there is a lack of 20 arcsec in Jnow J2000 conversion for dec component, ra is below 1 arcsec
-            #
-            #  only for icrs gives delta from 4 arcsec dec and .4 arcsec ra
-            bb = a.transform_to(BarycentricTrueEcliptic(equinox = 'J2000'))
-            #
-            #  when transform to GCRS i have ra with zero, but dec with 20 arcsec delta.
-            aa = a.transform_to(GCRS(obstime = 'J2000'))
-
-            dec_deltaICRS = (dec_dri - float(bb.dec.to_string(decimal=True, unit=u.degree))) * 3600
-            ra_deltaICRS = (ra_dri - float(bb.ra.to_string(decimal=True, unit=u.hour))) * 3600
-
-            dec_deltaGCRS = (dec_dri - float(aa.dec.to_string(decimal=True, unit=u.degree))) * 3600
-            ra_deltaGCRS = (ra_dri - float(aa.ra.to_string(decimal=True, unit=u.hour))) * 3600
-
-            dec_deltaFK5 = (dec_dri - self.dec) * 3600
-            ra_deltaFK5 = (ra_dri - self.ra) * 3600
-
-            print('Ginfo: Time(jd): {0} RA:{1:3.5f} DEC:{2:3.5f} Calculated Deltas(RA,DEC) agains ASCOM Driver    ->FK5 :{3:05.2f} , {4:05.2f}    ->Bary: {5:05.2f} , {6:05.2f}    ->GCRS: {7:05.2f} , {8:05.2f}'
-                  .format(self.jd,float(ra),float(dec),ra_deltaFK5,dec_deltaFK5,ra_deltaICRS,dec_deltaICRS,ra_deltaGCRS,dec_deltaGCRS))
-            '''
-            # end test
-            dec_show = d.dec.to_string(sep='::', precision=0, alwayssign=True, unit = u.degree)                             # format dec string
-            ra_show = d.ra.to_string(sep='::', precision=0, unit=u.hour)                                                    # format ra string
+            self.transform.Refraction = False
+            self.transform.SiteElevation = self.location.height.value
+            self.transform.SiteLatitude = self.location.latitude.value
+            self.transform.SiteLongitude = self.location.longitude.value
+            if len(self.ui.le_refractionTemperature.text()) > 0:
+                self.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())
+            else:
+                self.transform.SiteTemperature = 20.0
+            self.transform.SetTopocentric(float(ra), float(dec))
+            self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
+            self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
+            show = SkyCoord(ra=self.ra * u.hour, dec=self.dec * u.degree)
+            dec_show = show.dec.to_string(sep='::', precision=0, alwayssign=True, unit=u.degree)                            # format dec string
+            ra_show = show.ra.to_string(sep='::', precision=0, unit=u.hour)                                                 # format ra string
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude
-            self.mountDataQueue.put({'Name': 'GetTelescopeAzimut', 'Value': '{0:03.2f}'.format(self.az)})                   # Azimuth
-            self.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                           # Moutn status -> slew to stop
+            self.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})                  # Azimuth
+            self.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                           # Mount status -> slew to stop
             self.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0:6.6f}'.format(float(self.jd))})                   # Sideral time in julian format
             if str(self.pierside) == str('W'):                                                                              # pier side
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                                  # Transfer to test in GUI
