@@ -2,17 +2,10 @@ from distutils.core import setup
 
 setup(
     name='mountwizzard',
-    version='0.11',
+    version='0.13',
     packages=[
         'mountwizzard',
-        'mountwizzard/analyse',
-        'mountwizzard/model_thread',
-        'mountwizzard/mount_thread',
-        'mountwizzard/mount_ui',
-        'mountwizzard/relays',
-        'mountwizzard/sgpro',
-        'mountwizzard/stick_thread',
-        'mountwizzard/weather_thread'
+        'mountwizzard/support',
     ],
     url='https://pypi.python.org/pypi/mountwizzard',
     license='APL 2.0',

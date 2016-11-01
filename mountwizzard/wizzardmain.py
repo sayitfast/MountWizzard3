@@ -25,14 +25,14 @@ from PyQt5.QtCore import *
 # commands to threads
 from queue import Queue
 # import the UI part, which is done via QT Designer and exported
-from mountwizzard.mount_ui.mount_ui import Ui_MountDialog
+from support.mount_ui import Ui_MountDialog
 # import mount functions of other classes
-from mountwizzard.weather_thread.weather_thread import Weather
-from mountwizzard.stick_thread.stick_thread import Stick
-from mountwizzard.mount_thread.mount_thread import Mount
-from mountwizzard.model_thread.model_thread import Model
-from mountwizzard.analyse.analyse import Analyse
-from mountwizzard.relays.relays import Relays
+from support.weather_thread import Weather
+from support.stick_thread import Stick
+from support.mount_thread import Mount
+from support.model_thread import Model
+from support.analyse import Analyse
+from support.relays import Relays
 
 
 def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse

@@ -26,12 +26,12 @@ from astropy.coordinates import SkyCoord, EarthLocation, Angle
 # for the sorting
 from operator import itemgetter
 # testing refraction capability
-from mountwizzard.sgpro.sgpro import SGPro
+from support.sgpro import SGPro
 
 
 class Mount(QtCore.QThread):
-    logger = logging.getLogger('Mount')                                         # enable logging
-    signalMountConnected = QtCore.pyqtSignal([bool], name='mountConnected')     # signal for connetion status
+    logger = logging.getLogger('Mount')                                                                                     # enable logging
+    signalMountConnected = QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
     signalMountAzAltPointer = QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
 
     def __init__(self, ui, messageQueue, commandQueue, mountDataQueue):

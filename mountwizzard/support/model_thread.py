@@ -28,8 +28,8 @@ from astropy.time import Time
 # for the sorting
 from operator import itemgetter
 # for handling SGPro interface
-from mountwizzard.sgpro.sgpro import SGPro
-from mountwizzard.analyse.analyse import Analyse
+from support.sgpro import SGPro
+from support.analyse import Analyse
 
 
 def waitSettlingTime(timeDelay):                                                                                  # wait settling time
