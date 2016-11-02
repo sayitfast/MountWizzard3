@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/mountwizzard/wizzardmain.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,9 +36,9 @@
       <file leaf-file-name="README.md" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="136">
-                <caret line="53" column="123" selection-start-line="53" selection-start-column="123" selection-end-line="53" selection-end-column="123" />
+            <state split_layout="SECOND">
+              <first_editor relative-caret-position="179">
+                <caret line="72" column="1" selection-start-line="72" selection-start-column="1" selection-end-line="72" selection-end-column="1" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -423,7 +421,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478110766188</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="finalizing the installer">
+      <created>1478114258041</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1478114258041</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -466,7 +471,8 @@
     <MESSAGE value="Step 2" />
     <MESSAGE value="correction of distribution and imports" />
     <MESSAGE value="corrected about directories to be installed" />
-    <option name="LAST_COMMIT_MESSAGE" value="corrected about directories to be installed" />
+    <MESSAGE value="finalizing the installer" />
+    <option name="LAST_COMMIT_MESSAGE" value="finalizing the installer" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -626,9 +632,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="136">
-            <caret line="53" column="123" selection-start-line="53" selection-start-column="123" selection-end-line="53" selection-end-column="123" />
+        <state split_layout="SECOND">
+          <first_editor relative-caret-position="179">
+            <caret line="72" column="1" selection-start-line="72" selection-start-column="1" selection-end-line="72" selection-end-column="1" />
             <folding />
           </first_editor>
           <second_editor />

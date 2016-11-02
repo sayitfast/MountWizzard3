@@ -31,35 +31,46 @@ more seconds.
 Actually the SGPro API has some problems with DSLR Cam's. It doesn't work out properly. 
 ### Analytics
 Ist just a demo so far. Get some inspiration from Thomas Ackers pictures. Anyhow: Each modeling session ist stored under date/time in a 
-subfolder analyse. If this subfolder insn't there, pleas create it. You also can choose and older file under Model-> Analyse to view the plots.
+subfolder analyse. You also can choose and older file under Model-> Analyse to view the plots.
 ### Run Analyse
 It does the same point again you had with base points or refinement. Due to the fact, that during modeling the mount refines, the model changes
-each star. With that Dry run withou changing the model you get a true difference between the model and the actual solved images.
+each star. With that Dry run without changing the model you get a true difference between the model and the actual solved images.
 So far I had only simulation data to test. I'm waiting for next good skies to check if all went good. If you would like to test it,
 please feedback, what do you want to see. It should be no problem to implement it.
 
 ## Installation:
 You need and actual installation of Python and PyQt and it runs ony under windows. I use Windows10 64 bit. 
+
 ### Python
 So we start with the installation of Python. Necessary ist python >= 3.5
-You will find the download @ https://www.python.org/downloads/ the actual version is v 3.5.2. Please download it and install the package on your computer.
+You will find the download at:
+<pre>https://www.python.org/downloads/</pre> 
+The actual version is v 3.5.2. Please download it and install the package on your computer.
+
 ### Mountwizzard
-Just type pip install mountwizzard to install the tool as package. You can upgrade the wizzard by pip -install --upgrade mountwizzard. 
+Just type pip install mountwizzard to install the tool as package. You can upgrade the wizzard by 
+<pre>pip -install --upgrade mountwizzard</pre>
 In most cases all dependencies were solved and installed as well. But there is a good chance, that astropy doesn't work because
 you don't have a compiler installed. Therefore please proceed with next step. Otherwise skip it.
 
-You run the wizzard with
-pythonw.exe "c:\Users\XXX\AppData\Local\Programs\Python\Python35\Lib\site-packages\mountwizzard\mountwizzard.py"
+You run the mountwizzard with
+<pre>pythonw.exe "c:\Users\XXX\AppData\Local\Programs\Python\Python35\Lib\site-packages\mountwizzard\mountwizzard.py</pre>
 from the working directory you would like to run,where XXX is you username. All neccessary directories will be created. 
 If you have some files already from earlier versions or separate working directories, just copy them to the adequate place. 
 ### astropy
 For having a library for doing astronomical calculations and handling FITS files, there is astropy.
 Please download that package to a local folder. You can find it in the website which I showed some lines below. Please take cars about your python (3.5.x) and your windows (32/64bit) version. 
-You install that library with the command line as administrator "pip install astropy-1.2.1-cp35-cp35m-win_amd64.whl"
-A good source for precompiled whl files could be found at http://www.lfd.uci.edu/~gohlke/pythonlibs/. Please check your Windows version and 32/64 setup.
+You install that library with the command line:
+<pre>pip install astropy-1.2.1-cp35-cp35m-win_amd64.whl</pre>
+A good source for precompiled whl files could be found at
+ <pre> http://www.lfd.uci.edu/~gohlke/pythonlibs/ </pre>
+Please check your Windows version and 32/64 setup.
+
 ### ASCOM Framework
 If you didn't already install the ASCOM Framework on you computer for astronomy use, please do so now. 
-You will find the download @ http://ascom-standards.org the actual version is 6.2. Please download it and install the package on your computer.
+You will find the download at:
+<pre>http://ascom-standards.org</pre>
+The actual version is 6.2. Please download it and install the package on your computer.
 ### ASCOM drivers
 Please install Per Frejvals 10micron ASCOM driver and if you have the Stickstation as well, please do so with Per Frejval ASCOM Stickstation driver, too. 
 Another drive is used: OpenWeather ASCOM driver should be installed. For the first configuration you need an API key from OpenWeather. Please follow the instructions on http://openweathermap.org/api
