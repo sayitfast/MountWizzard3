@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='mountwizzard',
-    version='0.17',
+    version='0.191',
     packages=[
         'mountwizzard',
         'mountwizzard/support',
