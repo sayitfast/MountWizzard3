@@ -27,7 +27,7 @@ class Relays:
 
     def setStatus(self, response):
         lines = response.splitlines()                                                                                       # read over all the lines
-        for i in range(len(lines)):                                                                                         # convert from text to array of floeats
+        for i in range(len(lines)):                                                                                         # convert from text to array of floats
             if lines[i][0:7] == 'Status:':                                                                                  # here are the values of the relay stats
                 self.stat[0] = (lines[i][8] == '1')
                 self.stat[1] = (lines[i][10] == '1')

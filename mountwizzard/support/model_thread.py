@@ -472,16 +472,16 @@ class Model(QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
         self.mount.transform.Refraction = False                                                                             # using ascom conversion, refraction = 0
-        self.mount.transform.SiteElevation = self.location.height.value                                                     # site height
-        self.mount.transform.SiteLatitude = self.location.latitude.value                                                    # site latitude
-        self.mount.transform.SiteLongitude = self.location.longitude.value                                                  # site longitude
+        self.mount.transform.SiteElevation = self.mount.location.height.value                                               # site height
+        self.mount.transform.SiteLatitude = self.mount.location.latitude.value                                              # site latitude
+        self.mount.transform.SiteLongitude = self.mount.location.longitude.value                                            # site longitude
         if len(self.ui.le_refractionTemperature.text()) > 0:                                                                # set refraction temp
             self.mount.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())                           # set it if string available
         else:                                                                                                               # otherwise
             self.mount.transform.SiteTemperature = 20.0                                                                     # set it to 20.0 degree c
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
-        ra_jnow = self.transform.RATopocentric                                                                              # convert to float decimal
-        dec_jnow = self.transform.DecTopocentric                                                                            # convert to float decimal
+        ra_jnow = self.mount.transform.RATopocentric                                                                        # convert to float decimal
+        dec_jnow = self.mount.transform.DecTopocentric                                                                      # convert to float decimal
         jnow = SkyCoord(ra=ra_jnow * u.hour, dec=dec_jnow * u.degree)                                                       # make SkyCoord for conversion
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # test setup without mount. can't refine with simulation
             self.mount.sendCommand('Sr{0}'.format(jnow.ra.to_string(sep="::", precision=2, unit=u.hour),))                  # Write jnow ra to mount
@@ -534,6 +534,10 @@ class Model(QtCore.QThread):
                     err = math.sqrt(raE * raE + decE * decE)                                                                # accumulate sum of error vectors squared
                     self.logger.debug('runModel-> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))         # generating debug output
                     self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                      # adding point for matrix
+                    if modeltype == 'Base':                                                                                 # depending on modeltype set the relating modeled point invisible
+                        self.BasePoints[i][2].setVisible(False)                                                             # visibility = False
+                    if modeltype == 'Refinement':                                                                           # depending on modeltype set the relating modeled point invisible
+                        self.RefinementPoints[i][2].setVisible(False)                                                       # visibility = False
                     self.LogQueue.put(
                         '\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(
                             ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                              # data for User

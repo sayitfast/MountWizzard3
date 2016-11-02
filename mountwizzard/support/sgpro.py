@@ -52,10 +52,11 @@ class SGPro:
         self.solveImagePath = 'SgSolveImage'
 
     def checkConnection(self):
+        reply = ''
         try:
             reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
-        except:
-            reply = ''
+        except Exception as e:
+            self.logger.error('checkConnection -> error: {0}'.format(e))
         finally:
             if str(reply) == '200':
                 if self.SgGetDeviceStatus('Camera'):
@@ -94,6 +95,7 @@ class SGPro:
             # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
         except Exception as e:
+            self.logger.error('SgCaptureImage-> error: {0}'.format(e))
             return False, 'Request failed', ''
 
     def SgAbortImage(self):
@@ -107,6 +109,7 @@ class SGPro:
             # {"Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
+            self.logger.error('SgAbortImage-> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgAbortSolve(self, receipt):
@@ -121,14 +124,14 @@ class SGPro:
             # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
+            self.logger.error('SgAbortSolve-> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetCameraProps(self):
         # reference {}
         data = {}
         try:
-            req = request.Request(self.ipSGPro + self.getCameraPropsPath, data=bytes(json.dumps(data).encode('utf-8')),
-                                         method='POST')
+            req = request.Request(self.ipSGPro + self.getCameraPropsPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
             with request.urlopen(req) as f:
                 captureResponse = json.loads(f.read().decode('utf-8'))
