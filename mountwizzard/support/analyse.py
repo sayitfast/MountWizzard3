@@ -28,8 +28,6 @@ class Analyse:
         self.filepath = '\\analysedata'                                                                                     # define file path for storing the analyse files
 
     def saveData(self, data, name):                                                                                         # saving data from list to file
-        if not os.path.isdir(os.getcwd() + self.filepath):                                                                  # if analyse dir doesn't exist, make it
-            os.makedirs(os.getcwd() + self.filepath)                                                                        # if path doesn't exist, generate is
         filename = os.getcwd() + self.filepath + '\\' +name                                                                 # built the filename
         try:                                                                                                                # write data to disk
             outfile = open(filename, 'w')                                                                                   # open for write
@@ -37,7 +35,7 @@ class Analyse:
                 outfile.write('{0}\n'.format(item))                                                                         # write data lines
             outfile.close()                                                                                                 # close the save file
         except Exception as e:                                                                                              # Exception handling
-            self.logger.error('saveData -> item in analyse data could not be stored in file {0}, Error : {1}'.format(filename,e))
+            self.logger.error('saveData -> item in analyse data could not be stored in file {0}, Error : {1}'.format(filename, e))
             return
 
     def loadData(self, name):                                                                                               # loading data

@@ -1,5 +1,2 @@
 include README.md
 include Changelog.md
-include mountwizzard/analysedata/here_are_analyse_files_stored.txt
-include mountwizzard/config/here_are_config_files_stored.txt
-include mountwizzard/images/here_are_capture_images_stored.txt

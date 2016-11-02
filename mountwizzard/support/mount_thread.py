@@ -41,28 +41,28 @@ class Mount(QtCore.QThread):
         self.mountDataQueue = mountDataQueue
         self.messageQueue = messageQueue
         self.SGPro = SGPro()
-        self.statusReference    = { '0' : 'Tracking',
-                                    '1' : 'Stopped after STOP',
-                                    '2' : 'Slewing to park position',
-                                    '3' : 'Unparking',
-                                    '4' : 'Slewing to home position',
-                                    '5' : 'Parked',
-                                    '6' : 'Slewing or going to stop',
-                                    '7' : 'Tracking Off no move',
-                                    '8' : 'Motor low temperature',
-                                    '9' : 'Tracking outside limits',
-                                    '10' : 'Following Satellite',
-                                    '11' : 'User OK Needed',
-                                    '98' : 'Unknown Status',
-                                    '99' : 'Error'
-                                    }
+        self.statusReference = {'0': 'Tracking',
+                                '1': 'Stopped after STOP',
+                                '2': 'Slewing to park position',
+                                '3': 'Unparking',
+                                '4': 'Slewing to home position',
+                                '5': 'Parked',
+                                '6': 'Slewing or going to stop',
+                                '7': 'Tracking Off no move',
+                                '8': 'Motor low temperature',
+                                '9': 'Tracking outside limits',
+                                '10': 'Following Satellite',
+                                '11': 'User OK Needed',
+                                '98': 'Unknown Status',
+                                '99': 'Error'
+                                }
         self.mountStatusTimeOut = 0
         self.ra = 0
         self.dec = 0
         self.az = 0
         self.alt = 0
         self.stat = 0
-        self.location =  EarthLocation(lat=0, lon=0, height=0, ellipsoid='WGS84')
+        self.location = EarthLocation(lat=0, lon=0, height=0, ellipsoid='WGS84')
         self.site_lat = 49
         self.site_lon = 0
         self.site_height = 0
@@ -87,8 +87,8 @@ class Mount(QtCore.QThread):
         try:
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')
         except Exception as e:
+            self.messageQueue.put('Error load ASCOM transform Driver: {0}'.format(e))
             self.logger.error('run -> load ASCOM transform error:{0}'.format(e))                                            # write logfile
-            print('fehler !')
         finally:
             pass
         # main cycle in thread
@@ -138,10 +138,8 @@ class Mount(QtCore.QThread):
                     self.connected = True                               # setting connection status from driver
                     self.messageQueue.put('Mount Driver Connected')
                 except pythoncom.com_error as e:
-                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'
-                                                 .format(e.args[2][0]))
-                    self.logger.error('run-> Driver COM Error in dispatchMount: {0}'
-                                      .format(e.args[2][0]))
+                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e.args[2][0]))
+                    self.logger.error('run-> Driver COM Error in dispatchMount: {0}'.format(e.args[2][0]))
                     self.connected = False
                 except Exception as e:
                     self.messageQueue.put('Driver COM Error in dispatchMount: {0}'

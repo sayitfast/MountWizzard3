@@ -53,11 +53,11 @@ def constructHorizon(scene, horizon, height, width, border):
     return scene
 
 
-class MountForm(QDialog, QObject):
-    logger = logging.getLogger('MountForm:')                                                                                # logging enabling
+class MountWizzardApp(QDialog, QObject):
+    logger = logging.getLogger('MountWizzardApp:')                                                                          # logging enabling
 
     def __init__(self):
-        super(MountForm, self).__init__()                                                                                   # Initialize Class for UI
+        super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
         self.modifiers = None
         self.sceneRefinementPoints = None
         self.config = {}                                                                                                    # configuration data, which is stored
@@ -854,12 +854,18 @@ if __name__ == "__main__":
     if len(sys.argv) > 1:                                                                                                   # some arguments are given, at least 1
         if sys.argv[1] == '-d':                                                                                             # than we can check for debug option
             logging.basicConfig(filename='mount.log', level=logging.DEBUG, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
-    else:                                                                                                                   # set loglevel accordingly
+    else:                                                                                                                   # set logging level accordingly
         logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
+    if not os.path.isdir(os.getcwd() + '\\analysedata'):                                                                    # if analyse dir doesn't exist, make it
+        os.makedirs(os.getcwd() + '\\analysedata')                                                                          # if path doesn't exist, generate is
+    if not os.path.isdir(os.getcwd() + '\\images'):                                                                         # if images dir doesn't exist, make it
+        os.makedirs(os.getcwd() + '\\images')                                                                               # if path doesn't exist, generate is
+    if not os.path.isdir(os.getcwd() + '\\config'):                                                                         # if config dir doesn't exist, make it
+        os.makedirs(os.getcwd() + '\\config')                                                                               # if path doesn't exist, generate is
     logging.error('Mount wizard started !')                                                                                 # start message logger
     app = QApplication(sys.argv)
     sys.excepthook = except_hook
     app.setStyle(QStyleFactory.create('Fusion'))
-    mountApp = MountForm()
+    mountApp = MountWizzardApp()
     logging.error('Mount wizard stopped !')                                                                                 # stop message logger
     sys.exit(app.exec_())

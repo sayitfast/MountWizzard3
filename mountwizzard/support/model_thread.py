@@ -32,8 +32,8 @@ from support.sgpro import SGPro
 from support.analyse import Analyse
 
 
-def waitSettlingTime(timeDelay):                                                                                  # wait settling time
-    time.sleep(timeDelay)                                                                                               # just waiting
+def waitSettlingTime(timeDelay):                                                                                            # wait settling time
+    time.sleep(timeDelay)                                                                                                   # just waiting
 
 
 class Model(QtCore.QThread):
@@ -434,7 +434,7 @@ class Model(QtCore.QThread):
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
     def solveImage(self, modeltype, imagepath):                                                                             # solving image based on information inside the FITS files, no additional info
-        hint = float(self.ui.pixelSize.value()) * 206.6 * float(self.ui.cameraBin.value()) / float(self.ui.focalLength.value())    # cacluating hint for solve
+        hint = float(self.ui.pixelSize.value()) * 206.6 * float(self.ui.cameraBin.value()) / float(self.ui.focalLength.value())    # calculating hint for solve
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=self.ui.checkUseBlindSolve.isChecked(), useFitsHeaders=True)
         else:
