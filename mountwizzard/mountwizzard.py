@@ -41,15 +41,15 @@ def getXYEllipse(az, alt, height, width, border, esize):                        
     return x, y
 
 
-def constructHorizon(scene, horizon, height, width, border):
-    for i, p in enumerate(horizon):
+def constructHorizon(scene, horizon, height, width, border):                                                                # calculate horizon
+    for i, p in enumerate(horizon):                                                                                         # over all point in the horizon file
         if (i != len(horizon)) and (i != 0):                                                                                # horizon in between
             pen = QPen(QColor(0, 96, 0), 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # define the pen style thickness 3
             scene.addLine(border + int(p[0] / 360 * (width - 2 * border)),
                           height - border - int(p[1] * (height - 2 * border) / 90),
                           border + int(horizon[i - 1][0] / 360 * (width - 2 * border)),
                           height - border - int(horizon[i - 1][1] * (height - 2 * border) / 90),
-                          pen)
+                          pen)                                                                                              # and add it to the scene
     return scene
 
 
@@ -58,8 +58,8 @@ class MountWizzardApp(QDialog, QObject):
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
-        self.modifiers = None
-        self.sceneRefinementPoints = None
+        self.modifiers = None                                                                                               # for the mouse handling
+        self.sceneRefinementPoints = None                                                                                   # graphics refinement
         self.config = {}                                                                                                    # configuration data, which is stored
         self.borderModelPointsView = 20                                                                                     # border from rectangle to plot
         self.textheightModelPointsView = 10                                                                                 # size of text for positioning
@@ -171,20 +171,23 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
 
-    def setParkPos1Text(self):
+    def setParkPos1Text(self):                                                                                              # set text for button 1
         self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
 
-    def setParkPos2Text(self):
+    def setParkPos2Text(self):                                                                                              # set text for button 2
         self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
 
-    def setParkPos3Text(self):
+    def setParkPos3Text(self):                                                                                              # set text for button 3
         self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
 
-    def setParkPos4Text(self):
+    def setParkPos4Text(self):                                                                                              # set text for button 4
         self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
 
-    def setAzAltPointer(self, az, alt):
-        x, y = getXYEllipse(az, alt, self.ui.modelBasePointsPlot.height(), self.ui.modelBasePointsPlot.width(), self.borderModelPointsView, 2 * self.ellipseSizeModelPointsView)
+    def setAzAltPointer(self, az, alt):                                                                                     # set pointer in graphics
+        x, y = getXYEllipse(az, alt, self.ui.modelBasePointsPlot.height(),
+                            self.ui.modelBasePointsPlot.width(),
+                            self.borderModelPointsView,
+                            2 * self.ellipseSizeModelPointsView)
         self.pointerBaseTrackingWidget.setPos(int(x), int(y))
         self.pointerBaseTrackingWidget.update()
         self.pointerRefinementTrackingWidget.setPos(int(x), int(y))
@@ -208,11 +211,9 @@ class MountWizzardApp(QDialog, QObject):
             self.moving = False
 
     def initUI(self):
-        # set dark theme for astro use
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setMouseTracking(True)
-        # dark palette
-        darkPalette = QPalette()
+        darkPalette = QPalette()                                                                                            # set dark palette
         darkPalette.setColor(QPalette.Window, QColor(32, 32, 32))
         darkPalette.setColor(QPalette.WindowText, QColor(192, 192, 192))
         darkPalette.setColor(QPalette.Base, QColor(25, 25, 25))
@@ -226,13 +227,11 @@ class MountWizzardApp(QDialog, QObject):
         darkPalette.setColor(QPalette.Highlight, QColor(42, 130, 218))
         darkPalette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
         self.setPalette(darkPalette)
-        # now the new title text
-        palette = QPalette()
+        palette = QPalette()                                                                                                # title text
         palette.setColor(QPalette.Foreground, self.blueColor)
         palette.setColor(QPalette.Background, QColor(53, 53, 53))
         self.ui.windowTitle.setPalette(palette)
-        # finally showing the window
-        self.show()
+        self.show()                                                                                                         # show window
 
     def constructModelGrid(self):
         # adding the plot area
@@ -243,23 +242,18 @@ class MountWizzardApp(QDialog, QObject):
         esize = self.ellipseSizeModelPointsView
         scene = QGraphicsScene(0, 0, width-2, height-2)
         scene.setBackgroundBrush(QColor(32, 32, 32))
-        #
-        # bulding the grid of the plot and the axes
-        #
-        pen = QPen(QColor(64, 64, 64), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        pen = QPen(QColor(64, 64, 64), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # bulding the grid of the plot and the axes
         for i in range(0, 361, 30):
             scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border, border + int(i / 360 * (width - 2 * border)), border, pen)
         for i in range(0, 91, 10):
             scene.addLine(border, height - border - int(i * (height - 2 * border) / 90), width - border, height - border - int(i * (height - 2*border) / 90), pen)
         scene.addRect(border, border, width - 2*border, height - 2*border, pen)
-        # now the texts at the plot x
-        for i in range(0, 361, 30):
+        for i in range(0, 361, 30):                                                                                         # now the texts at the plot x
             text_item = QGraphicsTextItem('{0:03d}'.format(i), None)
             text_item.setDefaultTextColor(self.blueColor)
             text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)
             scene.addItem(text_item)
-        # now the texts at the plot y
-        for i in range(10, 91, 10):
+        for i in range(10, 91, 10):                                                                                         # now the texts at the plot y
             text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
             text_item.setDefaultTextColor(self.blueColor)
             text_item.setPos(width - border, height - border - textheight - int(i * (height - 2 * border) / 90))
@@ -272,23 +266,19 @@ class MountWizzardApp(QDialog, QObject):
 
     def showBasePoints(self):
         scene, esize, height, width, border = self.constructModelGrid()
-        for i, p in enumerate(self.model.BasePoints):                                   # show the base points
-            # outer circle is white
-            pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        for i, p in enumerate(self.model.BasePoints):                                                                       # show the base points
+            pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                         # outer circle is white
             x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
             scene.addEllipse(x, y, esize, esize, pen)
-            # inner circle -> after modelling green or red
-            pen = QPen(self.yellowColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+            pen = QPen(self.yellowColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # inner circle -> after modelling green or red
             x, y = getXYEllipse(p[0], p[1], height, width, border, esize/2)
             item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
             item.setPos(x, y)
-            # put the enumerating number to the circle
-            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)
+            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
             text_item.setDefaultTextColor(self.whiteColor)
             text_item.setPos(x, y)
             scene.addItem(text_item)
-            # storing the objects in the list
-            self.model.BasePoints[i] = (p[0], p[1], item)
+            self.model.BasePoints[i] = (p[0], p[1], item)                                                                   # storing the objects in the list
         scene = constructHorizon(scene, self.model.horizonPoints, height, width, border)
         # just to make the ellipses reactive:
         # item.setAcceptHoverEvents(True)
