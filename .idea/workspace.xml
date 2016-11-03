@@ -2,12 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -30,8 +27,20 @@
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="112">
-              <caret line="271" column="166" selection-start-line="271" selection-start-column="166" selection-end-line="271" selection-end-column="166" />
+            <state relative-caret-position="184">
+              <caret line="325" column="77" selection-start-line="325" selection-start-column="77" selection-end-line="325" selection-end-column="77" />
+              <folding>
+                <element signature="e#331#345#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="2164">
+              <caret line="516" column="128" selection-start-line="516" selection-start-column="128" selection-end-line="516" selection-end-column="128" />
               <folding />
             </state>
           </provider>
@@ -64,7 +73,6 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
         <option value="$PROJECT_DIR$/mountwizzard/__main__.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/relays.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/sgpro.py" />
@@ -72,6 +80,7 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
         <option value="$PROJECT_DIR$/setup.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
       </list>
     </option>
@@ -499,7 +508,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478203658792</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="update docu">
+      <created>1478207484771</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1478207484771</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -692,16 +708,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="843">
-          <caret line="521" column="185" selection-start-line="521" selection-start-column="185" selection-end-line="521" selection-end-column="185" />
-          <folding>
-            <element signature="e#310#324#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -795,11 +801,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2164">
+          <caret line="516" column="128" selection-start-line="516" selection-start-column="128" selection-end-line="516" selection-end-column="128" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="112">
-          <caret line="271" column="166" selection-start-line="271" selection-start-column="166" selection-end-line="271" selection-end-column="166" />
-          <folding />
+        <state relative-caret-position="184">
+          <caret line="325" column="77" selection-start-line="325" selection-start-column="77" selection-end-line="325" selection-end-column="77" />
+          <folding>
+            <element signature="e#331#345#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

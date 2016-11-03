@@ -22,7 +22,7 @@ from win32com.client import Dispatch
 import pythoncom
 # for coordinate transformation
 from astropy import units as u
-from astropy.coordinates import SkyCoord, EarthLocation, Angle
+from astropy.coordinates import SkyCoord
 # for the sorting
 from operator import itemgetter
 # testing refraction capability
@@ -61,7 +61,6 @@ class Mount(QtCore.QThread):
         self.az = 0                                                                                                         # mount reported azimuth
         self.alt = 0                                                                                                        # mount reported altitude
         self.stat = 0                                                                                                       # mount status (from Gstat command(
-        self.location = EarthLocation(lat=0, lon=0, height=0, ellipsoid='WGS84')                                            # site location for astropy
         self.site_lat = 49                                                                                                  # site lat
         self.site_lon = 0                                                                                                   # site lon
         self.site_height = 0                                                                                                # site height
@@ -168,10 +167,9 @@ class Mount(QtCore.QThread):
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
             self.logger.debug('flipMount-> error: {0}'.format(reply))                                                       # write to logger
 
-    def transformCelestialHorizontal(self, ha, dec):
-        a = SkyCoord(ra=ha, dec=dec, unit=(u.hour, u.degree), location=self.location, frame='fk5')
-        b = a.transform_to('altaz')
-        return float(b.az.to_string(unit='deg', decimal=True)), float(b.alt.to_string(unit='deg', decimal=True))
+    def degStringToDecimal(self, value):
+        hour, minute, second = value.split(':')
+        return float(hour) + float(minute) / 60 + float(second) / 3600
 
     def getAlignmentModel(self):
         self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(42, 130, 218)')
@@ -195,10 +193,11 @@ class Mount(QtCore.QThread):
             self.mountAlignRMSsum += errorRMS ** 2
             self.mountAlignmentPoints.append((i, errorRMS))
             dec = dec.replace('*', ':')
-            a = SkyCoord(ra=Angle(ha, unit=u.hour), dec=Angle(dec, unit=u.degree), location=self.location, frame='fk5')
-            b = a.transform_to('altaz')
-            az = int(float(b.az.to_string(unit='deg', decimal=True)))
-            alt = int(float(b.alt.to_string(unit='deg', decimal=True)))
+            dec_digit = self.degStringToDecimal(dec)
+            ha_digit = self.degStringToDecimal(ha)
+            self.transform.SetJ2000(ha_digit, dec_digit)
+            az = int(float(self.transform.AzimuthTopocentric))
+            alt = int(float(self.transform.ElevationTopocentric))
             self.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d} Az: {1:3d} Alt: {2:2d} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'.format(i, az, alt, errorRMS, errorAngle)})
         self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})
         self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})
@@ -269,14 +268,9 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, self.slew = reply.rstrip('#').strip().split(',')                # split the response to its parts
-            # self.jd = self.jd.rstrip('#')                                                                                 # was necessary for 2.14.8 beta due to bug
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
             self.stat = int(stat)                                                                                           # status should be int for referencing list
-            self.transform.Refraction = False
-            self.transform.SiteElevation = self.location.height.value
-            self.transform.SiteLatitude = self.location.latitude.value
-            self.transform.SiteLongitude = self.location.longitude.value
             if len(self.ui.le_refractionTemperature.text()) > 0:
                 self.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())
             else:
@@ -327,7 +321,10 @@ class Mount(QtCore.QThread):
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
         self.site_lat = self.sendCommand('Gt')                                                                              # get site latitude
-        self.location = EarthLocation(lat=self.site_lat, lon=self.site_lon, height=float(self.site_height), ellipsoid='WGS84')  # calculation location for transformations once
+        self.transform.Refraction = False                                                                                   # set parameter for ascom nova library
+        self.transform.SiteElevation = float(self.site_height)                                                              # height
+        self.transform.SiteLatitude = self.degStringToDecimal(self.site_lat)                                                # site lat
+        self.transform.SiteLongitude = self.degStringToDecimal(self.site_lon)                                               # site lon
         self.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                             # write data to GUI
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})                                         #
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})                                 #

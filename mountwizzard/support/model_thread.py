@@ -239,6 +239,12 @@ class Model(QtCore.QThread):
                 del self.RefinementPoints[i]                                                                                # otherwise delete point from list
         self.signalModelRedrawRefinement.emit(True)                                                                         # update graphics
 
+    def transformCelestialHorizontal(self, ha, dec):
+        self.mount.transform.SetJ2000(ha, dec)                                                                              # set J2000 ra, dec
+        alt = self.mount.transform.ElevationTopocentric                                                                     # convert alt
+        az = self.mount.transform.AzimuthTopocentric                                                                        # convert az
+        return az, alt
+
     def generateDSOPoints(self):                                                                                            # model points along dso path
         self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                                  # take some time, therefore coloring button during execution
         self.RefinementPoints = []                                                                                          # clear point list
@@ -249,7 +255,7 @@ class Model(QtCore.QThread):
         for i in range(0, 25):                                                                                              # round model point from actual az alt position 24 hours
             timeStep = timeMount + i / 48.0                                                                                 # stepsize
             timeStep_trans = Time(timeStep, format='jd', scale='utc')                                                       # transform time in jd format
-            coord_altaz = coord.transform_to(AltAz(obstime=timeStep_trans, location=self.mount.location))                   # transform ra/dec J2000 to alt az now
+            coord_altaz = coord.transform_to(AltAz(obstime=timeStep_trans))                                                 # transform ra/dec J2000 to alt az now
             az = float('{0.az}'.format(coord_altaz).rstrip('deg').strip())                                                  # take az data
             alt = float('{0.alt}'.format(coord_altaz).rstrip('deg').strip())                                                # take alt data
             if alt > 0:                                                                                                     # we only take point alt > 0
@@ -269,8 +275,8 @@ class Model(QtCore.QThread):
                 step = -10
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
-            for ha in range(240, 0, step):                                                                                  # for complete 24 hourangle
-                az, alt = self.mount.transformCelestialHorizontal(ha/10, dec)                                               # do the transformation to alt az
+            for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
+                az, alt = self.transformCelestialHorizontal(ha/10, dec)                                                     # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                              # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
@@ -290,8 +296,8 @@ class Model(QtCore.QThread):
                 step = -1                                                                                                   # lower dec, more point
             else:
                 step = -2                                                                                                   # higher dec. less point (anyway denser)
-            for ha in range(24, 0, step):                                                                                   # for complete 24 hourangle
-                az, alt = self.mount.transformCelestialHorizontal(ha, dec)                                                  # do the transformation to alt az
+            for ha in range(23, -1, step):                                                                                   # for complete 24 hourangle
+                az, alt = self.transformCelestialHorizontal(ha, dec)                                                        # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
@@ -473,10 +479,6 @@ class Model(QtCore.QThread):
                     time.sleep(.25)                                                                                         # therefore quicker cycle
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
-        self.mount.transform.Refraction = False                                                                             # using ascom conversion, refraction = 0
-        self.mount.transform.SiteElevation = self.mount.location.height.value                                               # site height
-        self.mount.transform.SiteLatitude = self.mount.location.latitude.value                                              # site latitude
-        self.mount.transform.SiteLongitude = self.mount.location.longitude.value                                            # site longitude
         if len(self.ui.le_refractionTemperature.text()) > 0:                                                                # set refraction temp
             self.mount.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())                           # set it if string available
         else:                                                                                                               # otherwise
@@ -512,7 +514,7 @@ class Model(QtCore.QThread):
                 self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                           # we keep all the stars before
                 self.cancel = False                                                                                         # and make it back to default
                 self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')       # button back to default color
-                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)') # button back to default color
+                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
                 break                                                                                                       # finally stopping model run
             self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))   # Gui Output
             self.logger.debug('runModel-> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))                    # Debug output
