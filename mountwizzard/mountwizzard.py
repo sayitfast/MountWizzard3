@@ -105,6 +105,8 @@ class MountWizzardApp(QDialog, QObject):
         self.model.signalModelRedrawRefinement. connect(self.showRefinementPoints)                                          # trigger redraw refinement chart
         self.model.signalModelRedrawBase.connect(self.showBasePoints)                                                       # trigger base chart
         self.model.start()                                                                                                  # starting polling thread
+        if not os.path.isdir(os.getcwd() + 'mw.txt'):                                                                       # check existing file for enable the features
+            self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
 
     def mappingFunctions(self):
         #
@@ -187,13 +189,13 @@ class MountWizzardApp(QDialog, QObject):
         x, y = getXYEllipse(az, alt, self.ui.modelBasePointsPlot.height(),
                             self.ui.modelBasePointsPlot.width(),
                             self.borderModelPointsView,
-                            2 * self.ellipseSizeModelPointsView)
-        self.pointerBaseTrackingWidget.setPos(int(x), int(y))
-        self.pointerBaseTrackingWidget.update()
-        self.pointerRefinementTrackingWidget.setPos(int(x), int(y))
-        self.pointerRefinementTrackingWidget.update()
+                            2 * self.ellipseSizeModelPointsView)                                                            # get xy coordinate
+        self.pointerBaseTrackingWidget.setPos(int(x), int(y))                                                               # set widget position to that coordinate
+        self.pointerBaseTrackingWidget.update()                                                                             # update the drawing
+        self.pointerRefinementTrackingWidget.setPos(int(x), int(y))                                                         # same for the refinement graphics - coordinate
+        self.pointerRefinementTrackingWidget.update()                                                                       # and redraw the graphics
 
-    def mousePressEvent(self, mouseEvent):
+    def mousePressEvent(self, mouseEvent):                                                                                  # overloading the mouse events for handling customized windows
         self.modifiers = mouseEvent.modifiers()
         if mouseEvent.button() == Qt.LeftButton:
             self.moving = True
@@ -233,26 +235,25 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.windowTitle.setPalette(palette)
         self.show()                                                                                                         # show window
 
-    def constructModelGrid(self):
-        # adding the plot area
-        height = self.ui.modelBasePointsPlot.height()
-        width = self.ui.modelBasePointsPlot.width()
-        border = self.borderModelPointsView
-        textheight = self.textheightModelPointsView
-        esize = self.ellipseSizeModelPointsView
-        scene = QGraphicsScene(0, 0, width-2, height-2)
-        scene.setBackgroundBrush(QColor(32, 32, 32))
-        pen = QPen(QColor(64, 64, 64), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # bulding the grid of the plot and the axes
-        for i in range(0, 361, 30):
+    def constructModelGrid(self):                                                                                           # adding the plot area
+        height = self.ui.modelBasePointsPlot.height()                                                                       # get some data out of the gui fields
+        width = self.ui.modelBasePointsPlot.width()                                                                         #
+        border = self.borderModelPointsView                                                                                 #
+        textheight = self.textheightModelPointsView                                                                         #
+        esize = self.ellipseSizeModelPointsView                                                                             #
+        scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
+        scene.setBackgroundBrush(QColor(32, 32, 32))                                                                        # background color
+        pen = QPen(QColor(64, 64, 64), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # building the grid of the plot and the axes
+        for i in range(0, 361, 30):                                                                                         # set az ticks
             scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border, border + int(i / 360 * (width - 2 * border)), border, pen)
-        for i in range(0, 91, 10):
+        for i in range(0, 91, 10):                                                                                          # set alt ticks
             scene.addLine(border, height - border - int(i * (height - 2 * border) / 90), width - border, height - border - int(i * (height - 2*border) / 90), pen)
-        scene.addRect(border, border, width - 2*border, height - 2*border, pen)
+        scene.addRect(border, border, width - 2*border, height - 2*border, pen)                                             # set frame around graphics
         for i in range(0, 361, 30):                                                                                         # now the texts at the plot x
-            text_item = QGraphicsTextItem('{0:03d}'.format(i), None)
-            text_item.setDefaultTextColor(self.blueColor)
-            text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)
-            scene.addItem(text_item)
+            text_item = QGraphicsTextItem('{0:03d}'.format(i), None)                                                        # set labels
+            text_item.setDefaultTextColor(self.blueColor)                                                                   # coloring of label
+            text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)                        # placing the text
+            scene.addItem(text_item)                                                                                        # adding item to scene to be shown
         for i in range(10, 91, 10):                                                                                         # now the texts at the plot y
             text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
             text_item.setDefaultTextColor(self.blueColor)
@@ -264,7 +265,7 @@ class MountWizzardApp(QDialog, QObject):
             scene.addItem(text_item)
         return scene, esize, height, width, border
 
-    def showBasePoints(self):
+    def showBasePoints(self):                                                                                               # drawing the points to the grid for base points
         scene, esize, height, width, border = self.constructModelGrid()
         for i, p in enumerate(self.model.BasePoints):                                                                       # show the base points
             pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                         # outer circle is white
@@ -288,7 +289,7 @@ class MountWizzardApp(QDialog, QObject):
         self.pointerBaseTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         self.ui.modelBasePointsPlot.setScene(scene)
 
-    def showRefinementPoints(self):
+    def showRefinementPoints(self):                                                                                         # same for the refinement points
         scene, esize, height, width, border = self.constructModelGrid()
         for i, p in enumerate(self.model.RefinementPoints):                         # show the refinement points
             # outer circle
@@ -430,6 +431,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg.setViewMode(QFileDialog.List)
         dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.ExistingFile)
+        # noinspection PyArgumentList
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
@@ -441,6 +443,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg.setViewMode(QFileDialog.List)
         dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.AnyFile)
+        # noinspection PyArgumentList
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\analysedata', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
@@ -451,6 +454,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg = QFileDialog()
         dlg.setViewMode(QFileDialog.List)
         dlg.setFileMode(QFileDialog.DirectoryOnly)
+        # noinspection PyArgumentList
         a = dlg.getExistingDirectory(self, 'Select directory', os.getcwd())
         if len(a) > 0:
             self.ui.le_imageDirectoryName.setText(a)
@@ -462,6 +466,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg.setViewMode(QFileDialog.List)
         dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.ExistingFile)
+        # noinspection PyArgumentList
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
@@ -497,6 +502,7 @@ class MountWizzardApp(QDialog, QObject):
         self.saveConfig()
         self.commandQueue.put('shutdown')
         time.sleep(1)
+        # noinspection PyArgumentList
         QCoreApplication.instance().quit()
 
     def setHorizonLimitHigh(self):
@@ -833,6 +839,7 @@ class MountWizzardApp(QDialog, QObject):
             text = self.messageQueue.get()                                                                                  # get the message
             self.ui.errorStatus.setText(text)                                                                               # write it to window
         self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
+        # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeate time cyclic
 
 if __name__ == "__main__":
@@ -855,6 +862,7 @@ if __name__ == "__main__":
     logging.error('Mount wizard started !')                                                                                 # start message logger
     app = QApplication(sys.argv)
     sys.excepthook = except_hook
+    # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))
     mountApp = MountWizzardApp()
     logging.error('Mount wizard stopped !')                                                                                 # stop message logger

@@ -378,7 +378,7 @@ class Model(QtCore.QThread):
             while self.mount.stat != 0:                                                                                     # wait for stopping = stat = 7
                 time.sleep(.1)                                                                                              # loop time
 
-    def capturingImage(self, index, ra, dec, jd):                                                                           # capturing image
+    def capturingImage(self, index, ra, dec, jd, az, alt):                                                                  # capturing image
         self.LogQueue.put('Capturing image for model point {0:2d}...'.format(index + 1))                                    # gui output
         guid = ''
         imagepath = ''
@@ -417,6 +417,8 @@ class Model(QtCore.QThread):
                 fitsHeader['OBJCTDEC'] = Angle(dec, unit=u.degree).to_string(precision=2, sep='  ', alwayssign=True, unit=u.degree)  # set dec as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
+                fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
+                fitsHeader['MW_ALT'] = str(alt)                                                                             # and vice versa
                 self.logger.debug(
                     'capturingImage-> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT1: {3} CDELT2: {4}'.format(
                         fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], fitsHeader['CDELT1'],
@@ -510,14 +512,14 @@ class Model(QtCore.QThread):
                 self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                           # we keep all the stars before
                 self.cancel = False                                                                                         # and make it back to default
                 self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')       # button back to default color
-                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)') # button back to default color
                 break                                                                                                       # finally stopping model run
             self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))   # Gui Output
             self.logger.debug('runModel-> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))                    # Debug output
             self.slewMount(p[0], p[1])                                                                                      # slewing mount to az/alt for model point
             self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))      # Gui Output
             waitSettlingTime(float(self.ui.settlingTime.value()))                                                           # wait for settling mount
-            suc, mes, imagepath = self.capturingImage(i, self.mount.ra, self.mount.dec, self.mount.jd)                      # capturing image and store position, time
+            suc, mes, imagepath = self.capturingImage(i, self.mount.ra, self.mount.dec, self.mount.jd, p[0], p[1])          # capturing image and store position (ra,dec), time, (az,alt)
             self.logger.debug('runModel-> capturingImage-> suc:{0} mes:{1}'.format(suc, mes))                               # Debug
             if suc:                                                                                                         # if a picture could be taken
                 self.LogQueue.put('Solving Image...')                                                                       # output for user GUI

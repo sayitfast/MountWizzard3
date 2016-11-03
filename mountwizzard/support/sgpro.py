@@ -112,10 +112,10 @@ class SGPro:
             self.logger.error('SgAbortImage-> error: {0}'.format(e))
             return False, 'Request failed'
 
-    def SgAbortSolve(self, receipt):
+    def SgAbortSolve(self, guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
-        # The receipt (GUID) returned from the "/solve" (SgSolveImage) call
-        data = {'Receipt': receipt}
+        # The guid (GUID) returned from the "/solve" (SgSolveImage) call
+        data = {'Receipt': guid}
         try:
             req = request.Request(self.ipSGPro + self.abortImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
@@ -139,6 +139,7 @@ class SGPro:
             return captureResponse['Success'], captureResponse['Message'], captureResponse['NumPixelsX'], captureResponse[
                 'NumPixelsY'], captureResponse['SupportsSubframe']
         except Exception as e:
+            self.logger.error('SgGetCameraProps-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
 
     def SgGetDeviceStatus(self, device):
@@ -153,11 +154,12 @@ class SGPro:
             # {"State":"IDLE","Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['State']
         except Exception as e:
+            self.logger.error('SgGetDeviceStatus-> error: {0}'.format(e))
             return False, 'Request failed'
 
-    def SgGetImagePath(self, receipt):
+    def SgGetImagePath(self, guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
-        data = {'Receipt': receipt}
+        data = {'Receipt': guid}
         try:
             req = request.Request(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
@@ -166,6 +168,7 @@ class SGPro:
             # {"Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
+            self.logger.error('SgGetImagePath-> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetTelescopePosition(self):
@@ -179,28 +182,26 @@ class SGPro:
             # {"Success":false,"Message":"String","Ra":0,"Dec":0}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec']
         except Exception as e:
+            self.logger.error('SgGetTelescopePosition-> error: {0}'.format(e))
             return False, 'Request failed', '', ''
 
-    def SgGetSolvedImageData(self, receipt):
+    def SgGetSolvedImageData(self, guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
-        data = {'Receipt': receipt}
+        data = {'Receipt': guid}
         try:
-            req = request.Request(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')),
-                                         method='POST')
+            req = request.Request(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
             with request.urlopen(req) as f:
                 captureResponse = json.loads(f.read().decode('utf-8'))
             # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec'], \
-                   captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
+            return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec'], captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
         except Exception as e:
+            self.logger.error('SgGetSolvedImageData-> error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
-    def SgSolveImage(self, imagepath, raHint=None, decHint=None, scaleHint=None,
-                     blindSolve=False, useFitsHeaders=False):
+    def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
         # reference {"ImagePath":"String","RaHint":0,"DecHint":0,"ScaleHint":0,"BlindSolve":false,"UseFitsHeadersForHints":false}
-        data = {"ImagePath": imagepath,
-                "BlindSolve": blindSolve, "UseFitsHeadersForHints": useFitsHeaders}
+        data = {"ImagePath": path, "BlindSolve": blindSolve, "UseFitsHeadersForHints": useFitsHeaders}
         if raHint:
             data['RaHint'] = raHint
         if decHint:
@@ -211,10 +212,10 @@ class SGPro:
             req = request.Request(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
             with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
+                captureResponse = json.loads(f.read().decode('utf-8'))                                                      # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
         except Exception as e:
+            self.logger.error('SgSolveImage-> error: {0}'.format(e))
             return False, 'Request failed', ''
 
 if __name__ == "__main__":
@@ -224,9 +225,10 @@ if __name__ == "__main__":
     print(cam.SgGetDeviceStatus('PlateSolver'))
     print(cam.SgGetCameraProps())
     print(time.ctime())
-    success, message, receipt = cam.SgCaptureImage(binningMode = 1, exposureLength = 1, speed= 'Normal', path = 'c:\\temp\\test.fits')
-    print(success,message,receipt)
-    while True:  # waiting for the image download before proceeding
+    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, speed='Normal', path='c:\\temp\\test.fits')
+    print(success, message, receipt)
+    imagepath = ''
+    while True:                                                                                                             # waiting for the image download before proceeding
         success, imagepath = cam.SgGetImagePath(receipt)
         if success:
             break
@@ -234,10 +236,9 @@ if __name__ == "__main__":
             time.sleep(0.1)
     print(success, imagepath)
     print(time.ctime())
-    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, speed='HiSpeed',
-                                                   path='c:\\temp\\test.fits')
+    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, speed='HiSpeed', path='c:\\temp\\test.fits')
     print(success, message, receipt)
-    while True:  # waiting for the image download before proceeding
+    while True:                                                                                                             # waiting for the image download before proceeding
         success, imagepath = cam.SgGetImagePath(receipt)
         if success:
             break
