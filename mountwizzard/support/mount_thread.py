@@ -269,7 +269,7 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, self.slew = reply.rstrip('#').strip().split(',')                # split the response to its parts
-            self.jd = self.jd.rstrip('#')
+            # self.jd = self.jd.rstrip('#')                                                                                 # was necessary for 2.14.8 beta due to bug
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
             self.stat = int(stat)                                                                                           # status should be int for referencing list

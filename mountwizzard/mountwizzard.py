@@ -105,7 +105,7 @@ class MountWizzardApp(QDialog, QObject):
         self.model.signalModelRedrawRefinement. connect(self.showRefinementPoints)                                          # trigger redraw refinement chart
         self.model.signalModelRedrawBase.connect(self.showBasePoints)                                                       # trigger base chart
         self.model.start()                                                                                                  # starting polling thread
-        if not os.path.isdir(os.getcwd() + 'mw.txt'):                                                                       # check existing file for enable the features
+        if not os.path.isfile(os.getcwd() + '\\mw.txt'):                                                                    # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
 
     def mappingFunctions(self):
