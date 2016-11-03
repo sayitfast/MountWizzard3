@@ -1,7 +1,7 @@
 # Changelog:
 ## beta Version:
 0.93
-- change distribution to packahe format
+- change distribution to python package format
 - changed Jnow / J2000 conversion to ASCOM / NOVAS library
 
 0.92
@@ -11,13 +11,13 @@
 - improved modeling settings / behaviour
 
 0.90
-! seetings ar now under /config subdirectory !
+! settings ar now under /config subdirectory !
 if you want to reuse you config, just copy is there !
 - save / restore window position for next start
 - adding model analysis first step to test
 - added coloring for mount status
 - added modeling support for pointcloud generation
-- added automatic anaysis file naming an storing
+- added automatic analyses file naming an storing
 - added colored analysis figures
 - many corrections and bugfixes
 
@@ -27,34 +27,34 @@ if you want to reuse you config, just copy is there !
 0.88
 - testing with out camera optimized
 - added ISO settings
-- added setting for trascking on/off after alt/az slew
-- loglevel to debug
+- added setting for tracking on/off after alt/az slew
+- logging level to debug
 
 0.87
-- bugfix und maintenance
+- bugfixing und maintenance
 
 0.86
 - added canceling of modeling task
-- added coloring for running task, so everybode can see, if tasks run
+- added coloring for running task, so everybody can see, if tasks run
 - implementing logfile (model.log), actual on debug level
 - improved reconnection to mount
 
 0.85
 - transfer mount site data to astropy loc
-- reverse calculation of model point in az/alt (actualy removed)
-- gegeration of model star setups including visualisation
+- reverse calculation of model point in az/alt (actually removed)
+- generation of model star setups including visualisation
 - updating GUI
 
 0.84
-- refactoring -> SGPro abstraction to seperate class
+- refactoring -> SGPro abstraction to separate class
 
 0.83
 - optimizing main loop 
 
 0.82
 - started implementing logging function
-- bugfix for error cases plate solving through SGPro
-- stability improvments
+- bugfixing for error cases plate solving through SGPro
+- stability improvements
 - optimizing GUI (Moving Control to Pointing Tab)
 
 0.81
@@ -62,10 +62,10 @@ if you want to reuse you config, just copy is there !
 - refactoring coordinate transformations to astropy (and away from driver)
 
 0.8
-- Comand tools should work
+- Command tools should work
 - base modeling works
 - refinement modeling
-- Opimizing for Target RMS works
+- Optimizing for Target RMS works
 
 
 alpha versions:
@@ -76,7 +76,7 @@ alpha versions:
 - no installation of comtypes needed anymore
 
 1.7
-- cleaup and doing the modelling with SGPro run. modeling should be possible on an beta status
+- cleanup and doing the modelling with SGPro run. modeling should be possible on an beta status
 
 1.6
 - complete refactoring and moving towards multi threading of the tool.
@@ -94,7 +94,7 @@ alpha versions:
 - improving readme for installation 
 
 1.2
-- Bugfixing Refractor Data
+- bugfixing refactor Data
 - New Feature: Direct Transfer Refraction Data from Stick to Mount by button press
 
 1.2
