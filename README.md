@@ -16,7 +16,7 @@ the older version under 'mount' will disappear !
 - Generate model point track for observing objects for modeling along track
 - Optimize model (even when not modeled with tool)
 - Auto refraction - even when not slewing, checking IDLE times of camera
-- A lot of settings of mount visible and changable
+- A lot of settings of mount visible and changeable
 - Pointing display ra/dec az/alt at the same time
 - Define up to 4 mount positions, which could be slew directly (e.g. flat panel, check ccd etc.)
 - Getting data from open weather (API key needed) and Stickstation
@@ -36,7 +36,7 @@ If you would like to speed-up the modeling, please disable in SGPro star analysi
 Actually the SGPro API has some problems with DSLR Cam's. It doesn't work out properly. 
 
 ### Analytics
-Ist just a demo so far. Get some good view from Thomas Ackers (thanks for his work). Anyhow: Each modeling session ist stored under date/time in a 
+Ist just a demo so far. Get some good view from Thomas (thanks for his work). Anyhow: Each modeling session ist stored under date/time in a 
 subfolder analyse. You also can choose and older file under Model-> Analyse to view the plots.
 
 ### Run Analyse
@@ -59,9 +59,9 @@ checkbox before starting the installation, otherwise you will not find the appro
 Just type 
 <pre>pip install mountwizzard</pre>
 to install the tool as package on your computer. You don't need to download the files from GitHub anymore, but if you still would like to test
-further development versions, please feel free to do it. Just copy the files in a working directory and start the Wizzard like you've done it before.
+further development versions, please feel free to do it. Just copy the files in a working directory and start the MountWizzard like you've done it before.
 
-You can upgrade the wizzard by 
+You can upgrade the MountWizzard by 
 <pre>pip -install --upgrade --no-cache-dir mountwizzard</pre>
 In most cases all dependencies were solved and installed as well. But there is a good chance, that astropy doesn't work because
 you don't have a compiler installed. Therefore please proceed with astropy installation as next step. Otherwise skip it.
@@ -76,7 +76,7 @@ A good source for precompiled whl files could be found at
 Please check your Windows version and 32/64 setup.
 
 ### Running MountWizzard
-You can run the mount wizzard from any working directory where you have write access to. You run the the wizzard out of the working 
+You can run the MountWizzard from any working directory where you have write access to. You run the the MountWizzard out of the working 
 directory with the command
 <pre>pythonw.exe "c:\Users\XXX\AppData\Local\Programs\Python\Python35\Lib\site-packages\mountwizzard\mountwizzard.py</pre>
 where XXX is you username. There might be some differences because of you windows installation. Just search for mountwizzard.py on your harddisk.

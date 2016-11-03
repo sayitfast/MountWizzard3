@@ -1,7 +1,11 @@
 # Changelog:
 ## beta Version:
+0.93
+- change distribution to packahe format
+- changed Jnow / J2000 conversion to ASCOM / NOVAS library
+
 0.92
--
+- improvements an refactoring
 
 0.91
 - improved modeling settings / behaviour
