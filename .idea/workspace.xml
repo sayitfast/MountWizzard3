@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
@@ -27,11 +26,9 @@
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="184">
-              <caret line="325" column="77" selection-start-line="325" selection-start-column="77" selection-end-line="325" selection-end-column="77" />
-              <folding>
-                <element signature="e#331#345#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="357">
+              <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -39,8 +36,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2164">
-              <caret line="516" column="128" selection-start-line="516" selection-start-column="128" selection-end-line="516" selection-end-column="128" />
+            <state relative-caret-position="2754">
+              <caret line="428" column="70" selection-start-line="428" selection-start-column="70" selection-end-line="428" selection-end-column="70" />
               <folding />
             </state>
           </provider>
@@ -515,7 +512,14 @@
       <option name="project" value="LOCAL" />
       <updated>1478207484771</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="remove astropy library step 1">
+      <created>1478211763234</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1478211763234</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -563,7 +567,8 @@
     <MESSAGE value="corrected modeling with coordinate transform and mark point as modeled (remove them)" />
     <MESSAGE value="Editor file checking to green&#10;Readme update to package and detailed install" />
     <MESSAGE value="update docu" />
-    <option name="LAST_COMMIT_MESSAGE" value="update docu" />
+    <MESSAGE value="remove astropy library step 1" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove astropy library step 1" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -803,19 +808,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2164">
-          <caret line="516" column="128" selection-start-line="516" selection-start-column="128" selection-end-line="516" selection-end-column="128" />
+        <state relative-caret-position="2754">
+          <caret line="428" column="70" selection-start-line="428" selection-start-column="70" selection-end-line="428" selection-end-column="70" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="325" column="77" selection-start-line="325" selection-start-column="77" selection-end-line="325" selection-end-column="77" />
-          <folding>
-            <element signature="e#331#345#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="357">
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>

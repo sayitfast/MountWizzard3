@@ -20,9 +20,6 @@ import math
 from PyQt5 import QtCore
 from win32com.client import Dispatch
 import pythoncom
-# for coordinate transformation
-from astropy import units as u
-from astropy.coordinates import SkyCoord
 # for the sorting
 from operator import itemgetter
 # testing refraction capability
@@ -167,9 +164,17 @@ class Mount(QtCore.QThread):
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
             self.logger.debug('flipMount-> error: {0}'.format(reply))                                                       # write to logger
 
-    def degStringToDecimal(self, value):
+    @staticmethod
+    def degStringToDecimal(value):
         hour, minute, second = value.split(':')
         return float(hour) + float(minute) / 60 + float(second) / 3600
+
+    @staticmethod
+    def decimalToDegree(value):
+        hour = int(value)
+        minute = int((value - hour) * 60)
+        second = int(((value - hour) * 60 - minute) * 60)
+        return hour, minute, second
 
     def getAlignmentModel(self):
         self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(42, 130, 218)')
@@ -278,9 +283,10 @@ class Mount(QtCore.QThread):
             self.transform.SetTopocentric(float(ra), float(dec))
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
-            show = SkyCoord(ra=self.ra * u.hour, dec=self.dec * u.degree)
-            dec_show = show.dec.to_string(sep='::', precision=0, alwayssign=True, unit=u.degree)                            # format dec string
-            ra_show = show.ra.to_string(sep='::', precision=0, unit=u.hour)                                                 # format ra string
+            h, m, s = self.decimalToDegree(self.ra)
+            ra_show = '{0:02}:{1:02}:{2:02}'.format(h, m, s)
+            h, m, s = self.decimalToDegree(self.dec)
+            dec_show = '{0:+03}:{1:02}:{2:02}'.format(h, m, s)
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude
@@ -341,8 +347,6 @@ class Mount(QtCore.QThread):
     def setupDriver(self):
         try:
             self.ascom.SetupDialog()                                                                                        # rise ascom driver setting dialog
-#            self.chooser.DeviceType = 'ObservingConditions'
-#            self.chooser.Choose('ASCOM.FrejvallGM.Telescope')
         except pythoncom.com_error as e:                                                                                    # error handling, happens sometimes
             self.connected = False                                                                                          # set to disconnected -> reconnect necessary
             self.messageQueue.put('Driver Exception in setupDriverMount: {0}'.format(e))                                    # debug output to Gui
