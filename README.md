@@ -63,17 +63,7 @@ further development versions, please feel free to do it. Just copy the files in 
 
 You can upgrade the MountWizzard by 
 <pre>pip -install --upgrade --no-cache-dir mountwizzard</pre>
-In most cases all dependencies were solved and installed as well. But there is a good chance, that astropy doesn't work because
-you don't have a compiler installed. Therefore please proceed with astropy installation as next step. Otherwise skip it.
-
-### astropy
-For having a library for doing astronomical calculations and handling FITS files, there is astropy.
-Please download that package to a local folder. You can find it in the website which I showed some lines below. Please take cars about your python (3.5.x) and your windows (32/64bit) version. 
-You install that library with the command line:
-<pre>pip install astropy-1.2.1-cp35-cp35m-win_amd64.whl</pre>
-A good source for precompiled whl files could be found at
- <pre> http://www.lfd.uci.edu/~gohlke/pythonlibs/ </pre>
-Please check your Windows version and 32/64 setup.
+In most cases all dependencies were solved and installed as well.
 
 ### Running MountWizzard
 You can run the MountWizzard from any working directory where you have write access to. You run the the MountWizzard out of the working 
