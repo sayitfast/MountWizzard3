@@ -66,6 +66,7 @@ class Stick(QtCore.QThread):
                 finally:                                                                                                    # still continua and try it again
                     pass                                                                                                    # needed for continue
             time.sleep(1)                                                                                                   # wait for the next cycle
+        self.ascom.Quit()
         pythoncom.CoUninitialize()                                                                                          # needed for doing COm objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
 

@@ -135,6 +135,8 @@ class Mount(QtCore.QThread):
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
                     time.sleep(1)                                                                                           # try it every second, not more
+        self.ascom.Quit()
+        self.transform.Quit()
         pythoncom.CoUninitialize()                                                                                          # needed for doing COM objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
 
@@ -284,9 +286,9 @@ class Mount(QtCore.QThread):
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
             h, m, s = self.decimalToDegree(self.ra)
-            ra_show = '{0:02} {1:02} {2:02}'.format(h, m, s)
+            ra_show = '{0:02}:{1:02}:{2:02}'.format(h, m, s)
             h, m, s = self.decimalToDegree(self.dec)
-            dec_show = '{0:+03} {1:02} {2:02}'.format(h, m, s)
+            dec_show = '{0:+03}:{1:02}:{2:02}'.format(h, m, s)
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude

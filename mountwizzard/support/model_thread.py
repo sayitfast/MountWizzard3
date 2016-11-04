@@ -14,13 +14,14 @@
 
 import logging
 import math
-import time, datetime
+import time
+import datetime
 import os
 from shutil import copyfile
 # threading
 from PyQt5 import QtCore
-# astronomy library for fits file handling
-from astropy.io import fits
+# library for fits file handling
+import pyfits
 # for the sorting
 from operator import itemgetter
 # for handling SGPro interface
@@ -413,13 +414,13 @@ class Model(QtCore.QThread):
                         time.sleep(0.5)                                                                                     # wait for 0.5 seconds
                 self.logger.debug('capturingImage-> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))        # debug output
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
-                fitsFileHandle = fits.open(imagepath, mode='update')                                                        # open for adding field info
+                fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 fitsHeader['DATE-OBS'] = datetime.datetime.utcnow().isoformat()                                             # set time to current time
-                h, m, s = self.decimalToDegree(self.ra)                                                                     # convert
-                fitsHeader['OBJCTRA'] = '{0:02}:{1:02}:{2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
-                h, m, s = self.decimalToDegree(self.dec)                                                                    # convert
-                fitsHeader['OBJCTDEC'] = '{0:+03}:{1:02}:{2:02}'.format(h, m, s)                                            # set dec as well
+                h, m, s = self.decimalToDegree(ra)                                                                          # convert
+                fitsHeader['OBJCTRA'] = '{0:02} {1:02} {2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
+                h, m, s = self.decimalToDegree(dec)                                                                         # convert
+                fitsHeader['OBJCTDEC'] = '{0:+03} {1:02} {2:02}'.format(h, m, s)                                            # set dec as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
                 fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
@@ -449,7 +450,7 @@ class Model(QtCore.QThread):
         self.logger.debug('solveImage (start)-> suc:{0} mes:{1} guid:{2} scalehint:{3}'.format(suc, mes, guid, hint))
         if not suc:                                                                                                         # if we failed to start solving
             self.LogQueue.put('\t\tSolving could not be started: ' + mes)                                                   # Gui output
-            self.logger.warning('solveImage -> no start {0}'. format(mes))                                                    # debug output
+            self.logger.warning('solveImage -> no start {0}'. format(mes))                                                  # debug output
             return False, 0, 0, 0, 0, 0, 0, 0                                                                               # default parameters without success
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
@@ -461,7 +462,7 @@ class Model(QtCore.QThread):
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
             if mes[:7] in ['Matched', 'Solve t']:                                                                           # if there is success, we can move on
                 self.logger.debug('solveImage (solved)-> suc:{0} mes:{1} guid:{2} ra:{3} dec:{4}'.format(suc, mes, guid, ra_sol, dec_sol))
-                fitsFileHandle = fits.open(imagepath, mode='readonly')                                                      # open for getting telescope coordinates
+                fitsFileHandle = pyfits.open(imagepath, mode='readonly')                                                    # open for getting telescope coordinates
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 ra_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')                                         # convert to decimals the ra of original pointing of mount
                 dec_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')                                       # convert to decimals the dec of original pointing of mount

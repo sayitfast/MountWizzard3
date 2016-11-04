@@ -67,6 +67,7 @@ class Weather(QtCore.QThread):
                 finally:                                                                                                    # continue to work
                     pass
             time.sleep(1)                                                                                                   # time loop
+        self.ascom.Quit()
         pythoncom.CoUninitialize()                                                                                          # destruct driver
         self.terminate()                                                                                                    # shutdown task
 
