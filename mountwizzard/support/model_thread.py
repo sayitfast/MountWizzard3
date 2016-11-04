@@ -14,17 +14,13 @@
 
 import logging
 import math
-import time
+import time, datetime
 import os
 from shutil import copyfile
 # threading
 from PyQt5 import QtCore
 # astronomy library for fits file handling
 from astropy.io import fits
-# for coordinate transformation
-from astropy import units as u
-from astropy.coordinates import SkyCoord, FK5, AltAz, Angle
-from astropy.time import Time
 # for the sorting
 from operator import itemgetter
 # for handling SGPro interface
@@ -189,12 +185,12 @@ class Model(QtCore.QThread):
             self.signalModelRedrawBase.emit(True)                                                                           # update graphics
         else:
             self.RefinementPoints = eastSide + westSide                                                                     # put them together
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update grafics
+            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
         hp = []                                                                                                             # clear cache
         try:                                                                                                                # try opening the file
-            with open('config\\' + horizonPointsFileName) as f:                                                             # run throu file
+            with open('config\\' + horizonPointsFileName) as f:                                                             # run through file
                 for line in f:                                                                                              # run through lines
                     m = line.rstrip('\n').split(':')                                                                        # split the values
                     point = (int(m[0]), int(m[1]))                                                                          # get point data
@@ -207,7 +203,7 @@ class Model(QtCore.QThread):
         hp = sorted(hp, key=itemgetter(0))                                                                                  # list should be sorted, but I do it for security anyway
         self.horizonPoints = []                                                                                             # clear horizon variable
         az_last = 0                                                                                                         # starting azimuth
-        alt_last = 0                                                                                                        # startind altitude
+        alt_last = 0                                                                                                        # starting altitude
         for i in range(0, len(hp)):                                                                                         # run through all points an link them via line
             az_act = hp[i][0]                                                                                               # get az from point of file
             alt_act = hp[i][1]                                                                                              # get alt from point of file
@@ -246,29 +242,30 @@ class Model(QtCore.QThread):
         return az, alt
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
-        self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                                  # take some time, therefore coloring button during execution
-        self.RefinementPoints = []                                                                                          # clear point list
-        ra = Angle(self.ui.le_trackRA.text(), unit=u.hour)                                                                  # Transform text to hours format
-        dec = Angle(self.ui.le_trackDEC.text(), unit=u.degree)                                                              # Transform text to degree format
-        coord = SkyCoord(ra=ra, dec=dec, frame=FK5(equinox='J2000'))                                                        # get data from DSO
-        timeMount = float(self.mount.jd)                                                                                    # get time from mount
-        for i in range(0, 25):                                                                                              # round model point from actual az alt position 24 hours
-            timeStep = timeMount + i / 48.0                                                                                 # stepsize
-            timeStep_trans = Time(timeStep, format='jd', scale='utc')                                                       # transform time in jd format
-            coord_altaz = coord.transform_to(AltAz(obstime=timeStep_trans))                                                 # transform ra/dec J2000 to alt az now
-            az = float('{0.az}'.format(coord_altaz).rstrip('deg').strip())                                                  # take az data
-            alt = float('{0.alt}'.format(coord_altaz).rstrip('deg').strip())                                                # take alt data
-            if alt > 0:                                                                                                     # we only take point alt > 0
-                self.RefinementPoints.append((int(az), int(alt)))                                                           # add point to list
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
-        self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')             # color button back, routine finished
+        #self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                                  # take some time, therefore coloring button during execution
+        #self.RefinementPoints = []                                                                                          # clear point list
+        #ra = Angle(self.ui.le_trackRA.text(), unit=u.hour)                                                                  # Transform text to hours format
+        #dec = Angle(self.ui.le_trackDEC.text(), unit=u.degree)                                                              # Transform text to degree format
+        #coord = SkyCoord(ra=ra, dec=dec, frame=FK5(equinox='J2000'))                                                        # get data from DSO
+        #timeMount = float(self.mount.jd)                                                                                    # get time from mount
+        #for i in range(0, 25):                                                                                              # round model point from actual az alt position 24 hours
+        #    timeStep = timeMount + i / 48.0                                                                                 # stepsize
+        #    timeStep_trans = Time(timeStep, format='jd', scale='utc')                                                       # transform time in jd format
+        #    coord_altaz = coord.transform_to(AltAz(obstime=timeStep_trans))                                                 # transform ra/dec J2000 to alt az now
+        #    az = float('{0.az}'.format(coord_altaz).rstrip('deg').strip())                                                  # take az data
+        #    alt = float('{0.alt}'.format(coord_altaz).rstrip('deg').strip())                                                # take alt data
+        #    if alt > 0:                                                                                                     # we only take point alt > 0
+        #        self.RefinementPoints.append((int(az), int(alt)))                                                           # add point to list
+        #    self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
+        #self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')             # color button back, routine finished
+        pass
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
         self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(42, 130, 218)')                                # tale some time, color button fro showing running
         self.RefinementPoints = []                                                                                          # clear pointlist
         west = []                                                                                                           # no sorting, point will be for west and east prepared
         east = []                                                                                                           #
-        for dec in range(-10, 90, 10):                                                                                      # range, actually referenced from european sitiation
+        for dec in range(-10, 90, 10):                                                                                      # range, actually referenced from european situation
             if dec < 30:                                                                                                    # has to be generalized
                 step = -15                                                                                                  # lower dec, more point
             elif dec < 70:
@@ -278,7 +275,7 @@ class Model(QtCore.QThread):
             for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
                 az, alt = self.transformCelestialHorizontal(ha/10, dec)                                                     # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
-                    if az > 180:                                                                                              # put to the right list
+                    if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
@@ -291,12 +288,12 @@ class Model(QtCore.QThread):
         self.RefinementPoints = []                                                                                          # clear pointlist
         west = []                                                                                                           # no sorting, point will be for west and east prepared
         east = []                                                                                                           #
-        for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european sitiation
+        for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european situation
             if dec < 60:                                                                                                    # has to be generalized
                 step = -1                                                                                                   # lower dec, more point
             else:
                 step = -2                                                                                                   # higher dec. less point (anyway denser)
-            for ha in range(23, -1, step):                                                                                   # for complete 24 hourangle
+            for ha in range(23, -1, step):                                                                                  # for complete 24 hourangle
                 az, alt = self.transformCelestialHorizontal(ha, dec)                                                        # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
@@ -354,7 +351,7 @@ class Model(QtCore.QThread):
             if len(self.RefinementPoints) > 0:
                 self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints)
             else:
-                self.logger.warning('runRefinementModel -> There are no Refinementpoints to model')
+                self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
             name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_refinement_run.txt'                                # generate name of analyse file
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
@@ -407,7 +404,7 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise its simulation
             suc = True                                                                                                      # success is always true
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
-            if not self.ui.checkTestWithoutCamera.isChecked():                                                              # if we simulate, we cannot wait for SGPro, ther is nothing !
+            if not self.ui.checkTestWithoutCamera.isChecked():                                                              # if we simulate, we cannot wait for SGPro, there is nothing !
                 while True:                                                                                                 # waiting for the image download before proceeding
                     suc, imagepath = self.SGPro.SgGetImagePath(guid)                                                        # there is the image path, once the image is downloaded
                     if suc:                                                                                                 # until then, the link is only the receipt
@@ -418,9 +415,11 @@ class Model(QtCore.QThread):
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
                 fitsFileHandle = fits.open(imagepath, mode='update')                                                        # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
-                fitsHeader['DATE-OBS'] = Time(float(jd), format='jd').isot                                                  # set time to mount time
-                fitsHeader['OBJCTRA'] = Angle(ra, unit=u.hour).to_string(precision=2, sep='  ', unit=u.hour)                # set the point coordinates from mount in J2000 as hint precision 2 ???
-                fitsHeader['OBJCTDEC'] = Angle(dec, unit=u.degree).to_string(precision=2, sep='  ', alwayssign=True, unit=u.degree)  # set dec as well
+                fitsHeader['DATE-OBS'] = datetime.datetime.utcnow().isoformat()                                             # set time to current time
+                h, m, s = self.decimalToDegree(self.ra)                                                                     # convert
+                fitsHeader['OBJCTRA'] = '{0:02}:{1:02}:{2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
+                h, m, s = self.decimalToDegree(self.dec)                                                                    # convert
+                fitsHeader['OBJCTDEC'] = '{0:+03}:{1:02}:{2:02}'.format(h, m, s)                                            # set dec as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
                 fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
@@ -464,8 +463,8 @@ class Model(QtCore.QThread):
                 self.logger.debug('solveImage (solved)-> suc:{0} mes:{1} guid:{2} ra:{3} dec:{4}'.format(suc, mes, guid, ra_sol, dec_sol))
                 fitsFileHandle = fits.open(imagepath, mode='readonly')                                                      # open for getting telescope coordinates
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
-                ra_fits = float(Angle(fitsHeader['OBJCTRA'], unit=u.hour).to_string(decimal='True'))                        # convert to decimals the ra of original pointing of mount
-                dec_fits = float(Angle(fitsHeader['OBJCTDEC'], unit=u.degree).to_string(decimal='True'))                    # convert to decimals the dec of original pointing of mount
+                ra_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')                                         # convert to decimals the ra of original pointing of mount
+                dec_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')                                       # convert to decimals the dec of original pointing of mount
                 fitsFileHandle.close()                                                                                      # close FIT file. All the data was store in FITS so batch could be made
                 return True, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                       # return values after successful solving
             elif mes != 'Solving':                                                                                          # general error
@@ -484,13 +483,13 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise
             self.mount.transform.SiteTemperature = 20.0                                                                     # set it to 20.0 degree c
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
-        ra_jnow = self.mount.transform.RATopocentric                                                                        # convert to float decimal
-        dec_jnow = self.mount.transform.DecTopocentric                                                                      # convert to float decimal
-        jnow = SkyCoord(ra=ra_jnow * u.hour, dec=dec_jnow * u.degree)                                                       # make SkyCoord for conversion
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # test setup without mount. can't refine with simulation
-            self.mount.sendCommand('Sr{0}'.format(jnow.ra.to_string(sep="::", precision=2, unit=u.hour),))                  # Write jnow ra to mount
-            self.mount.sendCommand('Sd{0}'.format(jnow.dec.to_string(sep="*:", precision=2, alwayssign=True),))             # write jnow dec to mount
-            self.logger.debug('addRefinementStar -> ra:{0} dec:{1}'.format(jnow.ra, jnow.dec))                              # debug output
+            h, m, s = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                        # convert to Jnow
+            self.mount.sendCommand('Sr{0:02d:{1:02d):{2:04.2f}'.format(h, m, s))                                            # Write jnow ra to mount
+            h, m, s = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                       # convert to Jnow
+            self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))
+            self.logger.debug('addRefinementStar -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
+                                                                           self.mount.transform.DecTopocentric))            # debug output
             sync_result = self.mount.sendCommand('CMS')                                                                     # send sync command (regardless what driver tells)
             if sync_result.strip() == 'E':                                                                                  # if sync result is E, than fault happen
                 self.logger.warning('addRefinementStar -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))         # write debug output

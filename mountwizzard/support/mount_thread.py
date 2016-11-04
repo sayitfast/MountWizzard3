@@ -165,8 +165,8 @@ class Mount(QtCore.QThread):
             self.logger.debug('flipMount-> error: {0}'.format(reply))                                                       # write to logger
 
     @staticmethod
-    def degStringToDecimal(value):
-        hour, minute, second = value.split(':')
+    def degStringToDecimal(value, splitter=':'):
+        hour, minute, second = value.split(splitter)
         return float(hour) + float(minute) / 60 + float(second) / 3600
 
     @staticmethod
@@ -284,9 +284,9 @@ class Mount(QtCore.QThread):
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
             h, m, s = self.decimalToDegree(self.ra)
-            ra_show = '{0:02}:{1:02}:{2:02}'.format(h, m, s)
+            ra_show = '{0:02} {1:02} {2:02}'.format(h, m, s)
             h, m, s = self.decimalToDegree(self.dec)
-            dec_show = '{0:+03}:{1:02}:{2:02}'.format(h, m, s)
+            dec_show = '{0:+03} {1:02} {2:02}'.format(h, m, s)
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude
