@@ -18,7 +18,7 @@ import time
 import math
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
-from win32com.client import Dispatch
+from win32com.client.dynamic import Dispatch
 import pythoncom
 # for the sorting
 from operator import itemgetter
@@ -126,11 +126,11 @@ class Mount(QtCore.QThread):
                     self.connected = True                                                                                   # setting connection status from driver
                     self.messageQueue.put('Mount Driver Connected')                                                         # status to gui
                 except pythoncom.com_error as e:                                                                            # error handling
-                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e.args[2][0]))                    # gui
+                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e))                               # gui
                     self.logger.error('run-> Driver COM Error in dispatchMount: {0}'.format(e))                             # logfile
                     self.connected = False                                                                                  # after error connection might be broken
                 except Exception as e:                                                                                      # error handling part 2
-                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e.args[2][0]))                    # to gui
+                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e))                               # to gui
                     self.logger.error('run-> Driver COM Error in dispatchMount: {0}'.format(e))                             # to logger
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
@@ -275,6 +275,7 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, self.slew = reply.rstrip('#').strip().split(',')                # split the response to its parts
+            self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
             self.stat = int(stat)                                                                                           # status should be int for referencing list

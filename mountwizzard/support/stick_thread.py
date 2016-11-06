@@ -16,7 +16,7 @@
 import logging
 from PyQt5 import QtCore
 import time
-from win32com.client import Dispatch
+from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
@@ -52,7 +52,6 @@ class Stick(QtCore.QThread):
             else:                                                                                                           # otherwise try to connect
                 try:
                     self.ascom = Dispatch('ASCOM.Stickstation.Observingconditions')                                         # load driver
-                    self.ascom.connected = True                                                                             # set ascom to connected
                     self.connected = True                                                                                   # set status to connected
                     self.messageQueue.put('Stick Driver Connected')                                                         # write message to gui
                 except pythoncom.com_error as e:                                                                            # If win32com failure
