@@ -1,4 +1,13 @@
 # Changelog:
+
+
+
+1.05
+- second fix
+
+1.04
+- fix bug reported from Geremia Forino
+
 ## beta Version:
 0.93
 - change distribution to python package format

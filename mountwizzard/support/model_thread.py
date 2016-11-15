@@ -506,7 +506,7 @@ class Model(QtCore.QThread):
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # test setup without mount. can't refine with simulation
             h, m, s = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                        # convert to Jnow
-            self.mount.sendCommand('Sr{0:02d:{1:02d):{2:04.2f}'.format(h, m, s))                                            # Write jnow ra to mount
+            self.mount.sendCommand('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                           # Write jnow ra to mount
             h, m, s = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                       # convert to Jnow
             self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))
             self.logger.debug('addRefinementStar -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
