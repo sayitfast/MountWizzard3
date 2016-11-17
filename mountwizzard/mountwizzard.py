@@ -369,6 +369,7 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
+            self.ui.checkSlewDome.setChecked(self.config['CheckSlewDome'])
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
@@ -418,6 +419,7 @@ class MountWizzardApp(QDialog, QObject):
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
+        self.config['CheckSlewDome'] = self.ui.checkSlewDome.isChecked()
 
         # save the config file
         try:
@@ -856,7 +858,7 @@ class MountWizzardApp(QDialog, QObject):
             self.fillMountData(data)                                                                                        # write dta in gui
         while not self.messageQueue.empty():                                                                                # do i have error messages ?
             text = self.messageQueue.get()                                                                                  # get the message
-            self.ui.errorStatus.setText(text)                                                                               # write it to window
+            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + '\n' + text)                                                                               # write it to window
         self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeate time cyclic
