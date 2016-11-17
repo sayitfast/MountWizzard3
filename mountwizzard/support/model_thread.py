@@ -41,10 +41,11 @@ class Model(QtCore.QThread):
     signalModelRedrawRefinement = QtCore.pyqtSignal(bool, name='ModelRedrawRefinementPoints')                               # redraw refinement chart
     signalModelRedrawBase = QtCore.pyqtSignal(bool, name='ModelRedrawBasePoints')                                           # redraw base charts
 
-    def __init__(self, ui, mount, messageQueue, commandQueue, dataQueue, LogQueue):
+    def __init__(self, ui, mount, dome, messageQueue, commandQueue, dataQueue, LogQueue):
         super().__init__()
         self.signalModelCommand.connect(self.command)                                                                       # signal for receiving commands to modeling from GUI
-        self.mount = mount                                                                                                  # class for mount
+        self.mount = mount                                                                                                  # class reference for mount control
+        self.dome = dome                                                                                                    # class reference for dome control
         self.ui = ui                                                                                                        # class for GUI object
         self.messageQueue = messageQueue                                                                                    # queue for sending error messages in GUI
         self.commandQueue = commandQueue                                                                                    # command queue for mount
@@ -337,7 +338,7 @@ class Model(QtCore.QThread):
         self.modelAnalyseData = []
         self.LogQueue.put('Clearing alignment model - taking 4 seconds. \n\n')
         self.commandQueue.put('ClearAlign')
-        time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (dont't know if necessary)
+        time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (don't know if necessary)
         self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def runBaseModel(self):
@@ -376,16 +377,20 @@ class Model(QtCore.QThread):
             self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
             self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
-    def slewMount(self, az, alt):                                                                                           # slewing mount to alt az point
+    def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
         if self.ui.checkTestWithoutMount.isChecked():                                                                       # if simulation
             self.mount.signalMountAzAltPointer.emit(az, alt)                                                                # just set the pointer, normally done from mount thread
-            time.sleep(0.2)                                                                                                 # wait 0.2 s the you can watch
+            time.sleep(0.5)                                                                                                 # wait 0.5 s the you can watch
         else:                                                                                                               # otherwise
             self.commandQueue.put('MS')                                                                                     # initiate slewing
+            if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
+                self.dome.ascom.SlewToAzimuth = az                                                                          # set azimuth coordinate
+                if self.dome.ascom.CanSetAltitude:                                                                          # if dome can set Altitude as well
+                    self.dome.ascom.SlewToAltitude = alt                                                                    # set altitude for dome
             time.sleep(2.5)                                                                                                 # wait for mount to start
-            while self.mount.stat != 0:                                                                                     # wait for stopping = stat = 7
+            while self.mount.slewing or (self.dome.ascom.Slewing and self.ui.checkSlewDome.isChecked()):                    # wait for tracking = 7 or dome not slewing
                 time.sleep(.1)                                                                                              # loop time
 
     def prepareCaptureImageSubframes(self, scale):                                                                          # get camera data for doing subframes
@@ -538,7 +543,7 @@ class Model(QtCore.QThread):
         self.logger.debug('runModel-> subframe: {0}, {1}, {2}, {3}, {4}'.format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # if mount simulated, no real commands to mount
             self.commandQueue.put('PO')                                                                                     # unpark to start slewing
-            self.commandQueue.put('AP')                                                                                     # tracking should be on as well
+            self.commandQueue.put('AP')   #######                                                                                  # tracking should be on as well
         for i, p in enumerate(runPoints):                                                                                   # run through all model points
             if self.cancel:                                                                                                 # here is the entry point for canceling the model run
                 self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                           # we keep all the stars before
@@ -548,7 +553,7 @@ class Model(QtCore.QThread):
                 break                                                                                                       # finally stopping model run
             self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))   # Gui Output
             self.logger.debug('runModel-> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))                    # Debug output
-            self.slewMount(p[0], p[1])                                                                                      # slewing mount to az/alt for model point
+            self.slewMountDome(p[0], p[1])                                                                                  # slewing mount and dome to az/alt for model point
             self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))      # Gui Output
             waitSettlingTime(float(self.ui.settlingTime.value()))                                                           # wait for settling mount
             suc, mes, imagepath = self.capturingImage(i, self.mount.ra, self.mount.dec, self.mount.jd, p[0], p[1],

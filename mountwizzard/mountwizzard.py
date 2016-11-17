@@ -87,7 +87,7 @@ class MountWizzardApp(QDialog, QObject):
         self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
-        self.model = Model(self.ui, self.mount, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
+        self.model = Model(self.ui, self.mount, self.dome, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
         self.showBasePoints()                                                                                               # populate gui with data for base model
@@ -289,7 +289,7 @@ class MountWizzardApp(QDialog, QObject):
         # just to make the ellipses reactive:
         # item.setAcceptHoverEvents(True)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        # if you would like to move items, the have to be set in the scene at 0,0 otherwise thats their reference point
+        # if you would like to move items, the have to be set in the scene at 0,0 otherwise that's their reference point
         # therefore the ellipse is set to 0,0 origin
         self.pointerBaseTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         self.ui.modelBasePointsPlot.setScene(scene)
@@ -317,7 +317,7 @@ class MountWizzardApp(QDialog, QObject):
         # just to make the ellipses reactive:
         # item.setAcceptHoverEvents(True)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        # if you would like to move items, the have to be set in the scene at 0,0 otherwise thats their reference point
+        # if you would like to move items, the have to be set in the scene at 0,0 otherwise that's their reference point
         # therefore the ellipse is set to 0,0 origin
         self.pointerRefinementTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         self.sceneRefinementPoints = scene
@@ -861,7 +861,7 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + '\n' + text)                                                                               # write it to window
         self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
         # noinspection PyCallByClass,PyTypeChecker
-        QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeate time cyclic
+        QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
 

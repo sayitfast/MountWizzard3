@@ -57,12 +57,12 @@ class Mount(QtCore.QThread):
         self.dec = 0                                                                                                        # mount reported dec to J2000 converted
         self.az = 0                                                                                                         # mount reported azimuth
         self.alt = 0                                                                                                        # mount reported altitude
-        self.stat = 0                                                                                                       # mount status (from Gstat command(
+        self.stat = 0                                                                                                       # mount status (from Gstat command)
+        self.slewing = False                                                                                                # from *D' command
         self.site_lat = 49                                                                                                  # site lat
         self.site_lon = 0                                                                                                   # site lon
         self.site_height = 0                                                                                                # site height
         self.jd = 2451544.5                                                                                                 # julian date
-        self.slew = 0                                                                                                       # slewing status
         self.pierside = 0                                                                                                   # side of pier (E/W)
         self.transform = None                                                                                               # ascom novas library entry point
         self.ascom = None                                                                                                   # ascom mount driver entry point
@@ -274,16 +274,17 @@ class Mount(QtCore.QThread):
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
-            ra, dec, self.pierside, az, alt, self.jd, stat, self.slew = reply.rstrip('#').strip().split(',')                # split the response to its parts
+            ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
             self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
             self.stat = int(stat)                                                                                           # status should be int for referencing list
-            if len(self.ui.le_refractionTemperature.text()) > 0:
-                self.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())
-            else:
-                self.transform.SiteTemperature = 20.0
-            self.transform.SetTopocentric(float(ra), float(dec))
+            self.slewing = (slew == '1')                                                                                    # set status slewing
+            if len(self.ui.le_refractionTemperature.text()) > 0:                                                            # if refraction temp available, then set it to converter as well
+                self.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())                             # exactly the numbers from mount
+            else:                                                                                                           # otherwise
+                self.transform.SiteTemperature = 20.0                                                                       # set it to 20 degree as default
+            self.transform.SetTopocentric(float(ra), float(dec))                                                            # set Jnow data
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
             h, m, s = self.decimalToDegree(self.ra)
