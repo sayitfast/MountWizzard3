@@ -33,6 +33,7 @@ from support.mount_thread import Mount
 from support.model_thread import Model
 from support.analyse import Analyse
 from support.relays import Relays
+from support.dome_thread import Dome
 
 
 def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse
@@ -80,8 +81,9 @@ class MountWizzardApp(QDialog, QObject):
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
-        self.Analyse = Analyse()                                                                                            # plotting and visualizing model measurements
-        self.Relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
+        self.analyse = Analyse()                                                                                            # plotting and visualizing model measurements
+        self.relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
+        self.dome = Dome(self.messageQueue)                                                                                 # dome control
         self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
@@ -100,6 +102,8 @@ class MountWizzardApp(QDialog, QObject):
         self.stick.signalStickData.connect(self.fillStickData)                                                              # connecting the signal for data
         self.stick.signalStickConnected.connect(self.setStickStatus)                                                        # status from thread
         self.stick.start()                                                                                                  # starting polling thread
+        self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
+        self.dome.start()                                                                                                   # starting polling thread
         self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
         self.model.signalModelAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
         self.model.signalModelRedrawRefinement. connect(self.showRefinementPoints)                                          # trigger redraw refinement chart
@@ -132,6 +136,7 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
         self.ui.btn_setupMountDriver.clicked.connect(self.setupMountDriver)
+        self.ui.btn_setupDomeDriver.clicked.connect(self.setupDomeDriver)
         self.ui.btn_setupStickDriver.clicked.connect(self.setupStickDriver)
         self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
@@ -325,7 +330,6 @@ class MountWizzardApp(QDialog, QObject):
                 self.config = json.load(data_file)
             data_file.close()
             self.model.loadHorizonPoints(str(self.config['HorizonPointsFileName']))
-
             self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
             self.ui.le_altParkPos1.setText(self.config['ParkPosAlt1'])
             self.ui.le_azParkPos1.setText(self.config['ParkPosAz1'])
@@ -364,6 +368,7 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
+            self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
@@ -412,11 +417,12 @@ class MountWizzardApp(QDialog, QObject):
         self.config['ScalePlotDEC'] = self.ui.scalePlotDEC.value()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
+        self.config['ASCOMDomeDriverName'] = self.dome.driverName
 
         # save the config file
         try:
             if not os.path.isdir(os.getcwd() + '\\config'):                                                                 # if config dir doesn't exist, make it
-                os.makedirs(os.getcwd() + '\\config')                                                                       # if path dowsn't exist, generate is
+                os.makedirs(os.getcwd() + '\\config')                                                                       # if path doesn't exist, generate is
             with open('config\\config.cfg', 'w') as outfile:
                 json.dump(self.config, outfile)
             outfile.close()
@@ -746,17 +752,17 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.le_windSpeedWeather.setText(str(data['WindSpeed']))
         self.ui.le_windDirectionWeather.setText(str(data['WindDirection']))
     #
-    # Relaisbox Handling
+    # Relay Box Handling
     #
 
     def bootMount(self):
-        self.Relays.bootMount()
+        self.relays.bootMount()
 
     def switchHeater(self):
-        self.Relays.switchHeater()
+        self.relays.switchHeater()
 
     def switchCCD(self):
-        self.Relays.switchCCD()
+        self.relays.switchCCD()
     #
     # SGPRO and Modelling handling
     #
@@ -766,6 +772,15 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: green;}')
         else:
             self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: red;}')
+
+    def setupDomeDriver(self):
+        self.dome.setupDriver()
+
+    def setDomeStatus(self, status):
+        if status:
+            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: green;}')
+        else:
+            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
     def runBaseModel(self):
         self.model.signalModelCommand.emit('RunBaseModel')
@@ -821,9 +836,9 @@ class MountWizzardApp(QDialog, QObject):
         self.model.signalModelCommand.emit('CancelAnalyseModel')
 
     def runPlotAnalyse(self):
-        data = self.Analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file
+        data = self.analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file
         if len(data) > 0:                                                                                                   # if data is in the file‚
-            self.Analyse.plotData(data, self.ui.scalePlotRA.value(), self.ui.scalePlotDEC.value())                          # show plots
+            self.analyse.plotData(data, self.ui.scalePlotRA.value(), self.ui.scalePlotDEC.value())                          # show plots
     #
     # basis loop for cyclic topic in gui
     #
