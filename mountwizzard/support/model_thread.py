@@ -387,8 +387,6 @@ class Model(QtCore.QThread):
             self.commandQueue.put('MS')                                                                                     # initiate slewing
             if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
                 self.dome.ascom.SlewToAzimuth = az                                                                          # set azimuth coordinate
-                if self.dome.ascom.CanSetAltitude:                                                                          # if dome can set Altitude as well
-                    self.dome.ascom.SlewToAltitude = alt                                                                    # set altitude for dome
             time.sleep(2.5)                                                                                                 # wait for mount to start
             while self.mount.slewing or (self.dome.ascom.Slewing and self.ui.checkSlewDome.isChecked()):                    # wait for tracking = 7 or dome not slewing
                 time.sleep(.1)                                                                                              # loop time
@@ -543,7 +541,7 @@ class Model(QtCore.QThread):
         self.logger.debug('runModel-> subframe: {0}, {1}, {2}, {3}, {4}'.format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # if mount simulated, no real commands to mount
             self.commandQueue.put('PO')                                                                                     # unpark to start slewing
-            self.commandQueue.put('AP')   #######                                                                                  # tracking should be on as well
+            self.commandQueue.put('AP')                                                                                     # tracking should be on as well
         for i, p in enumerate(runPoints):                                                                                   # run through all model points
             if self.cancel:                                                                                                 # here is the entry point for canceling the model run
                 self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                           # we keep all the stars before

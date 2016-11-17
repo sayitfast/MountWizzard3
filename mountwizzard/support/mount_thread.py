@@ -353,10 +353,10 @@ class Mount(QtCore.QThread):
             self.ascom.SetupDialog()                                                                                        # rise ascom driver setting dialog
         except pythoncom.com_error as e:                                                                                    # error handling, happens sometimes
             self.connected = False                                                                                          # set to disconnected -> reconnect necessary
-            self.messageQueue.put('Driver Exception in setupDriverMount: {0}'.format(e))                                    # debug output to Gui
+            self.messageQueue.put('Driver Exception in setupDriverMount')                                                   # debug output to Gui
             self.logger.debug('setupDriver -> win32com error: {0}'.format(e))                                               # write to log
         except Exception as e:                                                                                              # general exception
-            self.messageQueue.put('Driver Exception in setupMount: {0}'.format(e))                                          # write to gui
+            self.messageQueue.put('Driver Exception in setupMount')                                                         # write to gui
             self.logger.error('setupDriver -> general exception:{0}'.format(e))                                             # write to log
             self.connected = False                                                                                          # set to disconnected
         finally:                                                                                                            # won't stop the program, continue

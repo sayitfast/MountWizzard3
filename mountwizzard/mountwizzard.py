@@ -858,7 +858,7 @@ class MountWizzardApp(QDialog, QObject):
             self.fillMountData(data)                                                                                        # write dta in gui
         while not self.messageQueue.empty():                                                                                # do i have error messages ?
             text = self.messageQueue.get()                                                                                  # get the message
-            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + '\n' + text)                                                                               # write it to window
+            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')                                                                               # write it to window
         self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic

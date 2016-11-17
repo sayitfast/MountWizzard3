@@ -11,14 +11,14 @@
 # Licence APL2.0
 #
 ############################################################
-# standar solutions
+# standard solutions
 import logging
 import os
 import numpy
 # matplotlib
 import matplotlib                                                                                                           # plotting library
 matplotlib.use('Qt5Agg')                                                                                                    # we are using QT5 style
-import matplotlib.pyplot as plt                                                                                             # use the plot function
+from matplotlib import pyplot as plt                                                                                        # use the plot function
 
 
 class Analyse:
@@ -28,7 +28,7 @@ class Analyse:
         self.filepath = '\\analysedata'                                                                                     # define file path for storing the analyse files
 
     def saveData(self, data, name):                                                                                         # saving data from list to file
-        filename = os.getcwd() + self.filepath + '\\' +name                                                                 # built the filename
+        filename = os.getcwd() + self.filepath + '\\' + name                                                                # built the filename
         try:                                                                                                                # write data to disk
             outfile = open(filename, 'w')                                                                                   # open for write
             for item in data:                                                                                               # run through the data items
@@ -57,13 +57,13 @@ class Analyse:
     def plotData(self, data, scaleRA, scaleDEC):
         # index in plot             0  1    2   3   4   5       6           7       8       9
         # data format of analyse: (i, az, alt, ra, dec, ra_sol, dec_sol, raError, decError, err)
-        if len(data)==0:                                                                                               # in case no data loaded ->
+        if len(data) == 0:                                                                                                  # in case no data loaded ->
             return                                                                                                          # quit
-        dat = numpy.asarray(data)                                                                                      # convert list to array
+        dat = numpy.asarray(data)                                                                                           # convert list to array
         datWest = []                                                                                                        # clear the storage, point of west side of pier
         datEast = []                                                                                                        # point on the east side of pier
         datOut = []                                                                                                         # exceeding the min/max value
-        for i in range(0,len(dat)):                                                                                         # separate data for coloring
+        for i in range(0, len(dat)):                                                                                        # separate data for coloring
             out = False                                                                                                     # point out of range ?
             if dat[i][7] > scaleRA:
                 dat[i][7] = scaleRA
@@ -81,7 +81,7 @@ class Analyse:
                 datOut.append(dat[i])                                                                                       # append
             else:
                 if dat[i][1] > 180:                                                                                         # separate east from west and in scale from otu scale
-                    datWest.append(dat[i])                                                                                  # appen to west list
+                    datWest.append(dat[i])                                                                                  # append to west list
                 else:
                     datEast.append(dat[i])                                                                                  # append to east list
         dat = numpy.transpose(dat)                                                                                          # transpose array
@@ -111,14 +111,14 @@ class Analyse:
             plt.plot(datOut[8], datOut[2], 'ro')
 
         ax2 = fig.add_subplot(232)
-        #ax2.set_theta_direction(-1)
-        #ax2.set_theta_zero_location('N')
+        # ax2.set_theta_direction(-1)
+        # ax2.set_theta_zero_location('N')
         ax2.set_axis_bgcolor((48/256, 48/256, 48/256))
         ax2.tick_params(axis='x', colors='white')
         ax2.tick_params(axis='y', colors='white')
         plt.xlabel('RA Error (arcsec)', color='white')
         plt.ylabel('Altitude (degree)', color='white')
-        plt.title('Altitude over RightAcension Error', color='white')
+        plt.title('Altitude over RightAscension Error', color='white')
         plt.axis([-scaleRA, scaleRA, 0, 90])
         plt.grid(True, color='white')
         plt.plot(dat[7], dat[2], color='black')
@@ -131,7 +131,7 @@ class Analyse:
         ax3.set_axis_bgcolor((48/256, 48/256, 48/256))
         ax3.tick_params(axis='x', colors='white')
         ax3.tick_params(axis='y', colors='white')
-        plt.xlabel('Azimut (degree)', color='white')
+        plt.xlabel('Azimuth (degree)', color='white')
         plt.ylabel('Error (arcsec)', color='white')
         plt.title('Declination Error over Azimuth', color='white')
         plt.axis([0, 360, -scaleDEC, scaleDEC])
@@ -194,6 +194,5 @@ class Analyse:
 if __name__ == "__main__":
 
     a = Analyse()
-    #data = a.loadData('2016-10-27-18-31-58_analyse_run.txt')
-    #a.plotData(data, 20, 20)
-
+    # data = a.loadData('2016-10-27-18-31-58_analyse_run.txt')
+    # a.plotData(data, 20, 20)

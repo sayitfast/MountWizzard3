@@ -46,11 +46,11 @@ class Dome(QtCore.QThread):
                     self.connected = True                                                                                   # set status to connected
                     self.messageQueue.put('Dome Driver Connected')                                                          # write message to gui
                 except pythoncom.com_error as e:                                                                            # If win32com failure
-                    self.messageQueue.put('Driver COM Error in dispatchDome: {0}'.format(e.args[2][0]))                     # write message to gui
+                    self.messageQueue.put('Driver COM Error in dispatchDome')                                               # write message to gui
                     self.logger.error('run -> connect win32com error: {0}'.format(e))                                       # write to logger
                     self.connected = False                                                                                  # set to disconnected
                 except Exception as e:                                                                                      # if general exception
-                    self.messageQueue.put('Driver COM Error in dispatchDome: {0}'.format(e))                                # write to gui
+                    self.messageQueue.put('Driver COM Error in dispatchDome')                                               # write to gui
                     self.logger.error('run -> general exception: {0}'.format(e))                                            # write to logger
                     self.connected = False                                                                                  # set to disconnected
                 finally:                                                                                                    # still continua and try it again
@@ -70,11 +70,11 @@ class Dome(QtCore.QThread):
             self.driverName = self.chooser.Choose(self.driverName)
             self.connected = False                                                                                          # run the driver setup dialog
         except pythoncom.com_error as e:                                                                                    # exception handling
-            self.messageQueue.put('Driver COM Error in setupDome: {0}'.format(e))                                           # write to gui
+            self.messageQueue.put('Driver COM Error in setupDome')                                                          # write to gui
             self.logger.error('setupDriver -> win32com error:{0}'.format(e))                                                # write to log
             self.connected = False                                                                                          # set to disconnected
         except Exception as e:                                                                                              # general exception
-            self.messageQueue.put('Driver Exception in setupDome: {0}'.format(e))                                           # write to gui
+            self.messageQueue.put('Driver Exception in setupDome')                                                          # write to gui
             self.logger.error('setupDriver -> general exception:{0}'.format(e))                                             # write to log
             self.connected = False                                                                                          # set to disconnected
         finally:                                                                                                            # continue to work
