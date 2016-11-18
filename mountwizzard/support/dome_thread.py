@@ -81,6 +81,4 @@ class Dome(QtCore.QThread):
             pass                                                                                                            # python necessary
 
 if __name__ == "__main__":
-    dome = Dome()
-    #dome.ascom = Dispatch(dome.driverName)
-    dome.setupDriver()
+    pass

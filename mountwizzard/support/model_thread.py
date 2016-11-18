@@ -405,7 +405,7 @@ class Model(QtCore.QThread):
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
                 return False, 0, 0, 0, 0                                                                                    # default without subframe
 
-    def capturingImage(self, index, ra, dec, jd, az, alt, sub, sX, sY, oX, oY):                                             # capturing image
+    def capturingImage(self, index, ra, dec, az, alt, sub, sX, sY, oX, oY):                                                 # capturing image
         self.LogQueue.put('Capturing image for model point {0:2d}...'.format(index + 1))                                    # gui output
         guid = ''                                                                                                           # define guid
         imagepath = ''                                                                                                      # define imagepath
@@ -449,9 +449,8 @@ class Model(QtCore.QThread):
                 fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
                 fitsHeader['MW_ALT'] = str(alt)                                                                             # and vice versa
                 self.logger.debug(
-                    'capturingImage-> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT1: {3} CDELT2: {4}'.format(
-                        fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], fitsHeader['CDELT1'],
-                        fitsHeader['CDELT2']))                                                                              # write all header data to debug
+                    'capturingImage-> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
+                        fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                       # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
@@ -554,7 +553,7 @@ class Model(QtCore.QThread):
             self.slewMountDome(p[0], p[1])                                                                                  # slewing mount and dome to az/alt for model point
             self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))      # Gui Output
             waitSettlingTime(float(self.ui.settlingTime.value()))                                                           # wait for settling mount
-            suc, mes, imagepath = self.capturingImage(i, self.mount.ra, self.mount.dec, self.mount.jd, p[0], p[1],
+            suc, mes, imagepath = self.capturingImage(i, self.mount.ra, self.mount.dec, p[0], p[1],
                                                       self.sub, self.sizeX, self.sizeY, self.offX, self.offY)               # capturing image and store position (ra,dec), time, (az,alt)
             self.logger.debug('runModel-> capturingImage-> suc:{0} mes:{1}'.format(suc, mes))                               # Debug
             if suc:                                                                                                         # if a picture could be taken
