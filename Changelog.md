@@ -1,6 +1,9 @@
 # Changelog:
 
-
+1.06
+- dome support
+- utc from computer to iso time from mount in fits
+- canceled run could be rerun
 
 1.05
 - second fix

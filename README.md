@@ -76,19 +76,31 @@ This seems a little bit strange to run, but I found so far no better way to use 
 All necessary directories in the working directory will be created if not present. 
 If you have some files already from earlier versions or separate working directories, just copy them to the adequate place. 
 
-### ASCOM Framework
+### ASCOM framework
 If you didn't already install the ASCOM Framework on you computer for astronomy use, please do so now. 
 You will find the download at:
 <pre>http://ascom-standards.org</pre>
 The actual version is 6.2. Please download it and install the package on your computer.
 
 ### ASCOM drivers
-Please install Per Frejvals 10micron ASCOM driver and if you have the Stickstation as well, please do so with Per Frejval ASCOM Stickstation driver, too. 
+Please install Per Frejval 10micron ASCOM driver and if you have the Stickstation as well, please do so with Per Frejval ASCOM Stickstation driver, too. 
 Another drive is used: OpenWeather ASCOM driver should be installed. For the first configuration you need an API key from OpenWeather. Please follow the instructions on http://openweathermap.org/api
 how to get one.
 
 ## Usage:
 Choose the settings you would like. Configuration of Ascom environment could be done via settings
+
+## Logfiles or console output:
+The message:
+<pre>UserWarning: Could not find appropriate MS Visual C Runtime library or library is corrupt/misconfigured; 
+cannot determine whether your file object was opened in append mode.  
+Please consider using a file object opened in write mode instead. 
+'Could not find appropriate MS Visual C Runtime '
+ </pre>
+ could be ignored. This is an issue from ctype python library, which is already known and doesn't influence functionality of mountwizzard.
+see:
+<pre> mscvrt not found when calling fits.open() on Python 3.5 on Win10 #4342
+</pre>
 
 ### Remarks for professionals:
 The mount_ui.ui file is the PyQt Designer file. If you would like to change designs or rearrangements, you could

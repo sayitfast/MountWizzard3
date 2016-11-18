@@ -1236,7 +1236,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>180</y>
+       <y>290</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1245,7 +1245,7 @@
       <string>Runs the base model, if ther are any points</string>
      </property>
      <property name="text">
-      <string>Run Base</string>
+      <string>Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_sortBasePoints">
@@ -1268,7 +1268,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>220</y>
+       <y>180</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -1501,7 +1501,7 @@
      <property name="geometry">
       <rect>
        <x>620</x>
-       <y>180</y>
+       <y>290</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1510,7 +1510,41 @@
       <string>Cancels the base run in the next ful cycle</string>
      </property>
      <property name="text">
-      <string>Cancel Base</string>
+      <string>Cancel</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_23">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>270</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_103">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>260</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Modeling Run</string>
      </property>
     </widget>
    </widget>
@@ -1577,7 +1611,7 @@
       <string>Run refinment model</string>
      </property>
      <property name="text">
-      <string>Run Refinement</string>
+      <string>Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadRefinementPoints">
@@ -1844,7 +1878,7 @@
       <string>Cancel the refinment modeling in next cycle</string>
      </property>
      <property name="text">
-      <string>Cancel Refinement</string>
+      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_generateGridPoints">
@@ -1878,7 +1912,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Do Modeling</string>
+      <string>Modeling Run</string>
      </property>
     </widget>
    </widget>

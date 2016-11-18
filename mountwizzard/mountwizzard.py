@@ -880,11 +880,11 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/images')                                                                                # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
-    logging.error('Mount wizard started !')                                                                                 # start message logger
-    app = QApplication(sys.argv)
-    sys.excepthook = except_hook
+    logging.error('MountWizzard started !\n')                                                                               # start message logger
+    app = QApplication(sys.argv)                                                                                            # built application
+    sys.excepthook = except_hook                                                                                            # manage except hooks for logging
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
-    app.setStyle(QStyleFactory.create('Fusion'))
-    mountApp = MountWizzardApp()
-    logging.error('Mount wizard stopped !')                                                                                 # stop message logger
-    sys.exit(app.exec_())
+    app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
+    mountApp = MountWizzardApp()                                                                                            # instantiate Application
+    logging.error('MountWizzard stopped !\n')                                                                               # stop message logger
+    sys.exit(app.exec_())                                                                                                   # close application

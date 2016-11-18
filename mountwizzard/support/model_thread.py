@@ -541,44 +541,42 @@ class Model(QtCore.QThread):
             self.commandQueue.put('PO')                                                                                     # unpark to start slewing
             self.commandQueue.put('AP')                                                                                     # tracking should be on as well
         for i, p in enumerate(runPoints):                                                                                   # run through all model points
-            if self.cancel:                                                                                                 # here is the entry point for canceling the model run
-                self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                           # we keep all the stars before
-                self.cancel = False                                                                                         # and make it back to default
-                self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')       # button back to default color
-                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
-                break                                                                                                       # finally stopping model run
-            self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))   # Gui Output
-            self.logger.debug('runModel-> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))                    # Debug output
-            self.slewMountDome(p[0], p[1])                                                                                  # slewing mount and dome to az/alt for model point
-            self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))      # Gui Output
-            waitSettlingTime(float(self.ui.settlingTime.value()))                                                           # wait for settling mount
-            suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
-                                                      self.sub, self.sizeX, self.sizeY, self.offX, self.offY)               # capturing image and store position (ra,dec), time, (az,alt)
-            self.logger.debug('runModel-> capturingImage-> suc:{0} mes:{1}'.format(suc, mes))                               # Debug
-            if suc:                                                                                                         # if a picture could be taken
-                self.LogQueue.put('Solving Image...')                                                                       # output for user GUI
-                suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = self.solveImage(modeltype, imagepath)             # solve the position and returning the values
-                self.logger.debug('runModel-> solveImage-> suc:{0} ra:{1} dec:{2} scale:{3} angle:{4}'.format(suc, ra_sol, dec_sol, scale, angle))  # debug output
-                if not self.ui.checkKeepImages.isChecked():                                                                 # check if the model images should be kept
-                    os.remove(imagepath)                                                                                    # otherwise just delete them
-                if suc:                                                                                                     # solved data is there, we can sync
-                    if not modeltype == 'Analyse':                                                                          # if we run analyse, we don't change the model
-                        self.addRefinementStar(ra_sol, dec_sol)                                                             # sync the actual star to resolved coordinates in J2000
-                    self.numCheckPoints += 1                                                                                # increase index for synced stars
-                    raE = (ra_sol - ra_m) * 3600                                                                            # calculate the alignment error ra
-                    decE = (dec_sol - dec_m) * 3600                                                                         # calculate the alignment error dec
-                    err = math.sqrt(raE * raE + decE * decE)                                                                # accumulate sum of error vectors squared
-                    self.logger.debug('runModel-> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))         # generating debug output
-                    self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                      # adding point for matrix
-                    if modeltype == 'Base':                                                                                 # depending on modeltype set the relating modeled point invisible
-                        self.BasePoints[i][2].setVisible(False)                                                             # visibility = False
-                    if modeltype == 'Refinement':                                                                           # depending on modeltype set the relating modeled point invisible
-                        self.RefinementPoints[i][2].setVisible(False)                                                       # visibility = False
-                    self.LogQueue.put(
-                        '\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(
-                            ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                              # data for User
-                    self.logger.debug(
-                        'runModel-> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  Error: {4:2.1f}  Took: {5:3.1f}s'.format(
-                            ra_sol, dec_sol, scale, angle, err, timeTS))                                                    # log output
-        self.LogQueue.put('\n\n{0} Model finished. Number of points: {1:3d}   {2}.\n\n'.format(modeltype, self.numCheckPoints, time.ctime()))    # GUI output
+            if p[2].isVisible():                                                                                            # is the model point already run ?
+                if self.cancel:                                                                                             # here is the entry point for canceling the model run
+                    self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                       # we keep all the stars before
+                    self.cancel = False                                                                                     # and make it back to default
+                    self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')   # button back to default color
+                    self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                    break                                                                                                   # finally stopping model run
+                self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))       # Gui Output
+                self.logger.debug('runModel-> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))                # Debug output
+                self.slewMountDome(p[0], p[1])                                                                              # slewing mount and dome to az/alt for model point
+                self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))  # Gui Output
+                waitSettlingTime(float(self.ui.settlingTime.value()))                                                       # wait for settling mount
+                suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
+                                                          self.sub, self.sizeX, self.sizeY, self.offX, self.offY)           # capturing image and store position (ra,dec), time, (az,alt)
+                self.logger.debug('runModel-> capturingImage-> suc:{0} mes:{1}'.format(suc, mes))                           # Debug
+                if suc:                                                                                                     # if a picture could be taken
+                    self.LogQueue.put('Solving Image...')                                                                   # output for user GUI
+                    suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = self.solveImage(modeltype, imagepath)         # solve the position and returning the values
+                    self.logger.debug('runModel-> solveImage-> suc:{0} ra:{1} dec:{2} scale:{3} angle:{4}'.format(suc, ra_sol, dec_sol, scale, angle))  # debug output
+                    if not self.ui.checkKeepImages.isChecked():                                                             # check if the model images should be kept
+                        os.remove(imagepath)                                                                                # otherwise just delete them
+                    if suc:                                                                                                 # solved data is there, we can sync
+                        if not modeltype == 'Analyse':                                                                      # if we run analyse, we don't change the model
+                            self.addRefinementStar(ra_sol, dec_sol)                                                         # sync the actual star to resolved coordinates in J2000
+                        self.numCheckPoints += 1                                                                            # increase index for synced stars
+                        raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
+                        decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
+                        err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
+                        self.logger.debug('runModel-> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))     # generating debug output
+                        self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                  # adding point for matrix
+                        p[2].setVisible(False)                                                                              # set the relating modeled point invisible
+                        self.LogQueue.put(
+                            '\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(
+                                ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                          # data for User
+                        self.logger.debug(
+                            'runModel-> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  Error: {4:2.1f}  Took: {5:3.1f}s'.format(
+                                ra_sol, dec_sol, scale, angle, err, timeTS))                                                # log output
+        self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'.format(modeltype, self.numCheckPoints, time.ctime()))    # GUI output
         return self.results                                                                                                 # return results for analysing
