@@ -77,7 +77,7 @@ class Mount(QtCore.QThread):
         try:                                                                                                                # start accessing a com object
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
         except Exception as e:                                                                                              # exception handling
-            self.messageQueue.put('Error load ASCOM transform Driver: {0}'.format(e))                                       # write to gui
+            self.messageQueue.put('Error load ASCOM transform Driver')                                                      # write to gui
             self.logger.error('run -> load ASCOM transform error:{0}'.format(e))                                            # write logfile
         finally:                                                                                                            # we don't stop on error the wizzard
             pass                                                                                                            # python specific
@@ -125,12 +125,9 @@ class Mount(QtCore.QThread):
                     self.ascom.connected = True                                                                             # connect to mount
                     self.connected = True                                                                                   # setting connection status from driver
                     self.messageQueue.put('Mount Driver Connected')                                                         # status to gui
-                except pythoncom.com_error as e:                                                                            # error handling
-                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e))                               # gui
-                    self.logger.error('run-> Driver COM Error in dispatchMount: {0}'.format(e))                             # logfile
-                    self.connected = False                                                                                  # after error connection might be broken
-                except Exception as e:                                                                                      # error handling part 2
-                    self.messageQueue.put('Driver COM Error in dispatchMount: {0}'.format(e))                               # to gui
+                except Exception as e:                                                                                      # error handling
+                    if '{0}'.format(e).find('ASCOM.FrejvallGM.Telescope.connected') == 0:                                   # if this set, i cant connect
+                        self.messageQueue.put('Driver COM Error in dispatchMount')                                          # gui
                     self.logger.error('run-> Driver COM Error in dispatchMount: {0}'.format(e))                             # to logger
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
@@ -151,8 +148,8 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 reply = self.ascom.CommandString(command)                                                                   # with return value do regular command
         except pythoncom.com_error as e:                                                                                    # error handling
-            self.messageQueue.put('Driver COM Error in sendCommand: {0} reply: {1} error :{2}'.format(command, reply, e))   # gui
-            self.logger.error('sendCommand -> error: {0}'.format(e))                                                        # logger
+            self.messageQueue.put('Driver COM Error in sendCommand')                                                        # gui
+            self.logger.error('sendCommand -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))                # logger
             self.connected = False                                                                                          # in case of error, the connection might be broken
         finally:                                                                                                            # we don't stop
             if len(reply) > 0:                                                                                              # if there is a reply
