@@ -25,10 +25,10 @@ class Analyse:
     logger = logging.getLogger('Analyse')                                                                                   # logging enabling
 
     def __init__(self):
-        self.filepath = '\\analysedata'                                                                                     # define file path for storing the analyse files
+        self.filepath = '/analysedata'                                                                                      # define file path for storing the analyse files
 
     def saveData(self, data, name):                                                                                         # saving data from list to file
-        filename = os.getcwd() + self.filepath + '\\' + name                                                                # built the filename
+        filename = os.getcwd() + self.filepath + '/' + name                                                                 # built the filename
         try:                                                                                                                # write data to disk
             outfile = open(filename, 'w')                                                                                   # open for write
             for item in data:                                                                                               # run through the data items
@@ -39,7 +39,7 @@ class Analyse:
             return
 
     def loadData(self, name):                                                                                               # loading data
-        filename = os.getcwd() + self.filepath + '\\' + name                                                                # generate filename
+        filename = os.getcwd() + self.filepath + '/' + name                                                                 # generate filename
         data = []                                                                                                           # clear data list
         try:                                                                                                                # try to read the file
             with open(filename) as infile:                                                                                  # open

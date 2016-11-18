@@ -109,7 +109,7 @@ class MountWizzardApp(QDialog, QObject):
         self.model.signalModelRedrawRefinement. connect(self.showRefinementPoints)                                          # trigger redraw refinement chart
         self.model.signalModelRedrawBase.connect(self.showBasePoints)                                                       # trigger base chart
         self.model.start()                                                                                                  # starting polling thread
-        if not os.path.isfile(os.getcwd() + '\\mw.txt'):                                                                    # check existing file for enable the features
+        if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
 
     def mappingFunctions(self):
@@ -326,7 +326,7 @@ class MountWizzardApp(QDialog, QObject):
     def loadConfig(self):
         # load the config file
         try:
-            with open('config\\config.cfg', 'r') as data_file:
+            with open('config/config.cfg', 'r') as data_file:
                 self.config = json.load(data_file)
             data_file.close()
             self.model.loadHorizonPoints(str(self.config['HorizonPointsFileName']))
@@ -423,9 +423,9 @@ class MountWizzardApp(QDialog, QObject):
 
         # save the config file
         try:
-            if not os.path.isdir(os.getcwd() + '\\config'):                                                                 # if config dir doesn't exist, make it
-                os.makedirs(os.getcwd() + '\\config')                                                                       # if path doesn't exist, generate is
-            with open('config\\config.cfg', 'w') as outfile:
+            if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
+                os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
+            with open('config/config.cfg', 'w') as outfile:
                 json.dump(self.config, outfile)
             outfile.close()
         except Exception as e:
@@ -444,7 +444,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.ExistingFile)
         # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\config', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
         else:
@@ -456,7 +456,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.AnyFile)
         # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\analysedata', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/analysedata', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
         else:
@@ -479,7 +479,7 @@ class MountWizzardApp(QDialog, QObject):
         dlg.setNameFilter("Text files (*.txt)")
         dlg.setFileMode(QFileDialog.ExistingFile)
         # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'\\config', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
 
@@ -874,12 +874,12 @@ if __name__ == "__main__":
             logging.basicConfig(filename='mount.log', level=logging.DEBUG, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
     else:                                                                                                                   # set logging level accordingly
         logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s -> %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
-    if not os.path.isdir(os.getcwd() + '\\analysedata'):                                                                    # if analyse dir doesn't exist, make it
-        os.makedirs(os.getcwd() + '\\analysedata')                                                                          # if path doesn't exist, generate is
-    if not os.path.isdir(os.getcwd() + '\\images'):                                                                         # if images dir doesn't exist, make it
-        os.makedirs(os.getcwd() + '\\images')                                                                               # if path doesn't exist, generate is
-    if not os.path.isdir(os.getcwd() + '\\config'):                                                                         # if config dir doesn't exist, make it
-        os.makedirs(os.getcwd() + '\\config')                                                                               # if path doesn't exist, generate is
+    if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
+        os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
+    if not os.path.isdir(os.getcwd() + '/images'):                                                                          # if images dir doesn't exist, make it
+        os.makedirs(os.getcwd() + '/images')                                                                                # if path doesn't exist, generate is
+    if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
+        os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('Mount wizard started !')                                                                                 # start message logger
     app = QApplication(sys.argv)
     sys.excepthook = except_hook

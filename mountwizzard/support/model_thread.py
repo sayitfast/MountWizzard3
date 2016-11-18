@@ -154,7 +154,7 @@ class Model(QtCore.QThread):
         else:                                                                                                               #
             self.RefinementPoints = []                                                                                      # reset  points
         try:                                                                                                                # fault tolerance, if file io fails
-            with open('config\\' + modelPointsFileName) as fileHandle:                                                      # run over complete file
+            with open('config/' + modelPointsFileName) as fileHandle:                                                       # run over complete file
                 for line in fileHandle:                                                                                     # run over lines
                     convertedLine = line.rstrip('\n').split(':')                                                            # format is same as Per's MM
                     Point = (int(convertedLine[0]), int(convertedLine[1]))                                                  # take data from line
@@ -197,7 +197,7 @@ class Model(QtCore.QThread):
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
         hp = []                                                                                                             # clear cache
         try:                                                                                                                # try opening the file
-            with open('config\\' + horizonPointsFileName) as f:                                                             # run through file
+            with open('config/' + horizonPointsFileName) as f:                                                              # run through file
                 for line in f:                                                                                              # run through lines
                     m = line.rstrip('\n').split(':')                                                                        # split the values
                     point = (int(m[0]), int(m[1]))                                                                          # get point data
@@ -414,7 +414,7 @@ class Model(QtCore.QThread):
             self.logger.debug('capturingImage-> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
                               .format(self.ui.cameraBin.value(), int(float(self.ui.isoSetting.value())),
                                       self.ui.cameraExposure.value(),
-                                      self.ui.le_imageDirectoryName.text() + '\\' + self.captureFile))                      # write logfile
+                                      self.ui.le_imageDirectoryName.text() + '/' + self.captureFile))                       # write logfile
             if self.ui.checkFastDownload.isChecked():                                                                       # if camera is supporting high speed download
                 speed = 'HiSpeed'                                                                                           # we can use it for improved modeling speed
             else:                                                                                                           # otherwise
@@ -423,7 +423,7 @@ class Model(QtCore.QThread):
                                                        exposureLength=self.ui.cameraExposure.value(),
                                                        isoMode=int(float(self.ui.isoSetting.value())),
                                                        gain='High', speed=speed, frameType='Light',
-                                                       path=self.ui.le_imageDirectoryName.text() + '\\' + self.captureFile,
+                                                       path=self.ui.le_imageDirectoryName.text() + '/' + self.captureFile,
                                                        useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)              # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
         else:                                                                                                               # otherwise its simulation
             suc = True                                                                                                      # success is always true
@@ -456,8 +456,8 @@ class Model(QtCore.QThread):
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
                 return True, 'success', imagepath                                                                           # return true message imagepath
             else:                                                                                                           # If we test without camera, we need to take pictures of test
-                imagepath = self.ui.le_imageDirectoryName.text() + '\\' + self.captureFile                                  # set imagepath to default
-                copyfile(os.getcwd() + '\\testimages\\model_cap-{0}.fit'.format(index), imagepath)                          # copy testfile instead of imaging
+                imagepath = self.ui.le_imageDirectoryName.text() + '/' + self.captureFile                                   # set imagepath to default
+                copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index), imagepath)                            # copy testfile instead of imaging
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
                 return True, 'testsetup', imagepath                                                                         # return true test message imagepath
         else:                                                                                                               # otherwise
