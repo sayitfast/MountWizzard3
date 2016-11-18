@@ -15,7 +15,6 @@
 import logging
 import math
 import time
-import datetime
 import os
 from shutil import copyfile
 # threading
@@ -405,7 +404,7 @@ class Model(QtCore.QThread):
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
                 return False, 0, 0, 0, 0                                                                                    # default without subframe
 
-    def capturingImage(self, index, ra, dec, az, alt, sub, sX, sY, oX, oY):                                                 # capturing image
+    def capturingImage(self, index, jd, ra, dec, az, alt, sub, sX, sY, oX, oY):                                             # capturing image
         self.LogQueue.put('Capturing image for model point {0:2d}...'.format(index + 1))                                    # gui output
         guid = ''                                                                                                           # define guid
         imagepath = ''                                                                                                      # define imagepath
@@ -439,7 +438,7 @@ class Model(QtCore.QThread):
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
-                fitsHeader['DATE-OBS'] = datetime.datetime.utcnow().isoformat()                                             # set time to current time
+                fitsHeader['DATE-OBS'] = time.strftime('%Y-%m-%dT%H:%M:%S.0', time.gmtime((jd - 2440587.5) * 86400))        # set time to current time of the mount
                 h, m, s = self.mount.decimalToDegree(ra)                                                                    # convert
                 fitsHeader['OBJCTRA'] = '{0:02} {1:02} {2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
                 h, m, s = self.mount.decimalToDegree(dec)                                                                   # convert
@@ -467,11 +466,11 @@ class Model(QtCore.QThread):
         hint = float(self.ui.pixelSize.value()) * 206.6 * float(self.ui.cameraBin.value()) / float(self.ui.focalLength.value())    # calculating hint for solve
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=self.ui.checkUseBlindSolve.isChecked(), useFitsHeaders=True)
-        else:
-            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=False, useFitsHeaders=True)
-        self.logger.debug('solveImage (start)-> suc:{0} mes:{1} guid:{2} scalehint:{3}'.format(suc, mes, guid, hint))
+        else:                                                                                                               # otherwise
+            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=False, useFitsHeaders=True)      # solve without blind
+        self.logger.debug('solveImage (start)-> suc:{0} mes:{1} guid:{2} scalehint:{3}'.format(suc, mes, guid, hint))       # debug output
         if not suc:                                                                                                         # if we failed to start solving
-            self.LogQueue.put('\t\tSolving could not be started: ' + mes)                                                   # Gui output
+            self.LogQueue.put('\t\t\tSolving could not be started: ' + mes)                                                 # Gui output
             self.logger.warning('solveImage -> no start {0}'. format(mes))                                                  # debug output
             return False, 0, 0, 0, 0, 0, 0, 0                                                                               # default parameters without success
         while True:                                                                                                         # retrieving solving data in loop
@@ -553,7 +552,7 @@ class Model(QtCore.QThread):
             self.slewMountDome(p[0], p[1])                                                                                  # slewing mount and dome to az/alt for model point
             self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))      # Gui Output
             waitSettlingTime(float(self.ui.settlingTime.value()))                                                           # wait for settling mount
-            suc, mes, imagepath = self.capturingImage(i, self.mount.ra, self.mount.dec, p[0], p[1],
+            suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
                                                       self.sub, self.sizeX, self.sizeY, self.offX, self.offY)               # capturing image and store position (ra,dec), time, (az,alt)
             self.logger.debug('runModel-> capturingImage-> suc:{0} mes:{1}'.format(suc, mes))                               # Debug
             if suc:                                                                                                         # if a picture could be taken
