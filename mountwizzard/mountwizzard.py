@@ -681,11 +681,13 @@ class MountWizzardApp(QDialog, QObject):
             elif data['Value'] == '1':
                 self.ui.btn_stop.setStyleSheet('background-color: rgb(42, 130, 218)')
                 self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
+                self.ui.btn_mountUnpark.setStyleSheet('background-color: rgb(42, 130, 218)')
             elif data['Value'] == '5':
                 self.ui.btn_mountPark.setStyleSheet('background-color: rgb(42, 130, 218)')
                 self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
             elif data['Value'] == '7':
                 self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
+                self.ui.btn_mountUnpark.setStyleSheet('background-color: rgb(42, 130, 218)')
         if data['Name'] == 'GetTelescopeDEC':
             self.ui.le_telescopeDEC.setText(data['Value'])
         if data['Name'] == 'GetTelescopeRA':

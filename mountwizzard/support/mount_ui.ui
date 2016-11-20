@@ -148,7 +148,7 @@
      <property name="font">
       <font>
        <family>Courier</family>
-       <pointsize>22</pointsize>
+       <pointsize>24</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -187,7 +187,7 @@
      <property name="font">
       <font>
        <family>Courier</family>
-       <pointsize>22</pointsize>
+       <pointsize>24</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -226,7 +226,7 @@
      <property name="font">
       <font>
        <family>Courier</family>
-       <pointsize>22</pointsize>
+       <pointsize>24</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -265,7 +265,7 @@
      <property name="font">
       <font>
        <family>Courier</family>
-       <pointsize>22</pointsize>
+       <pointsize>24</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
