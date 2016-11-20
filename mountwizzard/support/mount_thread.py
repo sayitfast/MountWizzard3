@@ -124,11 +124,10 @@ class Mount(QtCore.QThread):
                     self.ascom = Dispatch('ASCOM.FrejvallGM.Telescope')                                                     # select win32 driver
                     self.ascom.connected = True                                                                             # connect to mount
                     self.connected = True                                                                                   # setting connection status from driver
-                    self.messageQueue.put('Mount Driver Connected')                                                         # status to gui
                 except Exception as e:                                                                                      # error handling
                     if '{0}'.format(e).find('ASCOM.FrejvallGM.Telescope.connected') == 0:                                   # if this set, i cant connect
                         self.messageQueue.put('Driver COM Error in dispatchMount')                                          # gui
-                    self.logger.error('run-> Driver COM Error in dispatchMount: {0}'.format(e))                             # to logger
+                    self.logger.error('run Mount -> Driver COM Error in dispatchMount: {0}'.format(e))                      # to logger
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
                     time.sleep(1)                                                                                           # try it every second, not more
@@ -149,7 +148,7 @@ class Mount(QtCore.QThread):
                 reply = self.ascom.CommandString(command)                                                                   # with return value do regular command
         except pythoncom.com_error as e:                                                                                    # error handling
             self.messageQueue.put('Driver COM Error in sendCommand')                                                        # gui
-            self.logger.error('sendCommand -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))                # logger
+            self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))          # logger
             self.connected = False                                                                                          # in case of error, the connection might be broken
         finally:                                                                                                            # we don't stop
             if len(reply) > 0:                                                                                              # if there is a reply
@@ -161,7 +160,7 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
-            self.logger.debug('flipMount-> error: {0}'.format(reply))                                                       # write to logger
+            self.logger.debug('flipMount -> error: {0}'.format(reply))                                                      # write to logger
 
     @staticmethod
     def degStringToDecimal(value, splitter=':'):
@@ -170,10 +169,15 @@ class Mount(QtCore.QThread):
 
     @staticmethod
     def decimalToDegree(value):
+        if value >= 0:
+            sign = '+'
+        else:
+            sign = ' '
+        value = abs(value)
         hour = int(value)
         minute = int((value - hour) * 60)
         second = int(((value - hour) * 60 - minute) * 60)
-        return hour, minute, second
+        return hour, minute, second, sign
 
     def getAlignmentModel(self):
         self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(42, 130, 218)')
@@ -284,10 +288,10 @@ class Mount(QtCore.QThread):
             self.transform.SetTopocentric(float(ra), float(dec))                                                            # set Jnow data
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
-            h, m, s = self.decimalToDegree(self.ra)
+            h, m, s, sign = self.decimalToDegree(self.ra)
             ra_show = '{0:02}:{1:02}:{2:02}'.format(h, m, s)
-            h, m, s = self.decimalToDegree(self.dec)
-            dec_show = '{0:+03}:{1:02}:{2:02}'.format(h, m, s)
+            h, m, s, sign= self.decimalToDegree(self.dec)
+            dec_show = '{0}{1:02}:{2:02}:{3:02}'.format(sign, h, m, s)
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude
@@ -351,10 +355,10 @@ class Mount(QtCore.QThread):
         except pythoncom.com_error as e:                                                                                    # error handling, happens sometimes
             self.connected = False                                                                                          # set to disconnected -> reconnect necessary
             self.messageQueue.put('Driver Exception in setupDriverMount')                                                   # debug output to Gui
-            self.logger.debug('setupDriver -> win32com error: {0}'.format(e))                                               # write to log
+            self.logger.debug('setupDriver Mount -> win32com error: {0}'.format(e))                                         # write to log
         except Exception as e:                                                                                              # general exception
             self.messageQueue.put('Driver Exception in setupMount')                                                         # write to gui
-            self.logger.error('setupDriver -> general exception:{0}'.format(e))                                             # write to log
+            self.logger.error('setupDriver Mount -> general exception:{0}'.format(e))                                       # write to log
             self.connected = False                                                                                          # set to disconnected
         finally:                                                                                                            # won't stop the program, continue
             return

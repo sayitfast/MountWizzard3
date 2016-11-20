@@ -2,8 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -23,11 +30,33 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-1197">
+              <caret line="415" column="21" selection-start-line="415" selection-start-column="21" selection-end-line="415" selection-end-column="21" />
+              <folding>
+                <element signature="e#310#324#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mount.log" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1460">
+              <caret line="958" column="60" selection-start-line="958" selection-start-column="60" selection-end-line="958" selection-end-column="60" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="136">
-              <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+            <state relative-caret-position="272">
+              <caret line="293" column="32" selection-start-line="293" selection-start-column="32" selection-end-line="293" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -60,15 +89,15 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/sgpro.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/setup.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
-        <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Changelog.md" />
+        <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
       </list>
     </option>
@@ -633,7 +662,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479482573786</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="optimizing error messages for mount connection">
+      <created>1479483975125</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1479483975125</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -712,19 +748,20 @@
     <MESSAGE value="code cleanup file paths" />
     <MESSAGE value="change FITS file from utc of computer to jd of mount according to dec / ra" />
     <MESSAGE value="update to rerun or finish a canceled model run" />
-    <option name="LAST_COMMIT_MESSAGE" value="update to rerun or finish a canceled model run" />
+    <MESSAGE value="optimizing error messages for mount connection" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimizing error messages for mount connection" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mountwizzard/mountwizzard.py</url>
-          <line>470</line>
+          <line>474</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py</url>
-          <line>331</line>
+          <line>335</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
@@ -958,30 +995,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/weather_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="440">
-          <caret line="84" column="124" selection-start-line="84" selection-start-column="124" selection-end-line="84" selection-end-column="124" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="82" column="89" selection-start-line="82" selection-start-column="89" selection-end-line="82" selection-end-column="89" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="595">
-          <caret line="83" column="4" selection-start-line="83" selection-start-column="4" selection-end-line="83" selection-end-column="4" />
-          <folding>
-            <element signature="e#331#345#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mw.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1013,19 +1026,6 @@
         <state relative-caret-position="248">
           <caret line="104" column="0" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
-          <caret line="845" column="5" selection-start-line="845" selection-start-column="5" selection-end-line="845" selection-end-column="5" />
-          <folding>
-            <element signature="e#17357#17519#0" expanded="false" />
-            <element signature="e#17571#17667#0" expanded="false" />
-            <element signature="e#17722#17850#0" expanded="false" />
-            <element signature="e#17882#19448#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1073,28 +1073,65 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="593">
+          <caret line="347" column="28" selection-start-line="347" selection-start-column="28" selection-end-line="347" selection-end-column="28" />
+          <folding>
+            <element signature="e#17357#17519#0" expanded="false" />
+            <element signature="e#17571#17667#0" expanded="false" />
+            <element signature="e#17722#17850#0" expanded="false" />
+            <element signature="e#17882#19448#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="49">
+          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="508">
-          <caret line="430" column="111" selection-start-line="430" selection-start-column="74" selection-end-line="430" selection-end-column="111" />
+          <caret line="55" column="0" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/weather_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="508">
+          <caret line="57" column="0" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="76" column="0" selection-start-line="76" selection-start-column="0" selection-end-line="76" selection-end-column="0" />
+        <state relative-caret-position="-1197">
+          <caret line="415" column="21" selection-start-line="415" selection-start-column="21" selection-end-line="415" selection-end-column="21" />
           <folding>
             <element signature="e#310#324#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1460">
+          <caret line="958" column="60" selection-start-line="958" selection-start-column="60" selection-end-line="958" selection-end-column="60" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="129" column="0" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+        <state relative-caret-position="272">
+          <caret line="293" column="32" selection-start-line="293" selection-start-column="32" selection-end-line="293" selection-end-column="32" />
           <folding />
         </state>
       </provider>

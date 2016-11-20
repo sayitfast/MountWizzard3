@@ -386,9 +386,13 @@ class Model(QtCore.QThread):
             self.commandQueue.put('MS')                                                                                     # initiate slewing
             if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
                 self.dome.ascom.SlewToAzimuth = az                                                                          # set azimuth coordinate
-            time.sleep(2.5)                                                                                                 # wait for mount to start
-            while self.mount.slewing or (self.dome.ascom.Slewing and self.ui.checkSlewDome.isChecked()):                    # wait for tracking = 7 or dome not slewing
-                time.sleep(.1)                                                                                              # loop time
+                time.sleep(2.5)                                                                                             # wait for mount to start
+                while self.mount.slewing or (self.dome.ascom.Slewing and self.ui.checkSlewDome.isChecked()):                # wait for tracking = 7 or dome not slewing
+                    time.sleep(.1)                                                                                          # loop time
+            else:
+                time.sleep(2.5)                                                                                             # wait for mount to start
+                while self.mount.slewing:                                                                                   # wait for tracking = 7 or dome not slewing
+                    time.sleep(.1)                                                                                          # loop time
 
     def prepareCaptureImageSubframes(self, scale):                                                                          # get camera data for doing subframes
         suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
@@ -409,6 +413,7 @@ class Model(QtCore.QThread):
         guid = ''                                                                                                           # define guid
         imagepath = ''                                                                                                      # define imagepath
         mes = ''                                                                                                            # define message
+        jd = float(jd)
         if not self.ui.checkTestWithoutCamera.isChecked():                                                                  # if it's not simulation, we start imaging
             self.logger.debug('capturingImage-> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
                               .format(self.ui.cameraBin.value(), int(float(self.ui.isoSetting.value())),
