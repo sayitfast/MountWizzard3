@@ -439,7 +439,7 @@ class Model(QtCore.QThread):
                         break                                                                                               # stopping the loop
                     else:                                                                                                   # otherwise
                         time.sleep(0.5)                                                                                     # wait for 0.5 seconds
-                self.logger.debug('capturingImage-> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))        # debug output
+                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))        # debug output
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
@@ -453,7 +453,7 @@ class Model(QtCore.QThread):
                 fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
                 fitsHeader['MW_ALT'] = str(alt)                                                                             # and vice versa
                 self.logger.debug(
-                    'capturingImage-> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
+                    'capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
                         fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                       # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
@@ -473,10 +473,10 @@ class Model(QtCore.QThread):
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=self.ui.checkUseBlindSolve.isChecked(), useFitsHeaders=True)
         else:                                                                                                               # otherwise
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=False, useFitsHeaders=True)      # solve without blind
-        self.logger.debug('solveImage (start)-> suc:{0} mes:{1} guid:{2} scalehint:{3}'.format(suc, mes, guid, hint))       # debug output
+        self.logger.debug('solveImage     -> suc:{0} mes:{1} scalehint:{2}'.format(suc, mes, hint))                         # debug output
         if not suc:                                                                                                         # if we failed to start solving
             self.LogQueue.put('\t\t\tSolving could not be started: ' + mes)                                                 # Gui output
-            self.logger.warning('solveImage -> no start {0}'. format(mes))                                                  # debug output
+            self.logger.warning('solveImage     -> no start {0}'. format(mes))                                                  # debug output
             return False, 0, 0, 0, 0, 0, 0, 0                                                                               # default parameters without success
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
@@ -487,7 +487,7 @@ class Model(QtCore.QThread):
             timeTS = float(timeTS)                                                                                          #
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
             if mes[:7] in ['Matched', 'Solve t']:                                                                           # if there is success, we can move on
-                self.logger.debug('solveImage (solved)-> suc:{0} mes:{1} guid:{2} ra:{3} dec:{4}'.format(suc, mes, guid, ra_sol, dec_sol))
+                self.logger.debug('solveImage solv-> ra:{0} dec:{1} suc:{2} mes:{3}'.format(ra_sol, dec_sol, suc, mes))
                 fitsFileHandle = pyfits.open(imagepath, mode='readonly')                                                    # open for getting telescope coordinates
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 ra_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')                                         # convert to decimals the ra of original pointing of mount
@@ -496,7 +496,7 @@ class Model(QtCore.QThread):
                 return True, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                       # return values after successful solving
             elif mes != 'Solving':                                                                                          # general error
                 self.LogQueue.put('\t\t\tError:  ' + mes)                                                                   # Gui output
-                self.logger.debug('solveImage (solved)-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                  # debug output
+                self.logger.debug('solveImage solv-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                  # debug output
                 return False, 0, 0, 0, 0, 0, 0, 0                                                                           # default parameters without success
             else:                                                                                                           # otherwise
                 if self.ui.checkUseBlindSolve.isChecked():                                                                  # when using blind solve, it takes 30-60 s
@@ -515,11 +515,11 @@ class Model(QtCore.QThread):
             self.mount.sendCommand('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                           # Write jnow ra to mount
             h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                 # convert to Jnow
             self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))
-            self.logger.debug('addRefinementStar -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
+            self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
                                                                            self.mount.transform.DecTopocentric))            # debug output
             sync_result = self.mount.sendCommand('CMS')                                                                     # send sync command (regardless what driver tells)
             if sync_result.strip() == 'E':                                                                                  # if sync result is E, than fault happen
-                self.logger.warning('addRefinementStar -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))         # write debug output
+                self.logger.warning('addRefinementSt -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))         # write debug output
                 return False                                                                                                # no refinement feedback
             else:                                                                                                           # otherwise
                 return True                                                                                                 # result OK, synced
@@ -541,7 +541,7 @@ class Model(QtCore.QThread):
             self.sizeY = 0                                                                                                  #
             self.offX = 0                                                                                                   #
             self.offY = 0                                                                                                   #
-        self.logger.debug('runModel-> subframe: {0}, {1}, {2}, {3}, {4}'.format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
+        self.logger.debug('runModel       -> subframe: {0}, {1}, {2}, {3}, {4}'.format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # if mount simulated, no real commands to mount
             self.commandQueue.put('PO')                                                                                     # unpark to start slewing
             self.commandQueue.put('AP')                                                                                     # tracking should be on as well
@@ -554,17 +554,17 @@ class Model(QtCore.QThread):
                     self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
                     break                                                                                                   # finally stopping model run
                 self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))       # Gui Output
-                self.logger.debug('runModel-> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))                # Debug output
+                self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))         # Debug output
                 self.slewMountDome(p[0], p[1])                                                                              # slewing mount and dome to az/alt for model point
                 self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))  # Gui Output
                 waitSettlingTime(float(self.ui.settlingTime.value()))                                                       # wait for settling mount
                 suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
                                                           self.sub, self.sizeX, self.sizeY, self.offX, self.offY)           # capturing image and store position (ra,dec), time, (az,alt)
-                self.logger.debug('runModel-> capturingImage-> suc:{0} mes:{1}'.format(suc, mes))                           # Debug
+                self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('Solving Image...')                                                                   # output for user GUI
                     suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = self.solveImage(modeltype, imagepath)         # solve the position and returning the values
-                    self.logger.debug('runModel-> solveImage-> suc:{0} ra:{1} dec:{2} scale:{3} angle:{4}'.format(suc, ra_sol, dec_sol, scale, angle))  # debug output
+                    self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'.format(ra_sol, dec_sol, suc, scale, angle))  # debug output
                     if not self.ui.checkKeepImages.isChecked():                                                             # check if the model images should be kept
                         os.remove(imagepath)                                                                                # otherwise just delete them
                     if suc:                                                                                                 # solved data is there, we can sync
@@ -574,14 +574,14 @@ class Model(QtCore.QThread):
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
                         decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
                         err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
-                        self.logger.debug('runModel-> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))     # generating debug output
+                        self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))      # generating debug output
                         self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                  # adding point for matrix
                         p[2].setVisible(False)                                                                              # set the relating modeled point invisible
                         self.LogQueue.put(
                             '\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(
                                 ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                          # data for User
                         self.logger.debug(
-                            'runModel-> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  Error: {4:2.1f}  Took: {5:3.1f}s'.format(
+                            'runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  Error: {4:2.1f}  Took: {5:3.1f}s'.format(
                                 ra_sol, dec_sol, scale, angle, err, timeTS))                                                # log output
         self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'.format(modeltype, self.numCheckPoints, time.ctime()))    # GUI output
         return self.results                                                                                                 # return results for analysing
