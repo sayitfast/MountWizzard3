@@ -54,12 +54,15 @@ class Analyse:
             return []                                                                                                       # loading doesn't work
         return data                                                                                                         # successful loading
 
-    def plotData(self, data, scaleRA, scaleDEC):
+    @staticmethod
+    def plotData(data, scaleRA, scaleDEC):
         # index in plot             0  1    2   3   4   5       6           7       8       9
         # data format of analyse: (i, az, alt, ra, dec, ra_sol, dec_sol, raError, decError, err)
         if len(data) == 0:                                                                                                  # in case no data loaded ->
             return                                                                                                          # quit
+        print(len(data))
         dat = numpy.asarray(data)                                                                                           # convert list to array
+        print(len(dat))
         datWest = []                                                                                                        # clear the storage, point of west side of pier
         datEast = []                                                                                                        # point on the east side of pier
         datOut = []                                                                                                         # exceeding the min/max value

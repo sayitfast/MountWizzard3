@@ -444,10 +444,10 @@ class Model(QtCore.QThread):
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 fitsHeader['DATE-OBS'] = time.strftime('%Y-%m-%dT%H:%M:%S.0', time.gmtime((jd - 2440587.5) * 86400))        # set time to current time of the mount
-                h, m, s = self.mount.decimalToDegree(ra)                                                                    # convert
+                h, m, s, sign= self.mount.decimalToDegree(ra)                                                               # convert
                 fitsHeader['OBJCTRA'] = '{0:02} {1:02} {2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
-                h, m, s = self.mount.decimalToDegree(dec)                                                                   # convert
-                fitsHeader['OBJCTDEC'] = '{0:+03} {1:02} {2:02}'.format(h, m, s)                                            # set dec as well
+                h, m, s, sign = self.mount.decimalToDegree(dec)                                                             # convert
+                fitsHeader['OBJCTDEC'] = '{0}{1:02} {2:02} {3:02}'.format(sign, h, m, s)                                    # set dec as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
                 fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
@@ -511,9 +511,9 @@ class Model(QtCore.QThread):
             self.mount.transform.SiteTemperature = 20.0                                                                     # set it to 20.0 degree c
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
         if not self.ui.checkTestWithoutMount.isChecked():                                                                   # test setup without mount. can't refine with simulation
-            h, m, s = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                        # convert to Jnow
+            h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                  # convert to Jnow
             self.mount.sendCommand('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                           # Write jnow ra to mount
-            h, m, s = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                       # convert to Jnow
+            h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                 # convert to Jnow
             self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))
             self.logger.debug('addRefinementStar -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
                                                                            self.mount.transform.DecTopocentric))            # debug output
