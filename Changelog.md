@@ -4,6 +4,7 @@
 - dome support
 - utc from computer to iso time from mount in fits
 - canceled run could be rerun
+- some refactoring and bugfixes
 
 1.05
 - second fix
