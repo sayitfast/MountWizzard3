@@ -164,8 +164,14 @@ class Mount(QtCore.QThread):
 
     @staticmethod
     def degStringToDecimal(value, splitter=':'):
+        sign = 1
+        if '-' in value:
+            value = value.replace('-', '')
+            sign = -1
+        elif '+' in value:
+            value = value.replace('+', '')
         hour, minute, second = value.split(splitter)
-        return float(hour) + float(minute) / 60 + float(second) / 3600
+        return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
 
     @staticmethod
     def decimalToDegree(value):

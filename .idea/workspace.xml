@@ -2,15 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -55,8 +48,8 @@
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="293" column="32" selection-start-line="293" selection-start-column="32" selection-end-line="293" selection-end-column="32" />
+            <state relative-caret-position="423">
+              <caret line="169" column="21" selection-start-line="169" selection-start-column="21" selection-end-line="169" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -669,7 +662,14 @@
       <option name="project" value="LOCAL" />
       <updated>1479483975125</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="correct sign in vor negative values">
+      <created>1479664692124</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1479664692124</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -680,8 +680,8 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21564482" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.89387757" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3668076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18181819" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3668076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18181819" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -749,7 +749,8 @@
     <MESSAGE value="change FITS file from utc of computer to jd of mount according to dec / ra" />
     <MESSAGE value="update to rerun or finish a canceled model run" />
     <MESSAGE value="optimizing error messages for mount connection" />
-    <option name="LAST_COMMIT_MESSAGE" value="optimizing error messages for mount connection" />
+    <MESSAGE value="correct sign in vor negative values" />
+    <option name="LAST_COMMIT_MESSAGE" value="correct sign in vor negative values" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -761,7 +762,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py</url>
-          <line>335</line>
+          <line>341</line>
           <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
@@ -1130,8 +1131,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="293" column="32" selection-start-line="293" selection-start-column="32" selection-end-line="293" selection-end-column="32" />
+        <state relative-caret-position="423">
+          <caret line="169" column="21" selection-start-line="169" selection-start-column="21" selection-end-line="169" selection-end-column="21" />
           <folding />
         </state>
       </provider>
