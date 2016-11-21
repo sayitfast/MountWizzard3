@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7034,7 +7034,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.0.6</string>
+    <string>MountWizzard  v1.0.7</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

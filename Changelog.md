@@ -1,4 +1,6 @@
 # Changelog:
+1.07
+- bugfixes dome support
 
 1.06
 - dome support
