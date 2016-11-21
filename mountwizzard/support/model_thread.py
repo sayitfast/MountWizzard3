@@ -365,12 +365,12 @@ class Model(QtCore.QThread):
             self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def runAnalyseModel(self):
-        if self.connected:
-            self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
-            if len(self.RefinementPoints + self.BasePoints) > 0:
-                self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)
-            else:
-                self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')
+        if self.connected:                                                                                                  # cam has to be connected
+            self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')                                # button blue (running)
+            if len(self.RefinementPoints + self.BasePoints) > 0:                                                            # there should be some points
+                self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)                   # run the analyse
+            else:                                                                                                           # otherwise omit the run
+                self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                   # write error log
             name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_analyse_run.txt'                                   # generate name of analyse file
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
