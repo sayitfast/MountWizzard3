@@ -365,12 +365,12 @@ class Model(QtCore.QThread):
             self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def runAnalyseModel(self):
-        if self.connected:
-            self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
-            if len(self.RefinementPoints + self.BasePoints) > 0:
-                self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)
-            else:
-                self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')
+        if self.connected:                                                                                                  # cam has to be connected
+            self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')                                # button blue (running)
+            if len(self.RefinementPoints + self.BasePoints) > 0:                                                            # there should be some points
+                self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)                   # run the analyse
+            else:                                                                                                           # otherwise omit the run
+                self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                   # write error log
             name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_analyse_run.txt'                                   # generate name of analyse file
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
@@ -387,7 +387,7 @@ class Model(QtCore.QThread):
             if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
                 self.dome.ascom.SlewToAzimuth = az                                                                          # set azimuth coordinate
                 time.sleep(2.5)                                                                                             # wait for mount to start
-                while self.mount.slewing or (self.dome.ascom.Slewing and self.ui.checkSlewDome.isChecked()):                # wait for tracking = 7 or dome not slewing
+                while self.mount.slewing or self.dome.ascom.Slewing:                                                        # wait for tracking = 7 or dome not slewing
                     time.sleep(.1)                                                                                          # loop time
             else:
                 time.sleep(2.5)                                                                                             # wait for mount to start
@@ -439,12 +439,12 @@ class Model(QtCore.QThread):
                         break                                                                                               # stopping the loop
                     else:                                                                                                   # otherwise
                         time.sleep(0.5)                                                                                     # wait for 0.5 seconds
-                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))        # debug output
+                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))       # debug output
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 fitsHeader['DATE-OBS'] = time.strftime('%Y-%m-%dT%H:%M:%S.0', time.gmtime((jd - 2440587.5) * 86400))        # set time to current time of the mount
-                h, m, s, sign = self.mount.decimalToDegree(ra)                                                               # convert
+                h, m, s, sign = self.mount.decimalToDegree(ra)                                                              # convert
                 fitsHeader['OBJCTRA'] = '{0:02} {1:02} {2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
                 h, m, s, sign = self.mount.decimalToDegree(dec)                                                             # convert
                 fitsHeader['OBJCTDEC'] = '{0}{1:02} {2:02} {3:02}'.format(sign, h, m, s)                                    # set dec as well
@@ -514,11 +514,11 @@ class Model(QtCore.QThread):
             h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                  # convert to Jnow
             self.mount.sendCommand('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                           # Write jnow ra to mount
             h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                 # convert to Jnow
-            self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))
+            self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))                                          # Write jnow dec to mount
             self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric, self.mount.transform.DecTopocentric))  # debug output
             sync_result = self.mount.sendCommand('CMS')                                                                     # send sync command (regardless what driver tells)
             if sync_result.strip() == 'E':                                                                                  # if sync result is E, than fault happen
-                self.logger.warning('addRefinementSt -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))           # write debug output
+                self.logger.warning('addRefinementSt -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))         # write debug output
                 return False                                                                                                # no refinement feedback
             else:                                                                                                           # otherwise
                 return True                                                                                                 # result OK, synced

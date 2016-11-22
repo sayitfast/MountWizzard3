@@ -78,7 +78,7 @@ class Mount(QtCore.QThread):
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
         except Exception as e:                                                                                              # exception handling
             self.messageQueue.put('Error load ASCOM transform Driver')                                                      # write to gui
-            self.logger.error('run -> load ASCOM transform error:{0}'.format(e))                                            # write logfile
+            self.logger.error('run Mount      -> load ASCOM transform error:{0}'.format(e))                                 # write logfile
         finally:                                                                                                            # we don't stop on error the wizzard
             pass                                                                                                            # python specific
         self.connected = False                                                                                              # init of connection status
@@ -127,7 +127,7 @@ class Mount(QtCore.QThread):
                 except Exception as e:                                                                                      # error handling
                     if '{0}'.format(e).find('ASCOM.FrejvallGM.Telescope.connected') == 0:                                   # if this set, i cant connect
                         self.messageQueue.put('Driver COM Error in dispatchMount')                                          # gui
-                    self.logger.error('run Mount -> Driver COM Error in dispatchMount: {0}'.format(e))                      # to logger
+                    self.logger.error('run Mount      -> Driver COM Error in dispatchMount: {0}'.format(e))                 # to logger
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
                     time.sleep(1)                                                                                           # try it every second, not more
@@ -160,7 +160,7 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
-            self.logger.debug('flipMount -> error: {0}'.format(reply))                                                      # write to logger
+            self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                      # write to logger
 
     @staticmethod
     def degStringToDecimal(value, splitter=':'):
@@ -231,13 +231,13 @@ class Mount(QtCore.QThread):
         self.ui.btn_runTargetRMSAlignment.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def backupModel(self):
-        self.ui.btn_backupModel.setStyleSheet('background-color: rgb(42, 130, 218)')
-        self.sendCommand('modeldel0BACKUP')
-        reply = self.sendCommand('modelsv0BACKUP')
-        if reply == '1':
-            self.messageQueue.put('Actual Model saved as BACKUP')
-        self.logger.debug('backupModel -> Reply: {0}'.format(reply))
-        self.ui.btn_backupModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        self.ui.btn_backupModel.setStyleSheet('background-color: rgb(42, 130, 218)')                                        # button blue
+        self.sendCommand('modeldel0BACKUP')                                                                                 # send delete command store in hand controller
+        reply = self.sendCommand('modelsv0BACKUP')                                                                          # send store command for hand controller
+        if reply == '1':                                                                                                    # if stored, than OK
+            self.messageQueue.put('Actual Model saved as BACKUP')                                                           # do message to gui
+        self.logger.debug('backupModel    -> Reply: {0}'.format(reply))                                                     # log it
+        self.ui.btn_backupModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')                   # button to default back
 
     def restoreModel(self):
         self.ui.btn_restoreModel.setStyleSheet('background-color: rgb(42, 130, 218)')
@@ -246,7 +246,7 @@ class Mount(QtCore.QThread):
             self.messageQueue.put('Actual Model loaded from BACKUP')
         else:
             self.messageQueue.put('There is no model named BACKUP or error while loading')
-        self.logger.debug('restoreModel -> Reply: {0}'.format(reply))
+        self.logger.debug('restoreModel   -> Reply: {0}'.format(reply))
         self.ui.btn_restoreModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def saveSimpleModel(self):
