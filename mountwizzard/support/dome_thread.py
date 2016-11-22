@@ -43,6 +43,7 @@ class Dome(QtCore.QThread):
             else:
                 try:
                     self.ascom = Dispatch(self.driverName)                                                                  # load driver
+                    self.ascom.connected = True
                     self.connected = True                                                                                   # set status to connected
                 except pythoncom.com_error as e:                                                                            # If win32com failure
                     self.messageQueue.put('Driver COM Error in dispatchDome')                                               # write message to gui

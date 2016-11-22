@@ -892,5 +892,5 @@ if __name__ == "__main__":
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
-    logging.error('MountWizzard stopped !\n')                                                                               # stop message logger
     sys.exit(app.exec_())                                                                                                   # close application
+    logging.error('MountWizzard stopped !\n')                                                                               # stop message logger

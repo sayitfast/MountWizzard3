@@ -381,11 +381,16 @@ class Model(QtCore.QThread):
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
         if self.ui.checkTestWithoutMount.isChecked():                                                                       # if simulation
             self.mount.signalMountAzAltPointer.emit(az, alt)                                                                # just set the pointer, normally done from mount thread
+            if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
+                self.dome.ascom.SlewToAzimuth(float(az))                                                                    # set azimuth coordinate
+                time.sleep(2.5)                                                                                             # wait for mount to start
+                while self.dome.ascom.Slewing:                                                                              # wait for dome not slewing
+                    time.sleep(.1)                                                                                          # loop time
             time.sleep(0.5)                                                                                                 # wait 0.5 s the you can watch
         else:                                                                                                               # otherwise
             self.commandQueue.put('MS')                                                                                     # initiate slewing
             if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
-                self.dome.ascom.SlewToAzimuth = az                                                                          # set azimuth coordinate
+                self.dome.ascom.SlewToAzimuth(float(az))                                                                    # set azimuth coordinate
                 time.sleep(2.5)                                                                                             # wait for mount to start
                 while self.mount.slewing or self.dome.ascom.Slewing:                                                        # wait for tracking = 7 or dome not slewing
                     time.sleep(.1)                                                                                          # loop time
