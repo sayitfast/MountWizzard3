@@ -444,7 +444,7 @@ class Model(QtCore.QThread):
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 fitsHeader['DATE-OBS'] = time.strftime('%Y-%m-%dT%H:%M:%S.0', time.gmtime((jd - 2440587.5) * 86400))        # set time to current time of the mount
-                h, m, s, sign= self.mount.decimalToDegree(ra)                                                               # convert
+                h, m, s, sign = self.mount.decimalToDegree(ra)                                                               # convert
                 fitsHeader['OBJCTRA'] = '{0:02} {1:02} {2:02}'.format(h, m, s)                                              # set the point coordinates from mount in J2000 as hi nt precision 2 ???
                 h, m, s, sign = self.mount.decimalToDegree(dec)                                                             # convert
                 fitsHeader['OBJCTDEC'] = '{0}{1:02} {2:02} {3:02}'.format(sign, h, m, s)                                    # set dec as well
@@ -515,11 +515,10 @@ class Model(QtCore.QThread):
             self.mount.sendCommand('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                           # Write jnow ra to mount
             h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                 # convert to Jnow
             self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))
-            self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
-                                                                           self.mount.transform.DecTopocentric))            # debug output
+            self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric, self.mount.transform.DecTopocentric))  # debug output
             sync_result = self.mount.sendCommand('CMS')                                                                     # send sync command (regardless what driver tells)
             if sync_result.strip() == 'E':                                                                                  # if sync result is E, than fault happen
-                self.logger.warning('addRefinementSt -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))         # write debug output
+                self.logger.warning('addRefinementSt -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))           # write debug output
                 return False                                                                                                # no refinement feedback
             else:                                                                                                           # otherwise
                 return True                                                                                                 # result OK, synced
