@@ -64,8 +64,11 @@ class Analyse:
         dat = numpy.asarray(data)                                                                                           # convert list to array
         print(len(dat))
         datWest = []                                                                                                        # clear the storage, point of west side of pier
+        isDatWest = False
         datEast = []                                                                                                        # point on the east side of pier
+        isDatEast = False
         datOut = []                                                                                                         # exceeding the min/max value
+        isDatOut = False
         for i in range(0, len(dat)):                                                                                        # separate data for coloring
             out = False                                                                                                     # point out of range ?
             if dat[i][7] > scaleRA:
@@ -82,11 +85,14 @@ class Analyse:
                 out = True
             if out:                                                                                                         # if out of range, put it to this list
                 datOut.append(dat[i])                                                                                       # append
+                isDatOut = True
             else:
                 if dat[i][1] > 180:                                                                                         # separate east from west and in scale from otu scale
                     datWest.append(dat[i])                                                                                  # append to west list
+                    isDatWest = True
                 else:
                     datEast.append(dat[i])                                                                                  # append to east list
+                    isDatEast = True
         dat = numpy.transpose(dat)                                                                                          # transpose array
         datWest = numpy.transpose(datWest)                                                                                  # transpose array
         datEast = numpy.transpose(datEast)                                                                                  # transpose array
@@ -108,9 +114,11 @@ class Analyse:
         plt.axis([-scaleDEC, scaleDEC, 0, 90])
         plt.grid(True, color='white')
         plt.plot(dat[8], dat[2], color='black')
-        plt.plot(datWest[8], datWest[2], 'bo')
-        plt.plot(datEast[8], datEast[2], 'go')
-        if len(datOut) > 0:
+        if isDatWest:
+            plt.plot(datWest[8], datWest[2], 'bo')
+        if isDatEast:
+            plt.plot(datEast[8], datEast[2], 'go')
+        if isDatOut:
             plt.plot(datOut[8], datOut[2], 'ro')
 
         ax2 = fig.add_subplot(232)
@@ -125,9 +133,11 @@ class Analyse:
         plt.axis([-scaleRA, scaleRA, 0, 90])
         plt.grid(True, color='white')
         plt.plot(dat[7], dat[2], color='black')
-        plt.plot(datWest[7], datWest[2], 'bo')
-        plt.plot(datEast[7], datEast[2], 'go')
-        if len(datOut) > 0:
+        if isDatWest:
+            plt.plot(datWest[7], datWest[2], 'bo')
+        if isDatEast:
+            plt.plot(datEast[7], datEast[2], 'go')
+        if isDatOut:
             plt.plot(datOut[1], datOut[2], 'ro')
 
         ax3 = fig.add_subplot(233)
@@ -140,9 +150,11 @@ class Analyse:
         plt.axis([0, 360, -scaleDEC, scaleDEC])
         plt.grid(True, color='white')
         plt.plot(dat[1], dat[8], color='black')
-        plt.plot(datWest[1], datWest[8], 'bo')
-        plt.plot(datEast[1], datEast[8], 'go')
-        if len(datOut) > 0:
+        if isDatWest:
+            plt.plot(datWest[1], datWest[8], 'bo')
+        if isDatEast:
+            plt.plot(datEast[1], datEast[8], 'go')
+        if isDatOut:
             plt.plot(datOut[1], datOut[8], 'ro')
 
         ax4 = fig.add_subplot(234)
@@ -155,9 +167,11 @@ class Analyse:
         plt.axis([-scaleRA, scaleRA, -scaleDEC, scaleDEC])
         plt.grid(True, color='white')
         plt.plot(dat[7], dat[8], color='black')
-        plt.plot(datWest[7], datWest[8], 'bo')
-        plt.plot(datEast[7], datEast[8], 'go')
-        if len(datOut) > 0:
+        if isDatWest:
+            plt.plot(datWest[7], datWest[8], 'bo')
+        if isDatEast:
+            plt.plot(datEast[7], datEast[8], 'go')
+        if isDatOut:
             plt.plot(datOut[7], datOut[8], 'ro')
 
         ax5 = fig.add_subplot(235)
@@ -170,9 +184,11 @@ class Analyse:
         plt.axis([0, len(data)-1, -scaleRA, scaleRA])
         plt.grid(True, color='white')
         plt.plot(dat[0], dat[7], color='black')
-        plt.plot(datWest[0], datWest[7], 'bo')
-        plt.plot(datEast[0], datEast[7], 'go')
-        if len(datOut) > 0:
+        if isDatWest:
+            plt.plot(datWest[0], datWest[7], 'bo')
+        if isDatEast:
+            plt.plot(datEast[0], datEast[7], 'go')
+        if isDatOut:
             plt.plot(datOut[0], datOut[7], 'ro')
 
         ax6 = fig.add_subplot(236)
@@ -185,9 +201,11 @@ class Analyse:
         plt.axis([0, len(data)-1, -scaleDEC, scaleDEC])
         plt.grid(True, color='white')
         plt.plot(dat[0], dat[8], color='black')
-        plt.plot(datWest[0], datWest[8], 'bo')
-        plt.plot(datEast[0], datEast[8], 'go')
-        if len(datOut) > 0:
+        if isDatWest:
+            plt.plot(datWest[0], datWest[8], 'bo')
+        if isDatEast:
+            plt.plot(datEast[0], datEast[8], 'go')
+        if isDatOut:
             plt.plot(datOut[0], datOut[8], 'ro')
 
         mng = plt.get_current_fig_manager()
