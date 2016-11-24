@@ -1,4 +1,7 @@
 # Changelog:
+1.08
+- 
+
 1.07
 - bugfixes dome support
 

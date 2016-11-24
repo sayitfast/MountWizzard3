@@ -156,7 +156,6 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_getActualModel.clicked.connect(self.getAlignmentModel)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(self.runTargetRMSAlignment)
-        self.ui.btn_sortBasePoints.clicked.connect(self.sortBasePoints)
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
         self.ui.btn_backupModel.clicked.connect(self.backupModel)
@@ -801,9 +800,6 @@ class MountWizzardApp(QDialog, QObject):
 
     def cancelRefinementModel(self):
         self.model.signalModelCommand.emit('CancelRefinementModel')
-
-    def sortBasePoints(self):
-        self.model.signalModelCommand.emit('SortBasePoints')
 
     def sortRefinementPoints(self):
         self.model.signalModelCommand.emit('SortRefinementPoints')

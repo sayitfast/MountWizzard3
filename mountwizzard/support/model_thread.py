@@ -86,9 +86,6 @@ class Model(QtCore.QThread):
             elif self.command == 'ClearAlignmentModel':                                                                     #
                 self.command = ''                                                                                           #
                 self.clearAlignmentModel()                                                                                  #
-            elif self.command == 'SortBasePoints':                                                                          #
-                self.command = ''                                                                                           #
-                self.sortPoints('base')                                                                                     #
             elif self.command == 'SortRefinementPoints':                                                                    #
                 self.command = ''                                                                                           #
                 self.sortPoints('refinement')                                                                               #

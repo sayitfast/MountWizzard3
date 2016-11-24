@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1248,27 +1248,11 @@
       <string>Run</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_sortBasePoints">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>130</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Sort the order of der model points from East to West Low to High Altitude</string>
-     </property>
-     <property name="text">
-      <string>Sort Order</string>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkUseBlindSolve">
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>180</y>
+       <y>130</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -1349,22 +1333,6 @@
       <rect>
        <x>480</x>
        <y>110</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_26">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>160</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -7034,7 +7002,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.0.7</string>
+    <string>MountWizzard  v1.0.8</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -7335,7 +7303,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>le_slewRate</tabstop>
   <tabstop>modellingLog</tabstop>
   <tabstop>btn_loadBasePoints</tabstop>
-  <tabstop>btn_sortBasePoints</tabstop>
   <tabstop>btn_mountPark</tabstop>
   <tabstop>btn_startTracking</tabstop>
   <tabstop>tabWidget</tabstop>
