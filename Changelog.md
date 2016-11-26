@@ -1,6 +1,9 @@
 # Changelog:
+1.0.9
+- removed extended logging
+
 1.08
-- 
+- bugfixing dome support with Geremia
 
 1.07
 - bugfixes dome support

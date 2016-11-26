@@ -113,6 +113,8 @@ class Model(QtCore.QThread):
                 self.getStatusSlow()                                                                                        # calling slow part of status
             self.counter += 1                                                                                               # loop +1
             time.sleep(.1)                                                                                                  # wait for the next cycle
+        self.ascom.Quit()
+        pythoncom.CoUninitialize()
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread
@@ -139,7 +141,7 @@ class Model(QtCore.QThread):
         self.connected = suc                                                                                                # set status for internal use
         self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
         if not suc:                                                                                                         # otherwise
-            self.logger.debug('getStatusSlow -> No SGPro connection: {0}'.format(mes))                                      # debug message
+            self.logger.debug('getStatusSlow  -> No SGPro connection: {0}'.format(mes))                                     # debug message
 
     def getStatusFast(self):                                                                                                # fast status
         pass                                                                                                                # actually no fast status
@@ -386,10 +388,12 @@ class Model(QtCore.QThread):
             time.sleep(0.5)                                                                                                 # wait 0.5 s the you can watch
         else:                                                                                                               # otherwise
             self.commandQueue.put('MS')                                                                                     # initiate slewing
+            self.logger.debug('slewMountDome  -> Checked:{0} Connected:{1}'.format(self.ui.checkSlewDome.isChecked(), self.dome.connected))
             if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
                 self.dome.ascom.SlewToAzimuth(float(az))                                                                    # set azimuth coordinate
+                self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
                 time.sleep(2.5)                                                                                             # wait for mount to start
-                while self.mount.slewing or self.dome.ascom.Slewing:                                                        # wait for tracking = 7 or dome not slewing
+                while self.mount.slewing or self.dome.ascom.Slewing:                                                        # wait for stop slewing mount or dome not slewing
                     time.sleep(.1)                                                                                          # loop time
             else:
                 time.sleep(2.5)                                                                                             # wait for mount to start
@@ -417,7 +421,7 @@ class Model(QtCore.QThread):
         mes = ''                                                                                                            # define message
         jd = float(jd)
         if not self.ui.checkTestWithoutCamera.isChecked():                                                                  # if it's not simulation, we start imaging
-            self.logger.debug('capturingImage-> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
+            self.logger.debug('capturingImage -> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
                               .format(self.ui.cameraBin.value(), int(float(self.ui.isoSetting.value())),
                                       self.ui.cameraExposure.value(),
                                       self.ui.le_imageDirectoryName.text() + '/' + self.captureFile))                       # write logfile
