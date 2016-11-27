@@ -277,6 +277,8 @@ class Model(QtCore.QThread):
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
+        if len(self.ui.le_trackRA.text()) == 0 or len(self.ui.le_trackDEC.text()) == 0:
+            return
         for i in range(0, 25):                                                                                              # round model point from actual az alt position 24 hours
             ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text()) + i / 12.0                                        # Transform text to hours format
             if ra >= 24:
@@ -335,6 +337,7 @@ class Model(QtCore.QThread):
         for az in range(0, 360, 30):                                                                                        # make point for all azimuth
             for alt in range(20, 90, 10):                                                                                   # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
+            time.sleep(.05)
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
