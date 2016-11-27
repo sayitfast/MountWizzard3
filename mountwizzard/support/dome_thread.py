@@ -33,14 +33,25 @@ class Dome(QtCore.QThread):
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverName = 'DomeSim.Dome'                                                                                    # driver object name
         self.slewing = False
+        self.counter = 0
 
     def run(self):                                                                                                          # runnable for doing the work
         pythoncom.CoInitialize()                                                                                            # needed for doing COm objects in threads
         self.connected = False                                                                                              # set connection flag for stick itself
+        self.counter = 0
         while True:                                                                                                         # main loop for stick thread
             self.signalDomeConnected.emit(self.connected)                                                                   # send status to GUI
             if self.connected:                                                                                              # differentiate between dome connected or not
-                self.slewing = self.ascom.Slewing
+                if self.counter == 0:                                                                                       # jobs once done at the beginning
+                    self.getStatusOnce()                                                                                    # task once
+                if self.counter % 2 == 0:                                                                                   # all tasks with 200 ms
+                    self.getStatusFast()                                                                                    # polling the mount status Ginfo
+                if self.counter % 20 == 0:                                                                                  # all tasks with 3 s
+                    self.getStatusMedium()                                                                                  # polling the mount
+                if self.counter % 300 == 0:                                                                                 # all task with 1 minute
+                    self.getStatusSlow()                                                                                    # slow ones
+                time.sleep(0.2)                                                                                             # time base is 200 ms
+                self.counter += 1                                                                                           # increasing counter for selection
                 time.sleep(.1)
             else:
                 try:
@@ -60,6 +71,18 @@ class Dome(QtCore.QThread):
 
     def __del__(self):                                                                                                      # remove thread
         self.wait()                                                                                                         #
+
+    def getStatusFast(self):
+        self.slewing = self.ascom.Slewing
+
+    def getStatusMedium(self):
+        pass
+
+    def getStatusSlow(self):
+        pass
+
+    def getStatusOnce(self):
+        pass
 
     def setupDriver(self):                                                                                                  #
         try:

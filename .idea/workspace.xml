@@ -3,10 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -39,34 +36,19 @@
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="333">
-              <caret line="332" column="161" lean-forward="false" selection-start-line="332" selection-start-column="161" selection-end-line="332" selection-end-column="161" />
+            <state relative-caret-position="962">
+              <caret line="138" column="0" lean-forward="true" selection-start-line="128" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="mount.log" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
+      <file leaf-file-name="dome_thread.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-871">
-              <caret line="5" column="37" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="37" />
+            <state relative-caret-position="179">
+              <caret line="35" column="24" lean-forward="false" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="374" column="0" lean-forward="false" selection-start-line="374" selection-start-column="0" selection-end-line="374" selection-end-column="0" />
-              <folding>
-                <element signature="e#17285#17447#0" expanded="false" />
-                <element signature="e#17499#17595#0" expanded="false" />
-                <element signature="e#17650#17778#0" expanded="false" />
-                <element signature="e#17810#19376#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -119,17 +101,18 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/relays.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="709" />
+    <option name="x" value="802" />
+    <option name="y" value="3" />
     <option name="width" value="1755" />
-    <option name="height" value="1567" />
+    <option name="height" value="1481" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -765,19 +748,26 @@
       <option name="project" value="LOCAL" />
       <updated>1480261287638</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="bugfix">
+      <created>1480262683268</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1480262683268</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="709" y="0" width="1755" height="1567" extended-state="0" />
-    <editor active="false" />
+    <frame x="802" y="3" width="1755" height="1481" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13801035" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13801035" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21564482" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8938207" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36630288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20384352" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21663019" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -822,7 +812,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="corrected modeling with coordinate transform and mark point as modeled (remove them)" />
     <MESSAGE value="Editor file checking to green&#10;Readme update to package and detailed install" />
     <MESSAGE value="update docu" />
     <MESSAGE value="remove astropy library step 1" />
@@ -847,7 +836,8 @@
     <MESSAGE value="bugfixing dome support" />
     <MESSAGE value="moving to refactor fo testing. also simulator for telescope" />
     <MESSAGE value="bugfixes an removal of dome slave select,because it's not needed" />
-    <option name="LAST_COMMIT_MESSAGE" value="bugfixes an removal of dome slave select,because it's not needed" />
+    <MESSAGE value="bugfix" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfix" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1181,14 +1171,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="486">
-          <caret line="42" column="49" lean-forward="false" selection-start-line="42" selection-start-column="49" selection-end-line="42" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-405">
@@ -1197,11 +1179,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="333">
-          <caret line="332" column="161" lean-forward="false" selection-start-line="332" selection-start-column="161" selection-end-line="332" selection-end-column="161" />
-          <folding />
+        <state relative-caret-position="5321">
+          <caret line="374" column="0" lean-forward="false" selection-start-line="374" selection-start-column="0" selection-end-line="374" selection-end-column="0" />
+          <folding>
+            <element signature="e#17285#17447#0" expanded="false" />
+            <element signature="e#17499#17595#0" expanded="false" />
+            <element signature="e#17650#17778#0" expanded="false" />
+            <element signature="e#17810#19376#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1213,16 +1200,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="374" column="0" lean-forward="false" selection-start-line="374" selection-start-column="0" selection-end-line="374" selection-end-column="0" />
-          <folding>
-            <element signature="e#17285#17447#0" expanded="false" />
-            <element signature="e#17499#17595#0" expanded="false" />
-            <element signature="e#17650#17778#0" expanded="false" />
-            <element signature="e#17810#19376#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="962">
+          <caret line="138" column="0" lean-forward="true" selection-start-line="128" selection-start-column="0" selection-end-line="138" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="179">
+          <caret line="35" column="24" lean-forward="false" selection-start-line="35" selection-start-column="24" selection-end-line="35" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
