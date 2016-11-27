@@ -1,4 +1,7 @@
 # Changelog:
+1.0.10
+- analyse for time dependant deviations of mount
+
 1.0.9
 - removed extended logging
 

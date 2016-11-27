@@ -360,7 +360,6 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
             self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
             self.ui.checkTestWithoutCamera.setChecked(self.config['CheckTestWithoutCamera'])
-            self.ui.checkTestWithoutMount.setChecked(self.config['CheckTestWithoutMount'])
             self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
             self.ui.le_trackRA.setText(self.config['TrackRA'])
             self.ui.le_trackDEC.setText(self.config['TrackDEC'])
@@ -372,6 +371,7 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
+            self.mount.driverName = self.config['ASCOMTelescopeDriverName']
             self.ui.checkSlewDome.setChecked(self.config['CheckSlewDome'])
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
         except Exception as e:
@@ -407,7 +407,6 @@ class MountWizzardApp(QDialog, QObject):
         self.config['FocalLength'] = self.ui.focalLength.value()
         self.config['ScaleSubframe'] = self.ui.scaleSubframe.value()
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
-        self.config['CheckTestWithoutMount'] = self.ui.checkTestWithoutMount.isChecked()
         self.config['CheckTestWithoutCamera'] = self.ui.checkTestWithoutCamera.isChecked()
         self.config['CheckAutoRefraction'] = self.ui.checkAutoRefraction.isChecked()
         self.config['TrackRA'] = self.ui.le_trackRA.text()
@@ -422,6 +421,7 @@ class MountWizzardApp(QDialog, QObject):
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
+        self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
         self.config['CheckSlewDome'] = self.ui.checkSlewDome.isChecked()
 
         # save the config file

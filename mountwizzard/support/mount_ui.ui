@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1379,7 +1379,7 @@
     <widget class="QDoubleSpinBox" name="azimuthBase">
      <property name="geometry">
       <rect>
-       <x>700</x>
+       <x>690</x>
        <y>90</y>
        <width>51</width>
        <height>22</height>
@@ -1404,7 +1404,7 @@
     <widget class="QDoubleSpinBox" name="altitudeBase">
      <property name="geometry">
       <rect>
-       <x>700</x>
+       <x>690</x>
        <y>60</y>
        <width>51</width>
        <height>22</height>
@@ -1462,7 +1462,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Az</string>
+      <string>Azimuth</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_cancelBaseModel">
@@ -1513,6 +1513,54 @@
      </property>
      <property name="text">
       <string>Modeling Run</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_109">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>60</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_110">
+     <property name="geometry">
+      <rect>
+       <x>740</x>
+       <y>90</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
@@ -1901,7 +1949,7 @@
       <string>Runs a refinment cycle without updating the mount model</string>
      </property>
      <property name="text">
-      <string>Run Analyse</string>
+      <string>Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_cancelAnalyseModel">
@@ -1917,14 +1965,14 @@
       <string>Cancels the model run in the next cycle</string>
      </property>
      <property name="text">
-      <string>Cancel Analyse</string>
+      <string>Cance</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runPlotAnalyse">
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>180</y>
+       <y>300</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1940,7 +1988,7 @@
      <property name="geometry">
       <rect>
        <x>440</x>
-       <y>130</y>
+       <y>250</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -1961,7 +2009,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>130</y>
+       <y>250</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -1979,7 +2027,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>130</y>
+       <y>250</y>
        <width>331</width>
        <height>21</height>
       </rect>
@@ -2012,7 +2060,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>110</y>
+       <y>230</y>
        <width>461</width>
        <height>21</height>
       </rect>
@@ -2028,7 +2076,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>190</y>
+       <y>310</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2059,7 +2107,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>160</y>
+       <y>280</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2077,7 +2125,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>310</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2095,7 +2143,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>160</y>
+       <y>280</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2127,7 +2175,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>161</width>
+       <width>221</width>
        <height>21</height>
       </rect>
      </property>
@@ -2137,7 +2185,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Run Analyse - Check Model</string>
+      <string>Analyse - Check Model (Base&amp;Refine)</string>
      </property>
     </widget>
     <widget class="Line" name="line_32">
@@ -2145,7 +2193,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>461</width>
+       <width>271</width>
        <height>21</height>
       </rect>
      </property>
@@ -2160,7 +2208,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>220</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -2172,6 +2220,279 @@
      </property>
      <property name="text">
       <string>Plotting Analysis Data</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_107">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>191</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Analyse - Time based deviations</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_cancelTimeChangeModel">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>170</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Cancels the model run in the next cycle</string>
+     </property>
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_runTimeChangeModel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Runs a refinment cycle without updating the mount model</string>
+     </property>
+     <property name="text">
+      <string>Run</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_33">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_174">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Altitude</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="azimuthTimeChange">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>110</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <double>359.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_175">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>110</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Azimuth</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="altitudeTimeChange">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>110</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>90.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>45.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_176">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Timeperiod</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="timeperiodTimeChange">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>140</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>10.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>60.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>10.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_108">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>140</y>
+       <width>31</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>min</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_111">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>110</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_112">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>110</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
    </widget>
@@ -6823,27 +7144,6 @@
       <string>Switch CCD</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkTestWithoutMount">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>151</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>if checked, no mount is necessary for test runs, no slew commands</string>
-     </property>
-     <property name="text">
-      <string>Test without mount</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_97">
      <property name="geometry">
       <rect>
@@ -7002,7 +7302,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.0.8</string>
+    <string>MountWizzard  v1.0.10</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

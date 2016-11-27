@@ -58,6 +58,7 @@ class Model(QtCore.QThread):
         self.alignmentPoints = []                                                                                           # placeholder for all points, which were modeled
         self.connected = False                                                                                              # connection to SGPro
         self.cancel = False                                                                                                 # cancelling the modeling
+        self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for model
         self.captureFile = 'model_cap.fit'                                                                                  # filename for capturing file
         self.counter = 0                                                                                                    # counter for main loop
@@ -74,39 +75,65 @@ class Model(QtCore.QThread):
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
-            if self.command == 'RunBaseModel':                                                                              # actually doing by receiving signals which enables
-                self.command = ''                                                                                           # only one command at a time, last wins
-                self.runBaseModel()                                                                                         # should be refactored to queue only without signal
-            elif self.command == 'RunRefinementModel':                                                                      #
-                self.command = ''                                                                                           #
-                self.runRefinementModel()                                                                                   #
-            elif self.command == 'RunAnalyseModel':                                                                         #
-                self.command = ''                                                                                           #
-                self.runAnalyseModel()                                                                                      #
-            elif self.command == 'ClearAlignmentModel':                                                                     #
-                self.command = ''                                                                                           #
-                self.clearAlignmentModel()                                                                                  #
-            elif self.command == 'SortRefinementPoints':                                                                    #
-                self.command = ''                                                                                           #
-                self.sortPoints('refinement')                                                                               #
-            elif self.command == 'GenerateDSOPoints':                                                                       #
-                self.command = ''                                                                                           #
-                self.generateDSOPoints()                                                                                    #
-            elif self.command == 'GenerateDensePoints':                                                                     #
-                self.command = ''                                                                                           #
-                self.generateDensePoints()                                                                                  #
-            elif self.command == 'GenerateNormalPoints':                                                                    #
-                self.command = ''                                                                                           #
-                self.generateNormalPoints()                                                                                 #
-            elif self.command == 'GenerateGridPoints':                                                                      #
-                self.command = ''                                                                                           #
-                self.generateGridPoints()                                                                                   #
-            elif self.command == 'GenerateBasePoints':                                                                      #
-                self.command = ''                                                                                           #
-                self.generateBasePoints()                                                                                   #
-            elif self.command == 'DeleteBelowHorizonLine':                                                                  #
-                self.command = ''                                                                                           #
-                self.deleteBelowHorizonLine()                                                                               #
+            if self.connected and self.mount.connected:
+                if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
+                    self.command = ''                                                                                       # only one command at a time, last wins
+                    self.ui.btn_runBaseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.runBaseModel()                                                                                     # should be refactored to queue only without signal
+                    self.ui.btn_runBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                    self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')   # button back to default color
+                elif self.command == 'RunRefinementModel':                                                                  #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.runRefinementModel()                                                                               #
+                    self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                    self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                elif self.command == 'RunAnalyseModel':                                                                     #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')                        # button blue (running)
+                    self.runAnalyseModel()                                                                                  #
+                    self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                    self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')        # button back to default color
+                elif self.command == 'RunTimeChangeModel':                                                                  #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_runTimeChangeModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.runTimeChangeModel()                                                                               #
+                    self.ui.btn_runTimeChangeModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                    self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                elif self.command == 'ClearAlignmentModel':                                                                 #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.clearAlignmentModel()                                                                              #
+                    self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                elif self.command == 'SortRefinementPoints':                                                                #
+                    self.command = ''                                                                                       #
+                    self.sortPoints('refinement')                                                                           #
+                elif self.command == 'GenerateDSOPoints':                                                                   #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                      # take some time, therefore coloring button during execution
+                    self.generateDSOPoints()                                                                                #
+                    self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # color button back, routine finished
+                elif self.command == 'GenerateDensePoints':                                                                 #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(42, 130, 218)')                    # tale some time, color button fro showing running
+                    self.generateDensePoints()                                                                              #
+                    self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')   # routing finished, coloring default
+                elif self.command == 'GenerateNormalPoints':                                                                #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_generateNormalPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                   # tale some time, color button fro showing running
+                    self.generateNormalPoints()                                                                             #
+                    self.ui.btn_generateNormalPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')  # routing finished, coloring default
+                elif self.command == 'GenerateGridPoints':                                                                  #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_generateGridPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                     # take some time, therefore coloring button during execution
+                    self.generateGridPoints()                                                                               #
+                    self.ui.btn_generateGridPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')    # color button back, routine finished
+                elif self.command == 'GenerateBasePoints':                                                                  #
+                    self.command = ''                                                                                       #
+                    self.generateBasePoints()                                                                               #
+                elif self.command == 'DeleteBelowHorizonLine':                                                              #
+                    self.command = ''                                                                                       #
+                    self.deleteBelowHorizonLine()                                                                           #
             if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow
@@ -121,18 +148,23 @@ class Model(QtCore.QThread):
         self.wait()
 
     def command(self, command):                                                                                             # dispatcher of commands inside thread
-        if command == 'CancelBaseModel':                                                                                    # check the command
-            self.command = ''                                                                                               # reset the command
-            self.cancel = True                                                                                              # set cancel flag
-            self.ui.btn_cancelBaseModel.setStyleSheet('background-color: red')                                              # reset color of button
-        elif command == 'CancelRefinementModel':                                                                            # check the command
-            self.command = ''                                                                                               # reset the command buffer
-            self.cancel = True                                                                                              # set cancel flag
-            self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: red')                                        # reset color of button
-        elif command == 'CancelAnalyseModel':                                                                               #
-            self.command = ''                                                                                               #
-            self.cancel = True                                                                                              #
-            self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: red')                                           # reset color of button
+        if self.modelrun:
+            if command == 'CancelBaseModel':                                                                                # check the command
+                self.command = ''                                                                                           # reset the command
+                self.cancel = True                                                                                          # set cancel flag
+                self.ui.btn_cancelBaseModel.setStyleSheet('background-color: red')                                          # reset color of button
+            elif command == 'CancelRefinementModel':                                                                        # check the command
+                self.command = ''                                                                                           # reset the command buffer
+                self.cancel = True                                                                                          # set cancel flag
+                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: red')                                    # reset color of button
+            elif command == 'CancelAnalyseModel':                                                                           #
+                self.command = ''                                                                                           #
+                self.cancel = True                                                                                          #
+                self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: red')                                       # reset color of button
+            elif command == 'CancelTimeChangeModel':                                                                        #
+                self.command = ''                                                                                           #
+                self.cancel = True                                                                                          #
+                self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: red')                                    # reset color of button
         else:
             self.command = command                                                                                          # passing the command to main loop of thread
 
@@ -247,77 +279,66 @@ class Model(QtCore.QThread):
         return az, alt
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
-        if self.mount.connected:
-            self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                              # take some time, therefore coloring button during execution
-            self.RefinementPoints = []                                                                                      # clear point list
-            for i in range(0, 25):                                                                                          # round model point from actual az alt position 24 hours
-                ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text()) + i / 12.0                                    # Transform text to hours format
-                if ra >= 24:
-                    ra -= 24
-                dec = self.mount.degStringToDecimal(self.ui.le_trackDEC.text())                                             # Transform text to degree format
-                self.mount.transform.SetJ2000(ra, dec)                                                                      # set data in J2000
-                alt = int(self.mount.transform.ElevationTopocentric)                                                        # take az data
-                az = int(self.mount.transform.AzimuthTopocentric)                                                           # take alt data
-                print(ra, dec, az, alt)
-                if alt > 0:                                                                                                 # we only take point alt > 0
-                    self.RefinementPoints.append((az, alt))                                                                 # add point to list
-                self.signalModelRedrawRefinement.emit(True)                                                                 # update graphics
-            self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')         # color button back, routine finished
+        self.RefinementPoints = []                                                                                          # clear point list
+        for i in range(0, 25):                                                                                              # round model point from actual az alt position 24 hours
+            ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text()) + i / 12.0                                        # Transform text to hours format
+            if ra >= 24:
+                ra -= 24
+            dec = self.mount.degStringToDecimal(self.ui.le_trackDEC.text())                                                 # Transform text to degree format
+            self.mount.transform.SetJ2000(ra, dec)                                                                          # set data in J2000
+            alt = int(self.mount.transform.ElevationTopocentric)                                                            # take az data
+            az = int(self.mount.transform.AzimuthTopocentric)                                                               # take alt data
+            print(ra, dec, az, alt)
+            if alt > 0:                                                                                                     # we only take point alt > 0
+                self.RefinementPoints.append((az, alt))                                                                     # add point to list
+            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
-        if self.mount.connected:
-            self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(42, 130, 218)')                            # tale some time, color button fro showing running
-            self.RefinementPoints = []                                                                                      # clear pointlist
-            west = []                                                                                                       # no sorting, point will be for west and east prepared
-            east = []                                                                                                       #
-            for dec in range(-10, 90, 10):                                                                                  # range, actually referenced from european situation
-                if dec < 30:                                                                                                # has to be generalized
-                    step = -15                                                                                              # lower dec, more point
-                elif dec < 70:
-                    step = -10
-                else:
-                    step = -30                                                                                              # higher dec. less point (anyway denser)
-                for ha in range(239, 0, step):                                                                              # for complete 24 hourangle
-                    az, alt = self.transformCelestialHorizontal(ha/10, dec)                                                 # do the transformation to alt az
-                    if alt > 0:                                                                                             # only point with alt > 0 are taken
-                        if az > 180:                                                                                        # put to the right list
-                            east.append((int(az), int(alt)))                                                                # add to east
-                        else:
-                            west.append((int(az), int(alt)))                                                                # add to west
-                self.RefinementPoints = west + east                                                                         # combine pointlist
-                self.signalModelRedrawRefinement.emit(True)                                                                 # update graphics
-            self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')       # routing finished, coloring default
+        self.RefinementPoints = []                                                                                          # clear pointlist
+        west = []                                                                                                           # no sorting, point will be for west and east prepared
+        east = []                                                                                                           #
+        for dec in range(-10, 90, 10):                                                                                      # range, actually referenced from european situation
+            if dec < 30:                                                                                                    # has to be generalized
+                step = -15                                                                                                  # lower dec, more point
+            elif dec < 70:
+                step = -10
+            else:
+                step = -30                                                                                                  # higher dec. less point (anyway denser)
+            for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
+                az, alt = self.transformCelestialHorizontal(ha/10, dec)                                                     # do the transformation to alt az
+                if alt > 0:                                                                                                 # only point with alt > 0 are taken
+                    if az > 180:                                                                                            # put to the right list
+                        east.append((int(az), int(alt)))                                                                    # add to east
+                    else:
+                        west.append((int(az), int(alt)))                                                                    # add to west
+            self.RefinementPoints = west + east                                                                             # combine pointlist
+            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
 
     def generateNormalPoints(self):
-        if self.mount.connected:
-            self.ui.btn_generateNormalPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                           # tale some time, color button fro showing running
-            self.RefinementPoints = []                                                                                      # clear pointlist
-            west = []                                                                                                       # no sorting, point will be for west and east prepared
-            east = []                                                                                                       #
-            for dec in range(-15, 90, 15):                                                                                  # range, actually referenced from european situation
-                if dec < 60:                                                                                                # has to be generalized
-                    step = -1                                                                                               # lower dec, more point
-                else:
-                    step = -2                                                                                               # higher dec. less point (anyway denser)
-                for ha in range(23, -1, step):                                                                              # for complete 24 hourangle
-                    az, alt = self.transformCelestialHorizontal(ha, dec)                                                    # do the transformation to alt az
-                    if alt > 0:                                                                                             # only point with alt > 0 are taken
-                        if az > 180:                                                                                        # put to the right list
-                            east.append((int(az), int(alt)))                                                                # add to east
-                        else:
-                            west.append((int(az), int(alt)))                                                                # add to west
-                self.RefinementPoints = west + east                                                                         # combine pointlist
-                self.signalModelRedrawRefinement.emit(True)                                                                 # update graphics
-            self.ui.btn_generateNormalPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')      # routing finished, coloring default
+        self.RefinementPoints = []                                                                                          # clear pointlist
+        west = []                                                                                                           # no sorting, point will be for west and east prepared
+        east = []                                                                                                           #
+        for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european situation
+            if dec < 60:                                                                                                    # has to be generalized
+                step = -1                                                                                                   # lower dec, more point
+            else:
+                step = -2                                                                                                   # higher dec. less point (anyway denser)
+            for ha in range(23, -1, step):                                                                                  # for complete 24 hourangle
+                az, alt = self.transformCelestialHorizontal(ha, dec)                                                        # do the transformation to alt az
+                if alt > 0:                                                                                                 # only point with alt > 0 are taken
+                    if az > 180:                                                                                            # put to the right list
+                        east.append((int(az), int(alt)))                                                                    # add to east
+                    else:
+                        west.append((int(az), int(alt)))                                                                    # add to west
+            self.RefinementPoints = west + east                                                                             # combine pointlist
+            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
 
     def generateGridPoints(self):                                                                                           # model points along dso path
-        self.ui.btn_generateGridPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                                 # take some time, therefore coloring button during execution
         self.RefinementPoints = []                                                                                          # clear point list
         for az in range(0, 360, 30):                                                                                        # make point for all azimuth
             for alt in range(20, 90, 10):                                                                                   # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
-        self.ui.btn_generateGridPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')            # color button back, routine finished
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
         self.BasePoints = []                                                                                                # clear it
@@ -332,73 +353,65 @@ class Model(QtCore.QThread):
         self.signalModelRedrawBase.emit(True)                                                                               # redraw the chart
 
     def clearAlignmentModel(self):
-        self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(42, 130, 218)')
         self.modelAnalyseData = []
         self.LogQueue.put('Clearing alignment model - taking 4 seconds. \n\n')
         self.commandQueue.put('ClearAlign')
         time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (don't know if necessary)
-        self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def runBaseModel(self):
-        if self.connected:
-            self.ui.btn_runBaseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
-            if len(self.BasePoints) > 0:
-                self.modelAnalyseData = self.runModel('Base', self.BasePoints)
-            else:
-                self.logger.warning('runBaseModel -> There are no Basepoints to model')
-            name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_base_run.txt'                                      # generate name of analyse file
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
-            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.ui.btn_runBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        if len(self.BasePoints) > 0:
+            self.modelAnalyseData = self.runModel('Base', self.BasePoints)
+        else:
+            self.logger.warning('runBaseModel -> There are no Basepoints to model')
+        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_base_run.txt'                                          # generate name of analyse file
+        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
 
     def runRefinementModel(self):
-        if self.connected:
-            self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(42, 130, 218)')
-            if len(self.RefinementPoints) > 0:
-                self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints)
-            else:
-                self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
-            name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_refinement_run.txt'                                # generate name of analyse file
-            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
-            self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        if len(self.RefinementPoints) > 0:
+            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints)
+        else:
+            self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
+        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_refinement_run.txt'                                    # generate name of analyse file
+        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
+        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runAnalyseModel(self):
-        if self.connected:                                                                                                  # cam has to be connected
-            self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')                                # button blue (running)
-            if len(self.RefinementPoints + self.BasePoints) > 0:                                                            # there should be some points
-                self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)                   # run the analyse
-            else:                                                                                                           # otherwise omit the run
-                self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                   # write error log
-            name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_analyse_run.txt'                                   # generate name of analyse file
-            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
-            self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        if len(self.RefinementPoints + self.BasePoints) > 0:                                                                # there should be some points
+            self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)                       # run the analyse
+        else:                                                                                                               # otherwise omit the run
+            self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
+        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_analyse_run.txt'                                       # generate name of analyse file
+        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
+        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
-    def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
+    def runTimeChangeModel(self):
+        points = []
+        for i in range(0, self.ui.timeperiodTimeChange.value()):
+            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value())))
+        self.modelAnalyseData = self.runModel('TimeChange', points)                                                         # run the analyse
+        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
+        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
+        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+
+    def slewMountDome(self, az, alt, modeltype):                                                                            # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
-        if self.ui.checkTestWithoutMount.isChecked():                                                                       # if simulation
-            self.mount.signalMountAzAltPointer.emit(az, alt)                                                                # just set the pointer, normally done from mount thread
-            if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
-                self.dome.ascom.SlewToAzimuth(float(az))                                                                    # set azimuth coordinate
-                time.sleep(2.5)                                                                                             # wait for mount to start
-                while self.dome.ascom.Slewing:                                                                              # wait for dome not slewing
-                    time.sleep(.1)                                                                                          # loop time
-            time.sleep(0.5)                                                                                                 # wait 0.5 s the you can watch
-        else:                                                                                                               # otherwise
-            self.commandQueue.put('MS')                                                                                     # initiate slewing
-            self.logger.debug('slewMountDome  -> Checked:{0} Connected:{1}'.format(self.ui.checkSlewDome.isChecked(), self.dome.connected))
-            if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                   # if there is a dome, should be slewed as well
-                self.dome.ascom.SlewToAzimuth(float(az))                                                                    # set azimuth coordinate
-                self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
-                time.sleep(2.5)                                                                                             # wait for mount to start
-                while self.mount.slewing or self.dome.ascom.Slewing:                                                        # wait for stop slewing mount or dome not slewing
-                    time.sleep(.1)                                                                                          # loop time
-            else:
-                time.sleep(2.5)                                                                                             # wait for mount to start
-                while self.mount.slewing:                                                                                   # wait for tracking = 7 or dome not slewing
-                    time.sleep(.1)                                                                                          # loop time
+        if modeltype == 'TimeChange':
+            self.commandQueue.put('MA')                                                                                     # initiate slewing without tracking at the end
+        else:
+            self.commandQueue.put('MS')                                                                                     # initiate slewing with tracking at the end
+        self.logger.debug('slewMountDome  -> Checked:{0} Connected:{1}'.format(self.ui.checkSlewDome.isChecked(), self.dome.connected))
+        if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                       # if there is a dome, should be slewed as well
+            self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
+            self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
+            time.sleep(2.5)                                                                                                 # wait for mount to start
+            while self.mount.slewing or self.dome.ascom.Slewing:                                                            # wait for stop slewing mount or dome not slewing
+                time.sleep(.1)                                                                                              # loop time
+        else:
+            time.sleep(2.5)                                                                                                 # wait for mount to start
+            while self.mount.slewing:                                                                                       # wait for tracking = 7 or dome not slewing
+                time.sleep(.1)                                                                                              # loop time
 
     def prepareCaptureImageSubframes(self, scale):                                                                          # get camera data for doing subframes
         suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
@@ -417,7 +430,6 @@ class Model(QtCore.QThread):
     def capturingImage(self, index, jd, ra, dec, az, alt, sub, sX, sY, oX, oY):                                             # capturing image
         self.LogQueue.put('Capturing image for model point {0:2d}...'.format(index + 1))                                    # gui output
         guid = ''                                                                                                           # define guid
-        imagepath = ''                                                                                                      # define imagepath
         mes = ''                                                                                                            # define message
         jd = float(jd)
         if not self.ui.checkTestWithoutCamera.isChecked():                                                                  # if it's not simulation, we start imaging
@@ -516,20 +528,13 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise
             self.mount.transform.SiteTemperature = 20.0                                                                     # set it to 20.0 degree c
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
-        if not self.ui.checkTestWithoutMount.isChecked():                                                                   # test setup without mount. can't refine with simulation
-            h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                  # convert to Jnow
-            self.mount.sendCommand('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                           # Write jnow ra to mount
-            h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                 # convert to Jnow
-            self.mount.sendCommand('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))                                          # Write jnow dec to mount
-            self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric, self.mount.transform.DecTopocentric))  # debug output
-            sync_result = self.mount.sendCommand('CMS')                                                                     # send sync command (regardless what driver tells)
-            if sync_result.strip() == 'E':                                                                                  # if sync result is E, than fault happen
-                self.logger.warning('addRefinementSt -> Star could not be added. ra:{0} dec:{1}'.format(ra, dec))         # write debug output
-                return False                                                                                                # no refinement feedback
-            else:                                                                                                           # otherwise
-                return True                                                                                                 # result OK, synced
-        else:                                                                                                               # if simulation, than always OK
-            return True                                                                                                     # simulation OK
+        h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                      # convert to Jnow
+        self.commandQueue.put('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                                # Write jnow ra to mount
+        h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                     # convert to Jnow
+        self.commandQueue.put('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))                                               # Write jnow dec to mount
+        self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric, self.mount.transform.DecTopocentric))  # debug output
+        self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
+        return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints):                                                                               # model run routing
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
@@ -547,20 +552,18 @@ class Model(QtCore.QThread):
             self.offX = 0                                                                                                   #
             self.offY = 0                                                                                                   #
         self.logger.debug('runModel       -> subframe: {0}, {1}, {2}, {3}, {4}'.format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
-        if not self.ui.checkTestWithoutMount.isChecked():                                                                   # if mount simulated, no real commands to mount
-            self.commandQueue.put('PO')                                                                                     # unpark to start slewing
-            self.commandQueue.put('AP')                                                                                     # tracking should be on as well
+        self.commandQueue.put('PO')                                                                                         # unpark to start slewing
+        self.commandQueue.put('AP')                                                                                         # tracking should be on as well
         for i, p in enumerate(runPoints):                                                                                   # run through all model points
+            self.modelrun = True                                                                                            # sets the run flag true
             if p[2].isVisible():                                                                                            # is the model point already run ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
                     self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                       # we keep all the stars before
                     self.cancel = False                                                                                     # and make it back to default
-                    self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')   # button back to default color
-                    self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
                     break                                                                                                   # finally stopping model run
                 self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))       # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))         # Debug output
-                self.slewMountDome(p[0], p[1])                                                                              # slewing mount and dome to az/alt for model point
+                self.slewMountDome(p[0], p[1], type)                                                                        # slewing mount and dome to az/alt for model point and analyse
                 self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))  # Gui Output
                 waitSettlingTime(float(self.ui.settlingTime.value()))                                                       # wait for settling mount
                 suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
@@ -573,7 +576,7 @@ class Model(QtCore.QThread):
                     if not self.ui.checkKeepImages.isChecked():                                                             # check if the model images should be kept
                         os.remove(imagepath)                                                                                # otherwise just delete them
                     if suc:                                                                                                 # solved data is there, we can sync
-                        if not modeltype == 'Analyse':                                                                      # if we run analyse, we don't change the model
+                        if modeltype in ['Base', 'Refinement']:                                                             #
                             self.addRefinementStar(ra_sol, dec_sol)                                                         # sync the actual star to resolved coordinates in J2000
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
@@ -589,4 +592,5 @@ class Model(QtCore.QThread):
                             'runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  Error: {4:2.1f}  Took: {5:3.1f}s'.format(
                                 ra_sol, dec_sol, scale, angle, err, timeTS))                                                # log output
         self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'.format(modeltype, self.numCheckPoints, time.ctime()))    # GUI output
+        self.modelrun = False
         return self.results                                                                                                 # return results for analysing
