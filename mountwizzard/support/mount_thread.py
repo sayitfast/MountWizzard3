@@ -82,8 +82,8 @@ class Mount(QtCore.QThread):
         try:                                                                                                                # start accessing a com object
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
         except Exception as e:                                                                                              # exception handling
-            self.messageQueue.put('Error load ASCOM transform Driver')                                                      # write to gui
-            self.logger.error('run Mount      -> load ASCOM transform error:{0}'.format(e))                                 # write logfile
+            self.messageQueue.put('Error loading ASCOM transform Driver')                                                   # write to gui
+            self.logger.error('run Mount      -> loading ASCOM transform error:{0}'.format(e))                              # write logfile
         finally:                                                                                                            # we don't stop on error the wizzard
             pass                                                                                                            # python specific
         self.connected = False                                                                                              # init of connection status
@@ -142,7 +142,8 @@ class Mount(QtCore.QThread):
                     self.ascom.connected = True                                                                             # connect to mount
                     self.connected = True                                                                                   # setting connection status from driver
                 except Exception as e:                                                                                      # error handling
-                    self.logger.error('run Mount      -> Driver COM Error in dispatchMount: {0}'.format(e))                 # to logger
+                    if self.driverName != '':
+                        self.logger.error('run Mount      -> Driver COM Error in dispatchMount: {0}'.format(e))             # to logger
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
                     time.sleep(1)                                                                                           # try it every second, not more
@@ -203,7 +204,7 @@ class Mount(QtCore.QThread):
                         stat = 0
                     else:
                         stat = 7
-                jd = 0
+                jd = self.ascom.SiderealTime
                 pierside = self.ascom.SideOfPier
                 if self.ascom.Slewing:
                     slew = 1
@@ -415,10 +416,6 @@ class Mount(QtCore.QThread):
             else:
                 self.driver_real = False
             self.connected = False                                                                                          # run the driver setup dialog
-        except pythoncom.com_error as e:                                                                                    # error handling, happens sometimes
-            self.connected = False                                                                                          # set to disconnected -> reconnect necessary
-            self.messageQueue.put('Driver Exception in setupDriverMount')                                                   # debug output to Gui
-            self.logger.debug('setupDriver Mount -> win32com error: {0}'.format(e))                                         # write to log
         except Exception as e:                                                                                              # general exception
             self.messageQueue.put('Driver Exception in setupMount')                                                         # write to gui
             self.logger.error('setupDriver Mount -> general exception:{0}'.format(e))                                       # write to log

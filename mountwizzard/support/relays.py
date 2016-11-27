@@ -23,7 +23,19 @@ class Relays:
     def __init__(self, ui):
         self.ui = ui
         self.stat = [False, False, False, False, False, False, False, False]
-        self.requestStatus()
+        self.connected = self.checkConnection()
+        if self.connected:
+            self.requestStatus()
+
+    def checkConnection(self):
+        connected = False
+        try:
+            request.urlopen(self.ipSGProBase, None, .5).getcode()
+            connected = True
+        except Exception:
+            connected = False
+        finally:
+            return connected
 
     def setStatus(self, response):
         lines = response.splitlines()                                                                                       # read over all the lines

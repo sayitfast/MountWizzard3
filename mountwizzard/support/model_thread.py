@@ -401,12 +401,12 @@ class Model(QtCore.QThread):
             self.commandQueue.put('MA')                                                                                     # initiate slewing without tracking at the end
         else:
             self.commandQueue.put('MS')                                                                                     # initiate slewing with tracking at the end
-        self.logger.debug('slewMountDome  -> Checked:{0} Connected:{1}'.format(self.ui.checkSlewDome.isChecked(), self.dome.connected))
-        if self.ui.checkSlewDome.isChecked() and self.dome.connected:                                                       # if there is a dome, should be slewed as well
+        self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.dome.connected))
+        if self.dome.connected:                                                                                             # if there is a dome, should be slewed as well
             self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
             self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
             time.sleep(2.5)                                                                                                 # wait for mount to start
-            while self.mount.slewing or self.dome.ascom.Slewing:                                                            # wait for stop slewing mount or dome not slewing
+            while self.mount.slewing or self.dome.slewing:                                                                  # wait for stop slewing mount or dome not slewing
                 time.sleep(.1)                                                                                              # loop time
         else:
             time.sleep(2.5)                                                                                                 # wait for mount to start
