@@ -1,6 +1,7 @@
 # Changelog:
 1.0.10
 - analyse for time dependant deviations of mount
+- implemented showing position and movement of dome if present
 
 1.0.9
 - removed extended logging
