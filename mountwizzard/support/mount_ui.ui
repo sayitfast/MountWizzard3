@@ -6722,33 +6722,6 @@
       <string>Dome</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkSlewDome">
-     <property name="geometry">
-      <rect>
-       <x>100</x>
-       <y>300</y>
-       <width>181</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Checked if you would like to keep the images of modeling session</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>Slew Dome if present</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="tab">
     <attribute name="title">

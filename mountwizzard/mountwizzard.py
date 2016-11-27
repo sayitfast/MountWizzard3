@@ -372,7 +372,6 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
-            self.ui.checkSlewDome.setChecked(self.config['CheckSlewDome'])
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
@@ -422,7 +421,6 @@ class MountWizzardApp(QDialog, QObject):
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
-        self.config['CheckSlewDome'] = self.ui.checkSlewDome.isChecked()
 
         # save the config file
         try:

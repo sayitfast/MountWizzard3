@@ -320,7 +320,7 @@ class Mount(QtCore.QThread):
         self.logger.debug('loadSimpleModel -> Reply: {0}'.format(reply))
 
     def setRefractionParameter(self, real):
-        if self.ui.le_pressureStick.text() != '':                       # value must be there
+        if self.ui.le_pressureStick.text() != '':                                                                           # value must be there
             self.sendCommand('SRPRS{0:04.1f}'.format(float(self.ui.le_pressureStick.text())), real)
             if float(self.ui.le_temperatureStick.text()) > 0:
                 self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.ui.le_temperatureStick.text())), real)
