@@ -24,6 +24,7 @@ class Dome(QtCore.QThread):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger('dome_thread:')
     signalDomeConnected = QtCore.pyqtSignal([bool], name='domeConnected')
+    signalDomPointer = QtCore.pyqtSignal([float], name='domePointer')
 
     def __init__(self, messageQueue):
         super().__init__()
@@ -50,7 +51,6 @@ class Dome(QtCore.QThread):
                     self.getStatusMedium()                                                                                  # polling the mount
                 if self.counter % 300 == 0:                                                                                 # all task with 1 minute
                     self.getStatusSlow()                                                                                    # slow ones
-                time.sleep(0.2)                                                                                             # time base is 200 ms
                 self.counter += 1                                                                                           # increasing counter for selection
                 time.sleep(.1)
             else:
@@ -64,7 +64,7 @@ class Dome(QtCore.QThread):
                     self.connected = False                                                                                  # set to disconnected
                 finally:                                                                                                    # still continua and try it again
                     pass                                                                                                    # needed for continue
-            time.sleep(1)                                                                                                   # wait for the next cycle
+                time.sleep(1)                                                                                               # wait for the next cycle
         self.ascom.Quit()
         pythoncom.CoUninitialize()                                                                                          # needed for doing COm objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
@@ -74,6 +74,7 @@ class Dome(QtCore.QThread):
 
     def getStatusFast(self):
         self.slewing = self.ascom.Slewing
+        self.signalDomPointer.emit(self.ascom.Azimuth)
 
     def getStatusMedium(self):
         pass

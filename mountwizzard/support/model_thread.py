@@ -427,7 +427,7 @@ class Model(QtCore.QThread):
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
                 return False, 0, 0, 0, 0                                                                                    # default without subframe
 
-    def capturingImage(self, index, jd, ra, dec, az, alt, sub, sX, sY, oX, oY):                                             # capturing image
+    def capturingImage(self, index, jd, ra, dec, az, alt, sub, sX, sY, oX, oY, speed):                                      # capturing image
         self.LogQueue.put('Capturing image for model point {0:2d}...'.format(index + 1))                                    # gui output
         guid = ''                                                                                                           # define guid
         mes = ''                                                                                                            # define message
@@ -437,10 +437,6 @@ class Model(QtCore.QThread):
                               .format(self.ui.cameraBin.value(), int(float(self.ui.isoSetting.value())),
                                       self.ui.cameraExposure.value(),
                                       self.ui.le_imageDirectoryName.text() + '/' + self.captureFile))                       # write logfile
-            if self.ui.checkFastDownload.isChecked():                                                                       # if camera is supporting high speed download
-                speed = 'HiSpeed'                                                                                           # we can use it for improved modeling speed
-            else:                                                                                                           # otherwise
-                speed = 'Normal'                                                                                            # standard speed
             suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=self.ui.cameraBin.value(),
                                                        exposureLength=self.ui.cameraExposure.value(),
                                                        isoMode=int(float(self.ui.isoSetting.value())),
@@ -485,12 +481,16 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
-    def solveImage(self, modeltype, imagepath):                                                                             # solving image based on information inside the FITS files, no additional info
-        hint = float(self.ui.pixelSize.value()) * 206.6 * float(self.ui.cameraBin.value()) / float(self.ui.focalLength.value())    # calculating hint for solve
+    def solveImage(self, modeltype, imagepath, pixelSize, cameraBin, focalLength):                                          # solving image based on information inside the FITS files, no additional info
+        hint = pixelSize * 206.6 * cameraBin / focalLength                                                                  # calculating hint for solve
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
-            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=self.ui.checkUseBlindSolve.isChecked(), useFitsHeaders=True)
+            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
+                                                     blindSolve=self.ui.checkUseBlindSolve.isChecked(),
+                                                     useFitsHeaders=True)
         else:                                                                                                               # otherwise
-            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint, blindSolve=False, useFitsHeaders=True)      # solve without blind
+            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
+                                                     blindSolve=False,
+                                                     useFitsHeaders=True)                                                   # solve without blind
         self.logger.debug('solveImage     -> suc:{0} mes:{1} scalehint:{2}'.format(suc, mes, hint))                         # debug output
         if not suc:                                                                                                         # if we failed to start solving
             self.LogQueue.put('\t\t\tSolving could not be started: ' + mes)                                                 # Gui output
@@ -532,7 +532,8 @@ class Model(QtCore.QThread):
         self.commandQueue.put('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                                # Write jnow ra to mount
         h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                     # convert to Jnow
         self.commandQueue.put('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))                                               # Write jnow dec to mount
-        self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric, self.mount.transform.DecTopocentric))  # debug output
+        self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
+                                                                     self.mount.transform.DecTopocentric))                  # debug output
         self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
         return True                                                                                                         # simulation OK
 
@@ -551,7 +552,8 @@ class Model(QtCore.QThread):
             self.sizeY = 0                                                                                                  #
             self.offX = 0                                                                                                   #
             self.offY = 0                                                                                                   #
-        self.logger.debug('runModel       -> subframe: {0}, {1}, {2}, {3}, {4}'.format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
+        self.logger.debug('runModel       -> subframe: {0}, {1}, {2}, {3}, {4}'
+                          .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking should be on as well
         for i, p in enumerate(runPoints):                                                                                   # run through all model points
@@ -566,13 +568,22 @@ class Model(QtCore.QThread):
                 self.slewMountDome(p[0], p[1], type)                                                                        # slewing mount and dome to az/alt for model point and analyse
                 self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))  # Gui Output
                 waitSettlingTime(float(self.ui.settlingTime.value()))                                                       # wait for settling mount
+                if self.ui.checkFastDownload.isChecked():                                                                   # if camera is supporting high speed download
+                    speed = 'HiSpeed'                                                                                       # we can use it for improved modeling speed
+                else:                                                                                                       # otherwise
+                    speed = 'Normal'                                                                                        # standard speed
                 suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
-                                                          self.sub, self.sizeX, self.sizeY, self.offX, self.offY)           # capturing image and store position (ra,dec), time, (az,alt)
+                                                          self.sub, self.sizeX, self.sizeY, self.offX, self.offY, speed)    # capturing image and store position (ra,dec), time, (az,alt)
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('Solving Image...')                                                                   # output for user GUI
-                    suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = self.solveImage(modeltype, imagepath)         # solve the position and returning the values
-                    self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'.format(ra_sol, dec_sol, suc, scale, angle))  # debug output
+                    pixelSize = float(self.ui.pixelSize.value())                                                            # get data from gui
+                    cameraBin = float(self.ui.cameraBin.value())                                                            # get data from gui
+                    focalLength = float(self.ui.focalLength.value())                                                        # get data from gui
+                    suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
+                        self.solveImage(modeltype, imagepath, pixelSize, cameraBin, focalLength)                            # solve the position and returning the values
+                    self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'
+                                      .format(ra_sol, dec_sol, suc, scale, angle))                                          # debug output
                     if not self.ui.checkKeepImages.isChecked():                                                             # check if the model images should be kept
                         os.remove(imagepath)                                                                                # otherwise just delete them
                     if suc:                                                                                                 # solved data is there, we can sync
@@ -585,12 +596,11 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))      # generating debug output
                         self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                  # adding point for matrix
                         p[2].setVisible(False)                                                                              # set the relating modeled point invisible
-                        self.LogQueue.put(
-                            '\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(
-                                ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                          # data for User
-                        self.logger.debug(
-                            'runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  Error: {4:2.1f}  Took: {5:3.1f}s'.format(
-                                ra_sol, dec_sol, scale, angle, err, timeTS))                                                # log output
-        self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'.format(modeltype, self.numCheckPoints, time.ctime()))    # GUI output
+                        self.LogQueue.put('\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
+                                          'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                  # data for User
+                        self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
+                                          'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))                                        # log output
+        self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'
+                          .format(modeltype, self.numCheckPoints, time.ctime()))                                            # GUI output
         self.modelrun = False
         return self.results                                                                                                 # return results for analysing

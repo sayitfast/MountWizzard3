@@ -39,7 +39,13 @@ from support.dome_thread import Dome
 def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse
     x = border - esize / 2 + int(az / 360 * (width - 2 * border))
     y = height - border - esize / 2 - int(alt / 90 * (height - 2 * border))
-    return x, y
+    return int(x), int(y)
+
+
+def getXYRectangle(az, width, border):
+    x = (az - 15) * (width - 2 * border) / 360 + border
+    y = border
+    return int(x), int(y)
 
 
 def constructHorizon(scene, horizon, height, width, border):                                                                # calculate horizon
@@ -77,6 +83,8 @@ class MountWizzardApp(QDialog, QObject):
         self.initUI()                                                                                                       # adapt the window to our purpose
         self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing
         self.pointerRefinementTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                             # Reference Widget for Pointing
+        self.pointerBaseDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
+        self.pointerRefinementDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
@@ -84,6 +92,7 @@ class MountWizzardApp(QDialog, QObject):
         self.analyse = Analyse()                                                                                            # plotting and visualizing model measurements
         self.relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self.messageQueue)                                                                                 # dome control
+        self.dome.signalDomPointer.connect(self.setDomePointer)
         self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
@@ -194,10 +203,23 @@ class MountWizzardApp(QDialog, QObject):
                             self.ui.modelBasePointsPlot.width(),
                             self.borderModelPointsView,
                             2 * self.ellipseSizeModelPointsView)                                                            # get xy coordinate
-        self.pointerBaseTrackingWidget.setPos(int(x), int(y))                                                               # set widget position to that coordinate
+        self.pointerBaseTrackingWidget.setPos(x, y)                                                                         # set widget position to that coordinate
+        self.pointerBaseTrackingWidget.setVisible(True)
         self.pointerBaseTrackingWidget.update()                                                                             # update the drawing
-        self.pointerRefinementTrackingWidget.setPos(int(x), int(y))                                                         # same for the refinement graphics - coordinate
+        self.pointerRefinementTrackingWidget.setPos(x, y)                                                                   # same for the refinement graphics - coordinate
+        self.pointerRefinementTrackingWidget.setVisible(True)
         self.pointerRefinementTrackingWidget.update()                                                                       # and redraw the graphics
+
+    def setDomePointer(self, az):                                                                                           # set pointer in graphics
+        width = self.ui.modelBasePointsPlot.width()
+        border = self.borderModelPointsView
+        x, y = getXYRectangle(az, width, border)
+        self.pointerBaseDomeWidget.setPos(x, y)                                                                             # set widget position to that coordinate
+        self.pointerBaseDomeWidget.setVisible(True)
+        self.pointerBaseDomeWidget.update()                                                                                 # update the drawing
+        self.pointerRefinementDomeWidget.setPos(x, y)                                                                       # same for the refinement graphics - coordinate
+        self.pointerRefinementDomeWidget.setVisible(True)
+        self.pointerRefinementDomeWidget.update()                                                                           # and redraw the graphics
 
     def mousePressEvent(self, mouseEvent):                                                                                  # overloading the mouse events for handling customized windows
         self.modifiers = mouseEvent.modifiers()
@@ -239,19 +261,15 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.windowTitle.setPalette(palette)
         self.show()                                                                                                         # show window
 
-    def constructModelGrid(self):                                                                                           # adding the plot area
-        height = self.ui.modelBasePointsPlot.height()                                                                       # get some data out of the gui fields
-        width = self.ui.modelBasePointsPlot.width()                                                                         #
-        border = self.borderModelPointsView                                                                                 #
-        textheight = self.textheightModelPointsView                                                                         #
-        esize = self.ellipseSizeModelPointsView                                                                             #
-        scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
+    def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
         scene.setBackgroundBrush(QColor(32, 32, 32))                                                                        # background color
         pen = QPen(QColor(64, 64, 64), 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # building the grid of the plot and the axes
         for i in range(0, 361, 30):                                                                                         # set az ticks
-            scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border, border + int(i / 360 * (width - 2 * border)), border, pen)
+            scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border,
+                          border + int(i / 360 * (width - 2 * border)), border, pen)
         for i in range(0, 91, 10):                                                                                          # set alt ticks
-            scene.addLine(border, height - border - int(i * (height - 2 * border) / 90), width - border, height - border - int(i * (height - 2*border) / 90), pen)
+            scene.addLine(border, height - border - int(i * (height - 2 * border) / 90),
+                          width - border, height - border - int(i * (height - 2*border) / 90), pen)
         scene.addRect(border, border, width - 2*border, height - 2*border, pen)                                             # set frame around graphics
         for i in range(0, 361, 30):                                                                                         # now the texts at the plot x
             text_item = QGraphicsTextItem('{0:03d}'.format(i), None)                                                        # set labels
@@ -267,11 +285,37 @@ class MountWizzardApp(QDialog, QObject):
             text_item.setDefaultTextColor(self.blueColor)
             text_item.setPos(0, height - border - textheight - int(i * (height - 2 * border) / 90))
             scene.addItem(text_item)
-        return scene, esize, height, width, border
+        return scene
 
     def showBasePoints(self):                                                                                               # drawing the points to the grid for base points
-        scene, esize, height, width, border = self.constructModelGrid()
-        for i, p in enumerate(self.model.BasePoints):                                                                       # show the base points
+        height = self.ui.modelBasePointsPlot.height()                                                                       # get some data out of the gui fields
+        width = self.ui.modelBasePointsPlot.width()                                                                         #
+        border = self.borderModelPointsView                                                                                 #
+        textheight = self.textheightModelPointsView                                                                         #
+        esize = self.ellipseSizeModelPointsView                                                                             #
+        self.pointerBaseTrackingWidget, self.pointerBaseDomeWidget = \
+            self.showPoints(self.ui.modelBasePointsPlot, self.model.BasePoints, self.model.horizonPoints,
+                            height, width, border, textheight, esize)
+
+    def showRefinementPoints(self):
+        height = self.ui.modelRefinementPointsPlot.height()                                                                 # get some data out of the gui fields
+        width = self.ui.modelRefinementPointsPlot.width()                                                                   #
+        border = self.borderModelPointsView                                                                                 #
+        textheight = self.textheightModelPointsView                                                                         #
+        esize = self.ellipseSizeModelPointsView                                                                             #
+        self.pointerRefinementTrackingWidget, self.pointerRefinementDomeWidget = \
+            self.showPoints(self.ui.modelRefinementPointsPlot, self.model.RefinementPoints, self.model.horizonPoints,
+                            height, width, border, textheight, esize)
+
+    def showPoints(self, plotWidget, points, horizon, height, width, border, textheight, esize):
+        scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
+        pen = QPen(QColor(128, 128, 128), 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # outer circle is white
+        brush = QBrush(QColor(64, 64, 64))
+        domeWidget = scene.addRect(0, 0, int((width - 2 * border) * 30 / 360), int(height - 2 * border), pen, brush)
+        domeWidget.setVisible(False)
+        domeWidget.setOpacity(0.5)
+        scene = self.constructModelGrid(height, width, border, textheight, scene)
+        for i, p in enumerate(points):                                                                                      # show the points
             pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                         # outer circle is white
             x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
             scene.addEllipse(x, y, esize, esize, pen)
@@ -281,46 +325,15 @@ class MountWizzardApp(QDialog, QObject):
             item.setPos(x, y)
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
             text_item.setDefaultTextColor(self.whiteColor)
-            text_item.setPos(x, y)
+            text_item.setPos(x+1, y+1)
             scene.addItem(text_item)
-            self.model.BasePoints[i] = (p[0], p[1], item)                                                                   # storing the objects in the list
-        scene = constructHorizon(scene, self.model.horizonPoints, height, width, border)
-        # just to make the ellipses reactive:
-        # item.setAcceptHoverEvents(True)
+            points[i] = (p[0], p[1], item)                                                                                  # storing the objects in the list
+        scene = constructHorizon(scene, horizon, height, width, border)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        # if you would like to move items, the have to be set in the scene at 0,0 otherwise that's their reference point
-        # therefore the ellipse is set to 0,0 origin
-        self.pointerBaseTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
-        self.ui.modelBasePointsPlot.setScene(scene)
-
-    def showRefinementPoints(self):                                                                                         # same for the refinement points
-        scene, esize, height, width, border = self.constructModelGrid()
-        for i, p in enumerate(self.model.RefinementPoints):                         # show the refinement points
-            # outer circle
-            pen = QPen(self.greenColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
-            scene.addEllipse(x, y, esize, esize, pen)
-            # inner circle is yellow -> after modelling green or red
-            pen = QPen(self.yellowColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize / 2)
-            item = scene.addEllipse(0, 0, esize / 2, esize / 2, pen)
-            item.setPos(x, y)
-            # put the enumerating number to the circle
-            text_item = QGraphicsTextItem('{0:02d}'.format(i + 1), None)
-            text_item.setDefaultTextColor(self.whiteColor)
-            text_item.setPos(x, y)
-            scene.addItem(text_item)
-            # storing the objects in the list
-            self.model.RefinementPoints[i] = (p[0], p[1], item)
-        scene = constructHorizon(scene, self.model.horizonPoints, height, width, border)
-        # just to make the ellipses reactive:
-        # item.setAcceptHoverEvents(True)
-        pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        # if you would like to move items, the have to be set in the scene at 0,0 otherwise that's their reference point
-        # therefore the ellipse is set to 0,0 origin
-        self.pointerRefinementTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
-        self.sceneRefinementPoints = scene
-        self.ui.modelRefinementPointsPlot.setScene(self.sceneRefinementPoints)
+        trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
+        trackWidget.setVisible(False)
+        plotWidget.setScene(scene)
+        return trackWidget, domeWidget
 
     def loadConfig(self):
         # load the config file
@@ -424,8 +437,8 @@ class MountWizzardApp(QDialog, QObject):
 
         # save the config file
         try:
-            if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
-                os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
+            if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
+                os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
             with open('config/config.cfg', 'w') as outfile:
                 json.dump(self.config, outfile)
             outfile.close()

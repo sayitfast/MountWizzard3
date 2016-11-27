@@ -72,7 +72,7 @@
     <rect>
      <x>10</x>
      <y>80</y>
-     <width>161</width>
+     <width>341</width>
      <height>21</height>
     </rect>
    </property>
@@ -1292,7 +1292,7 @@
        <x>0.000000000000000</x>
        <y>0.000000000000000</y>
        <width>449.000000000000000</width>
-       <height>309.000000000000000</height>
+       <height>319.000000000000000</height>
       </rectf>
      </property>
     </widget>
@@ -1594,7 +1594,7 @@
        <x>0.000000000000000</x>
        <y>0.000000000000000</y>
        <width>449.000000000000000</width>
-       <height>309.000000000000000</height>
+       <height>319.000000000000000</height>
       </rectf>
      </property>
     </widget>
@@ -1971,7 +1971,7 @@
     <widget class="QPushButton" name="btn_runPlotAnalyse">
      <property name="geometry">
       <rect>
-       <x>340</x>
+       <x>360</x>
        <y>300</y>
        <width>131</width>
        <height>31</height>
@@ -1988,8 +1988,8 @@
      <property name="geometry">
       <rect>
        <x>440</x>
-       <y>250</y>
-       <width>31</width>
+       <y>260</y>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -2002,14 +2002,14 @@
       <string>Sets dual tracking on / off</string>
      </property>
      <property name="text">
-      <string>Sel</string>
+      <string>Select</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_90">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>250</y>
+       <y>260</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2027,7 +2027,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>250</y>
+       <y>260</y>
        <width>331</width>
        <height>21</height>
       </rect>
@@ -2060,7 +2060,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>230</y>
+       <y>240</y>
        <width>461</width>
        <height>21</height>
       </rect>
@@ -2075,8 +2075,8 @@
     <widget class="QDoubleSpinBox" name="scalePlotDEC">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>310</y>
+       <x>270</x>
+       <y>300</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2107,7 +2107,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>300</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2124,8 +2124,8 @@
     <widget class="QLabel" name="label_94">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>310</y>
+       <x>180</x>
+       <y>300</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2143,7 +2143,7 @@
      <property name="geometry">
       <rect>
        <x>100</x>
-       <y>280</y>
+       <y>300</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2175,7 +2175,7 @@
       <rect>
        <x>10</x>
        <y>10</y>
-       <width>221</width>
+       <width>271</width>
        <height>21</height>
       </rect>
      </property>
@@ -2185,7 +2185,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Analyse - Check Model (Base&amp;Refine)</string>
+      <string>Analyse - Check Model (Base &amp; Refinement)</string>
      </property>
     </widget>
     <widget class="Line" name="line_32">
@@ -2208,7 +2208,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>220</y>
+       <y>230</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -2226,7 +2226,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>90</y>
        <width>191</width>
        <height>21</height>
       </rect>
@@ -2244,7 +2244,7 @@
      <property name="geometry">
       <rect>
        <x>150</x>
-       <y>170</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -2260,7 +2260,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>170</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -2276,7 +2276,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>100</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -2292,7 +2292,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>110</y>
+       <y>120</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -2310,7 +2310,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>110</y>
+       <y>120</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2335,7 +2335,7 @@
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>110</y>
+       <y>120</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -2353,7 +2353,7 @@
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>110</y>
+       <y>120</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2381,7 +2381,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>140</y>
+       <y>150</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -2399,7 +2399,7 @@
      <property name="geometry">
       <rect>
        <x>80</x>
-       <y>140</y>
+       <y>150</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2427,7 +2427,7 @@
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>140</y>
+       <y>150</y>
        <width>31</width>
        <height>20</height>
       </rect>
@@ -2451,7 +2451,7 @@
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>110</y>
+       <y>120</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -2475,7 +2475,55 @@
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>110</y>
+       <y>120</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_113">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>300</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_114">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>300</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -6117,7 +6165,7 @@
       <string>Sets dual tracking on / off</string>
      </property>
      <property name="text">
-      <string>Sel</string>
+      <string>Select</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_selectHorizonPointsFileName">
@@ -6138,7 +6186,7 @@
       <string>Sets dual tracking on / off</string>
      </property>
      <property name="text">
-      <string>Sel</string>
+      <string>Select</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_selectImageDirectoryName">
@@ -6159,7 +6207,7 @@
       <string>Sets dual tracking on / off</string>
      </property>
      <property name="text">
-      <string>Sel</string>
+      <string>Select</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_38">
