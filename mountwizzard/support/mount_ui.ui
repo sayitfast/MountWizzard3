@@ -1955,7 +1955,7 @@
     <widget class="QPushButton" name="btn_cancelAnalyseModel">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>170</x>
        <y>40</y>
        <width>131</width>
        <height>31</height>
@@ -1965,7 +1965,7 @@
       <string>Cancels the model run in the next cycle</string>
      </property>
      <property name="text">
-      <string>Cance</string>
+      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runPlotAnalyse">
@@ -2193,7 +2193,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>271</width>
+       <width>291</width>
        <height>21</height>
       </rect>
      </property>
@@ -2243,7 +2243,7 @@
     <widget class="QPushButton" name="btn_cancelTimeChangeModel">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>170</x>
        <y>180</y>
        <width>131</width>
        <height>31</height>
@@ -2277,7 +2277,7 @@
       <rect>
        <x>10</x>
        <y>100</y>
-       <width>271</width>
+       <width>291</width>
        <height>21</height>
       </rect>
      </property>
@@ -2309,7 +2309,7 @@
     <widget class="QDoubleSpinBox" name="azimuthTimeChange">
      <property name="geometry">
       <rect>
-       <x>220</x>
+       <x>240</x>
        <y>120</y>
        <width>51</width>
        <height>22</height>
@@ -2334,7 +2334,7 @@
     <widget class="QLabel" name="label_175">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>190</x>
        <y>120</y>
        <width>51</width>
        <height>21</height>
@@ -2352,7 +2352,7 @@
     <widget class="QDoubleSpinBox" name="altitudeTimeChange">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>110</x>
        <y>120</y>
        <width>51</width>
        <height>22</height>
@@ -2382,7 +2382,7 @@
       <rect>
        <x>10</x>
        <y>150</y>
-       <width>71</width>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -2392,13 +2392,13 @@
       </font>
      </property>
      <property name="text">
-      <string>Timeperiod</string>
+      <string>Number of runs</string>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="timeperiodTimeChange">
+    <widget class="QDoubleSpinBox" name="numberRunsTimeChange">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>110</x>
        <y>150</y>
        <width>51</width>
        <height>22</height>
@@ -2414,43 +2414,19 @@
       <double>10.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>60.000000000000000</double>
+      <double>300.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>1.000000000000000</double>
      </property>
      <property name="value">
-      <double>10.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_108">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>150</y>
-       <width>31</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>min</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
+      <double>30.000000000000000</double>
      </property>
     </widget>
     <widget class="QLabel" name="label_111">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>290</x>
        <y>120</y>
        <width>21</width>
        <height>20</height>
@@ -2474,7 +2450,7 @@
     <widget class="QLabel" name="label_112">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>160</x>
        <y>120</y>
        <width>21</width>
        <height>20</height>

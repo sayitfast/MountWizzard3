@@ -28,9 +28,6 @@ from support.sgpro import SGPro
 from support.analyse import Analyse
 
 
-def waitSettlingTime(timeDelay):                                                                                            # wait settling time
-    time.sleep(timeDelay)                                                                                                   # just waiting
-
 
 class Model(QtCore.QThread):
     logger = logging.getLogger('Model')                                                                                     # logging enabling
@@ -359,8 +356,9 @@ class Model(QtCore.QThread):
         time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (don't know if necessary)
 
     def runBaseModel(self):
+        settlingTime = int(float(self.ui.settlingTime.value()))
         if len(self.BasePoints) > 0:
-            self.modelAnalyseData = self.runModel('Base', self.BasePoints)
+            self.modelAnalyseData = self.runModel('Base', self.BasePoints, settlingTime)
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_base_run.txt'                                          # generate name of analyse file
@@ -368,8 +366,9 @@ class Model(QtCore.QThread):
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
 
     def runRefinementModel(self):
+        settlingTime = int(float(self.ui.settlingTime.value()))
         if len(self.RefinementPoints) > 0:
-            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints)
+            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints, settlingTime)
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_refinement_run.txt'                                    # generate name of analyse file
@@ -377,8 +376,9 @@ class Model(QtCore.QThread):
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runAnalyseModel(self):
+        settlingTime = int(float(self.ui.settlingTime.value()))
         if len(self.RefinementPoints + self.BasePoints) > 0:                                                                # there should be some points
-            self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints)                       # run the analyse
+            self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints, settlingTime)         # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_analyse_run.txt'                                       # generate name of analyse file
@@ -386,10 +386,11 @@ class Model(QtCore.QThread):
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runTimeChangeModel(self):
+        settlingTime = int(float(self.ui.settlingTime.value()) * 5)
         points = []
-        for i in range(0, self.ui.timeperiodTimeChange.value()):
-            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value())))
-        self.modelAnalyseData = self.runModel('TimeChange', points)                                                         # run the analyse
+        for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):
+            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), True))
+        self.modelAnalyseData = self.runModel('TimeChange', points, settlingTime)                                           # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
@@ -475,17 +476,23 @@ class Model(QtCore.QThread):
                 return True, 'success', imagepath                                                                           # return true message imagepath
             else:                                                                                                           # If we test without camera, we need to take pictures of test
                 imagepath = self.ui.le_imageDirectoryName.text() + '/' + self.captureFile                                   # set imagepath to default
-                copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index), imagepath)                            # copy testfile instead of imaging
+                if os.path.isfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index)):                             # check existing image file
+                    copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index), imagepath)                        # copy testfile instead of imaging
+                else:
+                    if index == 0:
+                        self.logger.error('capturingImage -> not test image files available !')
+                    else:
+                        copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(0), imagepath)                        # copy first testfile instead of imaging
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
                 return True, 'testsetup', imagepath                                                                         # return true test message imagepath
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
-    def solveImage(self, modeltype, imagepath, pixelSize, cameraBin, focalLength):                                          # solving image based on information inside the FITS files, no additional info
+    def solveImage(self, modeltype, blind, imagepath, pixelSize, cameraBin, focalLength):                                          # solving image based on information inside the FITS files, no additional info
         hint = pixelSize * 206.6 * cameraBin / focalLength                                                                  # calculating hint for solve
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
-                                                     blindSolve=self.ui.checkUseBlindSolve.isChecked(),
+                                                     blindSolve=blind,
                                                      useFitsHeaders=True)
         else:                                                                                                               # otherwise
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
@@ -514,7 +521,7 @@ class Model(QtCore.QThread):
                 return True, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                       # return values after successful solving
             elif mes != 'Solving':                                                                                          # general error
                 self.LogQueue.put('\t\t\tError:  ' + mes)                                                                   # Gui output
-                self.logger.debug('solveImage solv-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                  # debug output
+                self.logger.debug('solveImage solv-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                      # debug output
                 return False, 0, 0, 0, 0, 0, 0, 0                                                                           # default parameters without success
             else:                                                                                                           # otherwise
                 if self.ui.checkUseBlindSolve.isChecked():                                                                  # when using blind solve, it takes 30-60 s
@@ -522,11 +529,8 @@ class Model(QtCore.QThread):
                 else:                                                                                                       # local solver takes 1-2 s
                     time.sleep(.25)                                                                                         # therefore quicker cycle
 
-    def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
-        if len(self.ui.le_refractionTemperature.text()) > 0:                                                                # set refraction temp
-            self.mount.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())                           # set it if string available
-        else:                                                                                                               # otherwise
-            self.mount.transform.SiteTemperature = 20.0                                                                     # set it to 20.0 degree c
+    def addRefinementStar(self, ra, dec, refractionTemp):                                                                   # add refinement star during model run
+        self.mount.transform.SiteTemperature = refractionTemp                                                               # set refraction temp in converter
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
         h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                      # convert to Jnow
         self.commandQueue.put('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                                # Write jnow ra to mount
@@ -537,7 +541,7 @@ class Model(QtCore.QThread):
         self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
         return True                                                                                                         # simulation OK
 
-    def runModel(self, modeltype, runPoints):                                                                               # model run routing
+    def runModel(self, modeltype, runPoints, settlingTime):                                                                 # model run routing
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('Start {0} Model. {1}'.format(modeltype, time.ctime()))                                           # Start informing user
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
@@ -558,16 +562,25 @@ class Model(QtCore.QThread):
         self.commandQueue.put('AP')                                                                                         # tracking should be on as well
         for i, p in enumerate(runPoints):                                                                                   # run through all model points
             self.modelrun = True                                                                                            # sets the run flag true
-            if p[2].isVisible():                                                                                            # is the model point already run ?
+            if p[2]:                                                                                                        # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
                     self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                       # we keep all the stars before
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
-                self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))       # Gui Output
+                self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))   # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))         # Debug output
-                self.slewMountDome(p[0], p[1], type)                                                                        # slewing mount and dome to az/alt for model point and analyse
-                self.LogQueue.put('\tWait mount settling time {0} second(s) \n'.format(int(self.ui.settlingTime.value())))  # Gui Output
-                waitSettlingTime(float(self.ui.settlingTime.value()))                                                       # wait for settling mount
+                if modeltype in ['TimeChange']:
+                    if i == 0:
+                        self.slewMountDome(p[0], p[1], modeltype)                                                           # slewing mount and dome to az/alt for first slew only
+                else:
+                    self.slewMountDome(p[0], p[1], modeltype)                                                               # slewing mount and dome to az/alt for model point and analyse
+                self.LogQueue.put('\tWait mount settling time {0:d} second(s) '.format(settlingTime))                       # Gui Output
+                timeCounter = settlingTime
+                while timeCounter > 0:
+                    time.sleep(1)
+                    timeCounter -= 1
+                    self.LogQueue.put(' {0:d}'.format(timeCounter))
+                self.LogQueue.put('\n')
                 if self.ui.checkFastDownload.isChecked():                                                                   # if camera is supporting high speed download
                     speed = 'HiSpeed'                                                                                       # we can use it for improved modeling speed
                 else:                                                                                                       # otherwise
@@ -580,22 +593,28 @@ class Model(QtCore.QThread):
                     pixelSize = float(self.ui.pixelSize.value())                                                            # get data from gui
                     cameraBin = float(self.ui.cameraBin.value())                                                            # get data from gui
                     focalLength = float(self.ui.focalLength.value())                                                        # get data from gui
+                    blind = self.ui.checkUseBlindSolve.isChecked()                                                          # get data from gui
                     suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
-                        self.solveImage(modeltype, imagepath, pixelSize, cameraBin, focalLength)                            # solve the position and returning the values
+                        self.solveImage(modeltype, blind, imagepath, pixelSize, cameraBin, focalLength)                     # solve the position and returning the values
                     self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'
                                       .format(ra_sol, dec_sol, suc, scale, angle))                                          # debug output
                     if not self.ui.checkKeepImages.isChecked():                                                             # check if the model images should be kept
                         os.remove(imagepath)                                                                                # otherwise just delete them
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
-                            self.addRefinementStar(ra_sol, dec_sol)                                                         # sync the actual star to resolved coordinates in J2000
+                            if len(self.ui.le_refractionTemperature.text()) > 0:  # set refraction temp
+                                refractionTemp = float(self.ui.le_refractionTemperature.text())                             # set it if string available
+                            else:                                                                                           # otherwise
+                                refractionTemp = 20.0                                                                       # set it to 20.0 degree c
+                            self.addRefinementStar(ra_sol, dec_sol, refractionTemp)                                         # sync the actual star to resolved coordinates in J2000
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
                         decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
                         err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))      # generating debug output
                         self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                  # adding point for matrix
-                        p[2].setVisible(False)                                                                              # set the relating modeled point invisible
+                        if modeltype in ['Base', 'Refinement']:
+                            p[3].setVisible(False)                                                                              # set the relating modeled point invisible
                         self.LogQueue.put('\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
                                           'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                  # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '

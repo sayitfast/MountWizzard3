@@ -181,6 +181,8 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_generateBasePoints.clicked.connect(self.generateBasePoints)
         self.ui.btn_runAnalyseModel.clicked.connect(self.runAnalyseModel)
         self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModel)
+        self.ui.btn_runTimeChangeModel.clicked.connect(self.runTimeChangeModel)
+        self.ui.btn_cancelTimeChangeModel.clicked.connect(self.cancelTimeChangeModel)
         self.ui.btn_runPlotAnalyse.clicked.connect(self.runPlotAnalyse)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
@@ -327,7 +329,7 @@ class MountWizzardApp(QDialog, QObject):
             text_item.setDefaultTextColor(self.whiteColor)
             text_item.setPos(x+1, y+1)
             scene.addItem(text_item)
-            points[i] = (p[0], p[1], item)                                                                                  # storing the objects in the list
+            points[i] = (p[0], p[1], True, item)                                                                            # storing the objects in the list
         scene = constructHorizon(scene, horizon, height, width, border)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
@@ -382,6 +384,9 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
             self.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
+            self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
+            self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
+            self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
@@ -431,6 +436,9 @@ class MountWizzardApp(QDialog, QObject):
         self.config['ScalePlotRA'] = self.ui.scalePlotRA.value()
         self.config['ScalePlotDEC'] = self.ui.scalePlotDEC.value()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
+        self.config['AltitudeTimeChange'] = self.ui.altitudeTimeChange.value()
+        self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
+        self.config['NumberRunsTimeChange'] = self.ui.numberRunsTimeChange.value()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
@@ -849,6 +857,12 @@ class MountWizzardApp(QDialog, QObject):
 
     def cancelAnalyseModel(self):
         self.model.signalModelCommand.emit('CancelAnalyseModel')
+
+    def runTimeChangeModel(self):
+        self.model.signalModelCommand.emit('RunTimeChangeModel')
+
+    def cancelTimeChangeModel(self):
+        self.model.signalModelCommand.emit('CancelTimeChangeModel')
 
     def runPlotAnalyse(self):
         data = self.analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file

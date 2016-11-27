@@ -192,6 +192,7 @@ class Mount(QtCore.QThread):
             elif command == 'MA':
                 self.ascom.Tracking = False
                 self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
+                self.ascom.Tracking = False
             elif command == 'Ginfo':
                 ra = self.ascom.RightAscension
                 dec = self.ascom.Declination
@@ -217,6 +218,8 @@ class Mount(QtCore.QThread):
                 self.ascom.Park()
             elif command == 'AP':
                 self.ascom.Tracking = True
+            elif command == 'RT9':
+                self.ascom.Tracking = False
             else:
                 return ''
 
