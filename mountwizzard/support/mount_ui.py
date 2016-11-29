@@ -2972,7 +2972,7 @@ class Ui_MountDialog(object):
         self.le_driverStickConnected.setText(_translate("MountDialog", "Stick"))
         self.le_driverMountConnected.setToolTip(_translate("MountDialog", "Shows the connection status to mount in red / green"))
         self.le_driverMountConnected.setText(_translate("MountDialog", "Mount"))
-        self.windowTitle.setText(_translate("MountDialog", "MountWizzard  v1.0.11"))
+        self.windowTitle.setText(_translate("MountDialog", "MountWizzard  v1.0.12"))
         self.le_driverWeatherConnected.setToolTip(_translate("MountDialog", "Shows the status of open weather in red / green"))
         self.le_driverWeatherConnected.setText(_translate("MountDialog", "Weather"))
         self.btn_mountQuit.setToolTip(_translate("MountDialog", "Quits the tool and saves the settings data in config.cfg"))

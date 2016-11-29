@@ -28,7 +28,6 @@ from support.sgpro import SGPro
 from support.analyse import Analyse
 
 
-
 class Model(QtCore.QThread):
     logger = logging.getLogger('Model')                                                                                     # logging enabling
     signalModelConnected = QtCore.pyqtSignal(bool, name='ModelConnected')                                                   # message for errors
@@ -491,7 +490,7 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
-    def solveImage(self, modeltype, blind, imagepath, pixelSize, cameraBin, focalLength):                                          # solving image based on information inside the FITS files, no additional info
+    def solveImage(self, modeltype, blind, imagepath, pixelSize, cameraBin, focalLength):                                   # solving image based on information inside the FITS files, no additional info
         hint = pixelSize * 206.6 * cameraBin / focalLength                                                                  # calculating hint for solve
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
@@ -504,7 +503,7 @@ class Model(QtCore.QThread):
         self.logger.debug('solveImage     -> suc:{0} mes:{1} scalehint:{2}'.format(suc, mes, hint))                         # debug output
         if not suc:                                                                                                         # if we failed to start solving
             self.LogQueue.put('\t\t\tSolving could not be started: ' + mes)                                                 # Gui output
-            self.logger.warning('solveImage     -> no start {0}'. format(mes))                                                  # debug output
+            self.logger.warning('solveImage     -> no start {0}'. format(mes))                                              # debug output
             return False, 0, 0, 0, 0, 0, 0, 0                                                                               # default parameters without success
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
@@ -619,9 +618,9 @@ class Model(QtCore.QThread):
                         if modeltype in ['Base', 'Refinement']:
                             p[3].setVisible(False)                                                                              # set the relating modeled point invisible
                         self.LogQueue.put('\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
-                                          'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))                                  # data for User
+                                          'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))    # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
-                                          'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))                                        # log output
+                                          'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))            # log output
         self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'
                           .format(modeltype, self.numCheckPoints, time.ctime()))                                            # GUI output
         self.modelrun = False
