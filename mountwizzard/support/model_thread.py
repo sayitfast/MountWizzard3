@@ -286,7 +286,6 @@ class Model(QtCore.QThread):
             self.mount.transform.SetJ2000(ra, dec)                                                                          # set data in J2000
             alt = int(self.mount.transform.ElevationTopocentric)                                                            # take az data
             az = int(self.mount.transform.AzimuthTopocentric)                                                               # take alt data
-            print(ra, dec, az, alt)
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
@@ -616,7 +615,8 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))      # generating debug output
                         self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                  # adding point for matrix
                         if modeltype in ['Base', 'Refinement']:
-                            p[3].setVisible(False)                                                                              # set the relating modeled point invisible
+                            p[3].setVisible(False)                                                                          # set the relating modeled point invisible
+                            p[2] = False                                                                                    # set the point already modeled
                         self.LogQueue.put('\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
                                           'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))    # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
