@@ -468,7 +468,7 @@ class Model(QtCore.QThread):
                 fitsHeader['OBJCTDEC'] = '{0}{1:02} {2:02} {3:02}'.format(sign, h, m, s)                                    # set dec as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
-                fitsHeader['MW-AZ'] = str(az)                                                                               # x is the same as y
+                fitsHeader['MW_AZ'] = str(az)                                                                               # x is the same as y
                 fitsHeader['MW_ALT'] = str(alt)                                                                             # and vice versa
                 self.logger.debug(
                     'capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(

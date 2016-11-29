@@ -139,6 +139,10 @@ class Mount(QtCore.QThread):
             else:                                                                                                           # when not connected try to connect
                 try:
                     self.ascom = Dispatch(self.driverName)                                                                  # select win32 driver
+                    if self.driverName == 'ASCOM.FrejvallGM.Telescope':
+                        self.driver_real = True
+                    else:
+                        self.driver_real = False
                     self.ascom.connected = True                                                                             # connect to mount
                     self.connected = True                                                                                   # setting connection status from driver
                 except Exception as e:                                                                                      # error handling

@@ -1,4 +1,10 @@
 # Changelog:
+1.0.12
+- correction readme install
+
+1.0.11
+- bugfix in driver selection
+
 1.0.10
 - analyse for time dependant deviations of mount
 - implemented showing position and movement of dome if present

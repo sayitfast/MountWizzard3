@@ -3,7 +3,7 @@
 ###Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016
 
-## Version 1.0.10
+## Version 1.0.12
 
 # Important:
 ##### I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
@@ -66,7 +66,7 @@ still would like to test further development versions, please feel free to do it
 directory and start the MountWizzard like you've done it before.
 
 You can upgrade the MountWizzard by 
-<pre>pip -install --upgrade --no-cache-dir mountwizzard</pre>
+<pre>pip install --upgrade --no-cache-dir mountwizzard</pre>
 In most cases all dependencies were solved and installed as well.
 
 ### Running MountWizzard
