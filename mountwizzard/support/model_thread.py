@@ -19,6 +19,7 @@ import os
 from shutil import copyfile
 # threading
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import *
 # library for fits file handling
 import pyfits
 # for the sorting
@@ -390,21 +391,18 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.ui.settlingTime.value()) * 5)
         points = []
         for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):
-            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), True))
+            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), QGraphicsTextItem('')))
         self.modelAnalyseData = self.runModel('TimeChange', points, settlingTime)                                           # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
-    def slewMountDome(self, az, alt, modeltype):                                                                            # slewing mount and dome to alt az point
+    def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
-        if modeltype == 'TimeChange':
-            self.commandQueue.put('MA')                                                                                     # initiate slewing without tracking at the end
-        else:
-            self.commandQueue.put('MS')                                                                                     # initiate slewing with tracking at the end
+        self.commandQueue.put('MS')                                                                                         # initiate slewing with tracking at the end
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.dome.connected))
-        if self.dome.connected:                                                                                             # if there is a dome, should be slewed as well
+        if self.dome.connected == 1:                                                                                        # if there is a dome, should be slewed as well
             self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
             self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
             time.sleep(2.5)                                                                                                 # wait for mount to start
@@ -512,7 +510,7 @@ class Model(QtCore.QThread):
             angle = float(angle)                                                                                            #
             timeTS = float(timeTS)                                                                                          #
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            if mes[:7] in ['Matched', 'Solve t']:                                                                           # if there is success, we can move on
+            if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                           # if there is success, we can move on
                 self.logger.debug('solveImage solv-> ra:{0} dec:{1} suc:{2} mes:{3}'.format(ra_sol, dec_sol, suc, mes))
                 fitsFileHandle = pyfits.open(imagepath, mode='readonly')                                                    # open for getting telescope coordinates
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
@@ -561,20 +559,21 @@ class Model(QtCore.QThread):
                           .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking should be on as well
-        for i, p in enumerate(runPoints):                                                                                   # run through all model points
+        for i, (p_az, p_alt, p_item) in enumerate(runPoints):                                                               # run through all model points
             self.modelrun = True                                                                                            # sets the run flag true
-            if p[2]:                                                                                                        # is the model point to be run = true ?
+            if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
                     self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                       # we keep all the stars before
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
-                self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p[0], p[1]))   # Gui Output
-                self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p[0], p[1]))         # Debug output
+                self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p_az, p_alt))   # Gui Output
+                self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p_az, p_alt))        # Debug output
                 if modeltype in ['TimeChange']:
                     if i == 0:
-                        self.slewMountDome(p[0], p[1], modeltype)                                                           # slewing mount and dome to az/alt for first slew only
+                        self.slewMountDome(p_az, p_alt)                                                                     # slewing mount and dome to az/alt for first slew only
+                        self.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 else:
-                    self.slewMountDome(p[0], p[1], modeltype)                                                               # slewing mount and dome to az/alt for model point and analyse
+                    self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
                 self.LogQueue.put('\tWait mount settling time {0:d} second(s) '.format(settlingTime))                       # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:
@@ -586,8 +585,13 @@ class Model(QtCore.QThread):
                     speed = 'HiSpeed'                                                                                       # we can use it for improved modeling speed
                 else:                                                                                                       # otherwise
                     speed = 'Normal'                                                                                        # standard speed
-                suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p[0], p[1],
+                if modeltype in ['TimeChange']:
+                    self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
+                    time.sleep(0.2)
+                suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p_az, p_alt,
                                                           self.sub, self.sizeX, self.sizeY, self.offX, self.offY, speed)    # capturing image and store position (ra,dec), time, (az,alt)
+                if modeltype in ['TimeChange']:
+                    self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('Solving Image...')                                                                   # output for user GUI
@@ -612,11 +616,10 @@ class Model(QtCore.QThread):
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
                         decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
                         err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
-                        self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))      # generating debug output
-                        self.results.append((i, p[0], p[1], ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                  # adding point for matrix
+                        self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))  # generating debug output
+                        self.results.append((i, p_az, p_alt, ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                 # adding point for matrix
                         if modeltype in ['Base', 'Refinement']:
-                            p[3].setVisible(False)                                                                          # set the relating modeled point invisible
-                            p[2] = False                                                                                    # set the point already modeled
+                            p_item.setVisible(False)                                                                        # set the relating modeled point invisible
                         self.LogQueue.put('\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
                                           'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))    # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '

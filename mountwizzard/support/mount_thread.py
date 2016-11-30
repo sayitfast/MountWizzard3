@@ -209,7 +209,7 @@ class Mount(QtCore.QThread):
                         stat = 0
                     else:
                         stat = 7
-                jd = self.ascom.SiderealTime
+                jd = self.ascom.SiderealTime + 2440587.5
                 pierside = self.ascom.SideOfPier
                 if self.ascom.Slewing:
                     slew = 1

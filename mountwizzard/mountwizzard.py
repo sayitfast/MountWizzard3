@@ -329,7 +329,7 @@ class MountWizzardApp(QDialog, QObject):
             text_item.setDefaultTextColor(self.whiteColor)
             text_item.setPos(x+1, y+1)
             scene.addItem(text_item)
-            points[i] = (p[0], p[1], True, item)                                                                            # storing the objects in the list
+            points[i] = (p[0], p[1], item)                                                                                  # storing the objects in the list
         scene = constructHorizon(scene, horizon, height, width, border)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
@@ -803,8 +803,10 @@ class MountWizzardApp(QDialog, QObject):
         self.dome.setupDriver()
 
     def setDomeStatus(self, status):
-        if status:
+        if status == 1:
             self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: green;}')
+        elif status == 2:
+            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: grey;}')
         else:
             self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: red;}')
 

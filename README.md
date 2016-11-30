@@ -3,7 +3,7 @@
 ###Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016
 
-## Version 1.0.12
+## Version 1.0.13
 
 # Important:
 ##### I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
@@ -30,6 +30,11 @@ the older version under 'mount' will disappear !
 Please setup SGPro as you would image. Please also do some sort of focusing (should be obvious) and test some images 
 before start. If you would like to speed-up the modeling, please disable in SGPro star analysis. It takes 4-5 s per 
 image in addition.
+
+There is an entry for dome support. If you don't hav a dome to slew, please ensure, that there is no driver selected.
+This is indicated, that the DOME status on top of the window in grey. You can disable the dome driver under settings
+by calling the ASCOM chooser for dome an in the selection window upcoming just press "Cancel". This should disable the
+driver.
 
 ##Remarks
 

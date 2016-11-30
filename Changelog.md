@@ -1,6 +1,13 @@
 # Changelog:
+1.0.13
+- turning on tracking while imaging in analyse path
+- show dome status in gray, when no dome driver selected
+- checked for PlateSolve2: should run
+- astronomy.net should work
+
 1.0.12
 - correction readme install
+- bugfix model run already modeled points
 
 1.0.11
 - bugfix in driver selection

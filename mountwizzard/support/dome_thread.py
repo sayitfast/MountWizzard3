@@ -23,13 +23,13 @@ import pythoncom
 class Dome(QtCore.QThread):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger('dome_thread:')
-    signalDomeConnected = QtCore.pyqtSignal([bool], name='domeConnected')
+    signalDomeConnected = QtCore.pyqtSignal([int], name='domeConnected')
     signalDomPointer = QtCore.pyqtSignal([float], name='domePointer')
 
     def __init__(self, messageQueue):
         super().__init__()
         self.messageQueue = messageQueue
-        self.connected = False
+        self.connected = 2
         self.ascom = None                                                                                                   # placeholder for ascom driver object
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverName = 'DomeSim.Dome'                                                                                    # driver object name
@@ -37,12 +37,12 @@ class Dome(QtCore.QThread):
         self.counter = 0
 
     def run(self):                                                                                                          # runnable for doing the work
-        pythoncom.CoInitialize()                                                                                            # needed for doing COm objects in threads
-        self.connected = False                                                                                              # set connection flag for stick itself
+        pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
+        self.connected = 0                                                                                                  # set connection flag for stick itself
         self.counter = 0
         while True:                                                                                                         # main loop for stick thread
             self.signalDomeConnected.emit(self.connected)                                                                   # send status to GUI
-            if self.connected:                                                                                              # differentiate between dome connected or not
+            if self.connected == 1:                                                                                         # differentiate between dome connected or not
                 if self.counter == 0:                                                                                       # jobs once done at the beginning
                     self.getStatusOnce()                                                                                    # task once
                 if self.counter % 2 == 0:                                                                                   # all tasks with 200 ms
@@ -57,11 +57,14 @@ class Dome(QtCore.QThread):
                 try:
                     self.ascom = Dispatch(self.driverName)                                                                  # load driver
                     self.ascom.connected = True
-                    self.connected = True                                                                                   # set status to connected
+                    self.connected = 1                                                                                      # set status to connected
                 except Exception as e:                                                                                      # if general exception
                     if self.driverName != '':
                         self.logger.error('run Dome       -> general exception: {0}'.format(e))                             # write to logger
-                    self.connected = False                                                                                  # set to disconnected
+                    if self.driverName == '':
+                        self.connected = 2
+                    else:
+                        self.connected = 0                                                                                  # run the driver setup dialog
                 finally:                                                                                                    # still continua and try it again
                     pass                                                                                                    # needed for continue
                 time.sleep(1)                                                                                               # wait for the next cycle
@@ -90,11 +93,17 @@ class Dome(QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Dome'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.connected = False                                                                                          # run the driver setup dialog
+            if self.driverName == '':
+                self.connected = 2
+            else:
+                self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.messageQueue.put('Driver Exception in setupDome')                                                          # write to gui
             self.logger.error('setupDriverDome -> general exception:{0}'.format(e))                                         # write to log
-            self.connected = False                                                                                          # set to disconnected
+            if self.driverName == '':
+                self.connected = 2
+            else:
+                self.connected = 0                                                                                          # run the driver setup dialog
         finally:                                                                                                            # continue to work
             pass                                                                                                            # python necessary
 
