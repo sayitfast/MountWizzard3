@@ -1,4 +1,8 @@
 # Changelog:
+1.0.14
+- adaption for Time Flexure -> Delay time
+- adding mor option for Grid points
+
 1.0.13
 - turning on tracking while imaging in analyse path
 - show dome status in gray, when no dome driver selected

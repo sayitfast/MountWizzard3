@@ -14,7 +14,7 @@
     <x>0</x>
     <y>0</y>
     <width>791</width>
-    <height>671</height>
+    <height>670</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -1252,7 +1252,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>130</y>
+       <y>150</y>
        <width>131</width>
        <height>20</height>
       </rect>
@@ -1299,8 +1299,8 @@
     <widget class="QPushButton" name="btn_clearAlignmentModel">
      <property name="geometry">
       <rect>
-       <x>620</x>
-       <y>10</y>
+       <x>480</x>
+       <y>230</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1316,7 +1316,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>10</y>
+       <y>40</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1332,23 +1332,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>110</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_28">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>40</y>
+       <y>130</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -1364,7 +1348,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>60</y>
+       <y>80</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1380,7 +1364,7 @@
      <property name="geometry">
       <rect>
        <x>690</x>
-       <y>90</y>
+       <y>110</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -1405,7 +1389,7 @@
      <property name="geometry">
       <rect>
        <x>690</x>
-       <y>60</y>
+       <y>80</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -1433,7 +1417,7 @@
      <property name="geometry">
       <rect>
        <x>630</x>
-       <y>60</y>
+       <y>80</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -1451,7 +1435,7 @@
      <property name="geometry">
       <rect>
        <x>630</x>
-       <y>90</y>
+       <y>110</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -1519,7 +1503,7 @@
      <property name="geometry">
       <rect>
        <x>740</x>
-       <y>60</y>
+       <y>80</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -1543,7 +1527,7 @@
      <property name="geometry">
       <rect>
        <x>740</x>
-       <y>90</y>
+       <y>110</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -1561,6 +1545,56 @@
      </property>
      <property name="wordWrap">
       <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_116">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>10</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Generate Points</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_35">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>20</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_36">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>210</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </widget>
@@ -1602,7 +1636,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>220</y>
+       <y>230</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1634,7 +1668,7 @@
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>10</y>
+       <y>40</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1644,177 +1678,6 @@
      </property>
      <property name="text">
       <string>Show Refine Points</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_generateDSOPoints">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>100</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Generates refinment point along DSO track</string>
-     </property>
-     <property name="text">
-      <string>Generate DSO Track</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_trackDEC">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>170</y>
-       <width>241</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>Dec of DSO object</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_87">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>170</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>DEC</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_trackRA">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>140</y>
-       <width>241</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>RA of DSO object</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_88">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>140</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>RA</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_89">
-     <property name="geometry">
-      <rect>
-       <x>630</x>
-       <y>100</y>
-       <width>131</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Object in J2000</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_20">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>80</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_21">
-     <property name="geometry">
-      <rect>
-       <x>480</x>
-       <y>200</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <widget class="Line" name="line_22">
@@ -1837,7 +1700,7 @@
      <property name="geometry">
       <rect>
        <x>620</x>
-       <y>220</y>
+       <y>230</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1846,14 +1709,14 @@
       <string>Delete all points below the horizon line from horizone file</string>
      </property>
      <property name="text">
-      <string>Del below Horizon</string>
+      <string>Delete below Horizon</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_generateDensePoints">
      <property name="geometry">
       <rect>
        <x>480</x>
-       <y>50</y>
+       <y>80</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1869,7 +1732,7 @@
      <property name="geometry">
       <rect>
        <x>620</x>
-       <y>50</y>
+       <y>80</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1900,8 +1763,8 @@
     <widget class="QPushButton" name="btn_generateGridPoints">
      <property name="geometry">
       <rect>
-       <x>620</x>
-       <y>10</y>
+       <x>480</x>
+       <y>120</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1929,6 +1792,164 @@
      </property>
      <property name="text">
       <string>Modeling Run</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_26">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>170</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_178">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>120</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Rows</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="numberGridPointsRow">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>120</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>3.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>10.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>5.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="Line" name="line_27">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>210</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_108">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>10</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Generate Points</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_34">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>20</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="numberGridPointsCol">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>150</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>15.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>10.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_179">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>150</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Columns</string>
      </property>
     </widget>
    </widget>
@@ -1971,9 +1992,9 @@
     <widget class="QPushButton" name="btn_runPlotAnalyse">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>300</y>
-       <width>131</width>
+       <x>630</x>
+       <y>90</y>
+       <width>121</width>
        <height>31</height>
       </rect>
      </property>
@@ -1987,10 +2008,10 @@
     <widget class="QPushButton" name="btn_selectAnalyseFileName">
      <property name="geometry">
       <rect>
-       <x>440</x>
-       <y>260</y>
-       <width>51</width>
-       <height>21</height>
+       <x>500</x>
+       <y>90</y>
+       <width>121</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -2002,14 +2023,14 @@
       <string>Sets dual tracking on / off</string>
      </property>
      <property name="text">
-      <string>Select</string>
+      <string>Select File</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_90">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>260</y>
+       <x>330</x>
+       <y>40</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2026,8 +2047,8 @@
     <widget class="QLineEdit" name="le_analyseFileName">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>260</y>
+       <x>420</x>
+       <y>40</y>
        <width>331</width>
        <height>21</height>
       </rect>
@@ -2059,9 +2080,9 @@
     <widget class="Line" name="line_29">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>240</y>
-       <width>461</width>
+       <x>330</x>
+       <y>20</y>
+       <width>421</width>
        <height>21</height>
       </rect>
      </property>
@@ -2075,8 +2096,8 @@
     <widget class="QDoubleSpinBox" name="scalePlotDEC">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>300</y>
+       <x>420</x>
+       <y>100</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2106,8 +2127,8 @@
     <widget class="QLabel" name="label_93">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>300</y>
+       <x>330</x>
+       <y>70</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2124,8 +2145,8 @@
     <widget class="QLabel" name="label_94">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>300</y>
+       <x>330</x>
+       <y>100</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -2142,8 +2163,8 @@
     <widget class="QDoubleSpinBox" name="scalePlotRA">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>300</y>
+       <x>420</x>
+       <y>70</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -2207,8 +2228,8 @@
     <widget class="QLabel" name="label_99">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>230</y>
+       <x>330</x>
+       <y>10</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -2219,7 +2240,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Plotting Analysis Data</string>
+      <string>Plot Analyse Data</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_107">
@@ -2474,8 +2495,8 @@
     <widget class="QLabel" name="label_113">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>300</y>
+       <x>470</x>
+       <y>70</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -2498,8 +2519,8 @@
     <widget class="QLabel" name="label_114">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>300</y>
+       <x>470</x>
+       <y>100</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -2511,6 +2532,76 @@
      </property>
      <property name="text">
       <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_177">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>150</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Delay</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="delayTimeTimeChange">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>150</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>300.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>30.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_115">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>150</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>s</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -7177,6 +7268,177 @@
       <string>Relays</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="le_trackDEC">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>110</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Dec of DSO object</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_87">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>110</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>DEC</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_generateDSOPoints">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>40</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Generates refinment point along DSO track</string>
+     </property>
+     <property name="text">
+      <string>Generate DSO Track</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_89">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>40</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Object in J2000</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_trackRA">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>80</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>RA of DSO object</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="Line" name="line_20">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>20</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_21">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>140</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_88">
+     <property name="geometry">
+      <rect>
+       <x>360</x>
+       <y>80</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>RA</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="btn_shutdownQuit">
@@ -7299,7 +7561,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.0.13</string>
+    <string>MountWizzard  v1.0.14</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -7498,7 +7760,7 @@ p, li { white-space: pre-wrap; }
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>Shows the connection status to SGPro in red / green</string>
+    <string>Shows the connection status to SGPro in red / green / gray</string>
    </property>
    <property name="autoFillBackground">
     <bool>true</bool>
@@ -7561,8 +7823,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>altitudeBase</tabstop>
   <tabstop>azimuthBase</tabstop>
   <tabstop>checkUseBlindSolve</tabstop>
-  <tabstop>le_trackRA</tabstop>
-  <tabstop>le_trackDEC</tabstop>
   <tabstop>targetRMS</tabstop>
   <tabstop>le_analyseFileName</tabstop>
   <tabstop>le_horizonLimitLow</tabstop>
@@ -7624,7 +7884,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_mountPos1</tabstop>
   <tabstop>btn_setTrackingSolar</tabstop>
   <tabstop>btn_flipMount</tabstop>
-  <tabstop>btn_generateDSOPoints</tabstop>
  </tabstops>
  <resources/>
  <connections/>

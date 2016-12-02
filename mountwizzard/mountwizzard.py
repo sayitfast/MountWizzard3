@@ -381,12 +381,15 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
             self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
+            self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
+            self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
             self.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
             self.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
             self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
             self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
+            self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
@@ -431,6 +434,8 @@ class MountWizzardApp(QDialog, QObject):
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()
         self.config['AzimuthBase'] = self.ui.azimuthBase.value()
+        self.config['NumberGridPointsRow'] = self.ui.numberGridPointsRow.value()
+        self.config['NumberGridPointsCol'] = self.ui.numberGridPointsCol.value()
         self.config['WindowPositionX'] = self.pos().x()
         self.config['WindowPositionY'] = self.pos().y()
         self.config['ScalePlotRA'] = self.ui.scalePlotRA.value()
@@ -439,6 +444,7 @@ class MountWizzardApp(QDialog, QObject):
         self.config['AltitudeTimeChange'] = self.ui.altitudeTimeChange.value()
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
         self.config['NumberRunsTimeChange'] = self.ui.numberRunsTimeChange.value()
+        self.config['DelayTimeTimeChange'] = self.ui.delayTimeTimeChange.value()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName

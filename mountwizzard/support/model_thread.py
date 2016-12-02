@@ -332,9 +332,11 @@ class Model(QtCore.QThread):
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
 
     def generateGridPoints(self):                                                                                           # model points along dso path
+        row = int(float(self.ui.numberGridPointsRow.value()))
+        col = int(float(self.ui.numberGridPointsCol.value()))
         self.RefinementPoints = []                                                                                          # clear point list
-        for az in range(0, 360, 30):                                                                                        # make point for all azimuth
-            for alt in range(20, 90, 10):                                                                                   # make point for all altitudes
+        for az in range(5, 360, int(360 / col)):                                                                            # make point for all azimuth
+            for alt in range(10, 90, int(90 / row)):                                                                        # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             time.sleep(.05)
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
@@ -388,9 +390,9 @@ class Model(QtCore.QThread):
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runTimeChangeModel(self):
-        settlingTime = int(float(self.ui.settlingTime.value()) * 5)
-        points = []
-        for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):
+        settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
+        points = []                                                                                                         # clear the points
+        for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):                                                # generate the points
             points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), QGraphicsTextItem('')))
         self.modelAnalyseData = self.runModel('TimeChange', points, settlingTime)                                           # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
@@ -574,7 +576,7 @@ class Model(QtCore.QThread):
                         self.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
-                self.LogQueue.put('\tWait mount settling time {0:d} second(s) '.format(settlingTime))                       # Gui Output
+                self.LogQueue.put('\tWait mount settling / delay time {0:d} second(s) '.format(settlingTime))               # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:
                     time.sleep(1)

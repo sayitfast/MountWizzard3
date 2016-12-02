@@ -174,6 +174,8 @@ class Mount(QtCore.QThread):
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
                     return reply.rstrip('#').strip()                                                                        # return the value
+                    if command == 'CMS':
+                        self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
                     return ''                                                                                               # nothing
         else:
