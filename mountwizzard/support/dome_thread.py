@@ -32,12 +32,12 @@ class Dome(QtCore.QThread):
         self.connected = 2
         self.ascom = None                                                                                                   # placeholder for ascom driver object
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
-        self.driverName = 'DomeSim.Dome'                                                                                    # driver object name
+        self.driverName = ''                                                                                                # driver object name
         self.slewing = False
         self.counter = 0
 
     def run(self):                                                                                                          # runnable for doing the work
-        pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
+        pythoncom.CoInitialize()                                                                                            # needed for doing CO objects in threads
         self.connected = 0                                                                                                  # set connection flag for stick itself
         self.counter = 0
         while True:                                                                                                         # main loop for stick thread

@@ -1,4 +1,7 @@
 # Changelog:
+1.0.15
+- setting default installation without dome
+
 1.0.14
 - adaption for Time Flexure -> Delay time
 - adding mor option for Grid points
