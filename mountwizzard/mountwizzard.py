@@ -183,6 +183,8 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModel)
         self.ui.btn_runTimeChangeModel.clicked.connect(self.runTimeChangeModel)
         self.ui.btn_cancelTimeChangeModel.clicked.connect(self.cancelTimeChangeModel)
+        self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
+        self.ui.btn_cancelHystereseModel.clicked.connect(self.cancelHystereseModel)
         self.ui.btn_runPlotAnalyse.clicked.connect(self.runPlotAnalyse)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
@@ -329,7 +331,7 @@ class MountWizzardApp(QDialog, QObject):
             text_item.setDefaultTextColor(self.whiteColor)
             text_item.setPos(x+1, y+1)
             scene.addItem(text_item)
-            points[i] = (p[0], p[1], item)                                                                                  # storing the objects in the list
+            points[i] = (p[0], p[1], item, True)                                                                            # storing the objects in the list
         scene = constructHorizon(scene, horizon, height, width, border)
         pen = QPen(self.pointerColor, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
@@ -390,6 +392,7 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
             self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
             self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
+            self.ui.altitudeMinHysterese.setValue(self.config['AltitudeMinHysterese'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
@@ -445,6 +448,7 @@ class MountWizzardApp(QDialog, QObject):
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
         self.config['NumberRunsTimeChange'] = self.ui.numberRunsTimeChange.value()
         self.config['DelayTimeTimeChange'] = self.ui.delayTimeTimeChange.value()
+        self.config['AltitudeMinHysterese'] = self.ui.altitudeMinHysterese.value()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
@@ -871,6 +875,12 @@ class MountWizzardApp(QDialog, QObject):
 
     def cancelTimeChangeModel(self):
         self.model.signalModelCommand.emit('CancelTimeChangeModel')
+
+    def runHystereseModel(self):
+        self.model.signalModelCommand.emit('RunHystereseModel')
+
+    def cancelHystereseModel(self):
+        self.model.signalModelCommand.emit('CancelHystereseModel')
 
     def runPlotAnalyse(self):
         data = self.analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file

@@ -97,6 +97,12 @@ class Model(QtCore.QThread):
                     self.runTimeChangeModel()                                                                               #
                     self.ui.btn_runTimeChangeModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
                     self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                elif self.command == 'RunHystereseModel':                                                                   #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_runHystereseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.runHystereseModel()                                                                                #
+                    self.ui.btn_runHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                    self.ui.btn_cancelHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')  # button back to default color
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
                     self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(42, 130, 218)')
@@ -159,6 +165,10 @@ class Model(QtCore.QThread):
                 self.cancel = True                                                                                          #
                 self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: red')                                       # reset color of button
             elif command == 'CancelTimeChangeModel':                                                                        #
+                self.command = ''                                                                                           #
+                self.cancel = True                                                                                          #
+                self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: red')                                    # reset color of button
+            elif command == 'CancelHystereseModel':                                                                         #
                 self.command = ''                                                                                           #
                 self.cancel = True                                                                                          #
                 self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: red')                                    # reset color of button
@@ -393,9 +403,30 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
         points = []                                                                                                         # clear the points
         for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):                                                # generate the points
-            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), QGraphicsTextItem('')))
+            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), QGraphicsTextItem(''), True))
         self.modelAnalyseData = self.runModel('TimeChange', points, settlingTime)                                           # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
+        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
+        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+
+    def runHystereseModel(self):
+        settlingTime = int(float(self.ui.settlingTime.value()))                                                             # using settling time also for waiting / delay
+        points = [(270, 90, QGraphicsTextItem(''), True),
+                  (000, 20, QGraphicsTextItem(''), False),
+                  (270, 90, QGraphicsTextItem(''), True),
+                  (90, 20, QGraphicsTextItem(''), False),
+                  (270, 90, QGraphicsTextItem(''), True),
+                  (180, 20, QGraphicsTextItem(''), False),
+                  (270, 90, QGraphicsTextItem(''), True),
+                  (90, 90, QGraphicsTextItem(''), True),
+                  (181, 20, QGraphicsTextItem(''), False),
+                  (90, 90, QGraphicsTextItem(''), True),
+                  (270, 20, QGraphicsTextItem(''), False),
+                  (90, 90, QGraphicsTextItem(''), True),
+                  (359, 20, QGraphicsTextItem(''), False),
+                  (90, 90, QGraphicsTextItem(''), True)]
+        self.modelAnalyseData = self.runModel('Hysterese', points, settlingTime)                                            # run the analyse
+        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_hysterese.txt'                                         # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
@@ -407,11 +438,11 @@ class Model(QtCore.QThread):
         if self.dome.connected == 1:                                                                                        # if there is a dome, should be slewed as well
             self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
             self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
-            time.sleep(2.5)                                                                                                 # wait for mount to start
+            time.sleep(1)                                                                                                   # wait for mount to start
             while self.mount.slewing or self.dome.slewing:                                                                  # wait for stop slewing mount or dome not slewing
                 time.sleep(.1)                                                                                              # loop time
         else:
-            time.sleep(2.5)                                                                                                 # wait for mount to start
+            time.sleep(1)                                                                                                   # wait for mount to start
             while self.mount.slewing:                                                                                       # wait for tracking = 7 or dome not slewing
                 time.sleep(.1)                                                                                              # loop time
 
@@ -561,7 +592,7 @@ class Model(QtCore.QThread):
                           .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking should be on as well
-        for i, (p_az, p_alt, p_item) in enumerate(runPoints):                                                               # run through all model points
+        for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
@@ -583,11 +614,12 @@ class Model(QtCore.QThread):
                     timeCounter -= 1
                     self.LogQueue.put(' {0:d}'.format(timeCounter))
                 self.LogQueue.put('\n')
+            if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = true ?
                 if self.ui.checkFastDownload.isChecked():                                                                   # if camera is supporting high speed download
                     speed = 'HiSpeed'                                                                                       # we can use it for improved modeling speed
                 else:                                                                                                       # otherwise
                     speed = 'Normal'                                                                                        # standard speed
-                if modeltype in ['TimeChange']:
+                if modeltype in ['TimeChange', 'Hysterese']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                     time.sleep(0.2)
                 suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p_az, p_alt,
@@ -620,8 +652,7 @@ class Model(QtCore.QThread):
                         err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))  # generating debug output
                         self.results.append((i, p_az, p_alt, ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                 # adding point for matrix
-                        if modeltype in ['Base', 'Refinement']:
-                            p_item.setVisible(False)                                                                        # set the relating modeled point invisible
+                        p_item.setVisible(False)                                                                            # set the relating modeled point invisible
                         self.LogQueue.put('\t\t\tRA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
                                           'DECdiff: {5:2.1f}  Took: {6:3.1f}s'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))    # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '

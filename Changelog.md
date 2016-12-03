@@ -2,6 +2,7 @@
 1.0.14
 - adaption for Time Flexure -> Delay time
 - adding mor option for Grid points
+- adding hysterese analyse
 
 1.0.13
 - turning on tracking while imaging in analyse path
