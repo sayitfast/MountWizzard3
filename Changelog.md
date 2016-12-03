@@ -1,10 +1,14 @@
 # Changelog:
+1.0.16
+- changed waiting for start slewing to avoid a race condition
+
 1.0.15
 - setting default installation without dome
+- increasing wit time for slewing to 2.2 s
 
 1.0.14
 - adaption for Time Flexure -> Delay time
-- adding mor option for Grid points
+- adding more option for Grid points
 - adding hysterese analyse
 
 1.0.13
