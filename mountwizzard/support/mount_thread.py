@@ -27,7 +27,7 @@ from support.sgpro import SGPro
 
 
 class Mount(QtCore.QThread):
-    logger = logging.getLogger('Mount')                                                                                     # enable logging
+    logger = logging.getLogger(__name__)                                                                                     # enable logging
     signalMountConnected = QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
     signalMountAzAltPointer = QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
 

@@ -22,7 +22,7 @@ import pythoncom
 
 class Stick(QtCore.QThread):
     # signals for communication to main Thread / GUI
-    logger = logging.getLogger('stick_thread:')
+    logger = logging.getLogger(__name__)
     signalStickData = QtCore.pyqtSignal([dict], name='stickData')
     signalStickConnected = QtCore.pyqtSignal([bool], name='stickConnected')
 
