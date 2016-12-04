@@ -898,12 +898,15 @@ class MountWizzardApp(QDialog, QObject):
             else:
                 self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText() + text)                                     # otherwise add text at the end
             self.ui.modellingLog.moveCursor(QTextCursor.End)                                                                # and move cursor up
+            self.modelLogQueue.task_done()
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
             data = self.mountDataQueue.get()                                                                                # get the data from the queue
             self.fillMountData(data)                                                                                        # write dta in gui
+            self.mountDataQueue.task_done()
         while not self.messageQueue.empty():                                                                                # do i have error messages ?
             text = self.messageQueue.get()                                                                                  # get the message
-            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')                                                                               # write it to window
+            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')                                    # write it to window
+            self.messageQueue.task_done()
         self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic

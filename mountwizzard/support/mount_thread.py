@@ -125,6 +125,7 @@ class Mount(QtCore.QThread):
                         self.flipMount(self.driver_real)
                     else:
                         self.sendCommand(data, self.driver_real)                                                            # doing the command directly to mount (no method necessary)
+                    self.commandQueue.task_done()
                 else:                                                                                                       # if not connected, the we should do this
                     if self.counter == 0:                                                                                   # jobs once done at the beginning
                         self.getStatusOnce(self.driver_real)                                                                # task once
@@ -299,8 +300,8 @@ class Mount(QtCore.QThread):
             self.getAlignmentModel(real)
 
     def backupModel(self, real):
-        self.sendCommand('modeldel0BACKUP', real)                                                                                 # send delete command store in hand controller
-        reply = self.sendCommand('modelsv0BACKUP', real)                                                                          # send store command for hand controller
+        self.sendCommand('modeldel0BACKUP', real)                                                                           # send delete command store in hand controller
+        reply = self.sendCommand('modelsv0BACKUP', real)                                                                    # send store command for hand controller
         if reply == '1':                                                                                                    # if stored, than OK
             self.messageQueue.put('Actual Model saved as BACKUP')                                                           # do message to gui
         self.logger.debug('backupModel    -> Reply: {0}'.format(reply))                                                     # log it

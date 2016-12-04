@@ -102,7 +102,7 @@ class Model(QtCore.QThread):
                     self.ui.btn_runHystereseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
                     self.runHystereseModel()                                                                                #
                     self.ui.btn_runHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    self.ui.btn_cancelHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')  # button back to default color
+                    self.ui.btn_cancelHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')      # button back to default color
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
                     self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(42, 130, 218)')
