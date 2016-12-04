@@ -55,6 +55,7 @@ class Weather(QtCore.QThread):
                 try:
                     self.ascom = Dispatch('ASCOM.OpenWeatherMap.Observingconditions')                                       # load driver
                     self.connected = True                                                                                   # set connected
+                    self.ascom.connected = True                                                                             # enables data connection
                 except Exception as e:                                                                                      # general exception
                     self.messageQueue.put('Driver COM Error in dispatchWeather')                                            # write to gui
                     self.logger.error('run Weather    -> general exception in connectWeather: {0}'.format(e))               # write to log

@@ -52,6 +52,7 @@ class Stick(QtCore.QThread):
             else:                                                                                                           # otherwise try to connect
                 try:
                     self.ascom = Dispatch('ASCOM.Stickstation.Observingconditions')                                         # load driver
+                    self.ascom.connected = True                                                                             # enables data transfer
                     self.connected = True                                                                                   # set status to connected
                 except Exception as e:                                                                                      # if general exception
                     self.messageQueue.put('Driver COM Error in dispatchStick')                                              # write to gui

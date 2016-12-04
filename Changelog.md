@@ -1,4 +1,7 @@
 # Changelog:
+1.0.17
+- bugfix for not connecting stickstation directly
+
 1.0.16
 - changed waiting for start slewing to avoid a race condition
 
