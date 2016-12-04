@@ -7,7 +7,7 @@
 
 1.0.15
 - setting default installation without dome
-- increasing wit time for slewing to 2.2 s
+- increasing wait time for slewing to 2.2 s
 
 1.0.14
 - adaption for Time Flexure -> Delay time

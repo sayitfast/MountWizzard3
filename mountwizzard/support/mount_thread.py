@@ -174,7 +174,7 @@ class Mount(QtCore.QThread):
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
                     return reply.rstrip('#').strip()                                                                        # return the value
-                    if command == 'CMS':
+                    if command == 'CMS':    # TODO reply values to queuing mechanism
                         self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
                     return ''                                                                                               # nothing
@@ -211,7 +211,7 @@ class Mount(QtCore.QThread):
                         stat = 0
                     else:
                         stat = 7
-                jd = self.ascom.SiderealTime + 2440587.5
+                jd = self.ascom.SiderealTime + 2440587.5    # TODO: better time simulation
                 pierside = self.ascom.SideOfPier
                 if self.ascom.Slewing:
                     slew = 1
