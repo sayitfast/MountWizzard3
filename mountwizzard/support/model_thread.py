@@ -30,7 +30,7 @@ from support.analyse import Analyse
 
 
 class Model(QtCore.QThread):
-    logger = logging.getLogger('Model')                                                                                     # logging enabling
+    logger = logging.getLogger(__name__)                                                                                    # logging enabling
     signalModelConnected = QtCore.pyqtSignal(bool, name='ModelConnected')                                                   # message for errors
     signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                      # commands to sgpro thread
     signalModelAzAltPointer = QtCore.pyqtSignal([float, float], name='ModelAzAltPointer')                                   # setting az/alt pointer in charts

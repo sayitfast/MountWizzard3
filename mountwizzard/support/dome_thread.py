@@ -22,7 +22,7 @@ import pythoncom
 
 class Dome(QtCore.QThread):
     # signals for communication to main Thread / GUI
-    logger = logging.getLogger('dome_thread:')
+    logger = logging.getLogger(__name__)
     signalDomeConnected = QtCore.pyqtSignal([int], name='domeConnected')
     signalDomPointer = QtCore.pyqtSignal([float], name='domePointer')
 

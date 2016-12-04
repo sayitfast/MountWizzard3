@@ -21,7 +21,7 @@ import pythoncom
 
 
 class Weather(QtCore.QThread):
-    logger = logging.getLogger('weather_thread:')                                                                           # get logger for  problems
+    logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
     signalWeatherData = QtCore.pyqtSignal([dict], name='weatherData')                                                       # single for data transfer to gui
     signalWeatherConnected = QtCore.pyqtSignal([bool], name='weatherConnected')                                             # signal for connection status
 

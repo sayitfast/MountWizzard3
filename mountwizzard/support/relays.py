@@ -18,7 +18,7 @@ from urllib import request
 
 
 class Relays:
-    logger = logging.getLogger('Relays')                                                                                    # logging enabling
+    logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
     def __init__(self, ui):
         self.ui = ui

@@ -19,7 +19,7 @@ import json
 
 
 class SGPro:
-    logger = logging.getLogger('SGPro')                                         # logging enabling
+    logger = logging.getLogger(__name__)                                         # logging enabling
 
     def __init__(self):
         self.ipSGProBase = 'http://localhost:59590'
