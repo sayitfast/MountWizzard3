@@ -171,7 +171,7 @@ class Model(QtCore.QThread):
             elif command == 'CancelHystereseModel':                                                                         #
                 self.command = ''                                                                                           #
                 self.cancel = True                                                                                          #
-                self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: red')                                    # reset color of button
+                self.ui.btn_cancelHystereseModel.setStyleSheet('background-color: red')                                     # reset color of button
         else:
             self.command = command                                                                                          # passing the command to main loop of thread
 
