@@ -21,7 +21,7 @@ import pythoncom
 
 
 class Weather(QtCore.QThread):
-    logger = logging.getLogger('weather_thread:')                                                                           # get logger for  problems
+    logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
     signalWeatherData = QtCore.pyqtSignal([dict], name='weatherData')                                                       # single for data transfer to gui
     signalWeatherConnected = QtCore.pyqtSignal([bool], name='weatherConnected')                                             # signal for connection status
 
@@ -50,18 +50,15 @@ class Weather(QtCore.QThread):
                     self.signalWeatherData.emit(data)                                                                       # send data
                 except pythoncom.com_error as e:                                                                            # error handling
                     self.messageQueue.put('Driver win32com error in connectWeather')                                        # write to gui
-                    self.logger.error('run Weather-> win32com error in connectWeather: {0}'.format(e))                      # write to log
+                    self.logger.error('run Weather    -> win32com error in connectWeather: {0}'.format(e))                  # write to log
             else:
                 try:
                     self.ascom = Dispatch('ASCOM.OpenWeatherMap.Observingconditions')                                       # load driver
                     self.connected = True                                                                                   # set connected
-                except pythoncom.com_error as e:                                                                            # win32com problem
-                    self.messageQueue.put('Driver COM Error in dispatchWeather')                                            # write to gui
-                    self.logger.error('run Weather ->  win32com error in connectWeather: {0}'.format(e))                    # write to log
-                    self.connected = False                                                                                  # set to disconnected
+                    self.ascom.connected = True                                                                             # enables data connection
                 except Exception as e:                                                                                      # general exception
                     self.messageQueue.put('Driver COM Error in dispatchWeather')                                            # write to gui
-                    self.logger.error('run Weather -> general exception in connectWeather: {0}'.format(e))                  # write to log
+                    self.logger.error('run Weather    -> general exception in connectWeather: {0}'.format(e))               # write to log
                     self.connected = False                                                                                  # set to disconnected
                 finally:                                                                                                    # continue to work
                     pass
@@ -76,13 +73,9 @@ class Weather(QtCore.QThread):
     def setupDriver(self):                                                                                                  # ascom driver dialog
         try:
             self.ascom.SetupDialog()                                                                                        # run ascom setup Dialog
-        except pythoncom.com_error as e:                                                                                    # exception handling
-            self.messageQueue.put('Driver COM Error in setupWeather')                                                       # write to gui
-            self.logger.error('setupDriver Weather -> win32com error:{0}'.format(e))                                        # write to log
-            self.connected = False                                                                                          # set to disconnected
         except Exception as e:                                                                                              # general exception
             self.messageQueue.put('Driver Exception in setupWeather')                                                       # write to gui
-            self.logger.error('setupDriver Weather -> general exception:{0}'.format(e))                                     # write to log
+            self.logger.error('setupDriverWeather -> general exception:{0}'.format(e))                                      # write to log
             self.connected = False                                                                                          # set to disconnected
         finally:                                                                                                            # continue working
             return

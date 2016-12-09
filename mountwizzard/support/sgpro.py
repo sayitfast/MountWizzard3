@@ -19,7 +19,7 @@ import json
 
 
 class SGPro:
-    logger = logging.getLogger('SGPro')                                         # logging enabling
+    logger = logging.getLogger(__name__)                                         # logging enabling
 
     def __init__(self):
         self.ipSGProBase = 'http://localhost:59590'
@@ -56,7 +56,7 @@ class SGPro:
         try:
             reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
         except Exception as e:
-            self.logger.error('checkConnection -> error: {0}'.format(e))
+            self.logger.error('checkConnection-> error: {0}'.format(e))
         finally:
             if str(reply) == '200':
                 if self.SgGetDeviceStatus('Camera'):

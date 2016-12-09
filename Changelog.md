@@ -1,4 +1,42 @@
 # Changelog:
+1.0.17
+- bugfix for not connecting stickstation directly
+
+1.0.16
+- changed waiting for start slewing to avoid a race condition
+
+1.0.15
+- setting default installation without dome
+- increasing wait time for slewing to 2.2 s
+
+1.0.14
+- adaption for Time Flexure -> Delay time
+- adding more option for Grid points
+- adding hysterese analyse
+
+1.0.13
+- turning on tracking while imaging in analyse path
+- show dome status in gray, when no dome driver selected
+- checked for PlateSolve2: should run
+- astronomy.net should work
+
+1.0.12
+- correction readme install
+- bugfix model run already modeled points
+
+1.0.11
+- bugfix in driver selection
+
+1.0.10
+- analyse for time dependant deviations of mount
+- implemented showing position and movement of dome if present
+
+1.0.9
+- removed extended logging
+
+1.08
+- bugfixing dome support with Geremia
+
 1.07
 - bugfixes dome support
 
