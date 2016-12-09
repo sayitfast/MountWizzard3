@@ -92,39 +92,39 @@ class Mount(QtCore.QThread):
             self.signalMountConnected.emit(self.connected)                                                                  # sending the connection status
             if self.connected:                                                                                              # when connected, starting the work
                 if not self.commandQueue.empty():                                                                           # checking if in queue is something to do
-                    data = self.commandQueue.get()                                                                          # if yes, getting the work command
-                    if data == 'GetAlignmentModel':                                                                         # checking which command was sent
+                    command = self.commandQueue.get()                                                                       # if yes, getting the work command
+                    if command == 'GetAlignmentModel':                                                                      # checking which command was sent
                         self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(42, 130, 218)')
                         self.getAlignmentModel(self.driver_real)                                                            # running the appropriate method
                         self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    elif data == 'ClearAlign':                                                                              #
+                    elif command == 'ClearAlign':                                                                           #
                         self.sendCommand('delalig', self.driver_real)                                                       #
-                    elif data == 'RunTargetRMSAlignment':
+                    elif command == 'RunTargetRMSAlignment':
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet('background-color: rgb(42, 130, 218)')
                         self.runTargetRMSAlignment(self.driver_real)
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    elif data == 'BackupModel':
+                    elif command == 'BackupModel':
                         self.ui.btn_backupModel.setStyleSheet('background-color: rgb(42, 130, 218)')  # button blue
                         self.backupModel(self.driver_real)
                         self.ui.btn_backupModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')  # button to default back
-                    elif data == 'RestoreModel':
+                    elif command == 'RestoreModel':
                         self.ui.btn_restoreModel.setStyleSheet('background-color: rgb(42, 130, 218)')
                         self.restoreModel(self.driver_real)
                         self.ui.btn_restoreModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    elif data == 'LoadSimpleModel':
+                    elif command == 'LoadSimpleModel':
                         self.ui.btn_loadSimpleModel.setStyleSheet('background-color: rgb(42, 130, 218)')
                         self.loadSimpleModel(self.driver_real)
                         self.ui.btn_loadSimpleModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    elif data == 'SaveSimpleModel':
+                    elif command == 'SaveSimpleModel':
                         self.ui.btn_saveSimpleModel.setStyleSheet('background-color: rgb(42, 130, 218)')
                         self.saveSimpleModel(self.driver_real)
                         self.ui.btn_saveSimpleModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    elif data == 'SetRefractionParameter':
+                    elif command == 'SetRefractionParameter':
                         self.setRefractionParameter(self.driver_real)
-                    elif data == 'FLIP':
+                    elif command == 'FLIP':
                         self.flipMount(self.driver_real)
                     else:
-                        self.sendCommand(data, self.driver_real)                                                            # doing the command directly to mount (no method necessary)
+                        self.sendCommand(command, self.driver_real)                                                         # doing the command directly to mount (no method necessary)
                     self.commandQueue.task_done()
                 else:                                                                                                       # if not connected, the we should do this
                     if self.counter == 0:                                                                                   # jobs once done at the beginning

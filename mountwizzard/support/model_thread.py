@@ -573,6 +573,7 @@ class Model(QtCore.QThread):
         self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
                                                                      self.mount.transform.DecTopocentric))                  # debug output
         self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
+        # TODO: implement eventloop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints, settlingTime):                                                                 # model run routing
