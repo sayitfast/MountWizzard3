@@ -462,22 +462,23 @@ class Model(QtCore.QThread):
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
                 return False, 0, 0, 0, 0                                                                                    # default without subframe
 
-    def capturingImage(self, index, jd, ra, dec, az, alt, sub, sX, sY, oX, oY, speed):                                      # capturing image
+    def capturingImage(self, index, jd, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed):                                      # capturing image
         self.LogQueue.put('Capturing image for model point {0:2d}...'.format(index + 1))                                    # gui output
         guid = ''                                                                                                           # define guid
         mes = ''                                                                                                            # define message
         jd = float(jd)
+        delta_t = 0.0
         if not self.ui.checkTestWithoutCamera.isChecked():                                                                  # if it's not simulation, we start imaging
             self.logger.debug('capturingImage -> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
-                              .format(self.ui.cameraBin.value(), int(float(self.ui.isoSetting.value())),
-                                      self.ui.cameraExposure.value(),
+                              .format(binning, isoMode, exposure,
                                       self.ui.le_imageDirectoryName.text() + '/' + self.captureFile))                       # write logfile
-            suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=self.ui.cameraBin.value(),
-                                                       exposureLength=self.ui.cameraExposure.value(),
-                                                       isoMode=int(float(self.ui.isoSetting.value())),
+            suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=binning,
+                                                       exposureLength=exposure,
+                                                       isoMode=isoMode,
                                                        gain='High', speed=speed, frameType='Light',
                                                        path=self.ui.le_imageDirectoryName.text() + '/' + self.captureFile,
                                                        useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)              # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
+            time_start = time.time()                                                                                        # now the picture ist to be shot
         else:                                                                                                               # otherwise its simulation
             suc = True                                                                                                      # success is always true
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
@@ -488,6 +489,8 @@ class Model(QtCore.QThread):
                         break                                                                                               # stopping the loop
                     else:                                                                                                   # otherwise
                         time.sleep(0.5)                                                                                     # wait for 0.5 seconds
+                time_stop = time.time()                                                                                     # measuring the end of the capturing and downloading
+                delta_t = (time_stop - time_start) - exposure / 2
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))       # debug output
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
@@ -507,8 +510,9 @@ class Model(QtCore.QThread):
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
-                return True, 'success', imagepath                                                                           # return true message imagepath
+                return True, 'success', imagepath, delta_t                                                                  # return true message imagepath
             else:                                                                                                           # If we test without camera, we need to take pictures of test
+                delta_t = 0
                 imagepath = self.ui.le_imageDirectoryName.text() + '/' + self.captureFile                                   # set imagepath to default
                 if os.path.isfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index)):                             # check existing image file
                     copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index), imagepath)                        # copy testfile instead of imaging
@@ -518,9 +522,9 @@ class Model(QtCore.QThread):
                     else:
                         copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(0), imagepath)                        # copy first testfile instead of imaging
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
-                return True, 'testsetup', imagepath                                                                         # return true test message imagepath
+                return True, 'testsetup', imagepath, delta_t                                                                         # return true test message imagepath
         else:                                                                                                               # otherwise
-            return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
+            return False, mes, '', delta_t                                                                                           # image capturing was failing, writing message from SGPro back
 
     def solveImage(self, modeltype, blind, imagepath, pixelSize, cameraBin, focalLength):                                   # solving image based on information inside the FITS files, no additional info
         hint = pixelSize * 206.6 * cameraBin / focalLength                                                                  # calculating hint for solve
@@ -625,8 +629,13 @@ class Model(QtCore.QThread):
                 if modeltype in ['TimeChange', 'Hysterese']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                     time.sleep(0.2)
-                suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p_az, p_alt,
-                                                          self.sub, self.sizeX, self.sizeY, self.offX, self.offY, speed)    # capturing image and store position (ra,dec), time, (az,alt)
+                binning = int(float(self.ui.cameraBin.value()))
+                exposure = int(float(self.ui.cameraExposure.value()))
+                isoMode = int(float(self.ui.isoSetting.value()))
+                suc, mes, imagepath, delta_t = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec,
+                                                                   p_az, p_alt, binning, exposure, isoMode, self.sub,
+                                                                   self.sizeX, self.sizeY,
+                                                                   self.offX, self.offY, speed)                             # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
