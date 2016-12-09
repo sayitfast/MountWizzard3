@@ -3,7 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Changelog.md" afterPath="$PROJECT_DIR$/Changelog.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_ui.ui" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -15,20 +20,47 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CreatePatchCommitExecutor">
-    <option name="PATCH_PATH" value="" />
+    <option name="PATCH_PATH" value="C:\Users\mw\Projects\mountwizzard" />
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="mountwizzard" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
+    <leaf>
+      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="503" column="6" lean-forward="false" selection-start-line="503" selection-start-column="6" selection-end-line="503" selection-end-column="6" />
+            <state relative-caret-position="684">
+              <caret line="650" column="0" lean-forward="false" selection-start-line="650" selection-start-column="0" selection-end-line="650" selection-end-column="0" />
+              <folding>
+                <element signature="e#310#324#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="setup.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="19" lean-forward="false" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="440">
+              <caret line="186" column="32" lean-forward="true" selection-start-line="186" selection-start-column="32" selection-end-line="186" selection-end-column="32" />
+              <folding>
+                <element signature="e#19121#19283#0" expanded="false" />
+                <element signature="e#19335#19431#0" expanded="false" />
+                <element signature="e#19486#19614#0" expanded="false" />
+                <element signature="e#19646#21212#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -44,11 +76,25 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>data</find>
+      <find>sort</find>
+      <find>sendCommand</find>
+      <find>self.mount.sendCommand</find>
+      <find>MA</find>
+      <find>MS</find>
+      <find>Sr</find>
+      <find>without</find>
+      <find>checkTestWithoutM</find>
+      <find>park</find>
+      <find>requestStatus</find>
+      <find>index</find>
+      <find>cancelA</find>
+      <find>waitSett</find>
+      <find>Tracking</find>
+      <find>stopTr</find>
+      <find>self.ui.le_domeConnected.setStyleSheet</find>
+      <find>self.ui.le_domeConnected</find>
+      <find>TimeChange</find>
     </findStrings>
-    <replaceStrings>
-      <replace>command</replace>
-    </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="SYNC" />
@@ -64,19 +110,20 @@
         <option value="$PROJECT_DIR$/MANIFEST.in" />
         <option value="$PROJECT_DIR$/mountwizzard/wizzardmain.py" />
         <option value="$PROJECT_DIR$/mountwizzard/__main__.py" />
+        <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
+        <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/relays.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/sgpro.py" />
-        <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
         <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/Changelog.md" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       </list>
     </option>
@@ -84,8 +131,8 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="width" value="2576" />
+    <option name="height" value="1576" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -110,7 +157,7 @@
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
-      <showMembers />
+      <showMembers ProjectPane="true" />
       <showModules />
       <showLibraryContents />
       <hideEmptyPackages />
@@ -122,7 +169,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -163,6 +209,42 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="tests" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="testimages" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="support" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -170,12 +252,13 @@
         </subPane>
       </pane>
       <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
-    <property name="settings.editor.splitter.proportion" value="0.2" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/Programs/Python/Python35/Scripts/pyuic5.exe" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="full.screen.before.presentation.mode" value="false" />
   </component>
   <component name="PyConsoleOptionsProvider">
     <option name="myPythonConsoleState">
@@ -198,6 +281,117 @@
       <recent name="C:\Users\mw\Projects\mountwizzard" />
       <recent name="C:\Users\mw\Projects\mountwizzard\mountwizzard" />
     </key>
+  </component>
+  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
+    <UpdatedFiles>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Updated from server" />
+        <option name="myStatusName" value="Changed on server" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="CHANGED_ON_SERVER" />
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Updated" />
+          <option name="myStatusName" value="Changed" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="UPDATED" />
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/.idea/workspace.xml</PATH>
+          <PATH vcs="Git" revision="">$PROJECT_DIR$/mountwizzard/support/model_thread.py</PATH>
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Created" />
+          <option name="myStatusName" value="Created" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="CREATED" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Deleted" />
+          <option name="myStatusName" value="Deleted" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="true" />
+          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
+        </FILE-GROUP>
+        <FILE-GROUP>
+          <option name="myUpdateName" value="Restored" />
+          <option name="myStatusName" value="Will be restored" />
+          <option name="mySupportsDeletion" value="false" />
+          <option name="myCanBeAbsent" value="false" />
+          <option name="myId" value="RESTORED" />
+        </FILE-GROUP>
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Modified" />
+        <option name="myStatusName" value="Modified" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MODIFIED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Skipped" />
+        <option name="myStatusName" value="Skipped" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SKIPPED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with conflicts" />
+        <option name="myStatusName" value="Will be merged with conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_CONFLICTS" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with tree conflicts" />
+        <option name="myStatusName" value="Merged with tree conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged with property conflicts" />
+        <option name="myStatusName" value="Will be merged with property conflicts" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Merged" />
+        <option name="myStatusName" value="Will be merged" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="MERGED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Not in repository" />
+        <option name="myStatusName" value="Not in repository" />
+        <option name="mySupportsDeletion" value="true" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="UNKNOWN" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally added" />
+        <option name="myStatusName" value="Locally added" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_ADDED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Locally removed" />
+        <option name="myStatusName" value="Locally removed" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="LOCALLY_REMOVED" />
+      </FILE-GROUP>
+      <FILE-GROUP>
+        <option name="myUpdateName" value="Switched" />
+        <option name="myStatusName" value="Switched" />
+        <option name="mySupportsDeletion" value="false" />
+        <option name="myCanBeAbsent" value="false" />
+        <option name="myId" value="SWITCHED" />
+      </FILE-GROUP>
+    </UpdatedFiles>
   </component>
   <component name="RunManager" selected="Python.MountWizzard">
     <configuration default="false" name="MountWizzard" type="PythonConfigurationType" factoryName="Python" temporary="true">
@@ -249,6 +443,28 @@
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittests in mountwizzard" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mountwizzard" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="mountwizzard" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="$PROJECT_DIR$/mountwizzard" />
+      <option name="TEST_TYPE" value="TEST_FOLDER" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
@@ -385,21 +601,72 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="3">
-      <item index="0" class="java.lang.String" itemvalue="Python.MountWizzard" />
-      <item index="1" class="java.lang.String" itemvalue="Python.sgpro" />
-      <item index="2" class="java.lang.String" itemvalue="Python.dome_thread" />
+    <configuration default="false" name="Unittests in mountwizzard (1)" type="tests" factoryName="Unittests" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mountwizzard" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="mountwizzard" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="$PROJECT_DIR$/mountwizzard" />
+      <option name="TEST_TYPE" value="TEST_FOLDER" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Unittests in mountwizzard (2)" type="tests" factoryName="Unittests" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="mountwizzard" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="$PROJECT_DIR$" />
+      <option name="TEST_TYPE" value="TEST_FOLDER" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <option name="PUREUNITTEST" value="true" />
+      <option name="PARAMS" value="" />
+      <option name="USE_PARAM" value="false" />
+      <method />
+    </configuration>
+    <list size="6">
+      <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard (1)" />
+      <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard (2)" />
+      <item index="2" class="java.lang.String" itemvalue="Python.MountWizzard" />
+      <item index="3" class="java.lang.String" itemvalue="Python.sgpro" />
+      <item index="4" class="java.lang.String" itemvalue="Python.dome_thread" />
+      <item index="5" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
     </list>
     <recent_temporary>
-      <list size="3">
+      <list size="4">
         <item index="0" class="java.lang.String" itemvalue="Python.MountWizzard" />
-        <item index="1" class="java.lang.String" itemvalue="Python.dome_thread" />
-        <item index="2" class="java.lang.String" itemvalue="Python.sgpro" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
+        <item index="2" class="java.lang.String" itemvalue="Python.dome_thread" />
+        <item index="3" class="java.lang.String" itemvalue="Python.sgpro" />
       </list>
     </recent_temporary>
   </component>
   <component name="ShelveChangesManager" show_recycled="false">
     <option name="remove_strategy" value="false" />
+  </component>
+  <component name="StructureViewFactory">
+    <option name="ACTIVE_ACTIONS" value=",SHOW_INHERITED" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -408,104 +675,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
-    </task>
-    <task id="LOCAL-00001" summary="reconfigure">
-      <created>1477860744120</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1477860744120</updated>
-    </task>
-    <task id="LOCAL-00002" summary=" Going to a first package step 1">
-      <created>1477912158205</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1477912158205</updated>
-    </task>
-    <task id="LOCAL-00003" summary="Step 2">
-      <created>1478033543579</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1478033543579</updated>
-    </task>
-    <task id="LOCAL-00004" summary="correction of distribution and imports">
-      <created>1478036020576</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1478036020577</updated>
-    </task>
-    <task id="LOCAL-00005" summary="corrected about directories to be installed">
-      <created>1478038446799</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1478038446799</updated>
-    </task>
-    <task id="LOCAL-00006" summary="corrected about directories to be installed">
-      <created>1478038482670</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1478038482670</updated>
-    </task>
-    <task id="LOCAL-00007" summary="corrected about directories to be installed">
-      <created>1478110766188</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1478110766188</updated>
-    </task>
-    <task id="LOCAL-00008" summary="finalizing the installer">
-      <created>1478114258041</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1478114258041</updated>
-    </task>
-    <task id="LOCAL-00009" summary="update the readme for the package install">
-      <created>1478114635182</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1478114635182</updated>
-    </task>
-    <task id="LOCAL-00010" summary="update the readme for the package install">
-      <created>1478116252803</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1478116252803</updated>
-    </task>
-    <task id="LOCAL-00011" summary="corrected modeling with coordinate transform and mark point as modeled (remove them)">
-      <created>1478121846591</created>
-      <option name="number" value="00011" />
-      <option name="presentableId" value="LOCAL-00011" />
-      <option name="project" value="LOCAL" />
-      <updated>1478121846591</updated>
-    </task>
-    <task id="LOCAL-00012" summary="corrected modeling with coordinate transform and mark point as modeled (remove them)">
-      <created>1478122559360</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1478122559360</updated>
-    </task>
-    <task id="LOCAL-00013" summary="Editor file checking to green&#10;Readme update to package and detailed install">
-      <created>1478198224182</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1478198224182</updated>
-    </task>
-    <task id="LOCAL-00014" summary="update docu">
-      <created>1478202503732</created>
-      <option name="number" value="00014" />
-      <option name="presentableId" value="LOCAL-00014" />
-      <option name="project" value="LOCAL" />
-      <updated>1478202503732</updated>
     </task>
     <task id="LOCAL-00015" summary="update docu">
       <created>1478202617019</created>
@@ -668,72 +837,225 @@
       <option name="project" value="LOCAL" />
       <updated>1479669240158</updated>
     </task>
-    <task id="LOCAL-00038" summary="update readme">
-      <created>1479669302230</created>
+    <task id="LOCAL-00038" summary="errorhandling for analyse">
+      <created>1479933785104</created>
       <option name="number" value="00038" />
       <option name="presentableId" value="LOCAL-00038" />
       <option name="project" value="LOCAL" />
-      <updated>1479669302230</updated>
+      <updated>1479933785104</updated>
     </task>
-    <task id="LOCAL-00039" summary="update readme">
-      <created>1479801323874</created>
+    <task id="LOCAL-00039" summary="remove sorting base point (because there were anyway only three)">
+      <created>1480013507630</created>
       <option name="number" value="00039" />
       <option name="presentableId" value="LOCAL-00039" />
       <option name="project" value="LOCAL" />
-      <updated>1479801323874</updated>
+      <updated>1480013507630</updated>
     </task>
-    <task id="LOCAL-00040" summary="update readme">
-      <created>1479801426473</created>
+    <task id="LOCAL-00040" summary="bugfixing dome support">
+      <created>1480196061058</created>
       <option name="number" value="00040" />
       <option name="presentableId" value="LOCAL-00040" />
       <option name="project" value="LOCAL" />
-      <updated>1479801426473</updated>
+      <updated>1480196061058</updated>
     </task>
-    <task id="LOCAL-00041" summary="bugfix slewing dome and stop">
-      <created>1479803199700</created>
+    <task id="LOCAL-00041" summary="moving to refactor fo testing. also simulator for telescope">
+      <created>1480259390024</created>
       <option name="number" value="00041" />
       <option name="presentableId" value="LOCAL-00041" />
       <option name="project" value="LOCAL" />
-      <updated>1479803199700</updated>
+      <updated>1480259390024</updated>
     </task>
-    <task id="LOCAL-00042" summary="bugfix slewing dome and stop">
-      <created>1479929526068</created>
+    <task id="LOCAL-00042" summary="bugfixes an removal of dome slave select,because it's not needed">
+      <created>1480261287638</created>
       <option name="number" value="00042" />
       <option name="presentableId" value="LOCAL-00042" />
       <option name="project" value="LOCAL" />
-      <updated>1479929526068</updated>
+      <updated>1480261287638</updated>
     </task>
-    <task id="LOCAL-00043" summary="update variable data with command">
-      <created>1481296720686</created>
+    <task id="LOCAL-00043" summary="bugfix">
+      <created>1480262683268</created>
       <option name="number" value="00043" />
       <option name="presentableId" value="LOCAL-00043" />
       <option name="project" value="LOCAL" />
-      <updated>1481296720686</updated>
+      <updated>1480262683268</updated>
     </task>
-    <option name="localTasksCounter" value="44" />
+    <task id="LOCAL-00044" summary="refactoring dome_thread for data exchange">
+      <created>1480262987440</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1480262987440</updated>
+    </task>
+    <task id="LOCAL-00045" summary="refactoring modeling thread">
+      <created>1480276827643</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1480276827643</updated>
+    </task>
+    <task id="LOCAL-00046" summary="implement TimeChange Analyses">
+      <created>1480280959837</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1480280959837</updated>
+    </task>
+    <task id="LOCAL-00047" summary="documentation">
+      <created>1480281008115</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1480281008115</updated>
+    </task>
+    <task id="LOCAL-00048" summary="added error managemet DSO tracks">
+      <created>1480281319927</created>
+      <option name="number" value="00048" />
+      <option name="presentableId" value="LOCAL-00048" />
+      <option name="project" value="LOCAL" />
+      <updated>1480281319927</updated>
+    </task>
+    <task id="LOCAL-00049" summary="correct installation description">
+      <created>1480450310991</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1480450310991</updated>
+    </task>
+    <task id="LOCAL-00050" summary="correct installation description">
+      <created>1480450623029</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1480450623030</updated>
+    </task>
+    <task id="LOCAL-00051" summary="bugfix modeled points">
+      <created>1480450987914</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1480450987915</updated>
+    </task>
+    <task id="LOCAL-00052" summary="bugfix modeled points, dome support , platesolve2 support">
+      <created>1480539342114</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1480539342115</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Grid point configurable,">
+      <created>1480706029460</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1480706029460</updated>
+    </task>
+    <task id="LOCAL-00054" summary="adding hysterese analyse">
+      <created>1480768454564</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1480768454564</updated>
+    </task>
+    <task id="LOCAL-00055" summary="dome support default off">
+      <created>1480768635225</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1480768635225</updated>
+    </task>
+    <task id="LOCAL-00056" summary="get rid of a timing condition which might lead to race condition">
+      <created>1480791456079</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1480791456079</updated>
+    </task>
+    <task id="LOCAL-00057" summary="bugfix for stickstation">
+      <created>1480876842341</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1480876842342</updated>
+    </task>
+    <task id="LOCAL-00058" summary="bugfix for stickstation">
+      <created>1480876917563</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1480876917563</updated>
+    </task>
+    <task id="LOCAL-00059" summary="update environment for coding">
+      <created>1480878710346</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1480878710346</updated>
+    </task>
+    <task id="LOCAL-00060" summary="update for correction of queue handling (adding task_done())">
+      <created>1480882847944</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1480882847944</updated>
+    </task>
+    <task id="LOCAL-00061" summary="update for correction of queue handling (adding task_done())">
+      <created>1480883805480</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1480883805480</updated>
+    </task>
+    <task id="LOCAL-00062" summary="update for logger naming">
+      <created>1480883923360</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1480883923360</updated>
+    </task>
+    <task id="LOCAL-00063" summary="correct color code for cancel hysterese">
+      <created>1481046120637</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1481046120637</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="Unittests_in_mountwizzard - 2016.12.04 at 20h 14m 20s.xml">
+      <configuration name="Unittests in mountwizzard" configurationId="tests" />
+    </history-entry>
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="2576" height="1576" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20677084" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24783294" sideWeight="0.4959255" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26264727" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21564482" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.89323467" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3668076" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.23562023" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26334026" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24809425" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18439716" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32986832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24783294" sideWeight="0.5040745" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3963964" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1700611" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287858" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.38289204" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -742,17 +1064,17 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21564482" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.89387757" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3668076" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18181819" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8938207" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36630288" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.109140515" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12864584" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.084375" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287858" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39817232" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39699864" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -767,60 +1089,48 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="finalizing the installer" />
-    <MESSAGE value="update the readme for the package install" />
-    <MESSAGE value="corrected modeling with coordinate transform and mark point as modeled (remove them)" />
-    <MESSAGE value="Editor file checking to green&#10;Readme update to package and detailed install" />
-    <MESSAGE value="update docu" />
-    <MESSAGE value="remove astropy library step 1" />
-    <MESSAGE value="remove astropy library not needed for moutn thread" />
-    <MESSAGE value="model thread only uses astropy for FITS headers" />
-    <MESSAGE value="finally removed astropy dependency" />
-    <MESSAGE value="release of subframes&#10;" />
-    <MESSAGE value="extension for dome control while modeling part 1" />
-    <MESSAGE value="extension for dome control while modeling part 2" />
-    <MESSAGE value="extension for dome control while modeling part 3" />
-    <MESSAGE value="code cleanup" />
-    <MESSAGE value="code cleanup file paths" />
-    <MESSAGE value="change FITS file from utc of computer to jd of mount according to dec / ra" />
-    <MESSAGE value="update to rerun or finish a canceled model run" />
-    <MESSAGE value="optimizing error messages for mount connection" />
-    <MESSAGE value="correct sign in vor negative values" />
-    <MESSAGE value="add sign for string to dec conversion" />
     <MESSAGE value="bugfix for sign implementation" />
     <MESSAGE value="update gui" />
-    <MESSAGE value="update readme" />
-    <MESSAGE value="bugfix slewing dome and stop" />
-    <MESSAGE value="update variable data with command" />
-    <option name="LAST_COMMIT_MESSAGE" value="update variable data with command" />
+    <MESSAGE value="errorhandling for analyse" />
+    <MESSAGE value="remove sorting base point (because there were anyway only three)" />
+    <MESSAGE value="bugfixing dome support" />
+    <MESSAGE value="moving to refactor fo testing. also simulator for telescope" />
+    <MESSAGE value="bugfixes an removal of dome slave select,because it's not needed" />
+    <MESSAGE value="bugfix" />
+    <MESSAGE value="refactoring dome_thread for data exchange" />
+    <MESSAGE value="refactoring modeling thread" />
+    <MESSAGE value="implement TimeChange Analyses" />
+    <MESSAGE value="documentation" />
+    <MESSAGE value="added error managemet DSO tracks" />
+    <MESSAGE value="correct installation description" />
+    <MESSAGE value="bugfix modeled points" />
+    <MESSAGE value="bugfix modeled points, dome support , platesolve2 support" />
+    <MESSAGE value="Grid point configurable," />
+    <MESSAGE value="adding hysterese analyse" />
+    <MESSAGE value="dome support default off" />
+    <MESSAGE value="get rid of a timing condition which might lead to race condition" />
+    <MESSAGE value="bugfix for stickstation" />
+    <MESSAGE value="update environment for coding" />
+    <MESSAGE value="update for correction of queue handling (adding task_done())" />
+    <MESSAGE value="update for logger naming" />
+    <MESSAGE value="correct color code for cancel hysterese" />
+    <option name="LAST_COMMIT_MESSAGE" value="correct color code for cancel hysterese" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/mountwizzard.py</url>
-          <line>502</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py</url>
-          <line>402</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/mountwizzard/support/weather_thread.py</url>
+          <line>56</line>
+          <option name="timeStamp" value="20" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="17" />
+      <option name="time" value="21" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+    <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -828,23 +1138,8 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+    <entry file="file://$PROJECT_DIR$/README.md" />
+    <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -928,7 +1223,9 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
+          <folding>
+            <marker date="1481311175771" expanded="true" signature="8088:11384" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1001,13 +1298,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/__init__.py" />
     <entry file="file://$PROJECT_DIR$/run.py" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_ui.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/config/here_are_config_files_stored.txt">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1053,13 +1343,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/relays.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="29" column="159" lean-forward="false" selection-start-line="29" selection-start-column="159" selection-end-line="29" selection-end-column="159" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/pyfits/file.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="248">
@@ -1067,24 +1350,98 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/weather_thread.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_ui.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="508">
-          <caret line="57" column="0" lean-forward="false" selection-start-line="57" selection-start-column="0" selection-end-line="57" selection-end-column="0" />
+        <state relative-caret-position="170">
+          <caret line="10" column="20" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/win32com/client/dynamic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="521" column="0" lean-forward="false" selection-start-line="521" selection-start-column="0" selection-end-line="521" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2016.3/system/python_stubs/-867741936/PyQt5/QtCore/QThread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="42" column="8" lean-forward="false" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="37" lean-forward="false" selection-start-line="5" selection-start-column="24" selection-end-line="5" selection-end-column="37" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="452">
-          <caret line="104" column="35" lean-forward="false" selection-start-line="104" selection-start-column="35" selection-end-line="104" selection-end-column="35" />
+        <state relative-caret-position="340">
+          <caret line="24" column="43" lean-forward="false" selection-start-line="24" selection-start-column="43" selection-end-line="24" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="24" column="39" lean-forward="false" selection-start-line="24" selection-start-column="39" selection-end-line="24" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/weather_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="170">
+          <caret line="23" column="49" lean-forward="false" selection-start-line="23" selection-start-column="49" selection-end-line="23" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/sgpro.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="21" column="39" lean-forward="false" selection-start-line="21" selection-start-column="39" selection-end-line="21" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/relays.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="306">
+          <caret line="20" column="39" lean-forward="false" selection-start-line="20" selection-start-column="39" selection-end-line="20" selection-end-column="39" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="29" column="39" lean-forward="false" selection-start-line="29" selection-start-column="39" selection-end-line="29" selection-end-column="39" />
+          <folding>
+            <marker date="1481311175771" expanded="true" signature="8088:11384" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="25" column="0" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="655">
-          <caret line="895" column="124" lean-forward="false" selection-start-line="895" selection-start-column="124" selection-end-line="895" selection-end-column="124" />
+        <state relative-caret-position="440">
+          <caret line="186" column="32" lean-forward="true" selection-start-line="186" selection-start-column="32" selection-end-line="186" selection-end-column="32" />
           <folding>
             <element signature="e#19121#19283#0" expanded="false" />
             <element signature="e#19335#19431#0" expanded="false" />
@@ -1094,17 +1451,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="45" column="47" lean-forward="false" selection-start-line="45" selection-start-column="47" selection-end-line="45" selection-end-column="47" />
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="85">
+            <caret line="5" column="17" lean-forward="false" selection-start-line="5" selection-start-column="17" selection-end-line="5" selection-end-column="17" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
@@ -1112,55 +1472,27 @@
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="34">
-            <caret line="2" column="35" lean-forward="false" selection-start-line="2" selection-start-column="35" selection-end-line="2" selection-end-column="35" />
+            <caret line="2" column="66" lean-forward="false" selection-start-line="2" selection-start-column="66" selection-end-line="2" selection-end-column="66" />
+            <folding />
           </first_editor>
           <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1564">
-            <caret line="92" column="7" lean-forward="false" selection-start-line="92" selection-start-column="7" selection-end-line="92" selection-end-column="7" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="19" column="24" lean-forward="false" selection-start-line="19" selection-start-column="24" selection-end-line="19" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="67" column="46" lean-forward="false" selection-start-line="67" selection-start-column="46" selection-end-line="67" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="548">
-          <caret line="145" column="48" lean-forward="false" selection-start-line="145" selection-start-column="48" selection-end-line="145" selection-end-column="48" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/sgpro.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2890">
-          <caret line="223" column="0" lean-forward="false" selection-start-line="220" selection-start-column="0" selection-end-line="223" selection-end-column="0" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="503" column="6" lean-forward="false" selection-start-line="503" selection-start-column="6" selection-end-line="503" selection-end-column="6" />
+        <state relative-caret-position="684">
+          <caret line="650" column="0" lean-forward="false" selection-start-line="650" selection-start-column="0" selection-end-line="650" selection-end-column="0" />
+          <folding>
+            <element signature="e#310#324#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="19" lean-forward="false" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
           <folding />
         </state>
       </provider>

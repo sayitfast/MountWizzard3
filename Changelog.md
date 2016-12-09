@@ -1,4 +1,7 @@
 # Changelog:
+1.0.18
+- optimizing for time delay between imaging and point add in mount
+
 1.0.17
 - bugfix for not connecting stickstation directly
 

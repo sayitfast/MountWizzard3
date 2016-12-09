@@ -467,7 +467,6 @@ class Model(QtCore.QThread):
         guid = ''                                                                                                           # define guid
         mes = ''                                                                                                            # define message
         jd = float(jd)
-        delta_t = 0.0
         if not self.ui.checkTestWithoutCamera.isChecked():                                                                  # if it's not simulation, we start imaging
             self.logger.debug('capturingImage -> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
                               .format(binning, isoMode, exposure,
@@ -478,7 +477,6 @@ class Model(QtCore.QThread):
                                                        gain='High', speed=speed, frameType='Light',
                                                        path=self.ui.le_imageDirectoryName.text() + '/' + self.captureFile,
                                                        useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)              # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
-            time_start = time.time()                                                                                        # now the picture ist to be shot
         else:                                                                                                               # otherwise its simulation
             suc = True                                                                                                      # success is always true
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
@@ -489,8 +487,6 @@ class Model(QtCore.QThread):
                         break                                                                                               # stopping the loop
                     else:                                                                                                   # otherwise
                         time.sleep(0.5)                                                                                     # wait for 0.5 seconds
-                time_stop = time.time()                                                                                     # measuring the end of the capturing and downloading
-                delta_t = (time_stop - time_start) - exposure / 2
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))       # debug output
                 hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
@@ -510,9 +506,8 @@ class Model(QtCore.QThread):
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
-                return True, 'success', imagepath, delta_t                                                                  # return true message imagepath
+                return True, 'success', imagepath                                                                           # return true message imagepath
             else:                                                                                                           # If we test without camera, we need to take pictures of test
-                delta_t = 0
                 imagepath = self.ui.le_imageDirectoryName.text() + '/' + self.captureFile                                   # set imagepath to default
                 if os.path.isfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index)):                             # check existing image file
                     copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index), imagepath)                        # copy testfile instead of imaging
@@ -522,9 +517,9 @@ class Model(QtCore.QThread):
                     else:
                         copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(0), imagepath)                        # copy first testfile instead of imaging
                 self.LogQueue.put('\tImage path: {0}\n'.format(imagepath))                                                  # Gui output
-                return True, 'testsetup', imagepath, delta_t                                                                         # return true test message imagepath
+                return True, 'testsetup', imagepath                                                                         # return true test message imagepath
         else:                                                                                                               # otherwise
-            return False, mes, '', delta_t                                                                                           # image capturing was failing, writing message from SGPro back
+            return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
     def solveImage(self, modeltype, blind, imagepath, pixelSize, cameraBin, focalLength):                                   # solving image based on information inside the FITS files, no additional info
         hint = pixelSize * 206.6 * cameraBin / focalLength                                                                  # calculating hint for solve
@@ -577,7 +572,7 @@ class Model(QtCore.QThread):
         self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
                                                                      self.mount.transform.DecTopocentric))                  # debug output
         self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
-        # TODO: implement eventloop to get feedback of the return value of the command
+        # TODO: implement event loop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints, settlingTime):                                                                 # model run routing
@@ -598,12 +593,12 @@ class Model(QtCore.QThread):
         self.logger.debug('runModel       -> subframe: {0}, {1}, {2}, {3}, {4}'
                           .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))    # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
-        self.commandQueue.put('AP')                                                                                         # tracking should be on as well
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
                     self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                       # we keep all the stars before
+                    self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
                 self.LogQueue.put('\n\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0...'.format(i+1, p_az, p_alt))   # Gui Output
@@ -626,18 +621,14 @@ class Model(QtCore.QThread):
                     speed = 'HiSpeed'                                                                                       # we can use it for improved modeling speed
                 else:                                                                                                       # otherwise
                     speed = 'Normal'                                                                                        # standard speed
-                if modeltype in ['TimeChange', 'Hysterese']:
-                    self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
-                    time.sleep(0.2)
                 binning = int(float(self.ui.cameraBin.value()))
                 exposure = int(float(self.ui.cameraExposure.value()))
                 isoMode = int(float(self.ui.isoSetting.value()))
-                suc, mes, imagepath, delta_t = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec,
-                                                                   p_az, p_alt, binning, exposure, isoMode, self.sub,
-                                                                   self.sizeX, self.sizeY,
-                                                                   self.offX, self.offY, speed)                             # capturing image and store position (ra,dec), time, (az,alt)
-                if modeltype in ['TimeChange']:
-                    self.commandQueue.put('RT9')                                                                            # stop tracking until next round
+                self.commandQueue.put('AP')                                                                                 # tracking on during the picture taking
+                suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p_az,
+                                                          p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
+                                                          self.sizeY, self.offX, self.offY, speed)                          # capturing image and store position (ra,dec), time, (az,alt)
+                self.commandQueue.put('RT9')                                                                                # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('Solving Image...')                                                                   # output for user GUI
@@ -657,7 +648,7 @@ class Model(QtCore.QThread):
                                 refractionTemp = float(self.ui.le_refractionTemperature.text())                             # set it if string available
                             else:                                                                                           # otherwise
                                 refractionTemp = 20.0                                                                       # set it to 20.0 degree c
-                            self.addRefinementStar(ra_sol, dec_sol, refractionTemp)                                         # sync the actual star to resolved coordinates in J2000
+                            self.addRefinementStar(ra_sol - dec_sol, refractionTemp)                                        # sync the actual star to resolved coordinates in J2000
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
                         decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
@@ -673,3 +664,4 @@ class Model(QtCore.QThread):
                           .format(modeltype, self.numCheckPoints, time.ctime()))                                            # GUI output
         self.modelrun = False
         return self.results                                                                                                 # return results for analysing
+
