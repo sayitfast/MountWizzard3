@@ -1,4 +1,10 @@
 # Changelog:
+1.0.20
+- improve storing while keeping images from modeling
+
+1.0.19
+- bugfix in solving
+
 1.0.18
 - optimizing for time delay between imaging and point add in mount
 
