@@ -63,6 +63,7 @@ class Mount(QtCore.QThread):
         self.site_lon = 0                                                                                                   # site lon
         self.site_height = 0                                                                                                # site height
         self.jd = 2451544.5                                                                                                 # julian date
+        self.sidereal_time = ''                                                                                             # local sidereal time
         self.pierside = 0                                                                                                   # side of pier (E/W)
         self.transform = None                                                                                               # ascom novas library entry point
         self.ascom = None                                                                                                   # ascom mount driver entry point
@@ -200,6 +201,9 @@ class Mount(QtCore.QThread):
                 self.ascom.Tracking = False
                 self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
                 self.ascom.Tracking = False
+            elif command == 'GS':
+                h, m, s, sign = self.decimalToDegree(self.ascom.SiderealTime)
+                return '{0:02d}:{1:02d}:{2:02d}'.format(h, m, s)
             elif command == 'Ginfo':
                 ra = self.ascom.RightAscension
                 dec = self.ascom.Declination
@@ -364,12 +368,15 @@ class Mount(QtCore.QThread):
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude
             self.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})                  # Azimuth
             self.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                           # Mount status -> slew to stop
-            self.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0:6.6f}'.format(float(self.jd))})                   # Sideral time in julian format
             if str(self.pierside) == str('W'):                                                                              # pier side
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                                  # Transfer to test in GUI
             else:                                                                                                           #
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                                  # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
+        reply = self.sendCommand('GS', real)
+        if reply:
+            self.sidereal_time = reply.strip('#')
+            self.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                    # Sidereal local time
 
     def getStatusMedium(self, real):                                                                                        # medium status items like refraction
         if self.ui.checkAutoRefraction.isChecked():                                                                         # check if autorefraction is set

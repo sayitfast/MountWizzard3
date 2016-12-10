@@ -3106,9 +3106,9 @@
     <widget class="QLineEdit" name="le_siteElevation">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>100</y>
-       <width>121</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -3229,9 +3229,9 @@
     <widget class="QLineEdit" name="le_localTime">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>140</x>
        <y>130</y>
-       <width>121</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -3256,7 +3256,7 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>0000000000000</string>
+      <string>00:00:00</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -3270,7 +3270,7 @@
       <rect>
        <x>10</x>
        <y>130</y>
-       <width>111</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -3280,7 +3280,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Local Time (JD)</string>
+      <string>Local Sidereal Time </string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_siteLatitude">
@@ -7697,7 +7697,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.0.20</string>
+    <string>MountWizzard  v1.0.21</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
