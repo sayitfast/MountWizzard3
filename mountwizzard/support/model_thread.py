@@ -462,12 +462,17 @@ class Model(QtCore.QThread):
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
                 return False, 0, 0, 0, 0                                                                                    # default without subframe
 
-    def capturingImage(self, index, jd, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed, file):    # capturing image
+    def capturingImage(self, index, jd, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed, file, pierside):    # capturing image
         time_fits_header = time.strftime('%Y-%m-%dT%H:%M:%S.0', time.gmtime((float(jd) - 2440587.5) * 86400))               # generating fits header time entry
+        jd_fits_header = str(jd)                                                                                            # store jd as well
         h, m, s, sign = self.mount.decimalToDegree(ra)                                                                      # convert
         ra_fits_header = '{0:02} {1:02} {2:02}'.format(h, m, s)                                                             # set the point coordinates from mount in J2000 as hi nt precision 2 ???
         h, m, s, sign = self.mount.decimalToDegree(dec)                                                                     # convert
         dec_fits_header = '{0}{1:02} {2:02} {3:02}'.format(sign, h, m, s)                                                   # set dec as well
+        if pierside == '1':
+            pierside_fits_header = 'E'
+        else:
+            pierside_fits_header = 'W'
         guid = ''                                                                                                           # define guid
         mes = ''                                                                                                            # define message
         self.LogQueue.put('Capturing image for model point {0:2d}\n'.format(index + 1))                                     # gui output
@@ -495,8 +500,10 @@ class Model(QtCore.QThread):
                 fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 fitsHeader['DATE-OBS'] = time_fits_header                                                                   # set time to current time of the mount
-                fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set the point coordinates from mount in J2000
-                fitsHeader['OBJCTDEC'] = dec_fits_header
+                fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
+                fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
+                fitsHeader['JD'] = jd_fits_header                                                                           # store jd in header
+                fitsHeader['PierSide'] = pierside_fits_header                                                               # store pierside as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
                 fitsHeader['MW_AZ'] = str(az)                                                                               # x is the same as y
@@ -506,7 +513,7 @@ class Model(QtCore.QThread):
                         fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                       # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
-                self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                  # Gui output
+                self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                    # Gui output
                 return True, 'success', imagepath                                                                           # return true message imagepath
             else:                                                                                                           # If we test without camera, we need to take pictures of test
                 imagepath = file                                                                                            # set imagepath to default
@@ -634,7 +641,7 @@ class Model(QtCore.QThread):
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                 suc, mes, imagepath = self.capturingImage(i, self.mount.jd, self.mount.ra, self.mount.dec, p_az,
                                                           p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
-                                                          self.sizeY, self.offX, self.offY, speed, file)                    # capturing image and store position (ra,dec), time, (az,alt)
+                                                          self.sizeY, self.offX, self.offY, speed, file, self.mount.pierside)   # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
