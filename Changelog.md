@@ -1,6 +1,9 @@
 # Changelog:
+1.0.21
+- preparation for batch modeling / remodeling
+
 1.0.20
-- improve storing while keeping images from modeling
+- improved storing while keeping images from modeling
 
 1.0.19
 - bugfix in solving
