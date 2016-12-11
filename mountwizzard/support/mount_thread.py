@@ -184,11 +184,9 @@ class Mount(QtCore.QThread):
             if command == 'Gev':
                 return str(self.ascom.SiteElevation)
             elif command == 'Gt':
-                h, m, s, sign = self.decimalToDegree(self.ascom.SiteLatitude)
-                return '{0}{1:02}:{2:02}:{3:02}'.format(sign, h, m, s)
+                return self.decimalToDegree(self.ascom.SiteLatitude, True, False)
             elif command == 'Gg':
-                h, m, s, sign = self.decimalToDegree(self.ascom.SiteLongitude)
-                return '{0}{1:02}:{2:02}:{3:02}'.format(sign, h, m, s)
+                return self.decimalToDegree(self.ascom.SiteLongitude, True, False)
             elif command.startswith('Sz'):
                 self.value_azimuth = float(command[2:5])
             elif command.startswith('Sa'):
@@ -202,8 +200,7 @@ class Mount(QtCore.QThread):
                 self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
                 self.ascom.Tracking = False
             elif command == 'GS':
-                h, m, s, sign = self.decimalToDegree(self.ascom.SiderealTime)
-                return '{0:02d}:{1:02d}:{2:02d}'.format(h, m, s)
+                return self.decimalToDegree(self.ascom.SiderealTime, False, False)
             elif command == 'Ginfo':
                 ra = self.ascom.RightAscension
                 dec = self.ascom.Declination
@@ -252,7 +249,7 @@ class Mount(QtCore.QThread):
         return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
 
     @staticmethod
-    def decimalToDegree(value):
+    def decimalToDegree(value, with_sign, with_decimal):
         if value >= 0:
             sign = '+'
         else:
@@ -261,7 +258,14 @@ class Mount(QtCore.QThread):
         hour = int(value)
         minute = int((value - hour) * 60)
         second = int(((value - hour) * 60 - minute) * 60)
-        return hour, minute, second, sign
+        if with_decimal:
+            second_dec = '.{0:02d}'.format(int((((value - hour) * 60 - minute) * 60 - second) * 100))
+        else:
+            second_dec = ''
+        if with_sign:
+            return '{0}{1:02d}:{2:02d}:{3:02d}{4}'.format(sign, hour, minute, second, second_dec)
+        else:
+            return '{0:02d}:{1:02d}:{2:02d}{3}'.format(hour, minute, second, second_dec)
 
     def getAlignmentModel(self, real):
         self.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
@@ -359,10 +363,8 @@ class Mount(QtCore.QThread):
             self.transform.SetTopocentric(float(ra), float(dec))                                                            # set Jnow data
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
-            h, m, s, sign = self.decimalToDegree(self.ra)
-            ra_show = '{0:02}:{1:02}:{2:02}'.format(h, m, s)
-            h, m, s, sign = self.decimalToDegree(self.dec)
-            dec_show = '{0}{1:02}:{2:02}:{3:02}'.format(sign, h, m, s)
+            ra_show = self.decimalToDegree(self.ra, False, False)
+            dec_show = self.decimalToDegree(self.dec, True, False)
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
             self.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude

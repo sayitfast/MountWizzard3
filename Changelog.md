@@ -1,4 +1,11 @@
 # Changelog:
+1.0.23
+- increased precision for model parameter transfer
+- DSLR should run with SGPro beta 2.5.2.8
+
+1.0.22
+- bugfix modeling
+
 1.0.21
 - preparation for batch modeling / remodeling
 

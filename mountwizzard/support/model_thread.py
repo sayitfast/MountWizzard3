@@ -412,20 +412,20 @@ class Model(QtCore.QThread):
 
     def runHystereseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))                                                             # using settling time also for waiting / delay
-        points = [(270, 90, QGraphicsTextItem(''), True),
+        points = [(270, 85, QGraphicsTextItem(''), True),
                   (000, 20, QGraphicsTextItem(''), False),
-                  (270, 90, QGraphicsTextItem(''), True),
+                  (270, 85, QGraphicsTextItem(''), True),
                   (90, 20, QGraphicsTextItem(''), False),
-                  (270, 90, QGraphicsTextItem(''), True),
+                  (270, 85, QGraphicsTextItem(''), True),
                   (180, 20, QGraphicsTextItem(''), False),
-                  (270, 90, QGraphicsTextItem(''), True),
-                  (90, 90, QGraphicsTextItem(''), True),
+                  (270, 85, QGraphicsTextItem(''), True),
+                  (90, 85, QGraphicsTextItem(''), True),
                   (181, 20, QGraphicsTextItem(''), False),
-                  (90, 90, QGraphicsTextItem(''), True),
+                  (90, 85, QGraphicsTextItem(''), True),
                   (270, 20, QGraphicsTextItem(''), False),
-                  (90, 90, QGraphicsTextItem(''), True),
+                  (90, 85, QGraphicsTextItem(''), True),
                   (359, 20, QGraphicsTextItem(''), False),
-                  (90, 90, QGraphicsTextItem(''), True)]
+                  (90, 85, QGraphicsTextItem(''), True)]
         self.modelAnalyseData = self.runModel('Hysterese', points, settlingTime)                                            # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_hysterese.txt'                                         # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
@@ -465,10 +465,8 @@ class Model(QtCore.QThread):
 
     def capturingImage(self, index, st, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed, file, pierside):    # capturing image
         st_fits_header = str(st)                                                                                            # store jd as well
-        h, m, s, sign = self.mount.decimalToDegree(ra)                                                                      # convert
-        ra_fits_header = '{0:02} {1:02} {2:02}'.format(h, m, s)                                                             # set the point coordinates from mount in J2000 as hi nt precision 2 ???
-        h, m, s, sign = self.mount.decimalToDegree(dec)                                                                     # convert
-        dec_fits_header = '{0}{1:02} {2:02} {3:02}'.format(sign, h, m, s)                                                   # set dec as well
+        ra_fits_header = self.mount.decimalToDegree(ra, False, True)                                                        # set the point coordinates from mount in J2000 as hi nt precision 2 ???
+        dec_fits_header = self.mount.decimalToDegree(dec, True, True)                                                       # set dec as well
         if pierside == '1':
             pierside_fits_header = 'E'
         else:
@@ -481,7 +479,7 @@ class Model(QtCore.QThread):
                               .format(binning, isoMode, exposure, file))                                                    # write logfile
             suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=binning,
                                                        exposureLength=exposure,
-                                                       isoMode=isoMode,
+                                                       isoMode=isoMode, iso=str(isoMode),
                                                        gain='High', speed=speed, frameType='Light',
                                                        path=file,
                                                        useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)              # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
@@ -502,13 +500,13 @@ class Model(QtCore.QThread):
                 fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
                 fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
                 fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
-                fitsHeader['MODEL_SIDEREAL'] = st_fits_header                                                               # store jd in header
-                fitsHeader['MODEL_PIERSIDE'] = pierside_fits_header                                                         # store pierside as well
-                fitsHeader['MODEL_EXPOSURE'] = exposure                                                                     # store the exposure time as well
+                fitsHeader['M_ST'] = st_fits_header                                                                         # store jd in header
+                fitsHeader['M_PIER'] = pierside_fits_header                                                                 # store pierside as well
+                fitsHeader['M_EXP'] = exposure                                                                              # store the exposure time as well
                 fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
                 fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
-                fitsHeader['MODEL_AZ'] = str(az)                                                                            # x is the same as y
-                fitsHeader['MODEL_ALT'] = str(alt)                                                                          # and vice versa
+                fitsHeader['M_AZ'] = str(az)                                                                                # x is the same as y
+                fitsHeader['M_ALT'] = str(alt)                                                                              # and vice versa
                 self.logger.debug(
                     'capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
                         fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                       # write all header data to debug
@@ -574,12 +572,12 @@ class Model(QtCore.QThread):
     def addRefinementStar(self, ra, dec, refractionTemp):                                                                   # add refinement star during model run
         self.mount.transform.SiteTemperature = refractionTemp                                                               # set refraction temp in converter
         self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
-        h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.RATopocentric)                                      # convert to Jnow
-        self.commandQueue.put('Sr{0:02d}:{1:02d}:{2:04.2f}'.format(h, m, s))                                                # Write jnow ra to mount
-        h, m, s, sign = self.mount.decimalToDegree(self.mount.transform.DecTopocentric)                                     # convert to Jnow
-        self.commandQueue.put('Sd{0:+02d}*{1:02d}:{2:04.2f}'.format(h, m, s))                                               # Write jnow dec to mount
-        self.logger.debug('addRefinementSt -> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
-                                                                     self.mount.transform.DecTopocentric))                  # debug output
+        value = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)                                 # convert to Jnow
+        self.commandQueue.put('Sr{0}'.format(value))                                                                        # Write jnow ra to mount
+        value = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)                                 # convert to Jnow
+        self.commandQueue.put('Sd{0}'.format(value))                                                                        # Write jnow dec to mount
+        self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
+                                                                    self.mount.transform.DecTopocentric))                   # debug output
         self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
         # TODO: implement event loop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK

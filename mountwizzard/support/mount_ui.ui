@@ -3256,7 +3256,7 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>00:00:00</string>
+      <string>00:00:00.00</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -7697,7 +7697,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.0.21</string>
+    <string>MountWizzard  v1.0.23</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

@@ -70,7 +70,7 @@ class SGPro:
                 return False, 'Timeout !'
 
     def SgCaptureImage(self, binningMode=1, isoMode=None, exposureLength=1,
-                       gain=None, speed=None, frameType=None,
+                       gain=None, iso=None, speed=None, frameType=None,
                        path=None, useSubframe=False, posX=0, posY=0,
                        width=1, height=1):
         # reference {"BinningMode":0,"IsoMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
@@ -81,6 +81,8 @@ class SGPro:
             data['IsoMode'] = isoMode
         if gain:
             data['Gain'] = gain
+        if iso:
+            data['Iso'] = iso
         if speed:
             data['Speed'] = speed
         if frameType:
@@ -222,10 +224,8 @@ if __name__ == "__main__":
     import time
     cam = SGPro()
     print(cam.SgGetDeviceStatus('Camera'))
-    print(cam.SgGetDeviceStatus('PlateSolver'))
     print(cam.SgGetCameraProps())
-    print(time.ctime())
-    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, speed='Normal', path='c:\\temp\\test.fits')
+    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, isoMode=400, iso='400', speed='HiSpeed', path='c:\\temp\\test.fits')
     print(success, message, receipt)
     imagepath = ''
     while True:                                                                                                             # waiting for the image download before proceeding
@@ -233,16 +233,5 @@ if __name__ == "__main__":
         if success:
             break
         else:
-            time.sleep(0.1)
+            time.sleep(1)
     print(success, imagepath)
-    print(time.ctime())
-    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, speed='HiSpeed', path='c:\\temp\\test.fits')
-    print(success, message, receipt)
-    while True:                                                                                                             # waiting for the image download before proceeding
-        success, imagepath = cam.SgGetImagePath(receipt)
-        if success:
-            break
-        else:
-            time.sleep(0.1)
-    print(success, imagepath)
-    print(time.ctime())
