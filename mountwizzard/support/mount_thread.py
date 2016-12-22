@@ -237,19 +237,22 @@ class Mount(QtCore.QThread):
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
-    @staticmethod
-    def degStringToDecimal(value, splitter=':'):
+    def degStringToDecimal(self, value, splitter=':'):
+        print('splitter:', value)
         sign = 1
         if '-' in value:
             value = value.replace('-', '')
             sign = -1
         elif '+' in value:
             value = value.replace('+', '')
-        hour, minute, second = value.split(splitter)
+        try:
+            hour, minute, second = value.split(splitter)
+        except Exception as e:
+            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
         return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
 
     @staticmethod
-    def decimalToDegree(value, with_sign, with_decimal):
+    def decimalToDegree(value, with_sign, with_decimal, spl=':'):
         if value >= 0:
             sign = '+'
         else:
@@ -263,9 +266,9 @@ class Mount(QtCore.QThread):
         else:
             second_dec = ''
         if with_sign:
-            return '{0}{1:02d}:{2:02d}:{3:02d}{4}'.format(sign, hour, minute, second, second_dec)
+            return '{0}{1:02d}{5}{2:02d}{5}{3:02d}{4}'.format(sign, hour, minute, second, second_dec, spl)
         else:
-            return '{0:02d}:{1:02d}:{2:02d}{3}'.format(hour, minute, second, second_dec)
+            return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
     def getAlignmentModel(self, real):
         self.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
@@ -389,7 +392,7 @@ class Mount(QtCore.QThread):
                 if success and message in ['IDLE', 'DOWNLOADING']:                                                          # if tracking, when camera is idle or downloading
                     self.setRefractionParameter(real)                                                                       # transfer refraction to mount
                 else:                                                                                                       # otherwise
-                    self.logger.debug('getStatusMedium -> no autorefraction: {0}'.format(message))                          # no autorefraction is possible
+                    self.logger.debug('getStatusMedium-> no autorefraction: {0}'.format(message))                           # no autorefraction is possible
 
     def getStatusSlow(self, real):                                                                                          # slow update item like temps
         self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.sendCommand('Gmte', real)})                # Flip time

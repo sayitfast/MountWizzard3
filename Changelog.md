@@ -1,4 +1,10 @@
 # Changelog:
+1.0.25
+- improved storing of coordinate due to bugfix 
+
+1.0.24
+- bugfix to reported michel-d bug
+
 1.0.23
 - increased precision for model parameter transfer
 - DSLR should run with SGPro beta 2.5.2.8

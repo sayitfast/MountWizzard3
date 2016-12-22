@@ -465,8 +465,8 @@ class Model(QtCore.QThread):
 
     def capturingImage(self, index, st, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed, file, pierside):    # capturing image
         st_fits_header = str(st)                                                                                            # store jd as well
-        ra_fits_header = self.mount.decimalToDegree(ra, False, True)                                                        # set the point coordinates from mount in J2000 as hi nt precision 2 ???
-        dec_fits_header = self.mount.decimalToDegree(dec, True, True)                                                       # set dec as well
+        ra_fits_header = self.mount.decimalToDegree(ra, False, True, ' ')                                                   # set the point coordinates from mount in J2000 as hint precision 2
+        dec_fits_header = self.mount.decimalToDegree(dec, True, True, ' ')                                                  # set dec as well
         if pierside == '1':
             pierside_fits_header = 'E'
         else:
@@ -494,37 +494,43 @@ class Model(QtCore.QThread):
                     else:                                                                                                   # otherwise
                         time.sleep(0.5)                                                                                     # wait for 0.5 seconds
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))       # debug output
-                hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                        # calculating hint with focal length and pixel size of cam
-                fitsFileHandle = pyfits.open(imagepath, mode='update')                                                      # open for adding field info
-                fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
-                fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
-                fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
-                fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
-                fitsHeader['M_ST'] = st_fits_header                                                                         # store jd in header
-                fitsHeader['M_PIER'] = pierside_fits_header                                                                 # store pierside as well
-                fitsHeader['M_EXP'] = exposure                                                                              # store the exposure time as well
-                fitsHeader['CDELT1'] = str(hint)                                                                            # x is the same as y
-                fitsHeader['CDELT2'] = str(hint)                                                                            # and vice versa
-                fitsHeader['M_AZ'] = str(az)                                                                                # x is the same as y
-                fitsHeader['M_ALT'] = str(alt)                                                                              # and vice versa
-                self.logger.debug(
-                    'capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
-                        fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                       # write all header data to debug
-                fitsFileHandle.flush()                                                                                      # write all to disk
-                fitsFileHandle.close()                                                                                      # close FIT file
-                self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                    # Gui output
-                return True, 'success', imagepath                                                                           # return true message imagepath
             else:                                                                                                           # If we test without camera, we need to take pictures of test
                 imagepath = file                                                                                            # set imagepath to default
-                if os.path.isfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index)):                             # check existing image file
-                    shutil.copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(index), imagepath)                 # copy testfile instead of imaging
+                if os.path.isfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index)):                              # check existing image file
+                    shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index), imagepath)                  # copy testfile instead of imaging
                 else:
                     if index == 0:
                         self.logger.error('capturingImage -> not test image files available !')
                     else:
-                        shutil.copyfile(os.getcwd() + '/testimages/model_cap-{0}.fit'.format(0), imagepath)                 # copy first testfile instead of imaging
-                self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                    # Gui output
-                return True, 'testsetup', imagepath                                                                         # return true test message imagepath
+                        shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(0), imagepath)                  # copy first testfile instead of imaging
+                fitsFileHandle = pyfits.open(imagepath, mode='update')
+                fitsHeader = fitsFileHandle[0].header
+                ra = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+                dec = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+                ra_fits_header = self.mount.decimalToDegree(ra, False, True, ' ')
+                dec_fits_header = self.mount.decimalToDegree(dec, True, True, ' ')
+                fitsFileHandle.flush()
+                fitsFileHandle.close()
+            hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                            # calculating hint with focal length and pixel size of cam
+            fitsFileHandle = pyfits.open(imagepath, mode='update')                                                          # open for adding field info
+            fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
+            fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
+            fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
+            fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
+            fitsHeader['M_ST'] = st_fits_header                                                                             # store jd in header
+            fitsHeader['M_PIER'] = pierside_fits_header                                                                     # store pierside as well
+            fitsHeader['M_EXP'] = exposure                                                                                  # store the exposure time as well
+            fitsHeader['CDELT1'] = str(hint)                                                                                # x is the same as y
+            fitsHeader['CDELT2'] = str(hint)                                                                                # and vice versa
+            fitsHeader['M_AZ'] = str(az)                                                                                    # x is the same as y
+            fitsHeader['M_ALT'] = str(alt)                                                                                  # and vice versa
+            self.logger.debug('capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
+                fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
+                hint))                                                                                                      # write all header data to debug
+            fitsFileHandle.flush()                                                                                          # write all to disk
+            fitsFileHandle.close()                                                                                          # close FIT file
+            self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                        # Gui output
+            return True, 'testsetup', imagepath                                                                             # return true test message imagepath
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
@@ -551,7 +557,7 @@ class Model(QtCore.QThread):
             angle = float(angle)                                                                                            #
             timeTS = float(timeTS)                                                                                          #
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                           # if there is success, we can move on
+            if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> ra:{0} dec:{1} suc:{2} mes:{3}'.format(ra_sol, dec_sol, suc, mes))
                 fitsFileHandle = pyfits.open(imagepath, mode='readonly')                                                    # open for getting telescope coordinates
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
