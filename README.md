@@ -64,12 +64,14 @@ implement it.
 You need and actual installation of Python 3.5 and PyQt5 and it runs only under Windows. I use Windows10 64 bit. 
 
 ### Python
-So we start with the installation of Python. Necessary ist python >= 3.5
+So we start with the installation of Python. Necessary ist python 3.5.2 There might be some newer versions existing, but 
+still I only tested version 3.5.2. If you have some experience with newer version, please let me know, I would like to
+add these in the readme.
 You will find the download at:
 <pre>https://www.python.org/downloads/</pre> 
 The actual version is v 3.5.2. Please download it and install the package on your computer. Please remind to check the 
 'add to python path' checkbox before starting the installation, otherwise you will not find the appropriate path set in 
-your environment.
+your environment. 
 
 ### MountWizzard
 Just type 
@@ -133,4 +135,4 @@ in the same directory. If the commands are strange to you: don't touch the files
 The use this software is at your own risk! No responsibility for damages to your mount or other equipment or your 
 environment. Please take care yourself !
 
-Hope this makes fun and help, CS Michel
+Hope this makes fun and helps you for your hobby, CS Michel
