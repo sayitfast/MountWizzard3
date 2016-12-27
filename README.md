@@ -66,7 +66,7 @@ You need and actual installation of Python 3.5 and PyQt5 and it runs only under 
 ### Python
 So we start with the installation of Python. Necessary ist python 3.5.2 There might be some newer versions existing, but 
 still I only tested version 3.5.2. If you have some experience with newer version, please let me know, I would like to
-add these in the readme.
+add these in the readme. So far version 3.6.0 doesn't work with PyQt5, so please stay with 3.5.2
 You will find the download at:
 <pre>https://www.python.org/downloads/</pre> 
 The actual version is v 3.5.2. Please download it and install the package on your computer. Please remind to check the 
