@@ -130,11 +130,11 @@ class Mount(QtCore.QThread):
                 else:                                                                                                       # if not connected, the we should do this
                     if self.counter == 0:                                                                                   # jobs once done at the beginning
                         self.getStatusOnce(self.driver_real)                                                                # task once
-                    if self.counter % 2 == 0:                                                                               # all tasks with 200 ms
+                    if self.counter % 2 == 0:                                                                               # all tasks with 400 ms
                         self.getStatusFast(self.driver_real)                                                                # polling the mount status Ginfo
-                    if self.counter % 20 == 0:                                                                              # all tasks with 3 s
+                    if self.counter % 15 == 0:                                                                              # all tasks with 3 s
                         self.getStatusMedium(self.driver_real)                                                              # polling the mount
-                    if self.counter % 300 == 0:                                                                             # all task with 1 minute
+                    if self.counter % 150 == 0:                                                                             # all task with 30 seconds
                         self.getStatusSlow(self.driver_real)                                                                # slow ones
                 time.sleep(0.2)                                                                                             # time base is 200 ms
                 self.counter += 1                                                                                           # increasing counter for selection
@@ -238,7 +238,6 @@ class Mount(QtCore.QThread):
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
     def degStringToDecimal(self, value, splitter=':'):
-        print('splitter:', value)
         sign = 1
         if '-' in value:
             value = value.replace('-', '')
@@ -403,6 +402,8 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP2', real)})                  # temp of dec motor
         self.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs', real)})                            # get actual slew rate
         self.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF', real)})                   #
+        self.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf', real)})                     #
+        self.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat', real)})                   #
 
     def getStatusOnce(self, real):                                                                                          # one time updates for settings
         self.site_height = self.sendCommand('Gev', real)                                                                    # site height
@@ -421,8 +422,6 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})                                 #
         self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh', real)})              #
         self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go', real)})               #
-        self.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf', real)})                     #
-        self.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat', real)})                   #
         self.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD', real)})                        #
         self.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN', real)})                      #
         self.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP', real)})                 #
