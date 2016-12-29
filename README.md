@@ -12,9 +12,8 @@ between, I will name the release and beta versions explicitly on this page. You 
 ### Version release 1.0.22
 <pre>pip install mountwizzard==1.0.22 </pre>
 
-[Test](https://www.dropbox.com/s/ys73h915rfbrkxd/m1.png?dl=0)
-
 # Important:
+
 ##### I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
 On GitHub you will find from now on most probably only the package version under
 <pre>https://github.com/mworion/mountwizzard.git</pre>
