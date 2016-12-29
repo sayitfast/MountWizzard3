@@ -1,6 +1,8 @@
 # Changelog:
+
 1.0.25
-- improved storing of coordinate due to bugfix 
+- improved storing of coordinate due to bugfix
+- optimized interface for load horizon file
 
 1.0.24
 - bugfix to reported michel-d bug
@@ -127,7 +129,7 @@ if you want to reuse you config, just copy is there !
 - refactoring -> SGPro abstraction to separate class
 
 0.83
-- optimizing main loop 
+- optimizing main loop
 
 0.82
 - started implementing logging function
@@ -169,7 +171,7 @@ alpha versions:
 
 1.3
 - optimizing UI for switching on / off dual tracking, refraction, unattended flip
-- improving readme for installation 
+- improving readme for installation
 
 1.2
 - bugfixing refactor Data

@@ -234,16 +234,20 @@ class Model(QtCore.QThread):
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
         hp = []                                                                                                             # clear cache
-        try:                                                                                                                # try opening the file
-            with open('config/' + horizonPointsFileName) as f:                                                              # run through file
-                for line in f:                                                                                              # run through lines
-                    m = line.rstrip('\n').split(':')                                                                        # split the values
-                    point = (int(m[0]), int(m[1]))                                                                          # get point data
-                    hp.append(point)                                                                                        # add the point
-            f.close()                                                                                                       # close file again
-        except Exception as e:                                                                                              # handle exception
-            self.messageQueue.put('Error loading horizon points: {0}'.format(e))                                            # show on GUI
-            self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                           # write to logger
+        if not os.path.isfile(os.getcwd() + 'config/' + horizonPointsFileName):
+            self.messageQueue.put('Horizon points file does not exist !')                                                   # show on GUI
+            self.logger.error('loadHorizonPoints -> horizon points file does not exist !')                                  # write to logger
+        else:
+            try:                                                                                                            # try opening the file
+                with open('config/' + horizonPointsFileName) as f:                                                          # run through file
+                    for line in f:                                                                                          # run through lines
+                        m = line.rstrip('\n').split(':')                                                                    # split the values
+                        point = (int(m[0]), int(m[1]))                                                                      # get point data
+                        hp.append(point)                                                                                    # add the point
+                f.close()                                                                                                   # close file again
+            except Exception as e:                                                                                          # handle exception
+                self.messageQueue.put('Error loading horizon points: {0}'.format(e))                                        # show on GUI
+                self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                       # write to logger
             return                                                                                                          # stop routine
         hp = sorted(hp, key=itemgetter(0))                                                                                  # list should be sorted, but I do it for security anyway
         self.horizonPoints = []                                                                                             # clear horizon variable
