@@ -469,8 +469,8 @@ class Model(QtCore.QThread):
 
     def capturingImage(self, index, st, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed, file, pierside):    # capturing image
         st_fits_header = str(st)                                                                                            # store jd as well
-        ra_fits_header = self.mount.decimalToDegree(ra, False, True, ' ')                                                   # set the point coordinates from mount in J2000 as hint precision 2
-        dec_fits_header = self.mount.decimalToDegree(dec, True, True, ' ')                                                  # set dec as well
+        ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')                                                   # set the point coordinates from mount in J2000 as hint precision 2
+        dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')                                                  # set dec as well
         if pierside == '1':
             pierside_fits_header = 'E'
         else:
@@ -490,6 +490,7 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise its simulation
             suc = True                                                                                                      # success is always true
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
+            # TODO swap and remove 'not' statement or get this part out of the imaging routine -> even better
             if not self.ui.checkTestWithoutCamera.isChecked():                                                              # if we simulate, we cannot wait for SGPro, there is nothing !
                 while True:                                                                                                 # waiting for the image download before proceeding
                     suc, imagepath = self.SGPro.SgGetImagePath(guid)                                                        # there is the image path, once the image is downloaded
@@ -511,19 +512,22 @@ class Model(QtCore.QThread):
                 fitsHeader = fitsFileHandle[0].header
                 ra = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
                 dec = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-                ra_fits_header = self.mount.decimalToDegree(ra, False, True, ' ')
-                dec_fits_header = self.mount.decimalToDegree(dec, True, True, ' ')
+                ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')
+                dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')
                 fitsFileHandle.flush()
                 fitsFileHandle.close()
+                # TODO move hint calculation to model routine an pass the parameter pixel size camera bin and focal length
             hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                            # calculating hint with focal length and pixel size of cam
             fitsFileHandle = pyfits.open(imagepath, mode='update')                                                          # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
+            # TODO: sorting and naming of the right header data for following processes
             fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
             fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
             fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
             fitsHeader['M_ST'] = st_fits_header                                                                             # store jd in header
             fitsHeader['M_PIER'] = pierside_fits_header                                                                     # store pierside as well
             fitsHeader['M_EXP'] = exposure                                                                                  # store the exposure time as well
+            # TODO: str() function for fits header not needed
             fitsHeader['CDELT1'] = str(hint)                                                                                # x is the same as y
             fitsHeader['CDELT2'] = str(hint)                                                                                # and vice versa
             fitsHeader['M_AZ'] = str(az)                                                                                    # x is the same as y
@@ -534,7 +538,7 @@ class Model(QtCore.QThread):
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
             self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                        # Gui output
-            return True, 'testsetup', imagepath                                                                             # return true test message imagepath
+            return True, 'OK', imagepath                                                                                    # return true test message imagepath
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
@@ -593,6 +597,8 @@ class Model(QtCore.QThread):
         return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints, settlingTime):                                                                 # model run routing
+        # TODO: put all messages during modeling one tab right for every point to make it better visible
+        # TODO: the new schematics should be: get mount prepared, take picture, write all to fits, get fits and solve, save conclusions
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('Start {0} Model. {1}\n'.format(modeltype, time.ctime()))                                         # Start informing user
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
@@ -688,3 +694,6 @@ class Model(QtCore.QThread):
                           .format(modeltype, self.numCheckPoints, time.ctime()))                                            # GUI output
         self.modelrun = False
         return self.results                                                                                                 # return results for analysing
+
+
+

@@ -221,17 +221,12 @@ class SGPro:
             return False, 'Request failed', ''
 
 if __name__ == "__main__":
-    import time
+    import time, os
     cam = SGPro()
-    print(cam.SgGetDeviceStatus('Camera'))
-    print(cam.SgGetCameraProps())
-    success, message, receipt = cam.SgCaptureImage(binningMode=1, exposureLength=1, isoMode=400, iso='400', speed='HiSpeed', path='c:\\temp\\test.fits')
-    print(success, message, receipt)
-    imagepath = ''
+    imagepath = os.getcwd() + '/model009.fit'
+    print(imagepath)
+    suc, mes, guid = cam.SgSolveImage(imagepath, scaleHint='1.31', blindSolve=False, useFitsHeaders=True)
+    print(suc, mes, guid)
     while True:                                                                                                             # waiting for the image download before proceeding
-        success, imagepath = cam.SgGetImagePath(receipt)
-        if success:
-            break
-        else:
-            time.sleep(1)
-    print(success, imagepath)
+        print(cam.SgGetSolvedImageData(guid))
+        time.sleep(1)

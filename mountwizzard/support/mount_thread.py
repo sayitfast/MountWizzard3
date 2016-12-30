@@ -300,6 +300,7 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})
 
     def runTargetRMSAlignment(self, real):
+        # TODO There must be a model loaded. if not, a load should be done automatically
         self.mountAlignRMSsum = 999.9
         self.mountAlignNumberStars = 4
         while math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars) > float(self.ui.targetRMS.value()) and self.mountAlignNumberStars > 3:

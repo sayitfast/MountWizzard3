@@ -1,4 +1,9 @@
 # Changelog:
+1.1.0
+- release of tested version
+
+1.0.26
+- check and change ra/dec hints
 
 1.0.25
 - improved storing of coordinate due to bugfix
