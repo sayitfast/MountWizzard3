@@ -25,7 +25,7 @@ from PyQt5.QtCore import *
 # commands to threads
 from queue import Queue
 # import the UI part, which is done via QT Designer and exported
-from support.mount_ui import Ui_MountDialog
+from support.wizzard_main_ui import Ui_WizzardMainDialog
 # import mount functions of other classes
 from support.weather_thread import Weather
 from support.stick_thread import Stick
@@ -78,7 +78,7 @@ class MountWizzardApp(QDialog, QObject):
         self.pointerColor = QColor(255, 0, 255)
         self.moving = False                                                                                                 # check if window moves with mouse pointer
         self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
-        self.ui = Ui_MountDialog()                                                                                          # load the dialog from "DESIGNER"
+        self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
         self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing

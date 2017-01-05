@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <author>Michael Würtenberger</author>
- <class>MountDialog</class>
- <widget class="QWidget" name="MountDialog">
+ <class>WizzardMainDialog</class>
+ <widget class="QWidget" name="WizzardMainDialog">
   <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
@@ -7697,7 +7697,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.1.0</string>
+    <string>MountWizzard  v1.1.1 beta</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
