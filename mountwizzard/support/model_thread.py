@@ -107,6 +107,7 @@ class Model(QtCore.QThread):
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
                     self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.LogQueue.put('Clearing alignment model - taking 4 seconds. \n\n')
                     self.clearAlignmentModel()                                                                              #
                     self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
                 elif self.command == 'SortRefinementPoints':                                                                #
@@ -370,7 +371,6 @@ class Model(QtCore.QThread):
 
     def clearAlignmentModel(self):
         self.modelAnalyseData = []
-        self.LogQueue.put('Clearing alignment model - taking 4 seconds. \n\n')
         self.commandQueue.put('ClearAlign')
         time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (don't know if necessary)
 
@@ -487,7 +487,7 @@ class Model(QtCore.QThread):
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
-        self.logger.debug('capturingImage -> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
+        self.logger.debug('capturingImage -> params: BIN:{0} ISO:{1} EXP:{2} Path:{3}'
                           .format(binning, isoMode, exposure, file))                                                        # write logfile
         suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=binning,
                                                    exposureLength=exposure,
@@ -515,8 +515,16 @@ class Model(QtCore.QThread):
             fitsHeader['M_EXP'] = exposure                                                                                  # store the exposure time as well
             fitsHeader['M_AZ'] = az                                                                                         # x is the same as y
             fitsHeader['M_ALT'] = alt                                                                                       # and vice versa
-            self.logger.debug('capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
-                fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                               # write all header data to debug
+            self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} M_ST:{4} '
+                              'M_PIER:{5} M_EXP:{6} M_AZ:{7} M_ALT:{8}'.format(fitsHeader['DATE-OBS'],
+                                                                               fitsHeader['OBJCTRA'],
+                                                                               fitsHeader['OBJCTDEC'],
+                                                                               fitsHeader['CDELT1'],
+                                                                               fitsHeader['M_ST'],
+                                                                               fitsHeader['M_PIER'],
+                                                                               fitsHeader['M_EXP'],
+                                                                               fitsHeader['M_AZ'],
+                                                                               fitsHeader['M_ALT']))                        # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
             return True, 'OK', imagepath                                                                                    # return true OK and imagepath
@@ -545,16 +553,17 @@ class Model(QtCore.QThread):
             timeTS = float(timeTS)                                                                                          #
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
             if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
-                self.logger.debug('solveImage solv-> ra:{0} dec:{1} suc:{2} mes:{3}'.format(ra_sol, dec_sol, suc, mes))
+                self.logger.debug('solveImage solv-> ra_sol:{0} dec_sol:{1} suc:{2} mes:{3} scale:{4} angle:{5} '
+                                  'timeTS: {6}'.format(ra_sol, dec_sol, suc, mes, scale, angle, timeTS))
                 fitsFileHandle = pyfits.open(imagepath, mode='readonly')                                                    # open for getting telescope coordinates
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 ra_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')                                         # convert to decimals the ra of original pointing of mount
                 dec_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')                                       # convert to decimals the dec of original pointing of mount
                 fitsFileHandle.close()                                                                                      # close FIT file. All the data was store in FITS so batch could be made
-                return True, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                       # return values after successful solving
+                return True, mes, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                  # return values after successful solving
             elif mes != 'Solving':                                                                                          # general error
                 self.logger.debug('solveImage solv-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                      # debug output
-                return False, 0, 0, 0, 0, 0, 0, 0                                                                           # default parameters without success
+                return False, mes, 0, 0, 0, 0, 0, 0, 0                                                                      # default parameters without success
             else:                                                                                                           # otherwise
                 if blind:                                                                                                   # when using blind solve, it takes 30-60 s
                     time.sleep(5)                                                                                           # therefore slow cycle
@@ -575,10 +584,9 @@ class Model(QtCore.QThread):
         return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints, settlingTime):                                                                 # model run routing
-        # TODO: put all messages during modeling one tab right for every point to make it better visible
         # TODO: the new schematics should be: get mount prepared, take picture, write all to fits, get fits and solve, save conclusions
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
-        self.LogQueue.put('Start {0} Model. {1}\n'.format(modeltype, time.ctime()))                                         # Start informing user
+        self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
         self.numCheckPoints = 0                                                                                             # number og checkpoints done
         self.results = []                                                                                                   # error results
@@ -595,18 +603,20 @@ class Model(QtCore.QThread):
                           .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))                                  # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking on during the picture taking
-        base_dir_images = self.ui.le_imageDirectoryName.text() + '/' + time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())    # define subdirectory for storing the images
+        base_dir_images = self.ui.le_imageDirectoryName.text() + '/' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())     # define subdirectory for storing the images
         if not os.path.isdir(base_dir_images):                                                                              # if analyse dir doesn't exist, make it
-            os.makedirs(base_dir_images)                                                                                     # if path doesn't exist, generate is
+            os.makedirs(base_dir_images)                                                                                    # if path doesn't exist, generate is
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
-                    self.LogQueue.put('\n\n{0} Model canceled !\n'.format(modeltype))                                       # we keep all the stars before
+                    self.LogQueue.put('{0} -\t {1} Model canceled !\n'
+                                      .format(time.strftime("%H:%M:%S", time.localtime()), modeltype))                       # we keep all the stars before
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
-                self.LogQueue.put('\nSlewing to point {0:2d}  @ Az: {1:3d}\xb0 Alt: {2:2d}\xb0\n'.format(i+1, p_az, p_alt))  # Gui Output
+                self.LogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
+                                  .format(time.strftime("%H:%M:%S", time.localtime()), i+1, p_az, p_alt))                   # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p_az, p_alt))        # Debug output
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
@@ -614,7 +624,8 @@ class Model(QtCore.QThread):
                         self.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
-                self.LogQueue.put('Wait mount settling / delay time {0:d} second(s) '.format(settlingTime))                 # Gui Output
+                self.LogQueue.put('{0} -\t Wait mount settling / delay time {1:d} second(s) '
+                                  .format(time.strftime("%H:%M:%S", time.localtime()), settlingTime))                       # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:                                                                                      # waiting for settling time and showing data
                     time.sleep(1)                                                                                           # only step n seconds
@@ -634,7 +645,8 @@ class Model(QtCore.QThread):
                 file = base_dir_images + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'                              # generate filepath for storing image
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
-                self.LogQueue.put('Capturing image for model point {0:2d}\n'.format(i + 1))                                 # gui output
+                self.LogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
+                                  .format(time.strftime("%H:%M:%S", time.localtime()), i + 1))                              # gui output
                 suc, mes, imagepath = self.capturingImage(self.mount.sidereal_time, self.mount.ra, self.mount.dec,
                                                           p_az, p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
                                                           self.sizeY, self.offX, self.offY, speed, file, hint,
@@ -643,10 +655,11 @@ class Model(QtCore.QThread):
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
-                    self.LogQueue.put('Solving Image\n')                                                                    # output for user GUI
-                    suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
+                    self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
+                    suc, mes, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
                         self.solveImage(modeltype, blind, imagepath, hint)                                                  # solve the position and returning the values
-                    self.LogQueue.put('Image path: {0}\n'.format(imagepath))  # Gui output
+                    self.LogQueue.put('{0} -\t Image path: {1}\n'
+                                      .format(time.strftime("%H:%M:%S", time.localtime()),imagepath))                       # Gui output
                     self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'
                                       .format(ra_sol, dec_sol, suc, scale, angle))                                          # debug output
                     if suc:                                                                                                 # solved data is there, we can sync
@@ -663,16 +676,19 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))  # generating debug output
                         self.results.append((i, p_az, p_alt, ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                 # adding point for matrix
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
-                        self.LogQueue.put('RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
-                                          'DECdiff: {5:2.1f}  Took: {6:3.1f}s\n'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))    # data for User
+                        self.LogQueue.put('{0} -\t RA: {1:3.1f}  DEC: {2:3.1f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
+                                          'DECdiff: {5:2.1f}  Took: {6:3.1f}s\n'
+                                          .format(time.strftime("%H:%M:%S", time.localtime()), ra_sol, dec_sol,
+                                                  angle, raE, decE, timeTS))                                                # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
                                           'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))            # log output
                     else:                                                                                                   # no success in solving
-                        self.LogQueue.put('Solving error: {0}\n'.format(mes))                                               # Gui output
+                        self.LogQueue.put('{0} -\t Solving error: {1}\n'
+                                          .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
             shutil.rmtree(base_dir_images, ignore_errors=True)                                                              # otherwise just delete them
-        self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'
-                          .format(modeltype, self.numCheckPoints, time.ctime()))                                            # GUI output
+        self.LogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
+                          .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, self.numCheckPoints))             # GUI output
         self.modelrun = False
         return self.results                                                                                                 # return results for analysing
 

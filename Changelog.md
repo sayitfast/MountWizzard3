@@ -1,4 +1,9 @@
 # Changelog:
+1.1.1
+- bugfix solve message say OK, but timeout plate solving happened
+- bugfix in hint calculation in case of binning
+- reshaping logging while modeling
+
 1.1.0
 - release of tested version
 

@@ -928,11 +928,12 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/images')                                                                                # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
-    logging.error('MountWizzard started !\n')                                                                               # start message logger
+    logging.error('----------------------------------------')                                                               # start message logger
+    logging.error('MountWizzard started !')                                                                                 # start message logger
+    logging.error('----------------------------------------')                                                               # start message logger
     app = QApplication(sys.argv)                                                                                            # built application
     sys.excepthook = except_hook                                                                                            # manage except hooks for logging
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
     sys.exit(app.exec_())                                                                                                   # close application
-    logging.error('MountWizzard stopped !\n')                                                                               # stop message logger
