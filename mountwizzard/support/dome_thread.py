@@ -6,7 +6,7 @@
 # Python  v3.5
 #
 # Michael Würtenberger
-# (c) 2016
+# (c) 2016, 2017
 #
 # Licence APL2.0
 #

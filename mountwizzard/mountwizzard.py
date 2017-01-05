@@ -6,7 +6,7 @@
 # Python  v3.5
 #
 # Michael Würtenberger
-# (c) 2016
+# (c) 2016, 2017
 #
 # Licence APL2.0
 #
@@ -34,6 +34,7 @@ from support.model_thread import Model
 from support.analyse import Analyse
 from support.relays import Relays
 from support.dome_thread import Dome
+from support.popup_dialogs import MyPopup
 
 
 def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse
@@ -189,6 +190,9 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
+
+        self.ui.btn_popup.clicked.connect(self.doit)
+        self.ui.btn_popup_close.clicked.connect(self.doit_close)
 
     def setParkPos1Text(self):                                                                                              # set text for button 1
         self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
@@ -886,6 +890,14 @@ class MountWizzardApp(QDialog, QObject):
         data = self.analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file
         if len(data) > 0:                                                                                                   # if data is in the file‚
             self.analyse.plotData(data, self.ui.scalePlotRA.value(), self.ui.scalePlotDEC.value())                          # show plots
+
+    def doit(self):
+        self.w = MyPopup()
+        self.w.setGeometry(QRect(100, 100, 400, 200))
+        self.w.show()
+
+    def doit_close(self):
+        self.w = None
     #
     # basis loop for cyclic topic in gui
     #

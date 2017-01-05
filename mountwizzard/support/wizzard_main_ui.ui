@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>8</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7573,6 +7573,38 @@
      </property>
      <property name="text">
       <string>ms</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_popup">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>260</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Generates refinment point along DSO track</string>
+     </property>
+     <property name="text">
+      <string>Test Popup</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_popup_close">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>260</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Generates refinment point along DSO track</string>
+     </property>
+     <property name="text">
+      <string>Close Popup</string>
      </property>
     </widget>
    </widget>
