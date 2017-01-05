@@ -467,94 +467,73 @@ class Model(QtCore.QThread):
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
                 return False, 0, 0, 0, 0                                                                                    # default without subframe
 
-    def capturingImage(self, index, st, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed, file, pierside):    # capturing image
+    def getTestImage(self, index, imagepath):
+        if os.path.isfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index)):                                      # check existing image file
+            shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index), imagepath)                          # copy testfile instead of imaging
+        else:
+            if index == 0:                                                                                                  # test images should start with 0
+                self.logger.error('getTestImage   -> no test image files available !')
+                return False
+            else:
+                shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(0), imagepath)                          # copy first testfile instead of imaging
+                return True
+
+    def capturingImage(self, st, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed,
+                       file, hint, pierside):                                                                               # capturing image
         st_fits_header = str(st)                                                                                            # store jd as well
-        ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')                                                   # set the point coordinates from mount in J2000 as hint precision 2
-        dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')                                                  # set dec as well
+        ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')                                                  # set the point coordinates from mount in J2000 as hint precision 2
+        dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')                                                 # set dec as well
         if pierside == '1':
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
-        guid = ''                                                                                                           # define guid
-        mes = ''                                                                                                            # define message
-        self.LogQueue.put('Capturing image for model point {0:2d}\n'.format(index + 1))                                     # gui output
-        if not self.ui.checkTestWithoutCamera.isChecked():                                                                  # if it's not simulation, we start imaging
-            self.logger.debug('capturingImage -> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
-                              .format(binning, isoMode, exposure, file))                                                    # write logfile
-            suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=binning,
-                                                       exposureLength=exposure,
-                                                       isoMode=isoMode, iso=str(isoMode),
-                                                       gain='High', speed=speed, frameType='Light',
-                                                       path=file,
-                                                       useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)              # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
-        else:                                                                                                               # otherwise its simulation
-            suc = True                                                                                                      # success is always true
+        self.logger.debug('capturingImage -> params: BIN: {0} ISO:{1} EXP:{2} Path: {3}'
+                          .format(binning, isoMode, exposure, file))                                                        # write logfile
+        suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=binning,
+                                                   exposureLength=exposure,
+                                                   isoMode=isoMode, iso=str(isoMode),
+                                                   gain='High', speed=speed, frameType='Light',
+                                                   path=file,
+                                                   useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)                  # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
-            # TODO swap and remove 'not' statement or get this part out of the imaging routine -> even better
-            if not self.ui.checkTestWithoutCamera.isChecked():                                                              # if we simulate, we cannot wait for SGPro, there is nothing !
-                while True:                                                                                                 # waiting for the image download before proceeding
-                    suc, imagepath = self.SGPro.SgGetImagePath(guid)                                                        # there is the image path, once the image is downloaded
-                    if suc:                                                                                                 # until then, the link is only the receipt
-                        break                                                                                               # stopping the loop
-                    else:                                                                                                   # otherwise
-                        time.sleep(0.5)                                                                                     # wait for 0.5 seconds
-                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))       # debug output
-            else:                                                                                                           # If we test without camera, we need to take pictures of test
-                imagepath = file                                                                                            # set imagepath to default
-                if os.path.isfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index)):                              # check existing image file
-                    shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index), imagepath)                  # copy testfile instead of imaging
-                else:
-                    if index == 0:
-                        self.logger.error('capturingImage -> not test image files available !')
-                    else:
-                        shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(0), imagepath)                  # copy first testfile instead of imaging
-                fitsFileHandle = pyfits.open(imagepath, mode='update')
-                fitsHeader = fitsFileHandle[0].header
-                ra = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
-                dec = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-                ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')
-                dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')
-                fitsFileHandle.flush()
-                fitsFileHandle.close()
-                # TODO move hint calculation to model routine an pass the parameter pixel size camera bin and focal length
-            hint = float(self.ui.pixelSize.value()) * 206.6 / float(self.ui.focalLength.value())                            # calculating hint with focal length and pixel size of cam
+            while True:                                                                                                     # waiting for the image download before proceeding
+                suc, imagepath = self.SGPro.SgGetImagePath(guid)                                                            # there is the image path, once the image is downloaded
+                if suc:                                                                                                     # until then, the link is only the receipt
+                    break                                                                                                   # stopping the loop
+                else:                                                                                                       # otherwise
+                    time.sleep(0.5)                                                                                         # wait for 0.5 seconds
+            self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))           # debug output
             fitsFileHandle = pyfits.open(imagepath, mode='update')                                                          # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
-            # TODO: sorting and naming of the right header data for following processes
             fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
             fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
             fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
+            fitsHeader['CDELT1'] = hint                                                                                     # x is the same as y
+            fitsHeader['CDELT2'] = hint                                                                                     # and vice versa
             fitsHeader['M_ST'] = st_fits_header                                                                             # store jd in header
             fitsHeader['M_PIER'] = pierside_fits_header                                                                     # store pierside as well
             fitsHeader['M_EXP'] = exposure                                                                                  # store the exposure time as well
-            # TODO: str() function for fits header not needed
-            fitsHeader['CDELT1'] = str(hint)                                                                                # x is the same as y
-            fitsHeader['CDELT2'] = str(hint)                                                                                # and vice versa
-            fitsHeader['M_AZ'] = str(az)                                                                                    # x is the same as y
-            fitsHeader['M_ALT'] = str(alt)                                                                                  # and vice versa
+            fitsHeader['M_AZ'] = az                                                                                         # x is the same as y
+            fitsHeader['M_ALT'] = alt                                                                                       # and vice versa
             self.logger.debug('capturingImage -> DATE-OBS: {0}, OBJCTRA: {1} OBJTDEC: {2} CDELT: {3}'.format(
-                fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
-                hint))                                                                                                      # write all header data to debug
+                fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'], hint))                               # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
-            self.LogQueue.put('Image path: {0}\n'.format(imagepath))                                                        # Gui output
-            return True, 'OK', imagepath                                                                                    # return true test message imagepath
+            return True, 'OK', imagepath                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
-    def solveImage(self, modeltype, blind, imagepath, pixelSize, cameraBin, focalLength):                                   # solving image based on information inside the FITS files, no additional info
-        hint = pixelSize * 206.6 * cameraBin / focalLength                                                                  # calculating hint for solve
+    def solveImage(self, modeltype, blind, imagepath, hint):                                                                # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
                                                      blindSolve=blind,
                                                      useFitsHeaders=True)
-        else:                                                                                                               # otherwise
+        else:                                                                                                               # otherwise we have no chance for blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
                                                      blindSolve=False,
                                                      useFitsHeaders=True)                                                   # solve without blind
         self.logger.debug('solveImage     -> suc:{0} mes:{1} scalehint:{2}'.format(suc, mes, hint))                         # debug output
         if not suc:                                                                                                         # if we failed to start solving
-            self.LogQueue.put('Solving could not be started: {0}\n'.format(mes))                                            # Gui output
             self.logger.warning('solveImage     -> no start {0}'. format(mes))                                              # debug output
             return False, 0, 0, 0, 0, 0, 0, 0                                                                               # default parameters without success
         while True:                                                                                                         # retrieving solving data in loop
@@ -574,11 +553,10 @@ class Model(QtCore.QThread):
                 fitsFileHandle.close()                                                                                      # close FIT file. All the data was store in FITS so batch could be made
                 return True, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                       # return values after successful solving
             elif mes != 'Solving':                                                                                          # general error
-                self.LogQueue.put('Error: {0}\n'.format(mes))                                                               # Gui output
                 self.logger.debug('solveImage solv-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                      # debug output
                 return False, 0, 0, 0, 0, 0, 0, 0                                                                           # default parameters without success
             else:                                                                                                           # otherwise
-                if self.ui.checkUseBlindSolve.isChecked():                                                                  # when using blind solve, it takes 30-60 s
+                if blind:                                                                                                   # when using blind solve, it takes 30-60 s
                     time.sleep(5)                                                                                           # therefore slow cycle
                 else:                                                                                                       # local solver takes 1-2 s
                     time.sleep(.25)                                                                                         # therefore quicker cycle
@@ -651,23 +629,24 @@ class Model(QtCore.QThread):
                 binning = int(float(self.ui.cameraBin.value()))                                                             # get binning value from gui
                 exposure = int(float(self.ui.cameraExposure.value()))                                                       # get exposure value from gui
                 isoMode = int(float(self.ui.isoSetting.value()))                                                            # get isoMode value from GUI
+                blind = self.ui.checkUseBlindSolve.isChecked()                                                              # get data from gui
+                hint = float(self.ui.pixelSize.value()) * binning * 206.6 / float(self.ui.focalLength.value())              # calculating hint with focal length and pixel size of cam
                 file = base_dir_images + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'                              # generate filepath for storing image
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
-                suc, mes, imagepath = self.capturingImage(i, self.mount.sidereal_time, self.mount.ra, self.mount.dec, p_az,
-                                                          p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
-                                                          self.sizeY, self.offX, self.offY, speed, file, self.mount.pierside)   # capturing image and store position (ra,dec), time, (az,alt)
+                self.LogQueue.put('Capturing image for model point {0:2d}\n'.format(i + 1))                                 # gui output
+                suc, mes, imagepath = self.capturingImage(self.mount.sidereal_time, self.mount.ra, self.mount.dec,
+                                                          p_az, p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
+                                                          self.sizeY, self.offX, self.offY, speed, file, hint,
+                                                          self.mount.pierside)                                              # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('Solving Image\n')                                                                    # output for user GUI
-                    pixelSize = float(self.ui.pixelSize.value())                                                            # get data from gui
-                    cameraBin = float(self.ui.cameraBin.value())                                                            # get data from gui
-                    focalLength = float(self.ui.focalLength.value())                                                        # get data from gui
-                    blind = self.ui.checkUseBlindSolve.isChecked()                                                          # get data from gui
                     suc, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
-                        self.solveImage(modeltype, blind, imagepath, pixelSize, cameraBin, focalLength)                     # solve the position and returning the values
+                        self.solveImage(modeltype, blind, imagepath, hint)                                                  # solve the position and returning the values
+                    self.LogQueue.put('Image path: {0}\n'.format(imagepath))  # Gui output
                     self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'
                                       .format(ra_sol, dec_sol, suc, scale, angle))                                          # debug output
                     if suc:                                                                                                 # solved data is there, we can sync
@@ -688,6 +667,8 @@ class Model(QtCore.QThread):
                                           'DECdiff: {5:2.1f}  Took: {6:3.1f}s\n'.format(ra_sol, dec_sol, scale, angle, raE, decE, timeTS))    # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
                                           'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))            # log output
+                    else:                                                                                                   # no success in solving
+                        self.LogQueue.put('Solving error: {0}\n'.format(mes))                                               # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
             shutil.rmtree(base_dir_images, ignore_errors=True)                                                              # otherwise just delete them
         self.LogQueue.put('\n\n{0} Model finished. Number of modeled points: {1:3d}   {2}.\n\n'
