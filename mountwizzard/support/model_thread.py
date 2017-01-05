@@ -37,6 +37,9 @@ class Model(QtCore.QThread):
     signalModelAzAltPointer = QtCore.pyqtSignal([float, float], name='ModelAzAltPointer')                                   # setting az/alt pointer in charts
     signalModelRedrawRefinement = QtCore.pyqtSignal(bool, name='ModelRedrawRefinementPoints')                               # redraw refinement chart
     signalModelRedrawBase = QtCore.pyqtSignal(bool, name='ModelRedrawBasePoints')                                           # redraw base charts
+    BLUE = 'background-color: rgb(42, 130, 218)'
+    RED = 'background-color: red'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
     def __init__(self, ui, mount, dome, messageQueue, commandQueue, dataQueue, LogQueue):
         super().__init__()
@@ -76,63 +79,63 @@ class Model(QtCore.QThread):
             if self.connected and self.mount.connected:
                 if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                     self.command = ''                                                                                       # only one command at a time, last wins
-                    self.ui.btn_runBaseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
                     self.runBaseModel()                                                                                     # should be refactored to queue only without signal
-                    self.ui.btn_runBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    self.ui.btn_cancelBaseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')   # button back to default color
+                    self.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelBaseModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'RunRefinementModel':                                                                  #
                     self.command = ''                                                                                       #
-                    self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                     self.runRefinementModel()                                                                               #
-                    self.ui.btn_runRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                    self.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelRefinementModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
                 elif self.command == 'RunAnalyseModel':                                                                     #
                     self.command = ''                                                                                       #
-                    self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(42, 130, 218)')                        # button blue (running)
+                    self.ui.btn_runAnalyseModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
                     self.runAnalyseModel()                                                                                  #
-                    self.ui.btn_runAnalyseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')        # button back to default color
+                    self.ui.btn_runAnalyseModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                              # button back to default color
                 elif self.command == 'RunTimeChangeModel':                                                                  #
                     self.command = ''                                                                                       #
-                    self.ui.btn_runTimeChangeModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
                     self.runTimeChangeModel()                                                                               #
-                    self.ui.btn_runTimeChangeModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # button back to default color
+                    self.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelTimeChangeModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
                 elif self.command == 'RunHystereseModel':                                                                   #
                     self.command = ''                                                                                       #
-                    self.ui.btn_runHystereseModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                    self.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
                     self.runHystereseModel()                                                                                #
-                    self.ui.btn_runHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-                    self.ui.btn_cancelHystereseModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')      # button back to default color
+                    self.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelHystereseModel.setStyleSheet(self.DEFAULT)                                            # button back to default color
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
-                    self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(42, 130, 218)')
-                    self.LogQueue.put('Clearing alignment model - taking 4 seconds. \n\n')
+                    self.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
+                    self.LogQueue.put('Clearing alignment model - taking 4 seconds.\n')
                     self.clearAlignmentModel()                                                                              #
-                    self.ui.btn_clearAlignmentModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                    self.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 elif self.command == 'SortRefinementPoints':                                                                #
                     self.command = ''                                                                                       #
                     self.sortPoints('refinement')                                                                           #
                 elif self.command == 'GenerateDSOPoints':                                                                   #
                     self.command = ''                                                                                       #
-                    self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                      # take some time, therefore coloring button during execution
+                    self.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)                                                  # take some time, therefore coloring button during execution
                     self.generateDSOPoints()                                                                                #
-                    self.ui.btn_generateDSOPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')     # color button back, routine finished
+                    self.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                               # color button back, routine finished
                 elif self.command == 'GenerateDensePoints':                                                                 #
                     self.command = ''                                                                                       #
-                    self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(42, 130, 218)')                    # tale some time, color button fro showing running
+                    self.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)                                                # tale some time, color button fro showing running
                     self.generateDensePoints()                                                                              #
-                    self.ui.btn_generateDensePoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')   # routing finished, coloring default
+                    self.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                             # routing finished, coloring default
                 elif self.command == 'GenerateNormalPoints':                                                                #
                     self.command = ''                                                                                       #
-                    self.ui.btn_generateNormalPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                   # tale some time, color button fro showing running
+                    self.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)                                               # tale some time, color button fro showing running
                     self.generateNormalPoints()                                                                             #
-                    self.ui.btn_generateNormalPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')  # routing finished, coloring default
+                    self.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                            # routing finished, coloring default
                 elif self.command == 'GenerateGridPoints':                                                                  #
                     self.command = ''                                                                                       #
-                    self.ui.btn_generateGridPoints.setStyleSheet('background-color: rgb(42, 130, 218)')                     # take some time, therefore coloring button during execution
+                    self.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)                                                 # take some time, therefore coloring button during execution
                     self.generateGridPoints()                                                                               #
-                    self.ui.btn_generateGridPoints.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')    # color button back, routine finished
+                    self.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
                 elif self.command == 'GenerateBasePoints':                                                                  #
                     self.command = ''                                                                                       #
                     self.generateBasePoints()                                                                               #
@@ -157,23 +160,23 @@ class Model(QtCore.QThread):
             if command == 'CancelBaseModel':                                                                                # check the command
                 self.command = ''                                                                                           # reset the command
                 self.cancel = True                                                                                          # set cancel flag
-                self.ui.btn_cancelBaseModel.setStyleSheet('background-color: red')                                          # reset color of button
+                self.ui.btn_cancelBaseModel.setStyleSheet(self.RED)                                                         # reset color of button
             elif command == 'CancelRefinementModel':                                                                        # check the command
                 self.command = ''                                                                                           # reset the command buffer
                 self.cancel = True                                                                                          # set cancel flag
-                self.ui.btn_cancelRefinementModel.setStyleSheet('background-color: red')                                    # reset color of button
+                self.ui.btn_cancelRefinementModel.setStyleSheet(self.RED)                                                   # reset color of button
             elif command == 'CancelAnalyseModel':                                                                           #
                 self.command = ''                                                                                           #
                 self.cancel = True                                                                                          #
-                self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: red')                                       # reset color of button
+                self.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)                                                      # reset color of button
             elif command == 'CancelTimeChangeModel':                                                                        #
                 self.command = ''                                                                                           #
                 self.cancel = True                                                                                          #
-                self.ui.btn_cancelTimeChangeModel.setStyleSheet('background-color: red')                                    # reset color of button
+                self.ui.btn_cancelTimeChangeModel.setStyleSheet(self.RED)                                                   # reset color of button
             elif command == 'CancelHystereseModel':                                                                         #
                 self.command = ''                                                                                           #
                 self.cancel = True                                                                                          #
-                self.ui.btn_cancelHystereseModel.setStyleSheet('background-color: red')                                     # reset color of button
+                self.ui.btn_cancelHystereseModel.setStyleSheet(self.RED)                                                    # reset color of button
         else:
             self.command = command                                                                                          # passing the command to main loop of thread
 
@@ -659,7 +662,7 @@ class Model(QtCore.QThread):
                     suc, mes, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
                         self.solveImage(modeltype, blind, imagepath, hint)                                                  # solve the position and returning the values
                     self.LogQueue.put('{0} -\t Image path: {1}\n'
-                                      .format(time.strftime("%H:%M:%S", time.localtime()),imagepath))                       # Gui output
+                                      .format(time.strftime("%H:%M:%S", time.localtime()), imagepath))                      # Gui output
                     self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'
                                       .format(ra_sol, dec_sol, suc, scale, angle))                                          # debug output
                     if suc:                                                                                                 # solved data is there, we can sync
@@ -681,7 +684,7 @@ class Model(QtCore.QThread):
                                           .format(time.strftime("%H:%M:%S", time.localtime()), ra_sol, dec_sol,
                                                   angle, raE, decE, timeTS))                                                # data for User
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
-                                          'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))            # log output
+                                          'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))    # log output
                     else:                                                                                                   # no success in solving
                         self.LogQueue.put('{0} -\t Solving error: {1}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
@@ -691,6 +694,3 @@ class Model(QtCore.QThread):
                           .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, self.numCheckPoints))             # GUI output
         self.modelrun = False
         return self.results                                                                                                 # return results for analysing
-
-
-

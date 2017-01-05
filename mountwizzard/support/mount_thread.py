@@ -31,6 +31,9 @@ class Mount(QtCore.QThread):
     signalMountConnected = QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
     signalMountAzAltPointer = QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
 
+    BLUE = 'background-color: rgb(42, 130, 218)'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
+
     def __init__(self, ui, messageQueue, commandQueue, mountDataQueue):
         super().__init__()                                                                                                  # init of the class parent with super
         self.ui = ui                                                                                                        # accessing ui object from mount class
@@ -95,31 +98,31 @@ class Mount(QtCore.QThread):
                 if not self.commandQueue.empty():                                                                           # checking if in queue is something to do
                     command = self.commandQueue.get()                                                                       # if yes, getting the work command
                     if command == 'GetAlignmentModel':                                                                      # checking which command was sent
-                        self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                        self.ui.btn_getActualModel.setStyleSheet(self.BlUE)
                         self.getAlignmentModel(self.driver_real)                                                            # running the appropriate method
-                        self.ui.btn_getActualModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                        self.ui.btn_getActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':                                                                           #
                         self.sendCommand('delalig', self.driver_real)                                                       #
                     elif command == 'RunTargetRMSAlignment':
-                        self.ui.btn_runTargetRMSAlignment.setStyleSheet('background-color: rgb(42, 130, 218)')
+                        self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BlUE)
                         self.runTargetRMSAlignment(self.driver_real)
-                        self.ui.btn_runTargetRMSAlignment.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                        self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
                     elif command == 'BackupModel':
-                        self.ui.btn_backupModel.setStyleSheet('background-color: rgb(42, 130, 218)')  # button blue
+                        self.ui.btn_backupModel.setStyleSheet(self.BlUE)                                                    # button blue
                         self.backupModel(self.driver_real)
-                        self.ui.btn_backupModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')  # button to default back
+                        self.ui.btn_backupModel.setStyleSheet(self.DEFAULT)                                                 # button to default back
                     elif command == 'RestoreModel':
-                        self.ui.btn_restoreModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                        self.ui.btn_restoreModel.setStyleSheet(self.BlUE)
                         self.restoreModel(self.driver_real)
-                        self.ui.btn_restoreModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                        self.ui.btn_restoreModel.setStyleSheet(self.DEFAULT)
                     elif command == 'LoadSimpleModel':
-                        self.ui.btn_loadSimpleModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                        self.ui.btn_loadSimpleModel.setStyleSheet(self.BlUE)
                         self.loadSimpleModel(self.driver_real)
-                        self.ui.btn_loadSimpleModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                        self.ui.btn_loadSimpleModel.setStyleSheet(self.DEFAULT)
                     elif command == 'SaveSimpleModel':
-                        self.ui.btn_saveSimpleModel.setStyleSheet('background-color: rgb(42, 130, 218)')
+                        self.ui.btn_saveSimpleModel.setStyleSheet(self.BlUE)
                         self.saveSimpleModel(self.driver_real)
-                        self.ui.btn_saveSimpleModel.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+                        self.ui.btn_saveSimpleModel.setStyleSheet(self.DEFAULT)
                     elif command == 'SetRefractionParameter':
                         self.setRefractionParameter(self.driver_real)
                     elif command == 'FLIP':
@@ -247,7 +250,8 @@ class Mount(QtCore.QThread):
         try:
             hour, minute, second = value.split(splitter)
         except Exception as e:
-            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
+            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'
+                              .format(value, splitter, e))
             return 0
         return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
 
@@ -295,15 +299,19 @@ class Mount(QtCore.QThread):
             self.transform.SetJ2000(ha_digit, dec_digit)
             az = int(float(self.transform.AzimuthTopocentric))
             alt = int(float(self.transform.ElevationTopocentric))
-            self.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d} Az: {1:3d} Alt: {2:2d} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'.format(i, az, alt, errorRMS, errorAngle)})
+            self.mountDataQueue.put({'Name': 'ModelStarError',
+                                     'Value': '#{0:02d} Az: {1:3d} Alt: {2:2d} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
+                                    .format(i, az, alt, errorRMS, errorAngle)})
         self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})
-        self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})
+        self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
+                                .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})
 
     def runTargetRMSAlignment(self, real):
-        # TODO There must be a model loaded. if not, a load should be done automatically
-        self.mountAlignRMSsum = 999.9
-        self.mountAlignNumberStars = 4
-        while math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars) > float(self.ui.targetRMS.value()) and self.mountAlignNumberStars > 3:
+        self.getAlignmentModel(real)                                                                                        # get model first
+        self.mountAlignRMSsum = 999.9                                                                                       # set maximum
+        self.mountAlignNumberStars = 4                                                                                      # set minimum for stars
+        while math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars) > float(self.ui.targetRMS.value()) \
+                and self.mountAlignNumberStars > 3:
             a = sorted(self.mountAlignmentPoints, key=itemgetter(1), reverse=True)                                          # index 0 ist the worst star
             try:                                                                                                            # delete the worst star
                 self.sendCommand('delalst{0:d}'.format(a[0][0]), real)
