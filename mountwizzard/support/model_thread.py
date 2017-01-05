@@ -20,7 +20,7 @@ import os
 import shutil
 # threading
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import *
+from PyQt5 import QtWidgets
 # library for fits file handling
 import pyfits
 # for the sorting
@@ -411,7 +411,8 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
         points = []                                                                                                         # clear the points
         for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):                                                # generate the points
-            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()), QGraphicsTextItem(''), True))
+            points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()),
+                           QtWidgets.QGraphicsTextItem(''), True))
         self.modelAnalyseData = self.runModel('TimeChange', points, settlingTime)                                           # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
@@ -419,20 +420,20 @@ class Model(QtCore.QThread):
 
     def runHystereseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))                                                             # using settling time also for waiting / delay
-        points = [(270, 85, QGraphicsTextItem(''), True),
-                  (000, 20, QGraphicsTextItem(''), False),
-                  (270, 85, QGraphicsTextItem(''), True),
-                  (90, 20, QGraphicsTextItem(''), False),
-                  (270, 85, QGraphicsTextItem(''), True),
-                  (180, 20, QGraphicsTextItem(''), False),
-                  (270, 85, QGraphicsTextItem(''), True),
-                  (90, 85, QGraphicsTextItem(''), True),
-                  (181, 20, QGraphicsTextItem(''), False),
-                  (90, 85, QGraphicsTextItem(''), True),
-                  (270, 20, QGraphicsTextItem(''), False),
-                  (90, 85, QGraphicsTextItem(''), True),
-                  (359, 20, QGraphicsTextItem(''), False),
-                  (90, 85, QGraphicsTextItem(''), True)]
+        points = [(270, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (000, 20, QtWidgets.QGraphicsTextItem(''), False),
+                  (270, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (90, 20, QtWidgets.QGraphicsTextItem(''), False),
+                  (270, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (180, 20, QtWidgets.QGraphicsTextItem(''), False),
+                  (270, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (90, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (181, 20, QtWidgets.QGraphicsTextItem(''), False),
+                  (90, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (270, 20, QtWidgets.QGraphicsTextItem(''), False),
+                  (90, 85, QtWidgets.QGraphicsTextItem(''), True),
+                  (359, 20, QtWidgets.QGraphicsTextItem(''), False),
+                  (90, 85, QtWidgets.QGraphicsTextItem(''), True)]
         self.modelAnalyseData = self.runModel('Hysterese', points, settlingTime)                                            # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_hysterese.txt'                                         # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
