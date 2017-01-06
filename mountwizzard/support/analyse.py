@@ -15,17 +15,151 @@
 import logging
 import os
 import numpy
+# import for the PyQt5 Framework
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
+from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
 import matplotlib                                                                                                           # plotting library
 matplotlib.use('Qt5Agg')                                                                                                    # we are using QT5 style
 from matplotlib import pyplot as plt                                                                                        # use the plot function
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
+
+class ShowAnalyseData(FigureCanvas):
+
+    def __init__(self, parent=None):
+        self.plt = plt
+        self.fig = self.plt.figure(dpi=75)
+        rect = self.fig.patch
+        rect.set_facecolor((25/256, 25/256, 25/256))
+        self.axes = self.fig.add_subplot(111)
+        self.axes.grid(True, color='white')
+        self.axes.set_axis_bgcolor((48/256, 48/256, 48/256))
+        self.axes.tick_params(axis='x', colors='white')
+        self.axes.tick_params(axis='y', colors='white')
+        self.plt.rcParams['toolbar'] = 'None'
+        self.plt.rcParams['axes.titlesize'] = 'large'
+        self.plt.rcParams['axes.labelsize'] = 'medium'
+        self.plt.tight_layout(rect=[0.05, 0.05, 0.975, 0.95])
+        self.compute_initial_figure()
+        FigureCanvas.__init__(self, self.fig)
+        self.setParent(parent)
+        FigureCanvas.updateGeometry(self)
+
+    def compute_initial_figure(self):
+        self.axes.plot(1,1)
+
+
+class ShowAnalysePopup(QWidget):
+    logger = logging.getLogger(__name__)
+
+    def __init__(self, uiMain):
+        QWidget.__init__(self)
+        self.moving = False
+        self.offset = None
+        self.uiMain = uiMain
+        self.analyse = Analyse()
+        self.ui = Ui_AnalyseDialog()
+        self.ui.setupUi(self)
+        self.initUI()
+
+        self.ui.btn_selectClose.clicked.connect(self.close)
+        self.ui.scalePlotDEC.valueChanged.connect(self.getData)
+        self.ui.scalePlotRA.valueChanged.connect(self.getData)
+        self.ui.btn_selectDecError.clicked.connect(self.showDecError)
+        self.ui.btn_selectRaError.clicked.connect(self.showRaError)
+
+        helper = QVBoxLayout(self.ui.plot)
+        self.plotWidget = ShowAnalyseData(self.ui.plot)
+        helper.addWidget(self.plotWidget)
+
+    def mousePressEvent(self, mouseEvent):
+        self.modifiers = mouseEvent.modifiers()
+        if mouseEvent.button() == Qt.LeftButton:
+            self.moving = True
+            self.offset = mouseEvent.pos()
+
+    def mouseMoveEvent(self, mouseEvent):
+        if self.moving:
+            cursor = QCursor()
+            self.move(cursor.pos() - self.offset)
+
+    def mouseReleaseEvent(self, mouseEvent):
+        if self.moving:
+            cursor = QCursor()
+            self.move(cursor.pos() - self.offset)
+            self.moving = False
+
+    def initUI(self):
+        self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
+        self.setMouseTracking(True)
+        darkPalette = QPalette()
+        darkPalette.setColor(QPalette.Window, QColor(32, 32, 32))
+        darkPalette.setColor(QPalette.WindowText, QColor(192, 192, 192))
+        darkPalette.setColor(QPalette.Base, QColor(25, 25, 25))
+        darkPalette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
+        darkPalette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
+        darkPalette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
+        darkPalette.setColor(QPalette.Text, QColor(32, 144, 192))
+        darkPalette.setColor(QPalette.Button, QColor(24, 24, 24))
+        darkPalette.setColor(QPalette.ButtonText, QColor(192, 192, 192))
+        darkPalette.setColor(QPalette.BrightText, QColor(255, 0, 0))
+        darkPalette.setColor(QPalette.Highlight, QColor(42, 130, 218))
+        darkPalette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
+        self.setPalette(darkPalette)
+        palette = QPalette()
+        palette.setColor(QPalette.Foreground, QColor(32, 144, 192))
+        palette.setColor(QPalette.Background, QColor(53, 53, 53))
+        self.ui.windowTitle.setPalette(palette)
+
+    def getData(self):
+        self.scaleRA = self.ui.scalePlotRA.value()
+        self.scaleDEC = self.ui.scalePlotDEC.value()
+        self.data = self.analyse.loadData(self.uiMain.le_analyseFileName.text())
+        if len(self.data) > 0:
+            self.dat, self.datWest, self.datEast, self.datOut, self.isDatWest, self.isDatEast, self.isDatOut = \
+                self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+
+    def showDecError(self):
+        self.plotWidget.plt.cla()
+        self.plotWidget.plt.xlabel('Number of Model Point', color='white')
+        self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
+        self.plotWidget.plt.title('DEC Error over Modeling', color='white')
+        self.plotWidget.plt.axis([0, len(self.data)-1, -self.scaleDEC, self.scaleDEC])
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget.plt.plot(self.dat[0], self.dat[8], color='black')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[0], self.datWest[8], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[0], self.datEast[8], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[0], self.datOut[8], 'ro')
+        self.plotWidget.draw()
+
+    def showRaError(self):
+        self.plotWidget.plt.cla()
+        self.plotWidget.plt.xlabel('Number of Model Point', color='white')
+        self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
+        self.plotWidget.plt.title('RA Error over Modeling', color='white')
+        self.plotWidget.plt.axis([0, len(self.data)-1, -self.scaleRA, self.scaleRA])
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget. plt.plot(self.dat[0], self.dat[7], color='black')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[0], self.datWest[7], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[0], self.datEast[7], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[0], self.datOut[7], 'ro')
+        self.plotWidget.draw()
 
 
 class Analyse:
-    logger = logging.getLogger(__name__)                                                                                    # logging enabling
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
-        self.filepath = '/analysedata'                                                                                      # define file path for storing the analyse files
+        self.filepath = '/analysedata'
 
     def saveData(self, data, name):                                                                                         # saving data from list to file
         filename = os.getcwd() + self.filepath + '/' + name                                                                 # built the filename
@@ -54,15 +188,12 @@ class Analyse:
             return []                                                                                                       # loading doesn't work
         return data                                                                                                         # successful loading
 
-    @staticmethod
-    def plotData(data, scaleRA, scaleDEC):
+    def prepareData(self, data, scaleRA, scaleDEC):
         # index in plot             0  1    2   3   4   5       6           7       8       9
         # data format of analyse: (i, az, alt, ra, dec, ra_sol, dec_sol, raError, decError, err)
         if len(data) == 0:                                                                                                  # in case no data loaded ->
             return                                                                                                          # quit
-        print(len(data))
         dat = numpy.asarray(data)                                                                                           # convert list to array
-        print(len(dat))
         datWest = []                                                                                                        # clear the storage, point of west side of pier
         isDatWest = False
         datEast = []                                                                                                        # point on the east side of pier
@@ -93,127 +224,12 @@ class Analyse:
                 else:
                     datEast.append(dat[i])                                                                                  # append to east list
                     isDatEast = True
-        dat = numpy.transpose(dat)                                                                                          # transpose array
         datWest = numpy.transpose(datWest)                                                                                  # transpose array
         datEast = numpy.transpose(datEast)                                                                                  # transpose array
-        datOut = numpy.transpose(datOut)                                                                                    # transpose array
+        datOut = numpy.transpose(datOut)
+        dat = numpy.transpose(dat)                                                                                          # transpose array
+        return dat, datWest, datEast, datOut, isDatWest, isDatEast, isDatOut
 
-        plt.rcParams['toolbar'] = 'None'                                                                                    # no toolbar showing in plot
-        fig = plt.figure()                                                                                                  # open plot
-        fig.suptitle('Modeling Measurements', color='white', fontsize=20)                                                   # set title of figure
-        rect = fig.patch                                                                                                    # get rectangle of figure
-        rect.set_facecolor((25/256, 25/256, 25/256))                                                                        # set background color of rectangle
-
-        ax1 = fig.add_subplot(231)
-        ax1.set_axis_bgcolor((48/256, 48/256, 48/256))
-        ax1.tick_params(axis='x', colors='white')
-        ax1.tick_params(axis='y', colors='white')
-        plt.xlabel('DEC Error (arcsec)', color='white')
-        plt.ylabel('Altitude (degree)', color='white')
-        plt.title('Altitude over Declination Error', color='white')
-        plt.axis([-scaleDEC, scaleDEC, 0, 90])
-        plt.grid(True, color='white')
-        plt.plot(dat[8], dat[2], color='black')
-        if isDatWest:
-            plt.plot(datWest[8], datWest[2], 'bo')
-        if isDatEast:
-            plt.plot(datEast[8], datEast[2], 'go')
-        if isDatOut:
-            plt.plot(datOut[8], datOut[2], 'ro')
-
-        ax2 = fig.add_subplot(232)
-        # ax2.set_theta_direction(-1)
-        # ax2.set_theta_zero_location('N')
-        ax2.set_axis_bgcolor((48/256, 48/256, 48/256))
-        ax2.tick_params(axis='x', colors='white')
-        ax2.tick_params(axis='y', colors='white')
-        plt.xlabel('RA Error (arcsec)', color='white')
-        plt.ylabel('Altitude (degree)', color='white')
-        plt.title('Altitude over RightAscension Error', color='white')
-        plt.axis([-scaleRA, scaleRA, 0, 90])
-        plt.grid(True, color='white')
-        plt.plot(dat[7], dat[2], color='black')
-        if isDatWest:
-            plt.plot(datWest[7], datWest[2], 'bo')
-        if isDatEast:
-            plt.plot(datEast[7], datEast[2], 'go')
-        if isDatOut:
-            plt.plot(datOut[1], datOut[2], 'ro')
-
-        ax3 = fig.add_subplot(233)
-        ax3.set_axis_bgcolor((48/256, 48/256, 48/256))
-        ax3.tick_params(axis='x', colors='white')
-        ax3.tick_params(axis='y', colors='white')
-        plt.xlabel('Azimuth (degree)', color='white')
-        plt.ylabel('Error (arcsec)', color='white')
-        plt.title('Declination Error over Azimuth', color='white')
-        plt.axis([0, 360, -scaleDEC, scaleDEC])
-        plt.grid(True, color='white')
-        plt.plot(dat[1], dat[8], color='black')
-        if isDatWest:
-            plt.plot(datWest[1], datWest[8], 'bo')
-        if isDatEast:
-            plt.plot(datEast[1], datEast[8], 'go')
-        if isDatOut:
-            plt.plot(datOut[1], datOut[8], 'ro')
-
-        ax4 = fig.add_subplot(234)
-        ax4.set_axis_bgcolor((48/256, 48/256, 48/256))
-        ax4.tick_params(axis='x', colors='white')
-        ax4.tick_params(axis='y', colors='white')
-        plt.xlabel('RA Error (arcsec)', color='white')
-        plt.ylabel('DEC Error (arcsec)', color='white')
-        plt.title('DEC Error over RA Error', color='white')
-        plt.axis([-scaleRA, scaleRA, -scaleDEC, scaleDEC])
-        plt.grid(True, color='white')
-        plt.plot(dat[7], dat[8], color='black')
-        if isDatWest:
-            plt.plot(datWest[7], datWest[8], 'bo')
-        if isDatEast:
-            plt.plot(datEast[7], datEast[8], 'go')
-        if isDatOut:
-            plt.plot(datOut[7], datOut[8], 'ro')
-
-        ax5 = fig.add_subplot(235)
-        ax5.set_axis_bgcolor((48/256, 48/256, 48/256))
-        ax5.tick_params(axis='x', colors='white')
-        ax5.tick_params(axis='y', colors='white')
-        plt.xlabel('Number of Model Point', color='white')
-        plt.ylabel('RA Error (arcsec)', color='white')
-        plt.title('RA Error over Modeling', color='white')
-        plt.axis([0, len(data)-1, -scaleRA, scaleRA])
-        plt.grid(True, color='white')
-        plt.plot(dat[0], dat[7], color='black')
-        if isDatWest:
-            plt.plot(datWest[0], datWest[7], 'bo')
-        if isDatEast:
-            plt.plot(datEast[0], datEast[7], 'go')
-        if isDatOut:
-            plt.plot(datOut[0], datOut[7], 'ro')
-
-        ax6 = fig.add_subplot(236)
-        ax6.set_axis_bgcolor((48/256, 48/256, 48/256))
-        ax6.tick_params(axis='x', colors='white')
-        ax6.tick_params(axis='y', colors='white')
-        plt.xlabel('Number of Model Point', color='white')
-        plt.ylabel('DEC Error (arcsec)', color='white')
-        plt.title('DEC Error over Modeling', color='white')
-        plt.axis([0, len(data)-1, -scaleDEC, scaleDEC])
-        plt.grid(True, color='white')
-        plt.plot(dat[0], dat[8], color='black')
-        if isDatWest:
-            plt.plot(datWest[0], datWest[8], 'bo')
-        if isDatEast:
-            plt.plot(datEast[0], datEast[8], 'go')
-        if isDatOut:
-            plt.plot(datOut[0], datOut[8], 'ro')
-
-        mng = plt.get_current_fig_manager()
-        mng.window.showMaximized()
-        plt.show()
 
 if __name__ == "__main__":
-
-    a = Analyse()
-    # data = a.loadData('2016-10-27-18-31-58_analyse_run.txt')
-    # a.plotData(data, 20, 20)
+    pass

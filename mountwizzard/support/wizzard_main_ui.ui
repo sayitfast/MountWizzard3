@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1989,12 +1989,12 @@
       <string>Cancel</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runPlotAnalyse">
+    <widget class="QPushButton" name="btn_runOpenAnalyseWindow">
      <property name="geometry">
       <rect>
-       <x>630</x>
-       <y>90</y>
-       <width>121</width>
+       <x>330</x>
+       <y>110</y>
+       <width>421</width>
        <height>31</height>
       </rect>
      </property>
@@ -2002,14 +2002,14 @@
       <string>Draws a plot windows with the analysis data</string>
      </property>
      <property name="text">
-      <string>Plot Analyse</string>
+      <string>Open Analyse Window</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_selectAnalyseFileName">
      <property name="geometry">
       <rect>
-       <x>500</x>
-       <y>90</y>
+       <x>420</x>
+       <y>70</y>
        <width>121</width>
        <height>31</height>
       </rect>
@@ -2093,104 +2093,6 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="scalePlotDEC">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>100</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>resulting focal length - please think of reducers etc.</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="minimum">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>50.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>20.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_93">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>70</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Scale for RA</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_94">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>100</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Scale for DEC</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="scalePlotRA">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>70</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>resulting focal length - please think of reducers etc.</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="minimum">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>50.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>20.000000000000000</double>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_98">
      <property name="geometry">
       <rect>
@@ -2240,7 +2142,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Plot Analyse Data</string>
+      <string>Select Analyse File</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_107">
@@ -2473,54 +2375,6 @@
       <rect>
        <x>160</x>
        <y>120</y>
-       <width>21</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>°</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_113">
-     <property name="geometry">
-      <rect>
-       <x>470</x>
-       <y>70</y>
-       <width>21</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>°</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_114">
-     <property name="geometry">
-      <rect>
-       <x>470</x>
-       <y>100</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -8014,7 +7868,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_saveSimpleModel</tabstop>
   <tabstop>btn_runAnalyseModel</tabstop>
   <tabstop>btn_cancelAnalyseModel</tabstop>
-  <tabstop>btn_runPlotAnalyse</tabstop>
+  <tabstop>btn_runOpenAnalyseWindow</tabstop>
   <tabstop>btn_selectAnalyseFileName</tabstop>
   <tabstop>btn_cancelBaseModel</tabstop>
   <tabstop>btn_runRefinementModel</tabstop>

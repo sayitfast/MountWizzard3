@@ -31,7 +31,7 @@ from support.weather_thread import Weather
 from support.stick_thread import Stick
 from support.mount_thread import Mount
 from support.model_thread import Model
-from support.analyse import Analyse
+from support.analyse import ShowAnalysePopup
 from support.relays import Relays
 from support.dome_thread import Dome
 from support.popup_dialogs import MyPopup
@@ -82,6 +82,8 @@ class MountWizzardApp(QDialog, QObject):
         self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
+        self.show()                                                                                                         # show window
+        self.analysePopup = None                                                                                            # reference for additional window
         self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing
         self.pointerRefinementTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                             # Reference Widget for Pointing
         self.pointerBaseDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
@@ -90,7 +92,6 @@ class MountWizzardApp(QDialog, QObject):
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
-        self.analyse = Analyse()                                                                                            # plotting and visualizing model measurements
         self.relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self.messageQueue)                                                                                 # dome control
         self.dome.signalDomPointer.connect(self.setDomePointer)
@@ -98,6 +99,7 @@ class MountWizzardApp(QDialog, QObject):
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
         self.model = Model(self.ui, self.mount, self.dome, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
+        self.analysePopup = ShowAnalysePopup(self.ui)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
         self.showBasePoints()                                                                                               # populate gui with data for base model
@@ -186,7 +188,7 @@ class MountWizzardApp(QDialog, QObject):
         self.ui.btn_cancelTimeChangeModel.clicked.connect(self.cancelTimeChangeModel)
         self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
         self.ui.btn_cancelHystereseModel.clicked.connect(self.cancelHystereseModel)
-        self.ui.btn_runPlotAnalyse.clicked.connect(self.runPlotAnalyse)
+        self.ui.btn_runOpenAnalyseWindow.clicked.connect(self.runOpenAnalyseWindow)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
@@ -267,7 +269,6 @@ class MountWizzardApp(QDialog, QObject):
         palette.setColor(QPalette.Foreground, self.blueColor)
         palette.setColor(QPalette.Background, QColor(53, 53, 53))
         self.ui.windowTitle.setPalette(palette)
-        self.show()                                                                                                         # show window
 
     def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
         scene.setBackgroundBrush(QColor(32, 32, 32))                                                                        # background color
@@ -389,8 +390,8 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
             self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
             self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
-            self.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
-            self.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
+            self.analysePopup.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
+            self.analysePopup.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
             self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
@@ -445,8 +446,8 @@ class MountWizzardApp(QDialog, QObject):
         self.config['NumberGridPointsCol'] = self.ui.numberGridPointsCol.value()
         self.config['WindowPositionX'] = self.pos().x()
         self.config['WindowPositionY'] = self.pos().y()
-        self.config['ScalePlotRA'] = self.ui.scalePlotRA.value()
-        self.config['ScalePlotDEC'] = self.ui.scalePlotDEC.value()
+        self.config['ScalePlotRA'] = self.analysePopup.ui.scalePlotRA.value()
+        self.config['ScalePlotDEC'] = self.analysePopup.ui.scalePlotDEC.value()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
         self.config['AltitudeTimeChange'] = self.ui.altitudeTimeChange.value()
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
@@ -497,6 +498,11 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
         else:
             self.logger.warning('selectAnalyseFile -> no file selected')
+
+    def runOpenAnalyseWindow(self):
+        self.analysePopup.getData()
+        self.analysePopup.showDecError()
+        self.analysePopup.show()
 
     def selectImageDirectoryName(self):
         dlg = QFileDialog()
@@ -886,15 +892,8 @@ class MountWizzardApp(QDialog, QObject):
     def cancelHystereseModel(self):
         self.model.signalModelCommand.emit('CancelHystereseModel')
 
-    def runPlotAnalyse(self):
-        data = self.analyse.loadData(self.ui.le_analyseFileName.text())                                                     # load data file
-        if len(data) > 0:                                                                                                   # if data is in the file‚
-            self.analyse.plotData(data, self.ui.scalePlotRA.value(), self.ui.scalePlotDEC.value())                          # show plots
-
     def doit(self):
         self.w = MyPopup()
-        self.w.setGeometry(QRect(100, 100, 400, 200))
-        self.w.show()
 
     def doit_close(self):
         self.w = None
