@@ -92,7 +92,7 @@
     <string>Ra Error</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_3">
+  <widget class="QPushButton" name="btn_selectDecErrorAltitude">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -110,10 +110,10 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>Dec Error over Alt</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_4">
+  <widget class="QPushButton" name="btn_selectRaErrorAltitude">
    <property name="geometry">
     <rect>
      <x>400</x>
@@ -131,10 +131,10 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>Ra Error over Alt</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_5">
+  <widget class="QPushButton" name="btn_selectModelPointPolar">
    <property name="geometry">
     <rect>
      <x>530</x>
@@ -152,10 +152,10 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>Model Point Polar</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_6">
+  <widget class="QPushButton" name="btn_selectDecErrorAzimuth">
    <property name="geometry">
     <rect>
      <x>270</x>
@@ -173,7 +173,7 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>Dec Error over Az</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectClose">
@@ -239,7 +239,7 @@
     <string>...</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_10">
+  <widget class="QPushButton" name="btn_selectRaErrorAzimuth">
    <property name="geometry">
     <rect>
      <x>400</x>
@@ -257,13 +257,13 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>Ra Error over Az</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_93">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>190</x>
      <y>140</y>
      <width>121</width>
      <height>21</height>
@@ -281,7 +281,7 @@
   <widget class="QLabel" name="label_113">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>320</x>
      <y>140</y>
      <width>21</width>
      <height>20</height>
@@ -305,7 +305,7 @@
   <widget class="QDoubleSpinBox" name="scalePlotRA">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>270</x>
      <y>140</y>
      <width>51</width>
      <height>22</height>
@@ -336,7 +336,7 @@
   <widget class="QLabel" name="label_94">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>20</x>
      <y>140</y>
      <width>121</width>
      <height>21</height>
@@ -354,7 +354,7 @@
   <widget class="QDoubleSpinBox" name="scalePlotDEC">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>100</x>
      <y>140</y>
      <width>51</width>
      <height>22</height>
@@ -385,7 +385,7 @@
   <widget class="QLabel" name="label_114">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>150</x>
      <y>140</y>
      <width>21</width>
      <height>20</height>

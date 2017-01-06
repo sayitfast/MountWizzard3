@@ -21,9 +21,9 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
-import matplotlib                                                                                                           # plotting library
-matplotlib.use('Qt5Agg')                                                                                                    # we are using QT5 style
-from matplotlib import pyplot as plt                                                                                        # use the plot function
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib import pyplot as plt
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
@@ -49,7 +49,7 @@ class ShowAnalyseData(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
     def compute_initial_figure(self):
-        self.axes.plot(1,1)
+        self.axes.plot(1, 1)
 
 
 class ShowAnalysePopup(QWidget):
@@ -70,6 +70,12 @@ class ShowAnalysePopup(QWidget):
         self.ui.scalePlotRA.valueChanged.connect(self.getData)
         self.ui.btn_selectDecError.clicked.connect(self.showDecError)
         self.ui.btn_selectRaError.clicked.connect(self.showRaError)
+        self.ui.btn_selectDecErrorAltitude.clicked.connect(self.showDecErrorAltitude)
+        self.ui.btn_selectRaErrorAltitude.clicked.connect(self.showRaErrorAltitude)
+        self.ui.btn_selectDecErrorAzimuth.clicked.connect(self.showDecErrorAzimuth)
+        self.ui.btn_selectRaErrorAzimuth.clicked.connect(self.showRaErrorAzimuth)
+        self.ui.btn_selectModelPointPolar.clicked.connect(self.showModelPointPolar)
+
 
         helper = QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
@@ -122,12 +128,20 @@ class ShowAnalysePopup(QWidget):
             self.dat, self.datWest, self.datEast, self.datOut, self.isDatWest, self.isDatEast, self.isDatOut = \
                 self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
 
+    def setFigure(self, projection=None):
+        self.plotWidget.plt.clf()
+        self.plotWidget.axes = self.plotWidget.fig.add_subplot(111, projection=projection)
+        self.plotWidget.axes.grid(True, color='white')
+        self.plotWidget.axes.set_axis_bgcolor((48/256, 48/256, 48/256))
+        self.plotWidget.axes.tick_params(axis='x', colors='white')
+        self.plotWidget.axes.tick_params(axis='y', colors='white')
+
     def showDecError(self):
-        self.plotWidget.plt.cla()
+        self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
         self.plotWidget.plt.title('DEC Error over Modeling', color='white')
-        self.plotWidget.plt.axis([0, len(self.data)-1, -self.scaleDEC, self.scaleDEC])
+        self.plotWidget.plt.axis([0, len(self.data), -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.dat[0], self.dat[8], color='black')
         if self.isDatWest:
@@ -139,11 +153,11 @@ class ShowAnalysePopup(QWidget):
         self.plotWidget.draw()
 
     def showRaError(self):
-        self.plotWidget.plt.cla()
+        self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
         self.plotWidget.plt.title('RA Error over Modeling', color='white')
-        self.plotWidget.plt.axis([0, len(self.data)-1, -self.scaleRA, self.scaleRA])
+        self.plotWidget.plt.axis([0, len(self.data), -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget. plt.plot(self.dat[0], self.dat[7], color='black')
         if self.isDatWest:
@@ -154,6 +168,91 @@ class ShowAnalysePopup(QWidget):
             self.plotWidget.plt.plot(self.datOut[0], self.datOut[7], 'ro')
         self.plotWidget.draw()
 
+    def showDecErrorAltitude(self):
+        self.setFigure()
+        self.plotWidget.plt.xlabel('Altitude', color='white')
+        self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
+        self.plotWidget.plt.title('DEC Error over Altitude', color='white')
+        self.plotWidget.plt.axis([0, 90, -self.scaleDEC, self.scaleDEC])
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget.plt.plot(self.dat[2], self.dat[8], color='black')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[2], self.datWest[8], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[2], self.datEast[8], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[2], self.datOut[8], 'ro')
+        self.plotWidget.draw()
+
+    def showRaErrorAltitude(self):
+        self.setFigure()
+        self.plotWidget.plt.xlabel('Altitude', color='white')
+        self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
+        self.plotWidget.plt.title('RA Error over Altitude', color='white')
+        self.plotWidget.plt.axis([0, 90, -self.scaleRA, self.scaleRA])
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget. plt.plot(self.dat[2], self.dat[7], color='black')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[2], self.datWest[7], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[2], self.datEast[7], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[2], self.datOut[7], 'ro')
+        self.plotWidget.draw()
+
+    def showDecErrorAzimuth(self):
+        self.setFigure()
+        self.plotWidget.plt.xlabel('Altitude', color='white')
+        self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
+        self.plotWidget.plt.title('DEC Error over Azimuth', color='white')
+        self.plotWidget.plt.axis([0, 360, -self.scaleDEC, self.scaleDEC])
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget.plt.plot(self.dat[1], self.dat[8], color='black')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[1], self.datWest[8], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[1], self.datEast[8], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[1], self.datOut[8], 'ro')
+        self.plotWidget.draw()
+
+    def showRaErrorAzimuth(self):
+        self.setFigure()
+        self.plotWidget.plt.xlabel('Altitude', color='white')
+        self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
+        self.plotWidget.plt.title('RA Error over Azimuth', color='white')
+        self.plotWidget.plt.axis([0, 360, -self.scaleRA, self.scaleRA])
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget. plt.plot(self.dat[1], self.dat[7], color='black')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[1], self.datWest[7], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[1], self.datEast[7], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[1], self.datOut[7], 'ro')
+        self.plotWidget.draw()
+
+    def showModelPointPolar(self):
+        self.setFigure('polar')
+
+        self.plotWidget.axes.set_theta_zero_location('N')
+        self.plotWidget.axes.set_theta_direction(-1)
+        self.plotWidget.axes.set_rmax(90)
+        self.plotWidget.axes.set_rmin(0)
+        self.plotWidget.axes.set_yticks(range(0, 90, 10))
+        yLabel = ['90', '', '', '60', '', '', '30', '', '', '']
+        self.plotWidget.axes.set_yticklabels(yLabel, color='white')
+
+        self.plotWidget.plt.title('Model Points', color='white')
+        self.plotWidget.plt.axis([0, 360, 0, 90])
+        self.plotWidget.plt.grid(True, color='white')
+        if self.isDatWest:
+            self.plotWidget.plt.plot(self.datWest[1], 90 - self.datWest[2], 'bo')
+        if self.isDatEast:
+            self.plotWidget.plt.plot(self.datEast[1], 90 - self.datEast[2], 'go')
+        if self.isDatOut:
+            self.plotWidget.plt.plot(self.datOut[1], 90 - self.datOut[2], 'ro')
+        self.plotWidget.draw()
 
 class Analyse:
     logger = logging.getLogger(__name__)

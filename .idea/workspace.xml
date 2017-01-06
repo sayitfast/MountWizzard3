@@ -3,8 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Changelog.md" afterPath="$PROJECT_DIR$/Changelog.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse.py" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" />
     </list>
     <ignored path="mountwizzard.iws" />
@@ -25,10 +24,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="867">
+            <state relative-caret-position="6579">
               <caret line="404" column="104" lean-forward="false" selection-start-line="404" selection-start-column="104" selection-end-line="404" selection-end-column="104" />
               <folding>
                 <element signature="e#337#351#0" expanded="true" />
@@ -40,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="609">
-              <caret line="75" column="41" lean-forward="false" selection-start-line="75" selection-start-column="41" selection-end-line="75" selection-end-column="41" />
+            <state relative-caret-position="728">
+              <caret line="238" column="8" lean-forward="false" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="8" />
               <folding>
                 <element signature="e#336#350#0" expanded="true" />
               </folding>
@@ -129,9 +128,9 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/popup_dialogs.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
         <option value="$PROJECT_DIR$/Changelog.md" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
       </list>
     </option>
   </component>
@@ -519,13 +518,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00038" summary="errorhandling for analyse">
-      <created>1479933785104</created>
-      <option name="number" value="00038" />
-      <option name="presentableId" value="LOCAL-00038" />
-      <option name="project" value="LOCAL" />
-      <updated>1479933785104</updated>
-    </task>
     <task id="LOCAL-00039" summary="remove sorting base point (because there were anyway only three)">
       <created>1480013507630</created>
       <option name="number" value="00039" />
@@ -862,7 +854,14 @@
       <option name="project" value="LOCAL" />
       <updated>1483727714418</updated>
     </task>
-    <option name="localTasksCounter" value="87" />
+    <task id="LOCAL-00087" summary="position analyse window including title">
+      <created>1483728088291</created>
+      <option name="number" value="00087" />
+      <option name="presentableId" value="LOCAL-00087" />
+      <option name="project" value="LOCAL" />
+      <updated>1483728088291</updated>
+    </task>
+    <option name="localTasksCounter" value="88" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -932,7 +931,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="bugfix modeled points" />
     <MESSAGE value="bugfix modeled points, dome support , platesolve2 support" />
     <MESSAGE value="Grid point configurable," />
     <MESSAGE value="adding hysterese analyse" />
@@ -957,25 +955,19 @@
     <MESSAGE value="renaming ui files for later split" />
     <MESSAGE value="first test with plot separately" />
     <MESSAGE value="rewrite analyse part" />
-    <option name="LAST_COMMIT_MESSAGE" value="rewrite analyse part" />
+    <MESSAGE value="position analyse window including title" />
+    <option name="LAST_COMMIT_MESSAGE" value="position analyse window including title" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="45" />
+      <option name="time" value="46" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/dome_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1296,7 +1288,7 @@
         <state relative-caret-position="-8968">
           <caret line="29" column="35" lean-forward="false" selection-start-line="29" selection-start-column="28" selection-end-line="29" selection-end-column="35" />
           <folding>
-            <element signature="e#316#330#0" expanded="true" />
+            <element signature="e#316#330#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1314,17 +1306,7 @@
         <state relative-caret-position="371">
           <caret line="73" column="41" lean-forward="false" selection-start-line="73" selection-start-column="41" selection-end-line="73" selection-end-column="41" />
           <folding>
-            <element signature="e#350#375#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="609">
-          <caret line="75" column="41" lean-forward="false" selection-start-line="75" selection-start-column="41" selection-end-line="75" selection-end-column="41" />
-          <folding>
-            <element signature="e#336#350#0" expanded="true" />
+            <element signature="e#350#375#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1342,13 +1324,31 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="867">
+        <state relative-caret-position="6579">
           <caret line="404" column="104" lean-forward="false" selection-start-line="404" selection-start-column="104" selection-end-line="404" selection-end-column="104" />
           <folding>
             <element signature="e#337#351#0" expanded="true" />
             <element signature="e#19502#19664#0" expanded="false" />
             <element signature="e#19716#19812#0" expanded="false" />
             <element signature="e#19867#19995#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/matplotlib/artist.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="858" column="0" lean-forward="false" selection-start-line="858" selection-start-column="0" selection-end-line="858" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="728">
+          <caret line="238" column="8" lean-forward="false" selection-start-line="238" selection-start-column="8" selection-end-line="238" selection-end-column="8" />
+          <folding>
+            <element signature="e#336#350#0" expanded="true" />
           </folding>
         </state>
       </provider>
