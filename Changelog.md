@@ -3,6 +3,7 @@
 - bugfix solve message say OK, but timeout plate solving happened
 - bugfix in hint calculation in case of binning
 - reshaping logging while modeling
+- complete new analyse part
 
 1.1.0
 - release of tested version

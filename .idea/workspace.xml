@@ -2,15 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mountwizzard/support/popup_dialog_ui.py" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/mountwizzard/analysedata/here_are_analyse_files_stored.txt" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Changelog.md" afterPath="$PROJECT_DIR$/Changelog.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse.py" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/popup_dialogs.py" afterPath="$PROJECT_DIR$/mountwizzard/support/popup_dialogs.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,8 +28,8 @@
       <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="503" column="40" lean-forward="false" selection-start-line="503" selection-start-column="40" selection-end-line="503" selection-end-column="40" />
+            <state relative-caret-position="867">
+              <caret line="404" column="104" lean-forward="false" selection-start-line="404" selection-start-column="104" selection-end-line="404" selection-end-column="104" />
               <folding>
                 <element signature="e#337#351#0" expanded="true" />
                 <element signature="e#19502#19664#0" expanded="false" />
@@ -124,7 +119,6 @@
         <option value="$PROJECT_DIR$/mountwizzard/tests/unit/test_model_thread.py" />
         <option value="$PROJECT_DIR$/../mountwizzard-wiki/mountwizzard.wiki/Home.md" />
         <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
-        <option value="$PROJECT_DIR$/Changelog.md" />
         <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
@@ -136,6 +130,7 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/popup_dialogs.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
+        <option value="$PROJECT_DIR$/Changelog.md" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
       </list>
     </option>
@@ -524,13 +519,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00037" summary="update gui">
-      <created>1479669240158</created>
-      <option name="number" value="00037" />
-      <option name="presentableId" value="LOCAL-00037" />
-      <option name="project" value="LOCAL" />
-      <updated>1479669240158</updated>
-    </task>
     <task id="LOCAL-00038" summary="errorhandling for analyse">
       <created>1479933785104</created>
       <option name="number" value="00038" />
@@ -867,7 +855,14 @@
       <option name="project" value="LOCAL" />
       <updated>1483645388274</updated>
     </task>
-    <option name="localTasksCounter" value="86" />
+    <task id="LOCAL-00086" summary="rewrite analyse part">
+      <created>1483727714418</created>
+      <option name="number" value="00086" />
+      <option name="presentableId" value="LOCAL-00086" />
+      <option name="project" value="LOCAL" />
+      <updated>1483727714418</updated>
+    </task>
+    <option name="localTasksCounter" value="87" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -893,7 +888,7 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287858" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31319445" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31041667" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20763889" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20763889" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18400316" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899868" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.219323" sideWeight="0.5097529" order="2" side_tool="true" content_ui="tabs" />
@@ -937,7 +932,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="correct installation description" />
     <MESSAGE value="bugfix modeled points" />
     <MESSAGE value="bugfix modeled points, dome support , platesolve2 support" />
     <MESSAGE value="Grid point configurable," />
@@ -962,7 +956,8 @@
     <MESSAGE value="cleanup impoort code" />
     <MESSAGE value="renaming ui files for later split" />
     <MESSAGE value="first test with plot separately" />
-    <option name="LAST_COMMIT_MESSAGE" value="first test with plot separately" />
+    <MESSAGE value="rewrite analyse part" />
+    <option name="LAST_COMMIT_MESSAGE" value="rewrite analyse part" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1200,17 +1195,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Changelog.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="68">
-            <caret line="4" column="19" lean-forward="false" selection-start-line="4" selection-start-column="19" selection-end-line="4" selection-end-column="19" />
-            <folding />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MANIFEST.in">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -1345,10 +1329,21 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Changelog.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="85">
+            <caret line="5" column="27" lean-forward="false" selection-start-line="5" selection-start-column="27" selection-end-line="5" selection-end-column="27" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="503" column="40" lean-forward="false" selection-start-line="503" selection-start-column="40" selection-end-line="503" selection-end-column="40" />
+        <state relative-caret-position="867">
+          <caret line="404" column="104" lean-forward="false" selection-start-line="404" selection-start-column="104" selection-end-line="404" selection-end-column="104" />
           <folding>
             <element signature="e#337#351#0" expanded="true" />
             <element signature="e#19502#19664#0" expanded="false" />

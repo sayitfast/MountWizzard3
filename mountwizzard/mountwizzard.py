@@ -402,6 +402,7 @@ class MountWizzardApp(QDialog, QObject):
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+            self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -446,6 +447,8 @@ class MountWizzardApp(QDialog, QObject):
         self.config['NumberGridPointsCol'] = self.ui.numberGridPointsCol.value()
         self.config['WindowPositionX'] = self.pos().x()
         self.config['WindowPositionY'] = self.pos().y()
+        self.config['AnalysePopupWindowPositionX'] = self.analysePopup.pos().x()
+        self.config['AnalysePopupWindowPositionY'] = self.analysePopup.pos().y()
         self.config['ScalePlotRA'] = self.analysePopup.ui.scalePlotRA.value()
         self.config['ScalePlotDEC'] = self.analysePopup.ui.scalePlotDEC.value()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
@@ -501,6 +504,7 @@ class MountWizzardApp(QDialog, QObject):
 
     def runOpenAnalyseWindow(self):
         self.analysePopup.getData()
+        self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
         self.analysePopup.showDecError()
         self.analysePopup.show()
 
