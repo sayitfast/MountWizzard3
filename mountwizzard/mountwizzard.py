@@ -104,6 +104,8 @@ class MountWizzardApp(QDialog, QObject):
         self.loadConfig()                                                                                                   # loading configuration
         self.showBasePoints()                                                                                               # populate gui with data for base model
         self.showRefinementPoints()                                                                                         # same for refinement
+        if self.analysePopup.showStatus:
+            self.runOpenAnalyseWindow()
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
@@ -392,6 +394,7 @@ class MountWizzardApp(QDialog, QObject):
             self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
             self.analysePopup.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
             self.analysePopup.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
+            self.analysePopup.ui.scalePlotError.setValue(self.config['ScalePlotError'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
             self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
@@ -403,6 +406,7 @@ class MountWizzardApp(QDialog, QObject):
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
+            self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -449,8 +453,10 @@ class MountWizzardApp(QDialog, QObject):
         self.config['WindowPositionY'] = self.pos().y()
         self.config['AnalysePopupWindowPositionX'] = self.analysePopup.pos().x()
         self.config['AnalysePopupWindowPositionY'] = self.analysePopup.pos().y()
+        self.config['AnalysePopupWindowShowStatus'] = self.analysePopup.showStatus
         self.config['ScalePlotRA'] = self.analysePopup.ui.scalePlotRA.value()
         self.config['ScalePlotDEC'] = self.analysePopup.ui.scalePlotDEC.value()
+        self.config['ScalePlotError'] = self.analysePopup.ui.scalePlotError.value()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
         self.config['AltitudeTimeChange'] = self.ui.altitudeTimeChange.value()
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
@@ -460,6 +466,7 @@ class MountWizzardApp(QDialog, QObject):
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
+
 
         # save the config file
         try:
@@ -506,6 +513,7 @@ class MountWizzardApp(QDialog, QObject):
         self.analysePopup.getData()
         self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
         self.analysePopup.showDecError()
+        self.analysePopup.showStatus = True
         self.analysePopup.show()
 
     def selectImageDirectoryName(self):

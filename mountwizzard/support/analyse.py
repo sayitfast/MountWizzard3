@@ -42,7 +42,7 @@ class ShowAnalyseData(FigureCanvas):
         self.plt.rcParams['toolbar'] = 'None'
         self.plt.rcParams['axes.titlesize'] = 'large'
         self.plt.rcParams['axes.labelsize'] = 'medium'
-        self.plt.tight_layout(rect=[0.05, 0.05, 0.975, 0.95])
+        self.plt.tight_layout(rect=[0.05, 0.025, 0.95, 0.925])
         self.compute_initial_figure()
         FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
@@ -60,14 +60,16 @@ class ShowAnalysePopup(QWidget):
         self.moving = False
         self.offset = None
         self.uiMain = uiMain
+        self.showStatus = False
         self.analyse = Analyse()
         self.ui = Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
 
-        self.ui.btn_selectClose.clicked.connect(self.close)
+        self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
         self.ui.scalePlotDEC.valueChanged.connect(self.getData)
         self.ui.scalePlotRA.valueChanged.connect(self.getData)
+        self.ui.scalePlotError.valueChanged.connect(self.getData)
         self.ui.btn_selectDecError.clicked.connect(self.showDecError)
         self.ui.btn_selectRaError.clicked.connect(self.showRaError)
         self.ui.btn_selectDecErrorAltitude.clicked.connect(self.showDecErrorAltitude)
@@ -75,7 +77,7 @@ class ShowAnalysePopup(QWidget):
         self.ui.btn_selectDecErrorAzimuth.clicked.connect(self.showDecErrorAzimuth)
         self.ui.btn_selectRaErrorAzimuth.clicked.connect(self.showRaErrorAzimuth)
         self.ui.btn_selectModelPointPolar.clicked.connect(self.showModelPointPolar)
-
+        self.ui.btn_selectModelPointErrorPolar.clicked.connect(self.showModelPointErrorPolar)
 
         helper = QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
@@ -123,6 +125,7 @@ class ShowAnalysePopup(QWidget):
     def getData(self):
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()
+        self.scaleError = self.ui.scalePlotError.value()
         self.data = self.analyse.loadData(self.uiMain.le_analyseFileName.text())
         if len(self.data) > 0:
             self.dat, self.datWest, self.datEast, self.datOut, self.isDatWest, self.isDatEast, self.isDatOut = \
@@ -135,12 +138,20 @@ class ShowAnalysePopup(QWidget):
         self.plotWidget.axes.set_axis_bgcolor((48/256, 48/256, 48/256))
         self.plotWidget.axes.tick_params(axis='x', colors='white')
         self.plotWidget.axes.tick_params(axis='y', colors='white')
+        if projection:
+            self.plotWidget.plt.tight_layout(rect=[0.05, 0.025, 0.95, 0.925])
+        else:
+            self.plotWidget.plt.tight_layout(rect=[0.05, 0.025, 0.95, 0.925])
+
+    def closeAnalyseWindow(self):
+        self.showStatus = False
+        self.close()
 
     def showDecError(self):
         self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
-        self.plotWidget.plt.title('DEC Error over Modeling', color='white')
+        self.plotWidget.plt.title('DEC Error over Modeling\n ', color='white')
         self.plotWidget.plt.axis([0, len(self.data), -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.dat[0], self.dat[8], color='black')
@@ -156,7 +167,7 @@ class ShowAnalysePopup(QWidget):
         self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
-        self.plotWidget.plt.title('RA Error over Modeling', color='white')
+        self.plotWidget.plt.title('RA Error over Modeling\n ', color='white')
         self.plotWidget.plt.axis([0, len(self.data), -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget. plt.plot(self.dat[0], self.dat[7], color='black')
@@ -172,7 +183,7 @@ class ShowAnalysePopup(QWidget):
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
-        self.plotWidget.plt.title('DEC Error over Altitude', color='white')
+        self.plotWidget.plt.title('DEC Error over Altitude\n ', color='white')
         self.plotWidget.plt.axis([0, 90, -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.dat[2], self.dat[8], color='black')
@@ -188,7 +199,7 @@ class ShowAnalysePopup(QWidget):
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
-        self.plotWidget.plt.title('RA Error over Altitude', color='white')
+        self.plotWidget.plt.title('RA Error over Altitude\n ', color='white')
         self.plotWidget.plt.axis([0, 90, -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget. plt.plot(self.dat[2], self.dat[7], color='black')
@@ -204,7 +215,7 @@ class ShowAnalysePopup(QWidget):
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
-        self.plotWidget.plt.title('DEC Error over Azimuth', color='white')
+        self.plotWidget.plt.title('DEC Error over Azimuth\n ', color='white')
         self.plotWidget.plt.axis([0, 360, -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.dat[1], self.dat[8], color='black')
@@ -220,7 +231,7 @@ class ShowAnalysePopup(QWidget):
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
-        self.plotWidget.plt.title('RA Error over Azimuth', color='white')
+        self.plotWidget.plt.title('RA Error over Azimuth\n ', color='white')
         self.plotWidget.plt.axis([0, 360, -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget. plt.plot(self.dat[1], self.dat[7], color='black')
@@ -234,7 +245,6 @@ class ShowAnalysePopup(QWidget):
 
     def showModelPointPolar(self):
         self.setFigure('polar')
-
         self.plotWidget.axes.set_theta_zero_location('N')
         self.plotWidget.axes.set_theta_direction(-1)
         self.plotWidget.axes.set_rmax(90)
@@ -242,17 +252,41 @@ class ShowAnalysePopup(QWidget):
         self.plotWidget.axes.set_yticks(range(0, 90, 10))
         yLabel = ['90', '', '', '60', '', '', '30', '', '', '']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
-
-        self.plotWidget.plt.title('Model Points', color='white')
-        self.plotWidget.plt.axis([0, 360, 0, 90])
+        self.plotWidget.plt.title('Model Points\n ', color='white')
         self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget. plt.plot(self.dat[1] / 180.0 * 3.141593, 90 - self.dat[2], color='black')
         if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[1], 90 - self.datWest[2], 'bo')
+            self.plotWidget.plt.plot(self.datWest[1] / 180.0 * 3.141593, 90 - self.datWest[2], 'bo')
         if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[1], 90 - self.datEast[2], 'go')
+            self.plotWidget.plt.plot(self.datEast[1] / 180.0 * 3.141593, 90 - self.datEast[2], 'go')
         if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[1], 90 - self.datOut[2], 'ro')
+            self.plotWidget.plt.plot(self.datOut[1] / 180.0 * 3.141593, 90 - self.datOut[2], 'ro')
         self.plotWidget.draw()
+
+    def showModelPointErrorPolar(self):
+        self.setFigure('polar')
+        self.plotWidget.axes.set_theta_zero_location('N')
+        self.plotWidget.axes.set_theta_direction(-1)
+        self.plotWidget.axes.set_rmax(90)
+        self.plotWidget.axes.set_rmin(0)
+        self.plotWidget.axes.set_yticks(range(0, 90, 10))
+        yLabel = ['90', '', '', '60', '', '', '30', '', '', '']
+        self.plotWidget.axes.set_yticklabels(yLabel, color='white')
+        self.plotWidget.plt.title('Model Points Error\n ', color='white')
+        self.plotWidget.plt.grid(True, color='white')
+        self.plotWidget.plt.plot(self.dat[1] / 180.0 * 3.141593, 90 - self.dat[2], color='black')
+        cm = plt.cm.get_cmap('RdYlGn_r')
+        colors = self.dat[9]
+        area = self.dat[9] * 100 / self.scaleError + 20
+        theta = self.dat[1] / 180.0 * 3.141593
+        r = 90 - self.dat[2]
+        scatter = self.plotWidget.plt.scatter(theta, r, c=colors, vmin=1, vmax=self.scaleError, s=area, cmap=cm)
+        scatter.set_alpha(0.75)
+        colorbar = self.plotWidget.plt.colorbar(scatter, shrink=0.9)
+        colorbar.set_label('Error [arcsec]', color='white')
+        plt.setp(plt.getp(colorbar.ax.axes, 'yticklabels'), color='white')
+        self.plotWidget.draw()
+
 
 class Analyse:
     logger = logging.getLogger(__name__)

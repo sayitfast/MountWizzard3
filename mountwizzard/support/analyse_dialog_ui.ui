@@ -137,8 +137,8 @@
   <widget class="QPushButton" name="btn_selectModelPointPolar">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>50</y>
+     <x>140</x>
+     <y>90</y>
      <width>121</width>
      <height>31</height>
     </rect>
@@ -152,7 +152,7 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>Model Point Polar</string>
+    <string>Model Points Polar</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectDecErrorAzimuth">
@@ -197,7 +197,7 @@
     <string>Close</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_8">
+  <widget class="QPushButton" name="btn_selectModelPointErrorPolar">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -215,14 +215,14 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>Model Error Polar</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectAnalyseFileName_9">
    <property name="geometry">
     <rect>
-     <x>140</x>
-     <y>90</y>
+     <x>530</x>
+     <y>50</y>
      <width>121</width>
      <height>31</height>
     </rect>
@@ -263,9 +263,9 @@
   <widget class="QLabel" name="label_93">
    <property name="geometry">
     <rect>
-     <x>190</x>
+     <x>140</x>
      <y>140</y>
-     <width>121</width>
+     <width>61</width>
      <height>21</height>
     </rect>
    </property>
@@ -275,13 +275,13 @@
     </font>
    </property>
    <property name="text">
-    <string>Scale for RA</string>
+    <string>Scale RA</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_113">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>240</x>
      <y>140</y>
      <width>21</width>
      <height>20</height>
@@ -305,9 +305,9 @@
   <widget class="QDoubleSpinBox" name="scalePlotRA">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>200</x>
      <y>140</y>
-     <width>51</width>
+     <width>41</width>
      <height>22</height>
     </rect>
    </property>
@@ -336,9 +336,9 @@
   <widget class="QLabel" name="label_94">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>10</x>
      <y>140</y>
-     <width>121</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
@@ -348,15 +348,15 @@
     </font>
    </property>
    <property name="text">
-    <string>Scale for DEC</string>
+    <string>Scale DEC</string>
    </property>
   </widget>
   <widget class="QDoubleSpinBox" name="scalePlotDEC">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>80</x>
      <y>140</y>
-     <width>51</width>
+     <width>41</width>
      <height>22</height>
     </rect>
    </property>
@@ -385,7 +385,7 @@
   <widget class="QLabel" name="label_114">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>120</x>
      <y>140</y>
      <width>21</width>
      <height>20</height>
@@ -404,6 +404,79 @@
    </property>
    <property name="wordWrap">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_95">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>140</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Scale Error</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_115">
+   <property name="geometry">
+    <rect>
+     <x>380</x>
+     <y>140</y>
+     <width>51</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>arcsec</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="wordWrap">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="scalePlotError">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>140</y>
+     <width>41</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>resulting focal length - please think of reducers etc.</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="decimals">
+    <number>0</number>
+   </property>
+   <property name="minimum">
+    <double>5.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>50.000000000000000</double>
+   </property>
+   <property name="singleStep">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="value">
+    <double>10.000000000000000</double>
    </property>
   </widget>
  </widget>
