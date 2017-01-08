@@ -58,6 +58,8 @@ class Mount(QtCore.QThread):
                                 }                                                                                           # conversion list Gstat to text
         self.ra = 0                                                                                                         # mount reported ra to J2000 converted
         self.dec = 0                                                                                                        # mount reported dec to J2000 converted
+        self.raJnow = 0
+        self.decJnow = 0
         self.az = 0                                                                                                         # mount reported azimuth
         self.alt = 0                                                                                                        # mount reported altitude
         self.stat = 0                                                                                                       # mount status (from Gstat command)
@@ -266,7 +268,7 @@ class Mount(QtCore.QThread):
         minute = int((value - hour) * 60)
         second = int(((value - hour) * 60 - minute) * 60)
         if with_decimal:
-            second_dec = '.{0:02d}'.format(int((((value - hour) * 60 - minute) * 60 - second) * 100))
+            second_dec = '.{0:1d}'.format(int((((value - hour) * 60 - minute) * 60 - second) * 100))
         else:
             second_dec = ''
         if with_sign:
@@ -360,9 +362,15 @@ class Mount(QtCore.QThread):
             self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS', real)})
 
     def getStatusFast(self, real):                                                                                          # fast status item like pointing
+        reply = self.sendCommand('GS', real)
+        if reply:
+            self.sidereal_time = reply.strip('#')
+            self.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                    # Sidereal local time
         reply = self.sendCommand('Ginfo', real)                                                                             # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
+            self.raJnow = float(ra)
+            self.decJnow = float(dec)
             self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
@@ -372,7 +380,7 @@ class Mount(QtCore.QThread):
                 self.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())                             # exactly the numbers from mount
             else:                                                                                                           # otherwise
                 self.transform.SiteTemperature = 20.0                                                                       # set it to 20 degree as default
-            self.transform.SetTopocentric(float(ra), float(dec))                                                            # set Jnow data
+            self.transform.SetTopocentric(self.raJnow, self.decJnow)                                                        # set Jnow data
             self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
             self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
             ra_show = self.decimalToDegree(self.ra, False, False)
@@ -387,10 +395,6 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                                  # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
-        reply = self.sendCommand('GS', real)
-        if reply:
-            self.sidereal_time = reply.strip('#')
-            self.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                    # Sidereal local time
 
     def getStatusMedium(self, real):                                                                                        # medium status items like refraction
         if self.ui.checkAutoRefraction.isChecked():                                                                         # check if autorefraction is set

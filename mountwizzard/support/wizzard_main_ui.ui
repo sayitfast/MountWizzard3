@@ -6960,6 +6960,43 @@
       <string>Product Versions</string>
      </property>
     </widget>
+    <widget class="QLabel" name="firmwareProductName_7">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>240</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Working directory of MountWizzard is actually: </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="le_mwWorkingDir">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>260</y>
+       <width>741</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Product Number</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_9">
     <attribute name="title">

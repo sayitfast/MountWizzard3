@@ -113,6 +113,7 @@ class MountWizzardApp(MwWidget):
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:
             self.openAnalyseWindow()
+        self.ui.le_mwWorkingDir.setText(os.getcwd())
 
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
@@ -893,9 +894,9 @@ if __name__ == "__main__":
 
     if len(sys.argv) > 1:                                                                                                   # some arguments are given, at least 1
         if sys.argv[1] == '-d':                                                                                             # than we can check for debug option
-            logging.basicConfig(filename='mount.log', level=logging.DEBUG, format='%(asctime)s --- %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
+            logging.basicConfig(filename='mount.log', level=logging.DEBUG, format='%(asctime)s --- %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     else:                                                                                                                   # set logging level accordingly
-        logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s --- %(message)s', datefmt='%Y-%m-%d %I:%M:%S')
+        logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s --- %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/images'):                                                                          # if images dir doesn't exist, make it

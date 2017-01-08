@@ -38,6 +38,7 @@ class Model(QtCore.QThread):
     signalModelRedrawRefinement = QtCore.pyqtSignal(bool, name='ModelRedrawRefinementPoints')                               # redraw refinement chart
     signalModelRedrawBase = QtCore.pyqtSignal(bool, name='ModelRedrawBasePoints')                                           # redraw base charts
     BLUE = 'background-color: rgb(42, 130, 218)'
+    RED = 'background-color: red'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
     def __init__(self, ui, mount, dome, messageQueue, commandQueue, dataQueue, LogQueue):
@@ -378,41 +379,44 @@ class Model(QtCore.QThread):
 
     def runBaseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.BasePoints) > 0:
-            self.modelAnalyseData = self.runModel('Base', self.BasePoints, settlingTime)
+            self.modelAnalyseData = self.runModel('Base', self.BasePoints, directory, settlingTime)
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
-        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_base_run.txt'                                          # generate name of analyse file
-        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
-        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
 
     def runRefinementModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.RefinementPoints) > 0:
-            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints, settlingTime)
+            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints,
+                                                  directory, settlingTime)
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
-        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_refinement_run.txt'                                    # generate name of analyse file
+        name = directory + '_refinement_run.txt'                                                                            # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runAnalyseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.RefinementPoints + self.BasePoints) > 0:                                                                # there should be some points
-            self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints, settlingTime)         # run the analyse
+            self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints,
+                                                  directory, settlingTime)         # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
-        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_analyse_run.txt'                                       # generate name of analyse file
+        name = directory + '_analyse_run.txt'                                                                               # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runTimeChangeModel(self):
         settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = []                                                                                                         # clear the points
         for i in range(0, int(float(self.ui.numberRunsTimeChange.value()))):                                                # generate the points
             points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()),
                            QtWidgets.QGraphicsTextItem(''), True))
-        self.modelAnalyseData = self.runModel('TimeChange', points, settlingTime)                                           # run the analyse
+        self.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime)                                # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
@@ -481,11 +485,13 @@ class Model(QtCore.QThread):
                 shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(0), imagepath)                          # copy first testfile instead of imaging
                 return True
 
-    def capturingImage(self, st, ra, dec, az, alt, binning, exposure, isoMode, sub, sX, sY, oX, oY, speed,
-                       file, hint, pierside):                                                                               # capturing image
-        st_fits_header = str(st)                                                                                            # store jd as well
+    def capturingImage(self, st, ra, dec, raJnow, decJnow, az, alt, binning, exposure, isoMode, sub,
+                       sX, sY, oX, oY, speed, file, hint, pierside):                                                        # capturing image
+        st_fits_header = st[0:10]                                                                                           # store local sideral time as well
         ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')                                                  # set the point coordinates from mount in J2000 as hint precision 2
         dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')                                                 # set dec as well
+        raJnow_fits_header = self.mount.decimalToDegree(raJnow, False, True, ' ')                                           # set the point coordinates from mount in J2000 as hint precision 2
+        decJnow_fits_header = self.mount.decimalToDegree(decJnow, True, True, ' ')                                          # set dec as well
         if pierside == '1':
             pierside_fits_header = 'E'
         else:
@@ -513,28 +519,26 @@ class Model(QtCore.QThread):
             fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
             fitsHeader['CDELT1'] = hint                                                                                     # x is the same as y
             fitsHeader['CDELT2'] = hint                                                                                     # and vice versa
-            fitsHeader['M_ST'] = st_fits_header                                                                             # store jd in header
-            fitsHeader['M_PIER'] = pierside_fits_header                                                                     # store pierside as well
-            fitsHeader['M_EXP'] = exposure                                                                                  # store the exposure time as well
-            fitsHeader['M_AZ'] = az                                                                                         # x is the same as y
-            fitsHeader['M_ALT'] = alt                                                                                       # and vice versa
-            self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} M_ST:{4} '
-                              'M_PIER:{5} M_EXP:{6} M_AZ:{7} M_ALT:{8}'.format(fitsHeader['DATE-OBS'],
-                                                                               fitsHeader['OBJCTRA'],
-                                                                               fitsHeader['OBJCTDEC'],
-                                                                               fitsHeader['CDELT1'],
-                                                                               fitsHeader['M_ST'],
-                                                                               fitsHeader['M_PIER'],
-                                                                               fitsHeader['M_EXP'],
-                                                                               fitsHeader['M_AZ'],
-                                                                               fitsHeader['M_ALT']))                        # write all header data to debug
+            fitsHeader['MW_MRA'] = raJnow_fits_header                                                                       # reported RA of mount in JNOW
+            fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                     # reported DEC of mount in JNOW
+            fitsHeader['MW_ST'] = st_fits_header                                                                            # reported local sideral time of mount from GS command
+            fitsHeader['MW_MSIDE'] = pierside_fits_header                                                                   # reported pierside of mount from SD command
+            fitsHeader['MW_EXP'] = exposure                                                                                 # store the exposure time as well
+            fitsHeader['MW_AZ'] = az                                                                                        # x is the same as y
+            fitsHeader['MW_ALT'] = alt                                                                                      # and vice versa
+            self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
+                              'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
+                              .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
+                                      fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
+                                      fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
+                                      fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                           # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
             return True, 'OK', imagepath                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
             return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
 
-    def solveImage(self, modeltype, blind, imagepath, hint):                                                                # solving image based on information inside the FITS files, no additional info
+    def solveImage(self, modeltype, blind, imagepath, hint, refractionTemp):                                                # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
                                                      blindSolve=blind,
@@ -543,10 +547,9 @@ class Model(QtCore.QThread):
             suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
                                                      blindSolve=False,
                                                      useFitsHeaders=True)                                                   # solve without blind
-        self.logger.debug('solveImage     -> suc:{0} mes:{1} scalehint:{2}'.format(suc, mes, hint))                         # debug output
-        if not suc:                                                                                                         # if we failed to start solving
-            self.logger.warning('solveImage     -> no start {0}'. format(mes))                                              # debug output
-            return False, 0, 0, 0, 0, 0, 0, 0                                                                               # default parameters without success
+        if not suc:
+            self.logger.warning('solveImage     -> no start {0}'.format(mes))                                           # debug output
+            return False, mes
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
             dec_sol = float(dec_sol)                                                                                        # convert to float
@@ -558,35 +561,63 @@ class Model(QtCore.QThread):
             if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> ra_sol:{0} dec_sol:{1} suc:{2} mes:{3} scale:{4} angle:{5} '
                                   'timeTS: {6}'.format(ra_sol, dec_sol, suc, mes, scale, angle, timeTS))
-                fitsFileHandle = pyfits.open(imagepath, mode='readonly')                                                    # open for getting telescope coordinates
-                fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
-                ra_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')                                         # convert to decimals the ra of original pointing of mount
-                dec_fits = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')                                       # convert to decimals the dec of original pointing of mount
-                fitsFileHandle.close()                                                                                      # close FIT file. All the data was store in FITS so batch could be made
-                return True, mes, ra_fits, ra_sol, dec_fits, dec_sol, scale, angle, timeTS                                  # return values after successful solving
+                solved = True
+                break
             elif mes != 'Solving':                                                                                          # general error
-                self.logger.debug('solveImage solv-> suc:{0} mes:{1} guid:{2}'.format(suc, mes, guid))                      # debug output
-                return False, mes, 0, 0, 0, 0, 0, 0, 0                                                                      # default parameters without success
+                solved = False
+                break
             else:                                                                                                           # otherwise
                 if blind:                                                                                                   # when using blind solve, it takes 30-60 s
                     time.sleep(5)                                                                                           # therefore slow cycle
                 else:                                                                                                       # local solver takes 1-2 s
                     time.sleep(.25)                                                                                         # therefore quicker cycle
+        self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
+        if solved:
+            self.mount.transform.SiteTemperature = refractionTemp                                                           # set refraction temp in converter
+            self.mount.transform.SetJ2000(float(ra_sol), float(dec_sol))                                                    # set coordinates in J2000 (solver)
+            ra_sol_Jnow = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)                       # convert to Jnow
+            dec_sol_Jnow = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)                      # convert to Jnow
+            fitsFileHandle = pyfits.open(imagepath, mode='update')                                                          # open for adding field info
+            fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
+            fitsHeader['MW_PRA'] = ra_sol_Jnow
+            fitsHeader['MW_PDEC'] = dec_sol_Jnow
+            fitsHeader['MW_SRA'] = ra_sol
+            fitsHeader['MW_SDEC'] = dec_sol
+            fitsHeader['MW_PSCAL'] = scale
+            fitsHeader['MW_PANGL'] = angle
+            fitsHeader['MW_PTS'] = timeTS
+            self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
+                              format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
+                                     fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                          # write all header data to debug
+            fitsFileHandle.flush()  # write all to disk
+            fitsFileHandle.close()  # close FIT file
+            return True, mes
+        else:
+            return False, mes
 
-    def addRefinementStar(self, ra, dec, refractionTemp):                                                                   # add refinement star during model run
-        self.mount.transform.SiteTemperature = refractionTemp                                                               # set refraction temp in converter
-        self.mount.transform.SetJ2000(float(ra), float(dec))                                                                # set coordinates in J2000 (solver)
-        value = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)                                 # convert to Jnow
-        self.commandQueue.put('Sr{0}'.format(value))                                                                        # Write jnow ra to mount
-        value = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)                                 # convert to Jnow
-        self.commandQueue.put('Sd{0}'.format(value))                                                                        # Write jnow dec to mount
-        self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(self.mount.transform.RATopocentric,
-                                                                    self.mount.transform.DecTopocentric))                   # debug output
-        self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
+    def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
+        self.commandQueue.put('Sr{0}'.format(ra))                                                                        # Write jnow ra to mount
+        self.commandQueue.put('Sd{0}'.format(dec))                                                                        # Write jnow dec to mount
+        self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
+        print(ra, dec)
+        # self.commandQueue.put('CMS')                                                                                      # send sync command (regardless what driver tells)
         # TODO: implement event loop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK
 
-    def runModel(self, modeltype, runPoints, settlingTime):                                                                 # model run routing
+    def extractFitsData(self, imagepath):
+        fitsFileHandle = pyfits.open(imagepath)
+        fitsHeader = fitsFileHandle[0].header
+        ra_sol = fitsHeader['MW_SRA']
+        dec_sol = fitsHeader['MW_SDEC']
+        ra_m = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'])
+        dec_m = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'])
+        scale = fitsHeader['MW_PSCAL']
+        angle = fitsHeader['MW_PANGL']
+        timeTS = fitsHeader['MW_PTS']
+        fitsFileHandle.close()  # close FIT file
+        return ra_sol, dec_sol, ra_m, dec_m, scale, angle, timeTS
+
+    def runModel(self, modeltype, runPoints, directory, settlingTime):                                                                 # model run routing
         # TODO: the new schematics should be: get mount prepared, take picture, write all to fits, get fits and solve, save conclusions
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
@@ -606,7 +637,7 @@ class Model(QtCore.QThread):
                           .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))                                  # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking on during the picture taking
-        base_dir_images = self.ui.le_imageDirectoryName.text() + '/' + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())     # define subdirectory for storing the images
+        base_dir_images = self.ui.le_imageDirectoryName.text() + '/' + directory                                            # define subdirectory for storing the images
         if not os.path.isdir(base_dir_images):                                                                              # if analyse dir doesn't exist, make it
             os.makedirs(base_dir_images)                                                                                    # if path doesn't exist, generate is
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
@@ -651,6 +682,7 @@ class Model(QtCore.QThread):
                 self.LogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), i + 1))                              # gui output
                 suc, mes, imagepath = self.capturingImage(self.mount.sidereal_time, self.mount.ra, self.mount.dec,
+                                                          self.mount.raJnow, self.mount.decJnow,
                                                           p_az, p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
                                                           self.sizeY, self.offX, self.offY, speed, file, hint,
                                                           self.mount.pierside)                                              # capturing image and store position (ra,dec), time, (az,alt)
@@ -659,20 +691,18 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
-                    suc, mes, ra_m, ra_sol, dec_m, dec_sol, scale, angle, timeTS = \
-                        self.solveImage(modeltype, blind, imagepath, hint)                                                  # solve the position and returning the values
+                    if len(self.ui.le_refractionTemperature.text()) > 0:  # set refraction temp
+                        refractionTemp = float(self.ui.le_refractionTemperature.text())  # set it if string available
+                    else:  # otherwise
+                        refractionTemp = 20.0  # set it to 20.0 degree c
+                    suc, mes = self.solveImage(modeltype, blind, imagepath, hint, refractionTemp)                           # solve the position and returning the values
                     self.LogQueue.put('{0} -\t Image path: {1}\n'
                                       .format(time.strftime("%H:%M:%S", time.localtime()), imagepath))                      # Gui output
-                    self.logger.debug('runModel-solve -> ra:{0} dec:{1} suc:{2} scale:{3} angle:{4}'
-                                      .format(ra_sol, dec_sol, suc, scale, angle))                                          # debug output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
-                            if len(self.ui.le_refractionTemperature.text()) > 0:                                            # set refraction temp
-                                refractionTemp = float(self.ui.le_refractionTemperature.text())                             # set it if string available
-                            else:                                                                                           # otherwise
-                                refractionTemp = 20.0                                                                       # set it to 20.0 degree c
-                            self.addRefinementStar(ra_sol, dec_sol, refractionTemp)                                         # sync the actual star to resolved coordinates in J2000
+                            self.addRefinementStar(imagepath)                                                               # sync the actual star to resolved coordinates in J2000
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
+                        ra_sol, dec_sol, ra_m, dec_m, scale, angle, timeTS = self.extractFitsData(imagepath)
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
                         decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
                         err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
@@ -686,6 +716,7 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
                                           'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))    # log output
                     else:                                                                                                   # no success in solving
+                        os.remove(imagepath)                                                                                # delete unsolved image
                         self.LogQueue.put('{0} -\t Solving error: {1}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
