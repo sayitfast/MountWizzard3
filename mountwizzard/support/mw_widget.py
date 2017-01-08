@@ -27,11 +27,20 @@ class MwWidget(QWidget):
 
     def __init__(self):
         super(MwWidget, self).__init__()                                                                                    # Initialize Class for UI
-        self.blueColor = QColor(32, 144, 192)                                                                               # blue astro color
-        self.yellowColor = QColor(192, 192, 0)
-        self.greenColor = QColor(0, 255, 0)
-        self.whiteColor = QColor(192, 192, 192)
+        self.COLOR_ASTRO = QColor(32, 144, 192)                                                                             # blue astro color
+        self.COLOR_YELLOW = QColor(192, 192, 0)
+        self.COLOR_GREEN = QColor(0, 255, 0)
+        self.COLOR_WHITE = QColor(255, 255, 255)
+        self.COLOR_RED = QColor(255, 0, 0)
+        self.COLOR_BLACK = QColor(0, 0, 0)
         self.COLOR_POINTER = QColor(255, 0, 255)
+        self.COLOR_WINDOW = QColor(32, 32, 32)
+        self.COLOR_WINDOW_TEXT = QColor(192, 192, 192)
+        self.COLOR_BACKGROUND = QColor(53, 53, 53)
+        self.COLOR_BASE = QColor(25, 25, 25)
+        self.COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
+        self.COLOR_HIGHLIGHT = QColor(42, 130, 218)
+        self.palette = QPalette()                                                                                           # title text
         self.moving = False                                                                                                 # check if window moves with mouse pointer
         self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
         self.initUI()                                                                                                       # adapt the window to our purpose
@@ -57,20 +66,19 @@ class MwWidget(QWidget):
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setMouseTracking(True)
         darkPalette = QPalette()                                                                                            # set dark palette
-        darkPalette.setColor(QPalette.Window, QColor(32, 32, 32))
-        darkPalette.setColor(QPalette.WindowText, QColor(192, 192, 192))
-        darkPalette.setColor(QPalette.Base, QColor(25, 25, 25))
-        darkPalette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        darkPalette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
-        darkPalette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-        darkPalette.setColor(QPalette.Text, self.blueColor)
-        darkPalette.setColor(QPalette.Button, QColor(24, 24, 24))
-        darkPalette.setColor(QPalette.ButtonText, QColor(192, 192, 192))
-        darkPalette.setColor(QPalette.BrightText, QColor(255, 0, 0))
-        darkPalette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        darkPalette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
+        darkPalette.setColor(QPalette.Window, self.COLOR_WINDOW)
+        darkPalette.setColor(QPalette.WindowText, self.COLOR_WINDOW_TEXT)
+        darkPalette.setColor(QPalette.Base, self.COLOR_BASE)
+        darkPalette.setColor(QPalette.AlternateBase, self.COLOR_ALTERNATE_BASE)
+        darkPalette.setColor(QPalette.ToolTipBase, self.COLOR_WHITE)
+        darkPalette.setColor(QPalette.ToolTipText, self.COLOR_WHITE)
+        darkPalette.setColor(QPalette.Text, self.COLOR_ASTRO)
+        darkPalette.setColor(QPalette.Button, self.COLOR_BASE)
+        darkPalette.setColor(QPalette.ButtonText, self.COLOR_WINDOW_TEXT)
+        darkPalette.setColor(QPalette.BrightText, self.COLOR_RED)
+        darkPalette.setColor(QPalette.Highlight, self.COLOR_HIGHLIGHT)
+        darkPalette.setColor(QPalette.HighlightedText, self.COLOR_BLACK)
         self.setPalette(darkPalette)
-        self.palette = QPalette()                                                                                                # title text
-        self.palette.setColor(QPalette.Foreground, self.blueColor)
-        self.palette.setColor(QPalette.Background, QColor(53, 53, 53))
+        self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
+        self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
 
