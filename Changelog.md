@@ -1,9 +1,15 @@
 # Changelog:
+1.1.2
+- refactoring windows classes
+- refactoring analyse classs
+
 1.1.1
 - bugfix solve message say OK, but timeout plate solving happened
 - bugfix in hint calculation in case of binning
 - reshaping logging while modeling
 - complete new analyse part
+- added polar plots for analysing your modeling
+- bugfixing
 
 1.1.0
 - release of tested version

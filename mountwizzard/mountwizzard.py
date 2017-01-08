@@ -22,10 +22,11 @@ import os
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+# import the UI part, which is done via QT Designer and exported
+from support.mw_widget import MwWidget
+from support.wizzard_main_ui import Ui_WizzardMainDialog
 # commands to threads
 from queue import Queue
-# import the UI part, which is done via QT Designer and exported
-from support.wizzard_main_ui import Ui_WizzardMainDialog
 # import mount functions of other classes
 from support.weather_thread import Weather
 from support.stick_thread import Stick
@@ -61,7 +62,7 @@ def constructHorizon(scene, horizon, height, width, border):                    
     return scene
 
 
-class MountWizzardApp(QDialog, QObject):
+class MountWizzardApp(MwWidget):
     logger = logging.getLogger('MountWizzardApp:')                                                                          # logging enabling
 
     def __init__(self):
@@ -72,16 +73,13 @@ class MountWizzardApp(QDialog, QObject):
         self.borderModelPointsView = 20                                                                                     # border from rectangle to plot
         self.textheightModelPointsView = 10                                                                                 # size of text for positioning
         self.ellipseSizeModelPointsView = 12                                                                                # diameter of ellipse / circle for points
-        self.blueColor = QColor(32, 144, 192)                                                                               # blue astro color
-        self.yellowColor = QColor(192, 192, 0)
-        self.greenColor = QColor(0, 255, 0)
-        self.whiteColor = QColor(192, 192, 192)
-        self.pointerColor = QColor(255, 0, 255)
+        self.pointerColor = self.COLOR_POINTER
         self.moving = False                                                                                                 # check if window moves with mouse pointer
         self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
         self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
+        self.ui.windowTitle.setPalette(self.palette)
         self.show()                                                                                                         # show window
         self.analysePopup = None                                                                                            # reference for additional window
         self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing
@@ -232,45 +230,6 @@ class MountWizzardApp(QDialog, QObject):
         self.pointerRefinementDomeWidget.setPos(x, y)                                                                       # same for the refinement graphics - coordinate
         self.pointerRefinementDomeWidget.setVisible(True)
         self.pointerRefinementDomeWidget.update()                                                                           # and redraw the graphics
-
-    def mousePressEvent(self, mouseEvent):                                                                                  # overloading the mouse events for handling customized windows
-        self.modifiers = mouseEvent.modifiers()
-        if mouseEvent.button() == Qt.LeftButton:
-            self.moving = True
-            self.offset = mouseEvent.pos()
-
-    def mouseMoveEvent(self, mouseEvent):
-        if self.moving:
-            cursor = QCursor()
-            self.move(cursor.pos() - self.offset)
-
-    def mouseReleaseEvent(self, mouseEvent):
-        if self.moving:
-            cursor = QCursor()
-            self.move(cursor.pos() - self.offset)
-            self.moving = False
-
-    def initUI(self):
-        self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
-        self.setMouseTracking(True)
-        darkPalette = QPalette()                                                                                            # set dark palette
-        darkPalette.setColor(QPalette.Window, QColor(32, 32, 32))
-        darkPalette.setColor(QPalette.WindowText, QColor(192, 192, 192))
-        darkPalette.setColor(QPalette.Base, QColor(25, 25, 25))
-        darkPalette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        darkPalette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
-        darkPalette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-        darkPalette.setColor(QPalette.Text, self.blueColor)
-        darkPalette.setColor(QPalette.Button, QColor(24, 24, 24))
-        darkPalette.setColor(QPalette.ButtonText, QColor(192, 192, 192))
-        darkPalette.setColor(QPalette.BrightText, QColor(255, 0, 0))
-        darkPalette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        darkPalette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
-        self.setPalette(darkPalette)
-        palette = QPalette()                                                                                                # title text
-        palette.setColor(QPalette.Foreground, self.blueColor)
-        palette.setColor(QPalette.Background, QColor(53, 53, 53))
-        self.ui.windowTitle.setPalette(palette)
 
     def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
         scene.setBackgroundBrush(QColor(32, 32, 32))                                                                        # background color

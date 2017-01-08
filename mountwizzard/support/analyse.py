@@ -19,6 +19,7 @@ import numpy
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+from support.mw_widget import MwWidget
 from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
 import matplotlib
@@ -52,20 +53,19 @@ class ShowAnalyseData(FigureCanvas):
         self.axes.plot(1, 1)
 
 
-class ShowAnalysePopup(QWidget):
+class ShowAnalysePopup(MwWidget):
     logger = logging.getLogger(__name__)
 
     def __init__(self, uiMain):
-        QWidget.__init__(self)
-        self.moving = False
-        self.offset = None
+        super(ShowAnalysePopup, self).__init__()
+
         self.uiMain = uiMain
         self.showStatus = False
         self.analyse = Analyse()
         self.ui = Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
-
+        self.ui.windowTitle.setPalette(self.palette)
         self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
         self.ui.scalePlotDEC.valueChanged.connect(self.getData)
         self.ui.scalePlotRA.valueChanged.connect(self.getData)
@@ -82,45 +82,6 @@ class ShowAnalysePopup(QWidget):
         helper = QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
-
-    def mousePressEvent(self, mouseEvent):
-        self.modifiers = mouseEvent.modifiers()
-        if mouseEvent.button() == Qt.LeftButton:
-            self.moving = True
-            self.offset = mouseEvent.pos()
-
-    def mouseMoveEvent(self, mouseEvent):
-        if self.moving:
-            cursor = QCursor()
-            self.move(cursor.pos() - self.offset)
-
-    def mouseReleaseEvent(self, mouseEvent):
-        if self.moving:
-            cursor = QCursor()
-            self.move(cursor.pos() - self.offset)
-            self.moving = False
-
-    def initUI(self):
-        self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
-        self.setMouseTracking(True)
-        darkPalette = QPalette()
-        darkPalette.setColor(QPalette.Window, QColor(32, 32, 32))
-        darkPalette.setColor(QPalette.WindowText, QColor(192, 192, 192))
-        darkPalette.setColor(QPalette.Base, QColor(25, 25, 25))
-        darkPalette.setColor(QPalette.AlternateBase, QColor(53, 53, 53))
-        darkPalette.setColor(QPalette.ToolTipBase, QColor(255, 255, 255))
-        darkPalette.setColor(QPalette.ToolTipText, QColor(255, 255, 255))
-        darkPalette.setColor(QPalette.Text, QColor(32, 144, 192))
-        darkPalette.setColor(QPalette.Button, QColor(24, 24, 24))
-        darkPalette.setColor(QPalette.ButtonText, QColor(192, 192, 192))
-        darkPalette.setColor(QPalette.BrightText, QColor(255, 0, 0))
-        darkPalette.setColor(QPalette.Highlight, QColor(42, 130, 218))
-        darkPalette.setColor(QPalette.HighlightedText, QColor(0, 0, 0))
-        self.setPalette(darkPalette)
-        palette = QPalette()
-        palette.setColor(QPalette.Foreground, QColor(32, 144, 192))
-        palette.setColor(QPalette.Background, QColor(53, 53, 53))
-        self.ui.windowTitle.setPalette(palette)
 
     def getData(self):
         self.scaleRA = self.ui.scalePlotRA.value()
