@@ -3065,7 +3065,7 @@ class Ui_WizzardMainDialog(object):
         self.le_driverStickConnected.setText(_translate("WizzardMainDialog", "Stick"))
         self.le_driverMountConnected.setToolTip(_translate("WizzardMainDialog", "Shows the connection status to mount in red / green"))
         self.le_driverMountConnected.setText(_translate("WizzardMainDialog", "Mount"))
-        self.windowTitle.setText(_translate("WizzardMainDialog", "MountWizzard  v1.1.1 beta"))
+        self.windowTitle.setText(_translate("WizzardMainDialog", "MountWizzard  v1.1.2 beta"))
         self.le_driverWeatherConnected.setToolTip(_translate("WizzardMainDialog", "Shows the status of open weather in red / green"))
         self.le_driverWeatherConnected.setText(_translate("WizzardMainDialog", "Weather"))
         self.btn_mountQuit.setToolTip(_translate("WizzardMainDialog", "Quits the tool and saves the settings data in config.cfg"))

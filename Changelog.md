@@ -1,7 +1,11 @@
 # Changelog:
+1.1.3
+-
+
 1.1.2
 - refactoring windows classes
-- refactoring analyse classs
+- refactoring analyse classes
+- bugfix barry talked (spelling issue)
 
 1.1.1
 - bugfix solve message say OK, but timeout plate solving happened

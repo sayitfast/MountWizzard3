@@ -38,7 +38,6 @@ class Model(QtCore.QThread):
     signalModelRedrawRefinement = QtCore.pyqtSignal(bool, name='ModelRedrawRefinementPoints')                               # redraw refinement chart
     signalModelRedrawBase = QtCore.pyqtSignal(bool, name='ModelRedrawBasePoints')                                           # redraw base charts
     BLUE = 'background-color: rgb(42, 130, 218)'
-    RED = 'background-color: red'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
     def __init__(self, ui, mount, dome, messageQueue, commandQueue, dataQueue, LogQueue):

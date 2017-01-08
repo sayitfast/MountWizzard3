@@ -7583,7 +7583,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.1.1 beta</string>
+    <string>MountWizzard  v1.1.2 beta</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

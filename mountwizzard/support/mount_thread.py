@@ -98,29 +98,29 @@ class Mount(QtCore.QThread):
                 if not self.commandQueue.empty():                                                                           # checking if in queue is something to do
                     command = self.commandQueue.get()                                                                       # if yes, getting the work command
                     if command == 'GetAlignmentModel':                                                                      # checking which command was sent
-                        self.ui.btn_getActualModel.setStyleSheet(self.BlUE)
+                        self.ui.btn_getActualModel.setStyleSheet(self.BLUE)
                         self.getAlignmentModel(self.driver_real)                                                            # running the appropriate method
                         self.ui.btn_getActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':                                                                           #
                         self.sendCommand('delalig', self.driver_real)                                                       #
                     elif command == 'RunTargetRMSAlignment':
-                        self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BlUE)
+                        self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
                         self.runTargetRMSAlignment(self.driver_real)
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
                     elif command == 'BackupModel':
-                        self.ui.btn_backupModel.setStyleSheet(self.BlUE)                                                    # button blue
+                        self.ui.btn_backupModel.setStyleSheet(self.BLUE)                                                    # button blue
                         self.backupModel(self.driver_real)
                         self.ui.btn_backupModel.setStyleSheet(self.DEFAULT)                                                 # button to default back
                     elif command == 'RestoreModel':
-                        self.ui.btn_restoreModel.setStyleSheet(self.BlUE)
+                        self.ui.btn_restoreModel.setStyleSheet(self.BLUE)
                         self.restoreModel(self.driver_real)
                         self.ui.btn_restoreModel.setStyleSheet(self.DEFAULT)
                     elif command == 'LoadSimpleModel':
-                        self.ui.btn_loadSimpleModel.setStyleSheet(self.BlUE)
+                        self.ui.btn_loadSimpleModel.setStyleSheet(self.BLUE)
                         self.loadSimpleModel(self.driver_real)
                         self.ui.btn_loadSimpleModel.setStyleSheet(self.DEFAULT)
                     elif command == 'SaveSimpleModel':
-                        self.ui.btn_saveSimpleModel.setStyleSheet(self.BlUE)
+                        self.ui.btn_saveSimpleModel.setStyleSheet(self.BLUE)
                         self.saveSimpleModel(self.driver_real)
                         self.ui.btn_saveSimpleModel.setStyleSheet(self.DEFAULT)
                     elif command == 'SetRefractionParameter':
