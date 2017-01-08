@@ -50,20 +50,11 @@ def getXYRectangle(az, width, border):
     return int(x), int(y)
 
 
-def constructHorizon(scene, horizon, height, width, border):                                                                # calculate horizon
-    for i, p in enumerate(horizon):                                                                                         # over all point in the horizon file
-        if (i != len(horizon)) and (i != 0):                                                                                # horizon in between
-            pen = QPen(QColor(0, 96, 0), 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # define the pen style thickness 3
-            scene.addLine(border + int(p[0] / 360 * (width - 2 * border)),
-                          height - border - int(p[1] * (height - 2 * border) / 90),
-                          border + int(horizon[i - 1][0] / 360 * (width - 2 * border)),
-                          height - border - int(horizon[i - 1][1] * (height - 2 * border) / 90),
-                          pen)                                                                                              # and add it to the scene
-    return scene
-
-
 class MountWizzardApp(MwWidget):
     logger = logging.getLogger('MountWizzardApp:')                                                                          # logging enabling
+    BLUE = 'background-color: rgb(42, 130, 218)'
+    RED = 'background-color: red'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
@@ -230,6 +221,18 @@ class MountWizzardApp(MwWidget):
         self.pointerRefinementDomeWidget.setVisible(True)
         self.pointerRefinementDomeWidget.update()                                                                           # and redraw the graphics
 
+    def constructHorizon(self, scene, horizon, height, width, border):                                                      # calculate horizon
+        for i, p in enumerate(horizon):                                                                                     # over all point in the horizon file
+            if (i != len(horizon)) and (i != 0):                                                                            # horizon in between
+                pen = QPen(self.COLOR_GREEN_LIGHT, 3, Qt.SolidLine, Qt.RoundCap,
+                           Qt.RoundJoin)                                                                                    # define the pen style thickness 3
+                scene.addLine(border + int(p[0] / 360 * (width - 2 * border)),
+                              height - border - int(p[1] * (height - 2 * border) / 90),
+                              border + int(horizon[i - 1][0] / 360 * (width - 2 * border)),
+                              height - border - int(horizon[i - 1][1] * (height - 2 * border) / 90),
+                              pen)                                                                                          # and add it to the scene
+        return scene
+
     def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
         scene.setBackgroundBrush(self.COLOR_WINDOW)                                                                         # background color
         pen = QPen(self.COLOR_BACKGROUND, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # building the grid of the plot and the axes
@@ -297,7 +300,7 @@ class MountWizzardApp(MwWidget):
             text_item.setPos(x+1, y+1)
             scene.addItem(text_item)
             points[i] = (p[0], p[1], item, True)                                                                            # storing the objects in the list
-        scene = constructHorizon(scene, horizon, height, width, border)
+        scene = self.constructHorizon(scene, horizon, height, width, border)
         pen = QPen(self.COLOR_POINTER, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         trackWidget.setVisible(False)
@@ -678,24 +681,24 @@ class MountWizzardApp(MwWidget):
                 self.ui.le_refractionStatus.setText('OFF')
         if data['Name'] == 'GetMountStatus':
             self.ui.le_mountStatus.setText(str(self.mount.statusReference[data['Value']]))
-            self.ui.btn_startTracking.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-            self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-            self.ui.btn_mountPark.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-            self.ui.btn_mountUnpark.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-            self.ui.btn_stop.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.ui.btn_startTracking.setStyleSheet(self.DEFAULT)
+            self.ui.btn_stopTracking.setStyleSheet(self.DEFAULT)
+            self.ui.btn_mountPark.setStyleSheet(self.DEFAULT)
+            self.ui.btn_mountUnpark.setStyleSheet(self.DEFAULT)
+            self.ui.btn_stop.setStyleSheet(self.DEFAULT)
             if data['Value'] == '0':
-                self.ui.btn_startTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
-                self.ui.btn_mountUnpark.setStyleSheet('background-color: rgb(42, 130, 218)')
+                self.ui.btn_startTracking.setStyleSheet(self.BLUE)
+                self.ui.btn_mountUnpark.setStyleSheet(self.BLUE)
             elif data['Value'] == '1':
-                self.ui.btn_stop.setStyleSheet('background-color: rgb(42, 130, 218)')
-                self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
-                self.ui.btn_mountUnpark.setStyleSheet('background-color: rgb(42, 130, 218)')
+                self.ui.btn_stop.setStyleSheet(self.BLUE)
+                self.ui.btn_stopTracking.setStyleSheet(self.BLUE)
+                self.ui.btn_mountUnpark.setStyleSheet(self.BLUE)
             elif data['Value'] == '5':
-                self.ui.btn_mountPark.setStyleSheet('background-color: rgb(42, 130, 218)')
-                self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
+                self.ui.btn_mountPark.setStyleSheet(self.BLUE)
+                self.ui.btn_stopTracking.setStyleSheet(self.BLUE)
             elif data['Value'] == '7':
-                self.ui.btn_stopTracking.setStyleSheet('background-color: rgb(42, 130, 218)')
-                self.ui.btn_mountUnpark.setStyleSheet('background-color: rgb(42, 130, 218)')
+                self.ui.btn_stopTracking.setStyleSheet(self.BLUE)
+                self.ui.btn_mountUnpark.setStyleSheet(self.BLUE)
         if data['Name'] == 'GetTelescopeDEC':
             self.ui.le_telescopeDEC.setText(data['Value'])
         if data['Name'] == 'GetTelescopeRA':

@@ -30,6 +30,7 @@ class MwWidget(QWidget):
         self.COLOR_ASTRO = QColor(32, 144, 192)                                                                             # blue astro color
         self.COLOR_YELLOW = QColor(192, 192, 0)
         self.COLOR_GREEN = QColor(0, 255, 0)
+        self.COLOR_GREEN_LIGHT = QColor(0, 92, 0)
         self.COLOR_WHITE = QColor(255, 255, 255)
         self.COLOR_RED = QColor(255, 0, 0)
         self.COLOR_BLACK = QColor(0, 0, 0)
