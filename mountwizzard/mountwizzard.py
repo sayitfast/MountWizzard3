@@ -35,6 +35,7 @@ from support.model_thread import Model
 from support.analyse import ShowAnalysePopup
 from support.relays import Relays
 from support.dome_thread import Dome
+from support.coordinate_widget import ShowCoordinatePopup
 from support.popup_dialogs import MyPopup
 
 
@@ -64,14 +65,11 @@ class MountWizzardApp(MwWidget):
         self.borderModelPointsView = 20                                                                                     # border from rectangle to plot
         self.textheightModelPointsView = 10                                                                                 # size of text for positioning
         self.ellipseSizeModelPointsView = 12                                                                                # diameter of ellipse / circle for points
-        self.moving = False                                                                                                 # check if window moves with mouse pointer
-        self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
         self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
         self.ui.windowTitle.setPalette(self.palette)
         self.show()                                                                                                         # show window
-        self.analysePopup = None                                                                                            # reference for additional window
         self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing
         self.pointerRefinementTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                             # Reference Widget for Pointing
         self.pointerBaseDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
@@ -88,6 +86,7 @@ class MountWizzardApp(MwWidget):
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
         self.model = Model(self.ui, self.mount, self.dome, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
         self.analysePopup = ShowAnalysePopup(self.ui)
+        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
         self.showBasePoints()                                                                                               # populate gui with data for base model
@@ -105,14 +104,15 @@ class MountWizzardApp(MwWidget):
         self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
         self.dome.start()                                                                                                   # starting polling thread
         self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
-        self.model.signalModelAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
-        self.model.signalModelRedrawRefinement. connect(self.showRefinementPoints)                                          # trigger redraw refinement chart
+        self.model.signalModelRedrawRefinement.connect(self.showRefinementPoints)                                           # trigger redraw refinement chart
         self.model.signalModelRedrawBase.connect(self.showBasePoints)                                                       # trigger base chart
         self.model.start()                                                                                                  # starting polling thread
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:
             self.openAnalyseWindow()
+        if self.coordinatePopup.showStatus:
+            self.openCoordinateWindow()
         self.ui.le_mwWorkingDir.setText(os.getcwd())
 
     def mappingFunctions(self):
@@ -160,8 +160,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_backupModel.clicked.connect(self.backupModel)
         self.ui.btn_restoreModel.clicked.connect(self.restoreModel)
         self.ui.btn_flipMount.clicked.connect(self.flipMount)
-        self.ui.btn_loadRefinementPoints.clicked.connect(self.loadModelRefinementPoints)
-        self.ui.btn_loadBasePoints.clicked.connect(self.loadModelBasePoints)
+        self.ui.btn_loadRefinementPoints.clicked.connect(self.loadRefinementPoints)
+        self.ui.btn_loadBasePoints.clicked.connect(self.loadBasePoints)
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
         self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
@@ -176,6 +176,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
         self.ui.btn_cancelHystereseModel.clicked.connect(self.cancelHystereseModel)
         self.ui.btn_openAnalyseWindow.clicked.connect(self.openAnalyseWindow)
+        self.ui.btn_openCoordinateWindow.clicked.connect(self.openCoordinateWindow)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
@@ -363,6 +364,8 @@ class MountWizzardApp(MwWidget):
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
             self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
+            self.coordinatePopup.move(self.config['CoordinatePopupWindowPositionX'], self.config['CoordinatePopupWindowPositionY'])
+            self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -409,6 +412,9 @@ class MountWizzardApp(MwWidget):
         self.config['AnalysePopupWindowPositionX'] = self.analysePopup.pos().x()
         self.config['AnalysePopupWindowPositionY'] = self.analysePopup.pos().y()
         self.config['AnalysePopupWindowShowStatus'] = self.analysePopup.showStatus
+        self.config['CoordinatePopupWindowPositionX'] = self.coordinatePopup.pos().x()
+        self.config['CoordinatePopupWindowPositionY'] = self.coordinatePopup.pos().y()
+        self.config['CoordinatePopupWindowShowStatus'] = self.coordinatePopup.showStatus
         self.config['ScalePlotRA'] = self.analysePopup.ui.scalePlotRA.value()
         self.config['ScalePlotDEC'] = self.analysePopup.ui.scalePlotDEC.value()
         self.config['ScalePlotError'] = self.analysePopup.ui.scalePlotError.value()
@@ -467,6 +473,11 @@ class MountWizzardApp(MwWidget):
         self.analysePopup.showDecError()
         self.analysePopup.showStatus = True
         self.analysePopup.show()
+
+    def openCoordinateWindow(self):
+        self.coordinatePopup.showAllPoints()
+        self.coordinatePopup.showStatus = True
+        self.coordinatePopup.show()
 
     def selectImageDirectoryName(self):
         dlg = QFileDialog()
@@ -815,13 +826,11 @@ class MountWizzardApp(MwWidget):
     def clearAlignmentModel(self):
         self.model.signalModelCommand.emit('ClearAlignmentModel')
 
-    def loadModelBasePoints(self):
-        self.model.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
-        self.showBasePoints()
+    def loadBasePoints(self):
+        self.model.signalModelCommand.emit('LoadBasePoints')
 
-    def loadModelRefinementPoints(self):
-        self.model.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
-        self.showRefinementPoints()
+    def loadRefinementPoints(self):
+        self.model.signalModelCommand.emit('LoadRefinementPoints')
 
     def generateDSOPoints(self):
         self.model.signalModelCommand.emit('GenerateDSOPoints')
@@ -861,9 +870,6 @@ class MountWizzardApp(MwWidget):
 
     def doit_close(self):
         self.w = None
-    #
-    # basis loop for cyclic topic in gui
-    #
 
     def mainLoop(self):
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do

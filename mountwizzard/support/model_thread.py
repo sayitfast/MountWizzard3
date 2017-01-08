@@ -113,6 +113,12 @@ class Model(QtCore.QThread):
                     self.LogQueue.put('Clearing alignment model - taking 4 seconds.\n')
                     self.clearAlignmentModel()                                                                              #
                     self.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
+                elif self.command == 'LoadBasePoints':
+                    self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
+                    self.showBasePoints()
+                elif self.command == 'LoadRefinementPoints':
+                    self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
+                    self.showRefinementPoints()
                 elif self.command == 'SortRefinementPoints':                                                                #
                     self.command = ''                                                                                       #
                     self.sortPoints('refinement')                                                                           #
@@ -293,6 +299,14 @@ class Model(QtCore.QThread):
         alt = self.mount.transform.ElevationTopocentric                                                                     # convert alt
         az = self.mount.transform.AzimuthTopocentric                                                                        # convert az
         return az, alt
+
+    def showBasePoints(self):
+        self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
+        self.signalModelRedrawBase.emit(True)
+
+    def showRefinementPoints(self):
+        self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
+        self.signalModelRedrawRefinement.emit(True)
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
         self.RefinementPoints = []                                                                                          # clear point list

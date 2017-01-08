@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1595,6 +1595,22 @@
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_openCoordinateWindow">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>180</y>
+       <width>271</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Draws a plot windows with the analysis data</string>
+     </property>
+     <property name="text">
+      <string>Open Coordinate Window</string>
      </property>
     </widget>
    </widget>
@@ -7620,7 +7636,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.1.3 beta</string>
+    <string>MountWizzard  v1.1.4 beta</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
