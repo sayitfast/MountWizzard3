@@ -92,8 +92,6 @@ class MountWizzardApp(MwWidget):
         self.loadConfig()                                                                                                   # loading configuration
         self.showBasePoints()                                                                                               # populate gui with data for base model
         self.showRefinementPoints()                                                                                         # same for refinement
-        if self.analysePopup.showStatus:
-            self.openAnalyseWindow()
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
@@ -113,6 +111,8 @@ class MountWizzardApp(MwWidget):
         self.model.start()                                                                                                  # starting polling thread
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
+        if self.analysePopup.showStatus:
+            self.openAnalyseWindow()
 
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
@@ -461,7 +461,7 @@ class MountWizzardApp(MwWidget):
             self.logger.warning('selectAnalyseFile -> no file selected')
 
     def openAnalyseWindow(self):
-        self.analysePopup.getData()
+        self.analysePopup.getData(self.ui.le_analyseFileName.text())
         self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
         self.analysePopup.showDecError()
         self.analysePopup.showStatus = True

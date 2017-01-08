@@ -16,9 +16,7 @@ import logging
 import os
 import numpy
 # import for the PyQt5 Framework
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
 from support.mw_widget import MwWidget
 from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
@@ -78,16 +76,15 @@ class ShowAnalysePopup(MwWidget):
         self.ui.btn_selectRaErrorAzimuth.clicked.connect(self.showRaErrorAzimuth)
         self.ui.btn_selectModelPointPolar.clicked.connect(self.showModelPointPolar)
         self.ui.btn_selectModelPointErrorPolar.clicked.connect(self.showModelPointErrorPolar)
-
         helper = QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
 
-    def getData(self):
+    def getData(self, filename):
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()
         self.scaleError = self.ui.scalePlotError.value()
-        self.data = self.analyse.loadData(self.uiMain.le_analyseFileName.text())
+        self.data = self.analyse.loadData(filename)
         if len(self.data) > 0:
             self.dat, self.datWest, self.datEast, self.datOut, self.isDatWest, self.isDatEast, self.isDatOut = \
                 self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
