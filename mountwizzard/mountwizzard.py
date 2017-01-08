@@ -93,7 +93,7 @@ class MountWizzardApp(MwWidget):
         self.showBasePoints()                                                                                               # populate gui with data for base model
         self.showRefinementPoints()                                                                                         # same for refinement
         if self.analysePopup.showStatus:
-            self.runOpenAnalyseWindow()
+            self.openAnalyseWindow()
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
@@ -115,10 +115,6 @@ class MountWizzardApp(MwWidget):
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
 
     def mappingFunctions(self):
-        #
-        # defining all the function against Dialog
-        # here are the wrapper for commands
-        #
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
         self.ui.btn_mountPark.clicked.connect(self.mountPark)
@@ -178,11 +174,10 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_cancelTimeChangeModel.clicked.connect(self.cancelTimeChangeModel)
         self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
         self.ui.btn_cancelHystereseModel.clicked.connect(self.cancelHystereseModel)
-        self.ui.btn_runOpenAnalyseWindow.clicked.connect(self.runOpenAnalyseWindow)
+        self.ui.btn_openAnalyseWindow.clicked.connect(self.openAnalyseWindow)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
-
         self.ui.btn_popup.clicked.connect(self.doit)
         self.ui.btn_popup_close.clicked.connect(self.doit_close)
 
@@ -308,7 +303,6 @@ class MountWizzardApp(MwWidget):
         return trackWidget, domeWidget
 
     def loadConfig(self):
-        # load the config file
         try:
             with open('config/config.cfg', 'r') as data_file:
                 self.config = json.load(data_file)
@@ -374,7 +368,6 @@ class MountWizzardApp(MwWidget):
             return
 
     def saveConfig(self):
-        # put the config data in the json object
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
         self.config['ParkPosAlt1'] = self.ui.le_altParkPos1.text()
         self.config['ParkPosAz1'] = self.ui.le_azParkPos1.text()
@@ -427,9 +420,6 @@ class MountWizzardApp(MwWidget):
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
-
-
-        # save the config file
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -470,7 +460,7 @@ class MountWizzardApp(MwWidget):
         else:
             self.logger.warning('selectAnalyseFile -> no file selected')
 
-    def runOpenAnalyseWindow(self):
+    def openAnalyseWindow(self):
         self.analysePopup.getData()
         self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
         self.analysePopup.showDecError()

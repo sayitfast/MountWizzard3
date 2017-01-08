@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1989,7 +1989,7 @@
       <string>Cancel</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runOpenAnalyseWindow">
+    <widget class="QPushButton" name="btn_openAnalyseWindow">
      <property name="geometry">
       <rect>
        <x>330</x>
@@ -7583,7 +7583,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.1.2 beta</string>
+    <string>MountWizzard  v1.1.3 beta</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -7868,7 +7868,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_saveSimpleModel</tabstop>
   <tabstop>btn_runAnalyseModel</tabstop>
   <tabstop>btn_cancelAnalyseModel</tabstop>
-  <tabstop>btn_runOpenAnalyseWindow</tabstop>
+  <tabstop>btn_openAnalyseWindow</tabstop>
   <tabstop>btn_selectAnalyseFileName</tabstop>
   <tabstop>btn_cancelBaseModel</tabstop>
   <tabstop>btn_runRefinementModel</tabstop>
