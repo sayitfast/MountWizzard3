@@ -86,7 +86,7 @@ class MountWizzardApp(MwWidget):
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
         self.model = Model(self.ui, self.mount, self.dome, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
         self.analysePopup = ShowAnalysePopup(self.ui)
-        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount)
+        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
         self.showBasePoints()                                                                                               # populate gui with data for base model

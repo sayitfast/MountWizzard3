@@ -36,7 +36,7 @@ def getXYRectangle(az, width, border):
 class ShowCoordinatePopup(MwWidget):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, uiMain, model, mount):
+    def __init__(self, uiMain, model, mount, dome):
         super(ShowCoordinatePopup, self).__init__()
 
         self.borderModelPointsView = 20
@@ -47,6 +47,7 @@ class ShowCoordinatePopup(MwWidget):
         self.uiMain = uiMain
         self.model = model
         self.mount = mount
+        self.dome = dome
         self.showStatus = False
         self.ui = Ui_CoordinateDialog()
         self.ui.setupUi(self)
@@ -55,6 +56,7 @@ class ShowCoordinatePopup(MwWidget):
         self.showAllPoints()
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.model.signalModelRedraw.connect(self.showAllPoints)
+        self.dome.signalDomPointer.connect(self.setDomePointer)
         self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
 
     def closeAnalyseWindow(self):
