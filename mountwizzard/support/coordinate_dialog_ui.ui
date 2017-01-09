@@ -43,22 +43,25 @@
   <widget class="QPushButton" name="btn_selectClose">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>50</y>
-     <width>121</width>
+     <x>620</x>
+     <y>0</y>
+     <width>41</width>
      <height>31</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <family>Arial</family>
+     <pointsize>16</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="toolTip">
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>Close</string>
+    <string>X</string>
    </property>
   </widget>
   <widget class="QGraphicsView" name="modelPointsPlot">

@@ -28,6 +28,7 @@ class MwWidget(QWidget):
     def __init__(self):
         super(MwWidget, self).__init__()                                                                                    # Initialize Class for UI
         self.COLOR_ASTRO = QColor(32, 144, 192)                                                                             # blue astro color
+        self.COLOR_BLUE = QColor(0, 0, 255)
         self.COLOR_YELLOW = QColor(192, 192, 0)
         self.COLOR_GREEN = QColor(0, 255, 0)
         self.COLOR_GREEN_LIGHT = QColor(0, 92, 0)

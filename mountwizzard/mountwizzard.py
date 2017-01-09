@@ -117,6 +117,7 @@ class MountWizzardApp(MwWidget):
 
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
+        self.ui.btn_selectClose.clicked.connect(self.selectClose)
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
         self.ui.btn_mountPark.clicked.connect(self.mountPark)
         self.ui.btn_mountUnpark.clicked.connect(self.mountUnpark)
@@ -440,6 +441,10 @@ class MountWizzardApp(MwWidget):
 
     def saveConfigQuit(self):
         self.saveConfig()
+        # noinspection PyArgumentList
+        QCoreApplication.instance().quit()
+
+    def selectClose(self):
         # noinspection PyArgumentList
         QCoreApplication.instance().quit()
 

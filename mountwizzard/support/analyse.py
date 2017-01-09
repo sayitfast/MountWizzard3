@@ -205,10 +205,8 @@ class ShowAnalysePopup(MwWidget):
         self.setFigure('polar')
         self.plotWidget.axes.set_theta_zero_location('N')
         self.plotWidget.axes.set_theta_direction(-1)
-        self.plotWidget.axes.set_rmax(90)
-        self.plotWidget.axes.set_rmin(0)
         self.plotWidget.axes.set_yticks(range(0, 90, 10))
-        yLabel = ['90', '', '', '60', '', '', '30', '', '', '']
+        yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.plt.title('Model Points\n ', color='white')
         self.plotWidget.plt.grid(True, color='white')
@@ -219,16 +217,16 @@ class ShowAnalysePopup(MwWidget):
             self.plotWidget.plt.plot(self.datEast[1] / 180.0 * 3.141593, 90 - self.datEast[2], 'go')
         if self.isDatOut:
             self.plotWidget.plt.plot(self.datOut[1] / 180.0 * 3.141593, 90 - self.datOut[2], 'ro')
+        self.plotWidget.axes.set_rmax(90)
+        self.plotWidget.axes.set_rmin(0)
         self.plotWidget.draw()
 
     def showModelPointErrorPolar(self):
         self.setFigure('polar')
         self.plotWidget.axes.set_theta_zero_location('N')
         self.plotWidget.axes.set_theta_direction(-1)
-        self.plotWidget.axes.set_rmax(90)
-        self.plotWidget.axes.set_rmin(0)
         self.plotWidget.axes.set_yticks(range(0, 90, 10))
-        yLabel = ['90', '', '', '60', '', '', '30', '', '', '']
+        yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.plt.title('Model Points Error\n ', color='white')
         self.plotWidget.plt.grid(True, color='white')
@@ -243,6 +241,8 @@ class ShowAnalysePopup(MwWidget):
         colorbar = self.plotWidget.plt.colorbar(scatter, shrink=0.9)
         colorbar.set_label('Error [arcsec]', color='white')
         plt.setp(plt.getp(colorbar.ax.axes, 'yticklabels'), color='white')
+        self.plotWidget.axes.set_rmax(90)
+        self.plotWidget.axes.set_rmin(0)
         self.plotWidget.draw()
 
 

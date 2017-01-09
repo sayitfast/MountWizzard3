@@ -54,8 +54,7 @@ class ShowCoordinatePopup(MwWidget):
         self.ui.windowTitle.setPalette(self.palette)
         self.showAllPoints()
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)
-        self.model.signalModelRedrawRefinement.connect(self.showAllPoints)
-        self.model.signalModelRedrawBase.connect(self.showAllPoints)
+        self.model.signalModelRedraw.connect(self.showAllPoints)
         self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
 
     def closeAnalyseWindow(self):
@@ -123,19 +122,27 @@ class ShowCoordinatePopup(MwWidget):
         border = self.borderModelPointsView
         textheight = self.textheightModelPointsView
         esize = self.ellipseSizeModelPointsView
-        self.pointerTrackingWidget, self.pointerDomeWidget = self.showPoints(self.ui.modelPointsPlot, self.model.BasePoints + self.model.RefinementPoints,
-                                                                             self.model.horizonPoints, height, width,
-                                                                             border, textheight, esize)
-
-    def showPoints(self, plotWidget, points, horizon, height, width, border, textheight, esize):
         scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
         pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                            # outer circle is white
         brush = QBrush(self.COLOR_BACKGROUND)
-        domeWidget = scene.addRect(0, 0, int((width - 2 * border) * 30 / 360), int(height - 2 * border), pen, brush)
-        domeWidget.setVisible(False)
-        domeWidget.setOpacity(0.5)
+        self.pointerDomeWidget = scene.addRect(0, 0, int((width - 2 * border) * 30 / 360), int(height - 2 * border), pen, brush)
+        self.pointerDomeWidget.setVisible(False)
+        self.pointerDomeWidget.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, border, textheight, scene)
-        for i, p in enumerate(points):                                                                                      # show the points
+        for i, p in enumerate(self.model.BasePoints):                                                                                      # show the points
+            pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
+            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
+            scene.addEllipse(x, y, esize, esize, pen)
+            pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # inner circle -> after modelling green or red
+            x, y = getXYEllipse(p[0], p[1], height, width, border, esize/2)
+            item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
+            item.setPos(x, y)
+            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
+            text_item.setDefaultTextColor(self.COLOR_ASTRO)
+            text_item.setPos(x+1, y+1)
+            scene.addItem(text_item)
+            self.model.BasePoints[i] = (p[0], p[1], item, True)                                                                            # storing the objects in the list
+        for i, p in enumerate(self.model.RefinementPoints):                                                                                      # show the points
             pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
             x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
             scene.addEllipse(x, y, esize, esize, pen)
@@ -147,10 +154,10 @@ class ShowCoordinatePopup(MwWidget):
             text_item.setDefaultTextColor(self.COLOR_WHITE)
             text_item.setPos(x+1, y+1)
             scene.addItem(text_item)
-            points[i] = (p[0], p[1], item, True)                                                                            # storing the objects in the list
-        scene = self.constructHorizon(scene, horizon, height, width, border)
+            self.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                                            # storing the objects in the list
+        scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)
         pen = QPen(self.COLOR_POINTER, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
-        trackWidget.setVisible(False)
-        plotWidget.setScene(scene)
-        return trackWidget, domeWidget
+        self.pointerTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
+        self.pointerTrackingWidget.setVisible(False)
+        self.ui.modelPointsPlot.setScene(scene)
+        return

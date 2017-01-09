@@ -34,9 +34,10 @@ class Model(QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
     signalModelConnected = QtCore.pyqtSignal(bool, name='ModelConnected')                                                   # message for errors
     signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                      # commands to sgpro thread
-    signalModelAzAltPointer = QtCore.pyqtSignal([float, float], name='ModelAzAltPointer')                                   # setting az/alt pointer in charts
     signalModelRedrawRefinement = QtCore.pyqtSignal(bool, name='ModelRedrawRefinementPoints')                               # redraw refinement chart
     signalModelRedrawBase = QtCore.pyqtSignal(bool, name='ModelRedrawBasePoints')                                           # redraw base charts
+    signalModelRedraw = QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
+
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
@@ -114,10 +115,10 @@ class Model(QtCore.QThread):
                     self.clearAlignmentModel()                                                                              #
                     self.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 elif self.command == 'LoadBasePoints':
-                    self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
+                    self.command = ''
                     self.showBasePoints()
                 elif self.command == 'LoadRefinementPoints':
-                    self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
+                    self.command = ''
                     self.showRefinementPoints()
                 elif self.command == 'SortRefinementPoints':                                                                #
                     self.command = ''                                                                                       #
@@ -197,25 +198,22 @@ class Model(QtCore.QThread):
         pass                                                                                                                # actually no fast status
 
     def loadModelPoints(self, modelPointsFileName, modeltype):                                                              # load model point file from MM als list from tuples
-        if modeltype == 'base':                                                                                             # check type of model file
-            self.BasePoints = []                                                                                            # reset BasePoints
-        else:                                                                                                               #
-            self.RefinementPoints = []                                                                                      # reset  points
+        p = []
         try:                                                                                                                # fault tolerance, if file io fails
             with open('config/' + modelPointsFileName) as fileHandle:                                                       # run over complete file
                 for line in fileHandle:                                                                                     # run over lines
                     convertedLine = line.rstrip('\n').split(':')                                                            # format is same as Per's MM
                     Point = (int(convertedLine[0]), int(convertedLine[1]))                                                  # take data from line
-                    if len(convertedLine) == 2:                                                                             # in MM format base and refinement are included
-                        if modeltype == 'refinement':                                                                       # Switch for type
-                            self.RefinementPoints.append(Point)                                                             # add data to the adequate list
-                    else:
-                        if modeltype == 'base':
-                            self.BasePoints.append(Point)
+                    if len(convertedLine) == 2 and modeltype == 'refinement':                                               # in MM format base and refinement are included
+                        p.append(Point)                                                                                     # add data to the adequate list
+                    elif len(convertedLine) != 2 and modeltype == 'base':
+                        p.append(Point)
             fileHandle.close()                                                                                              # close file
         except Exception as e:                                                                                              # handle exception
             self.messageQueue.put('Error loading model points from {0} error:{1}!'.format(modelPointsFileName, e))          # Gui message
             self.logger.error('loadModelPoints -> {0} could not be loaded error{1}'.format(modelPointsFileName, e))         # log output
+        finally:
+            return p
 
     def sortPoints(self, modeltype):                                                                                        # sorting point for performance
         if modeltype == 'base':                                                                                             # check type of sorting
@@ -238,9 +236,11 @@ class Model(QtCore.QThread):
         if modeltype == 'base':
             self.BasePoints = eastSide + westSide                                                                           # put them together
             self.signalModelRedrawBase.emit(True)                                                                           # update graphics
+            self.signalModelRedraw.emit(True)                                                                               # update graphics
         else:
             self.RefinementPoints = eastSide + westSide                                                                     # put them together
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
+            self.signalModelRedraw.emit(True)                                                                               # update graphics
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
         hp = []                                                                                                             # clear cache
@@ -293,6 +293,7 @@ class Model(QtCore.QThread):
             else:                                                                                                           #
                 del self.RefinementPoints[i]                                                                                # otherwise delete point from list
         self.signalModelRedrawRefinement.emit(True)                                                                         # update graphics
+        self.signalModelRedraw.emit(True)
 
     def transformCelestialHorizontal(self, ha, dec):
         self.mount.transform.SetJ2000(ha, dec)                                                                              # set J2000 ra, dec
@@ -301,12 +302,14 @@ class Model(QtCore.QThread):
         return az, alt
 
     def showBasePoints(self):
-        self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
+        self.BasePoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
         self.signalModelRedrawBase.emit(True)
+        self.signalModelRedraw.emit(True)
 
     def showRefinementPoints(self):
-        self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
+        self.RefinementPoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
         self.signalModelRedrawRefinement.emit(True)
+        self.signalModelRedraw.emit(True)
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
@@ -323,6 +326,7 @@ class Model(QtCore.QThread):
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
+            self.signalModelRedraw.emit(True)
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
         self.RefinementPoints = []                                                                                          # clear pointlist
@@ -344,6 +348,7 @@ class Model(QtCore.QThread):
                         west.append((int(az), int(alt)))                                                                    # add to west
             self.RefinementPoints = west + east                                                                             # combine pointlist
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
+            self.signalModelRedraw.emit(True)
 
     def generateNormalPoints(self):
         self.RefinementPoints = []                                                                                          # clear pointlist
@@ -363,6 +368,7 @@ class Model(QtCore.QThread):
                         west.append((int(az), int(alt)))                                                                    # add to west
             self.RefinementPoints = west + east                                                                             # combine pointlist
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
+            self.signalModelRedraw.emit(True)
 
     def generateGridPoints(self):                                                                                           # model points along dso path
         row = int(float(self.ui.numberGridPointsRow.value()))
@@ -373,6 +379,7 @@ class Model(QtCore.QThread):
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             time.sleep(.05)
             self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
+            self.signalModelRedraw.emit(True)
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
         self.BasePoints = []                                                                                                # clear it
@@ -385,6 +392,7 @@ class Model(QtCore.QThread):
             point = (azp, alt)                                                                                              # generate the point value az,alt
             self.BasePoints.append(point)                                                                                   # put it to list
         self.signalModelRedrawBase.emit(True)                                                                               # redraw the chart
+        self.signalModelRedraw.emit(True)
 
     def clearAlignmentModel(self):
         self.modelAnalyseData = []
@@ -437,6 +445,7 @@ class Model(QtCore.QThread):
 
     def runHystereseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))                                                             # using settling time also for waiting / delay
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = [(270, 85, QtWidgets.QGraphicsTextItem(''), True),
                   (000, 20, QtWidgets.QGraphicsTextItem(''), False),
                   (270, 85, QtWidgets.QGraphicsTextItem(''), True),
@@ -451,7 +460,7 @@ class Model(QtCore.QThread):
                   (90, 85, QtWidgets.QGraphicsTextItem(''), True),
                   (359, 20, QtWidgets.QGraphicsTextItem(''), False),
                   (90, 85, QtWidgets.QGraphicsTextItem(''), True)]
-        self.modelAnalyseData = self.runModel('Hysterese', points, settlingTime)                                            # run the analyse
+        self.modelAnalyseData = self.runModel('Hysterese', points, directory, settlingTime)                                 # run the analyse
         name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_hysterese.txt'                                         # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
@@ -625,14 +634,15 @@ class Model(QtCore.QThread):
         dec_sol = fitsHeader['MW_SDEC']
         ra_m = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'])
         dec_m = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'])
+        ra_sol_Jnow = fitsHeader['MW_PRA']
+        dec_sol_Jnow = fitsHeader['MW_PDEC']
         scale = fitsHeader['MW_PSCAL']
         angle = fitsHeader['MW_PANGL']
         timeTS = fitsHeader['MW_PTS']
         fitsFileHandle.close()  # close FIT file
-        return ra_sol, dec_sol, ra_m, dec_m, scale, angle, timeTS
+        return ra_sol, dec_sol, ra_sol_Jnow, dec_sol_Jnow, ra_m, dec_m, scale, angle, timeTS
 
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                                 # model run routing
-        # TODO: the new schematics should be: get mount prepared, take picture, write all to fits, get fits and solve, save conclusions
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
@@ -713,10 +723,10 @@ class Model(QtCore.QThread):
                     self.LogQueue.put('{0} -\t Image path: {1}\n'
                                       .format(time.strftime("%H:%M:%S", time.localtime()), imagepath))                      # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
+                        ra_sol, dec_sol, ra_sol_Jnow, dec_sol_Jnow, ra_m, dec_m, scale, angle, timeTS = self.extractFitsData(imagepath)
                         if modeltype in ['Base', 'Refinement']:                                                             #
-                            self.addRefinementStar(imagepath)                                                               # sync the actual star to resolved coordinates in J2000
+                            self.addRefinementStar(ra_sol_Jnow, dec_sol_Jnow)                                               # sync the actual star to resolved coordinates in JNOW
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
-                        ra_sol, dec_sol, ra_m, dec_m, scale, angle, timeTS = self.extractFitsData(imagepath)
                         raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
                         decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
                         err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
