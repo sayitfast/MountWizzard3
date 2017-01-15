@@ -238,7 +238,7 @@ class ShowAnalysePopup(MwWidget):
         r = 90 - self.dat[2]
         scatter = self.plotWidget.plt.scatter(theta, r, c=colors, vmin=1, vmax=self.scaleError, s=area, cmap=cm)
         scatter.set_alpha(0.75)
-        colorbar = self.plotWidget.plt.colorbar(scatter, shrink=0.9)
+        colorbar = self.plotWidget.plt.colorbar(scatter)
         colorbar.set_label('Error [arcsec]', color='white')
         plt.setp(plt.getp(colorbar.ax.axes, 'yticklabels'), color='white')
         self.plotWidget.axes.set_rmax(90)

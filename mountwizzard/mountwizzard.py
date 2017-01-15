@@ -39,18 +39,6 @@ from support.coordinate_widget import ShowCoordinatePopup
 from support.popup_dialogs import MyPopup
 
 
-def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse
-    x = border - esize / 2 + int(az / 360 * (width - 2 * border))
-    y = height - border - esize / 2 - int(alt / 90 * (height - 2 * border))
-    return int(x), int(y)
-
-
-def getXYRectangle(az, width, border):
-    x = (az - 15) * (width - 2 * border) / 360 + border
-    y = border
-    return int(x), int(y)
-
-
 class MountWizzardApp(MwWidget):
     logger = logging.getLogger('MountWizzardApp:')                                                                          # logging enabling
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -60,40 +48,27 @@ class MountWizzardApp(MwWidget):
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
         self.modifiers = None                                                                                               # for the mouse handling
-        self.sceneRefinementPoints = None                                                                                   # graphics refinement
         self.config = {}                                                                                                    # configuration data, which is stored
-        self.borderModelPointsView = 20                                                                                     # border from rectangle to plot
-        self.textheightModelPointsView = 10                                                                                 # size of text for positioning
-        self.ellipseSizeModelPointsView = 12                                                                                # diameter of ellipse / circle for points
         self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
         self.ui.windowTitle.setPalette(self.palette)
         self.show()                                                                                                         # show window
-        self.pointerBaseTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                                   # Reference Widget for Pointing
-        self.pointerRefinementTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)                                             # Reference Widget for Pointing
-        self.pointerBaseDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
-        self.pointerRefinementDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self.messageQueue)                                                                                 # dome control
-        self.dome.signalDomPointer.connect(self.setDomePointer)
         self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
         self.model = Model(self.ui, self.mount, self.dome, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
         self.analysePopup = ShowAnalysePopup(self.ui)
-        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome)
+        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
-        self.showBasePoints()                                                                                               # populate gui with data for base model
-        self.showRefinementPoints()                                                                                         # same for refinement
-        self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
-        self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                    # set AzAltPointer in Gui
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
         self.weather.signalWeatherConnected.connect(self.setWeatherStatus)                                                  # status from thread
@@ -104,9 +79,8 @@ class MountWizzardApp(MwWidget):
         self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
         self.dome.start()                                                                                                   # starting polling thread
         self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
-        self.model.signalModelRedrawRefinement.connect(self.showRefinementPoints)                                           # trigger redraw refinement chart
-        self.model.signalModelRedrawBase.connect(self.showBasePoints)                                                       # trigger base chart
         self.model.start()                                                                                                  # starting polling thread
+        self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:
@@ -195,115 +169,6 @@ class MountWizzardApp(MwWidget):
 
     def setParkPos4Text(self):                                                                                              # set text for button 4
         self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
-
-    def setAzAltPointer(self, az, alt):                                                                                     # set pointer in graphics
-        x, y = getXYEllipse(az, alt, self.ui.modelBasePointsPlot.height(),
-                            self.ui.modelBasePointsPlot.width(),
-                            self.borderModelPointsView,
-                            2 * self.ellipseSizeModelPointsView)                                                            # get xy coordinate
-        self.pointerBaseTrackingWidget.setPos(x, y)                                                                         # set widget position to that coordinate
-        self.pointerBaseTrackingWidget.setVisible(True)
-        self.pointerBaseTrackingWidget.update()                                                                             # update the drawing
-        self.pointerRefinementTrackingWidget.setPos(x, y)                                                                   # same for the refinement graphics - coordinate
-        self.pointerRefinementTrackingWidget.setVisible(True)
-        self.pointerRefinementTrackingWidget.update()                                                                       # and redraw the graphics
-
-    def setDomePointer(self, az):                                                                                           # set pointer in graphics
-        width = self.ui.modelBasePointsPlot.width()
-        border = self.borderModelPointsView
-        x, y = getXYRectangle(az, width, border)
-        self.pointerBaseDomeWidget.setPos(x, y)                                                                             # set widget position to that coordinate
-        self.pointerBaseDomeWidget.setVisible(True)
-        self.pointerBaseDomeWidget.update()                                                                                 # update the drawing
-        self.pointerRefinementDomeWidget.setPos(x, y)                                                                       # same for the refinement graphics - coordinate
-        self.pointerRefinementDomeWidget.setVisible(True)
-        self.pointerRefinementDomeWidget.update()                                                                           # and redraw the graphics
-
-    def constructHorizon(self, scene, horizon, height, width, border):                                                      # calculate horizon
-        for i, p in enumerate(horizon):                                                                                     # over all point in the horizon file
-            if (i != len(horizon)) and (i != 0):                                                                            # horizon in between
-                pen = QPen(self.COLOR_GREEN_LIGHT, 3, Qt.SolidLine, Qt.RoundCap,
-                           Qt.RoundJoin)                                                                                    # define the pen style thickness 3
-                scene.addLine(border + int(p[0] / 360 * (width - 2 * border)),
-                              height - border - int(p[1] * (height - 2 * border) / 90),
-                              border + int(horizon[i - 1][0] / 360 * (width - 2 * border)),
-                              height - border - int(horizon[i - 1][1] * (height - 2 * border) / 90),
-                              pen)                                                                                          # and add it to the scene
-        return scene
-
-    def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
-        scene.setBackgroundBrush(self.COLOR_WINDOW)                                                                         # background color
-        pen = QPen(self.COLOR_BACKGROUND, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # building the grid of the plot and the axes
-        for i in range(0, 361, 30):                                                                                         # set az ticks
-            scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border,
-                          border + int(i / 360 * (width - 2 * border)), border, pen)
-        for i in range(0, 91, 10):                                                                                          # set alt ticks
-            scene.addLine(border, height - border - int(i * (height - 2 * border) / 90),
-                          width - border, height - border - int(i * (height - 2*border) / 90), pen)
-        scene.addRect(border, border, width - 2*border, height - 2*border, pen)                                             # set frame around graphics
-        for i in range(0, 361, 30):                                                                                         # now the texts at the plot x
-            text_item = QGraphicsTextItem('{0:03d}'.format(i), None)                                                        # set labels
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)                                                                 # coloring of label
-            text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)                        # placing the text
-            scene.addItem(text_item)                                                                                        # adding item to scene to be shown
-        for i in range(10, 91, 10):                                                                                         # now the texts at the plot y
-            text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(width - border, height - border - textheight - int(i * (height - 2 * border) / 90))
-            scene.addItem(text_item)
-            text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(0, height - border - textheight - int(i * (height - 2 * border) / 90))
-            scene.addItem(text_item)
-        return scene
-
-    def showBasePoints(self):                                                                                               # drawing the points to the grid for base points
-        height = self.ui.modelBasePointsPlot.height()                                                                       # get some data out of the gui fields
-        width = self.ui.modelBasePointsPlot.width()                                                                         #
-        border = self.borderModelPointsView                                                                                 #
-        textheight = self.textheightModelPointsView                                                                         #
-        esize = self.ellipseSizeModelPointsView                                                                             #
-        self.pointerBaseTrackingWidget, self.pointerBaseDomeWidget = \
-            self.showPoints(self.ui.modelBasePointsPlot, self.model.BasePoints, self.model.horizonPoints,
-                            height, width, border, textheight, esize)
-
-    def showRefinementPoints(self):
-        height = self.ui.modelRefinementPointsPlot.height()                                                                 # get some data out of the gui fields
-        width = self.ui.modelRefinementPointsPlot.width()                                                                   #
-        border = self.borderModelPointsView                                                                                 #
-        textheight = self.textheightModelPointsView                                                                         #
-        esize = self.ellipseSizeModelPointsView                                                                             #
-        self.pointerRefinementTrackingWidget, self.pointerRefinementDomeWidget = \
-            self.showPoints(self.ui.modelRefinementPointsPlot, self.model.RefinementPoints, self.model.horizonPoints,
-                            height, width, border, textheight, esize)
-
-    def showPoints(self, plotWidget, points, horizon, height, width, border, textheight, esize):
-        scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
-        pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                            # outer circle is white
-        brush = QBrush(self.COLOR_BACKGROUND)
-        domeWidget = scene.addRect(0, 0, int((width - 2 * border) * 30 / 360), int(height - 2 * border), pen, brush)
-        domeWidget.setVisible(False)
-        domeWidget.setOpacity(0.5)
-        scene = self.constructModelGrid(height, width, border, textheight, scene)
-        for i, p in enumerate(points):                                                                                      # show the points
-            pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
-            scene.addEllipse(x, y, esize, esize, pen)
-            pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # inner circle -> after modelling green or red
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize/2)
-            item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
-            item.setPos(x, y)
-            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
-            text_item.setDefaultTextColor(self.COLOR_WHITE)
-            text_item.setPos(x+1, y+1)
-            scene.addItem(text_item)
-            points[i] = (p[0], p[1], item, True)                                                                            # storing the objects in the list
-        scene = self.constructHorizon(scene, horizon, height, width, border)
-        pen = QPen(self.COLOR_POINTER, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        trackWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
-        trackWidget.setVisible(False)
-        plotWidget.setScene(scene)
-        return trackWidget, domeWidget
 
     def loadConfig(self):
         try:
@@ -877,14 +742,6 @@ class MountWizzardApp(MwWidget):
         self.w = None
 
     def mainLoop(self):
-        while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
-            text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
-            if text == 'delete':                                                                                            # delete logfile for modeling
-                self.ui.modellingLog.setText('')                                                                            # reset window text
-            else:
-                self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText() + text)                                     # otherwise add text at the end
-            self.ui.modellingLog.moveCursor(QTextCursor.End)                                                                # and move cursor up
-            self.modelLogQueue.task_done()
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
             data = self.mountDataQueue.get()                                                                                # get the data from the queue
             self.fillMountData(data)                                                                                        # write dta in gui

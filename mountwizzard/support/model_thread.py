@@ -415,7 +415,7 @@ class Model(QtCore.QThread):
                                                   directory, settlingTime)
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
-        name = directory + '_refinement_run.txt'                                                                            # generate name of analyse file
+        name = directory + '_refinement.txt'                                                                                # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
@@ -427,7 +427,7 @@ class Model(QtCore.QThread):
                                                   directory, settlingTime)         # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
-        name = directory + '_analyse_run.txt'                                                                               # generate name of analyse file
+        name = directory + '_analyse.txt'                                                                                   # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 

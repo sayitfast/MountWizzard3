@@ -36,7 +36,7 @@ def getXYRectangle(az, width, border):
 class ShowCoordinatePopup(MwWidget):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, uiMain, model, mount, dome):
+    def __init__(self, uiMain, model, mount, dome, modelLogQueue):
         super(ShowCoordinatePopup, self).__init__()
 
         self.borderModelPointsView = 20
@@ -48,6 +48,7 @@ class ShowCoordinatePopup(MwWidget):
         self.model = model
         self.mount = mount
         self.dome = dome
+        self.modelLogQueue = modelLogQueue
         self.showStatus = False
         self.ui = Ui_CoordinateDialog()
         self.ui.setupUi(self)
@@ -58,6 +59,7 @@ class ShowCoordinatePopup(MwWidget):
         self.model.signalModelRedraw.connect(self.showAllPoints)
         self.dome.signalDomPointer.connect(self.setDomePointer)
         self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
+        self.mainLoop()
 
     def closeAnalyseWindow(self):
         self.showStatus = False
@@ -163,3 +165,15 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerTrackingWidget.setVisible(False)
         self.ui.modelPointsPlot.setScene(scene)
         return
+
+    def mainLoop(self):
+        while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
+            text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
+            if text == 'delete':                                                                                            # delete logfile for modeling
+                self.ui.modellingLog.setText('')                                                                            # reset window text
+            else:
+                self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText() + text)                                     # otherwise add text at the end
+            self.ui.modellingLog.moveCursor(QTextCursor.End)                                                                # and move cursor up
+            self.modelLogQueue.task_done()
+        # noinspection PyCallByClass,PyTypeChecker
+        QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic

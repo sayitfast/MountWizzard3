@@ -1,6 +1,11 @@
 # Changelog:
+1.1.4
+- ui reshaping and separate windows for points and analyse
+- updating model algorithm for batch calculation
+- updating tooltips with correct indications
+
 1.1.3
--
+- bugfixing
 
 1.1.2
 - refactoring windows classes
