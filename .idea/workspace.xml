@@ -2,18 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/mountwizzard/support/coordinate_dialog_ui.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Changelog.md" afterPath="$PROJECT_DIR$/Changelog.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse.py" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse_dialog_ui.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/coordinate_dialog_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/coordinate_dialog_ui.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" afterPath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/setup.py" afterPath="$PROJECT_DIR$/setup.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -563,13 +554,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00052" summary="bugfix modeled points, dome support , platesolve2 support">
-      <created>1480539342114</created>
-      <option name="number" value="00052" />
-      <option name="presentableId" value="LOCAL-00052" />
-      <option name="project" value="LOCAL" />
-      <updated>1480539342115</updated>
-    </task>
     <task id="LOCAL-00053" summary="Grid point configurable,">
       <created>1480706029460</created>
       <option name="number" value="00053" />
@@ -906,7 +890,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484487747728</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="updated ui&#10;bugfixing">
+      <created>1484513648644</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1484513648644</updated>
+    </task>
+    <option name="localTasksCounter" value="102" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -976,7 +967,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added pierside to image capture for later evaluation" />
     <MESSAGE value="correcting time measurement" />
     <MESSAGE value="preparation remodeling" />
     <MESSAGE value="dslr update and precision update" />
@@ -1001,7 +991,8 @@
     <MESSAGE value="optimizing and bugfixing" />
     <MESSAGE value="added dome visibility" />
     <MESSAGE value="started separate branch for develop" />
-    <option name="LAST_COMMIT_MESSAGE" value="started separate branch for develop" />
+    <MESSAGE value="updated ui&#10;bugfixing" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated ui&#10;bugfixing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
