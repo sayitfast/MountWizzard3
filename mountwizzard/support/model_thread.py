@@ -316,7 +316,7 @@ class Model(QtCore.QThread):
             return
         for i in range(0, 75, 5):                                                                                           # round model point from actual az alt position 24 hours
             ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text())                                                   # Transform text to hours format
-            ra -= i / 12.0
+            ra -= float(i) / 12.0
             dec = self.mount.degStringToDecimal(self.ui.le_trackDEC.text())                                                 # Transform text to degree format
             az, alt = self.transformCelestialHorizontal(ra, dec)                                                            # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
