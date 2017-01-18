@@ -292,8 +292,12 @@ class Model(QtCore.QThread):
                 del self.RefinementPoints[i]                                                                                # otherwise delete point from list
         self.signalModelRedraw.emit(True)
 
-    def transformCelestialHorizontal(self, ha, dec):
-        self.mount.transform.SetJ2000(ha, dec)                                                                              # set J2000 ra, dec
+    def transformCelestialHorizontal(self, ra, dec):
+        if ra < 0:
+            ra += 24
+        if ra >= 24:
+            ra -= 24
+        self.mount.transform.SetJ2000(ra, dec)                                                                              # set J2000 ra, dec
         alt = self.mount.transform.ElevationTopocentric                                                                     # convert alt
         az = self.mount.transform.AzimuthTopocentric                                                                        # convert az
         return az, alt
@@ -310,14 +314,11 @@ class Model(QtCore.QThread):
         self.RefinementPoints = []                                                                                          # clear point list
         if len(self.ui.le_trackRA.text()) == 0 or len(self.ui.le_trackDEC.text()) == 0:
             return
-        for i in range(0, 25):                                                                                              # round model point from actual az alt position 24 hours
-            ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text()) + i / 12.0                                        # Transform text to hours format
-            if ra >= 24:
-                ra -= 24
+        for i in range(0, 75, 5):                                                                                           # round model point from actual az alt position 24 hours
+            ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text())                                                   # Transform text to hours format
+            ra -= i / 12.0
             dec = self.mount.degStringToDecimal(self.ui.le_trackDEC.text())                                                 # Transform text to degree format
-            self.mount.transform.SetJ2000(ra, dec)                                                                          # set data in J2000
-            alt = int(self.mount.transform.ElevationTopocentric)                                                            # take az data
-            az = int(self.mount.transform.AzimuthTopocentric)                                                               # take alt data
+            az, alt = self.transformCelestialHorizontal(ra, dec)                                                            # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedraw.emit(True)
