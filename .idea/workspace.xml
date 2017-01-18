@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.py" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" />
     </list>
@@ -28,8 +27,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
-              <caret line="318" column="26" lean-forward="false" selection-start-line="318" selection-start-column="26" selection-end-line="318" selection-end-column="26" />
+            <state relative-caret-position="799">
+              <caret line="320" column="145" lean-forward="true" selection-start-line="320" selection-start-column="145" selection-end-line="320" selection-end-column="145" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -729,13 +728,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00057" summary="bugfix for stickstation">
-      <created>1480876842341</created>
-      <option name="number" value="00057" />
-      <option name="presentableId" value="LOCAL-00057" />
-      <option name="project" value="LOCAL" />
-      <updated>1480876842342</updated>
-    </task>
     <task id="LOCAL-00058" summary="bugfix for stickstation">
       <created>1480876917563</created>
       <option name="number" value="00058" />
@@ -1072,7 +1064,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484764492299</updated>
     </task>
-    <option name="localTasksCounter" value="106" />
+    <task id="LOCAL-00106" summary="update hmi">
+      <created>1484766946866</created>
+      <option name="number" value="00106" />
+      <option name="presentableId" value="LOCAL-00106" />
+      <option name="project" value="LOCAL" />
+      <updated>1484766946866</updated>
+    </task>
+    <option name="localTasksCounter" value="107" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1142,7 +1141,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="horizon point file not try to load in case of no file chosen" />
     <MESSAGE value="correction hint in case of binning&#10;refactoring test without camera&#10;removing gui variables from functional code for later automatic testing&#10;" />
     <MESSAGE value="bugfixing log message error plate solving" />
     <MESSAGE value="cleanup impoort code" />
@@ -1167,17 +1165,11 @@
     <MESSAGE value="added popup test ui file" />
     <MESSAGE value="clean up model for signals redraw and normal point generation" />
     <MESSAGE value="update dso stream and correction of failure mode transform celestial horizontal" />
-    <option name="LAST_COMMIT_MESSAGE" value="update dso stream and correction of failure mode transform celestial horizontal" />
+    <MESSAGE value="update hmi" />
+    <option name="LAST_COMMIT_MESSAGE" value="update hmi" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/model_thread.py</url>
-          <line>318</line>
-          <option name="timeStamp" value="60" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -1932,8 +1924,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="318" column="26" lean-forward="false" selection-start-line="318" selection-start-column="26" selection-end-line="318" selection-end-column="26" />
+        <state relative-caret-position="799">
+          <caret line="320" column="145" lean-forward="true" selection-start-line="320" selection-start-column="145" selection-end-line="320" selection-end-column="145" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>
