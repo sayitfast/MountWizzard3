@@ -34,8 +34,6 @@ class Model(QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
     signalModelConnected = QtCore.pyqtSignal(bool, name='ModelConnected')                                                   # message for errors
     signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                      # commands to sgpro thread
-    signalModelRedrawRefinement = QtCore.pyqtSignal(bool, name='ModelRedrawRefinementPoints')                               # redraw refinement chart
-    signalModelRedrawBase = QtCore.pyqtSignal(bool, name='ModelRedrawBasePoints')                                           # redraw base charts
     signalModelRedraw = QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -292,7 +290,6 @@ class Model(QtCore.QThread):
                 i += 1                                                                                                      # if ok , keep him
             else:                                                                                                           #
                 del self.RefinementPoints[i]                                                                                # otherwise delete point from list
-        self.signalModelRedrawRefinement.emit(True)                                                                         # update graphics
         self.signalModelRedraw.emit(True)
 
     def transformCelestialHorizontal(self, ha, dec):
@@ -303,12 +300,10 @@ class Model(QtCore.QThread):
 
     def showBasePoints(self):
         self.BasePoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
-        self.signalModelRedrawBase.emit(True)
         self.signalModelRedraw.emit(True)
 
     def showRefinementPoints(self):
         self.RefinementPoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
-        self.signalModelRedrawRefinement.emit(True)
         self.signalModelRedraw.emit(True)
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
@@ -325,7 +320,6 @@ class Model(QtCore.QThread):
             az = int(self.mount.transform.AzimuthTopocentric)                                                               # take alt data
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
             self.signalModelRedraw.emit(True)
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
@@ -347,7 +341,6 @@ class Model(QtCore.QThread):
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
             self.RefinementPoints = west + east                                                                             # combine pointlist
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
             self.signalModelRedraw.emit(True)
 
     def generateNormalPoints(self):
@@ -356,18 +349,18 @@ class Model(QtCore.QThread):
         east = []                                                                                                           #
         for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european situation
             if dec < 60:                                                                                                    # has to be generalized
-                step = -1                                                                                                   # lower dec, more point
+                step = -10                                                                                                  # lower dec, more point
             else:
-                step = -2                                                                                                   # higher dec. less point (anyway denser)
-            for ha in range(23, -1, step):                                                                                  # for complete 24 hourangle
-                az, alt = self.transformCelestialHorizontal(ha, dec)                                                        # do the transformation to alt az
+                step = -20                                                                                                  # higher dec. less point (anyway denser)
+            for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
+                az, alt = self.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
+
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
             self.RefinementPoints = west + east                                                                             # combine pointlist
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
             self.signalModelRedraw.emit(True)
 
     def generateGridPoints(self):                                                                                           # model points along dso path
@@ -378,7 +371,6 @@ class Model(QtCore.QThread):
             for alt in range(10, 90, int(90 / row)):                                                                        # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             time.sleep(.05)
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
             self.signalModelRedraw.emit(True)
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
@@ -391,7 +383,6 @@ class Model(QtCore.QThread):
                 azp -= 360                                                                                                  # shift it if necessary
             point = (azp, alt)                                                                                              # generate the point value az,alt
             self.BasePoints.append(point)                                                                                   # put it to list
-        self.signalModelRedrawBase.emit(True)                                                                               # redraw the chart
         self.signalModelRedraw.emit(True)
 
     def clearAlignmentModel(self):
