@@ -66,11 +66,11 @@ class Model(QtCore.QThread):
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
         self.numCheckPoints = 0                                                                                             # number og checkpoints done
         self.results = []                                                                                                   # error results
-        self.sub = False                                                                                                    # use subframes when imaging
         self.sizeX = 0                                                                                                      # sizeX of subframe
         self.sizeY = 0                                                                                                      # sizeY of subframe
         self.offX = 0                                                                                                       # offsetX for subframe
         self.offY = 0                                                                                                       # offsetY for subframe
+        self.modelData = dict()
 
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
@@ -475,19 +475,25 @@ class Model(QtCore.QThread):
             while self.mount.slewing:                                                                                       # wait for tracking = 7 or dome not slewing
                 time.sleep(0.1)                                                                                             # loop time
 
-    def prepareCaptureImageSubframes(self, scale):                                                                          # get camera data for doing subframes
+    def prepareCaptureImageSubframes(self, scale, modelData):                                                               # get camera data for doing subframes
         suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
         self.logger.debug('prepareCaptureSubframe-> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))         # debug data
         if suc:                                                                                                             # if cam props are there
             if canSubframe:                                                                                                 # if camera could do subframes
-                sizeXsub = int(sizeX * scale)                                                                               # size inner window
-                sizeYsub = int(sizeY * scale)                                                                               # size inner window
-                offX = int((sizeX - sizeXsub) / 2)                                                                          # offset is half of the rest
-                offY = int((sizeY - sizeYsub) / 2)                                                                          # same in y
-                return True, sizeXsub, sizeYsub, offX, offY                                                                 # return values
+                modelData['sizeX'] = int(sizeX * scale)                                                                     # size inner window
+                modelData['sizeY'] = int(sizeY * scale)                                                                     # size inner window
+                modelData['offX'] = int((sizeX - sizeX) / 2)                                                                # offset is half of the rest
+                modelData['offY'] = int((sizeY - sizeY) / 2)                                                                # same in y
+                modelData['canSubframe'] = True                                                                             # same in y
+                return modelData                                                                                            # return values
             else:                                                                                                           # otherwise error
+                modelData['sizeX'] = 0                                                                                      # size inner window
+                modelData['sizeY'] = 0                                                                                      # size inner window
+                modelData['offX'] = 0                                                                                       # offset is half of the rest
+                modelData['offY'] = 0                                                                                       # same in y
+                modelData['canSubframe'] = False                                                                            # same in y
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
-                return False, 0, 0, 0, 0                                                                                    # default without subframe
+                return modelData                                                                                            # default without subframe
 
     def getTestImage(self, index, imagepath):
         if os.path.isfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index)):                                      # check existing image file
@@ -500,47 +506,53 @@ class Model(QtCore.QThread):
                 shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(0), imagepath)                          # copy first testfile instead of imaging
                 return True
 
-    def capturingImage(self, st, ra, dec, raJnow, decJnow, az, alt, binning, exposure, isoMode, sub,
-                       sX, sY, oX, oY, speed, file, hint, pierside):                                                        # capturing image
-        st_fits_header = st[0:10]                                                                                           # store local sideral time as well
-        ra_fits_header = self.mount.decimalToDegree(ra, False, False, ' ')                                                  # set the point coordinates from mount in J2000 as hint precision 2
-        dec_fits_header = self.mount.decimalToDegree(dec, True, False, ' ')                                                 # set dec as well
-        raJnow_fits_header = self.mount.decimalToDegree(raJnow, False, True, ' ')                                           # set the point coordinates from mount in J2000 as hint precision 2
-        decJnow_fits_header = self.mount.decimalToDegree(decJnow, True, True, ' ')                                          # set dec as well
-        if pierside == '1':
+    def capturingImage(self, modelData):                                                                                    # capturing image
+        st_fits_header = modelData['sidereal_time'][0:10]                                                                   # store local sideral time as well
+        ra_fits_header = self.mount.decimalToDegree(modelData['ra'], False, False, ' ')                                     # set the point coordinates from mount in J2000 as hint precision 2
+        dec_fits_header = self.mount.decimalToDegree(modelData['dec'], True, False, ' ')                                    # set dec as well
+        raJnow_fits_header = self.mount.decimalToDegree(modelData['raJnow'], False, True, ' ')                              # set the point coordinates from mount in J2000 as hint precision 2
+        decJnow_fits_header = self.mount.decimalToDegree(modelData['decJnow'], True, True, ' ')                             # set dec as well
+        if modelData['pierside'] == '1':
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
-        self.logger.debug('capturingImage -> params: BIN:{0} ISO:{1} EXP:{2} Path:{3}'
-                          .format(binning, isoMode, exposure, file))                                                        # write logfile
-        suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=binning,
-                                                   exposureLength=exposure,
-                                                   isoMode=isoMode, iso=str(isoMode),
-                                                   gain='High', speed=speed, frameType='Light',
-                                                   path=file,
-                                                   useSubframe=sub, posX=oX, posY=oY, width=sX, height=sY)                  # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
+        self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
+        suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=modelData['binning'],
+                                                   exposureLength=modelData['exposure'],
+                                                   isoMode=modelData['isoMode'],
+                                                   iso=str(modelData['isoMode']),
+                                                   gain='High',
+                                                   speed=modelData['speed'],
+                                                   frameType='Light',
+                                                   path=modelData['file'],
+                                                   useSubframe=modelData['canSubframe'],
+                                                   posX=modelData['offX'],
+                                                   posY=modelData['offY'],
+                                                   width=modelData['sizeX'],
+                                                   height=modelData['sizeY'])                                               # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
+        self.modelData['imagepath'] = ''
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
             while True:                                                                                                     # waiting for the image download before proceeding
-                suc, imagepath = self.SGPro.SgGetImagePath(guid)                                                            # there is the image path, once the image is downloaded
+                suc, modelData['imagepath'] = self.SGPro.SgGetImagePath(guid)                                               # there is the image path, once the image is downloaded
                 if suc:                                                                                                     # until then, the link is only the receipt
                     break                                                                                                   # stopping the loop
                 else:                                                                                                       # otherwise
                     time.sleep(0.5)                                                                                         # wait for 0.5 seconds
-            self.logger.debug('capturingImage -> getImagePath-> suc: {0}, imagepath: {1}'.format(suc, imagepath))           # debug output
-            fitsFileHandle = pyfits.open(imagepath, mode='update')                                                          # open for adding field info
+            self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))             # debug output
+            fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
             fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
             fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
             fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
-            fitsHeader['CDELT1'] = hint                                                                                     # x is the same as y
-            fitsHeader['CDELT2'] = hint                                                                                     # and vice versa
+            fitsHeader['CDELT1'] = modelData['hint']                                                                        # x is the same as y
+            fitsHeader['CDELT2'] = modelData['hint']                                                                        # and vice versa
             fitsHeader['MW_MRA'] = raJnow_fits_header                                                                       # reported RA of mount in JNOW
             fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                     # reported DEC of mount in JNOW
             fitsHeader['MW_ST'] = st_fits_header                                                                            # reported local sideral time of mount from GS command
             fitsHeader['MW_MSIDE'] = pierside_fits_header                                                                   # reported pierside of mount from SD command
-            fitsHeader['MW_EXP'] = exposure                                                                                 # store the exposure time as well
-            fitsHeader['MW_AZ'] = az                                                                                        # x is the same as y
-            fitsHeader['MW_ALT'] = alt                                                                                      # and vice versa
+            fitsHeader['MW_EXP'] = modelData['exposure']                                                                    # store the exposure time as well
+            fitsHeader['MW_AZ'] = modelData['azimuth']                                                                      # x is the same as y
+            fitsHeader['MW_ALT'] = modelData['altitude']                                                                    # and vice versa
             self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
                               'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
                               .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
@@ -549,70 +561,71 @@ class Model(QtCore.QThread):
                                       fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                           # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
-            return True, 'OK', imagepath                                                                                    # return true OK and imagepath
+            return True, 'OK', modelData                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
-            return False, mes, ''                                                                                           # image capturing was failing, writing message from SGPro back
+            return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
-    def solveImage(self, modeltype, blind, imagepath, hint, refractionTemp):                                                # solving image based on information inside the FITS files, no additional info
+    def solveImage(self, modeltype, modelData):                                                                             # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
-            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
-                                                     blindSolve=blind,
+            suc, mes, guid = self.SGPro.SgSolveImage(modelData['imagepath'],
+                                                     scaleHint=modelData['hint'],
+                                                     blindSolve=modelData['blind'],
                                                      useFitsHeaders=True)
         else:                                                                                                               # otherwise we have no chance for blind solve
-            suc, mes, guid = self.SGPro.SgSolveImage(imagepath, scaleHint=hint,
+            suc, mes, guid = self.SGPro.SgSolveImage(modelData['imagepath'],
+                                                     scaleHint=modelData['hint'],
                                                      blindSolve=False,
                                                      useFitsHeaders=True)                                                   # solve without blind
         if not suc:
-            self.logger.warning('solveImage     -> no start {0}'.format(mes))                                           # debug output
-            return False, mes
+            self.logger.warning('solveImage     -> no start {0}'.format(mes))                                               # debug output
+            return False, mes, modelData
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
-            dec_sol = float(dec_sol)                                                                                        # convert to float
-            ra_sol = float(ra_sol)                                                                                          #
-            scale = float(scale)                                                                                            #
-            angle = float(angle)                                                                                            #
-            timeTS = float(timeTS)                                                                                          #
+            modelData['dec_sol'] = float(dec_sol)                                                                           # convert to float
+            modelData['ra_sol'] = float(ra_sol)
+            modelData['scale'] = float(scale)
+            modelData['angle'] = float(angle)
+            modelData['timeTS'] = float(timeTS)
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
             if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
-                self.logger.debug('solveImage solv-> ra_sol:{0} dec_sol:{1} suc:{2} mes:{3} scale:{4} angle:{5} '
-                                  'timeTS: {6}'.format(ra_sol, dec_sol, suc, mes, scale, angle, timeTS))
+                self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
                 solved = True
                 break
             elif mes != 'Solving':                                                                                          # general error
                 solved = False
                 break
             else:                                                                                                           # otherwise
-                if blind:                                                                                                   # when using blind solve, it takes 30-60 s
+                if self.modelData['blind']:                                                                                 # when using blind solve, it takes 30-60 s
                     time.sleep(5)                                                                                           # therefore slow cycle
                 else:                                                                                                       # local solver takes 1-2 s
                     time.sleep(.25)                                                                                         # therefore quicker cycle
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if solved:
-            self.mount.transform.SiteTemperature = refractionTemp                                                           # set refraction temp in converter
-            self.mount.transform.SetJ2000(float(ra_sol), float(dec_sol))                                                    # set coordinates in J2000 (solver)
-            ra_sol_Jnow = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)                       # convert to Jnow
-            dec_sol_Jnow = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)                      # convert to Jnow
-            fitsFileHandle = pyfits.open(imagepath, mode='update')                                                          # open for adding field info
+            self.mount.transform.SiteTemperature = modelData['refractionTemp']                                              # set refraction temp in converter
+            self.mount.transform.SetJ2000(modelData['ra_sol'], modelData['dec_sol'])                                        # set coordinates in J2000 (solver)
+            modelData['ra_sol_Jnow'] = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)          # convert to Jnow
+            modelData['dec_sol_Jnow'] = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)         # convert to Jnow
+            fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
-            fitsHeader['MW_PRA'] = ra_sol_Jnow
-            fitsHeader['MW_PDEC'] = dec_sol_Jnow
-            fitsHeader['MW_SRA'] = ra_sol
-            fitsHeader['MW_SDEC'] = dec_sol
-            fitsHeader['MW_PSCAL'] = scale
-            fitsHeader['MW_PANGL'] = angle
-            fitsHeader['MW_PTS'] = timeTS
+            fitsHeader['MW_PRA'] = modelData['ra_sol_Jnow']
+            fitsHeader['MW_PDEC'] = modelData['dec_sol_Jnow']
+            fitsHeader['MW_SRA'] = modelData['ra_sol']
+            fitsHeader['MW_SDEC'] = modelData['dec_sol']
+            fitsHeader['MW_PSCAL'] = modelData['scale']
+            fitsHeader['MW_PANGL'] = modelData['angle']
+            fitsHeader['MW_PTS'] = modelData['timeTS']
             self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
                               format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
                                      fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                          # write all header data to debug
-            fitsFileHandle.flush()  # write all to disk
-            fitsFileHandle.close()  # close FIT file
-            return True, mes
+            fitsFileHandle.flush()                                                                                           # write all to disk
+            fitsFileHandle.close()                                                                                           # close FIT file
+            return True, mes, modelData
         else:
-            return False, mes
+            return False, mes, modelData
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
-        self.commandQueue.put('Sr{0}'.format(ra))                                                                        # Write jnow ra to mount
-        self.commandQueue.put('Sd{0}'.format(dec))                                                                        # Write jnow dec to mount
+        self.commandQueue.put('Sr{0}'.format(ra))                                                                           # Write jnow ra to mount
+        self.commandQueue.put('Sd{0}'.format(dec))                                                                          # Write jnow dec to mount
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
         print(ra, dec)
         # self.commandQueue.put('CMS')                                                                                      # send sync command (regardless what driver tells)
@@ -634,29 +647,25 @@ class Model(QtCore.QThread):
         fitsFileHandle.close()  # close FIT file
         return ra_sol, dec_sol, ra_sol_Jnow, dec_sol_Jnow, ra_m, dec_m, scale, angle, timeTS
 
-    def runModel(self, modeltype, runPoints, directory, settlingTime):                                                                 # model run routing
+    def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
         self.numCheckPoints = 0                                                                                             # number og checkpoints done
         self.results = []                                                                                                   # error results
-        if self.ui.checkDoSubframe.isChecked():                                                                             # should we run with subframes
-            scaleSubframe = self.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-            self.sub, self.sizeX, self.sizeY, self.offX, self.offY = self.prepareCaptureImageSubframes(scaleSubframe)       # calculate the necessary data
-        else:                                                                                                               # otherwise
-            self.sub = False                                                                                                # set default values
-            self.sizeX = 0                                                                                                  #
-            self.sizeY = 0                                                                                                  #
-            self.offX = 0                                                                                                   #
-            self.offY = 0                                                                                                   #
-        self.logger.debug('runModel       -> subframe: {0}, {1}, {2}, {3}, {4}'
-                          .format(self.sub, self.sizeX, self.sizeY, self.offX, self.offY))                                  # log data
+        self.modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                          # define subdirectory for storing the images
+        scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
+        self.modelData = self.prepareCaptureImageSubframes(scaleSubframe, self.modelData)                                   # calculate the necessary data
+        if not self.ui.checkDoSubframe.isChecked():                                                                         # should we run with subframes
+            self.modelData['canSubframe'] = False                                                                           # set default values
+        self.logger.debug('runModel       -> modelData: {0}'.format(self.modelData))                                        # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking on during the picture taking
-        base_dir_images = self.ui.le_imageDirectoryName.text() + '/' + directory                                            # define subdirectory for storing the images
-        if not os.path.isdir(base_dir_images):                                                                              # if analyse dir doesn't exist, make it
-            os.makedirs(base_dir_images)                                                                                    # if path doesn't exist, generate is
+        if not os.path.isdir(self.modelData['base_dir_images']):                                                            # if analyse dir doesn't exist, make it
+            os.makedirs(self.modelData['base_dir_images'])                                                                  # if path doesn't exist, generate is
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
+            self.modelData['azimuth'] = p_az
+            self.modelData['altitude'] = p_alt
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
@@ -684,34 +693,36 @@ class Model(QtCore.QThread):
                 self.LogQueue.put('\n')                                                                                     # clear gui for next line
             if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = true ?
                 if self.ui.checkFastDownload.isChecked():                                                                   # if camera is supporting high speed download
-                    speed = 'HiSpeed'                                                                                       # we can use it for improved modeling speed
+                    self.modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
-                    speed = 'Normal'                                                                                        # standard speed
-                binning = int(float(self.ui.cameraBin.value()))                                                             # get binning value from gui
-                exposure = int(float(self.ui.cameraExposure.value()))                                                       # get exposure value from gui
-                isoMode = int(float(self.ui.isoSetting.value()))                                                            # get isoMode value from GUI
-                blind = self.ui.checkUseBlindSolve.isChecked()                                                              # get data from gui
-                hint = float(self.ui.pixelSize.value()) * binning * 206.6 / float(self.ui.focalLength.value())              # calculating hint with focal length and pixel size of cam
-                file = base_dir_images + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'                              # generate filepath for storing image
+                    self.modelData['speed'] = 'Normal'
+                self.modelData['file'] = self.modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'  # generate filepath for storing image
+                self.modelData['binning'] = int(float(self.ui.cameraBin.value()))
+                self.modelData['exposure'] = int(float(self.ui.cameraExposure.value()))
+                self.modelData['isoMode'] = int(float(self.ui.isoSetting.value()))
+                self.modelData['blind'] = self.ui.checkUseBlindSolve.isChecked()
+                self.modelData['hint'] = float(self.ui.pixelSize.value()) * self.modelData['binning'] * 206.6 / float(self.ui.focalLength.value())
+                self.modelData['sidereal_time'] = self.mount.sidereal_time
+                self.modelData['ra'] = self.mount.ra
+                self.modelData['dec'] = self.mount.dec
+                self.modelData['raJnow'] = self.mount.raJnow
+                self.modelData['decJnow'] = self.mount.decJnow
+                self.modelData['pierside'] = self.mount.pierside
+                if len(self.ui.le_refractionTemperature.text()) > 0:                                                        # set refraction temp
+                    self.modelData['refractionTemp'] = float(self.ui.le_refractionTemperature.text())                       # set it if string available
+                else:
+                    self.modelData['refractionTemp'] = 20.0                                                                 # set it to 20.0 degree c
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                 self.LogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), i + 1))                              # gui output
-                suc, mes, imagepath = self.capturingImage(self.mount.sidereal_time, self.mount.ra, self.mount.dec,
-                                                          self.mount.raJnow, self.mount.decJnow,
-                                                          p_az, p_alt, binning, exposure, isoMode, self.sub, self.sizeX,
-                                                          self.sizeY, self.offX, self.offY, speed, file, hint,
-                                                          self.mount.pierside)                                              # capturing image and store position (ra,dec), time, (az,alt)
+                suc, mes, imagepath = self.capturingImage(self.modelData)                                                   # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
-                    if len(self.ui.le_refractionTemperature.text()) > 0:  # set refraction temp
-                        refractionTemp = float(self.ui.le_refractionTemperature.text())  # set it if string available
-                    else:  # otherwise
-                        refractionTemp = 20.0  # set it to 20.0 degree c
-                    suc, mes = self.solveImage(modeltype, blind, imagepath, hint, refractionTemp)                           # solve the position and returning the values
+                    suc, mes, self.modelData = self.solveImage(modeltype, self.modelData)                                   # solve the position and returning the values
                     self.LogQueue.put('{0} -\t Image path: {1}\n'
                                       .format(time.strftime("%H:%M:%S", time.localtime()), imagepath))                      # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
