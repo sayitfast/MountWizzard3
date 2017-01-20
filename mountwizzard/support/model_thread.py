@@ -605,6 +605,9 @@ class Model(QtCore.QThread):
             self.mount.transform.SetJ2000(modelData['ra_sol'], modelData['dec_sol'])                                        # set coordinates in J2000 (solver)
             modelData['ra_sol_Jnow'] = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)          # convert to Jnow
             modelData['dec_sol_Jnow'] = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)         # convert to Jnow
+            modelData['raError'] = (modelData['ra_sol'] - modelData['ra']) * 3600                                           # calculate the alignment error ra
+            modelData['decError'] = (modelData['dec_sol'] - modelData['dec']) * 3600                                        # calculate the alignment error dec
+            modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
             fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
             fitsHeader['MW_PRA'] = modelData['ra_sol_Jnow']
@@ -631,21 +634,6 @@ class Model(QtCore.QThread):
         # self.commandQueue.put('CMS')                                                                                      # send sync command (regardless what driver tells)
         # TODO: implement event loop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK
-
-    def extractFitsData(self, imagepath):
-        fitsFileHandle = pyfits.open(imagepath)
-        fitsHeader = fitsFileHandle[0].header
-        ra_sol = fitsHeader['MW_SRA']
-        dec_sol = fitsHeader['MW_SDEC']
-        ra_m = self.mount.degStringToDecimal(fitsHeader['OBJCTRA'])
-        dec_m = self.mount.degStringToDecimal(fitsHeader['OBJCTDEC'])
-        ra_sol_Jnow = fitsHeader['MW_PRA']
-        dec_sol_Jnow = fitsHeader['MW_PDEC']
-        scale = fitsHeader['MW_PSCAL']
-        angle = fitsHeader['MW_PANGL']
-        timeTS = fitsHeader['MW_PTS']
-        fitsFileHandle.close()  # close FIT file
-        return ra_sol, dec_sol, ra_sol_Jnow, dec_sol_Jnow, ra_m, dec_m, scale, angle, timeTS
 
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
@@ -708,6 +696,7 @@ class Model(QtCore.QThread):
                 self.modelData['raJnow'] = self.mount.raJnow
                 self.modelData['decJnow'] = self.mount.decJnow
                 self.modelData['pierside'] = self.mount.pierside
+                self.modelData['index'] = i
                 if len(self.ui.le_refractionTemperature.text()) > 0:                                                        # set refraction temp
                     self.modelData['refractionTemp'] = float(self.ui.le_refractionTemperature.text())                       # set it if string available
                 else:
@@ -724,30 +713,25 @@ class Model(QtCore.QThread):
                     self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
                     suc, mes, self.modelData = self.solveImage(modeltype, self.modelData)                                   # solve the position and returning the values
                     self.LogQueue.put('{0} -\t Image path: {1}\n'
-                                      .format(time.strftime("%H:%M:%S", time.localtime()), imagepath))                      # Gui output
+                                      .format(time.strftime("%H:%M:%S", time.localtime()), self.modelData['imagepath']))    # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
-                        ra_sol, dec_sol, ra_sol_Jnow, dec_sol_Jnow, ra_m, dec_m, scale, angle, timeTS = self.extractFitsData(imagepath)
                         if modeltype in ['Base', 'Refinement']:                                                             #
-                            self.addRefinementStar(ra_sol_Jnow, dec_sol_Jnow)                                               # sync the actual star to resolved coordinates in JNOW
+                            self.addRefinementStar(self.modelData['ra_sol_Jnow'], self.modelData['dec_sol_Jnow'])           # sync the actual star to resolved coordinates in JNOW
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
-                        raE = (ra_sol - ra_m) * 3600                                                                        # calculate the alignment error ra
-                        decE = (dec_sol - dec_m) * 3600                                                                     # calculate the alignment error dec
-                        err = math.sqrt(raE * raE + decE * decE)                                                            # accumulate sum of error vectors squared
-                        self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'.format(raE, decE, self.numCheckPoints))  # generating debug output
-                        self.results.append((i, p_az, p_alt, ra_m, dec_m, ra_sol, dec_sol, raE, decE, err))                 # adding point for matrix
+                        self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
+                                          .format(self.modelData['raE'], self.modelData['decE'], self.numCheckPoints))      # generating debug output
+                        self.results.append(self.modelData)                                                                 # adding point for matrix
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
-                        self.LogQueue.put('{0} -\t RA: {1:3.1f}  DEC: {2:3.1f}  Angle: {3:3.1f}  RAdiff: {4:2.1f}  '
-                                          'DECdiff: {5:2.1f}  Took: {6:3.1f}s\n'
-                                          .format(time.strftime("%H:%M:%S", time.localtime()), ra_sol, dec_sol,
-                                                  angle, raE, decE, timeTS))                                                # data for User
-                        self.logger.debug('runModel       -> RA: {0:3.1f}  DEC: {1:3.1f}  Scale: {2:2.2f}  Angle: {3:3.1f}  '
-                                          'Error: {4:2.1f}  Took: {5:3.1f}s'.format(ra_sol, dec_sol, scale, angle, err, timeTS))    # log output
+                        self.LogQueue.put('{0} -\t RAdiff: {1:2.1f} DECdiff: {2:2.1f}\n'
+                                          .format(time.strftime("%H:%M:%S", time.localtime()),
+                                                  self.modelData['raError'], self.modelData['decError']))                   # data for User
+                        self.logger.debug('runModel       -> modelData: {0}'.format(self.modelData))                        # log output
                     else:                                                                                                   # no success in solving
-                        os.remove(imagepath)                                                                                # delete unsolved image
+                        os.remove(self.modelData['imagepath'])                                                              # delete unsolved image
                         self.LogQueue.put('{0} -\t Solving error: {1}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
-            shutil.rmtree(base_dir_images, ignore_errors=True)                                                              # otherwise just delete them
+            shutil.rmtree(self.modelData['base_dir_images'], ignore_errors=True)                                            # otherwise just delete them
         self.LogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
                           .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, self.numCheckPoints))             # GUI output
         self.modelrun = False

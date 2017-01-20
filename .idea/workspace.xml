@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" afterPath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,8 +26,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1090">
-              <caret line="623" column="40" lean-forward="false" selection-start-line="623" selection-start-column="40" selection-end-line="623" selection-end-column="40" />
+            <state relative-caret-position="279">
+              <caret line="698" column="2" lean-forward="false" selection-start-line="698" selection-start-column="2" selection-end-line="698" selection-end-column="2" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -50,7 +48,7 @@
       <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4930">
+            <state relative-caret-position="3622">
               <caret line="706" column="0" lean-forward="false" selection-start-line="706" selection-start-column="0" selection-end-line="706" selection-end-column="0" />
               <folding>
                 <element signature="n#!!doc" expanded="false" />
@@ -59,11 +57,7 @@
                 <element signature="e#12692#12753#0" expanded="false" />
                 <element signature="e#12911#12972#0" expanded="false" />
                 <element signature="e#13130#13191#0" expanded="false" />
-                <element signature="e#13227#17916#0" expanded="false" />
-                <element signature="e#13244#17699#0" expanded="false" />
                 <element signature="e#17743#17916#0" expanded="false" />
-                <element signature="e#17952#22655#0" expanded="false" />
-                <element signature="e#21993#22440#0" expanded="false" />
                 <element signature="e#22484#22655#0" expanded="false" />
                 <element signature="e#22953#23435#0" expanded="false" />
                 <element signature="e#23482#23956#0" expanded="false" />
@@ -252,10 +246,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-8" />
-    <option name="y" value="-8" />
-    <option name="width" value="2576" />
-    <option name="height" value="1576" />
+    <option name="x" value="-6" />
+    <option name="y" value="1" />
+    <option name="width" value="2572" />
+    <option name="height" value="1565" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -302,114 +296,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tests" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="tests" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="test_model_thread" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="testimages" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="support" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="mountwizzard" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="config" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -728,13 +614,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
-    </task>
-    <task id="LOCAL-00060" summary="update for correction of queue handling (adding task_done())">
-      <created>1480882847944</created>
-      <option name="number" value="00060" />
-      <option name="presentableId" value="LOCAL-00060" />
-      <option name="project" value="LOCAL" />
-      <updated>1480882847944</updated>
     </task>
     <task id="LOCAL-00061" summary="update for correction of queue handling (adding task_done())">
       <created>1480883805480</created>
@@ -1072,7 +951,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484770527439</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="change to central modelData dictionary for data exchange">
+      <created>1484849915134</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1484849915134</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1089,16 +975,16 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="2576" height="1576" extended-state="6" />
+    <frame x="-6" y="1" width="2572" height="1565" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18006304" sideWeight="0.49024707" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18034728" sideWeight="0.49024707" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15625" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21456437" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287858" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31319445" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.47847223" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37228832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19944017" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18400316" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899868" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.219323" sideWeight="0.5097529" order="2" side_tool="true" content_ui="tabs" />
@@ -1142,7 +1028,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="correction hint in case of binning&#10;refactoring test without camera&#10;removing gui variables from functional code for later automatic testing&#10;" />
     <MESSAGE value="bugfixing log message error plate solving" />
     <MESSAGE value="cleanup impoort code" />
     <MESSAGE value="renaming ui files for later split" />
@@ -1167,7 +1052,8 @@
     <MESSAGE value="clean up model for signals redraw and normal point generation" />
     <MESSAGE value="update dso stream and correction of failure mode transform celestial horizontal" />
     <MESSAGE value="update hmi" />
-    <option name="LAST_COMMIT_MESSAGE" value="update hmi" />
+    <MESSAGE value="change to central modelData dictionary for data exchange" />
+    <option name="LAST_COMMIT_MESSAGE" value="change to central modelData dictionary for data exchange" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1240,11 +1126,7 @@
             <element signature="e#12692#12753#0" expanded="false" />
             <element signature="e#12911#12972#0" expanded="false" />
             <element signature="e#13130#13191#0" expanded="false" />
-            <element signature="e#13227#17916#0" expanded="false" />
-            <element signature="e#13244#17699#0" expanded="false" />
             <element signature="e#17743#17916#0" expanded="false" />
-            <element signature="e#17952#22655#0" expanded="false" />
-            <element signature="e#21993#22440#0" expanded="false" />
             <element signature="e#22484#22655#0" expanded="false" />
             <element signature="e#22953#23435#0" expanded="false" />
             <element signature="e#23482#23956#0" expanded="false" />
@@ -1363,11 +1245,7 @@
             <element signature="e#12692#12753#0" expanded="false" />
             <element signature="e#12911#12972#0" expanded="false" />
             <element signature="e#13130#13191#0" expanded="false" />
-            <element signature="e#13227#17916#0" expanded="false" />
-            <element signature="e#13244#17699#0" expanded="false" />
             <element signature="e#17743#17916#0" expanded="false" />
-            <element signature="e#17952#22655#0" expanded="false" />
-            <element signature="e#21993#22440#0" expanded="false" />
             <element signature="e#22484#22655#0" expanded="false" />
             <element signature="e#22953#23435#0" expanded="false" />
             <element signature="e#23482#23956#0" expanded="false" />
@@ -1479,11 +1357,7 @@
             <element signature="e#12692#12753#0" expanded="false" />
             <element signature="e#12911#12972#0" expanded="false" />
             <element signature="e#13130#13191#0" expanded="false" />
-            <element signature="e#13227#17916#0" expanded="false" />
-            <element signature="e#13244#17699#0" expanded="false" />
             <element signature="e#17743#17916#0" expanded="false" />
-            <element signature="e#17952#22655#0" expanded="false" />
-            <element signature="e#21993#22440#0" expanded="false" />
             <element signature="e#22484#22655#0" expanded="false" />
             <element signature="e#22953#23435#0" expanded="false" />
             <element signature="e#23482#23956#0" expanded="false" />
@@ -1797,9 +1671,30 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="105" column="8" lean-forward="false" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="8" />
+          <folding>
+            <element signature="e#6298#6459#0" expanded="false" />
+            <element signature="e#6612#6788#0" expanded="false" />
+            <element signature="e#7107#7677#0" expanded="false" />
+            <element signature="e#7844#8376#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="398" column="8" lean-forward="false" selection-start-line="398" selection-start-column="8" selection-end-line="398" selection-end-column="8" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4930">
+        <state relative-caret-position="3622">
           <caret line="706" column="0" lean-forward="false" selection-start-line="706" selection-start-column="0" selection-end-line="706" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
@@ -1808,11 +1703,7 @@
             <element signature="e#12692#12753#0" expanded="false" />
             <element signature="e#12911#12972#0" expanded="false" />
             <element signature="e#13130#13191#0" expanded="false" />
-            <element signature="e#13227#17916#0" expanded="false" />
-            <element signature="e#13244#17699#0" expanded="false" />
             <element signature="e#17743#17916#0" expanded="false" />
-            <element signature="e#17952#22655#0" expanded="false" />
-            <element signature="e#21993#22440#0" expanded="false" />
             <element signature="e#22484#22655#0" expanded="false" />
             <element signature="e#22953#23435#0" expanded="false" />
             <element signature="e#23482#23956#0" expanded="false" />
@@ -1906,31 +1797,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="105" column="8" lean-forward="false" selection-start-line="105" selection-start-column="8" selection-end-line="105" selection-end-column="8" />
-          <folding>
-            <element signature="e#6298#6459#0" expanded="false" />
-            <element signature="e#6612#6788#0" expanded="false" />
-            <element signature="e#7107#7677#0" expanded="false" />
-            <element signature="e#7844#8376#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="398" column="8" lean-forward="false" selection-start-line="398" selection-start-column="8" selection-end-line="398" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1090">
-          <caret line="623" column="40" lean-forward="false" selection-start-line="623" selection-start-column="40" selection-end-line="623" selection-end-column="40" />
+        <state relative-caret-position="279">
+          <caret line="698" column="2" lean-forward="false" selection-start-line="698" selection-start-column="2" selection-end-line="698" selection-end-column="2" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>
