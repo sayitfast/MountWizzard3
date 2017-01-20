@@ -293,7 +293,6 @@ class Model(QtCore.QThread):
         self.signalModelRedraw.emit(True)
 
     def transformCelestialHorizontal(self, ra, dec):
-        print('test')
         if ra < 0:
             ra += 24
         if ra >= 24:
@@ -337,7 +336,7 @@ class Model(QtCore.QThread):
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
-                az, alt = self.transformCelestialHorizontal(ha/10, dec)                                                     # do the transformation to alt az
+                az, alt = self.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
