@@ -26,8 +26,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="542">
-              <caret line="495" column="124" lean-forward="false" selection-start-line="495" selection-start-column="124" selection-end-line="495" selection-end-column="124" />
+            <state relative-caret-position="576">
+              <caret line="492" column="124" lean-forward="false" selection-start-line="492" selection-start-column="124" selection-end-line="492" selection-end-column="124" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -637,13 +637,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00070" summary="dslr update and precision update">
-      <created>1482406970889</created>
-      <option name="number" value="00070" />
-      <option name="presentableId" value="LOCAL-00070" />
-      <option name="project" value="LOCAL" />
-      <updated>1482406970889</updated>
-    </task>
     <task id="LOCAL-00071" summary="update readme for python versions">
       <created>1482700146374</created>
       <option name="number" value="00071" />
@@ -980,7 +973,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484948655656</updated>
     </task>
-    <option name="localTasksCounter" value="119" />
+    <task id="LOCAL-00119" summary="bugfix modelData">
+      <created>1484949825206</created>
+      <option name="number" value="00119" />
+      <option name="presentableId" value="LOCAL-00119" />
+      <option name="project" value="LOCAL" />
+      <updated>1484949825207</updated>
+    </task>
+    <option name="localTasksCounter" value="120" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1050,7 +1050,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="refactoring color entries" />
     <MESSAGE value="refactoring color entries finish" />
     <MESSAGE value="bugfix due to message barry" />
     <MESSAGE value="refactor runopenanalysewindow" />
@@ -1075,14 +1074,15 @@
     <MESSAGE value="log should be stored correctly" />
     <MESSAGE value="update visual second down in one location" />
     <MESSAGE value="move dict to list" />
-    <option name="LAST_COMMIT_MESSAGE" value="move dict to list" />
+    <MESSAGE value="bugfix modelData" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfix modelData" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mountwizzard/support/model_thread.py</url>
-          <line>642</line>
+          <line>641</line>
           <option name="timeStamp" value="63" />
         </line-breakpoint>
       </breakpoints>
@@ -1822,8 +1822,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="542">
-          <caret line="495" column="124" lean-forward="false" selection-start-line="495" selection-start-column="124" selection-end-line="495" selection-end-column="124" />
+        <state relative-caret-position="576">
+          <caret line="492" column="124" lean-forward="false" selection-start-line="492" selection-start-column="124" selection-end-line="492" selection-end-column="124" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>

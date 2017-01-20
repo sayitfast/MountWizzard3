@@ -479,19 +479,18 @@ class Model(QtCore.QThread):
     def prepareCaptureImageSubframes(self, scale, modelData):                                                               # get camera data for doing subframes
         suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
         self.logger.debug('prepareCaptureSubframe-> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))         # debug data
-        if suc:                                                                                                             # if cam props are there
-            if canSubframe:                                                                                                 # if camera could do subframes
+        modelData['sizeX'] = 0  # size inner window
+        modelData['sizeY'] = 0  # size inner window
+        modelData['offX'] = 0  # offset is half of the rest
+        modelData['offY'] = 0  # same in y
+        modelData['canSubframe'] = False  # same in y
+        if suc and canSubframe:                                                                                             # if camera could do subframes
                 modelData['sizeX'] = int(sizeX * scale)                                                                     # size inner window
                 modelData['sizeY'] = int(sizeY * scale)                                                                     # size inner window
                 modelData['offX'] = int((sizeX - sizeX) / 2)                                                                # offset is half of the rest
                 modelData['offY'] = int((sizeY - sizeY) / 2)                                                                # same in y
                 modelData['canSubframe'] = True                                                                             # same in y
-            else:                                                                                                           # otherwise error
-                modelData['sizeX'] = 0                                                                                      # size inner window
-                modelData['sizeY'] = 0                                                                                      # size inner window
-                modelData['offX'] = 0                                                                                       # offset is half of the rest
-                modelData['offY'] = 0                                                                                       # same in y
-                modelData['canSubframe'] = False                                                                            # same in y
+        else:                                                                                                               # otherwise error
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
         return modelData                                                                                                    # default without subframe
 
