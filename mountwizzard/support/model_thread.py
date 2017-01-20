@@ -71,7 +71,6 @@ class Model(QtCore.QThread):
         self.sizeY = 0                                                                                                      # sizeY of subframe
         self.offX = 0                                                                                                       # offsetX for subframe
         self.offY = 0                                                                                                       # offsetY for subframe
-        self.modelData = dict()
 
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
@@ -637,24 +636,24 @@ class Model(QtCore.QThread):
         return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
+        modelData = dict()
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
-        self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
-        self.numCheckPoints = 0                                                                                             # number og checkpoints done
-        self.results = {}                                                                                                   # error results
-        self.modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                          # define subdirectory for storing the images
+        numCheckPoints = 0                                                                                                  # number og checkpoints done
+        results = {}                                                                                                        # error results
+        modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                               # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
-        self.modelData = self.prepareCaptureImageSubframes(scaleSubframe, self.modelData)                                   # calculate the necessary data
+        modelData = self.prepareCaptureImageSubframes(scaleSubframe, modelData)                                             # calculate the necessary data
         if not self.ui.checkDoSubframe.isChecked():                                                                         # should we run with subframes
-            self.modelData['canSubframe'] = False                                                                           # set default values
-        self.logger.debug('runModel       -> modelData: {0}'.format(self.modelData))                                        # log data
+            modelData['canSubframe'] = False                                                                                # set default values
+        self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
         self.commandQueue.put('PO')                                                                                         # unpark to start slewing
         self.commandQueue.put('AP')                                                                                         # tracking on during the picture taking
-        if not os.path.isdir(self.modelData['base_dir_images']):                                                            # if analyse dir doesn't exist, make it
-            os.makedirs(self.modelData['base_dir_images'])                                                                  # if path doesn't exist, generate is
+        if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
+            os.makedirs(modelData['base_dir_images'])                                                                       # if path doesn't exist, generate is
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
-            self.modelData['azimuth'] = p_az
-            self.modelData['altitude'] = p_alt
+            modelData['azimuth'] = p_az
+            modelData['altitude'] = p_alt
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
@@ -672,68 +671,69 @@ class Model(QtCore.QThread):
                         self.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
-                self.LogQueue.put('{0} -\t Wait mount settling / delay time {1:d} second(s) '
+                self.LogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), settlingTime))                       # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:                                                                                      # waiting for settling time and showing data
                     time.sleep(1)                                                                                           # only step n seconds
                     timeCounter -= 1                                                                                        # count down
-                    self.LogQueue.put(' {0:d}'.format(timeCounter))                                                         # write to gui
+                    self.LogQueue.put('backspace')
+                    self.LogQueue.put('{0:02d} sec'.format(timeCounter))                                                    # write to gui
                 self.LogQueue.put('\n')                                                                                     # clear gui for next line
             if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = true ?
                 if self.ui.checkFastDownload.isChecked():                                                                   # if camera is supporting high speed download
-                    self.modelData['speed'] = 'HiSpeed'
+                    modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
-                    self.modelData['speed'] = 'Normal'
-                self.modelData['file'] = self.modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'  # generate filepath for storing image
-                self.modelData['binning'] = int(float(self.ui.cameraBin.value()))
-                self.modelData['exposure'] = int(float(self.ui.cameraExposure.value()))
-                self.modelData['isoMode'] = int(float(self.ui.isoSetting.value()))
-                self.modelData['blind'] = self.ui.checkUseBlindSolve.isChecked()
-                self.modelData['hint'] = float(self.ui.pixelSize.value()) * self.modelData['binning'] * 206.6 / float(self.ui.focalLength.value())
-                self.modelData['sidereal_time'] = self.mount.sidereal_time
-                self.modelData['ra'] = self.mount.ra
-                self.modelData['dec'] = self.mount.dec
-                self.modelData['raJnow'] = self.mount.raJnow
-                self.modelData['decJnow'] = self.mount.decJnow
-                self.modelData['pierside'] = self.mount.pierside
-                self.modelData['index'] = i
+                    modelData['speed'] = 'Normal'
+                modelData['file'] = modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'    # generate filepath for storing image
+                modelData['binning'] = int(float(self.ui.cameraBin.value()))
+                modelData['exposure'] = int(float(self.ui.cameraExposure.value()))
+                modelData['isoMode'] = int(float(self.ui.isoSetting.value()))
+                modelData['blind'] = self.ui.checkUseBlindSolve.isChecked()
+                modelData['hint'] = float(self.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.ui.focalLength.value())
+                modelData['sidereal_time'] = self.mount.sidereal_time
+                modelData['ra'] = self.mount.ra
+                modelData['dec'] = self.mount.dec
+                modelData['raJnow'] = self.mount.raJnow
+                modelData['decJnow'] = self.mount.decJnow
+                modelData['pierside'] = self.mount.pierside
+                modelData['index'] = i
                 if len(self.ui.le_refractionTemperature.text()) > 0:                                                        # set refraction temp
-                    self.modelData['refractionTemp'] = float(self.ui.le_refractionTemperature.text())                       # set it if string available
+                    modelData['refractionTemp'] = float(self.ui.le_refractionTemperature.text())                            # set it if string available
                 else:
-                    self.modelData['refractionTemp'] = 20.0                                                                 # set it to 20.0 degree c
+                    modelData['refractionTemp'] = 20.0                                                                      # set it to 20.0 degree c
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                 self.LogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), i + 1))                              # gui output
-                suc, mes, imagepath = self.capturingImage(self.modelData)                                                   # capturing image and store position (ra,dec), time, (az,alt)
+                suc, mes, imagepath = self.capturingImage(modelData)                                                        # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
-                    suc, mes, self.modelData = self.solveImage(modeltype, self.modelData)                                   # solve the position and returning the values
+                    suc, mes, modelData = self.solveImage(modeltype, modelData)                                             # solve the position and returning the values
                     self.LogQueue.put('{0} -\t Image path: {1}\n'
-                                      .format(time.strftime("%H:%M:%S", time.localtime()), self.modelData['imagepath']))    # Gui output
+                                      .format(time.strftime("%H:%M:%S", time.localtime()), modelData['imagepath']))         # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
-                            self.addRefinementStar(self.modelData['ra_sol_Jnow'], self.modelData['dec_sol_Jnow'])           # sync the actual star to resolved coordinates in JNOW
-                        self.numCheckPoints += 1                                                                            # increase index for synced stars
+                            self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])                     # sync the actual star to resolved coordinates in JNOW
+                        numCheckPoints += 1                                                                                 # increase index for synced stars
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
-                                          .format(self.modelData['raError'], self.modelData['decError'], self.numCheckPoints))  # generating debug output
-                        self.results.append(copy.copy(self.modelData))                                                      # adding point for matrix
+                                          .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
+                        results.append(copy.copy(modelData))                                                                # adding point for matrix
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
                         self.LogQueue.put('{0} -\t RAdiff: {1:2.1f} DECdiff: {2:2.1f}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()),
-                                                  self.modelData['raError'], self.modelData['decError']))                   # data for User
-                        self.logger.debug('runModel       -> modelData: {0}'.format(self.modelData))                        # log output
+                                                  modelData['raError'], modelData['decError']))                             # data for User
+                        self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
-                        os.remove(self.modelData['imagepath'])                                                              # delete unsolved image
+                        os.remove(modelData['imagepath'])                                                                   # delete unsolved image
                         self.LogQueue.put('{0} -\t Solving error: {1}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
-            shutil.rmtree(self.modelData['base_dir_images'], ignore_errors=True)                                            # otherwise just delete them
+            shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
         self.LogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
-                          .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, self.numCheckPoints))             # GUI output
+                          .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, numCheckPoints))                  # GUI output
         self.modelrun = False
-        return self.results                                                                                                 # return results for analysing
+        return results                                                                                                      # return results for analysing

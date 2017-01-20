@@ -193,6 +193,8 @@ class ShowCoordinatePopup(MwWidget):
             text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
             if text == 'delete':                                                                                            # delete logfile for modeling
                 self.ui.modellingLog.setText('')                                                                            # reset window text
+            elif text == 'backspace':
+                self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText()[:-6])
             else:
                 self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText() + text)                                     # otherwise add text at the end
             self.ui.modellingLog.moveCursor(QTextCursor.End)                                                                # and move cursor up
