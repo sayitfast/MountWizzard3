@@ -397,7 +397,6 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                                  # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
-        self.signalMountTrackPreview.emit(True)
 
     def getStatusMedium(self, real):                                                                                        # medium status items like refraction
         if self.ui.checkAutoRefraction.isChecked():                                                                         # check if autorefraction is set

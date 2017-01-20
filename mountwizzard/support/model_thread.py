@@ -18,6 +18,7 @@ import time
 import datetime
 import os
 import shutil
+import copy
 # threading
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -640,7 +641,7 @@ class Model(QtCore.QThread):
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
         self.numCheckPoints = 0                                                                                             # number og checkpoints done
-        self.results = []                                                                                                   # error results
+        self.results = {}                                                                                                   # error results
         self.modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                          # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
         self.modelData = self.prepareCaptureImageSubframes(scaleSubframe, self.modelData)                                   # calculate the necessary data
@@ -720,7 +721,7 @@ class Model(QtCore.QThread):
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(self.modelData['raError'], self.modelData['decError'], self.numCheckPoints))  # generating debug output
-                        self.results.append(self.modelData)                                                                 # adding point for matrix
+                        self.results.append(copy.copy(self.modelData))                                                      # adding point for matrix
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
                         self.LogQueue.put('{0} -\t RAdiff: {1:2.1f} DECdiff: {2:2.1f}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()),
