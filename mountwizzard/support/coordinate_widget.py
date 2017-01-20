@@ -85,6 +85,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDomeWidget.update()
 
     def drawTrackPreview(self):
+        return
         self.groupTrackPreviewItems = QGraphicsItemGroup()
         pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         width = self.ui.modelPointsPlot.width()
@@ -96,14 +97,13 @@ class ShowCoordinatePopup(MwWidget):
             ra -= float(i) / 12.0
             dec = self.mount.dec                                                                                            # Transform text to degree format
             az, alt = self.model.transformCelestialHorizontal(ra, dec)                                                      # transform to az alt
-            if alt > 0:                                                                    # we only take point above horizon
+            if alt > 0:                                                                                                     # we only take point above horizon
                 x, y = getXYEllipse(az, alt, height, width, border, esize / 2)
                 item = QGraphicsEllipseItem(x, y, esize / 2, esize / 2)
                 item.setPen(pen)
                 self.groupTrackPreviewItems.addToGroup(item)
         self.groupTrackPreviewItems.setVisible(True)
         self.groupTrackPreviewItems.update()
-        QApplication.processEvents()
 
     def constructHorizon(self, scene, horizon, height, width, border):
         for i, p in enumerate(horizon):

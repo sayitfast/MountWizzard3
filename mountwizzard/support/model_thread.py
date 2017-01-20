@@ -293,6 +293,7 @@ class Model(QtCore.QThread):
         self.signalModelRedraw.emit(True)
 
     def transformCelestialHorizontal(self, ra, dec):
+        print('test')
         if ra < 0:
             ra += 24
         if ra >= 24:
@@ -319,6 +320,7 @@ class Model(QtCore.QThread):
             ra -= float(i) / 12.0
             dec = self.mount.degStringToDecimal(self.ui.le_trackDEC.text())                                                 # Transform text to degree format
             az, alt = self.transformCelestialHorizontal(ra, dec)                                                            # transform to az alt
+            print(az, alt)
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedraw.emit(True)
