@@ -486,7 +486,6 @@ class Model(QtCore.QThread):
                 modelData['offX'] = int((sizeX - sizeX) / 2)                                                                # offset is half of the rest
                 modelData['offY'] = int((sizeY - sizeY) / 2)                                                                # same in y
                 modelData['canSubframe'] = True                                                                             # same in y
-                return modelData                                                                                            # return values
             else:                                                                                                           # otherwise error
                 modelData['sizeX'] = 0                                                                                      # size inner window
                 modelData['sizeY'] = 0                                                                                      # size inner window
@@ -494,7 +493,7 @@ class Model(QtCore.QThread):
                 modelData['offY'] = 0                                                                                       # same in y
                 modelData['canSubframe'] = False                                                                            # same in y
                 self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
-                return modelData                                                                                            # default without subframe
+        return modelData                                                                                                    # default without subframe
 
     def getTestImage(self, index, imagepath):
         if os.path.isfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index)):                                      # check existing image file
@@ -636,7 +635,7 @@ class Model(QtCore.QThread):
         return True                                                                                                         # simulation OK
 
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
-        modelData = dict()
+        modelData = {}
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
