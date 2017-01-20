@@ -640,7 +640,7 @@ class Model(QtCore.QThread):
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
-        results = {}                                                                                                        # error results
+        results = []                                                                                                        # error results
         modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                               # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, modelData)                                             # calculate the necessary data
