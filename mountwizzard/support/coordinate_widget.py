@@ -187,7 +187,6 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         scene.addItem(self.groupTrackPreviewItems)
         self.ui.modelPointsPlot.setScene(scene)
-        return
 
     def mainLoop(self):
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do

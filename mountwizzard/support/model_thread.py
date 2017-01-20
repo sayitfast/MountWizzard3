@@ -531,7 +531,7 @@ class Model(QtCore.QThread):
                                                    posY=modelData['offY'],
                                                    width=modelData['sizeX'],
                                                    height=modelData['sizeY'])                                               # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
-        self.modelData['imagepath'] = ''
+        modelData['imagepath'] = ''
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
             while True:                                                                                                     # waiting for the image download before proceeding
                 suc, modelData['imagepath'] = self.SGPro.SgGetImagePath(guid)                                               # there is the image path, once the image is downloaded
@@ -596,7 +596,7 @@ class Model(QtCore.QThread):
                 solved = False
                 break
             else:                                                                                                           # otherwise
-                if self.modelData['blind']:                                                                                 # when using blind solve, it takes 30-60 s
+                if modelData['blind']:                                                                                      # when using blind solve, it takes 30-60 s
                     time.sleep(5)                                                                                           # therefore slow cycle
                 else:                                                                                                       # local solver takes 1-2 s
                     time.sleep(.25)                                                                                         # therefore quicker cycle

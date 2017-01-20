@@ -47,16 +47,16 @@ class Stick(QtCore.QThread):
                     self.signalStickData.emit(data)                                                                         # sending the data via signal
                 except pythoncom.com_error as e:                                                                            # if error, than put it to queue
                     self.connected = False                                                                                  # if error occurs, set to disconnected
-                    self.messageQueue.put('Driver COM Error in connectStick')                                               # write to gui
-                    self.logger.error('run Stick      -> get data error: {0}'.format(e))                                    # write to logfile
+                    #self.messageQueue.put('Driver COM Error in connectStick')                                               # write to gui
+                    #self.logger.error('run Stick      -> get data error: {0}'.format(e))                                    # write to logfile
             else:                                                                                                           # otherwise try to connect
                 try:
                     self.ascom = Dispatch('ASCOM.Stickstation.Observingconditions')                                         # load driver
                     self.ascom.connected = True                                                                             # enables data transfer
                     self.connected = True                                                                                   # set status to connected
                 except Exception as e:                                                                                      # if general exception
-                    self.messageQueue.put('Driver COM Error in dispatchStick')                                              # write to gui
-                    self.logger.error('run Stick      -> general exception in dispatchStick: {0}'.format(e))                # write to logger
+                    #self.messageQueue.put('Driver COM Error in dispatchStick')                                              # write to gui
+                    #self.logger.error('run Stick      -> general exception in dispatchStick: {0}'.format(e))                # write to logger
                     self.connected = False                                                                                  # set to disconnected
                 finally:                                                                                                    # still continua and try it again
                     pass                                                                                                    # needed for continue

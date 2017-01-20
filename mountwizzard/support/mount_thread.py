@@ -153,6 +153,7 @@ class Mount(QtCore.QThread):
                         self.driver_real = False
                     self.ascom.connected = True                                                                             # connect to mount
                     self.connected = True                                                                                   # setting connection status from driver
+                    self.counter = 0                                                                                        # whenever reconnect, then start from scratch
                 except Exception as e:                                                                                      # error handling
                     if self.driverName != '':
                         self.logger.error('run Mount      -> Driver COM Error in dispatchMount: {0}'.format(e))             # to logger
