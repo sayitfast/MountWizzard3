@@ -26,8 +26,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="721" column="128" lean-forward="false" selection-start-line="721" selection-start-column="128" selection-end-line="721" selection-end-column="128" />
+            <state relative-caret-position="280">
+              <caret line="632" column="124" lean-forward="false" selection-start-line="632" selection-start-column="124" selection-end-line="632" selection-end-column="124" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -508,13 +508,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00062" summary="update for logger naming">
-      <created>1480883923360</created>
-      <option name="number" value="00062" />
-      <option name="presentableId" value="LOCAL-00062" />
-      <option name="project" value="LOCAL" />
-      <updated>1480883923360</updated>
-    </task>
     <task id="LOCAL-00063" summary="correct color code for cancel hysterese">
       <created>1481046120637</created>
       <option name="number" value="00063" />
@@ -851,7 +844,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484928364887</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="bugfix raError">
+      <created>1484930059454</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1484930059454</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -921,7 +921,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="cleanup impoort code" />
     <MESSAGE value="renaming ui files for later split" />
     <MESSAGE value="first test with plot separately" />
     <MESSAGE value="rewrite analyse part" />
@@ -946,7 +945,8 @@
     <MESSAGE value="update hmi" />
     <MESSAGE value="change to central modelData dictionary for data exchange" />
     <MESSAGE value="change to central modelData dictionary for data exchange for beta test" />
-    <option name="LAST_COMMIT_MESSAGE" value="change to central modelData dictionary for data exchange for beta test" />
+    <MESSAGE value="bugfix raError" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfix raError" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1692,8 +1692,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="721" column="128" lean-forward="false" selection-start-line="721" selection-start-column="128" selection-end-line="721" selection-end-column="128" />
+        <state relative-caret-position="280">
+          <caret line="632" column="124" lean-forward="false" selection-start-line="632" selection-start-column="124" selection-end-line="632" selection-end-column="124" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>

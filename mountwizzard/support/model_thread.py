@@ -630,8 +630,7 @@ class Model(QtCore.QThread):
         self.commandQueue.put('Sr{0}'.format(ra))                                                                           # Write jnow ra to mount
         self.commandQueue.put('Sd{0}'.format(dec))                                                                          # Write jnow dec to mount
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
-        print(ra, dec)
-        # self.commandQueue.put('CMS')                                                                                      # send sync command (regardless what driver tells)
+        self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
         # TODO: implement event loop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK
 
