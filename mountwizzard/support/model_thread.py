@@ -719,7 +719,7 @@ class Model(QtCore.QThread):
                             self.addRefinementStar(self.modelData['ra_sol_Jnow'], self.modelData['dec_sol_Jnow'])           # sync the actual star to resolved coordinates in JNOW
                         self.numCheckPoints += 1                                                                            # increase index for synced stars
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
-                                          .format(self.modelData['raE'], self.modelData['decE'], self.numCheckPoints))      # generating debug output
+                                          .format(self.modelData['raError'], self.modelData['decError'], self.numCheckPoints))  # generating debug output
                         self.results.append(self.modelData)                                                                 # adding point for matrix
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
                         self.LogQueue.put('{0} -\t RAdiff: {1:2.1f} DECdiff: {2:2.1f}\n'

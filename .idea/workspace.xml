@@ -26,8 +26,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="279">
-              <caret line="698" column="2" lean-forward="false" selection-start-line="698" selection-start-column="2" selection-end-line="698" selection-end-column="2" />
+            <state relative-caret-position="449">
+              <caret line="721" column="128" lean-forward="false" selection-start-line="721" selection-start-column="128" selection-end-line="721" selection-end-column="128" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -38,116 +38,9 @@
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="527">
-              <caret line="398" column="8" lean-forward="false" selection-start-line="398" selection-start-column="8" selection-end-line="398" selection-end-column="8" />
+            <state relative-caret-position="309">
+              <caret line="103" column="56" lean-forward="false" selection-start-line="103" selection-start-column="51" selection-end-line="103" selection-end-column="56" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3622">
-              <caret line="706" column="0" lean-forward="false" selection-start-line="706" selection-start-column="0" selection-end-line="706" selection-end-column="0" />
-              <folding>
-                <element signature="n#!!doc" expanded="false" />
-                <element signature="e#337#351#0" expanded="true" />
-                <element signature="e#12473#12534#0" expanded="false" />
-                <element signature="e#12692#12753#0" expanded="false" />
-                <element signature="e#12911#12972#0" expanded="false" />
-                <element signature="e#13130#13191#0" expanded="false" />
-                <element signature="e#17743#17916#0" expanded="false" />
-                <element signature="e#22484#22655#0" expanded="false" />
-                <element signature="e#22953#23435#0" expanded="false" />
-                <element signature="e#23482#23956#0" expanded="false" />
-                <element signature="e#24493#24886#0" expanded="false" />
-                <element signature="e#24939#25332#0" expanded="false" />
-                <element signature="e#25367#25394#0" expanded="false" />
-                <element signature="e#25431#25458#0" expanded="false" />
-                <element signature="e#25497#25524#0" expanded="false" />
-                <element signature="e#25566#25594#0" expanded="false" />
-                <element signature="e#25636#25664#0" expanded="false" />
-                <element signature="e#25708#25736#0" expanded="false" />
-                <element signature="e#25774#25802#0" expanded="false" />
-                <element signature="e#25832#25861#0" expanded="false" />
-                <element signature="e#25896#25925#0" expanded="false" />
-                <element signature="e#25963#26125#0" expanded="false" />
-                <element signature="e#26170#26373#0" expanded="false" />
-                <element signature="e#26417#26619#0" expanded="false" />
-                <element signature="e#26660#26965#0" expanded="false" />
-                <element signature="e#26745#26812#0" expanded="false" />
-                <element signature="e#26839#26905#0" expanded="false" />
-                <element signature="e#27008#27329#0" expanded="false" />
-                <element signature="e#27098#27170#0" expanded="false" />
-                <element signature="e#27197#27268#0" expanded="false" />
-                <element signature="e#27378#27678#0" expanded="false" />
-                <element signature="e#27461#27526#0" expanded="false" />
-                <element signature="e#27553#27617#0" expanded="false" />
-                <element signature="e#27727#27774#0" expanded="false" />
-                <element signature="e#27814#28351#0" expanded="false" />
-                <element signature="e#28391#28928#0" expanded="false" />
-                <element signature="e#28968#29505#0" expanded="false" />
-                <element signature="e#29545#30082#0" expanded="false" />
-                <element signature="e#30087#30088#0" expanded="false" />
-                <element signature="e#30163#30381#0" expanded="false" />
-                <element signature="e#30424#30466#0" expanded="false" />
-                <element signature="e#30513#30559#0" expanded="false" />
-                <element signature="e#30596#30632#0" expanded="false" />
-                <element signature="e#30670#30707#0" expanded="false" />
-                <element signature="e#30748#30788#0" expanded="false" />
-                <element signature="e#30829#30869#0" expanded="false" />
-                <element signature="e#30911#30935#0" expanded="false" />
-                <element signature="e#30980#36056#0" expanded="false" />
-                <element signature="e#31020#31059#0" expanded="false" />
-                <element signature="e#31122#31285#0" expanded="false" />
-                <element signature="e#31568#31838#0" expanded="false" />
-                <element signature="e#31684#31838#0" expanded="false" />
-                <element signature="e#33102#33261#0" expanded="false" />
-                <element signature="e#33319#34446#0" expanded="false" />
-                <element signature="e#33765#33880#0" expanded="false" />
-                <element signature="e#33936#34108#0" expanded="false" />
-                <element signature="e#34164#34276#0" expanded="false" />
-                <element signature="e#34332#34446#0" expanded="false" />
-                <element signature="e#35059#35232#0" expanded="false" />
-                <element signature="e#36056#36057#0" expanded="false" />
-                <element signature="e#36125#36149#0" expanded="false" />
-                <element signature="e#36197#36415#0" expanded="false" />
-                <element signature="e#36460#36767#0" expanded="false" />
-                <element signature="e#36773#36774#0" expanded="false" />
-                <element signature="e#36851#36877#0" expanded="false" />
-                <element signature="e#36927#37149#0" expanded="false" />
-                <element signature="e#37196#37791#0" expanded="false" />
-                <element signature="e#37796#37797#0" expanded="false" />
-                <element signature="e#37863#37886#0" expanded="false" />
-                <element signature="e#37924#37950#0" expanded="false" />
-                <element signature="e#37985#38008#0" expanded="false" />
-                <element signature="e#38013#38014#0" expanded="false" />
-                <element signature="e#38103#38309#0" expanded="false" />
-                <element signature="e#38350#38373#0" expanded="false" />
-                <element signature="e#38783#38833#0" expanded="false" />
-                <element signature="e#38874#38927#0" expanded="false" />
-                <element signature="e#38971#39027#0" expanded="false" />
-                <element signature="e#39074#39133#0" expanded="false" />
-                <element signature="e#39179#39237#0" expanded="false" />
-                <element signature="e#39285#39345#0" expanded="false" />
-                <element signature="e#39390#39447#0" expanded="false" />
-                <element signature="e#39889#39947#0" expanded="false" />
-                <element signature="e#39991#40047#0" expanded="false" />
-                <element signature="e#40091#40147#0" expanded="false" />
-                <element signature="e#40188#40241#0" expanded="false" />
-                <element signature="e#40285#40341#0" expanded="false" />
-                <element signature="e#40385#40441#0" expanded="false" />
-                <element signature="e#40488#40547#0" expanded="false" />
-                <element signature="e#40590#40645#0" expanded="false" />
-                <element signature="e#40691#40749#0" expanded="false" />
-                <element signature="e#40779#40797#0" expanded="false" />
-                <element signature="e#40833#40846#0" expanded="false" />
-                <element signature="e#41051#41379#0" expanded="false" />
-                <element signature="e#42235#45655#0" expanded="false" />
-                <element signature="e#42397#42686#0" expanded="false" />
-                <element signature="e#42859#43153#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -163,8 +56,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>self.LogQueue.put</find>
-      <find>LogQueue</find>
       <find>'background-color: rgb(32,32,32); color: rgb(192,192,192)'</find>
       <find>'background-color: red'</find>
       <find>analys</find>
@@ -193,6 +84,8 @@
       <find>setDomeStatus</find>
       <find>modelL</find>
       <find>generateDSOPoints</find>
+      <find>setSt</find>
+      <find>raE</find>
     </findStrings>
     <replaceStrings>
       <replace>self.DEFAULT</replace>
@@ -615,13 +508,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00061" summary="update for correction of queue handling (adding task_done())">
-      <created>1480883805480</created>
-      <option name="number" value="00061" />
-      <option name="presentableId" value="LOCAL-00061" />
-      <option name="project" value="LOCAL" />
-      <updated>1480883805480</updated>
-    </task>
     <task id="LOCAL-00062" summary="update for logger naming">
       <created>1480883923360</created>
       <option name="number" value="00062" />
@@ -958,7 +844,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484849915134</updated>
     </task>
-    <option name="localTasksCounter" value="110" />
+    <task id="LOCAL-00110" summary="change to central modelData dictionary for data exchange for beta test">
+      <created>1484928364886</created>
+      <option name="number" value="00110" />
+      <option name="presentableId" value="LOCAL-00110" />
+      <option name="project" value="LOCAL" />
+      <updated>1484928364887</updated>
+    </task>
+    <option name="localTasksCounter" value="111" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1028,7 +921,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="bugfixing log message error plate solving" />
     <MESSAGE value="cleanup impoort code" />
     <MESSAGE value="renaming ui files for later split" />
     <MESSAGE value="first test with plot separately" />
@@ -1053,7 +945,8 @@
     <MESSAGE value="update dso stream and correction of failure mode transform celestial horizontal" />
     <MESSAGE value="update hmi" />
     <MESSAGE value="change to central modelData dictionary for data exchange" />
-    <option name="LAST_COMMIT_MESSAGE" value="change to central modelData dictionary for data exchange" />
+    <MESSAGE value="change to central modelData dictionary for data exchange for beta test" />
+    <option name="LAST_COMMIT_MESSAGE" value="change to central modelData dictionary for data exchange for beta test" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1684,18 +1577,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="527">
-          <caret line="398" column="8" lean-forward="false" selection-start-line="398" selection-start-column="8" selection-end-line="398" selection-end-column="8" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3622">
-          <caret line="706" column="0" lean-forward="false" selection-start-line="706" selection-start-column="0" selection-end-line="706" selection-end-column="0" />
+        <state relative-caret-position="289">
+          <caret line="311" column="8" lean-forward="false" selection-start-line="311" selection-start-column="8" selection-end-line="311" selection-end-column="8" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
             <element signature="e#337#351#0" expanded="true" />
@@ -1797,10 +1682,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="309">
+          <caret line="103" column="56" lean-forward="false" selection-start-line="103" selection-start-column="51" selection-end-line="103" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="279">
-          <caret line="698" column="2" lean-forward="false" selection-start-line="698" selection-start-column="2" selection-end-line="698" selection-end-column="2" />
+        <state relative-caret-position="449">
+          <caret line="721" column="128" lean-forward="false" selection-start-line="721" selection-start-column="128" selection-end-line="721" selection-end-column="128" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>
