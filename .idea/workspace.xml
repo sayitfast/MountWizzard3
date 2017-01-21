@@ -3,13 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse.py" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" afterPath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" afterPath="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" afterPath="$PROJECT_DIR$/mountwizzard/support/wizzard_main_ui.ui" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -33,7 +27,7 @@
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="289">
-              <caret line="77" column="0" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+              <caret line="335" column="107" lean-forward="false" selection-start-line="335" selection-start-column="107" selection-end-line="335" selection-end-column="107" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -252,9 +246,9 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       </list>
     </option>
   </component>
@@ -678,13 +672,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00073" summary="update readme for python versions">
-      <created>1482876977031</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1482876977031</updated>
-    </task>
     <task id="LOCAL-00074" summary="update readme for python versions">
       <created>1482877064673</created>
       <option name="number" value="00074" />
@@ -1021,7 +1008,14 @@
       <option name="project" value="LOCAL" />
       <updated>1484950122542</updated>
     </task>
-    <option name="localTasksCounter" value="122" />
+    <task id="LOCAL-00122" summary="bugfix intermediate">
+      <created>1485032267851</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1485032267852</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1091,7 +1085,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="bugfix due to message barry" />
     <MESSAGE value="refactor runopenanalysewindow" />
     <MESSAGE value="bugfixing race condition analyse filename" />
     <MESSAGE value="finished prepare for bulk modeling by including all necessary data into fits headers" />
@@ -1116,17 +1109,11 @@
     <MESSAGE value="move dict to list" />
     <MESSAGE value="bugfix modelData" />
     <MESSAGE value="update gui" />
-    <option name="LAST_COMMIT_MESSAGE" value="update gui" />
+    <MESSAGE value="bugfix intermediate" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfix intermediate" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/model_thread.py</url>
-          <line>304</line>
-          <option name="timeStamp" value="72" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
@@ -1867,7 +1854,7 @@
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
-          <caret line="77" column="0" lean-forward="false" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+          <caret line="335" column="107" lean-forward="false" selection-start-line="335" selection-start-column="107" selection-end-line="335" selection-end-column="107" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>

@@ -333,7 +333,7 @@ class Model(QtCore.QThread):
                 step = -10
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
-            for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
+            for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
                 az, alt = self.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
@@ -352,7 +352,7 @@ class Model(QtCore.QThread):
                 step = -10                                                                                                  # lower dec, more point
             else:
                 step = -20                                                                                                  # higher dec. less point (anyway denser)
-            for ha in range(239, 0, step):                                                                                  # for complete 24 hourangle
+            for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
                 az, alt = self.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
 
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
