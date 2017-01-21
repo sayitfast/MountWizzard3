@@ -24,27 +24,28 @@ from PyQt5.QtCore import *
 class MwWidget(QWidget):
 
     logger = logging.getLogger(__name__)
+    COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
+    COLOR_BLUE = QColor(0, 0, 255)
+    COLOR_YELLOW = QColor(192, 192, 0)
+    COLOR_GREEN = QColor(0, 255, 0)
+    COLOR_GREEN_LIGHT = QColor(0, 92, 0)
+    COLOR_WHITE = QColor(255, 255, 255)
+    COLOR_RED = QColor(255, 0, 0)
+    COLOR_BLACK = QColor(0, 0, 0)
+    COLOR_POINTER = QColor(255, 0, 255)
+    COLOR_WINDOW = QColor(32, 32, 32)
+    COLOR_WINDOW_TEXT = QColor(192, 192, 192)
+    COLOR_BACKGROUND = QColor(53, 53, 53)
+    COLOR_BASE = QColor(25, 25, 25)
+    COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
+    COLOR_HIGHLIGHT = QColor(42, 130, 218)
 
     def __init__(self):
         super(MwWidget, self).__init__()                                                                                    # Initialize Class for UI
-        self.COLOR_ASTRO = QColor(32, 144, 192)                                                                             # blue astro color
-        self.COLOR_BLUE = QColor(0, 0, 255)
-        self.COLOR_YELLOW = QColor(192, 192, 0)
-        self.COLOR_GREEN = QColor(0, 255, 0)
-        self.COLOR_GREEN_LIGHT = QColor(0, 92, 0)
-        self.COLOR_WHITE = QColor(255, 255, 255)
-        self.COLOR_RED = QColor(255, 0, 0)
-        self.COLOR_BLACK = QColor(0, 0, 0)
-        self.COLOR_POINTER = QColor(255, 0, 255)
-        self.COLOR_WINDOW = QColor(32, 32, 32)
-        self.COLOR_WINDOW_TEXT = QColor(192, 192, 192)
-        self.COLOR_BACKGROUND = QColor(53, 53, 53)
-        self.COLOR_BASE = QColor(25, 25, 25)
-        self.COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
-        self.COLOR_HIGHLIGHT = QColor(42, 130, 218)
         self.palette = QPalette()                                                                                           # title text
         self.moving = False                                                                                                 # check if window moves with mouse pointer
         self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
+        self.modifiers = None
         self.initUI()                                                                                                       # adapt the window to our purpose
 
     def mousePressEvent(self, mouseEvent):                                                                                  # overloading the mouse events for handling customized windows

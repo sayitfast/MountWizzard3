@@ -55,17 +55,17 @@ class ShowCoordinatePopup(MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.ui.windowTitle.setPalette(self.palette)
-        self.showAllPoints()
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.mount.signalMountTrackPreview.connect(self.drawTrackPreview)
-        self.model.signalModelRedraw.connect(self.showAllPoints)
+        self.model.signalModelRedraw.connect(self.redrawCoordinateWindow)
         self.dome.signalDomPointer.connect(self.setDomePointer)
-        self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
-        self.mainLoop()
+        self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)
+        self.show()
+        self.setVisible(False)
 
-    def closeAnalyseWindow(self):
+    def hideCoordinateWindow(self):
         self.showStatus = False
-        self.close()
+        self.setVisible(False)
 
     def setAzAltPointer(self, az, alt):
         x, y = getXYEllipse(az, alt, self.ui.modelPointsPlot.height(),
@@ -86,7 +86,6 @@ class ShowCoordinatePopup(MwWidget):
 
     def drawTrackPreview(self):
         return
-        self.groupTrackPreviewItems = QGraphicsItemGroup()
         pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         width = self.ui.modelPointsPlot.width()
         border = self.borderModelPointsView
@@ -143,7 +142,7 @@ class ShowCoordinatePopup(MwWidget):
             scene.addItem(text_item)
         return scene
 
-    def showAllPoints(self):
+    def redrawCoordinateWindow(self):
         height = self.ui.modelPointsPlot.height()
         width = self.ui.modelPointsPlot.width()
         border = self.borderModelPointsView
@@ -187,17 +186,4 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
         scene.addItem(self.groupTrackPreviewItems)
         self.ui.modelPointsPlot.setScene(scene)
-
-    def mainLoop(self):
-        while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
-            text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
-            if text == 'delete':                                                                                            # delete logfile for modeling
-                self.ui.modellingLog.setText('')                                                                            # reset window text
-            elif text == 'backspace':
-                self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText()[:-6])
-            else:
-                self.ui.modellingLog.setText(self.ui.modellingLog.toPlainText() + text)                                     # otherwise add text at the end
-            self.ui.modellingLog.moveCursor(QTextCursor.End)                                                                # and move cursor up
-            self.modelLogQueue.task_done()
-        # noinspection PyCallByClass,PyTypeChecker
-        QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
+        #self.update()

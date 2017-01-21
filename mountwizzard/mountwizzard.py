@@ -84,9 +84,10 @@ class MountWizzardApp(MwWidget):
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:
-            self.openAnalyseWindow()
+            self.showAnalyseWindow()
         if self.coordinatePopup.showStatus:
-            self.openCoordinateWindow()
+            self.coordinatePopup.redrawCoordinateWindow()
+            self.showCoordinateWindow()
         self.ui.le_mwWorkingDir.setText(os.getcwd())
 
     def mappingFunctions(self):
@@ -150,8 +151,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_cancelTimeChangeModel.clicked.connect(self.cancelTimeChangeModel)
         self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
         self.ui.btn_cancelHystereseModel.clicked.connect(self.cancelHystereseModel)
-        self.ui.btn_openAnalyseWindow.clicked.connect(self.openAnalyseWindow)
-        self.ui.btn_openCoordinateWindow.clicked.connect(self.openCoordinateWindow)
+        self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
+        self.ui.btn_openCoordinateWindow.clicked.connect(self.showCoordinateWindow)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
@@ -337,17 +338,16 @@ class MountWizzardApp(MwWidget):
         else:
             self.logger.warning('selectAnalyseFile -> no file selected')
 
-    def openAnalyseWindow(self):
+    def showAnalyseWindow(self):
         self.analysePopup.getData(self.ui.le_analyseFileName.text())
         self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
         self.analysePopup.showDecError()
         self.analysePopup.showStatus = True
-        self.analysePopup.show()
+        self.analysePopup.setVisible(True)
 
-    def openCoordinateWindow(self):
-        self.coordinatePopup.showAllPoints()
+    def showCoordinateWindow(self):
         self.coordinatePopup.showStatus = True
-        self.coordinatePopup.show()
+        self.coordinatePopup.setVisible(True)
 
     def selectImageDirectoryName(self):
         dlg = QFileDialog()
@@ -750,7 +750,17 @@ class MountWizzardApp(MwWidget):
             text = self.messageQueue.get()                                                                                  # get the message
             self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')                                    # write it to window
             self.messageQueue.task_done()
-        self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                     # move cursor
+            self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                 # move cursor
+        while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
+            text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
+            if text == 'delete':                                                                                            # delete logfile for modeling
+                self.coordinatePopup.ui.modellingLog.setText('')                                                            # reset window text
+            elif text == 'backspace':
+                self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText()[:-6])
+            else:
+                self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText() + text)     # otherwise add text at the end
+            self.coordinatePopup.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
+            self.modelLogQueue.task_done()
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 

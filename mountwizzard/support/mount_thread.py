@@ -420,6 +420,8 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF', real)})                   #
         self.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf', real)})                     #
         self.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat', real)})                   #
+        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh', real)})              #
+        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go', real)})               #
 
     def getStatusOnce(self, real):                                                                                          # one time updates for settings
         self.site_height = self.sendCommand('Gev', real)                                                                    # site height
@@ -436,8 +438,6 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                             # write data to GUI
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})                                         #
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})                                 #
-        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh', real)})              #
-        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go', real)})               #
         self.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD', real)})                        #
         self.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN', real)})                      #
         self.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP', real)})                 #

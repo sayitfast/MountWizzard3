@@ -64,7 +64,7 @@ class ShowAnalysePopup(MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.ui.windowTitle.setPalette(self.palette)
-        self.ui.btn_selectClose.clicked.connect(self.closeAnalyseWindow)
+        self.ui.btn_selectClose.clicked.connect(self.hideAnalyseWindow)
         self.ui.scalePlotDEC.valueChanged.connect(self.getData)
         self.ui.scalePlotRA.valueChanged.connect(self.getData)
         self.ui.scalePlotError.valueChanged.connect(self.getData)
@@ -79,6 +79,8 @@ class ShowAnalysePopup(MwWidget):
         helper = QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
+        self.show()
+        self.setVisible(False)
 
     def getData(self, filename):
         self.scaleRA = self.ui.scalePlotRA.value()
@@ -88,6 +90,14 @@ class ShowAnalysePopup(MwWidget):
         if len(self.data) > 0:
             self.dat, self.datWest, self.datEast, self.datOut, self.isDatWest, self.isDatEast, self.isDatOut = \
                 self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
+            self.dat = 0
+            self.datWest = 0
+            self.datEast = 0
+            self.datOut = 0
+            self.isDatWest = False
+            self.isDatEast = False
+            self.isDatOut = False
 
     def setFigure(self, projection=None):
         self.plotWidget.plt.clf()
@@ -101,9 +111,9 @@ class ShowAnalysePopup(MwWidget):
         else:
             self.plotWidget.plt.tight_layout(rect=[0.05, 0.025, 0.95, 0.925])
 
-    def closeAnalyseWindow(self):
+    def hideAnalyseWindow(self):
         self.showStatus = False
-        self.close()
+        self.setVisible(False)
 
     def showDecError(self):
         self.setFigure()

@@ -233,11 +233,9 @@ class Model(QtCore.QThread):
         eastSide = sorted(eastSide, key=itemgetter(1))                                                                      # sort east flipside
         if modeltype == 'base':
             self.BasePoints = eastSide + westSide                                                                           # put them together
-            self.signalModelRedrawBase.emit(True)                                                                           # update graphics
             self.signalModelRedraw.emit(True)                                                                               # update graphics
         else:
             self.RefinementPoints = eastSide + westSide                                                                     # put them together
-            self.signalModelRedrawRefinement.emit(True)                                                                     # update graphics
             self.signalModelRedraw.emit(True)                                                                               # update graphics
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
@@ -408,7 +406,7 @@ class Model(QtCore.QThread):
                                                   directory, settlingTime)
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
-        name = directory + '_refinement.txt'                                                                                # generate name of analyse file
+        name = directory + '_refinement.dat'                                                                                # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
@@ -420,7 +418,7 @@ class Model(QtCore.QThread):
                                                   directory, settlingTime)         # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
-        name = directory + '_analyse.txt'                                                                                   # generate name of analyse file
+        name = directory + '_analyse.dat'                                                                                   # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
@@ -432,7 +430,7 @@ class Model(QtCore.QThread):
             points.append((int(self.ui.azimuthTimeChange.value()), int(self.ui.altitudeTimeChange.value()),
                            QtWidgets.QGraphicsTextItem(''), True))
         self.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime)                                # run the analyse
-        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_timechange.txt'                                        # generate name of analyse file
+        name = directory + '_timechange.dat'                                                                                # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
@@ -454,7 +452,7 @@ class Model(QtCore.QThread):
                   (359, 20, QtWidgets.QGraphicsTextItem(''), False),
                   (90, 85, QtWidgets.QGraphicsTextItem(''), True)]
         self.modelAnalyseData = self.runModel('Hysterese', points, directory, settlingTime)                                 # run the analyse
-        name = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime()) + '_hysterese.txt'                                         # generate name of analyse file
+        name = directory + '_hysterese.dat'                                                                                 # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
@@ -633,12 +631,13 @@ class Model(QtCore.QThread):
         # TODO: implement event loop to get feedback of the return value of the command
         return True                                                                                                         # simulation OK
 
+    # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
-        modelData = {}
+        modelData = dict()                                                                                                  # all model data
+        results = list()                                                                                                    # results
         self.LogQueue.put('delete')                                                                                         # deleting the logfile view
         self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
-        results = []                                                                                                        # error results
         modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                               # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, modelData)                                             # calculate the necessary data
