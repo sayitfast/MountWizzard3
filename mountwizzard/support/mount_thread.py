@@ -16,6 +16,7 @@
 import logging
 import time
 import math
+import threading
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
 from win32com.client.dynamic import Dispatch
@@ -84,6 +85,7 @@ class Mount(QtCore.QThread):
         self.driver_real = False
         self.value_azimuth = 0.0
         self.value_altitude = 0.0
+        self.transformationLock = threading.Lock()
 
     def run(self):                                                                                                          # runnable of the thread
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
@@ -244,6 +246,18 @@ class Mount(QtCore.QThread):
                 self.ascom.Tracking = False
             else:
                 return ''
+
+    def transformCelestialHorizontal(self, ra, dec):
+        self.transformationLock.acquire()
+        if ra < 0:
+            ra += 24
+        if ra >= 24:
+            ra -= 24
+        self.transform.SetJ2000(ra, dec)                                                                              # set J2000 ra, dec
+        alt = self.transform.ElevationTopocentric                                                                     # convert alt
+        az = self.transform.AzimuthTopocentric                                                                        # convert az
+        self.transformationLock.release()
+        return az, alt
 
     def flipMount(self, real):                                                                                              # doing the flip of the mount
         reply = self.sendCommand('FLIP', real).rstrip('#').strip()

@@ -298,16 +298,6 @@ class Model(QtCore.QThread):
         self.RefinementPoints = []
         self.signalModelRedraw.emit(True)
 
-    def transformCelestialHorizontal(self, ra, dec):
-        if ra < 0:
-            ra += 24
-        if ra >= 24:
-            ra -= 24
-        self.mount.transform.SetJ2000(ra, dec)                                                                              # set J2000 ra, dec
-        alt = self.mount.transform.ElevationTopocentric                                                                     # convert alt
-        az = self.mount.transform.AzimuthTopocentric                                                                        # convert az
-        return az, alt
-
     def showBasePoints(self):
         self.BasePoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
         self.signalModelRedraw.emit(True)
@@ -322,7 +312,7 @@ class Model(QtCore.QThread):
         self.RefinementPoints = []                                                                                          # clear point list
         for i in range(0, 20):                                                                                              # round model point from actual az alt position 24 hours
             ra = raCopy - float(i) * 6 / 20                                                                                 # 6 hours of track test
-            az, alt = self.transformCelestialHorizontal(ra, decCopy)                                                        # transform to az alt
+            az, alt = self.mount.transformCelestialHorizontal(ra, decCopy)                                                        # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedraw.emit(True)
@@ -339,7 +329,7 @@ class Model(QtCore.QThread):
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
+                az, alt = self.mount.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
@@ -358,7 +348,7 @@ class Model(QtCore.QThread):
             else:
                 step = -20                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
+                az, alt = self.mount.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
 
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list

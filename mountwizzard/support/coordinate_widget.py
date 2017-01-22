@@ -106,14 +106,14 @@ class ShowCoordinatePopup(MwWidget):
         for i in range(0, 50):                                                                                              # round model point from actual az alt position 24 hours
             ra = raCopy - float(i) * 10 / 50                                                                         # 12 hours line max
             dec = decCopy                                                                                            # Transform text to degree format
-            az, alt = self.model.transformCelestialHorizontal(ra, dec)                                                      # transform to az alt
+            az, alt = self.mount.transformCelestialHorizontal(ra, dec)                                                      # transform to az alt
             x, y = getXY(az, alt, height, width, border)
             self.pointerTrackLine[i].setPos(x, y)
             if alt > 0:
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.model.transformCelestialHorizontal(self.mount.ra - float(self.mount.timeToFlip) / 60, dec)            # transform to az alt
+        az, alt = self.mount.transformCelestialHorizontal(self.mount.ra - float(self.mount.timeToFlip) / 60, dec)            # transform to az alt
         x, y = getXY(az, alt, height, width, border)
         self.itemFlipTime.setPos(x, y)
         delta = float(self.mount.timeToFlip)
@@ -217,11 +217,11 @@ class ShowCoordinatePopup(MwWidget):
         scene = self.constructModelGrid(height, width, border, textheight, scene)
         for i, p in enumerate(self.model.BasePoints):                                                                       # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
-            scene.addEllipse(x, y, esize, esize, pen)
+            x, y = getXY(p[0], p[1], height, width, border, esize)
+            scene.addEllipse(x - esize / 2, y - esize / 2, esize, esize, pen)
             pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # inner circle -> after modelling green or red
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize/2)
-            item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
+            x, y = getXY(p[0], p[1], height, width, border, esize/2)
+            item = scene.addEllipse(-esize / 4, -esize / 4, esize/2, esize/2, pen)
             item.setPos(x, y)
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
