@@ -133,6 +133,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_runTargetRMSAlignment.clicked.connect(self.runTargetRMSAlignment)
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
+        self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
         self.ui.btn_backupModel.clicked.connect(self.backupModel)
         self.ui.btn_restoreModel.clicked.connect(self.restoreModel)
         self.ui.btn_flipMount.clicked.connect(self.flipMount)
@@ -209,8 +210,6 @@ class MountWizzardApp(MwWidget):
             self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
             self.ui.checkTestWithoutCamera.setChecked(self.config['CheckTestWithoutCamera'])
             self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
-            self.ui.le_trackRA.setText(self.config['TrackRA'])
-            self.ui.le_trackDEC.setText(self.config['TrackDEC'])
             self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
             self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
@@ -267,8 +266,6 @@ class MountWizzardApp(MwWidget):
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
         self.config['CheckTestWithoutCamera'] = self.ui.checkTestWithoutCamera.isChecked()
         self.config['CheckAutoRefraction'] = self.ui.checkAutoRefraction.isChecked()
-        self.config['TrackRA'] = self.ui.le_trackRA.text()
-        self.config['TrackDEC'] = self.ui.le_trackDEC.text()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()
         self.config['AzimuthBase'] = self.ui.azimuthBase.value()
@@ -692,6 +689,9 @@ class MountWizzardApp(MwWidget):
 
     def deleteBelowHorizonLine(self):
         self.model.signalModelCommand.emit('DeleteBelowHorizonLine')
+
+    def deletePoints(self):
+        self.model.signalModelCommand.emit('DeletePoints')
 
     def clearAlignmentModel(self):
         self.model.signalModelCommand.emit('ClearAlignmentModel')

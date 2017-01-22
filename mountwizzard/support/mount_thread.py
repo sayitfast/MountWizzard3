@@ -71,6 +71,7 @@ class Mount(QtCore.QThread):
         self.jd = 2451544.5                                                                                                 # julian date
         self.sidereal_time = ''                                                                                             # local sidereal time
         self.pierside = 0                                                                                                   # side of pier (E/W)
+        self.timeToFlip = '200'
         self.transform = None                                                                                               # ascom novas library entry point
         self.ascom = None                                                                                                   # ascom mount driver entry point
         self.mountAlignRMSsum = 0                                                                                           # variable for counting RMS over stars
@@ -190,6 +191,8 @@ class Mount(QtCore.QThread):
         else:
             if command == 'Gev':
                 return str(self.ascom.SiteElevation)
+            elif command == 'Gmte':
+                return '0125'
             elif command == 'Gt':
                 return self.decimalToDegree(self.ascom.SiteLatitude, True, False)
             elif command == 'Gg':
@@ -209,10 +212,14 @@ class Mount(QtCore.QThread):
             elif command == 'GS':
                 return self.decimalToDegree(self.ascom.SiderealTime, False, False)
             elif command == 'Ginfo':
-                ra = self.ascom.RightAscension
-                dec = self.ascom.Declination
-                az = self.ascom.Azimuth
-                alt = self.ascom.Altitude
+                self.raJnow = self.ascom.RightAscension
+                self.decJnow = self.ascom.Declination
+                self.transform.SiteTemperature = 20.0
+                self.transform.SetTopocentric(self.raJnow, self.decJnow)
+                alt = self.transform.ElevationTopocentric
+                az = self.transform.AzimuthTopocentric
+                self.ra = self.transform.RAJ2000
+                self.dec = self.transform.DecJ2000
                 if self.ascom.Slewing:
                     stat = 6
                 else:
@@ -226,7 +233,7 @@ class Mount(QtCore.QThread):
                     slew = 1
                 else:
                     slew = 0
-                return '{0},{1},{2},{3},{4},{5},{6},{7}#'.format(ra, dec, pierside, az, alt, jd, stat, slew)
+                return '{0},{1},{2},{3},{4},{5},{6},{7}#'.format(self.raJnow, self.decJnow, pierside, az, alt, jd, stat, slew)
             elif command == 'PO':
                 self.ascom.Unpark()
             elif command == 'hP':
@@ -323,35 +330,46 @@ class Mount(QtCore.QThread):
                 self.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
             self.getAlignmentModel(real)
 
+    def saveActualModel(self, target, real):
+        self.sendCommand('modeldel0' + target, real)
+        reply = self.sendCommand('modelsv0' + target, real)
+        if reply == '1':
+            return True
+        else:
+            return False
+
+    def loadActualModel(self, target, real):
+        reply = self.sendCommand('modelld0' + target, real)
+        if reply == '1':
+            return True
+        else:
+            return False
+
     def backupModel(self, real):
-        self.sendCommand('modeldel0BACKUP', real)                                                                           # send delete command store in hand controller
-        reply = self.sendCommand('modelsv0BACKUP', real)                                                                    # send store command for hand controller
-        if reply == '1':                                                                                                    # if stored, than OK
-            self.messageQueue.put('Actual Model saved as BACKUP')                                                           # do message to gui
-        self.logger.debug('backupModel    -> Reply: {0}'.format(reply))                                                     # log it
+        if self.saveActualModel('BACKUP', real):
+            self.messageQueue.put('Actual Model save to BACKUP')
+        else:
+            self.logger.debug('backupModel    -> Model BACKUP could not be saved')                                          # log it
 
     def restoreModel(self, real):
-        reply = self.sendCommand('modelld0BACKUP', real)
-        if reply == '1':
+        if self.loadActualModel('BACKUP', real):
             self.messageQueue.put('Actual Model loaded from BACKUP')
         else:
             self.messageQueue.put('There is no model named BACKUP or error while loading')
-        self.logger.debug('restoreModel   -> Reply: {0}'.format(reply))
+            self.logger.debug('backupModel    -> Model BACKUP could not be loaded')                                         # log it
 
     def saveSimpleModel(self, real):
-        self.sendCommand('modeldel0SIMPLE', real)
-        reply = self.sendCommand('modelsv0SIMPLE', real)
-        if reply == '1':
-            self.messageQueue.put('Actual Model save as SIMPLE')
-        self.logger.debug('saveSimpleModel -> Reply: {0}'.format(reply))
+        if self.saveActualModel('SIMPLE', real):
+            self.messageQueue.put('Actual Model save to SIMPLE')
+        else:
+            self.logger.debug('saveSimpleModel-> Model SIMPLE could not be saved')                                          # log it
 
     def loadSimpleModel(self, real):
-        reply = self.sendCommand('modelld0SIMPLE', real)
-        if reply == '1':
+        if self.loadActualModel('SIMPLE', real):
             self.messageQueue.put('Actual Model loaded from SIMPLE')
         else:
             self.messageQueue.put('There is no model named SIMPLE or error while loading')
-        self.logger.debug('loadSimpleModel -> Reply: {0}'.format(reply))
+            self.logger.debug('loadSimpleModel-> Model SIMPLE could not be loaded')                                         # log it
 
     def setRefractionParameter(self, real):
         if self.ui.le_pressureStick.text() != '':                                                                           # value must be there
@@ -411,7 +429,8 @@ class Mount(QtCore.QThread):
         self.signalMountTrackPreview.emit(True)
 
     def getStatusSlow(self, real):                                                                                          # slow update item like temps
-        self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.sendCommand('Gmte', real)})                # Flip time
+        self.timeToFlip = self.sendCommand('Gmte', real)
+        self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                               # Flip time
         self.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP', real)})             # refraction temp out of mount
         self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS', real)})                # refraction pressure out of mount
         self.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1', real)})                   # temp of RA motor

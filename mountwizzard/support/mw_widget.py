@@ -33,6 +33,8 @@ class MwWidget(QWidget):
     COLOR_RED = QColor(255, 0, 0)
     COLOR_BLACK = QColor(0, 0, 0)
     COLOR_POINTER = QColor(255, 0, 255)
+    COLOR_TRACKWIDGETTEXT = QColor(255, 255, 255)
+    COLOR_TRACKWIDGETPOINTS = QColor(128, 128, 128)
     COLOR_WINDOW = QColor(32, 32, 32)
     COLOR_WINDOW_TEXT = QColor(192, 192, 192)
     COLOR_BACKGROUND = QColor(53, 53, 53)

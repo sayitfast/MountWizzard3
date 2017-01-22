@@ -144,9 +144,12 @@ class Model(QtCore.QThread):
                 elif self.command == 'GenerateBasePoints':                                                                  #
                     self.command = ''                                                                                       #
                     self.generateBasePoints()                                                                               #
-                elif self.command == 'DeleteBelowHorizonLine':                                                              #
-                    self.command = ''                                                                                       #
-                    self.deleteBelowHorizonLine()                                                                           #
+                elif self.command == 'DeleteBelowHorizonLine':
+                    self.command = ''
+                    self.deleteBelowHorizonLine()
+                elif self.command == 'DeletePoints':
+                    self.command = ''
+                    self.deletePoints()
             if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow
@@ -290,6 +293,11 @@ class Model(QtCore.QThread):
                 del self.RefinementPoints[i]                                                                                # otherwise delete point from list
         self.signalModelRedraw.emit(True)
 
+    def deletePoints(self):
+        self.BasePoints = []
+        self.RefinementPoints = []
+        self.signalModelRedraw.emit(True)
+
     def transformCelestialHorizontal(self, ra, dec):
         if ra < 0:
             ra += 24
@@ -310,14 +318,10 @@ class Model(QtCore.QThread):
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
-        if len(self.ui.le_trackRA.text()) == 0 or len(self.ui.le_trackDEC.text()) == 0:
-            return
-        for i in range(0, 75, 5):                                                                                           # round model point from actual az alt position 24 hours
-            ra = self.mount.degStringToDecimal(self.ui.le_trackRA.text())                                                   # Transform text to hours format
-            ra -= float(i) / 12.0
-            dec = self.mount.degStringToDecimal(self.ui.le_trackDEC.text())                                                 # Transform text to degree format
+        for i in range(0, 20):                                                                                              # round model point from actual az alt position 24 hours
+            ra = self.mount.ra - float(i) * 6 / 20                                                                          # 6 hours of track test
+            dec = self.mount.dec                                                                                            # Transform text to degree format
             az, alt = self.transformCelestialHorizontal(ra, dec)                                                            # transform to az alt
-            print(az, alt)
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedraw.emit(True)

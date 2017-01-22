@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1574,7 +1574,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>200</y>
+       <y>270</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -1988,93 +1988,6 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_trackRA">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>300</y>
-       <width>241</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>RA of DSO object</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_89">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>260</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Object in J2000</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_trackDEC">
-     <property name="geometry">
-      <rect>
-       <x>210</x>
-       <y>330</y>
-       <width>241</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>Dec of DSO object</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_generateDSOPoints">
      <property name="geometry">
       <rect>
@@ -2089,42 +2002,6 @@
      </property>
      <property name="text">
       <string>Generate DSO Track</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_87">
-     <property name="geometry">
-      <rect>
-       <x>180</x>
-       <y>330</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>DEC</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_88">
-     <property name="geometry">
-      <rect>
-       <x>180</x>
-       <y>300</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>RA</string>
      </property>
     </widget>
     <widget class="Line" name="line_39">
@@ -2207,6 +2084,22 @@
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_deletePoints">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>200</y>
+       <width>251</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Delete all points below the horizon line from horizone file</string>
+     </property>
+     <property name="text">
+      <string>Delete all Points</string>
      </property>
     </widget>
    </widget>

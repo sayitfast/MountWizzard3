@@ -33,6 +33,12 @@ def getXYRectangle(az, width, border):
     return int(x), int(y)
 
 
+def getXY(az, alt, height, width, border):                                                                                  # calculation of the position
+    x = border + int(az / 360 * (width - 2 * border))
+    y = height - border - int(alt / 90 * (height - 2 * border))
+    return int(x), int(y)
+
+
 class ShowCoordinatePopup(MwWidget):
     logger = logging.getLogger(__name__)
 
@@ -42,9 +48,12 @@ class ShowCoordinatePopup(MwWidget):
         self.borderModelPointsView = 20
         self.textheightModelPointsView = 10
         self.ellipseSizeModelPointsView = 12
-        self.pointerTrackingWidget = QGraphicsEllipseItem(0, 0, 0, 0)
-        self.pointerDomeWidget = QGraphicsRectItem(0, 0, 0, 0)
-        self.groupTrackPreviewItems = QGraphicsItemGroup()
+        self.pointerAzAlt = QGraphicsItemGroup()
+        self.pointerTrack = QGraphicsItemGroup()
+        self.pointerTrackLine = []
+        self.itemFlipTime = QGraphicsItemGroup()
+        self.itemFlipTimeText = QGraphicsTextItem('')
+        self.pointerDome = QGraphicsRectItem(0, 0, 0, 0)
         self.uiMain = uiMain
         self.model = model
         self.mount = mount
@@ -68,41 +77,62 @@ class ShowCoordinatePopup(MwWidget):
         self.setVisible(False)
 
     def setAzAltPointer(self, az, alt):
-        x, y = getXYEllipse(az, alt, self.ui.modelPointsPlot.height(),
-                            self.ui.modelPointsPlot.width(),
-                            self.borderModelPointsView,
-                            2 * self.ellipseSizeModelPointsView)
-        self.pointerTrackingWidget.setPos(x, y)
-        self.pointerTrackingWidget.setVisible(True)
-        self.pointerTrackingWidget.update()
+        x, y = getXY(az, alt, self.ui.modelPointsPlot.height(),
+                     self.ui.modelPointsPlot.width(),
+                     self.borderModelPointsView)
+        self.pointerAzAlt.setPos(x, y)
+        self.pointerAzAlt.setVisible(True)
 
     def setDomePointer(self, az):
         width = self.ui.modelPointsPlot.width()
         border = self.borderModelPointsView
         x, y = getXYRectangle(az, width, border)
-        self.pointerDomeWidget.setPos(x, y)
-        self.pointerDomeWidget.setVisible(True)
-        self.pointerDomeWidget.update()
+        self.pointerDome.setPos(x, y)
+        self.pointerDome.setVisible(True)
+        self.pointerDome.update()
 
     def drawTrackPreview(self):
-        return
-        pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         width = self.ui.modelPointsPlot.width()
         border = self.borderModelPointsView
         height = self.ui.modelPointsPlot.height()
-        esize = self.ellipseSizeModelPointsView
-        for i in range(0, 75, 2):                                                                                           # round model point from actual az alt position 24 hours
-            ra = self.mount.ra                                                                                              # Transform text to hours format
-            ra -= float(i) / 12.0
+        self.pointerTrack.setVisible(True)
+        for i in range(0, 50):                                                                                              # round model point from actual az alt position 24 hours
+            ra = self.mount.ra - float(i) * 10 / 50                                                                         # 12 hours line max
             dec = self.mount.dec                                                                                            # Transform text to degree format
             az, alt = self.model.transformCelestialHorizontal(ra, dec)                                                      # transform to az alt
-            if alt > 0:                                                                                                     # we only take point above horizon
-                x, y = getXYEllipse(az, alt, height, width, border, esize / 2)
-                item = QGraphicsEllipseItem(x, y, esize / 2, esize / 2)
-                item.setPen(pen)
-                self.groupTrackPreviewItems.addToGroup(item)
-        self.groupTrackPreviewItems.setVisible(True)
-        self.groupTrackPreviewItems.update()
+            x, y = getXY(az, alt, height, width, border)
+            self.pointerTrackLine[i].setPos(x, y)
+            if alt > 0:
+                self.pointerTrackLine[i].setVisible(True)
+            else:
+                self.pointerTrackLine[i].setVisible(False)
+        az, alt = self.model.transformCelestialHorizontal(self.mount.ra - float(self.mount.timeToFlip) / 60, dec)            # transform to az alt
+        x, y = getXY(az, alt, height, width, border)
+        self.itemFlipTime.setPos(x, y)
+        self.itemFlipTimeText.setPlainText(' 19.30\n{0:03.0f} min'.format(float(self.mount.timeToFlip)))
+
+    def constructTrackWidget(self, esize):
+        group = QGraphicsItemGroup()
+        groupFlipTime = QGraphicsItemGroup()
+        track = []
+        group.setVisible(False)
+        pen = QPen(self.COLOR_TRACKWIDGETPOINTS, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        for i in range(0, 50):
+            item = QGraphicsEllipseItem(-esize / 8, -esize / 8, esize / 4, esize / 4)
+            item.setPen(pen)
+            group.addToGroup(item)
+            track.append(item)
+        itemText = QGraphicsTextItem(' 19:20\n000 min', None)
+        itemText.setDefaultTextColor(self.COLOR_TRACKWIDGETTEXT)
+        groupFlipTime.addToGroup(itemText)
+        item = QGraphicsEllipseItem(- esize / 4, -esize / 4, esize / 2, esize / 2)
+        item.setPen(pen)
+        groupFlipTime.addToGroup(item)
+        item = QGraphicsRectItem(0, -esize, 0, 2 * esize)
+        item.setPen(pen)
+        groupFlipTime.addToGroup(item)
+        group.addToGroup(groupFlipTime)
+        return group, groupFlipTime, itemText, track
 
     def constructHorizon(self, scene, horizon, height, width, border):
         for i, p in enumerate(horizon):
@@ -142,6 +172,27 @@ class ShowCoordinatePopup(MwWidget):
             scene.addItem(text_item)
         return scene
 
+    def constructAzAltPointer(self, esize):
+        group = QGraphicsItemGroup()
+        group.setVisible(False)
+        pen = QPen(self.COLOR_POINTER, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        item = QGraphicsEllipseItem(-esize, -esize, 2 * esize, 2 * esize)
+        item.setPen(pen)
+        group.addToGroup(item)
+        item = QGraphicsLineItem(-esize, 0, -esize / 2, 0)
+        item.setPen(pen)
+        group.addToGroup(item)
+        item = QGraphicsLineItem(0, -esize, 0, -esize / 2)
+        item.setPen(pen)
+        group.addToGroup(item)
+        item = QGraphicsLineItem(esize / 2, 0, esize, 0)
+        item.setPen(pen)
+        group.addToGroup(item)
+        item = QGraphicsLineItem(0, esize / 2, 0, esize)
+        item.setPen(pen)
+        group.addToGroup(item)
+        return group
+
     def redrawCoordinateWindow(self):
         height = self.ui.modelPointsPlot.height()
         width = self.ui.modelPointsPlot.width()
@@ -151,9 +202,9 @@ class ShowCoordinatePopup(MwWidget):
         scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
         pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                            # outer circle is white
         brush = QBrush(self.COLOR_BACKGROUND)
-        self.pointerDomeWidget = scene.addRect(0, 0, int((width - 2 * border) * 30 / 360), int(height - 2 * border), pen, brush)
-        self.pointerDomeWidget.setVisible(False)
-        self.pointerDomeWidget.setOpacity(0.5)
+        self.pointerDome = scene.addRect(0, 0, int((width - 2 * border) * 30 / 360), int(height - 2 * border), pen, brush)
+        self.pointerDome.setVisible(False)
+        self.pointerDome.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, border, textheight, scene)
         for i, p in enumerate(self.model.BasePoints):                                                                       # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
@@ -182,8 +233,8 @@ class ShowCoordinatePopup(MwWidget):
             scene.addItem(text_item)
             self.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                       # storing the objects in the list
         scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)
-        pen = QPen(self.COLOR_POINTER, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        self.pointerTrackingWidget = scene.addEllipse(0, 0, 2 * esize, 2 * esize, pen)
-        scene.addItem(self.groupTrackPreviewItems)
+        self.pointerAzAlt = self.constructAzAltPointer(esize)
+        self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(esize)
+        scene.addItem(self.pointerAzAlt)
+        scene.addItem(self.pointerTrack)
         self.ui.modelPointsPlot.setScene(scene)
-        #self.update()
