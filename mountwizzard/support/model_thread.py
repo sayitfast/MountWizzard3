@@ -317,11 +317,12 @@ class Model(QtCore.QThread):
         self.signalModelRedraw.emit(True)
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
+        raCopy = copy.copy(self.mount.ra)
+        decCopy = copy.copy(self.mount.dec)
         self.RefinementPoints = []                                                                                          # clear point list
         for i in range(0, 20):                                                                                              # round model point from actual az alt position 24 hours
-            ra = self.mount.ra - float(i) * 6 / 20                                                                          # 6 hours of track test
-            dec = self.mount.dec                                                                                            # Transform text to degree format
-            az, alt = self.transformCelestialHorizontal(ra, dec)                                                            # transform to az alt
+            ra = raCopy - float(i) * 6 / 20                                                                                 # 6 hours of track test
+            az, alt = self.transformCelestialHorizontal(ra, decCopy)                                                        # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedraw.emit(True)

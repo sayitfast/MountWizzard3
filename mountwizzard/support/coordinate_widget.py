@@ -14,18 +14,13 @@
 # standard solutions
 import logging
 import datetime
+import copy
 # import for the PyQt5 Framework
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from support.mw_widget import MwWidget
 from support.coordinate_dialog_ui import Ui_CoordinateDialog
-
-
-def getXYEllipse(az, alt, height, width, border, esize):                                                                    # calculation of the ellipse
-    x = border - esize / 2 + int(az / 360 * (width - 2 * border))
-    y = height - border - esize / 2 - int(alt / 90 * (height - 2 * border))
-    return int(x), int(y)
 
 
 def getXYRectangle(az, width, border):
@@ -102,13 +97,15 @@ class ShowCoordinatePopup(MwWidget):
     def drawTrackPreview(self):
         if not self.uiMain.checkRunTrackingWidget.isChecked():
             return
+        raCopy = copy.copy(self.mount.ra)
+        decCopy = copy.copy(self.mount.dec)
         width = self.ui.modelPointsPlot.width()
         border = self.borderModelPointsView
         height = self.ui.modelPointsPlot.height()
         self.pointerTrack.setVisible(True)
         for i in range(0, 50):                                                                                              # round model point from actual az alt position 24 hours
-            ra = self.mount.ra - float(i) * 10 / 50                                                                         # 12 hours line max
-            dec = self.mount.dec                                                                                            # Transform text to degree format
+            ra = raCopy - float(i) * 10 / 50                                                                         # 12 hours line max
+            dec = decCopy                                                                                            # Transform text to degree format
             az, alt = self.model.transformCelestialHorizontal(ra, dec)                                                      # transform to az alt
             x, y = getXY(az, alt, height, width, border)
             self.pointerTrackLine[i].setPos(x, y)
