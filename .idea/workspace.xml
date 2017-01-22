@@ -3,9 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" afterPath="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse.py" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" afterPath="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
@@ -29,8 +27,8 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1448">
-              <caret line="630" column="0" lean-forward="false" selection-start-line="630" selection-start-column="0" selection-end-line="630" selection-end-column="0" />
+            <state relative-caret-position="-3959">
+              <caret line="394" column="0" lean-forward="false" selection-start-line="394" selection-start-column="0" selection-end-line="396" selection-end-column="61" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -38,135 +36,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="274" column="0" lean-forward="false" selection-start-line="274" selection-start-column="0" selection-end-line="274" selection-end-column="0" />
+            <state relative-caret-position="277">
+              <caret line="268" column="34" lean-forward="false" selection-start-line="268" selection-start-column="34" selection-end-line="268" selection-end-column="34" />
               <folding>
                 <element signature="e#336#350#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="coordinate_widget.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="202">
-              <caret line="223" column="58" lean-forward="false" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
-              <folding>
-                <element signature="e#336#350#0" expanded="true" />
-                <element signature="e#7797#7958#0" expanded="false" />
-                <element signature="e#8111#8287#0" expanded="false" />
-                <element signature="e#8606#9176#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="235">
-              <caret line="332" column="90" lean-forward="false" selection-start-line="332" selection-start-column="90" selection-end-line="332" selection-end-column="90" />
-              <folding>
-                <element signature="n#!!doc" expanded="false" />
-                <element signature="e#12541#12602#0" expanded="false" />
-                <element signature="e#12760#12821#0" expanded="false" />
-                <element signature="e#12979#13040#0" expanded="false" />
-                <element signature="e#13198#13259#0" expanded="false" />
-                <element signature="e#17776#17949#0" expanded="false" />
-                <element signature="e#22488#22659#0" expanded="false" />
-                <element signature="e#22957#23439#0" expanded="false" />
-                <element signature="e#24472#24865#0" expanded="false" />
-                <element signature="e#24918#25311#0" expanded="false" />
-                <element signature="e#25346#25373#0" expanded="false" />
-                <element signature="e#25410#25437#0" expanded="false" />
-                <element signature="e#25476#25503#0" expanded="false" />
-                <element signature="e#25545#25573#0" expanded="false" />
-                <element signature="e#25615#25643#0" expanded="false" />
-                <element signature="e#25687#25715#0" expanded="false" />
-                <element signature="e#25753#25781#0" expanded="false" />
-                <element signature="e#25811#25840#0" expanded="false" />
-                <element signature="e#25875#25904#0" expanded="false" />
-                <element signature="e#25942#26104#0" expanded="false" />
-                <element signature="e#26149#26352#0" expanded="false" />
-                <element signature="e#26396#26598#0" expanded="false" />
-                <element signature="e#26639#26944#0" expanded="false" />
-                <element signature="e#26724#26791#0" expanded="false" />
-                <element signature="e#26818#26884#0" expanded="false" />
-                <element signature="e#26987#27308#0" expanded="false" />
-                <element signature="e#27077#27149#0" expanded="false" />
-                <element signature="e#27176#27247#0" expanded="false" />
-                <element signature="e#27357#27657#0" expanded="false" />
-                <element signature="e#27440#27505#0" expanded="false" />
-                <element signature="e#27532#27596#0" expanded="false" />
-                <element signature="e#27706#27753#0" expanded="false" />
-                <element signature="e#27793#28330#0" expanded="false" />
-                <element signature="e#28370#28907#0" expanded="false" />
-                <element signature="e#28947#29484#0" expanded="false" />
-                <element signature="e#29524#30061#0" expanded="false" />
-                <element signature="e#30066#30067#0" expanded="false" />
-                <element signature="e#30142#30360#0" expanded="false" />
-                <element signature="e#30403#30445#0" expanded="false" />
-                <element signature="e#30492#30538#0" expanded="false" />
-                <element signature="e#30575#30611#0" expanded="false" />
-                <element signature="e#30649#30686#0" expanded="false" />
-                <element signature="e#30727#30767#0" expanded="false" />
-                <element signature="e#30808#30848#0" expanded="false" />
-                <element signature="e#30890#30914#0" expanded="false" />
-                <element signature="e#30999#31038#0" expanded="false" />
-                <element signature="e#31101#31264#0" expanded="false" />
-                <element signature="e#31547#31817#0" expanded="false" />
-                <element signature="e#31663#31817#0" expanded="false" />
-                <element signature="e#33081#33240#0" expanded="false" />
-                <element signature="e#33298#34425#0" expanded="false" />
-                <element signature="e#33744#33859#0" expanded="false" />
-                <element signature="e#33915#34087#0" expanded="false" />
-                <element signature="e#34143#34255#0" expanded="false" />
-                <element signature="e#34311#34425#0" expanded="false" />
-                <element signature="e#35038#35211#0" expanded="false" />
-                <element signature="e#36035#36036#0" expanded="false" />
-                <element signature="e#36104#36128#0" expanded="false" />
-                <element signature="e#36176#36394#0" expanded="false" />
-                <element signature="e#36439#36746#0" expanded="false" />
-                <element signature="e#36752#36753#0" expanded="false" />
-                <element signature="e#36830#36856#0" expanded="false" />
-                <element signature="e#36906#37128#0" expanded="false" />
-                <element signature="e#37175#37770#0" expanded="false" />
-                <element signature="e#37775#37776#0" expanded="false" />
-                <element signature="e#37842#37865#0" expanded="false" />
-                <element signature="e#37903#37929#0" expanded="false" />
-                <element signature="e#37964#37987#0" expanded="false" />
-                <element signature="e#37992#37993#0" expanded="false" />
-                <element signature="e#38082#38288#0" expanded="false" />
-                <element signature="e#38329#38352#0" expanded="false" />
-                <element signature="e#38399#38724#0" expanded="false" />
-                <element signature="e#38762#38812#0" expanded="false" />
-                <element signature="e#38853#38906#0" expanded="false" />
-                <element signature="e#38950#39006#0" expanded="false" />
-                <element signature="e#39053#39112#0" expanded="false" />
-                <element signature="e#39158#39216#0" expanded="false" />
-                <element signature="e#39264#39324#0" expanded="false" />
-                <element signature="e#39362#39412#0" expanded="false" />
-                <element signature="e#39457#39514#0" expanded="false" />
-                <element signature="e#39652#39710#0" expanded="false" />
-                <element signature="e#39753#39808#0" expanded="false" />
-                <element signature="e#39853#39910#0" expanded="false" />
-                <element signature="e#39956#40014#0" expanded="false" />
-                <element signature="e#40058#40114#0" expanded="false" />
-                <element signature="e#40158#40214#0" expanded="false" />
-                <element signature="e#40255#40308#0" expanded="false" />
-                <element signature="e#40352#40408#0" expanded="false" />
-                <element signature="e#40452#40508#0" expanded="false" />
-                <element signature="e#40555#40614#0" expanded="false" />
-                <element signature="e#40657#40712#0" expanded="false" />
-                <element signature="e#40758#40816#0" expanded="false" />
-                <element signature="e#40846#40864#0" expanded="false" />
-                <element signature="e#40900#40913#0" expanded="false" />
-                <element signature="e#43605#43894#0" expanded="false" />
-                <element signature="e#44067#44361#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -262,9 +138,9 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
       </list>
     </option>
   </component>
@@ -479,6 +355,23 @@
       <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
+    <configuration default="false" name="analyse" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mountwizzard/support" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="mountwizzard" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
     <configuration default="true" type="PythonConfigurationType" factoryName="Python">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -657,20 +550,22 @@
       <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
-    <list size="6">
+    <list size="7">
       <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard (1)" />
       <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard (2)" />
       <item index="2" class="java.lang.String" itemvalue="Python.MountWizzard" />
       <item index="3" class="java.lang.String" itemvalue="Python.sgpro" />
       <item index="4" class="java.lang.String" itemvalue="Python.dome_thread" />
       <item index="5" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
+      <item index="6" class="java.lang.String" itemvalue="Python.analyse" />
     </list>
     <recent_temporary>
-      <list size="4">
+      <list size="5">
         <item index="0" class="java.lang.String" itemvalue="Python.MountWizzard" />
-        <item index="1" class="java.lang.String" itemvalue="Python.sgpro" />
-        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
-        <item index="3" class="java.lang.String" itemvalue="Python.dome_thread" />
+        <item index="1" class="java.lang.String" itemvalue="Python.analyse" />
+        <item index="2" class="java.lang.String" itemvalue="Python.sgpro" />
+        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
+        <item index="4" class="java.lang.String" itemvalue="Python.dome_thread" />
       </list>
     </recent_temporary>
   </component>
@@ -687,13 +582,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
-    </task>
-    <task id="LOCAL-00082" summary="bugfixing log message error plate solving">
-      <created>1483637729304</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1483637729304</updated>
     </task>
     <task id="LOCAL-00083" summary="cleanup impoort code">
       <created>1483637881781</created>
@@ -1031,7 +919,14 @@
       <option name="project" value="LOCAL" />
       <updated>1485107157486</updated>
     </task>
-    <option name="localTasksCounter" value="131" />
+    <task id="LOCAL-00131" summary="bugfix getXY">
+      <created>1485109638510</created>
+      <option name="number" value="00131" />
+      <option name="presentableId" value="LOCAL-00131" />
+      <option name="project" value="LOCAL" />
+      <updated>1485109638510</updated>
+    </task>
+    <option name="localTasksCounter" value="132" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1055,7 +950,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15625" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21456437" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31280616" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.37222221" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3716216" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25135136" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18400316" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899868" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -1101,7 +996,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="started separate branch for develop" />
     <MESSAGE value="updated ui&#10;bugfixing" />
     <MESSAGE value="added forgotten modules" />
     <MESSAGE value="added popup test ui file" />
@@ -1126,36 +1020,22 @@
     <MESSAGE value="update for showing fliptime" />
     <MESSAGE value="started threading lock for transformation calculation" />
     <MESSAGE value="bugfix coordinate window when closed first" />
-    <option name="LAST_COMMIT_MESSAGE" value="bugfix coordinate window when closed first" />
+    <MESSAGE value="bugfix getXY" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfix getXY" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mountwizzard/support/analyse.py</url>
-          <line>279</line>
-          <option name="timeStamp" value="84" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/model_thread.py</url>
-          <line>705</line>
-          <option name="timeStamp" value="85" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/model_thread.py</url>
-          <line>391</line>
-          <option name="timeStamp" value="86" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/model_thread.py</url>
-          <line>734</line>
-          <option name="timeStamp" value="87" />
+          <line>270</line>
+          <option name="timeStamp" value="93" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="88" />
+      <option name="time" value="95" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1761,15 +1641,28 @@
         <state relative-caret-position="706">
           <caret line="253" column="124" lean-forward="false" selection-start-line="253" selection-start-column="124" selection-end-line="253" selection-end-column="124" />
           <folding>
-            <element signature="e#337#351#0" expanded="true" />
+            <element signature="e#337#351#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="202">
+          <caret line="223" column="58" lean-forward="false" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
+          <folding>
+            <element signature="e#336#350#0" expanded="true" />
+            <element signature="e#7797#7958#0" expanded="false" />
+            <element signature="e#8111#8287#0" expanded="false" />
+            <element signature="e#8606#9176#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="235">
-          <caret line="332" column="90" lean-forward="false" selection-start-line="332" selection-start-column="90" selection-end-line="332" selection-end-column="90" />
+        <state relative-caret-position="-1754">
+          <caret line="175" column="0" lean-forward="false" selection-start-line="175" selection-start-column="0" selection-end-line="177" selection-end-column="28" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
             <element signature="e#12541#12602#0" expanded="false" />
@@ -1871,35 +1764,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="274" column="0" lean-forward="false" selection-start-line="274" selection-start-column="0" selection-end-line="274" selection-end-column="0" />
-          <folding>
-            <element signature="e#336#350#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1448">
-          <caret line="630" column="0" lean-forward="false" selection-start-line="630" selection-start-column="0" selection-end-line="630" selection-end-column="0" />
+        <state relative-caret-position="-3959">
+          <caret line="394" column="0" lean-forward="false" selection-start-line="394" selection-start-column="0" selection-end-line="396" selection-end-column="61" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="223" column="58" lean-forward="false" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
+        <state relative-caret-position="277">
+          <caret line="268" column="34" lean-forward="false" selection-start-line="268" selection-start-column="34" selection-end-line="268" selection-end-column="34" />
           <folding>
             <element signature="e#336#350#0" expanded="true" />
-            <element signature="e#7797#7958#0" expanded="false" />
-            <element signature="e#8111#8287#0" expanded="false" />
-            <element signature="e#8606#9176#0" expanded="false" />
           </folding>
         </state>
       </provider>

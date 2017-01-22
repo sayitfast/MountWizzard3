@@ -392,6 +392,9 @@ class Model(QtCore.QThread):
             self.modelAnalyseData = self.runModel('Base', self.BasePoints, directory, settlingTime)
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
+        name = directory + '_test.dat'                                                                                # generate name of analyse file
+        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
+        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def runRefinementModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
