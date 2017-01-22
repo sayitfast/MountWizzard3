@@ -596,10 +596,9 @@ class Model(QtCore.QThread):
                     time.sleep(.25)                                                                                         # therefore quicker cycle
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if solved:
-            self.mount.transform.SiteTemperature = modelData['refractionTemp']                                              # set refraction temp in converter
-            self.mount.transform.SetJ2000(modelData['ra_sol'], modelData['dec_sol'])                                        # set coordinates in J2000 (solver)
-            modelData['ra_sol_Jnow'] = self.mount.decimalToDegree(self.mount.transform.RATopocentric, False, True)          # convert to Jnow
-            modelData['dec_sol_Jnow'] = self.mount.decimalToDegree(self.mount.transform.DecTopocentric, True, True)         # convert to Jnow
+            ra, dec = self.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
+            modelData['ra_sol_Jnow'] = self.mount.decimalToDegree(ra, False, True)                                          # convert to Jnow
+            modelData['dec_sol_Jnow'] = self.mount.decimalToDegree(dec, True, True)                                         # convert to Jnow
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra']) * 3600                                           # calculate the alignment error ra
             modelData['decError'] = (modelData['dec_sol'] - modelData['dec']) * 3600                                        # calculate the alignment error dec
             modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])

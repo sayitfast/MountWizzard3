@@ -254,10 +254,17 @@ class Mount(QtCore.QThread):
             self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
-        else:
+        elif transform == 2:
             self.transform.SetTopocentric(ra, dec)
             val1 = self.transform.RAJ2000
             val2 = self.transform.DECJ2000
+        elif transform == 3:
+            self.transform.SetJ2000(ra, dec)
+            val1 = self.transform.RATopocentric
+            val2 = self.transform.DECTopocentric
+        else:
+            val1 = ra
+            val2 = dec
         self.transformationLock.release()
         return val1, val2
 
