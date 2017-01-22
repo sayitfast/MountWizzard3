@@ -66,6 +66,7 @@ class ShowCoordinatePopup(MwWidget):
         self.model.signalModelRedraw.connect(self.redrawCoordinateWindow)
         self.dome.signalDomPointer.connect(self.setDomePointer)
         self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)
+        self.redrawCoordinateWindow()
         self.show()
         self.setVisible(False)
 

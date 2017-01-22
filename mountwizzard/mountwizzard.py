@@ -86,7 +86,6 @@ class MountWizzardApp(MwWidget):
         if self.analysePopup.showStatus:
             self.showAnalyseWindow()
         if self.coordinatePopup.showStatus:
-            self.coordinatePopup.redrawCoordinateWindow()
             self.showCoordinateWindow()
         self.ui.le_mwWorkingDir.setText(os.getcwd())
 
