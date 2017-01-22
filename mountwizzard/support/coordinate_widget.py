@@ -66,6 +66,7 @@ class ShowCoordinatePopup(MwWidget):
         self.ui.windowTitle.setPalette(self.palette)
         self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.mount.signalMountTrackPreview.connect(self.drawTrackPreview)
+        self.uiMain.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)
         self.model.signalModelRedraw.connect(self.redrawCoordinateWindow)
         self.dome.signalDomPointer.connect(self.setDomePointer)
         self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)
@@ -91,7 +92,15 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDome.setVisible(True)
         self.pointerDome.update()
 
+    def changeStatusTrackingWidget(self):
+        if self.uiMain.checkRunTrackingWidget.isChecked():
+            self.drawTrackPreview()
+        else:
+            self.pointerTrack.setVisible(False)
+
     def drawTrackPreview(self):
+        if not self.uiMain.checkRunTrackingWidget.isChecked():
+            return
         width = self.ui.modelPointsPlot.width()
         border = self.borderModelPointsView
         height = self.ui.modelPointsPlot.height()
@@ -221,11 +230,11 @@ class ShowCoordinatePopup(MwWidget):
             self.model.BasePoints[i] = (p[0], p[1], item, True)                                                             # storing the objects in the list
         for i, p in enumerate(self.model.RefinementPoints):                                                                 # show the points
             pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize)
-            scene.addEllipse(x, y, esize, esize, pen)
+            x, y = getXY(p[0], p[1], height, width, border)
+            scene.addEllipse(x - esize / 2, y - esize / 2, esize, esize, pen)
             pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # inner circle -> after modelling green or red
-            x, y = getXYEllipse(p[0], p[1], height, width, border, esize/2)
-            item = scene.addEllipse(0, 0, esize/2, esize/2, pen)
+            x, y = getXY(p[0], p[1], height, width, border)
+            item = scene.addEllipse(-esize/4, -esize/4, esize/2, esize/2, pen)
             item.setPos(x, y)
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
             text_item.setDefaultTextColor(self.COLOR_WHITE)
