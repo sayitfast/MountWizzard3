@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/analyse.py" afterPath="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" afterPath="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
     </list>
     <ignored path="mountwizzard.iws" />
@@ -24,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3959">
-              <caret line="394" column="0" lean-forward="false" selection-start-line="394" selection-start-column="0" selection-end-line="396" selection-end-column="61" />
+            <state relative-caret-position="167">
+              <caret line="707" column="0" lean-forward="false" selection-start-line="707" selection-start-column="0" selection-end-line="707" selection-end-column="0" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -36,7 +35,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="277">
@@ -139,8 +138,8 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
       </list>
     </option>
   </component>
@@ -583,13 +582,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00083" summary="cleanup impoort code">
-      <created>1483637881781</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1483637881781</updated>
-    </task>
     <task id="LOCAL-00084" summary="renaming ui files for later split">
       <created>1483638431193</created>
       <option name="number" value="00084" />
@@ -926,7 +918,14 @@
       <option name="project" value="LOCAL" />
       <updated>1485109638510</updated>
     </task>
-    <option name="localTasksCounter" value="132" />
+    <task id="LOCAL-00132" summary="update save analyse file">
+      <created>1485117813767</created>
+      <option name="number" value="00132" />
+      <option name="presentableId" value="LOCAL-00132" />
+      <option name="project" value="LOCAL" />
+      <updated>1485117813767</updated>
+    </task>
+    <option name="localTasksCounter" value="133" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -996,7 +995,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="updated ui&#10;bugfixing" />
     <MESSAGE value="added forgotten modules" />
     <MESSAGE value="added popup test ui file" />
     <MESSAGE value="clean up model for signals redraw and normal point generation" />
@@ -1021,7 +1019,8 @@
     <MESSAGE value="started threading lock for transformation calculation" />
     <MESSAGE value="bugfix coordinate window when closed first" />
     <MESSAGE value="bugfix getXY" />
-    <option name="LAST_COMMIT_MESSAGE" value="bugfix getXY" />
+    <MESSAGE value="update save analyse file" />
+    <option name="LAST_COMMIT_MESSAGE" value="update save analyse file" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1764,22 +1763,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3959">
-          <caret line="394" column="0" lean-forward="false" selection-start-line="394" selection-start-column="0" selection-end-line="396" selection-end-column="61" />
-          <folding>
-            <element signature="e#316#330#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="277">
           <caret line="268" column="34" lean-forward="false" selection-start-line="268" selection-start-column="34" selection-end-line="268" selection-end-column="34" />
           <folding>
             <element signature="e#336#350#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="167">
+          <caret line="707" column="0" lean-forward="false" selection-start-line="707" selection-start-column="0" selection-end-line="707" selection-end-column="0" />
+          <folding>
+            <element signature="e#316#330#0" expanded="true" />
           </folding>
         </state>
       </provider>
