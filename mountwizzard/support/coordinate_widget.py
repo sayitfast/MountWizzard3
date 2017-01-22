@@ -13,6 +13,7 @@
 ############################################################
 # standard solutions
 import logging
+import datetime
 # import for the PyQt5 Framework
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -118,7 +119,9 @@ class ShowCoordinatePopup(MwWidget):
         az, alt = self.model.transformCelestialHorizontal(self.mount.ra - float(self.mount.timeToFlip) / 60, dec)            # transform to az alt
         x, y = getXY(az, alt, height, width, border)
         self.itemFlipTime.setPos(x, y)
-        self.itemFlipTimeText.setPlainText(' 19.30\n{0:03.0f} min'.format(float(self.mount.timeToFlip)))
+        delta = float(self.mount.timeToFlip)
+        fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
+        self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:03.0f} min'.format(fliptime, delta))
 
     def constructTrackWidget(self, esize):
         group = QGraphicsItemGroup()
