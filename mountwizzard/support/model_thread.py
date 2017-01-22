@@ -312,7 +312,7 @@ class Model(QtCore.QThread):
         self.RefinementPoints = []                                                                                          # clear point list
         for i in range(0, 20):                                                                                              # round model point from actual az alt position 24 hours
             ra = raCopy - float(i) * 6 / 20                                                                                 # 6 hours of track test
-            az, alt = self.mount.transformCelestialHorizontal(ra, decCopy)                                                        # transform to az alt
+            az, alt = self.mount.transformNovas(ra, decCopy, 1)                                                             # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             self.signalModelRedraw.emit(True)
@@ -329,7 +329,7 @@ class Model(QtCore.QThread):
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.mount.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
+                az, alt = self.mount.transformNovas(ha / 10, dec, 1)                                                        # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
@@ -348,7 +348,7 @@ class Model(QtCore.QThread):
             else:
                 step = -20                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.mount.transformCelestialHorizontal(ha / 10, dec)                                                   # do the transformation to alt az
+                az, alt = self.mount.transformNovas(ha / 10, dec, 1)                                                        # do the transformation to alt az
 
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list

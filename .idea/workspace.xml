@@ -28,25 +28,10 @@
       <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="706">
-              <caret line="334" column="54" lean-forward="true" selection-start-line="334" selection-start-column="54" selection-end-line="334" selection-end-column="54" />
+            <state relative-caret-position="366">
+              <caret line="350" column="51" lean-forward="false" selection-start-line="350" selection-start-column="37" selection-end-line="350" selection-end-column="51" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="coordinate_widget.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="583">
-              <caret line="223" column="58" lean-forward="false" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
-              <folding>
-                <element signature="e#336#350#0" expanded="true" />
-                <element signature="e#7746#7907#0" expanded="false" />
-                <element signature="e#8060#8236#0" expanded="false" />
-                <element signature="e#8555#9125#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -163,8 +148,8 @@
       <file leaf-file-name="mount_thread.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="257" column="18" lean-forward="false" selection-start-line="257" selection-start-column="18" selection-end-line="257" selection-end-column="18" />
+            <state relative-caret-position="706">
+              <caret line="253" column="124" lean-forward="false" selection-start-line="253" selection-start-column="124" selection-end-line="253" selection-end-column="124" />
               <folding>
                 <element signature="e#337#351#0" expanded="true" />
               </folding>
@@ -183,9 +168,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>BLUE</find>
-      <find>Color</find>
-      <find>self.ui.le_analyseFileName.text()</find>
       <find>getData</find>
       <find>getData(</find>
       <find>prin</find>
@@ -212,7 +194,10 @@
       <find>ascom.RightAscension</find>
       <find>deleteBelowHorizonLine</find>
       <find>print</find>
+      <find>self.transform</find>
+      <find>transformCele</find>
       <find>transformCelestialHorizontal</find>
+      <find>transformNovas</find>
     </findStrings>
     <replaceStrings>
       <replace>self.DEFAULT</replace>
@@ -220,6 +205,7 @@
       <replace>COLOR_WHITE</replace>
       <replace>COLOR_GREEN</replace>
       <replace>modelData</replace>
+      <replace>transformNovas</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -261,8 +247,8 @@
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" />
         <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
       </list>
     </option>
@@ -687,13 +673,6 @@
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
     </task>
-    <task id="LOCAL-00079" summary="horizon point file not try to load in case of no file chosen">
-      <created>1483117677334</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1483117677334</updated>
-    </task>
     <task id="LOCAL-00080" summary="correction hint in case of binning&#10;refactoring test without camera&#10;removing gui variables from functional code for later automatic testing&#10;">
       <created>1483631796276</created>
       <option name="number" value="00080" />
@@ -1030,7 +1009,14 @@
       <option name="project" value="LOCAL" />
       <updated>1485101607411</updated>
     </task>
-    <option name="localTasksCounter" value="128" />
+    <task id="LOCAL-00128" summary="started threading lock for transformation calculation">
+      <created>1485102501789</created>
+      <option name="number" value="00128" />
+      <option name="presentableId" value="LOCAL-00128" />
+      <option name="project" value="LOCAL" />
+      <updated>1485102501789</updated>
+    </task>
+    <option name="localTasksCounter" value="129" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -1100,7 +1086,6 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="optimizing and bugfixing" />
     <MESSAGE value="added dome visibility" />
     <MESSAGE value="started separate branch for develop" />
     <MESSAGE value="updated ui&#10;bugfixing" />
@@ -1125,7 +1110,8 @@
     <MESSAGE value="introduction of tracking widget&#10;bugfixing&#10;" />
     <MESSAGE value="checkbox for tracking widget" />
     <MESSAGE value="update for showing fliptime" />
-    <option name="LAST_COMMIT_MESSAGE" value="update for showing fliptime" />
+    <MESSAGE value="started threading lock for transformation calculation" />
+    <option name="LAST_COMMIT_MESSAGE" value="started threading lock for transformation calculation" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1849,33 +1835,33 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="108" column="47" lean-forward="false" selection-start-line="108" selection-start-column="33" selection-end-line="108" selection-end-column="47" />
+          <folding>
+            <element signature="e#336#350#0" expanded="true" />
+            <element signature="e#7759#7920#0" expanded="false" />
+            <element signature="e#8073#8249#0" expanded="false" />
+            <element signature="e#8568#9138#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="334" column="54" lean-forward="true" selection-start-line="334" selection-start-column="54" selection-end-line="334" selection-end-column="54" />
+        <state relative-caret-position="366">
+          <caret line="350" column="51" lean-forward="false" selection-start-line="350" selection-start-column="37" selection-end-line="350" selection-end-column="51" />
           <folding>
             <element signature="e#316#330#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="583">
-          <caret line="223" column="58" lean-forward="false" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
-          <folding>
-            <element signature="e#336#350#0" expanded="true" />
-            <element signature="e#7746#7907#0" expanded="false" />
-            <element signature="e#8060#8236#0" expanded="false" />
-            <element signature="e#8555#9125#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="257" column="18" lean-forward="false" selection-start-line="257" selection-start-column="18" selection-end-line="257" selection-end-column="18" />
+        <state relative-caret-position="706">
+          <caret line="253" column="124" lean-forward="false" selection-start-line="253" selection-start-column="124" selection-end-line="253" selection-end-column="124" />
           <folding>
             <element signature="e#337#351#0" expanded="true" />
           </folding>

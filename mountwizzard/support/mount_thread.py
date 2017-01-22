@@ -216,10 +216,7 @@ class Mount(QtCore.QThread):
             elif command == 'Ginfo':
                 self.raJnow = self.ascom.RightAscension
                 self.decJnow = self.ascom.Declination
-                self.transform.SiteTemperature = 20.0
-                self.transform.SetTopocentric(self.raJnow, self.decJnow)
-                alt = self.transform.ElevationTopocentric
-                az = self.transform.AzimuthTopocentric
+                az, alt = self.transformNovas(self.ra, self.dec, 1)
                 self.ra = self.transform.RAJ2000
                 self.dec = self.transform.DecJ2000
                 if self.ascom.Slewing:
@@ -247,17 +244,22 @@ class Mount(QtCore.QThread):
             else:
                 return ''
 
-    def transformCelestialHorizontal(self, ra, dec):
+    def transformNovas(self, ra, dec, transform=1):
         self.transformationLock.acquire()
-        if ra < 0:
-            ra += 24
-        if ra >= 24:
-            ra -= 24
-        self.transform.SetJ2000(ra, dec)                                                                              # set J2000 ra, dec
-        alt = self.transform.ElevationTopocentric                                                                     # convert alt
-        az = self.transform.AzimuthTopocentric                                                                        # convert az
+        if transform == 1:
+            if ra < 0:
+                ra += 24
+            if ra >= 24:
+                ra -= 24
+            self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        else:
+            self.transform.SetTopocentric(ra, dec)
+            val1 = self.transform.RAJ2000
+            val2 = self.transform.DECJ2000
         self.transformationLock.release()
-        return az, alt
+        return val1, val2
 
     def flipMount(self, real):                                                                                              # doing the flip of the mount
         reply = self.sendCommand('FLIP', real).rstrip('#').strip()
@@ -321,9 +323,7 @@ class Mount(QtCore.QThread):
             dec = dec.replace('*', ':')
             dec_digit = self.degStringToDecimal(dec)
             ha_digit = self.degStringToDecimal(ha)
-            self.transform.SetJ2000(ha_digit, dec_digit)
-            az = int(float(self.transform.AzimuthTopocentric))
-            alt = int(float(self.transform.ElevationTopocentric))
+            az, alt = self.transformNovas(ha_digit, dec_digit, 1)
             self.mountDataQueue.put({'Name': 'ModelStarError',
                                      'Value': '#{0:02d} Az: {1:3d} Alt: {2:2d} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
                                     .format(i, az, alt, errorRMS, errorAngle)})
@@ -410,13 +410,7 @@ class Mount(QtCore.QThread):
             self.alt = float(alt)                                                                                           # and altitude
             self.stat = int(stat)                                                                                           # status should be int for referencing list
             self.slewing = (slew == '1')                                                                                    # set status slewing
-            if len(self.ui.le_refractionTemperature.text()) > 0:                                                            # if refraction temp available, then set it to converter as well
-                self.transform.SiteTemperature = float(self.ui.le_refractionTemperature.text())                             # exactly the numbers from mount
-            else:                                                                                                           # otherwise
-                self.transform.SiteTemperature = 20.0                                                                       # set it to 20 degree as default
-            self.transform.SetTopocentric(self.raJnow, self.decJnow)                                                        # set Jnow data
-            self.ra = self.transform.RAJ2000                                                                                # convert to float decimal
-            self.dec = self.transform.DecJ2000                                                                              # convert to float decimal
+            self.ra, self.dec = self.transformNovas(self.raJnow, self.decJnow, 2)                                           # convert J2000
             ra_show = self.decimalToDegree(self.ra, False, False)
             dec_show = self.decimalToDegree(self.dec, True, False)
             self.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
