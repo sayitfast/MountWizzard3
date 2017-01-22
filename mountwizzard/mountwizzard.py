@@ -327,10 +327,10 @@ class MountWizzardApp(MwWidget):
     def selectAnalyseFileName(self):
         dlg = QFileDialog()
         dlg.setViewMode(QFileDialog.List)
-        dlg.setNameFilter("Text files (*.txt)")
+        dlg.setNameFilter("Data Files (*.dat)")
         dlg.setFileMode(QFileDialog.AnyFile)
         # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/analysedata', 'Text files (*.txt)')
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)')
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
         else:

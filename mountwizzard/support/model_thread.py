@@ -702,6 +702,10 @@ class Model(QtCore.QThread):
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
+
+                results.append(copy.copy(modelData))  # adding point for matrix
+                numCheckPoints += 1
+
                 if suc:                                                                                                     # if a picture could be taken
                     self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
                     suc, mes, modelData = self.solveImage(modeltype, modelData)                                             # solve the position and returning the values
@@ -710,10 +714,10 @@ class Model(QtCore.QThread):
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
                             self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])                     # sync the actual star to resolved coordinates in JNOW
-                        numCheckPoints += 1                                                                                 # increase index for synced stars
+                        #numCheckPoints += 1                                                                                 # increase index for synced stars
+                        #results.append(copy.copy(modelData))                                                                # adding point for matrix
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
-                        results.append(copy.copy(modelData))                                                                # adding point for matrix
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
                         self.LogQueue.put('{0} -\t RAdiff: {1:2.1f} DECdiff: {2:2.1f}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()),

@@ -14,6 +14,7 @@
 # standard solutions
 import logging
 import os
+import json
 import numpy
 # import for the PyQt5 Framework
 from PyQt5.QtWidgets import *
@@ -266,24 +267,18 @@ class Analyse:
         filename = os.getcwd() + self.filepath + '/' + name                                                                 # built the filename
         try:                                                                                                                # write data to disk
             outfile = open(filename, 'w')                                                                                   # open for write
-            for item in data:                                                                                               # run through the data items
-                outfile.write('{0}\n'.format(item))                                                                         # write data lines
+            json.dump(outfile, data)
             outfile.close()                                                                                                 # close the save file
         except Exception as e:                                                                                              # Exception handling
             self.logger.error('saveData -> item in analyse data could not be stored in file {0}, Error : {1}'.format(filename, e))
             return
 
     def loadData(self, name):                                                                                               # loading data
-        filename = os.getcwd() + self.filepath + '/' + name                                                                 # generate filename
-        data = []                                                                                                           # clear data list
+        filename = os.getcwd() + self.filepath + '/' + name                                                                 # generate filename                                                                                                           # clear data list
         try:                                                                                                                # try to read the file
-            with open(filename) as infile:                                                                                  # open
-                lines = infile.read().splitlines()                                                                          # read over all the lines
+            infile = open(filename)                                                                                         # open
+            data = json.load(infile)                                                                                        # add element to list
             infile.close()                                                                                                  # close
-            for i in range(len(lines)):                                                                                     # convert from text to array of floats
-                lst1 = lines[i].strip(')').strip('(').split(',')                                                            # shorten the text and split to items
-                lst2 = [float(i) for i in lst1]                                                                             # convert to float
-                data.append(lst2)                                                                                           # add element to list
         except Exception as e:                                                                                              # exception handling
             self.logger.error('loadData -> item in analyse data could not be loaded from file {0}, Error : {1}'.format(filename, e))
             return []                                                                                                       # loading doesn't work

@@ -218,10 +218,10 @@ class ShowCoordinatePopup(MwWidget):
         scene = self.constructModelGrid(height, width, border, textheight, scene)
         for i, p in enumerate(self.model.BasePoints):                                                                       # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
-            x, y = getXY(p[0], p[1], height, width, border, esize)
+            x, y = getXY(p[0], p[1], height, width, border)
             scene.addEllipse(x - esize / 2, y - esize / 2, esize, esize, pen)
             pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # inner circle -> after modelling green or red
-            x, y = getXY(p[0], p[1], height, width, border, esize/2)
+            x, y = getXY(p[0], p[1], height, width, border)
             item = scene.addEllipse(-esize / 4, -esize / 4, esize/2, esize/2, pen)
             item.setPos(x, y)
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
