@@ -3,6 +3,7 @@
 - ui reshaping and separate windows for points and analyse
 - updating model algorithm for batch calculation
 - updating tooltips with correct indications
+- bugfixing
 
 1.1.3
 - bugfixing
