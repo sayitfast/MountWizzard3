@@ -414,7 +414,6 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = self.BasePoints + self.RefinementPoints
-        print(len(points))
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('Analyse', points, directory, settlingTime)                               # run the analyse
         else:                                                                                                               # otherwise omit the run
