@@ -723,7 +723,7 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
-                        self.LogQueue.put('{0} -\t  RAdiff:  {1:2.1f}    DECdiff: {2:2.1f}\n'
+                        self.LogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()),
                                                   modelData['raError'], modelData['decError']))                             # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
