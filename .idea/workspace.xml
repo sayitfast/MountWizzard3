@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="548e327d-4ad6-4e15-972b-68da7c161977" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/mountwizzard.iml" afterPath="$PROJECT_DIR$/.idea/mountwizzard.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mountwizzard.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -24,11 +22,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="model_thread.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="312">
-              <caret line="707" column="0" lean-forward="false" selection-start-line="707" selection-start-column="0" selection-end-line="707" selection-end-column="0" />
+            <state relative-caret-position="5984">
+              <caret line="368" column="45" lean-forward="false" selection-start-line="368" selection-start-column="45" selection-end-line="368" selection-end-column="45" />
               <folding>
                 <element signature="e#316#330#0" expanded="true" />
               </folding>
@@ -36,13 +34,26 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="analyse.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
+      <file leaf-file-name="coordinate_widget.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4556">
-              <caret line="268" column="34" lean-forward="false" selection-start-line="268" selection-start-column="34" selection-end-line="268" selection-end-column="34" />
+            <state relative-caret-position="374">
+              <caret line="49" column="24" lean-forward="false" selection-start-line="49" selection-start-column="24" selection-end-line="49" selection-end-column="24" />
               <folding>
                 <element signature="e#336#350#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="mountwizzard.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1020">
+              <caret line="83" column="0" lean-forward="false" selection-start-line="82" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+              <folding>
+                <element signature="n#!!doc" expanded="false" />
+                <element signature="e#337#351#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -59,6 +70,21 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
+      <find>decimalToDegree</find>
+      <find>horizon</find>
+      <find>self.LogQueue.put</find>
+      <find>LogQueue</find>
+      <find>'background-color: rgb(32,32,32); color: rgb(192,192,192)'</find>
+      <find>'background-color: red'</find>
+      <find>analys</find>
+      <find>runPlot</find>
+      <find>Analyse</find>
+      <find>print</find>
+      <find>whiteColor</find>
+      <find>greenColor</find>
+      <find>BLUE</find>
+      <find>Color</find>
+      <find>self.ui.le_analyseFileName.text()</find>
       <find>getData</find>
       <find>getData(</find>
       <find>prin</find>
@@ -69,44 +95,22 @@
       <find>signal.Model</find>
       <find>trackWidget</find>
       <find>signalModelAzAltPointer</find>
+      <find>signalModelRedraw</find>
       <find>signalMountAzAltPointer</find>
       <find>close</find>
       <find>loadModelPoints</find>
       <find>setDomeStatus</find>
-      <find>modelL</find>
-      <find>generateDSOPoints</find>
-      <find>raE</find>
-      <find>setSt</find>
-      <find>self.modelData</find>
-      <find>pointerTrackingWidget</find>
-      <find>self.pointerTrackingWidget</find>
-      <find>showAllPoints</find>
-      <find>signalModelRedraw</find>
-      <find>ascom.RightAscension</find>
-      <find>deleteBelowHorizonLine</find>
-      <find>print</find>
-      <find>self.transform</find>
-      <find>transformCele</find>
-      <find>transformCelestialHorizontal</find>
-      <find>transformNovas</find>
     </findStrings>
     <replaceStrings>
       <replace>self.DEFAULT</replace>
       <replace>self.RED</replace>
       <replace>COLOR_WHITE</replace>
       <replace>COLOR_GREEN</replace>
-      <replace>modelData</replace>
-      <replace>transformNovas</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="ROOT_SYNC" value="SYNC" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
-    <option name="RECENT_BRANCH_BY_REPOSITORY">
-      <map>
-        <entry key="$PROJECT_DIR$" value="master" />
-      </map>
-    </option>
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -124,31 +128,30 @@
         <option value="$PROJECT_DIR$/mountwizzard/tests/unit/test_model_thread.py" />
         <option value="$PROJECT_DIR$/../mountwizzard-wiki/mountwizzard.wiki/Home.md" />
         <option value="$PROJECT_DIR$/mountwizzard/support/weather_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/sgpro.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/relays.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/popup_dialogs.py" />
         <option value="$PROJECT_DIR$/mountwizzard/mw_widget.py" />
+        <option value="$PROJECT_DIR$/setup.py" />
         <option value="$PROJECT_DIR$/Changelog.md" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/setup.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/stick_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
-        <option value="$PROJECT_DIR$/mountwizzard/config/config.cfg" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/mount_thread.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
-        <option value="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/mount.log" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/mw_widget.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
         <option value="$PROJECT_DIR$/mountwizzard/support/model_thread.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/mountwizzard.py" />
+        <option value="$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1936" />
-    <option name="height" value="1056" />
+    <option name="width" value="2576" />
+    <option name="height" value="1576" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -185,8 +188,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
       <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -210,6 +213,24 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="mountwizzard" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="testimages" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -254,8 +275,8 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$USER_HOME$/mountwizzard" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/Programs/Python/Python35/Scripts/pyuic5.exe" />
+    <property name="settings.editor.selected.configurable" value="preferences.externalTools" />
     <property name="full.screen.before.presentation.mode" value="false" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -289,7 +310,7 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$USER_HOME$/mountwizzard" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mountwizzard" />
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
@@ -329,23 +350,6 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="mountwizzard" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mountwizzard/support/dome_thread.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <method />
-    </configuration>
-    <configuration default="false" name="analyse" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/mountwizzard/support" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="mountwizzard" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/mountwizzard/support/analyse.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -550,22 +554,20 @@
       <option name="USE_PARAM" value="false" />
       <method />
     </configuration>
-    <list size="7">
+    <list size="6">
       <item index="0" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard (1)" />
       <item index="1" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard (2)" />
       <item index="2" class="java.lang.String" itemvalue="Python.MountWizzard" />
       <item index="3" class="java.lang.String" itemvalue="Python.sgpro" />
       <item index="4" class="java.lang.String" itemvalue="Python.dome_thread" />
-      <item index="5" class="java.lang.String" itemvalue="Python.analyse" />
-      <item index="6" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
+      <item index="5" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
     </list>
     <recent_temporary>
-      <list size="5">
+      <list size="4">
         <item index="0" class="java.lang.String" itemvalue="Python.MountWizzard" />
-        <item index="1" class="java.lang.String" itemvalue="Python.analyse" />
-        <item index="2" class="java.lang.String" itemvalue="Python.sgpro" />
-        <item index="3" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
-        <item index="4" class="java.lang.String" itemvalue="Python.dome_thread" />
+        <item index="1" class="java.lang.String" itemvalue="Python.sgpro" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Unittests in mountwizzard" />
+        <item index="3" class="java.lang.String" itemvalue="Python.dome_thread" />
       </list>
     </recent_temporary>
   </component>
@@ -582,6 +584,244 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1477855752893</updated>
+    </task>
+    <task id="LOCAL-00050" summary="correct installation description">
+      <created>1480450623029</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1480450623030</updated>
+    </task>
+    <task id="LOCAL-00051" summary="bugfix modeled points">
+      <created>1480450987914</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1480450987915</updated>
+    </task>
+    <task id="LOCAL-00052" summary="bugfix modeled points, dome support , platesolve2 support">
+      <created>1480539342114</created>
+      <option name="number" value="00052" />
+      <option name="presentableId" value="LOCAL-00052" />
+      <option name="project" value="LOCAL" />
+      <updated>1480539342115</updated>
+    </task>
+    <task id="LOCAL-00053" summary="Grid point configurable,">
+      <created>1480706029460</created>
+      <option name="number" value="00053" />
+      <option name="presentableId" value="LOCAL-00053" />
+      <option name="project" value="LOCAL" />
+      <updated>1480706029460</updated>
+    </task>
+    <task id="LOCAL-00054" summary="adding hysterese analyse">
+      <created>1480768454564</created>
+      <option name="number" value="00054" />
+      <option name="presentableId" value="LOCAL-00054" />
+      <option name="project" value="LOCAL" />
+      <updated>1480768454564</updated>
+    </task>
+    <task id="LOCAL-00055" summary="dome support default off">
+      <created>1480768635225</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1480768635225</updated>
+    </task>
+    <task id="LOCAL-00056" summary="get rid of a timing condition which might lead to race condition">
+      <created>1480791456079</created>
+      <option name="number" value="00056" />
+      <option name="presentableId" value="LOCAL-00056" />
+      <option name="project" value="LOCAL" />
+      <updated>1480791456079</updated>
+    </task>
+    <task id="LOCAL-00057" summary="bugfix for stickstation">
+      <created>1480876842341</created>
+      <option name="number" value="00057" />
+      <option name="presentableId" value="LOCAL-00057" />
+      <option name="project" value="LOCAL" />
+      <updated>1480876842342</updated>
+    </task>
+    <task id="LOCAL-00058" summary="bugfix for stickstation">
+      <created>1480876917563</created>
+      <option name="number" value="00058" />
+      <option name="presentableId" value="LOCAL-00058" />
+      <option name="project" value="LOCAL" />
+      <updated>1480876917563</updated>
+    </task>
+    <task id="LOCAL-00059" summary="update environment for coding">
+      <created>1480878710346</created>
+      <option name="number" value="00059" />
+      <option name="presentableId" value="LOCAL-00059" />
+      <option name="project" value="LOCAL" />
+      <updated>1480878710346</updated>
+    </task>
+    <task id="LOCAL-00060" summary="update for correction of queue handling (adding task_done())">
+      <created>1480882847944</created>
+      <option name="number" value="00060" />
+      <option name="presentableId" value="LOCAL-00060" />
+      <option name="project" value="LOCAL" />
+      <updated>1480882847944</updated>
+    </task>
+    <task id="LOCAL-00061" summary="update for correction of queue handling (adding task_done())">
+      <created>1480883805480</created>
+      <option name="number" value="00061" />
+      <option name="presentableId" value="LOCAL-00061" />
+      <option name="project" value="LOCAL" />
+      <updated>1480883805480</updated>
+    </task>
+    <task id="LOCAL-00062" summary="update for logger naming">
+      <created>1480883923360</created>
+      <option name="number" value="00062" />
+      <option name="presentableId" value="LOCAL-00062" />
+      <option name="project" value="LOCAL" />
+      <updated>1480883923360</updated>
+    </task>
+    <task id="LOCAL-00063" summary="correct color code for cancel hysterese">
+      <created>1481046120637</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1481046120637</updated>
+    </task>
+    <task id="LOCAL-00064" summary="correct for minimal deviation for modeling">
+      <created>1481313999764</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1481313999764</updated>
+    </task>
+    <task id="LOCAL-00065" summary="update to format directories">
+      <created>1481378781703</created>
+      <option name="number" value="00065" />
+      <option name="presentableId" value="LOCAL-00065" />
+      <option name="project" value="LOCAL" />
+      <updated>1481378781703</updated>
+    </task>
+    <task id="LOCAL-00066" summary="added pierside to image capture for later evaluation">
+      <created>1481379846003</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1481379846003</updated>
+    </task>
+    <task id="LOCAL-00067" summary="correcting time measurement">
+      <created>1481381757152</created>
+      <option name="number" value="00067" />
+      <option name="presentableId" value="LOCAL-00067" />
+      <option name="project" value="LOCAL" />
+      <updated>1481381757153</updated>
+    </task>
+    <task id="LOCAL-00068" summary="preparation remodeling">
+      <created>1481384296549</created>
+      <option name="number" value="00068" />
+      <option name="presentableId" value="LOCAL-00068" />
+      <option name="project" value="LOCAL" />
+      <updated>1481384296549</updated>
+    </task>
+    <task id="LOCAL-00069" summary="dslr update and precision update">
+      <created>1481479385125</created>
+      <option name="number" value="00069" />
+      <option name="presentableId" value="LOCAL-00069" />
+      <option name="project" value="LOCAL" />
+      <updated>1481479385126</updated>
+    </task>
+    <task id="LOCAL-00070" summary="dslr update and precision update">
+      <created>1482406970889</created>
+      <option name="number" value="00070" />
+      <option name="presentableId" value="LOCAL-00070" />
+      <option name="project" value="LOCAL" />
+      <updated>1482406970889</updated>
+    </task>
+    <task id="LOCAL-00071" summary="update readme for python versions">
+      <created>1482700146374</created>
+      <option name="number" value="00071" />
+      <option name="presentableId" value="LOCAL-00071" />
+      <option name="project" value="LOCAL" />
+      <updated>1482700146374</updated>
+    </task>
+    <task id="LOCAL-00072" summary="update readme for python versions">
+      <created>1482869617158</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1482869617158</updated>
+    </task>
+    <task id="LOCAL-00073" summary="update readme for python versions">
+      <created>1482876977031</created>
+      <option name="number" value="00073" />
+      <option name="presentableId" value="LOCAL-00073" />
+      <option name="project" value="LOCAL" />
+      <updated>1482876977031</updated>
+    </task>
+    <task id="LOCAL-00074" summary="update readme for python versions">
+      <created>1482877064673</created>
+      <option name="number" value="00074" />
+      <option name="presentableId" value="LOCAL-00074" />
+      <option name="project" value="LOCAL" />
+      <updated>1482877064673</updated>
+    </task>
+    <task id="LOCAL-00075" summary="update readme for python versions">
+      <created>1482877288795</created>
+      <option name="number" value="00075" />
+      <option name="presentableId" value="LOCAL-00075" />
+      <option name="project" value="LOCAL" />
+      <updated>1482877288795</updated>
+    </task>
+    <task id="LOCAL-00076" summary="update readme for python versions">
+      <created>1483003855753</created>
+      <option name="number" value="00076" />
+      <option name="presentableId" value="LOCAL-00076" />
+      <option name="project" value="LOCAL" />
+      <updated>1483003855768</updated>
+    </task>
+    <task id="LOCAL-00077" summary="horizon point file not try to load in case of no file chosen">
+      <created>1483005336062</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1483005336062</updated>
+    </task>
+    <task id="LOCAL-00078" summary="horizon point file not try to load in case of no file chosen">
+      <created>1483026857192</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1483026857192</updated>
+    </task>
+    <task id="LOCAL-00079" summary="horizon point file not try to load in case of no file chosen">
+      <created>1483117677334</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1483117677334</updated>
+    </task>
+    <task id="LOCAL-00080" summary="correction hint in case of binning&#10;refactoring test without camera&#10;removing gui variables from functional code for later automatic testing&#10;">
+      <created>1483631796276</created>
+      <option name="number" value="00080" />
+      <option name="presentableId" value="LOCAL-00080" />
+      <option name="project" value="LOCAL" />
+      <updated>1483631796276</updated>
+    </task>
+    <task id="LOCAL-00081" summary="bugfixing log message error plate solving">
+      <created>1483635829304</created>
+      <option name="number" value="00081" />
+      <option name="presentableId" value="LOCAL-00081" />
+      <option name="project" value="LOCAL" />
+      <updated>1483635829304</updated>
+    </task>
+    <task id="LOCAL-00082" summary="bugfixing log message error plate solving">
+      <created>1483637729304</created>
+      <option name="number" value="00082" />
+      <option name="presentableId" value="LOCAL-00082" />
+      <option name="project" value="LOCAL" />
+      <updated>1483637729304</updated>
+    </task>
+    <task id="LOCAL-00083" summary="cleanup impoort code">
+      <created>1483637881781</created>
+      <option name="number" value="00083" />
+      <option name="presentableId" value="LOCAL-00083" />
+      <option name="project" value="LOCAL" />
+      <updated>1483637881781</updated>
     </task>
     <task id="LOCAL-00084" summary="renaming ui files for later split">
       <created>1483638431193</created>
@@ -688,245 +928,7 @@
       <option name="project" value="LOCAL" />
       <updated>1483980758376</updated>
     </task>
-    <task id="LOCAL-00099" summary="added dome visibility">
-      <created>1483981990292</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1483981990293</updated>
-    </task>
-    <task id="LOCAL-00100" summary="started separate branch for develop">
-      <created>1484487747728</created>
-      <option name="number" value="00100" />
-      <option name="presentableId" value="LOCAL-00100" />
-      <option name="project" value="LOCAL" />
-      <updated>1484487747728</updated>
-    </task>
-    <task id="LOCAL-00101" summary="updated ui&#10;bugfixing">
-      <created>1484513648644</created>
-      <option name="number" value="00101" />
-      <option name="presentableId" value="LOCAL-00101" />
-      <option name="project" value="LOCAL" />
-      <updated>1484513648644</updated>
-    </task>
-    <task id="LOCAL-00102" summary="added forgotten modules">
-      <created>1484679762387</created>
-      <option name="number" value="00102" />
-      <option name="presentableId" value="LOCAL-00102" />
-      <option name="project" value="LOCAL" />
-      <updated>1484679762387</updated>
-    </task>
-    <task id="LOCAL-00103" summary="added popup test ui file">
-      <created>1484680828272</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1484680828272</updated>
-    </task>
-    <task id="LOCAL-00104" summary="clean up model for signals redraw and normal point generation">
-      <created>1484760116800</created>
-      <option name="number" value="00104" />
-      <option name="presentableId" value="LOCAL-00104" />
-      <option name="project" value="LOCAL" />
-      <updated>1484760116800</updated>
-    </task>
-    <task id="LOCAL-00105" summary="update dso stream and correction of failure mode transform celestial horizontal">
-      <created>1484764492299</created>
-      <option name="number" value="00105" />
-      <option name="presentableId" value="LOCAL-00105" />
-      <option name="project" value="LOCAL" />
-      <updated>1484764492299</updated>
-    </task>
-    <task id="LOCAL-00106" summary="update hmi">
-      <created>1484766946866</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1484766946866</updated>
-    </task>
-    <task id="LOCAL-00107" summary="update hmi">
-      <created>1484770222938</created>
-      <option name="number" value="00107" />
-      <option name="presentableId" value="LOCAL-00107" />
-      <option name="project" value="LOCAL" />
-      <updated>1484770222938</updated>
-    </task>
-    <task id="LOCAL-00108" summary="update hmi">
-      <created>1484770527439</created>
-      <option name="number" value="00108" />
-      <option name="presentableId" value="LOCAL-00108" />
-      <option name="project" value="LOCAL" />
-      <updated>1484770527439</updated>
-    </task>
-    <task id="LOCAL-00109" summary="change to central modelData dictionary for data exchange">
-      <created>1484849915134</created>
-      <option name="number" value="00109" />
-      <option name="presentableId" value="LOCAL-00109" />
-      <option name="project" value="LOCAL" />
-      <updated>1484849915134</updated>
-    </task>
-    <task id="LOCAL-00110" summary="change to central modelData dictionary for data exchange for beta test">
-      <created>1484928364886</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1484928364887</updated>
-    </task>
-    <task id="LOCAL-00111" summary="bugfix raError">
-      <created>1484930059454</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1484930059454</updated>
-    </task>
-    <task id="LOCAL-00112" summary="enable set model">
-      <created>1484930364819</created>
-      <option name="number" value="00112" />
-      <option name="presentableId" value="LOCAL-00112" />
-      <option name="project" value="LOCAL" />
-      <updated>1484930364819</updated>
-    </task>
-    <task id="LOCAL-00113" summary="problem in drawTrack">
-      <created>1484932925146</created>
-      <option name="number" value="00113" />
-      <option name="presentableId" value="LOCAL-00113" />
-      <option name="project" value="LOCAL" />
-      <updated>1484932925146</updated>
-    </task>
-    <task id="LOCAL-00114" summary="problem in drawTrack">
-      <created>1484933883472</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
-      <option name="project" value="LOCAL" />
-      <updated>1484933883472</updated>
-    </task>
-    <task id="LOCAL-00115" summary="remove wrong self.modelData">
-      <created>1484936266891</created>
-      <option name="number" value="00115" />
-      <option name="presentableId" value="LOCAL-00115" />
-      <option name="project" value="LOCAL" />
-      <updated>1484936266891</updated>
-    </task>
-    <task id="LOCAL-00116" summary="log should be stored correctly">
-      <created>1484940585404</created>
-      <option name="number" value="00116" />
-      <option name="presentableId" value="LOCAL-00116" />
-      <option name="project" value="LOCAL" />
-      <updated>1484940585404</updated>
-    </task>
-    <task id="LOCAL-00117" summary="update visual second down in one location">
-      <created>1484943303227</created>
-      <option name="number" value="00117" />
-      <option name="presentableId" value="LOCAL-00117" />
-      <option name="project" value="LOCAL" />
-      <updated>1484943303227</updated>
-    </task>
-    <task id="LOCAL-00118" summary="move dict to list">
-      <created>1484948655656</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1484948655656</updated>
-    </task>
-    <task id="LOCAL-00119" summary="bugfix modelData">
-      <created>1484949825206</created>
-      <option name="number" value="00119" />
-      <option name="presentableId" value="LOCAL-00119" />
-      <option name="project" value="LOCAL" />
-      <updated>1484949825207</updated>
-    </task>
-    <task id="LOCAL-00120" summary="bugfix modelData">
-      <created>1484950032995</created>
-      <option name="number" value="00120" />
-      <option name="presentableId" value="LOCAL-00120" />
-      <option name="project" value="LOCAL" />
-      <updated>1484950032995</updated>
-    </task>
-    <task id="LOCAL-00121" summary="update gui">
-      <created>1484950122542</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1484950122542</updated>
-    </task>
-    <task id="LOCAL-00122" summary="bugfix intermediate">
-      <created>1485032267851</created>
-      <option name="number" value="00122" />
-      <option name="presentableId" value="LOCAL-00122" />
-      <option name="project" value="LOCAL" />
-      <updated>1485032267852</updated>
-    </task>
-    <task id="LOCAL-00123" summary="order refine points">
-      <created>1485033006705</created>
-      <option name="number" value="00123" />
-      <option name="presentableId" value="LOCAL-00123" />
-      <option name="project" value="LOCAL" />
-      <updated>1485033006706</updated>
-    </task>
-    <task id="LOCAL-00124" summary="introduction of tracking widget&#10;bugfixing&#10;">
-      <created>1485097495155</created>
-      <option name="number" value="00124" />
-      <option name="presentableId" value="LOCAL-00124" />
-      <option name="project" value="LOCAL" />
-      <updated>1485097495155</updated>
-    </task>
-    <task id="LOCAL-00125" summary="checkbox for tracking widget">
-      <created>1485098551746</created>
-      <option name="number" value="00125" />
-      <option name="presentableId" value="LOCAL-00125" />
-      <option name="project" value="LOCAL" />
-      <updated>1485098551746</updated>
-    </task>
-    <task id="LOCAL-00126" summary="update for showing fliptime">
-      <created>1485100394975</created>
-      <option name="number" value="00126" />
-      <option name="presentableId" value="LOCAL-00126" />
-      <option name="project" value="LOCAL" />
-      <updated>1485100394975</updated>
-    </task>
-    <task id="LOCAL-00127" summary="update for showing fliptime">
-      <created>1485101607410</created>
-      <option name="number" value="00127" />
-      <option name="presentableId" value="LOCAL-00127" />
-      <option name="project" value="LOCAL" />
-      <updated>1485101607411</updated>
-    </task>
-    <task id="LOCAL-00128" summary="started threading lock for transformation calculation">
-      <created>1485102501789</created>
-      <option name="number" value="00128" />
-      <option name="presentableId" value="LOCAL-00128" />
-      <option name="project" value="LOCAL" />
-      <updated>1485102501789</updated>
-    </task>
-    <task id="LOCAL-00129" summary="started threading lock for transformation calculation">
-      <created>1485103576369</created>
-      <option name="number" value="00129" />
-      <option name="presentableId" value="LOCAL-00129" />
-      <option name="project" value="LOCAL" />
-      <updated>1485103576369</updated>
-    </task>
-    <task id="LOCAL-00130" summary="bugfix coordinate window when closed first">
-      <created>1485107157486</created>
-      <option name="number" value="00130" />
-      <option name="presentableId" value="LOCAL-00130" />
-      <option name="project" value="LOCAL" />
-      <updated>1485107157486</updated>
-    </task>
-    <task id="LOCAL-00131" summary="bugfix getXY">
-      <created>1485109638510</created>
-      <option name="number" value="00131" />
-      <option name="presentableId" value="LOCAL-00131" />
-      <option name="project" value="LOCAL" />
-      <updated>1485109638510</updated>
-    </task>
-    <task id="LOCAL-00132" summary="update save analyse file">
-      <created>1485117813767</created>
-      <option name="number" value="00132" />
-      <option name="presentableId" value="LOCAL-00132" />
-      <option name="project" value="LOCAL" />
-      <updated>1485117813767</updated>
-    </task>
-    <option name="localTasksCounter" value="133" />
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -943,26 +945,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="2576" height="1576" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20442571" sideWeight="0.49024707" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.15625" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18006304" sideWeight="0.49024707" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2986111" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.21456437" sideWeight="0.5046875" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31280616" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3716216" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2505568" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31319445" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31041667" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18400316" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32899868" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.219323" sideWeight="0.5097529" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2" sideWeight="0.4953125" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287858" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33194444" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2986111" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -996,50 +998,58 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="added forgotten modules" />
-    <MESSAGE value="added popup test ui file" />
-    <MESSAGE value="clean up model for signals redraw and normal point generation" />
-    <MESSAGE value="update dso stream and correction of failure mode transform celestial horizontal" />
-    <MESSAGE value="update hmi" />
-    <MESSAGE value="change to central modelData dictionary for data exchange" />
-    <MESSAGE value="change to central modelData dictionary for data exchange for beta test" />
-    <MESSAGE value="bugfix raError" />
-    <MESSAGE value="enable set model" />
-    <MESSAGE value="problem in drawTrack" />
-    <MESSAGE value="remove wrong self.modelData" />
-    <MESSAGE value="log should be stored correctly" />
-    <MESSAGE value="update visual second down in one location" />
-    <MESSAGE value="move dict to list" />
-    <MESSAGE value="bugfix modelData" />
-    <MESSAGE value="update gui" />
-    <MESSAGE value="bugfix intermediate" />
-    <MESSAGE value="order refine points" />
-    <MESSAGE value="introduction of tracking widget&#10;bugfixing&#10;" />
-    <MESSAGE value="checkbox for tracking widget" />
-    <MESSAGE value="update for showing fliptime" />
-    <MESSAGE value="started threading lock for transformation calculation" />
-    <MESSAGE value="bugfix coordinate window when closed first" />
-    <MESSAGE value="bugfix getXY" />
-    <MESSAGE value="update save analyse file" />
-    <option name="LAST_COMMIT_MESSAGE" value="update save analyse file" />
+    <MESSAGE value="correct for minimal deviation for modeling" />
+    <MESSAGE value="update to format directories" />
+    <MESSAGE value="added pierside to image capture for later evaluation" />
+    <MESSAGE value="correcting time measurement" />
+    <MESSAGE value="preparation remodeling" />
+    <MESSAGE value="dslr update and precision update" />
+    <MESSAGE value="update readme for python versions" />
+    <MESSAGE value="horizon point file not try to load in case of no file chosen" />
+    <MESSAGE value="correction hint in case of binning&#10;refactoring test without camera&#10;removing gui variables from functional code for later automatic testing&#10;" />
+    <MESSAGE value="bugfixing log message error plate solving" />
+    <MESSAGE value="cleanup impoort code" />
+    <MESSAGE value="renaming ui files for later split" />
+    <MESSAGE value="first test with plot separately" />
+    <MESSAGE value="rewrite analyse part" />
+    <MESSAGE value="position analyse window including title" />
+    <MESSAGE value="finalizing analyse plot files for first test" />
+    <MESSAGE value="refactoring for window widget class done" />
+    <MESSAGE value="refactoring color entries" />
+    <MESSAGE value="refactoring color entries finish" />
+    <MESSAGE value="bugfix due to message barry" />
+    <MESSAGE value="refactor runopenanalysewindow" />
+    <MESSAGE value="bugfixing race condition analyse filename" />
+    <MESSAGE value="finished prepare for bulk modeling by including all necessary data into fits headers" />
+    <MESSAGE value="preparation of separation the coordinate window" />
+    <MESSAGE value="optimizing and bugfixing" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimizing and bugfixing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/mountwizzard/support/analyse.py</url>
-          <line>270</line>
-          <option name="timeStamp" value="93" />
-        </line-breakpoint>
-      </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="95" />
+      <option name="time" value="60" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8772">
+          <caret line="516" column="10" lean-forward="false" selection-start-line="516" selection-start-column="10" selection-end-line="516" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md" />
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -1074,101 +1084,7 @@
           <caret line="269" column="82" lean-forward="false" selection-start-line="269" selection-start-column="38" selection-end-line="269" selection-end-column="82" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
-            <element signature="e#12541#12602#0" expanded="false" />
-            <element signature="e#12760#12821#0" expanded="false" />
-            <element signature="e#12979#13040#0" expanded="false" />
-            <element signature="e#13198#13259#0" expanded="false" />
-            <element signature="e#17776#17949#0" expanded="false" />
-            <element signature="e#22488#22659#0" expanded="false" />
-            <element signature="e#22957#23439#0" expanded="false" />
-            <element signature="e#24472#24865#0" expanded="false" />
-            <element signature="e#24918#25311#0" expanded="false" />
-            <element signature="e#25346#25373#0" expanded="false" />
-            <element signature="e#25410#25437#0" expanded="false" />
-            <element signature="e#25476#25503#0" expanded="false" />
-            <element signature="e#25545#25573#0" expanded="false" />
-            <element signature="e#25615#25643#0" expanded="false" />
-            <element signature="e#25687#25715#0" expanded="false" />
-            <element signature="e#25753#25781#0" expanded="false" />
-            <element signature="e#25811#25840#0" expanded="false" />
-            <element signature="e#25875#25904#0" expanded="false" />
-            <element signature="e#25942#26104#0" expanded="false" />
-            <element signature="e#26149#26352#0" expanded="false" />
-            <element signature="e#26396#26598#0" expanded="false" />
-            <element signature="e#26639#26944#0" expanded="false" />
-            <element signature="e#26724#26791#0" expanded="false" />
-            <element signature="e#26818#26884#0" expanded="false" />
-            <element signature="e#26987#27308#0" expanded="false" />
-            <element signature="e#27077#27149#0" expanded="false" />
-            <element signature="e#27176#27247#0" expanded="false" />
-            <element signature="e#27357#27657#0" expanded="false" />
-            <element signature="e#27440#27505#0" expanded="false" />
-            <element signature="e#27532#27596#0" expanded="false" />
-            <element signature="e#27706#27753#0" expanded="false" />
-            <element signature="e#27793#28330#0" expanded="false" />
-            <element signature="e#28370#28907#0" expanded="false" />
-            <element signature="e#28947#29484#0" expanded="false" />
-            <element signature="e#29524#30061#0" expanded="false" />
-            <element signature="e#30066#30067#0" expanded="false" />
-            <element signature="e#30142#30360#0" expanded="false" />
-            <element signature="e#30403#30445#0" expanded="false" />
-            <element signature="e#30492#30538#0" expanded="false" />
-            <element signature="e#30575#30611#0" expanded="false" />
-            <element signature="e#30649#30686#0" expanded="false" />
-            <element signature="e#30727#30767#0" expanded="false" />
-            <element signature="e#30808#30848#0" expanded="false" />
-            <element signature="e#30890#30914#0" expanded="false" />
-            <element signature="e#30999#31038#0" expanded="false" />
-            <element signature="e#31101#31264#0" expanded="false" />
-            <element signature="e#31547#31817#0" expanded="false" />
-            <element signature="e#31663#31817#0" expanded="false" />
-            <element signature="e#33081#33240#0" expanded="false" />
-            <element signature="e#33298#34425#0" expanded="false" />
-            <element signature="e#33744#33859#0" expanded="false" />
-            <element signature="e#33915#34087#0" expanded="false" />
-            <element signature="e#34143#34255#0" expanded="false" />
-            <element signature="e#34311#34425#0" expanded="false" />
-            <element signature="e#35038#35211#0" expanded="false" />
-            <element signature="e#36035#36036#0" expanded="false" />
-            <element signature="e#36104#36128#0" expanded="false" />
-            <element signature="e#36176#36394#0" expanded="false" />
-            <element signature="e#36439#36746#0" expanded="false" />
-            <element signature="e#36752#36753#0" expanded="false" />
-            <element signature="e#36830#36856#0" expanded="false" />
-            <element signature="e#36906#37128#0" expanded="false" />
-            <element signature="e#37175#37770#0" expanded="false" />
-            <element signature="e#37775#37776#0" expanded="false" />
-            <element signature="e#37842#37865#0" expanded="false" />
-            <element signature="e#37903#37929#0" expanded="false" />
-            <element signature="e#37964#37987#0" expanded="false" />
-            <element signature="e#37992#37993#0" expanded="false" />
-            <element signature="e#38082#38288#0" expanded="false" />
-            <element signature="e#38329#38352#0" expanded="false" />
-            <element signature="e#38399#38724#0" expanded="false" />
-            <element signature="e#38762#38812#0" expanded="false" />
-            <element signature="e#38853#38906#0" expanded="false" />
-            <element signature="e#38950#39006#0" expanded="false" />
-            <element signature="e#39053#39112#0" expanded="false" />
-            <element signature="e#39158#39216#0" expanded="false" />
-            <element signature="e#39264#39324#0" expanded="false" />
-            <element signature="e#39362#39412#0" expanded="false" />
-            <element signature="e#39457#39514#0" expanded="false" />
-            <element signature="e#39652#39710#0" expanded="false" />
-            <element signature="e#39753#39808#0" expanded="false" />
-            <element signature="e#39853#39910#0" expanded="false" />
-            <element signature="e#39956#40014#0" expanded="false" />
-            <element signature="e#40058#40114#0" expanded="false" />
-            <element signature="e#40158#40214#0" expanded="false" />
-            <element signature="e#40255#40308#0" expanded="false" />
-            <element signature="e#40352#40408#0" expanded="false" />
-            <element signature="e#40452#40508#0" expanded="false" />
-            <element signature="e#40555#40614#0" expanded="false" />
-            <element signature="e#40657#40712#0" expanded="false" />
-            <element signature="e#40758#40816#0" expanded="false" />
-            <element signature="e#40846#40864#0" expanded="false" />
-            <element signature="e#40900#40913#0" expanded="false" />
-            <element signature="e#43605#43894#0" expanded="false" />
-            <element signature="e#44067#44361#0" expanded="false" />
+            <element signature="e#337#351#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1193,101 +1109,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
-            <element signature="e#12541#12602#0" expanded="false" />
-            <element signature="e#12760#12821#0" expanded="false" />
-            <element signature="e#12979#13040#0" expanded="false" />
-            <element signature="e#13198#13259#0" expanded="false" />
-            <element signature="e#17776#17949#0" expanded="false" />
-            <element signature="e#22488#22659#0" expanded="false" />
-            <element signature="e#22957#23439#0" expanded="false" />
-            <element signature="e#24472#24865#0" expanded="false" />
-            <element signature="e#24918#25311#0" expanded="false" />
-            <element signature="e#25346#25373#0" expanded="false" />
-            <element signature="e#25410#25437#0" expanded="false" />
-            <element signature="e#25476#25503#0" expanded="false" />
-            <element signature="e#25545#25573#0" expanded="false" />
-            <element signature="e#25615#25643#0" expanded="false" />
-            <element signature="e#25687#25715#0" expanded="false" />
-            <element signature="e#25753#25781#0" expanded="false" />
-            <element signature="e#25811#25840#0" expanded="false" />
-            <element signature="e#25875#25904#0" expanded="false" />
-            <element signature="e#25942#26104#0" expanded="false" />
-            <element signature="e#26149#26352#0" expanded="false" />
-            <element signature="e#26396#26598#0" expanded="false" />
-            <element signature="e#26639#26944#0" expanded="false" />
-            <element signature="e#26724#26791#0" expanded="false" />
-            <element signature="e#26818#26884#0" expanded="false" />
-            <element signature="e#26987#27308#0" expanded="false" />
-            <element signature="e#27077#27149#0" expanded="false" />
-            <element signature="e#27176#27247#0" expanded="false" />
-            <element signature="e#27357#27657#0" expanded="false" />
-            <element signature="e#27440#27505#0" expanded="false" />
-            <element signature="e#27532#27596#0" expanded="false" />
-            <element signature="e#27706#27753#0" expanded="false" />
-            <element signature="e#27793#28330#0" expanded="false" />
-            <element signature="e#28370#28907#0" expanded="false" />
-            <element signature="e#28947#29484#0" expanded="false" />
-            <element signature="e#29524#30061#0" expanded="false" />
-            <element signature="e#30066#30067#0" expanded="false" />
-            <element signature="e#30142#30360#0" expanded="false" />
-            <element signature="e#30403#30445#0" expanded="false" />
-            <element signature="e#30492#30538#0" expanded="false" />
-            <element signature="e#30575#30611#0" expanded="false" />
-            <element signature="e#30649#30686#0" expanded="false" />
-            <element signature="e#30727#30767#0" expanded="false" />
-            <element signature="e#30808#30848#0" expanded="false" />
-            <element signature="e#30890#30914#0" expanded="false" />
-            <element signature="e#30999#31038#0" expanded="false" />
-            <element signature="e#31101#31264#0" expanded="false" />
-            <element signature="e#31547#31817#0" expanded="false" />
-            <element signature="e#31663#31817#0" expanded="false" />
-            <element signature="e#33081#33240#0" expanded="false" />
-            <element signature="e#33298#34425#0" expanded="false" />
-            <element signature="e#33744#33859#0" expanded="false" />
-            <element signature="e#33915#34087#0" expanded="false" />
-            <element signature="e#34143#34255#0" expanded="false" />
-            <element signature="e#34311#34425#0" expanded="false" />
-            <element signature="e#35038#35211#0" expanded="false" />
-            <element signature="e#36035#36036#0" expanded="false" />
-            <element signature="e#36104#36128#0" expanded="false" />
-            <element signature="e#36176#36394#0" expanded="false" />
-            <element signature="e#36439#36746#0" expanded="false" />
-            <element signature="e#36752#36753#0" expanded="false" />
-            <element signature="e#36830#36856#0" expanded="false" />
-            <element signature="e#36906#37128#0" expanded="false" />
-            <element signature="e#37175#37770#0" expanded="false" />
-            <element signature="e#37775#37776#0" expanded="false" />
-            <element signature="e#37842#37865#0" expanded="false" />
-            <element signature="e#37903#37929#0" expanded="false" />
-            <element signature="e#37964#37987#0" expanded="false" />
-            <element signature="e#37992#37993#0" expanded="false" />
-            <element signature="e#38082#38288#0" expanded="false" />
-            <element signature="e#38329#38352#0" expanded="false" />
-            <element signature="e#38399#38724#0" expanded="false" />
-            <element signature="e#38762#38812#0" expanded="false" />
-            <element signature="e#38853#38906#0" expanded="false" />
-            <element signature="e#38950#39006#0" expanded="false" />
-            <element signature="e#39053#39112#0" expanded="false" />
-            <element signature="e#39158#39216#0" expanded="false" />
-            <element signature="e#39264#39324#0" expanded="false" />
-            <element signature="e#39362#39412#0" expanded="false" />
-            <element signature="e#39457#39514#0" expanded="false" />
-            <element signature="e#39652#39710#0" expanded="false" />
-            <element signature="e#39753#39808#0" expanded="false" />
-            <element signature="e#39853#39910#0" expanded="false" />
-            <element signature="e#39956#40014#0" expanded="false" />
-            <element signature="e#40058#40114#0" expanded="false" />
-            <element signature="e#40158#40214#0" expanded="false" />
-            <element signature="e#40255#40308#0" expanded="false" />
-            <element signature="e#40352#40408#0" expanded="false" />
-            <element signature="e#40452#40508#0" expanded="false" />
-            <element signature="e#40555#40614#0" expanded="false" />
-            <element signature="e#40657#40712#0" expanded="false" />
-            <element signature="e#40758#40816#0" expanded="false" />
-            <element signature="e#40846#40864#0" expanded="false" />
-            <element signature="e#40900#40913#0" expanded="false" />
-            <element signature="e#43605#43894#0" expanded="false" />
-            <element signature="e#44067#44361#0" expanded="false" />
+            <element signature="e#337#351#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1305,101 +1127,7 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
-            <element signature="e#12541#12602#0" expanded="false" />
-            <element signature="e#12760#12821#0" expanded="false" />
-            <element signature="e#12979#13040#0" expanded="false" />
-            <element signature="e#13198#13259#0" expanded="false" />
-            <element signature="e#17776#17949#0" expanded="false" />
-            <element signature="e#22488#22659#0" expanded="false" />
-            <element signature="e#22957#23439#0" expanded="false" />
-            <element signature="e#24472#24865#0" expanded="false" />
-            <element signature="e#24918#25311#0" expanded="false" />
-            <element signature="e#25346#25373#0" expanded="false" />
-            <element signature="e#25410#25437#0" expanded="false" />
-            <element signature="e#25476#25503#0" expanded="false" />
-            <element signature="e#25545#25573#0" expanded="false" />
-            <element signature="e#25615#25643#0" expanded="false" />
-            <element signature="e#25687#25715#0" expanded="false" />
-            <element signature="e#25753#25781#0" expanded="false" />
-            <element signature="e#25811#25840#0" expanded="false" />
-            <element signature="e#25875#25904#0" expanded="false" />
-            <element signature="e#25942#26104#0" expanded="false" />
-            <element signature="e#26149#26352#0" expanded="false" />
-            <element signature="e#26396#26598#0" expanded="false" />
-            <element signature="e#26639#26944#0" expanded="false" />
-            <element signature="e#26724#26791#0" expanded="false" />
-            <element signature="e#26818#26884#0" expanded="false" />
-            <element signature="e#26987#27308#0" expanded="false" />
-            <element signature="e#27077#27149#0" expanded="false" />
-            <element signature="e#27176#27247#0" expanded="false" />
-            <element signature="e#27357#27657#0" expanded="false" />
-            <element signature="e#27440#27505#0" expanded="false" />
-            <element signature="e#27532#27596#0" expanded="false" />
-            <element signature="e#27706#27753#0" expanded="false" />
-            <element signature="e#27793#28330#0" expanded="false" />
-            <element signature="e#28370#28907#0" expanded="false" />
-            <element signature="e#28947#29484#0" expanded="false" />
-            <element signature="e#29524#30061#0" expanded="false" />
-            <element signature="e#30066#30067#0" expanded="false" />
-            <element signature="e#30142#30360#0" expanded="false" />
-            <element signature="e#30403#30445#0" expanded="false" />
-            <element signature="e#30492#30538#0" expanded="false" />
-            <element signature="e#30575#30611#0" expanded="false" />
-            <element signature="e#30649#30686#0" expanded="false" />
-            <element signature="e#30727#30767#0" expanded="false" />
-            <element signature="e#30808#30848#0" expanded="false" />
-            <element signature="e#30890#30914#0" expanded="false" />
-            <element signature="e#30999#31038#0" expanded="false" />
-            <element signature="e#31101#31264#0" expanded="false" />
-            <element signature="e#31547#31817#0" expanded="false" />
-            <element signature="e#31663#31817#0" expanded="false" />
-            <element signature="e#33081#33240#0" expanded="false" />
-            <element signature="e#33298#34425#0" expanded="false" />
-            <element signature="e#33744#33859#0" expanded="false" />
-            <element signature="e#33915#34087#0" expanded="false" />
-            <element signature="e#34143#34255#0" expanded="false" />
-            <element signature="e#34311#34425#0" expanded="false" />
-            <element signature="e#35038#35211#0" expanded="false" />
-            <element signature="e#36035#36036#0" expanded="false" />
-            <element signature="e#36104#36128#0" expanded="false" />
-            <element signature="e#36176#36394#0" expanded="false" />
-            <element signature="e#36439#36746#0" expanded="false" />
-            <element signature="e#36752#36753#0" expanded="false" />
-            <element signature="e#36830#36856#0" expanded="false" />
-            <element signature="e#36906#37128#0" expanded="false" />
-            <element signature="e#37175#37770#0" expanded="false" />
-            <element signature="e#37775#37776#0" expanded="false" />
-            <element signature="e#37842#37865#0" expanded="false" />
-            <element signature="e#37903#37929#0" expanded="false" />
-            <element signature="e#37964#37987#0" expanded="false" />
-            <element signature="e#37992#37993#0" expanded="false" />
-            <element signature="e#38082#38288#0" expanded="false" />
-            <element signature="e#38329#38352#0" expanded="false" />
-            <element signature="e#38399#38724#0" expanded="false" />
-            <element signature="e#38762#38812#0" expanded="false" />
-            <element signature="e#38853#38906#0" expanded="false" />
-            <element signature="e#38950#39006#0" expanded="false" />
-            <element signature="e#39053#39112#0" expanded="false" />
-            <element signature="e#39158#39216#0" expanded="false" />
-            <element signature="e#39264#39324#0" expanded="false" />
-            <element signature="e#39362#39412#0" expanded="false" />
-            <element signature="e#39457#39514#0" expanded="false" />
-            <element signature="e#39652#39710#0" expanded="false" />
-            <element signature="e#39753#39808#0" expanded="false" />
-            <element signature="e#39853#39910#0" expanded="false" />
-            <element signature="e#39956#40014#0" expanded="false" />
-            <element signature="e#40058#40114#0" expanded="false" />
-            <element signature="e#40158#40214#0" expanded="false" />
-            <element signature="e#40255#40308#0" expanded="false" />
-            <element signature="e#40352#40408#0" expanded="false" />
-            <element signature="e#40452#40508#0" expanded="false" />
-            <element signature="e#40555#40614#0" expanded="false" />
-            <element signature="e#40657#40712#0" expanded="false" />
-            <element signature="e#40758#40816#0" expanded="false" />
-            <element signature="e#40846#40864#0" expanded="false" />
-            <element signature="e#40900#40913#0" expanded="false" />
-            <element signature="e#43605#43894#0" expanded="false" />
-            <element signature="e#44067#44361#0" expanded="false" />
+            <element signature="e#337#351#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1418,11 +1146,35 @@
     <entry file="file://$USER_HOME$/test/mountwizzard/wizzardmain.py" />
     <entry file="file://$PROJECT_DIR$/MANIFEST" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/pyfits/util.py" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/mw.txt" />
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/pyfits/file.py" />
+    <entry file="file://$PROJECT_DIR$/mountwizzard/mw.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/pyfits/file.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="248">
+          <caret line="104" column="0" lean-forward="false" selection-start-line="104" selection-start-column="0" selection-end-line="104" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_ui.py" />
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/win32com/client/dynamic.py" />
-    <entry file="file://$USER_HOME$/.PyCharmCE2016.3/system/python_stubs/-867741936/PyQt5/QtCore/QThread.py" />
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/win32com/client/dynamic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="381">
+          <caret line="521" column="0" lean-forward="false" selection-start-line="521" selection-start-column="0" selection-end-line="521" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/.PyCharmCE2016.3/system/python_stubs/-867741936/PyQt5/QtCore/QThread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="314">
+          <caret line="42" column="8" lean-forward="false" selection-start-line="42" selection-start-column="8" selection-end-line="42" selection-end-column="8" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydevd_bundle/pydevd_exec2.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -1437,7 +1189,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/../mountwizzard-wiki/mountwizzard.wiki/Home.md" />
+    <entry file="file://$PROJECT_DIR$/../mountwizzard-wiki/mountwizzard.wiki/Home.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="68">
+            <caret line="4" column="0" lean-forward="false" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MANIFEST.in">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="17">
@@ -1449,7 +1210,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
           <caret line="2" column="14" lean-forward="false" selection-start-line="2" selection-start-column="14" selection-end-line="2" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1457,10 +1217,19 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="170">
           <caret line="10" column="26" lean-forward="false" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="26" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/weather_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
@@ -1471,6 +1240,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1478,6 +1248,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1485,6 +1256,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="8" column="16" lean-forward="false" selection-start-line="8" selection-start-column="16" selection-end-line="8" selection-end-column="16" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1499,10 +1271,30 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="371">
           <caret line="73" column="41" lean-forward="false" selection-start-line="73" selection-start-column="41" selection-end-line="73" selection-end-column="41" />
+          <folding>
+            <element signature="e#350#375#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/matplotlib/artist.py" />
+    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35/Lib/site-packages/matplotlib/artist.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="371">
+          <caret line="858" column="0" lean-forward="false" selection-start-line="858" selection-start-column="0" selection-end-line="858" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Changelog.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="34">
+            <caret line="2" column="1" lean-forward="false" selection-start-line="2" selection-start-column="1" selection-end-line="2" selection-end-column="1" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/setup.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -1511,174 +1303,86 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="153">
+            <caret line="9" column="36" lean-forward="false" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
       <provider editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Changelog.md" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/stick_thread.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="629">
-          <caret line="50" column="21" lean-forward="false" selection-start-line="50" selection-start-column="21" selection-end-line="50" selection-end-column="21" />
+        <state relative-caret-position="-179">
+          <caret line="3" column="0" lean-forward="false" selection-start-line="3" selection-start-column="0" selection-end-line="3" selection-end-column="0" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/analysedata/2017-01-20-18-15-02_refinement.txt" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/analysedata/2017-01-20-18-06-41_refinement.txt" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/mount.log" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/analysedata/2017-01-20-22-06-34_analyse.txt" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/config/config.cfg" />
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mw_widget.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/config/config.cfg">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="107">
-          <caret line="35" column="38" lean-forward="false" selection-start-line="35" selection-start-column="38" selection-end-line="35" selection-end-column="38" />
-          <folding />
+        <state relative-caret-position="0">
+          <caret line="0" column="267" lean-forward="false" selection-start-line="0" selection-start-column="257" selection-end-line="0" selection-end-column="267" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/support/mount_thread.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="706">
-          <caret line="253" column="124" lean-forward="false" selection-start-line="253" selection-start-column="124" selection-end-line="253" selection-end-column="124" />
+        <state relative-caret-position="357">
+          <caret line="31" column="27" lean-forward="false" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="202">
-          <caret line="223" column="58" lean-forward="false" selection-start-line="223" selection-start-column="58" selection-end-line="223" selection-end-column="58" />
+        <state relative-caret-position="204">
+          <caret line="209" column="0" lean-forward="false" selection-start-line="209" selection-start-column="0" selection-end-line="209" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/mw_widget.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="121">
+          <caret line="31" column="47" lean-forward="false" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5984">
+          <caret line="368" column="45" lean-forward="false" selection-start-line="368" selection-start-column="45" selection-end-line="368" selection-end-column="45" />
           <folding>
-            <element signature="e#336#350#0" expanded="false" />
-            <element signature="e#7797#7958#0" expanded="false" />
-            <element signature="e#8111#8287#0" expanded="false" />
-            <element signature="e#8606#9176#0" expanded="false" />
+            <element signature="e#316#330#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/mountwizzard/mountwizzard.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1754">
-          <caret line="175" column="0" lean-forward="false" selection-start-line="175" selection-start-column="0" selection-end-line="177" selection-end-column="28" />
+        <state relative-caret-position="1020">
+          <caret line="83" column="0" lean-forward="false" selection-start-line="82" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
           <folding>
             <element signature="n#!!doc" expanded="false" />
-            <element signature="e#12541#12602#0" expanded="false" />
-            <element signature="e#12760#12821#0" expanded="false" />
-            <element signature="e#12979#13040#0" expanded="false" />
-            <element signature="e#13198#13259#0" expanded="false" />
-            <element signature="e#17776#17949#0" expanded="false" />
-            <element signature="e#22488#22659#0" expanded="false" />
-            <element signature="e#22957#23439#0" expanded="false" />
-            <element signature="e#24472#24865#0" expanded="false" />
-            <element signature="e#24918#25311#0" expanded="false" />
-            <element signature="e#25346#25373#0" expanded="false" />
-            <element signature="e#25410#25437#0" expanded="false" />
-            <element signature="e#25476#25503#0" expanded="false" />
-            <element signature="e#25545#25573#0" expanded="false" />
-            <element signature="e#25615#25643#0" expanded="false" />
-            <element signature="e#25687#25715#0" expanded="false" />
-            <element signature="e#25753#25781#0" expanded="false" />
-            <element signature="e#25811#25840#0" expanded="false" />
-            <element signature="e#25875#25904#0" expanded="false" />
-            <element signature="e#25942#26104#0" expanded="false" />
-            <element signature="e#26149#26352#0" expanded="false" />
-            <element signature="e#26396#26598#0" expanded="false" />
-            <element signature="e#26639#26944#0" expanded="false" />
-            <element signature="e#26724#26791#0" expanded="false" />
-            <element signature="e#26818#26884#0" expanded="false" />
-            <element signature="e#26987#27308#0" expanded="false" />
-            <element signature="e#27077#27149#0" expanded="false" />
-            <element signature="e#27176#27247#0" expanded="false" />
-            <element signature="e#27357#27657#0" expanded="false" />
-            <element signature="e#27440#27505#0" expanded="false" />
-            <element signature="e#27532#27596#0" expanded="false" />
-            <element signature="e#27706#27753#0" expanded="false" />
-            <element signature="e#27793#28330#0" expanded="false" />
-            <element signature="e#28370#28907#0" expanded="false" />
-            <element signature="e#28947#29484#0" expanded="false" />
-            <element signature="e#29524#30061#0" expanded="false" />
-            <element signature="e#30066#30067#0" expanded="false" />
-            <element signature="e#30142#30360#0" expanded="false" />
-            <element signature="e#30403#30445#0" expanded="false" />
-            <element signature="e#30492#30538#0" expanded="false" />
-            <element signature="e#30575#30611#0" expanded="false" />
-            <element signature="e#30649#30686#0" expanded="false" />
-            <element signature="e#30727#30767#0" expanded="false" />
-            <element signature="e#30808#30848#0" expanded="false" />
-            <element signature="e#30890#30914#0" expanded="false" />
-            <element signature="e#30999#31038#0" expanded="false" />
-            <element signature="e#31101#31264#0" expanded="false" />
-            <element signature="e#31547#31817#0" expanded="false" />
-            <element signature="e#31663#31817#0" expanded="false" />
-            <element signature="e#33081#33240#0" expanded="false" />
-            <element signature="e#33298#34425#0" expanded="false" />
-            <element signature="e#33744#33859#0" expanded="false" />
-            <element signature="e#33915#34087#0" expanded="false" />
-            <element signature="e#34143#34255#0" expanded="false" />
-            <element signature="e#34311#34425#0" expanded="false" />
-            <element signature="e#35038#35211#0" expanded="false" />
-            <element signature="e#36035#36036#0" expanded="false" />
-            <element signature="e#36104#36128#0" expanded="false" />
-            <element signature="e#36176#36394#0" expanded="false" />
-            <element signature="e#36439#36746#0" expanded="false" />
-            <element signature="e#36752#36753#0" expanded="false" />
-            <element signature="e#36830#36856#0" expanded="false" />
-            <element signature="e#36906#37128#0" expanded="false" />
-            <element signature="e#37175#37770#0" expanded="false" />
-            <element signature="e#37775#37776#0" expanded="false" />
-            <element signature="e#37842#37865#0" expanded="false" />
-            <element signature="e#37903#37929#0" expanded="false" />
-            <element signature="e#37964#37987#0" expanded="false" />
-            <element signature="e#37992#37993#0" expanded="false" />
-            <element signature="e#38082#38288#0" expanded="false" />
-            <element signature="e#38329#38352#0" expanded="false" />
-            <element signature="e#38399#38724#0" expanded="false" />
-            <element signature="e#38762#38812#0" expanded="false" />
-            <element signature="e#38853#38906#0" expanded="false" />
-            <element signature="e#38950#39006#0" expanded="false" />
-            <element signature="e#39053#39112#0" expanded="false" />
-            <element signature="e#39158#39216#0" expanded="false" />
-            <element signature="e#39264#39324#0" expanded="false" />
-            <element signature="e#39362#39412#0" expanded="false" />
-            <element signature="e#39457#39514#0" expanded="false" />
-            <element signature="e#39652#39710#0" expanded="false" />
-            <element signature="e#39753#39808#0" expanded="false" />
-            <element signature="e#39853#39910#0" expanded="false" />
-            <element signature="e#39956#40014#0" expanded="false" />
-            <element signature="e#40058#40114#0" expanded="false" />
-            <element signature="e#40158#40214#0" expanded="false" />
-            <element signature="e#40255#40308#0" expanded="false" />
-            <element signature="e#40352#40408#0" expanded="false" />
-            <element signature="e#40452#40508#0" expanded="false" />
-            <element signature="e#40555#40614#0" expanded="false" />
-            <element signature="e#40657#40712#0" expanded="false" />
-            <element signature="e#40758#40816#0" expanded="false" />
-            <element signature="e#40846#40864#0" expanded="false" />
-            <element signature="e#40900#40913#0" expanded="false" />
-            <element signature="e#43605#43894#0" expanded="false" />
-            <element signature="e#44067#44361#0" expanded="false" />
+            <element signature="e#337#351#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/analyse.py">
+    <entry file="file://$PROJECT_DIR$/mountwizzard/support/coordinate_widget.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4556">
-          <caret line="268" column="34" lean-forward="false" selection-start-line="268" selection-start-column="34" selection-end-line="268" selection-end-column="34" />
+        <state relative-caret-position="374">
+          <caret line="49" column="24" lean-forward="false" selection-start-line="49" selection-start-column="24" selection-end-line="49" selection-end-column="24" />
           <folding>
             <element signature="e#336#350#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/mountwizzard/support/model_thread.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="312">
-          <caret line="707" column="0" lean-forward="false" selection-start-line="707" selection-start-column="0" selection-end-line="707" selection-end-column="0" />
-          <folding>
-            <element signature="e#316#330#0" expanded="true" />
           </folding>
         </state>
       </provider>
