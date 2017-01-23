@@ -226,7 +226,7 @@ class ShowCoordinatePopup(MwWidget):
             item.setPos(x, y)
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(x+1, y+1)
+            text_item.setPos(x - esize / 8, y - esize / 8)
             scene.addItem(text_item)
             self.model.BasePoints[i] = (p[0], p[1], item, True)                                                             # storing the objects in the list
         for i, p in enumerate(self.model.RefinementPoints):                                                                 # show the points
@@ -239,7 +239,7 @@ class ShowCoordinatePopup(MwWidget):
             item.setPos(x, y)
             text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
             text_item.setDefaultTextColor(self.COLOR_WHITE)
-            text_item.setPos(x+1, y+1)
+            text_item.setPos(x - esize / 8, y - esize / 8)
             scene.addItem(text_item)
             self.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                       # storing the objects in the list
         scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)

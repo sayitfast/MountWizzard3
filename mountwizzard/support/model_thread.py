@@ -413,9 +413,10 @@ class Model(QtCore.QThread):
     def runAnalyseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        if len(self.RefinementPoints + self.BasePoints) > 0:                                                                # there should be some points
-            self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints,
-                                                  directory, settlingTime)                                                  # run the analyse
+        points = self.BasePoints + self.RefinementPoints
+        print(len(points))
+        if len(points) > 0:                                                                                                 # there should be some points
+            self.modelAnalyseData = self.runModel('Analyse', points, directory, settlingTime)                               # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
         name = directory + '_analyse.dat'                                                                                   # generate name of analyse file
@@ -480,11 +481,11 @@ class Model(QtCore.QThread):
     def prepareCaptureImageSubframes(self, scale, modelData):                                                               # get camera data for doing subframes
         suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
         self.logger.debug('prepareCaptureSubframe-> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))         # debug data
-        modelData['sizeX'] = 0  # size inner window
-        modelData['sizeY'] = 0  # size inner window
-        modelData['offX'] = 0  # offset is half of the rest
-        modelData['offY'] = 0  # same in y
-        modelData['canSubframe'] = False  # same in y
+        modelData['sizeX'] = 0                                                                                              # size inner window
+        modelData['sizeY'] = 0                                                                                              # size inner window
+        modelData['offX'] = 0                                                                                               # offset is half of the rest
+        modelData['offY'] = 0                                                                                               # same in y
+        modelData['canSubframe'] = False
         if suc and canSubframe:                                                                                             # if camera could do subframes
                 modelData['sizeX'] = int(sizeX * scale)                                                                     # size inner window
                 modelData['sizeY'] = int(sizeY * scale)                                                                     # size inner window
@@ -722,7 +723,7 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
-                        self.LogQueue.put('{0} -\t RAdiff: {1:2.1f} DECdiff: {2:2.1f}\n'
+                        self.LogQueue.put('{0} -\t  RAdiff:  {1:2.1f}    DECdiff: {2:2.1f}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()),
                                                   modelData['raError'], modelData['decError']))                             # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
