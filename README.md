@@ -6,7 +6,7 @@
 Because I'm going to use the pip installer for beta versions as well and there is no way to rollback a version number or to get one in
 between, I will name the release and beta versions explicitly on this page. You can switch between any version with this pip command.
 
-### Version 1.1.4 beta for upcoming next release 2.0
+### Version 1.1.4 beta for upcoming next release 2.0rc
 <pre>pip install mountwizzard==1.1.4 </pre>
 
 ### Version release 1.1.0
