@@ -171,8 +171,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], color='black')
         self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], 'bo')
-
         self.plotWidget.draw()
+
+        # index in plot             0  1    2   3   4   5       6           7       8       9
+        # data format of analyse: (i, az, alt, ra, dec, ra_sol, dec_sol, raError, decError, err)
 
     def showModelPointPolar(self):
         self.setFigure('polar')
@@ -183,13 +185,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.plt.title('Model Points\n ', color='white')
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget. plt.plot(self.dat[1] / 180.0 * 3.141593, 90 - self.dat[2], color='black')
-        if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[1] / 180.0 * 3.141593, 90 - self.datWest[2], 'bo')
-        if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[1] / 180.0 * 3.141593, 90 - self.datEast[2], 'go')
-        if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[1] / 180.0 * 3.141593, 90 - self.datOut[2], 'ro')
+        azimuth = numpy.asarray(self.data['azimuth'])
+        altitude = numpy.asarray(self.data['altitude'])
+        self.plotWidget. plt.plot( azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
+        self.plotWidget.plt.plot(azimuth / 180.0 * 3.141593, 90 - altitude, 'bo')
         self.plotWidget.axes.set_rmax(90)
         self.plotWidget.axes.set_rmin(0)
         self.plotWidget.draw()
@@ -203,12 +202,14 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.plt.title('Model Points Error\n ', color='white')
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget.plt.plot(self.dat[1] / 180.0 * 3.141593, 90 - self.dat[2], color='black')
+        azimuth = numpy.asarray(self.data['azimuth'])
+        altitude = numpy.asarray(self.data['altitude'])
+        self.plotWidget.plt.plot(azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
         cm = plt.cm.get_cmap('RdYlGn_r')
-        colors = self.dat[9]
-        area = self.dat[9] * 100 / self.scaleError + 20
-        theta = self.dat[1] / 180.0 * 3.141593
-        r = 90 - self.dat[2]
+        colors = numpy.asarray(self.data['modelError'])
+        area = colors * 100 / self.scaleError + 20
+        theta = azimuth / 180.0 * 3.141593
+        r = 90 - altitude
         scatter = self.plotWidget.plt.scatter(theta, r, c=colors, vmin=1, vmax=self.scaleError, s=area, cmap=cm)
         scatter.set_alpha(0.75)
         colorbar = self.plotWidget.plt.colorbar(scatter)
