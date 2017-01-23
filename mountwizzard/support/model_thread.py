@@ -392,9 +392,10 @@ class Model(QtCore.QThread):
             self.modelAnalyseData = self.runModel('Base', self.BasePoints, directory, settlingTime)
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
-        name = directory + '_test.dat'                                                                                # generate name of analyse file
-        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
-        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+        name = directory + '_test.dat'                                                                                      # generate name of analyse file
+        if len(self.modelAnalyseData) > 0:
+            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
+            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runRefinementModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
@@ -405,20 +406,22 @@ class Model(QtCore.QThread):
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
         name = directory + '_refinement.dat'                                                                                # generate name of analyse file
-        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
-        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+        if len(self.modelAnalyseData) > 0:
+            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
+            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runAnalyseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.RefinementPoints + self.BasePoints) > 0:                                                                # there should be some points
             self.modelAnalyseData = self.runModel('Analyse', self.BasePoints + self.RefinementPoints,
-                                                  directory, settlingTime)         # run the analyse
+                                                  directory, settlingTime)                                                  # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
         name = directory + '_analyse.dat'                                                                                   # generate name of analyse file
-        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
-        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+        if len(self.modelAnalyseData) > 0:
+            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
+            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runTimeChangeModel(self):
         settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
@@ -429,8 +432,9 @@ class Model(QtCore.QThread):
                            QtWidgets.QGraphicsTextItem(''), True))
         self.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime)                                # run the analyse
         name = directory + '_timechange.dat'                                                                                # generate name of analyse file
-        self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
-        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+        if len(self.modelAnalyseData) > 0:
+            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
+            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runHystereseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))                                                             # using settling time also for waiting / delay
@@ -452,7 +456,8 @@ class Model(QtCore.QThread):
         self.modelAnalyseData = self.runModel('Hysterese', points, directory, settlingTime)                                 # run the analyse
         name = directory + '_hysterese.dat'                                                                                 # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
-        self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+        if len(self.modelAnalyseData) > 0:
+            self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
