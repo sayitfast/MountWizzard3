@@ -68,6 +68,7 @@ class MountWizzardApp(MwWidget):
         self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
+        time.sleep(.2)
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -86,6 +87,7 @@ class MountWizzardApp(MwWidget):
         if self.analysePopup.showStatus:
             self.showAnalyseWindow()
         if self.coordinatePopup.showStatus:
+            self.coordinatePopup.redrawCoordinateWindow()
             self.showCoordinateWindow()
         self.ui.le_mwWorkingDir.setText(os.getcwd())
 
