@@ -90,7 +90,6 @@ class ShowAnalysePopup(MwWidget):
         self.data = self.analyse.loadData(filename)
         if len(self.data) > 0:
             self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
-        print(self.data)
 
     def setFigure(self, projection=None):
         self.plotWidget.plt.clf()
@@ -115,8 +114,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.title('DEC Error over Modeling\n ', color='white')
         self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget.plt.plot(self.data['index'], self.data['ra'], color='black')
-        self.plotWidget.plt.plot(self.data['index'], self.data['ra'], 'bo')
+        self.plotWidget.plt.plot(self.data['index'], self.data['decError'], color='black')
+        self.plotWidget.plt.plot(self.data['index'], self.data['decError'], 'bo')
         self.plotWidget.draw()
 
     def showRaError(self):
@@ -124,15 +123,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
         self.plotWidget.plt.title('RA Error over Modeling\n ', color='white')
-        self.plotWidget.plt.axis([0, len(self.data), -self.scaleRA, self.scaleRA])
+        self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget. plt.plot(self.dat[0], self.dat[7], color='black')
-        if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[0], self.datWest[7], 'bo')
-        if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[0], self.datEast[7], 'go')
-        if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[0], self.datOut[7], 'ro')
+        self.plotWidget.plt.plot(self.data['index'], self.data['raError'], color='black')
+        self.plotWidget.plt.plot(self.data['index'], self.data['raError'], 'bo')
         self.plotWidget.draw()
 
     def showDecErrorAltitude(self):
@@ -142,13 +136,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.title('DEC Error over Altitude\n ', color='white')
         self.plotWidget.plt.axis([0, 90, -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget.plt.plot(self.dat[2], self.dat[8], color='black')
-        if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[2], self.datWest[8], 'bo')
-        if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[2], self.datEast[8], 'go')
-        if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[2], self.datOut[8], 'ro')
+        self.plotWidget.plt.plot(self.data['altitude'], self.data['decError'], color='black')
+        self.plotWidget.plt.plot(self.data['altitude'], self.data['decError'], 'bo')
         self.plotWidget.draw()
 
     def showRaErrorAltitude(self):
@@ -158,13 +147,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.title('RA Error over Altitude\n ', color='white')
         self.plotWidget.plt.axis([0, 90, -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget. plt.plot(self.dat[2], self.dat[7], color='black')
-        if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[2], self.datWest[7], 'bo')
-        if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[2], self.datEast[7], 'go')
-        if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[2], self.datOut[7], 'ro')
+        self.plotWidget.plt.plot(self.data['altitude'], self.data['raError'], color='black')
+        self.plotWidget.plt.plot(self.data['altitude'], self.data['raError'], 'bo')
         self.plotWidget.draw()
 
     def showDecErrorAzimuth(self):
@@ -174,13 +158,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.title('DEC Error over Azimuth\n ', color='white')
         self.plotWidget.plt.axis([0, 360, -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget.plt.plot(self.dat[1], self.dat[8], color='black')
-        if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[1], self.datWest[8], 'bo')
-        if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[1], self.datEast[8], 'go')
-        if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[1], self.datOut[8], 'ro')
+        self.plotWidget.plt.plot(self.data['azimuth'], self.data['decError'], color='black')
+        self.plotWidget.plt.plot(self.data['azimuth'], self.data['decError'], 'bo')
         self.plotWidget.draw()
 
     def showRaErrorAzimuth(self):
@@ -190,13 +169,9 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.title('RA Error over Azimuth\n ', color='white')
         self.plotWidget.plt.axis([0, 360, -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget. plt.plot(self.dat[1], self.dat[7], color='black')
-        if self.isDatWest:
-            self.plotWidget.plt.plot(self.datWest[1], self.datWest[7], 'bo')
-        if self.isDatEast:
-            self.plotWidget.plt.plot(self.datEast[1], self.datEast[7], 'go')
-        if self.isDatOut:
-            self.plotWidget.plt.plot(self.datOut[1], self.datOut[7], 'ro')
+        self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], color='black')
+        self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], 'bo')
+
         self.plotWidget.draw()
 
     def showModelPointPolar(self):
@@ -271,7 +246,7 @@ class Analyse:
             return {}                                                                                                       # loading doesn't work
         result = dict()
         for timestepdict in data:
-            for (key, value) in timedict.items():
+            for (key, value) in timestepdict.items():
                 if key in result:
                     pass
                     result[key].append(value)
@@ -282,10 +257,10 @@ class Analyse:
     def prepareData(self, data, scaleRA, scaleDEC):
         if len(data) == 0:                                                                                                  # in case no data loaded ->
             return                                                                                                          # quit
-        data['ra'] = [scaleRA if x > scaleRA else x for x in data['ra']]
-        data['ra'] = [-scaleRA if x < -scaleRA else x for x in data['ra']]
-        data['dec'] = [scaleDEC if x > scaleDEC else x for x in data['dec']]
-        data['dec'] = [-scaleDEC if x < -scaleDEC else x for x in data['dec']]
+        data['raError'] = [scaleRA if x > scaleRA else x for x in data['raError']]
+        data['raError'] = [-scaleRA if x < -scaleRA else x for x in data['raError']]
+        data['decError'] = [scaleDEC if x > scaleDEC else x for x in data['decError']]
+        data['decError'] = [-scaleDEC if x < -scaleDEC else x for x in data['decError']]
         return data
 
 if __name__ == "__main__":
