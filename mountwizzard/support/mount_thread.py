@@ -332,7 +332,7 @@ class Mount(QtCore.QThread):
             ha_digit = self.degStringToDecimal(ha)
             az, alt = self.transformNovas(ha_digit, dec_digit, 1)
             self.mountDataQueue.put({'Name': 'ModelStarError',
-                                     'Value': '#{0:02d} Az: {1:3d} Alt: {2:2d} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
+                                     'Value': '#{0:02d} Az: {1:3.0f} Alt: {2:2.0f} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
                                     .format(i, az, alt, errorRMS, errorAngle)})
         self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})
         self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
