@@ -1,4 +1,9 @@
 # Changelog:
+1.1.5
+- ui refreshment
+- change analyse view
+- update storing data
+
 1.1.4
 - ui reshaping and separate windows for points and analyse
 - updating model algorithm for batch calculation

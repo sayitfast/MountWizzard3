@@ -2096,7 +2096,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>Delete all points below the horizon line from horizone file</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Delete all Points</string>
@@ -7579,7 +7579,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.1.4 beta</string>
+    <string>MountWizzard  v1.1.5</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
