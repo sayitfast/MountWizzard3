@@ -90,6 +90,7 @@ class MountWizzardApp(MwWidget):
             self.coordinatePopup.redrawCoordinateWindow()
             self.showCoordinateWindow()
         self.ui.le_mwWorkingDir.setText(os.getcwd())
+        self.w = None
 
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
@@ -310,7 +311,8 @@ class MountWizzardApp(MwWidget):
         # noinspection PyArgumentList
         QCoreApplication.instance().quit()
 
-    def selectClose(self):
+    @staticmethod
+    def selectClose():
         # noinspection PyArgumentList
         QCoreApplication.instance().quit()
 

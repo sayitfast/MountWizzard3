@@ -73,6 +73,8 @@ class Mount(QtCore.QThread):
         self.sidereal_time = ''                                                                                             # local sidereal time
         self.pierside = 0                                                                                                   # side of pier (E/W)
         self.timeToFlip = '200'
+        self.refractionTemp = '20.0'
+        self.refractionPressure = '900.0'
         self.transform = None                                                                                               # ascom novas library entry point
         self.ascom = None                                                                                                   # ascom mount driver entry point
         self.mountAlignRMSsum = 0                                                                                           # variable for counting RMS over stars
@@ -213,6 +215,8 @@ class Mount(QtCore.QThread):
                 self.ascom.Tracking = False
             elif command == 'GS':
                 return self.decimalToDegree(self.ascom.SiderealTime, False, False)
+            elif command == 'GRTMP':
+                return '0.0'
             elif command == 'Ginfo':
                 self.raJnow = self.ascom.RightAscension
                 self.decJnow = self.ascom.Declination
@@ -246,6 +250,7 @@ class Mount(QtCore.QThread):
 
     def transformNovas(self, ra, dec, transform=1):
         self.transformationLock.acquire()
+        self.transform.SiteTemperature = float(self.refractionTemp)
         if transform == 1:
             if ra < 0:
                 ra += 24
@@ -448,8 +453,10 @@ class Mount(QtCore.QThread):
     def getStatusSlow(self, real):                                                                                          # slow update item like temps
         self.timeToFlip = self.sendCommand('Gmte', real)
         self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                               # Flip time
-        self.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP', real)})             # refraction temp out of mount
-        self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS', real)})                # refraction pressure out of mount
+        self.refractionTemp = self.sendCommand('GRTMP', real)
+        self.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                         # refraction temp out of mount
+        self.refractionPressure = self.sendCommand('GRPRS', real)
+        self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                        # refraction pressure out of mount
         self.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1', real)})                   # temp of RA motor
         self.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP2', real)})                  # temp of dec motor
         self.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs', real)})                            # get actual slew rate

@@ -697,10 +697,8 @@ class Model(QtCore.QThread):
                 modelData['decJnow'] = self.mount.decJnow
                 modelData['pierside'] = self.mount.pierside
                 modelData['index'] = i
-                if len(self.ui.le_refractionTemperature.text()) > 0:                                                        # set refraction temp
-                    modelData['refractionTemp'] = float(self.ui.le_refractionTemperature.text())                            # set it if string available
-                else:
-                    modelData['refractionTemp'] = 20.0                                                                      # set it to 20.0 degree c
+                modelData['refractionTemp'] = self.mount.refractionTemp                                                     # set it if string available
+                modelData['refractionPress'] = self.mount.refractionPressure                                                # set it if string available
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                 self.LogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'

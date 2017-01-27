@@ -107,15 +107,14 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerTrack.setVisible(True)
         for i in range(0, 50):                                                                                              # round model point from actual az alt position 24 hours
             ra = raCopy - float(i) * 10 / 50                                                                                # 12 hours line max
-            dec = decCopy                                                                                                   # Transform text to degree format
-            az, alt = self.mount.transformNovas(ra, dec, 1)                                                                 # transform to az alt
+            az, alt = self.mount.transformNovas(ra, decCopy, 1)                                                             # transform to az alt
             x, y = getXY(az, alt, height, width, border)
             self.pointerTrackLine[i].setPos(x, y)
             if alt > 0:
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.mount.transformNovas(self.mount.ra - float(self.mount.timeToFlip) / 60, dec, 1)                      # transform to az alt
+        az, alt = self.mount.transformNovas(self.mount.ra - float(self.mount.timeToFlip) / 60, decCopy, 1)                  # transform to az alt
         x, y = getXY(az, alt, height, width, border)
         self.itemFlipTime.setPos(x, y)
         delta = float(self.mount.timeToFlip)
