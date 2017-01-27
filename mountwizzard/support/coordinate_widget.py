@@ -80,6 +80,7 @@ class ShowCoordinatePopup(MwWidget):
                      self.borderModelPointsView)
         self.pointerAzAlt.setPos(x, y)
         self.pointerAzAlt.setVisible(True)
+        self.pointerAzAlt.update()
 
     def setDomePointer(self, az):
         width = self.ui.modelPointsPlot.width()
