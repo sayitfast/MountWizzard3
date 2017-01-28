@@ -225,7 +225,12 @@ class MountWizzardApp(MwWidget):
             self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
             self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
             self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
-            self.ui.altitudeMinHysterese.setValue(self.config['AltitudeMinHysterese'])
+            self.ui.altitudeHysterese1.setValue(self.config['AltitudeHysterese1'])
+            self.ui.altitudeHysterese2.setValue(self.config['AltitudeHysterese2'])
+            self.ui.azimuthHysterese1.setValue(self.config['AzimuthHysterese1'])
+            self.ui.azimuthHysterese2.setValue(self.config['AzimuthHysterese2'])
+            self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
+            self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.stick.driverName = self.config['ASCOMStickDriverName']
@@ -291,7 +296,12 @@ class MountWizzardApp(MwWidget):
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
         self.config['NumberRunsTimeChange'] = self.ui.numberRunsTimeChange.value()
         self.config['DelayTimeTimeChange'] = self.ui.delayTimeTimeChange.value()
-        self.config['AltitudeMinHysterese'] = self.ui.altitudeMinHysterese.value()
+        self.config['AltitudeHysterese1'] = self.ui.altitudeHysterese1.value()
+        self.config['AltitudeHysterese2'] = self.ui.altitudeHysterese2.value()
+        self.config['AzimuthHysterese1'] = self.ui.azimuthHysterese1.value()
+        self.config['AzimuthHysterese2'] = self.ui.azimuthHysterese2.value()
+        self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
+        self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMStickDriverName'] = self.stick.driverName

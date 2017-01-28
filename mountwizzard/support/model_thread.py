@@ -437,27 +437,22 @@ class Model(QtCore.QThread):
             self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runHystereseModel(self):
-        settlingTime = int(float(self.ui.settlingTime.value()))                                                             # using settling time also for waiting / delay
+        waitingTime = int(float(self.ui.settlingTime.value()))                                                              # using settling time also for waiting / delay
+        alt1 = int(float(self.ui.altitudeHysterese1.value()))
+        alt2 = int(float(self.ui.altitudeHysterese2.value()))
+        az1 = int(float(self.ui.azimuthHysterese1.value()))
+        az2 = int(float(self.ui.azimuthHysterese2.value()))
+        numberRunsHysterese = int(float(self.ui.numberRunsHysterese.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        points = [(270, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (000, 20, QtWidgets.QGraphicsTextItem(''), False),
-                  (270, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (90, 20, QtWidgets.QGraphicsTextItem(''), False),
-                  (270, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (180, 20, QtWidgets.QGraphicsTextItem(''), False),
-                  (270, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (90, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (181, 20, QtWidgets.QGraphicsTextItem(''), False),
-                  (90, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (270, 20, QtWidgets.QGraphicsTextItem(''), False),
-                  (90, 85, QtWidgets.QGraphicsTextItem(''), True),
-                  (359, 20, QtWidgets.QGraphicsTextItem(''), False),
-                  (90, 85, QtWidgets.QGraphicsTextItem(''), True)]
-        self.modelAnalyseData = self.runModel('Hysterese', points, directory, settlingTime)                                 # run the analyse
+        points = []
+        for i in range(0, numberRunsHysterese):
+            points.append((az1, alt1, QtWidgets.QGraphicsTextItem(''), True))
+            points.append((az2, alt2, QtWidgets.QGraphicsTextItem(''), False))
+        self.modelAnalyseData = self.runModel('Hysterese', points, directory, waitingTime)                                  # run the analyse
         name = directory + '_hysterese.dat'                                                                                 # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         if len(self.modelAnalyseData) > 0:
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                                  # save the data
+            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
