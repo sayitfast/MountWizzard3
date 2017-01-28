@@ -75,7 +75,7 @@ class Model(QtCore.QThread):
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
-            if self.connected and self.mount.connected:
+            if self.connected and self.mount.connected:                                                                     # SGPro must run and mount must be connected
                 if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                     self.command = ''                                                                                       # only one command at a time, last wins
                     self.ui.btn_runBaseModel.setStyleSheet(self.BLUE)

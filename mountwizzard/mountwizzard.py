@@ -68,7 +68,6 @@ class MountWizzardApp(MwWidget):
         self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
-        time.sleep(.2)
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -343,7 +342,7 @@ class MountWizzardApp(MwWidget):
             self.logger.warning('selectAnalyseFile -> no file selected')
 
     def showAnalyseWindow(self):
-        self.analysePopup.getData(self.ui.le_analyseFileName.text())
+        self.analysePopup.getData()
         self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
         self.analysePopup.showDecError()
         self.analysePopup.showStatus = True

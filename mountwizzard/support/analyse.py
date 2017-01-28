@@ -16,8 +16,9 @@ import logging
 import os
 import json
 import numpy
+import copy
 # import for the PyQt5 Framework
-from PyQt5.QtWidgets import *
+import PyQt5.QtWidgets
 from support.mw_widget import MwWidget
 from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
@@ -52,6 +53,7 @@ class ShowAnalyseData(FigureCanvas):
         self.axes.plot(1, 1)
 
 
+# noinspection PyTypeChecker
 class ShowAnalysePopup(MwWidget):
     logger = logging.getLogger(__name__)
 
@@ -60,6 +62,10 @@ class ShowAnalysePopup(MwWidget):
 
         self.uiMain = uiMain
         self.showStatus = False
+        self.scaleRA = 10
+        self.scaleDEC = 10
+        self.scaleError = 10
+        self.data = {}
         self.analyse = Analyse()
         self.ui = Ui_AnalyseDialog()
         self.ui.setupUi(self)
@@ -77,17 +83,18 @@ class ShowAnalysePopup(MwWidget):
         self.ui.btn_selectRaErrorAzimuth.clicked.connect(self.showRaErrorAzimuth)
         self.ui.btn_selectModelPointPolar.clicked.connect(self.showModelPointPolar)
         self.ui.btn_selectModelPointErrorPolar.clicked.connect(self.showModelPointErrorPolar)
-        helper = QVBoxLayout(self.ui.plot)
+        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
         self.show()
         self.setVisible(False)
 
-    def getData(self, filename):
+    def getData(self):
+        filenameData = self.uiMain.le_analyseFileName.text()
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()
         self.scaleError = self.ui.scalePlotError.value()
-        self.data = self.analyse.loadData(filename)
+        self.data = self.analyse.loadData(filenameData)
         if len(self.data) > 0:
             self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
 
@@ -108,15 +115,18 @@ class ShowAnalysePopup(MwWidget):
         self.setVisible(False)
 
     def showDecError(self):
+        if len(self.data) == 0:
+            return
         self.setFigure()
-        self.plotWidget.plt.xlabel('Number of Model Point', color='white')
-        self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
-        self.plotWidget.plt.title('DEC Error over Modeling\n ', color='white')
-        self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleDEC, self.scaleDEC])
-        self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget.plt.plot(self.data['index'], self.data['decError'], color='black')
-        self.plotWidget.plt.plot(self.data['index'], self.data['decError'], 'bo')
-        self.plotWidget.draw()
+        self.plotWidget.plt.xlabel('Number of Model Point', color='white')                                                  # x axis
+        self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')                                                     # y axis
+        self.plotWidget.plt.title('DEC Error over Modeling\n ', color='white')                                              # title
+        self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleDEC, self.scaleDEC])                               # defining the scaling of the plot
+        self.plotWidget.plt.grid(True, color='white')                                                                       # color of the plot grid
+        self.plotWidget.plt.plot(self.data['index'], self.data['decError'], color='black')                                  # Basic Data
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.scatter(self.data['index'], self.data['decError'], c=colors, s=50)
+        self.plotWidget.draw()                                                                                              # put the plot in the widget
 
     def showRaError(self):
         self.setFigure()
@@ -125,8 +135,9 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.title('RA Error over Modeling\n ', color='white')
         self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
-        self.plotWidget.plt.plot(self.data['index'], self.data['raError'], color='black')
-        self.plotWidget.plt.plot(self.data['index'], self.data['raError'], 'bo')
+        self.plotWidget.plt.plot(self.data['index'], self.data['raError'], color='black')                                   # Basic Data
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.scatter(self.data['index'], self.data['raError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showDecErrorAltitude(self):
@@ -137,7 +148,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.axis([0, 90, -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['altitude'], self.data['decError'], color='black')
-        self.plotWidget.plt.plot(self.data['altitude'], self.data['decError'], 'bo')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.scatter(self.data['altitude'], self.data['decError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showRaErrorAltitude(self):
@@ -148,7 +160,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.axis([0, 90, -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['altitude'], self.data['raError'], color='black')
-        self.plotWidget.plt.plot(self.data['altitude'], self.data['raError'], 'bo')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.scatter(self.data['altitude'], self.data['raError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showDecErrorAzimuth(self):
@@ -159,7 +172,8 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.axis([0, 360, -self.scaleDEC, self.scaleDEC])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['azimuth'], self.data['decError'], color='black')
-        self.plotWidget.plt.plot(self.data['azimuth'], self.data['decError'], 'bo')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.scatter(self.data['azimuth'], self.data['decError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showRaErrorAzimuth(self):
@@ -170,11 +184,9 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.axis([0, 360, -self.scaleRA, self.scaleRA])
         self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], color='black')
-        self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], 'bo')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.scatter(self.data['azimuth'], self.data['raError'], c=colors, s=50)
         self.plotWidget.draw()
-
-        # index in plot             0  1    2   3   4   5       6           7       8       9
-        # data format of analyse: (i, az, alt, ra, dec, ra_sol, dec_sol, raError, decError, err)
 
     def showModelPointPolar(self):
         self.setFigure('polar')
@@ -187,8 +199,9 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.grid(True, color='white')
         azimuth = numpy.asarray(self.data['azimuth'])
         altitude = numpy.asarray(self.data['altitude'])
-        self.plotWidget. plt.plot( azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
-        self.plotWidget.plt.plot(azimuth / 180.0 * 3.141593, 90 - altitude, 'bo')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        self.plotWidget.plt.plot(azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
+        self.plotWidget.plt.scatter(azimuth / 180.0 * 3.141593, 90 - altitude, c=colors, s=50)
         self.plotWidget.axes.set_rmax(90)
         self.plotWidget.axes.set_rmin(0)
         self.plotWidget.draw()
@@ -226,43 +239,43 @@ class Analyse:
     def __init__(self):
         self.filepath = '/analysedata'
 
-    def saveData(self, data, name):                                                                                         # saving data from list to file
-        filename = os.getcwd() + self.filepath + '/' + name                                                                 # built the filename
+    def saveData(self, dataProcess, name):                                                                                  # saving data from list to file
+        filenameData = os.getcwd() + self.filepath + '/' + name                                                             # built the filename
         try:                                                                                                                # write data to disk
-            outfile = open(filename, 'w')                                                                                   # open for write
-            json.dump(data, outfile)
+            outfile = open(filenameData, 'w')                                                                               # open for write
+            json.dump(dataProcess, outfile)
             outfile.close()                                                                                                 # close the save file
         except Exception as e:                                                                                              # Exception handling
-            self.logger.error('saveData -> item in analyse data could not be stored in file {0}, Error : {1}'.format(filename, e))
+            self.logger.error('saveData       -> analyse data file {0}, Error : {1}'.format(filenameData, e))
             return
 
     def loadData(self, name):                                                                                               # loading data
-        filename = os.getcwd() + self.filepath + '/' + name                                                                 # generate filename
+        filenameData = os.getcwd() + self.filepath + '/' + name                                                             # generate filename
         try:                                                                                                                # try to read the file
-            infile = open(filename, 'r')
-            data = json.load(infile)
-            infile.close()                                                                                                  # close
+            infileData = open(filenameData, 'r')
+            dataJson = json.load(infileData)
+            infileData.close()                                                                                                  # close
         except Exception as e:                                                                                              # exception handling
-            self.logger.error('loadData -> item in analyse data could not be loaded from file {0}, Error : {1}'.format(filename, e))
+            self.logger.error('loadData       ->  analyse data file {0}, Error : {1}'.format(filenameData, e))
             return {}                                                                                                       # loading doesn't work
-        result = dict()
-        for timestepdict in data:
-            for (key, value) in timestepdict.items():
-                if key in result:
-                    pass
-                    result[key].append(value)
+        resultData = dict()
+        for timestepdict in dataJson:
+            for (keyData, valueData) in timestepdict.items():
+                if keyData in resultData:
+                    resultData[keyData].append(valueData)
                 else:
-                    result[key] = [value]
-        return result                                                                                                         # successful loading
+                    resultData[keyData] = [valueData]
+        return resultData                                                                                                   # successful loading
 
-    def prepareData(self, data, scaleRA, scaleDEC):
-        if len(data) == 0:                                                                                                  # in case no data loaded ->
-            return                                                                                                          # quit
-        data['raError'] = [scaleRA if x > scaleRA else x for x in data['raError']]
-        data['raError'] = [-scaleRA if x < -scaleRA else x for x in data['raError']]
-        data['decError'] = [scaleDEC if x > scaleDEC else x for x in data['decError']]
-        data['decError'] = [-scaleDEC if x < -scaleDEC else x for x in data['decError']]
-        return data
+    @staticmethod
+    def prepareData(dataProcess, scaleRA, scaleDEC):
+        if len(dataProcess) == 0:                                                                                           # in case no data loaded ->
+            return dataProcess                                                                                              # quit
+        dataProcess['raError'] = [scaleRA if x > scaleRA else x for x in dataProcess['raError']]
+        dataProcess['raError'] = [-scaleRA if x < -scaleRA else x for x in dataProcess['raError']]
+        dataProcess['decError'] = [scaleDEC if x > scaleDEC else x for x in dataProcess['decError']]
+        dataProcess['decError'] = [-scaleDEC if x < -scaleDEC else x for x in dataProcess['decError']]
+        return dataProcess
 
 if __name__ == "__main__":
     filename = 'C:/Users/mw/Projects/mountwizzard/mountwizzard/analysedata/2017-01-22-19-46-07_test.dat'
