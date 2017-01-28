@@ -55,9 +55,12 @@ class Dome(QtCore.QThread):
                 time.sleep(.1)
             else:
                 try:
-                    self.ascom = Dispatch(self.driverName)                                                                  # load driver
-                    self.ascom.connected = True
-                    self.connected = 1                                                                                      # set status to connected
+                    if self.driverName == '':
+                        self.connected = 2
+                    else:
+                        self.ascom = Dispatch(self.driverName)                                                              # load driver
+                        self.ascom.connected = True
+                        self.connected = 1                                                                                  # set status to connected
                 except Exception as e:                                                                                      # if general exception
                     if self.driverName != '':
                         self.logger.error('run Dome       -> general exception: {0}'.format(e))                             # write to logger

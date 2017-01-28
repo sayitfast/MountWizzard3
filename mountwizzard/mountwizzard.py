@@ -229,6 +229,7 @@ class MountWizzardApp(MwWidget):
             self.ui.altitudeMinHysterese.setValue(self.config['AltitudeMinHysterese'])
             self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
+            self.stick.driverName = self.config['ASCOMStickDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
@@ -294,6 +295,7 @@ class MountWizzardApp(MwWidget):
         self.config['AltitudeMinHysterese'] = self.ui.altitudeMinHysterese.value()
         self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
+        self.config['ASCOMStickDriverName'] = self.stick.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
@@ -610,8 +612,10 @@ class MountWizzardApp(MwWidget):
         self.stick.setupDriver()
 
     def setStickStatus(self, status):
-        if status:
+        if status == 1:
             self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: green;}')
+        elif status == 2:
+            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: gray;}')
         else:
             self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
