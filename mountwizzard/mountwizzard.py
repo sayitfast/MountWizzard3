@@ -68,6 +68,7 @@ class MountWizzardApp(MwWidget):
         self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.loadConfig()                                                                                                   # loading configuration
+        time.sleep(1)
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -127,6 +128,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_clearAlignmentModel.clicked.connect(self.clearAlignmentModel)
         self.ui.btn_selectImageDirectoryName.clicked.connect(self.selectImageDirectoryName)
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
+        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_getActualModel.clicked.connect(self.getAlignmentModel)
@@ -197,6 +199,8 @@ class MountWizzardApp(MwWidget):
             self.setParkPos4Text()
             self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
             self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
+            self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
+            self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
             self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
             self.ui.cameraBin.setValue(self.config['CameraBin'])
             self.ui.cameraExposure.setValue(self.config['CameraExposure'])
@@ -260,6 +264,8 @@ class MountWizzardApp(MwWidget):
         self.config['ParkPosAz4'] = self.ui.le_azParkPos4.text()
         self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
         self.config['HorizonPointsFileName'] = self.ui.le_horizonPointsFileName.text()
+        self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
+        self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
         self.config['ImageDirectoryName'] = self.ui.le_imageDirectoryName.text()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
@@ -373,6 +379,10 @@ class MountWizzardApp(MwWidget):
         else:
             self.logger.warning('selectModelPointsFile -> no file selected')
 
+    def selectHorizonPointsMode(self):
+        self.model.loadHorizonPoints(self.ui.le_horizonPointsFileName.text())
+        self.coordinatePopup.redrawCoordinateWindow()
+
     def selectHorizonPointsFileName(self):
         dlg = QFileDialog()
         dlg.setViewMode(QFileDialog.List)
@@ -382,6 +392,9 @@ class MountWizzardApp(MwWidget):
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
         if a[0] != '':
             self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
+            self.model.loadHorizonPoints(os.path.basename(a[0]))
+            self.ui.checkUseMinimumHorizonLine.setChecked(False)
+            self.coordinatePopup.redrawCoordinateWindow()
 
     def mountPark(self):
         self.commandQueue.put('hP')

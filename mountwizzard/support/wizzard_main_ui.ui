@@ -6479,7 +6479,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>330</y>
+       <y>360</y>
        <width>371</width>
        <height>21</height>
       </rect>
@@ -6512,7 +6512,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>310</y>
+       <y>340</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -6572,7 +6572,7 @@
      <property name="geometry">
       <rect>
        <x>120</x>
-       <y>310</y>
+       <y>340</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -6916,7 +6916,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>390</y>
+       <y>420</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -7153,7 +7153,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>370</y>
+       <y>400</y>
        <width>371</width>
        <height>21</height>
       </rect>
@@ -7174,7 +7174,7 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>420</y>
+       <y>450</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -7192,6 +7192,100 @@
      </property>
      <property name="text">
       <string>Show Tracking Widget in Coordinate</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_180">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>310</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Altitude</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_122">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>310</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>310</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>90.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>20.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>310</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Use Highspeed download of CCD camera if availabe</string>
+     </property>
+     <property name="text">
+      <string>Use Minimum Altitude as Horizon Line</string>
      </property>
      <property name="checked">
       <bool>true</bool>
