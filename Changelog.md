@@ -1,4 +1,9 @@
 # Changelog:
+1.1.6
+- correction relays
+- ui improvements
+- test automation
+
 1.1.5
 - ui refreshment
 - change analyse view
