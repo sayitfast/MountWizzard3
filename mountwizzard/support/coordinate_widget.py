@@ -147,7 +147,7 @@ class ShowCoordinatePopup(MwWidget):
     def constructHorizon(self, scene, horizon, height, width, border):
         if len(horizon) == 0:
             return scene
-        pen = QPen(self.COLOR_GREEN_HORIZON, 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                      # define the pen style thickness 3
+        pen = QPen(self.COLOR_GREEN_HORIZON, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                      # define the pen style thickness 3
         poly = QPolygonF()
         x, y = getXY(0, 0, height, width, border)
         poly.append(QPointF(x, y))
@@ -223,6 +223,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDome.setVisible(False)
         self.pointerDome.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, border, textheight, scene)
+        scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)
         for i, p in enumerate(self.model.BasePoints):                                                                       # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
             x, y = getXY(p[0], p[1], height, width, border)
@@ -249,7 +250,6 @@ class ShowCoordinatePopup(MwWidget):
             text_item.setPos(x - esize / 8, y - esize / 8)
             scene.addItem(text_item)
             self.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                       # storing the objects in the list
-        scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, border)
         self.pointerAzAlt = self.constructAzAltPointer(esize)
         self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(esize)
         scene.addItem(self.pointerAzAlt)
