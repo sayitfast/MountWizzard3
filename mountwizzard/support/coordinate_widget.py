@@ -157,7 +157,7 @@ class ShowCoordinatePopup(MwWidget):
         for i, p in enumerate(horizon):
             x, y = getXY(horizon[i][0], horizon[i][1], height, width, border)
             poly.append(QPointF(x, y))
-        x, y = getXY(360, horizon[len(horizon)][1], height, width, border)
+        x, y = getXY(360, horizon[len(horizon)-1][1], height, width, border)
         poly.append(QPointF(x, y))
         x, y = getXY(360, 0, height, width, border)
         poly.append(QPointF(x, y))

@@ -37,7 +37,7 @@ class ShowAnalyseData(FigureCanvas):
         rect.set_facecolor((25/256, 25/256, 25/256))
         self.axes = self.fig.add_subplot(111)
         self.axes.grid(True, color='white')
-        self.axes.set_axis_bgcolor((48/256, 48/256, 48/256))
+        self.axes.set_facecolor((32/256, 32/256, 32/256))
         self.axes.tick_params(axis='x', colors='white')
         self.axes.tick_params(axis='y', colors='white')
         self.plt.rcParams['toolbar'] = 'None'
@@ -102,7 +102,7 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.clf()
         self.plotWidget.axes = self.plotWidget.fig.add_subplot(111, projection=projection)
         self.plotWidget.axes.grid(True, color='white')
-        self.plotWidget.axes.set_axis_bgcolor((48/256, 48/256, 48/256))
+        self.plotWidget.axes.set_facecolor((32/256, 32/256, 32/256))
         self.plotWidget.axes.tick_params(axis='x', colors='white')
         self.plotWidget.axes.tick_params(axis='y', colors='white')
         if projection:
