@@ -75,7 +75,7 @@ class ShowCoordinatePopup(MwWidget):
         self.setVisible(False)
 
     def setAzAltPointer(self, az, alt):
-        print(self.mount.signalMountAzAltPointer)
+        #print(self.mount.signalMountAzAltPointer)
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(),
                      self.ui.modelPointsPlot.width(),
                      self.borderModelPointsView)

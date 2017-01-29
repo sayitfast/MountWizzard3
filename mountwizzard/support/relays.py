@@ -30,26 +30,26 @@ class Relays:
     def checkConnection(self):
         connected = False
         try:
-            request.urlopen(self.ipSGProBase, None, .5).getcode()
+            request.urlopen('http://' + self.ui.le_ipRelaybox.text(), None, .5).getcode()
             connected = True
-        except Exception:
+        except Exception as e:
             connected = False
+            print(e)
         finally:
             return connected
 
     def setStatus(self, response):
         lines = response.splitlines()                                                                                       # read over all the lines
-        for i in range(len(lines)):                                                                                         # convert from text to array of floats
-            if lines[i][0:7] == 'Status:':                                                                                  # here are the values of the relay stats
-                self.stat[0] = (lines[i][8] == '1')
-                self.stat[1] = (lines[i][10] == '1')
-                self.stat[2] = (lines[i][13] == '1')
-                self.stat[3] = (lines[i][15] == '1')
-                self.stat[4] = (lines[i][18] == '1')
-                self.stat[5] = (lines[i][20] == '1')
-                self.stat[6] = (lines[i][23] == '1')
-                self.stat[7] = (lines[i][25] == '1')
-                self.logger.debug('setStatus -> status: {0}'.format(self.stat))
+        if lines[0] == '<response>':                                                                                        # here are the values of the relay stats
+            self.stat[0] = (lines[2][8] == '1')
+            self.stat[1] = (lines[3][8] == '1')
+            self.stat[2] = (lines[4][8] == '1')
+            self.stat[3] = (lines[5][8] == '1')
+            self.stat[4] = (lines[6][8] == '1')
+            self.stat[5] = (lines[7][8] == '1')
+            self.stat[6] = (lines[8][8] == '1')
+            self.stat[7] = (lines[9][8] == '1')
+            self.logger.debug('setStatus -> status: {0}'.format(self.stat))
         if self.stat[0]:
             self.ui.btn_switchCCD.setStyleSheet('background-color: rgb(42, 130, 218)')
         else:
@@ -63,8 +63,8 @@ class Relays:
         try:
             request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FF0801')
             time.sleep(1)
-            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FF0800')
-            self.setStatus(f.read().decode('utf-8'))
+            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FF0800')
+            self.requestStatus()
         except Exception as e:
             self.logger.error('switchHeater -> error {0}'.format(e))
         finally:
@@ -72,7 +72,7 @@ class Relays:
 
     def requestStatus(self):
         try:
-            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FF0700', None, .5)
+            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/status.xml', None, .5)
             self.setStatus(f.read().decode('utf-8'))
         except Exception as e:
             self.logger.error('requestStatus -> error {0}'.format(e))
@@ -81,8 +81,8 @@ class Relays:
 
     def switchAllOff(self):
         try:
-            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FFE000', None, .5)
-            self.setStatus(f.read().decode('utf-8'))
+            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FFE000', None, .5)
+            self.requestStatus()
         except Exception as e:
             self.logger.error('switchAllOff -> error {0}'.format(e))
         finally:
@@ -90,8 +90,8 @@ class Relays:
 
     def switchCCD(self):
         try:
-            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/relays.cgi?relay=1', None, .5)
-            self.setStatus(f.read().decode('utf-8'))
+            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/relays.cgi?relay=1', None, .5)
+            self.requestStatus()
         except Exception as e:
             self.logger.error('switchCCD -> error {0}'.format(e))
         finally:
@@ -99,8 +99,8 @@ class Relays:
 
     def switchHeater(self):
         try:
-            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/relays.cgi?relay=2', None, .5)
-            self.setStatus(f.read().decode('utf-8'))
+            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/relays.cgi?relay=2', None, .5)
+            self.requestStatus()
         except Exception as e:
             self.logger.error('switchHeater -> error {0}'.format(e))
         finally:
