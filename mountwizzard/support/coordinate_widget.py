@@ -145,15 +145,22 @@ class ShowCoordinatePopup(MwWidget):
         return group, groupFlipTime, itemText, track
 
     def constructHorizon(self, scene, horizon, height, width, border):
+        if len(horizon) == 0:
+            return scene
+        pen = QPen(self.COLOR_GREEN_HORIZON, 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                      # define the pen style thickness 3
+        poly = QPolygonF()
+        x, y = getXY(0, 0, height, width, border)
+        poly.append(QPointF(x, y))
+        x, y = getXY(0, horizon[0][1], height, width, border)
+        poly.append(QPointF(x, y))
         for i, p in enumerate(horizon):
-            if (i != len(horizon)) and (i != 0):                                                                            # horizon in between
-                pen = QPen(self.COLOR_GREEN_LIGHT, 3, Qt.SolidLine, Qt.RoundCap,
-                           Qt.RoundJoin)                                                                                    # define the pen style thickness 3
-                scene.addLine(border + int(p[0] / 360 * (width - 2 * border)),
-                              height - border - int(p[1] * (height - 2 * border) / 90),
-                              border + int(horizon[i - 1][0] / 360 * (width - 2 * border)),
-                              height - border - int(horizon[i - 1][1] * (height - 2 * border) / 90),
-                              pen)                                                                                          # and add it to the scene
+            x, y = getXY(horizon[i][0], horizon[i][1], height, width, border)
+            poly.append(QPointF(x, y))
+        x, y = getXY(360, horizon[i][1], height, width, border)
+        poly.append(QPointF(x, y))
+        x, y = getXY(360, 0, height, width, border)
+        poly.append(QPointF(x, y))
+        scene.addPolygon(poly, pen, self.COLOR_GREEN_HORIZON_DARK)
         return scene
 
     def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
