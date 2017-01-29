@@ -603,8 +603,10 @@ class MountWizzardApp(MwWidget):
             self.ui.le_telescopeRA.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopeAltitude':
             self.ui.le_telescopeAltitude.setText(str(data['Value']))
+            self.coordinatePopup.ui.le_telescopeAltitude.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopeAzimuth':
             self.ui.le_telescopeAzimut.setText(str(data['Value']))
+            self.coordinatePopup.ui.le_telescopeAzimut.setText(str(data['Value']))
         if data['Name'] == 'GetSlewRate':
             self.ui.le_slewRate.setText(str(data['Value']))
         if data['Name'] == 'GetUnattendedFlip':

@@ -2096,10 +2096,10 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Delete all Points</string>
+      <string>Clear Model Points in Window</string>
      </property>
     </widget>
    </widget>
@@ -2490,22 +2490,6 @@
      </property>
      <property name="text">
       <string>Cancel</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_cancelAnalyseModel_2">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>430</y>
-       <width>281</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Make Batch Model from Analyse</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_analyseFileName">
@@ -7887,6 +7871,22 @@
       <string>Close Popup</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_cancelAnalyseModel_2">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>300</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Make Batch Model from Analyse</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="btn_shutdownQuit">
@@ -8009,7 +8009,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.1.5</string>
+    <string>MountWizzard  v1.2rc</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

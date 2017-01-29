@@ -75,6 +75,7 @@ class ShowCoordinatePopup(MwWidget):
         self.setVisible(False)
 
     def setAzAltPointer(self, az, alt):
+        print(self.mount.signalMountAzAltPointer)
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(),
                      self.ui.modelPointsPlot.width(),
                      self.borderModelPointsView)
@@ -126,7 +127,7 @@ class ShowCoordinatePopup(MwWidget):
         groupFlipTime = QGraphicsItemGroup()
         track = []
         group.setVisible(False)
-        pen = QPen(self.COLOR_TRACKWIDGETPOINTS, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        pen = QPen(self.COLOR_TRACKWIDGETPOINTS, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         for i in range(0, 50):
             item = QGraphicsEllipseItem(-esize / 8, -esize / 8, esize / 4, esize / 4)
             item.setPen(pen)
@@ -156,7 +157,7 @@ class ShowCoordinatePopup(MwWidget):
         for i, p in enumerate(horizon):
             x, y = getXY(horizon[i][0], horizon[i][1], height, width, border)
             poly.append(QPointF(x, y))
-        x, y = getXY(360, horizon[i][1], height, width, border)
+        x, y = getXY(360, horizon[len(horizon)][1], height, width, border)
         poly.append(QPointF(x, y))
         x, y = getXY(360, 0, height, width, border)
         poly.append(QPointF(x, y))
@@ -196,6 +197,7 @@ class ShowCoordinatePopup(MwWidget):
         item = QGraphicsEllipseItem(-esize, -esize, 2 * esize, 2 * esize)
         item.setPen(pen)
         group.addToGroup(item)
+        pen = QPen(self.COLOR_POINTER, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         item = QGraphicsLineItem(-esize, 0, -esize / 2, 0)
         item.setPen(pen)
         group.addToGroup(item)
