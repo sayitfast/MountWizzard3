@@ -63,12 +63,11 @@ class MountWizzardApp(MwWidget):
         self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
-        self.model = Model(self.ui, self.mount, self.dome, self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)  # transferring ui and mount object as well
+        self.model = Model(self.ui, self.mount, self.dome,
+                           self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)                   # transferring ui and mount object as well
         self.analysePopup = ShowAnalysePopup(self.ui)
         self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)
         self.mappingFunctions()                                                                                             # mapping the functions to ui
-        self.loadConfig()                                                                                                   # loading configuration
-        time.sleep(1)
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -82,6 +81,7 @@ class MountWizzardApp(MwWidget):
         self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
         self.model.start()                                                                                                  # starting polling thread
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
+        self.loadConfig()                                                                                                   # loading configuration
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:
