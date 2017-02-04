@@ -42,7 +42,7 @@ from support.popup_dialogs import MyPopup
 
 
 class MountWizzardApp(MwWidget):
-    logger = logging.getLogger('MountWizzardApp:')                                                                          # logging enabling
+    logger = logging.getLogger(__name__)                                                                                    # logging enabling
     BLUE = 'background-color: rgb(42, 130, 218)'                                                                            # colors for changing skin while running
     RED = 'background-color: red'                                                                                           #
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'                                                    #
@@ -66,7 +66,8 @@ class MountWizzardApp(MwWidget):
         self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
         self.model = Model(self.ui, self.mount, self.dome,
-                           self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)                   # transferring ui and mount object as well
+                           self.messageQueue, self.commandQueue, self.mountDataQueue,
+                           self.modelLogQueue)                                                                              # transferring ui and mount object as well
         self.analysePopup = ShowAnalysePopup(self.ui)                                                                       # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)          # window for modeling points
         self.mappingFunctions()                                                                                             # mapping the functions to ui

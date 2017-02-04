@@ -41,7 +41,7 @@ class Model(QtCore.QThread):
     RED = 'background-color: red'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
-    def __init__(self, ui, mount, dome, messageQueue, commandQueue, dataQueue, LogQueue):
+    def __init__(self, ui, mount, dome, messageQueue, commandQueue, dataQueue, logQueue):
         super().__init__()
         self.signalModelCommand.connect(self.command)                                                                       # signal for receiving commands to modeling from GUI
         self.mount = mount                                                                                                  # class reference for mount control
@@ -50,7 +50,7 @@ class Model(QtCore.QThread):
         self.messageQueue = messageQueue                                                                                    # queue for sending error messages in GUI
         self.commandQueue = commandQueue                                                                                    # command queue for mount
         self.dataQueue = dataQueue                                                                                          # Feedback queue for Data
-        self.LogQueue = LogQueue                                                                                            # GUI output windows messages in modeling windows
+        self.logQueue = logQueue                                                                                            # GUI output windows messages in modeling windows
         self.SGPro = SGPro()                                                                                                # wrapper class SGPro REST API
         self.Analyse = Analyse()                                                                                            # use Class for saving analyse data
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
@@ -109,7 +109,7 @@ class Model(QtCore.QThread):
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
                     self.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
-                    self.LogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+                    self.logQueue.put('Clearing alignment model - taking 4 seconds.\n')
                     self.clearAlignmentModel()                                                                              #
                     self.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 elif self.command == 'LoadBasePoints':
@@ -625,19 +625,22 @@ class Model(QtCore.QThread):
             return False, mes, modelData
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
-        self.commandQueue.put('Sr{0}'.format(ra))                                                                           # Write jnow ra to mount
-        self.commandQueue.put('Sd{0}'.format(dec))                                                                          # Write jnow dec to mount
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
-        self.commandQueue.put('CMS')                                                                                        # send sync command (regardless what driver tells)
-        # TODO: implement event loop to get feedback of the return value of the command
-        return True                                                                                                         # simulation OK
+        self.mount.sendCommand('Sr{0}'.format(ra))                                                                          # Write jnow ra to mount
+        self.mount.sendCommand('Sd{0}'.format(dec))                                                                         # Write jnow dec to mount
+        reply = self.mount.sendCommand('CMS')                                                                               # send sync command (regardless what driver tells)
+        if reply == 'E':
+            self.logger.error('addRefinementSt-> error adding star')
+            return False
+        else:
+            return True                                                                                                     # simulation OK
 
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
-        self.LogQueue.put('delete')                                                                                         # deleting the logfile view
-        self.LogQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
+        self.logQueue.put('delete')                                                                                         # deleting the logfile view
+        self.logQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                               # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
@@ -655,12 +658,12 @@ class Model(QtCore.QThread):
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
-                    self.LogQueue.put('{0} -\t {1} Model canceled !\n'
+                    self.logQueue.put('{0} -\t {1} Model canceled !\n'
                                       .format(time.strftime("%H:%M:%S", time.localtime()), modeltype))                       # we keep all the stars before
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
-                self.LogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
+                self.logQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), i+1, p_az, p_alt))                   # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p_az, p_alt))        # Debug output
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
@@ -669,15 +672,15 @@ class Model(QtCore.QThread):
                         self.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
-                self.LogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
+                self.logQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), settlingTime))                       # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:                                                                                      # waiting for settling time and showing data
                     time.sleep(1)                                                                                           # only step n seconds
                     timeCounter -= 1                                                                                        # count down
-                    self.LogQueue.put('backspace')
-                    self.LogQueue.put('{0:02d} sec'.format(timeCounter))                                                    # write to gui
-                self.LogQueue.put('\n')                                                                                     # clear gui for next line
+                    self.logQueue.put('backspace')
+                    self.logQueue.put('{0:02d} sec'.format(timeCounter))                                                    # write to gui
+                self.logQueue.put('\n')                                                                                     # clear gui for next line
             if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = true ?
                 if self.ui.checkFastDownload.isChecked():                                                                   # if camera is supporting high speed download
                     modelData['speed'] = 'HiSpeed'
@@ -700,36 +703,41 @@ class Model(QtCore.QThread):
                 modelData['refractionPress'] = self.mount.refractionPressure                                                # set it if string available
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
-                self.LogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
+                self.logQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
                                   .format(time.strftime("%H:%M:%S", time.localtime()), i + 1))                              # gui output
                 suc, mes, imagepath = self.capturingImage(modelData)                                                        # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
-                    self.LogQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
+                    self.logQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
                     suc, mes, modelData = self.solveImage(modeltype, modelData)                                             # solve the position and returning the values
-                    self.LogQueue.put('{0} -\t Image path: {1}\n'
+                    self.logQueue.put('{0} -\t Image path: {1}\n'
                                       .format(time.strftime("%H:%M:%S", time.localtime()), modelData['imagepath']))         # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
-                            self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])                     # sync the actual star to resolved coordinates in JNOW
+                            suc = self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])               # sync the actual star to resolved coordinates in JNOW
+                            if suc:
+                                self.logQueue.put('{0} -\t point added\n'
+                                                  .format(time.strftime("%H:%M:%S", time.localtime())))
+                            else:
+                                self.cancel = True
                         numCheckPoints += 1                                                                                 # increase index for synced stars
                         results.append(copy.copy(modelData))                                                                # adding point for matrix
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
-                        self.LogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
+                        self.logQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()),
                                                   modelData['raError'], modelData['decError']))                             # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
                         os.remove(modelData['imagepath'])                                                                   # delete unsolved image
-                        self.LogQueue.put('{0} -\t Solving error: {1}\n'
+                        self.logQueue.put('{0} -\t Solving error: {1}\n'
                                           .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
-        self.LogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
+        self.logQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
                           .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, numCheckPoints))                  # GUI output
         self.modelrun = False
         return results                                                                                                      # return results for analysing

@@ -72,9 +72,9 @@ class Mount(QtCore.QThread):
         self.jd = 2451544.5                                                                                                 # julian date
         self.sidereal_time = ''                                                                                             # local sidereal time
         self.pierside = 0                                                                                                   # side of pier (E/W)
-        self.timeToFlip = '200'
-        self.refractionTemp = '20.0'
-        self.refractionPressure = '900.0'
+        self.timeToFlip = '200'                                                                                             # minutes to flip
+        self.refractionTemp = '20.0'                                                                                        # coordinate transformation need temp
+        self.refractionPressure = '900.0'                                                                                   # and pressure
         self.transform = None                                                                                               # ascom novas library entry point
         self.ascom = None                                                                                                   # ascom mount driver entry point
         self.mountAlignRMSsum = 0                                                                                           # variable for counting RMS over stars
@@ -82,12 +82,13 @@ class Mount(QtCore.QThread):
         self.mountAlignNumberStars = 0                                                                                      # number of stars
         self.counter = 0                                                                                                    # counter im main loop
         self.connected = False                                                                                              # connection status
-        self.driverName = 'ASCOM.FrejvallGM.Telescope'
-        self.chooser = None
-        self.driver_real = False
-        self.value_azimuth = 0.0
-        self.value_altitude = 0.0
-        self.transformationLock = threading.Lock()
+        self.driverName = 'ASCOM.FrejvallGM.Telescope'                                                                      # default driver name is Per's driver
+        self.chooser = None                                                                                                 # object space
+        self.driver_real = False                                                                                            # identifier, if data is real (or simulation
+        self.value_azimuth = 0.0                                                                                            # object for Sz command
+        self.value_altitude = 0.0                                                                                           # object for Sa command
+        self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
+        self.sendCommandLock = threading.Lock()
 
     def run(self):                                                                                                          # runnable of the thread
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
@@ -107,75 +108,76 @@ class Mount(QtCore.QThread):
                     command = self.commandQueue.get()                                                                       # if yes, getting the work command
                     if command == 'GetAlignmentModel':                                                                      # checking which command was sent
                         self.ui.btn_getActualModel.setStyleSheet(self.BLUE)
-                        self.getAlignmentModel(self.driver_real)                                                            # running the appropriate method
+                        self.getAlignmentModel()                                                                            # running the appropriate method
                         self.ui.btn_getActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':                                                                           #
-                        self.sendCommand('delalig', self.driver_real)                                                       #
+                        self.sendCommand('delalig')                                                                         #
                     elif command == 'RunTargetRMSAlignment':
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
-                        self.runTargetRMSAlignment(self.driver_real)
+                        self.runTargetRMSAlignment()
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
                     elif command == 'BackupModel':
                         self.ui.btn_backupModel.setStyleSheet(self.BLUE)                                                    # button blue
-                        self.backupModel(self.driver_real)
+                        self.backupModel()
                         self.ui.btn_backupModel.setStyleSheet(self.DEFAULT)                                                 # button to default back
                     elif command == 'RestoreModel':
                         self.ui.btn_restoreModel.setStyleSheet(self.BLUE)
-                        self.restoreModel(self.driver_real)
+                        self.restoreModel()
                         self.ui.btn_restoreModel.setStyleSheet(self.DEFAULT)
                     elif command == 'LoadSimpleModel':
                         self.ui.btn_loadSimpleModel.setStyleSheet(self.BLUE)
-                        self.loadSimpleModel(self.driver_real)
+                        self.loadSimpleModel()
                         self.ui.btn_loadSimpleModel.setStyleSheet(self.DEFAULT)
                     elif command == 'SaveSimpleModel':
                         self.ui.btn_saveSimpleModel.setStyleSheet(self.BLUE)
-                        self.saveSimpleModel(self.driver_real)
+                        self.saveSimpleModel()
                         self.ui.btn_saveSimpleModel.setStyleSheet(self.DEFAULT)
                     elif command == 'SetRefractionParameter':
-                        self.setRefractionParameter(self.driver_real)
+                        self.setRefractionParameter()
                     elif command == 'FLIP':
-                        self.flipMount(self.driver_real)
+                        self.flipMount()
                     else:
-                        self.sendCommand(command, self.driver_real)                                                         # doing the command directly to mount (no method necessary)
+                        self.sendCommand(command)                                                                           # doing the command directly to mount (no method necessary)
                     self.commandQueue.task_done()
                 else:                                                                                                       # if not connected, the we should do this
                     if self.counter == 0:                                                                                   # jobs once done at the beginning
-                        self.getStatusOnce(self.driver_real)                                                                # task once
+                        self.getStatusOnce()                                                                                # task once
                     if self.counter % 2 == 0:                                                                               # all tasks with 400 ms
-                        self.getStatusFast(self.driver_real)                                                                # polling the mount status Ginfo
+                        self.getStatusFast()                                                                                # polling the mount status Ginfo
                     if self.counter % 15 == 0:                                                                              # all tasks with 3 s
-                        self.getStatusMedium(self.driver_real)                                                              # polling the mount
+                        self.getStatusMedium()                                                                              # polling the mount
                     if self.counter % 150 == 0:                                                                             # all task with 30 seconds
-                        self.getStatusSlow(self.driver_real)                                                                # slow ones
+                        self.getStatusSlow()                                                                                # slow ones
                 time.sleep(0.2)                                                                                             # time base is 200 ms
                 self.counter += 1                                                                                           # increasing counter for selection
             else:                                                                                                           # when not connected try to connect
                 try:
                     self.ascom = Dispatch(self.driverName)                                                                  # select win32 driver
-                    if self.driverName == 'ASCOM.FrejvallGM.Telescope':
-                        self.driver_real = True
+                    if self.driverName == 'ASCOM.FrejvallGM.Telescope':                                                     # identify real telescope against simulator
+                        self.driver_real = True                                                                             # set it
                     else:
-                        self.driver_real = False
+                        self.driver_real = False                                                                            # set it
                     self.ascom.connected = True                                                                             # connect to mount
                     self.connected = True                                                                                   # setting connection status from driver
                     self.counter = 0                                                                                        # whenever reconnect, then start from scratch
                 except Exception as e:                                                                                      # error handling
-                    if self.driverName != '':
+                    if self.driverName != '':                                                                               # if driver is not empty, than error messages
                         self.logger.error('run Mount      -> Driver COM Error in dispatchMount: {0}'.format(e))             # to logger
                     self.connected = False                                                                                  # connection broken
                 finally:                                                                                                    # we don't stop, but try it again
                     time.sleep(1)                                                                                           # try it every second, not more
-        self.ascom.Quit()
-        self.transform.Quit()
+        self.ascom.Quit()                                                                                                   # close ascom mount object
+        self.transform.Quit()                                                                                               # close ascom novas transform object
         pythoncom.CoUninitialize()                                                                                          # needed for doing COM objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread
         self.wait()                                                                                                         # wait for stop of thread
 
-    def sendCommand(self, command, real):                                                                                   # core routine for sending commands to mount
+    def sendCommand(self, command):                                                                                         # core routine for sending commands to mount
         reply = ''                                                                                                          # reply is empty
-        if real:
+        self.sendCommandLock.acquire()
+        if self.driver_real:
             try:                                                                                                            # all with error handling
                 if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                                 # these are the commands, which do not expect a return value
                     self.ascom.CommandBlind(command)                                                                        # than do blind command
@@ -187,25 +189,28 @@ class Mount(QtCore.QThread):
                 self.connected = False                                                                                      # in case of error, the connection might be broken
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
-                    return reply.rstrip('#').strip()                                                                        # return the value
-                    if command == 'CMS':    # TODO reply values to queuing mechanism
+                    value = reply.rstrip('#').strip()                                                                       # return the value
+                    if command == 'CMS':
                         self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
-                    return ''                                                                                               # nothing
-        else:
-            if command == 'Gev':
-                return str(self.ascom.SiteElevation)
+                    value = ''                                                                                              # nothing
+            self.sendCommandLock.release()
+            return value
+        else:                                                                                                               # from here we doing the simulation for 10micron mounts commands
+            value = ''
+            if command == 'Gev':                                                                                            # which are special, but only for the most important for MW to run
+                value = str(self.ascom.SiteElevation)
             elif command == 'Gmte':
-                return '0125'
+                value = '0125'
             elif command == 'Gt':
-                return self.decimalToDegree(self.ascom.SiteLatitude, True, False)
+                value = self.decimalToDegree(self.ascom.SiteLatitude, True, False)
             elif command == 'Gg':
                 lon = self.decimalToDegree(self.ascom.SiteLongitude, True, False)
                 if lon[0] == '-':                                                                                           # due to compatibility to LX200 protocol east is negative
                     lon1 = lon.replace('-', '+')                                                                            # change that
                 else:
                     lon1 = lon.replace('+', '-')                                                                            # and vice versa
-                return lon1
+                value = lon1
             elif command.startswith('Sz'):
                 self.value_azimuth = float(command[2:5])
             elif command.startswith('Sa'):
@@ -219,9 +224,9 @@ class Mount(QtCore.QThread):
                 self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
                 self.ascom.Tracking = False
             elif command == 'GS':
-                return self.decimalToDegree(self.ascom.SiderealTime, False, False)
+                value = self.decimalToDegree(self.ascom.SiderealTime, False, False)
             elif command == 'GRTMP':
-                return '0.0'
+                value = '0.0'
             elif command == 'Ginfo':
                 self.raJnow = self.ascom.RightAscension
                 self.decJnow = self.ascom.Declination
@@ -241,7 +246,6 @@ class Mount(QtCore.QThread):
                 else:
                     slew = 0
                 value = '{0},{1},{2},{3},{4},{5},{6},{7}#'.format(self.raJnow, self.decJnow, pierside, az, alt, jd, stat, slew)
-                return value
             elif command == 'PO':
                 self.ascom.Unpark()
             elif command == 'hP':
@@ -250,41 +254,41 @@ class Mount(QtCore.QThread):
                 self.ascom.Tracking = True
             elif command == 'RT9':
                 self.ascom.Tracking = False
-            else:
-                return ''
+        self.sendCommandLock.release()
+        return value
 
-    def transformNovas(self, ra, dec, transform=1):
-        self.transformationLock.acquire()
-        self.transform.SiteTemperature = float(self.refractionTemp)
+    def transformNovas(self, ra, dec, transform=1):                                                                         # wrapper for the novas ascom implementation
+        self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
+        self.transform.SiteTemperature = float(self.refractionTemp)                                                         # needs refraction temp
         if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
-            if ra < 0:
-                ra += 24
-            if ra >= 24:
+            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
+                ra += 24                                                                                                    #
+            if ra >= 24:                                                                                                    # so set it right
                 ra -= 24
             self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
         elif transform == 2:                                                                                                # 2 = Jnow -> J2000
-            self.transform.SetTopocentric(ra, dec)
+            self.transform.SetTopocentric(ra, dec)                                                                          # set Jnow data
             val1 = self.transform.RAJ2000
             val2 = self.transform.DECJ2000
         elif transform == 3:                                                                                                # 3 = J2000 -> JNow
-            self.transform.SetJ2000(ra, dec)
+            self.transform.SetJ2000(ra, dec)                                                                                # set J2000 data
             val1 = self.transform.RATopocentric
             val2 = self.transform.DECTopocentric
         else:
             val1 = ra
             val2 = dec
-        self.transformationLock.release()
+        self.transformationLock.release()                                                                                   # release locking for thread safety
         return val1, val2
 
-    def flipMount(self, real):                                                                                              # doing the flip of the mount
-        reply = self.sendCommand('FLIP', real).rstrip('#').strip()
+    def flipMount(self):                                                                                                    # doing the flip of the mount
+        reply = self.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
-    def degStringToDecimal(self, value, splitter=':'):
+    def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
         sign = 1
         if '-' in value:
             value = value.replace('-', '')
@@ -300,7 +304,7 @@ class Mount(QtCore.QThread):
         return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
 
     @staticmethod
-    def decimalToDegree(value, with_sign, with_decimal, spl=':'):
+    def decimalToDegree(value, with_sign, with_decimal, spl=':'):                                                           # format decimal value to string in degree format
         if value >= 0:
             sign = '+'
         else:
@@ -318,16 +322,16 @@ class Mount(QtCore.QThread):
         else:
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
-    def getAlignmentModel(self, real):
-        self.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
-        self.mountAlignRMSsum = 0
-        self.mountAlignmentPoints = []
-        self.mountAlignNumberStars = int(self.sendCommand('getalst', real).rstrip('#').strip())
-        if self.mountAlignNumberStars == 0:
+    def getAlignmentModel(self):                                                                                            # download alignment model from mount
+        self.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})                                              # clear the window in gui
+        self.mountAlignRMSsum = 0                                                                                           # set RMS sum to 0 for calculation
+        self.mountAlignmentPoints = []                                                                                      # clear the alignment points downloaded
+        self.mountAlignNumberStars = int(self.sendCommand('getalst').rstrip('#').strip())                                   # get number of stars
+        if self.mountAlignNumberStars == 0:                                                                                 # if no stars, finish
             return
-        for i in range(1, self.mountAlignNumberStars+1):
+        for i in range(1, self.mountAlignNumberStars+1):                                                                    # otherwise download them step for step
             try:
-                reply = self.sendCommand('getalp{0:d}'.format(i), real).split(',')
+                reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
             except pythoncom.com_error as e:
                 self.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
                 return 0, 0
@@ -344,80 +348,80 @@ class Mount(QtCore.QThread):
             self.mountDataQueue.put({'Name': 'ModelStarError',
                                      'Value': '#{0:02d} Az: {1:3.0f} Alt: {2:2.0f} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
                                     .format(i, az, alt, errorRMS, errorAngle)})
-        self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})
+        self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                      # write them to gui
         self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
-                                .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})
+                                .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})                    # set the error values in gui
 
-    def runTargetRMSAlignment(self, real):
-        self.getAlignmentModel(real)                                                                                        # get model first
+    def runTargetRMSAlignment(self):
+        self.getAlignmentModel()                                                                                            # get model first
         self.mountAlignRMSsum = 999.9                                                                                       # set maximum
         self.mountAlignNumberStars = 4                                                                                      # set minimum for stars
         while math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars) > float(self.ui.targetRMS.value()) \
                 and self.mountAlignNumberStars > 3:
             a = sorted(self.mountAlignmentPoints, key=itemgetter(1), reverse=True)                                          # index 0 ist the worst star
             try:                                                                                                            # delete the worst star
-                self.sendCommand('delalst{0:d}'.format(a[0][0]), real)
+                self.sendCommand('delalst{0:d}'.format(a[0][0]))
             except pythoncom.com_error as e:
                 self.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-            self.getAlignmentModel(real)
+            self.getAlignmentModel()
 
-    def saveActualModel(self, target, real):
-        self.sendCommand('modeldel0' + target, real)
-        reply = self.sendCommand('modelsv0' + target, real)
+    def saveActualModel(self, target):
+        self.sendCommand('modeldel0' + target)
+        reply = self.sendCommand('modelsv0' + target)
         if reply == '1':
             return True
         else:
             return False
 
-    def loadActualModel(self, target, real):
-        reply = self.sendCommand('modelld0' + target, real)
+    def loadActualModel(self, target):
+        reply = self.sendCommand('modelld0' + target)
         if reply == '1':
             return True
         else:
             return False
 
-    def backupModel(self, real):
-        if self.saveActualModel('BACKUP', real):
+    def backupModel(self):
+        if self.saveActualModel('BACKUP'):
             self.messageQueue.put('Actual Model save to BACKUP')
         else:
             self.logger.debug('backupModel    -> Model BACKUP could not be saved')                                          # log it
 
-    def restoreModel(self, real):
-        if self.loadActualModel('BACKUP', real):
+    def restoreModel(self):
+        if self.loadActualModel('BACKUP'):
             self.messageQueue.put('Actual Model loaded from BACKUP')
         else:
             self.messageQueue.put('There is no model named BACKUP or error while loading')
             self.logger.debug('backupModel    -> Model BACKUP could not be loaded')                                         # log it
 
-    def saveSimpleModel(self, real):
-        if self.saveActualModel('SIMPLE', real):
+    def saveSimpleModel(self):
+        if self.saveActualModel('SIMPLE'):
             self.messageQueue.put('Actual Model save to SIMPLE')
         else:
             self.logger.debug('saveSimpleModel-> Model SIMPLE could not be saved')                                          # log it
 
-    def loadSimpleModel(self, real):
-        if self.loadActualModel('SIMPLE', real):
+    def loadSimpleModel(self):
+        if self.loadActualModel('SIMPLE'):
             self.messageQueue.put('Actual Model loaded from SIMPLE')
         else:
             self.messageQueue.put('There is no model named SIMPLE or error while loading')
             self.logger.debug('loadSimpleModel-> Model SIMPLE could not be loaded')                                         # log it
 
-    def setRefractionParameter(self, real):
+    def setRefractionParameter(self):
         if self.ui.le_pressureStick.text() != '':                                                                           # value must be there
-            self.sendCommand('SRPRS{0:04.1f}'.format(float(self.ui.le_pressureStick.text())), real)
+            self.sendCommand('SRPRS{0:04.1f}'.format(float(self.ui.le_pressureStick.text())))
             if float(self.ui.le_temperatureStick.text()) > 0:
-                self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.ui.le_temperatureStick.text())), real)
+                self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.ui.le_temperatureStick.text())))
             else:
-                self.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.ui.le_temperatureStick.text())), real)
-            self.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP', real)})
-            self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS', real)})
+                self.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.ui.le_temperatureStick.text())))
+            self.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP')})
+            self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS')})
 
-    def getStatusFast(self, real):                                                                                          # fast status item like pointing
-        reply = self.sendCommand('GS', real)
+    def getStatusFast(self):                                                                                                # fast status item like pointing
+        reply = self.sendCommand('GS')
         if reply:
             self.sidereal_time = reply.strip('#')
             self.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                    # Sidereal local time
-        reply = self.sendCommand('Ginfo', real)                                                                             # use command "Ginfo" for fast topics
+        reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
             self.raJnow = float(ra)
@@ -440,45 +444,45 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                                  # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
-            self.timeToFlip = self.sendCommand('Gmte', real)
-            self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                               # Flip time
+            self.timeToFlip = self.sendCommand('Gmte')
+            self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                           # Flip time
 
-    def getStatusMedium(self, real):                                                                                        # medium status items like refraction
+    def getStatusMedium(self):                                                                                              # medium status items like refraction
         if self.ui.checkAutoRefraction.isChecked():                                                                         # check if autorefraction is set
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
-                self.setRefractionParameter(real)                                                                           # transfer refraction from to mount
+                self.setRefractionParameter()                                                                               # transfer refraction from to mount
             else:                                                                                                           #
                 success, message = self.SGPro.SgGetDeviceStatus('Camera')                                                   # getting the Camera status
                 if success and message in ['IDLE', 'DOWNLOADING']:                                                          # if tracking, when camera is idle or downloading
-                    self.setRefractionParameter(real)                                                                       # transfer refraction to mount
+                    self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
                     self.logger.debug('getStatusMedium-> no autorefraction: {0}'.format(message))                           # no autorefraction is possible
         self.signalMountTrackPreview.emit(True)
 
-    def getStatusSlow(self, real):                                                                                          # slow update item like temps
-        self.timeToFlip = self.sendCommand('Gmte', real)
+    def getStatusSlow(self):                                                                                                # slow update item like temps
+        self.timeToFlip = self.sendCommand('Gmte')
         self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                               # Flip time
-        self.refractionTemp = self.sendCommand('GRTMP', real)
+        self.refractionTemp = self.sendCommand('GRTMP')
         self.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                         # refraction temp out of mount
-        self.refractionPressure = self.sendCommand('GRPRS', real)
+        self.refractionPressure = self.sendCommand('GRPRS')
         self.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                        # refraction pressure out of mount
-        self.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1', real)})                   # temp of RA motor
-        self.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP2', real)})                  # temp of dec motor
-        self.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs', real)})                            # get actual slew rate
-        self.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF', real)})                   #
-        self.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf', real)})                     #
-        self.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat', real)})                   #
-        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh', real)})              #
-        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go', real)})               #
+        self.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1')})                         # temp of RA motor
+        self.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP2')})                        # temp of dec motor
+        self.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                                  # get actual slew rate
+        self.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})                         #
+        self.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})                           #
+        self.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})                         #
+        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})                    #
+        self.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})                     #
 
-    def getStatusOnce(self, real):                                                                                          # one time updates for settings
-        self.site_height = self.sendCommand('Gev', real)                                                                    # site height
-        lon1 = self.sendCommand('Gg', real)                                                                                 # get site lon
+    def getStatusOnce(self):                                                                                                # one time updates for settings
+        self.site_height = self.sendCommand('Gev')                                                                          # site height
+        lon1 = self.sendCommand('Gg')                                                                                       # get site lon
         if lon1[0] == '-':                                                                                                  # due to compatibility to LX200 protocol east is negative
             self.site_lon = lon1.replace('-', '+')                                                                          # change that
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
-        self.site_lat = self.sendCommand('Gt', real)                                                                        # get site latitude
+        self.site_lat = self.sendCommand('Gt')                                                                              # get site latitude
         self.transform.Refraction = False                                                                                   # set parameter for ascom nova library
         self.transform.SiteElevation = float(self.site_height)                                                              # height
         self.transform.SiteLatitude = self.degStringToDecimal(self.site_lat)                                                # site lat
@@ -486,16 +490,15 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                             # write data to GUI
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})                                         #
         self.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})                                 #
-        self.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD', real)})                        #
-        self.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN', real)})                      #
-        self.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP', real)})                 #
-        self.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.sendCommand('GVT', real)})                        #
-        self.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.sendCommand('GVZ', real)})                     #
-        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.sendCommand('GVN', real)))                                 # firmware version for checking
+        self.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD')})                              #
+        self.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN')})                            #
+        self.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP')})                       #
+        self.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.sendCommand('GVT')})                              #
+        self.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.sendCommand('GVZ')})                           #
+        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.sendCommand('GVN')))                                       # firmware version for checking
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
-
 
     def setupDriver(self):
         try:
