@@ -200,7 +200,12 @@ class Mount(QtCore.QThread):
             elif command == 'Gt':
                 return self.decimalToDegree(self.ascom.SiteLatitude, True, False)
             elif command == 'Gg':
-                return self.decimalToDegree(self.ascom.SiteLongitude, True, False)
+                lon = self.decimalToDegree(self.ascom.SiteLongitude, True, False)
+                if lon[0] == '-':                                                                                           # due to compatibility to LX200 protocol east is negative
+                    lon1 = lon.replace('-', '+')                                                                            # change that
+                else:
+                    lon1 = lon.replace('+', '-')                                                                            # and vice versa
+                return lon1
             elif command.startswith('Sz'):
                 self.value_azimuth = float(command[2:5])
             elif command.startswith('Sa'):
@@ -220,9 +225,8 @@ class Mount(QtCore.QThread):
             elif command == 'Ginfo':
                 self.raJnow = self.ascom.RightAscension
                 self.decJnow = self.ascom.Declination
-                az, alt = self.transformNovas(self.ra, self.dec, 1)
-                self.ra = self.transform.RAJ2000
-                self.dec = self.transform.DecJ2000
+                az = self.ascom.Azimuth
+                alt = self.ascom.Altitude
                 if self.ascom.Slewing:
                     stat = 6
                 else:
@@ -236,7 +240,8 @@ class Mount(QtCore.QThread):
                     slew = 1
                 else:
                     slew = 0
-                return '{0},{1},{2},{3},{4},{5},{6},{7}#'.format(self.raJnow, self.decJnow, pierside, az, alt, jd, stat, slew)
+                value = '{0},{1},{2},{3},{4},{5},{6},{7}#'.format(self.raJnow, self.decJnow, pierside, az, alt, jd, stat, slew)
+                return value
             elif command == 'PO':
                 self.ascom.Unpark()
             elif command == 'hP':
@@ -251,7 +256,7 @@ class Mount(QtCore.QThread):
     def transformNovas(self, ra, dec, transform=1):
         self.transformationLock.acquire()
         self.transform.SiteTemperature = float(self.refractionTemp)
-        if transform == 1:
+        if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
             if ra < 0:
                 ra += 24
             if ra >= 24:
@@ -259,11 +264,11 @@ class Mount(QtCore.QThread):
             self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
-        elif transform == 2:
+        elif transform == 2:                                                                                                # 2 = Jnow -> J2000
             self.transform.SetTopocentric(ra, dec)
             val1 = self.transform.RAJ2000
             val2 = self.transform.DECJ2000
-        elif transform == 3:
+        elif transform == 3:                                                                                                # 3 = J2000 -> JNow
             self.transform.SetJ2000(ra, dec)
             val1 = self.transform.RATopocentric
             val2 = self.transform.DECTopocentric

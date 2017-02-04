@@ -114,10 +114,10 @@ class SGPro:
             self.logger.error('SgAbortImage-> error: {0}'.format(e))
             return False, 'Request failed'
 
-    def SgAbortSolve(self, guid):
+    def SgAbortSolve(self, _guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
         # The guid (GUID) returned from the "/solve" (SgSolveImage) call
-        data = {'Receipt': guid}
+        data = {'Receipt': _guid}
         try:
             req = request.Request(self.ipSGPro + self.abortImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
@@ -159,9 +159,9 @@ class SGPro:
             self.logger.error('SgGetDeviceStatus-> error: {0}'.format(e))
             return False, 'Request failed'
 
-    def SgGetImagePath(self, guid):
+    def SgGetImagePath(self, _guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
-        data = {'Receipt': guid}
+        data = {'Receipt': _guid}
         try:
             req = request.Request(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
@@ -187,9 +187,9 @@ class SGPro:
             self.logger.error('SgGetTelescopePosition-> error: {0}'.format(e))
             return False, 'Request failed', '', ''
 
-    def SgGetSolvedImageData(self, guid):
+    def SgGetSolvedImageData(self, _guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
-        data = {'Receipt': guid}
+        data = {'Receipt': _guid}
         try:
             req = request.Request(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
@@ -221,7 +221,8 @@ class SGPro:
             return False, 'Request failed', ''
 
 if __name__ == "__main__":
-    import time, os
+    import time
+    import os
     cam = SGPro()
     imagepath = os.getcwd() + '/model009.fit'
     print(imagepath)
