@@ -85,6 +85,7 @@ class MountWizzardApp(MwWidget):
         self.model.start()                                                                                                  # starting polling thread
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         # noinspection PyCallByClass,PyTypeChecker
+        self.loadConfig()
         QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
