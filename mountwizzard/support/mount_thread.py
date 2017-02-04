@@ -486,6 +486,11 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP', real)})                 #
         self.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.sendCommand('GVT', real)})                        #
         self.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.sendCommand('GVZ', real)})                     #
+        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.sendCommand('GVN', real)))                                 # firmware version for checking
+        self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
+        self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
+        self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
+
 
     def setupDriver(self):
         try:
