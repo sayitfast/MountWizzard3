@@ -43,9 +43,9 @@ from support.popup_dialogs import MyPopup
 
 class MountWizzardApp(MwWidget):
     logger = logging.getLogger('MountWizzardApp:')                                                                          # logging enabling
-    BLUE = 'background-color: rgb(42, 130, 218)'
-    RED = 'background-color: red'
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
+    BLUE = 'background-color: rgb(42, 130, 218)'                                                                            # colors for changing skin while running
+    RED = 'background-color: red'                                                                                           #
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'                                                    #
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
@@ -54,7 +54,7 @@ class MountWizzardApp(MwWidget):
         self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
-        self.ui.windowTitle.setPalette(self.palette)
+        self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
         self.show()                                                                                                         # show window
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
@@ -67,8 +67,8 @@ class MountWizzardApp(MwWidget):
         self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
         self.model = Model(self.ui, self.mount, self.dome,
                            self.messageQueue, self.commandQueue, self.mountDataQueue, self.modelLogQueue)                   # transferring ui and mount object as well
-        self.analysePopup = ShowAnalysePopup(self.ui)
-        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)
+        self.analysePopup = ShowAnalysePopup(self.ui)                                                                       # windows for analyse data
+        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)          # window for modeling points
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
@@ -86,12 +86,12 @@ class MountWizzardApp(MwWidget):
         self.loadConfig()                                                                                                   # loading configuration
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
-        if self.analysePopup.showStatus:
-            self.showAnalyseWindow()
-        if self.coordinatePopup.showStatus:
-            self.coordinatePopup.redrawCoordinateWindow()
-            self.showCoordinateWindow()
-        self.ui.le_mwWorkingDir.setText(os.getcwd())
+        if self.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
+            self.showAnalyseWindow()                                                                                        # show it
+        if self.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
+            self.coordinatePopup.redrawCoordinateWindow()                                                                   # update content
+            self.showCoordinateWindow()                                                                                     # show it
+        self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
         self.w = None
 
     def mappingFunctions(self):
@@ -824,6 +824,7 @@ if __name__ == "__main__":
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('MountWizzard started !')                                                                                 # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
+    logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application
     sys.excepthook = except_hook                                                                                            # manage except hooks for logging
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList

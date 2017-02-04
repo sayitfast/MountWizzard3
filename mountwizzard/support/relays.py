@@ -49,7 +49,7 @@ class Relays:
             self.stat[5] = (lines[7][8] == '1')
             self.stat[6] = (lines[8][8] == '1')
             self.stat[7] = (lines[9][8] == '1')
-            self.logger.debug('setStatus -> status: {0}'.format(self.stat))
+            self.logger.debug('relay setStatus-> status: {0}'.format(self.stat))
         if self.stat[0]:
             self.ui.btn_switchCCD.setStyleSheet('background-color: rgb(42, 130, 218)')
         else:
