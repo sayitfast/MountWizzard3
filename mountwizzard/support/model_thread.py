@@ -477,6 +477,7 @@ class Model(QtCore.QThread):
                 time.sleep(0.1)                                                                                             # loop time
 
     def prepareCaptureImageSubframes(self, scale, modelData):                                                               # get camera data for doing subframes
+
         suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
         self.logger.debug('prepareCaptureSubframe-> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))         # debug data
         modelData['sizeX'] = 0                                                                                              # size inner window

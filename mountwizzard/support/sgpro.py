@@ -30,7 +30,7 @@ class SGPro:
         self.captureImagePath = 'SgCaptureImage'
         self.connectDevicePath = 'SgConnectDevicePath'
         self.disconnectDevicePath = 'SgDisconnectDevicePath'
-        self.enumerateDevicePath = 'SgEnumerateDevicePath'
+        self.enumerateDevicePath = 'SgEnumerateDevices'
         self.getCameraPropsPath = 'SgGetCameraProps'
         self.getCameraTempPath = ''                                     # not needed
         self.getDeviceStatusPath = 'SgGetDeviceStatus'
@@ -69,6 +69,20 @@ class SGPro:
             else:
                 return False, 'Timeout !'
 
+    def SgEnumerateDevice(self, device):
+        # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
+        data = {'Device': device}
+        try:
+            req = request.Request(self.ipSGPro + self.enumerateDevicePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
+            req.add_header('Content-Type', 'application/json')
+            with request.urlopen(req) as f:
+                captureResponse = json.loads(f.read().decode('utf-8'))
+            # {"Devices":["String"],"Success":false,"Message":"String"}
+            return captureResponse['Devices'], captureResponse['Success'], 'Request OK'
+        except Exception as e:
+            self.logger.error('SgEnumerateDevi-> error: {0}'.format(e))
+            return '', False, 'Request failed'
+
     def SgCaptureImage(self, binningMode=1, isoMode=None, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None,
                        path=None, useSubframe=False, posX=0, posY=0,
@@ -97,7 +111,7 @@ class SGPro:
             # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
         except Exception as e:
-            self.logger.error('SgCaptureImage-> error: {0}'.format(e))
+            self.logger.error('SgCaptureImage -> error: {0}'.format(e))
             return False, 'Request failed', ''
 
     def SgAbortImage(self):
@@ -111,7 +125,7 @@ class SGPro:
             # {"Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
-            self.logger.error('SgAbortImage-> error: {0}'.format(e))
+            self.logger.error('SgAbortImage   -> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgAbortSolve(self, _guid):
@@ -126,7 +140,7 @@ class SGPro:
             # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
-            self.logger.error('SgAbortSolve-> error: {0}'.format(e))
+            self.logger.error('SgAbortSolve   -> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetCameraProps(self):
@@ -141,7 +155,7 @@ class SGPro:
             return captureResponse['Success'], captureResponse['Message'], captureResponse['NumPixelsX'], captureResponse[
                 'NumPixelsY'], captureResponse['SupportsSubframe']
         except Exception as e:
-            self.logger.error('SgGetCameraProps-> error: {0}'.format(e))
+            self.logger.error('SgGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
 
     def SgGetDeviceStatus(self, device):
@@ -156,7 +170,7 @@ class SGPro:
             # {"State":"IDLE","Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['State']
         except Exception as e:
-            self.logger.error('SgGetDeviceStatus-> error: {0}'.format(e))
+            self.logger.error('SgGetDeviceStat-> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetImagePath(self, _guid):
@@ -170,7 +184,7 @@ class SGPro:
             # {"Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
-            self.logger.error('SgGetImagePath-> error: {0}'.format(e))
+            self.logger.error('SgGetImagePath -> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetTelescopePosition(self):
@@ -184,7 +198,7 @@ class SGPro:
             # {"Success":false,"Message":"String","Ra":0,"Dec":0}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec']
         except Exception as e:
-            self.logger.error('SgGetTelescopePosition-> error: {0}'.format(e))
+            self.logger.error('SgGetTelescopePo-> error: {0}'.format(e))
             return False, 'Request failed', '', ''
 
     def SgGetSolvedImageData(self, _guid):
@@ -198,7 +212,7 @@ class SGPro:
             # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec'], captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
         except Exception as e:
-            self.logger.error('SgGetSolvedImageData-> error: {0}'.format(e))
+            self.logger.error('SgGetSolvedImag-> error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
     def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
@@ -217,17 +231,12 @@ class SGPro:
                 captureResponse = json.loads(f.read().decode('utf-8'))                                                      # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
         except Exception as e:
-            self.logger.error('SgSolveImage-> error: {0}'.format(e))
+            self.logger.error('SgSolveImage   -> error: {0}'.format(e))
             return False, 'Request failed', ''
 
 if __name__ == "__main__":
     import time
     import os
     cam = SGPro()
-    imagepath = os.getcwd() + '/model009.fit'
-    print(imagepath)
-    suc, mes, guid = cam.SgSolveImage(imagepath, scaleHint='1.31', blindSolve=False, useFitsHeaders=True)
-    print(suc, mes, guid)
-    while True:                                                                                                             # waiting for the image download before proceeding
-        print(cam.SgGetSolvedImageData(guid))
-        time.sleep(1)
+    dev, suc, mes = cam.SgEnumerateDevice('Camera')
+    print(dev, suc, mes)

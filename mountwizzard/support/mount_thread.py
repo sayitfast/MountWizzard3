@@ -254,6 +254,8 @@ class Mount(QtCore.QThread):
                 self.ascom.Tracking = True
             elif command == 'RT9':
                 self.ascom.Tracking = False
+            elif command == 'CMS':
+                value = 'V'
         self.sendCommandLock.release()
         return value
 
