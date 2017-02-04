@@ -55,7 +55,6 @@ class MountWizzardApp(MwWidget):
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
         self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
-        self.show()                                                                                                         # show window
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
@@ -84,9 +83,10 @@ class MountWizzardApp(MwWidget):
         self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
         self.model.start()                                                                                                  # starting polling thread
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
+        self.loadConfig()                                                                                                   # loading configuration
+        self.show()                                                                                                         # show window
         # noinspection PyCallByClass,PyTypeChecker
-        self.loadConfig()
-        QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration
+        QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration second time
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
