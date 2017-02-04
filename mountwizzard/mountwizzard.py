@@ -84,7 +84,8 @@ class MountWizzardApp(MwWidget):
         self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
         self.model.start()                                                                                                  # starting polling thread
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
-        self.loadConfig()                                                                                                   # loading configuration
+        # noinspection PyCallByClass,PyTypeChecker
+        QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration
         if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
             self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
