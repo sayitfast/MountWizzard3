@@ -319,7 +319,7 @@ class Model(QtCore.QThread):
             az, alt = self.mount.transformNovas(ra, decCopy, 1)                                                             # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
-            self.signalModelRedraw.emit(True)
+        self.signalModelRedraw.emit(True)
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
         self.RefinementPoints = []                                                                                          # clear pointlist
@@ -340,7 +340,7 @@ class Model(QtCore.QThread):
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
             self.RefinementPoints = west + east                                                                             # combine pointlist
-            self.signalModelRedraw.emit(True)
+        self.signalModelRedraw.emit(True)
 
     def generateNormalPoints(self):
         self.RefinementPoints = []                                                                                          # clear pointlist
@@ -353,14 +353,13 @@ class Model(QtCore.QThread):
                 step = -20                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
                 az, alt = self.mount.transformNovas(ha / 10, dec, 1)                                                        # do the transformation to alt az
-
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
             self.RefinementPoints = west + east                                                                             # combine pointlist
-            self.signalModelRedraw.emit(True)
+        self.signalModelRedraw.emit(True)
 
     def generateGridPoints(self):                                                                                           # model points along dso path
         row = int(float(self.ui.numberGridPointsRow.value()))
@@ -370,7 +369,7 @@ class Model(QtCore.QThread):
             for alt in range(10, 90, int(90 / row)):                                                                        # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
             time.sleep(.05)
-            self.signalModelRedraw.emit(True)
+        self.signalModelRedraw.emit(True)
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
         self.BasePoints = []                                                                                                # clear it
