@@ -1,4 +1,9 @@
 # Changelog:
+1.1.7
+- cyclic logs per day
+- correction simulation ascom telescope simulator
+- bugfix waiting for start slewing while modeling
+
 1.1.6
 - correction relays
 - ui improvements
