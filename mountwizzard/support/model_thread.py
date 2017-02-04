@@ -463,6 +463,8 @@ class Model(QtCore.QThread):
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
         self.commandQueue.put('MS')                                                                                         # initiate slewing with tracking at the end
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.dome.connected))
+        while not self.mount.slewing:                                                                                       # wait for mount starting slewing
+            time.sleep(0.1)                                                                                                 # loop time
         if self.dome.connected == 1:                                                                                        # if there is a dome, should be slewed as well
             self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
             self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
@@ -471,8 +473,6 @@ class Model(QtCore.QThread):
             while self.mount.slewing or self.dome.slewing:                                                                  # wait for stop slewing mount or dome not slewing
                 time.sleep(0.1)                                                                                             # loop time
         else:
-            while not self.mount.slewing:                                                                                   # wait for mount starting slewing
-                time.sleep(0.1)                                                                                             # loop time
             while self.mount.slewing:                                                                                       # wait for tracking = 7 or dome not slewing
                 time.sleep(0.1)                                                                                             # loop time
 

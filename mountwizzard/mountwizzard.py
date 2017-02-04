@@ -14,9 +14,11 @@
 
 # import basic stuff
 import logging
+import logging.handlers
 import sys
 import json
 import time
+import datetime
 import os
 # import for the PyQt5 Framework
 from PyQt5.QtGui import *
@@ -802,12 +804,17 @@ if __name__ == "__main__":
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
-
+    name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
+    handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     if len(sys.argv) > 1:                                                                                                   # some arguments are given, at least 1
         if sys.argv[1] == '-d':                                                                                             # than we can check for debug option
-            logging.basicConfig(filename='mount.log', level=logging.DEBUG, format='%(asctime)s --- %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+            logging.basicConfig(level=logging.DEBUG,
+                                format='%(asctime)s [%(threadName)15s] - %(message)s',
+                                handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
     else:                                                                                                                   # set logging level accordingly
-        logging.basicConfig(filename='mount.log', level=logging.ERROR, format='%(asctime)s --- %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+        logging.basicConfig(level=logging.ERROR,
+                            format='%(asctime)s [%(threadName)15s] - %(message)s',
+                            handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/images'):                                                                          # if images dir doesn't exist, make it
