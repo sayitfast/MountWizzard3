@@ -101,7 +101,7 @@ class ShowAnalysePopup(MwWidget):
     def setFigure(self, projection=None):
         self.plotWidget.plt.clf()
         self.plotWidget.axes = self.plotWidget.fig.add_subplot(111, projection=projection)
-        self.plotWidget.axes.grid(True, color='white')
+        self.plotWidget.axes.grid(True, color='gray')
         self.plotWidget.axes.set_facecolor((32/256, 32/256, 32/256))
         self.plotWidget.axes.tick_params(axis='x', colors='white')
         self.plotWidget.axes.tick_params(axis='y', colors='white')
@@ -122,7 +122,6 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')                                                     # y axis
         self.plotWidget.plt.title('DEC Error over Modeling\n ', color='white')                                              # title
         self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleDEC, self.scaleDEC])                               # defining the scaling of the plot
-        self.plotWidget.plt.grid(True, color='white')                                                                       # color of the plot grid
         self.plotWidget.plt.plot(self.data['index'], self.data['decError'], color='black')                                  # Basic Data
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
         self.plotWidget.plt.scatter(self.data['index'], self.data['decError'], c=colors, s=50)
@@ -134,7 +133,6 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
         self.plotWidget.plt.title('RA Error over Modeling\n ', color='white')
         self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleRA, self.scaleRA])
-        self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['index'], self.data['raError'], color='black')                                   # Basic Data
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
         self.plotWidget.plt.scatter(self.data['index'], self.data['raError'], c=colors, s=50)
@@ -146,7 +144,6 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
         self.plotWidget.plt.title('DEC Error over Altitude\n ', color='white')
         self.plotWidget.plt.axis([0, 90, -self.scaleDEC, self.scaleDEC])
-        self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['altitude'], self.data['decError'], color='black')
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
         self.plotWidget.plt.scatter(self.data['altitude'], self.data['decError'], c=colors, s=50)
@@ -158,7 +155,6 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
         self.plotWidget.plt.title('RA Error over Altitude\n ', color='white')
         self.plotWidget.plt.axis([0, 90, -self.scaleRA, self.scaleRA])
-        self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['altitude'], self.data['raError'], color='black')
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
         self.plotWidget.plt.scatter(self.data['altitude'], self.data['raError'], c=colors, s=50)
@@ -170,7 +166,6 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
         self.plotWidget.plt.title('DEC Error over Azimuth\n ', color='white')
         self.plotWidget.plt.axis([0, 360, -self.scaleDEC, self.scaleDEC])
-        self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['azimuth'], self.data['decError'], color='black')
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
         self.plotWidget.plt.scatter(self.data['azimuth'], self.data['decError'], c=colors, s=50)
@@ -182,7 +177,6 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
         self.plotWidget.plt.title('RA Error over Azimuth\n ', color='white')
         self.plotWidget.plt.axis([0, 360, -self.scaleRA, self.scaleRA])
-        self.plotWidget.plt.grid(True, color='white')
         self.plotWidget.plt.plot(self.data['azimuth'], self.data['raError'], color='black')
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
         self.plotWidget.plt.scatter(self.data['azimuth'], self.data['raError'], c=colors, s=50)
@@ -196,7 +190,6 @@ class ShowAnalysePopup(MwWidget):
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.plt.title('Model Points\n ', color='white')
-        self.plotWidget.plt.grid(True, color='white')
         azimuth = numpy.asarray(self.data['azimuth'])
         altitude = numpy.asarray(self.data['altitude'])
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
@@ -214,7 +207,6 @@ class ShowAnalysePopup(MwWidget):
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.plt.title('Model Points Error\n ', color='white')
-        self.plotWidget.plt.grid(True, color='white')
         azimuth = numpy.asarray(self.data['azimuth'])
         altitude = numpy.asarray(self.data['altitude'])
         self.plotWidget.plt.plot(azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
