@@ -618,7 +618,7 @@ class Model(QtCore.QThread):
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
     def solveImageSimulation(self, modelData):
-        modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 3600
+        modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
         modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 3600
         modelData['scale'] = 1.3
         modelData['angle'] = 90
@@ -776,16 +776,16 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.logQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                                   # output for user GUI
-                    if self.mount.driver_real:
-                        suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
-                    else:
+                    if not self.mount.driver_real or self.ui.checkTestWithoutCamera.isChecked():
                         suc, mes, modelData = self.solveImageSimulation(modelData)                                          # solve the position and returning the values from Simulation
+                    else:
+                        suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
                     self.logQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))         # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
                             suc = self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])               # sync the actual star to resolved coordinates in JNOW
                             if suc:
-                                self.logQueue.put('{0} -\t point added\n'.format(self.timeStamp()))
+                                self.logQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
                             else:
                                 self.cancel = True
                         numCheckPoints += 1                                                                                 # increase index for synced stars

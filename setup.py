@@ -2,13 +2,13 @@ from distutils.core import setup
 
 setup(
     name='mountwizzard',
-    version='1.1.8',
+    version='1.1.9',
     packages=[
         'mountwizzard',
         'mountwizzard/support',
     ],
     install_requires=[
-        'PyQt5>=5.7',
+        'PyQt5=5.7',
         'matplotlib>=1.5.3',
         'pypiwin32>=219',
         'pyfits>=3.4'

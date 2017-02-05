@@ -1,4 +1,7 @@
 # Changelog:
+1.1.9
+- changing simulation values
+
 1.1.8
 - optimisations
 - adding feature batch model calculation
