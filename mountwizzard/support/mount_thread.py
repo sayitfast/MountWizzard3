@@ -303,6 +303,14 @@ class Mount(QtCore.QThread):
             self.transform.SetJ2000(ra, dec)                                                                                # set J2000 data
             val1 = self.transform.RATopocentric
             val2 = self.transform.DECTopocentric
+        elif transform == 4:                                                                                                # 1 = JNow -> alt/az
+            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
+                ra += 24                                                                                                    #
+            if ra >= 24:                                                                                                    # so set it right
+                ra -= 24
+            self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
         else:
             val1 = ra
             val2 = dec
@@ -369,12 +377,9 @@ class Mount(QtCore.QThread):
             self.mountAlignRMSsum += errorRMS ** 2
             self.mountAlignmentPoints.append((i, errorRMS))
             dec = dec.replace('*', ':')
-            dec_digit = self.degStringToDecimal(dec)
-            ha_digit = self.degStringToDecimal(ha)
-            az, alt = self.transformNovas(ha_digit, dec_digit, 1)
             self.mountDataQueue.put({'Name': 'ModelStarError',
-                                     'Value': '#{0:02d} Az: {1:3.0f} Alt: {2:2.0f} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
-                                    .format(i, az, alt, errorRMS, errorAngle)})
+                                     'Value': '#{0:02d} RA: {1} DEC: {2} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
+                                    .format(i, ha, dec, errorRMS, errorAngle)})
         self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                      # write them to gui
         self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
                                 .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})                    # set the error values in gui

@@ -618,8 +618,8 @@ class Model(QtCore.QThread):
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
     def solveImageSimulation(self, modelData):
-        modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 180
-        modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 1800
+        modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 3600
+        modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 3600
         modelData['scale'] = 1.3
         modelData['angle'] = 90
         modelData['timeTS'] = 2.5
