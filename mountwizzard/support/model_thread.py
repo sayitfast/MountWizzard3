@@ -82,37 +82,36 @@ class Model(QtCore.QThread):
                     self.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
                     self.runBaseModel()                                                                                     # should be refactored to queue only without signal
                     self.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
-                    self.ui.btn_cancelBaseModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                    self.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                     # button back to default color
                 elif self.command == 'RunRefinementModel':                                                                  #
                     self.command = ''                                                                                       #
                     self.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                     self.runRefinementModel()                                                                               #
                     self.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
-                    self.ui.btn_cancelRefinementModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
-                elif self.command == 'RunBatchModel':                                                                  #
+                    self.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                     # button back to default color
+                elif self.command == 'RunBatchModel':                                                                       #
                     self.command = ''                                                                                       #
-                    self.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
-                    self.runBatchModel()                                                                               #
-                    self.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
-                    self.ui.btn_cancelRefinementModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
-                elif self.command == 'RunAnalyseModel':                                                                     #
+                    self.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
+                    self.runBatchModel()                                                                                    #
+                    self.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
+                elif self.command == 'RunCheckModel':                                                                       #
                     self.command = ''                                                                                       #
-                    self.ui.btn_runAnalyseModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
-                    self.runAnalyseModel()                                                                                  #
-                    self.ui.btn_runAnalyseModel.setStyleSheet(self.DEFAULT)
-                    self.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                              # button back to default color
+                    self.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                      # button blue (running)
+                    self.runCheckModel()                                                                                    #
+                    self.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                     # button back to default color
                 elif self.command == 'RunTimeChangeModel':                                                                  #
                     self.command = ''                                                                                       #
                     self.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
                     self.runTimeChangeModel()                                                                               #
                     self.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
-                    self.ui.btn_cancelTimeChangeModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
+                    self.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                              # button back to default color
                 elif self.command == 'RunHystereseModel':                                                                   #
                     self.command = ''                                                                                       #
                     self.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
                     self.runHystereseModel()                                                                                #
                     self.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
-                    self.ui.btn_cancelHystereseModel.setStyleSheet(self.DEFAULT)                                            # button back to default color
+                    self.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                              # button back to default color
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
                     self.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
@@ -172,26 +171,14 @@ class Model(QtCore.QThread):
 
     def command(self, command):                                                                                             # dispatcher of commands inside thread
         if self.modelrun:
-            if command == 'CancelBaseModel':                                                                                # check the command
+            if command == 'CancelModel':                                                                                    # check the command
                 self.command = ''                                                                                           # reset the command
                 self.cancel = True                                                                                          # set cancel flag
-                self.ui.btn_cancelBaseModel.setStyleSheet(self.RED)                                                         # reset color of button
-            elif command == 'CancelRefinementModel':                                                                        # check the command
-                self.command = ''                                                                                           # reset the command buffer
-                self.cancel = True                                                                                          # set cancel flag
-                self.ui.btn_cancelRefinementModel.setStyleSheet(self.RED)                                                   # reset color of button
+                self.ui.btn_cancelModel.setStyleSheet(self.RED)                                                             # reset color of button
             elif command == 'CancelAnalyseModel':                                                                           #
                 self.command = ''                                                                                           #
                 self.cancel = True                                                                                          #
                 self.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)                                                      # reset color of button
-            elif command == 'CancelTimeChangeModel':                                                                        #
-                self.command = ''                                                                                           #
-                self.cancel = True                                                                                          #
-                self.ui.btn_cancelTimeChangeModel.setStyleSheet(self.RED)                                                   # reset color of button
-            elif command == 'CancelHystereseModel':                                                                         #
-                self.command = ''                                                                                           #
-                self.cancel = True                                                                                          #
-                self.ui.btn_cancelHystereseModel.setStyleSheet(self.RED)                                                    # reset color of button
         else:
             self.command = command                                                                                          # passing the command to main loop of thread
 
@@ -423,7 +410,7 @@ class Model(QtCore.QThread):
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
-    def runAnalyseModel(self):
+    def runCheckModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = self.BasePoints + self.RefinementPoints
@@ -431,7 +418,7 @@ class Model(QtCore.QThread):
             self.modelAnalyseData = self.runModel('Analyse', points, directory, settlingTime)                               # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
-        name = directory + '_analyse.dat'                                                                                   # generate name of analyse file
+        name = directory + '_check.dat'                                                                                     # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data

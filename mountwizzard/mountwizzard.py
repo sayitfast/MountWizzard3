@@ -127,9 +127,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
         self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
-        self.ui.btn_cancelBaseModel.clicked.connect(self.cancelBaseModel)
+        self.ui.btn_cancelModel.clicked.connect(self.cancelModel)
         self.ui.btn_runRefinementModel.clicked.connect(self.runRefinementModel)
-        self.ui.btn_cancelRefinementModel.clicked.connect(self.cancelRefinementModel)
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
         self.ui.btn_clearAlignmentModel.clicked.connect(self.clearAlignmentModel)
         self.ui.btn_selectImageDirectoryName.clicked.connect(self.selectImageDirectoryName)
@@ -155,12 +154,10 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_generateNormalPoints.clicked.connect(self.generateNormalPoints)
         self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
         self.ui.btn_generateBasePoints.clicked.connect(self.generateBasePoints)
-        self.ui.btn_runAnalyseModel.clicked.connect(self.runAnalyseModel)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModel)
+        self.ui.btn_runCheckModel.clicked.connect(self.runCheckModel)
         self.ui.btn_runTimeChangeModel.clicked.connect(self.runTimeChangeModel)
-        self.ui.btn_cancelTimeChangeModel.clicked.connect(self.cancelTimeChangeModel)
+        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModel)
         self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
-        self.ui.btn_cancelHystereseModel.clicked.connect(self.cancelHystereseModel)
         self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
         self.ui.btn_openCoordinateWindow.clicked.connect(self.showCoordinateWindow)
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
@@ -714,14 +711,8 @@ class MountWizzardApp(MwWidget):
     def runBaseModel(self):
         self.model.signalModelCommand.emit('RunBaseModel')
 
-    def cancelBaseModel(self):
-        self.model.signalModelCommand.emit('CancelBaseModel')
-
     def runRefinementModel(self):
         self.model.signalModelCommand.emit('RunRefinementModel')
-
-    def cancelRefinementModel(self):
-        self.model.signalModelCommand.emit('CancelRefinementModel')
 
     def sortRefinementPoints(self):
         self.model.signalModelCommand.emit('SortRefinementPoints')
@@ -756,11 +747,11 @@ class MountWizzardApp(MwWidget):
     def generateBasePoints(self):
         self.model.signalModelCommand.emit('GenerateBasePoints')
 
-    def runAnalyseModel(self):
-        self.model.signalModelCommand.emit('RunAnalyseModel')
+    def runCheckModel(self):
+        self.model.signalModelCommand.emit('RunCheckModel')
 
-    def cancelAnalyseModel(self):
-        self.model.signalModelCommand.emit('CancelAnalyseModel')
+    def cancelModel(self):
+        self.model.signalModelCommand.emit('CancelModel')
 
     def runBatchModel(self):
         self.model.signalModelCommand.emit('RunBatchModel')
@@ -768,14 +759,11 @@ class MountWizzardApp(MwWidget):
     def runTimeChangeModel(self):
         self.model.signalModelCommand.emit('RunTimeChangeModel')
 
-    def cancelTimeChangeModel(self):
-        self.model.signalModelCommand.emit('CancelTimeChangeModel')
+    def cancelAnalyseModel(self):
+        self.model.signalModelCommand.emit('CancelAnalyseModel')
 
     def runHystereseModel(self):
         self.model.signalModelCommand.emit('RunHystereseModel')
-
-    def cancelHystereseModel(self):
-        self.model.signalModelCommand.emit('CancelHystereseModel')
 
     def doit(self):
         self.w = MyPopup()

@@ -1422,22 +1422,6 @@
       <string>Azimuth</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelBaseModel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>430</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels the base run in the next full cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Cancel</string>
-     </property>
-    </widget>
     <widget class="Line" name="line_23">
      <property name="geometry">
       <rect>
@@ -1574,7 +1558,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>270</y>
+       <y>250</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -1764,22 +1748,6 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelRefinementModel">
-     <property name="geometry">
-      <rect>
-       <x>180</x>
-       <y>430</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancel the refinment modeling in next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Cancel</string>
-     </property>
-    </widget>
     <widget class="QDoubleSpinBox" name="numberGridPointsCol">
      <property name="geometry">
       <rect>
@@ -1813,7 +1781,7 @@
       <rect>
        <x>180</x>
        <y>390</y>
-       <width>131</width>
+       <width>271</width>
        <height>31</height>
       </rect>
      </property>
@@ -1890,28 +1858,28 @@
       <string>Refinement Modeling Run</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelAnalyseModel">
+    <widget class="QPushButton" name="btn_cancelModel">
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>430</y>
-       <width>131</width>
+       <y>300</y>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels the analyse model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels the model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Cancel</string>
+      <string>Cancel Model Run</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runAnalyseModel">
+    <widget class="QPushButton" name="btn_runCheckModel">
      <property name="geometry">
       <rect>
        <x>490</x>
        <y>390</y>
-       <width>131</width>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -2125,12 +2093,12 @@
       <string>Analyse - Time based deviations</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelTimeChangeModel">
+    <widget class="QPushButton" name="btn_cancelAnalyseModel">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>110</y>
-       <width>131</width>
+       <x>460</x>
+       <y>230</y>
+       <width>281</width>
        <height>31</height>
       </rect>
      </property>
@@ -2138,7 +2106,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels a analyse cycle by constant pointing alt/az and measuring the error (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Cancel</string>
+      <string>Cancel Analyse Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runTimeChangeModel">
@@ -2146,7 +2114,7 @@
       <rect>
        <x>10</x>
        <y>110</y>
-       <width>131</width>
+       <width>291</width>
        <height>31</height>
       </rect>
      </property>
@@ -2465,7 +2433,7 @@
       <rect>
        <x>10</x>
        <y>280</y>
-       <width>131</width>
+       <width>291</width>
        <height>31</height>
       </rect>
      </property>
@@ -2474,22 +2442,6 @@
      </property>
      <property name="text">
       <string>Run</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_cancelHystereseModel">
-     <property name="geometry">
-      <rect>
-       <x>170</x>
-       <y>280</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels a analyse cycle by swapping two alt/az positions and measuring the error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Cancel</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_analyseFileName">
@@ -7185,7 +7137,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Checked if you would like to keep the images of modeling session</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Checked if you would like to see the tracking line and flip time in the window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
@@ -8275,7 +8227,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_restoreModel</tabstop>
   <tabstop>btn_loadSimpleModel</tabstop>
   <tabstop>btn_saveSimpleModel</tabstop>
-  <tabstop>btn_cancelBaseModel</tabstop>
   <tabstop>btn_clearAlignmentModel</tabstop>
   <tabstop>btn_generateBasePoints</tabstop>
   <tabstop>btn_mountQuit</tabstop>

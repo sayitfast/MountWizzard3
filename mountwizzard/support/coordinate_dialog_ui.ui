@@ -34,7 +34,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Pointing Coordinates</string>
+    <string>Pointing Coordinates / Modeling</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
