@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'wizzard_main_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.7
+# Created by: PyQt5 UI code generator 5.7.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -958,6 +958,9 @@ class Ui_WizzardMainDialog(object):
         font.setPointSize(10)
         self.label_187.setFont(font)
         self.label_187.setObjectName("label_187")
+        self.btn_runBatchModel = QtWidgets.QPushButton(self.tab_5)
+        self.btn_runBatchModel.setGeometry(QtCore.QRect(460, 280, 281, 31))
+        self.btn_runBatchModel.setObjectName("btn_runBatchModel")
         self.tabWidget.addTab(self.tab_5, "")
         self.tab_8 = QtWidgets.QWidget()
         self.tab_8.setObjectName("tab_8")
@@ -2614,9 +2617,6 @@ class Ui_WizzardMainDialog(object):
         self.btn_popup_close = QtWidgets.QPushButton(self.tab_9)
         self.btn_popup_close.setGeometry(QtCore.QRect(510, 260, 131, 31))
         self.btn_popup_close.setObjectName("btn_popup_close")
-        self.btn_cancelAnalyseModel_2 = QtWidgets.QPushButton(self.tab_9)
-        self.btn_cancelAnalyseModel_2.setGeometry(QtCore.QRect(350, 300, 281, 31))
-        self.btn_cancelAnalyseModel_2.setObjectName("btn_cancelAnalyseModel_2")
         self.tabWidget.addTab(self.tab_9, "")
         self.btn_shutdownQuit = QtWidgets.QPushButton(WizzardMainDialog)
         self.btn_shutdownQuit.setGeometry(QtCore.QRect(10, 110, 161, 31))
@@ -2953,6 +2953,8 @@ class Ui_WizzardMainDialog(object):
         self.label_121.setText(_translate("WizzardMainDialog", "°"))
         self.label_186.setText(_translate("WizzardMainDialog", "Azimuth"))
         self.label_187.setText(_translate("WizzardMainDialog", "Point 2    Altitude"))
+        self.btn_runBatchModel.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Generates a new pointing model from stored analyse data</p></body></html>"))
+        self.btn_runBatchModel.setText(_translate("WizzardMainDialog", "Make Batch Model from Analyse"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_5), _translate("WizzardMainDialog", "Model Analyse"))
         self.le_alignNumberStars.setToolTip(_translate("WizzardMainDialog", "Number of alignment stars in actual used pointing model"))
         self.le_alignNumberStars.setText(_translate("WizzardMainDialog", "10"))
@@ -3186,8 +3188,6 @@ class Ui_WizzardMainDialog(object):
         self.btn_popup.setText(_translate("WizzardMainDialog", "Test Popup"))
         self.btn_popup_close.setToolTip(_translate("WizzardMainDialog", "Generates refinment point along DSO track"))
         self.btn_popup_close.setText(_translate("WizzardMainDialog", "Close Popup"))
-        self.btn_cancelAnalyseModel_2.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Generates a new pointing model from stored analyse data</p></body></html>"))
-        self.btn_cancelAnalyseModel_2.setText(_translate("WizzardMainDialog", "Make Batch Model from Analyse"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_9), _translate("WizzardMainDialog", "MW"))
         self.btn_shutdownQuit.setToolTip(_translate("WizzardMainDialog", "Send shutdown command to the mount and quit the tool"))
         self.btn_shutdownQuit.setText(_translate("WizzardMainDialog", "Shutdown / Quit"))

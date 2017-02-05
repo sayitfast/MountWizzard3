@@ -19,6 +19,7 @@ import datetime
 import os
 import shutil
 import copy
+import random
 # threading
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
@@ -52,7 +53,7 @@ class Model(QtCore.QThread):
         self.dataQueue = dataQueue                                                                                          # Feedback queue for Data
         self.logQueue = logQueue                                                                                            # GUI output windows messages in modeling windows
         self.SGPro = SGPro()                                                                                                # wrapper class SGPro REST API
-        self.Analyse = Analyse()                                                                                            # use Class for saving analyse data
+        self.analyse = Analyse()                                                                                            # use Class for saving analyse data
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
         self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
@@ -86,6 +87,12 @@ class Model(QtCore.QThread):
                     self.command = ''                                                                                       #
                     self.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                     self.runRefinementModel()                                                                               #
+                    self.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelRefinementModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
+                elif self.command == 'RunBatchModel':                                                                  #
+                    self.command = ''                                                                                       #
+                    self.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
+                    self.runBatchModel()                                                                               #
                     self.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                     self.ui.btn_cancelRefinementModel.setStyleSheet(self.DEFAULT)                                           # button back to default color
                 elif self.command == 'RunAnalyseModel':                                                                     #
@@ -197,6 +204,10 @@ class Model(QtCore.QThread):
 
     def getStatusFast(self):                                                                                                # fast status
         pass                                                                                                                # actually no fast status
+
+    @property
+    def timeStamp(self):
+        return time.strftime("%H:%M:%S", time.localtime())
 
     def loadModelPoints(self, modelPointsFileName, modeltype):                                                              # load model point file from MM als list from tuples
         p = []
@@ -398,7 +409,7 @@ class Model(QtCore.QThread):
         name = directory + '_test.dat'                                                                                      # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
+            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runRefinementModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
@@ -411,7 +422,7 @@ class Model(QtCore.QThread):
         name = directory + '_refinement.dat'                                                                                # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
+            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runAnalyseModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
@@ -424,7 +435,7 @@ class Model(QtCore.QThread):
         name = directory + '_analyse.dat'                                                                                   # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
+            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runTimeChangeModel(self):
         settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
@@ -437,7 +448,7 @@ class Model(QtCore.QThread):
         name = directory + '_timechange.dat'                                                                                # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
+            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runHystereseModel(self):
         waitingTime = int(float(self.ui.settlingTime.value()))                                                              # using settling time also for waiting / delay
@@ -455,9 +466,52 @@ class Model(QtCore.QThread):
         name = directory + '_hysterese.dat'                                                                                 # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         if len(self.modelAnalyseData) > 0:
-            self.Analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
+            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
-    def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
+    def runBatchModel(self):
+        nameDataFile = self.ui.le_analyseFileName.text()
+        self.logger.debug('runBatchModel  -> model from {0}'.format(nameDataFile))                                          # debug output
+        data = self.analyse.loadData(nameDataFile)                                                                          # load data
+        if not('ra_JNow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
+            self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
+            self.logQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                                 # Gui Output
+            return
+        if not('ra_sol_JNow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
+            self.logger.error('runBatchModel  -> ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
+            self.logQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                                       # Gui Output
+            return
+        if not('pierside' in data and 'sidereal_time' in data):                                                             # you need sidereal time and pierside
+            self.logger.error('runBatchModel  -> pierside and sidereal time not in data file')                              # debug output
+            self.logQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                                 # Gui Output
+            return
+        self.mount.saveActualModel('BATCH')
+        self.logQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))               # Gui Output
+        self.mount.sendCommand('newalig')
+        self.logQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                         # Gui Output
+        for i in range(0, len(data['index'])):
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.mount.decimalToDegree(data['ra_Jnow'][i], False, True),
+                                                              self.mount.decimalToDegree(data['dec_Jnow'][i], True, False),
+                                                              data['pierside'][i],
+                                                              self.mount.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
+                                                              self.mount.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
+                                                              data['sidereal_time'][i])
+            reply = self.mount.sendCommand(command)
+            if reply == 'E':
+                self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
+                self.logQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                            # Gui Output
+            else:
+                self.logQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
+                                  .format(self.timeStamp(), reply,
+                                          int(data['azimuth'][i]), int(data['altitude'][i])))                               # Gui Output
+        reply = self.mount.sendCommand('endalig')
+        if reply == 'V':
+            self.logQueue.put('{0} - \tModel successful finished! \n'.format(self.timeStamp()))                             # Gui Output
+            self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
+        else:
+            self.logQueue.put('{0} - \tModel could not be calculated with current data! \n'.format(self.timeStamp()))       # Gui Output
+            self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
+
+    def slewMountDome(self, az, alt):                                                                                           # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
         self.commandQueue.put('MS')                                                                                         # initiate slewing with tracking at the end
@@ -507,10 +561,10 @@ class Model(QtCore.QThread):
 
     def capturingImage(self, modelData):                                                                                    # capturing image
         st_fits_header = modelData['sidereal_time'][0:10]                                                                   # store local sideral time as well
-        ra_fits_header = self.mount.decimalToDegree(modelData['ra'], False, False, ' ')                                     # set the point coordinates from mount in J2000 as hint precision 2
-        dec_fits_header = self.mount.decimalToDegree(modelData['dec'], True, False, ' ')                                    # set dec as well
-        raJnow_fits_header = self.mount.decimalToDegree(modelData['raJnow'], False, True, ' ')                              # set the point coordinates from mount in J2000 as hint precision 2
-        decJnow_fits_header = self.mount.decimalToDegree(modelData['decJnow'], True, True, ' ')                             # set dec as well
+        ra_fits_header = self.mount.decimalToDegree(modelData['ra_J2000'], False, False, ' ')                               # set the point coordinates from mount in J2000 as hint precision 2
+        dec_fits_header = self.mount.decimalToDegree(modelData['dec_J2000'], True, False, ' ')                              # set dec as well
+        raJnow_fits_header = self.mount.decimalToDegree(modelData['ra_Jnow'], False, True, ' ')                             # set the point coordinates from mount in J2000 as hint precision 2
+        decJnow_fits_header = self.mount.decimalToDegree(modelData['dec_Jnow'], True, True, ' ')                            # set dec as well
         if modelData['pierside'] == '1':
             pierside_fits_header = 'E'
         else:
@@ -564,6 +618,20 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
+    def solveImageSimulation(self, modelData):
+        modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 180
+        modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 1800
+        modelData['scale'] = 1.3
+        modelData['angle'] = 90
+        modelData['timeTS'] = 2.5
+        ra, dec = self.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
+        modelData['ra_sol_Jnow'] = ra
+        modelData['dec_sol_Jnow'] = dec
+        modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600
+        modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600
+        modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
+        return True, 'OK', modelData
+
     def solveImage(self, modeltype, modelData):                                                                             # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.SGPro.SgSolveImage(modelData['imagepath'],
@@ -601,10 +669,10 @@ class Model(QtCore.QThread):
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if solved:
             ra, dec = self.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
-            modelData['ra_sol_Jnow'] = self.mount.decimalToDegree(ra, False, True)                                          # convert to Jnow
-            modelData['dec_sol_Jnow'] = self.mount.decimalToDegree(dec, True, True)                                         # convert to Jnow
-            modelData['raError'] = (modelData['ra_sol'] - modelData['ra']) * 3600                                           # calculate the alignment error ra
-            modelData['decError'] = (modelData['dec_sol'] - modelData['dec']) * 3600                                        # calculate the alignment error dec
+            modelData['ra_sol_Jnow'] = ra                                                                                   # ra in Jnow
+            modelData['dec_sol_Jnow'] = dec                                                                                 # dec in  Jnow
+            modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra
+            modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600                                  # calculate the alignment error dec
             modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
             fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
@@ -640,7 +708,7 @@ class Model(QtCore.QThread):
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
         self.logQueue.put('delete')                                                                                         # deleting the logfile view
-        self.logQueue.put('{0} - Start {1} Model\n'.format(time.strftime("%H:%M:%S", time.localtime()), modeltype))         # Start informing user
+        self.logQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                                    # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                               # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
@@ -658,13 +726,12 @@ class Model(QtCore.QThread):
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
-                    self.logQueue.put('{0} -\t {1} Model canceled !\n'
-                                      .format(time.strftime("%H:%M:%S", time.localtime()), modeltype))                       # we keep all the stars before
+                    self.logQueue.put('{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))                 # we keep all the stars before
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
                 self.logQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
-                                  .format(time.strftime("%H:%M:%S", time.localtime()), i+1, p_az, p_alt))                   # Gui Output
+                                  .format(self.timeStamp(), i+1, p_az, p_alt))                                              # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p_az, p_alt))        # Debug output
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
@@ -673,7 +740,7 @@ class Model(QtCore.QThread):
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
                 self.logQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
-                                  .format(time.strftime("%H:%M:%S", time.localtime()), settlingTime))                       # Gui Output
+                                  .format(self.timeStamp(), settlingTime))                                                  # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:                                                                                      # waiting for settling time and showing data
                     time.sleep(1)                                                                                           # only step n seconds
@@ -692,34 +759,34 @@ class Model(QtCore.QThread):
                 modelData['isoMode'] = int(float(self.ui.isoSetting.value()))
                 modelData['blind'] = self.ui.checkUseBlindSolve.isChecked()
                 modelData['hint'] = float(self.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.ui.focalLength.value())
-                modelData['sidereal_time'] = self.mount.sidereal_time
-                modelData['ra'] = self.mount.ra
-                modelData['dec'] = self.mount.dec
-                modelData['raJnow'] = self.mount.raJnow
-                modelData['decJnow'] = self.mount.decJnow
+                modelData['sidereal_time'] = self.mount.sidereal_time[0:9]
+                modelData['ra_J2000'] = self.mount.ra
+                modelData['dec_J2000'] = self.mount.dec
+                modelData['ra_Jnow'] = self.mount.raJnow
+                modelData['dec_Jnow'] = self.mount.decJnow
                 modelData['pierside'] = self.mount.pierside
                 modelData['index'] = i
                 modelData['refractionTemp'] = self.mount.refractionTemp                                                     # set it if string available
                 modelData['refractionPress'] = self.mount.refractionPressure                                                # set it if string available
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('AP')                                                                             # tracking on during the picture taking
-                self.logQueue.put('{0} -\t Capturing image for model point {1:2d}\n'
-                                  .format(time.strftime("%H:%M:%S", time.localtime()), i + 1))                              # gui output
+                self.logQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))       # gui output
                 suc, mes, imagepath = self.capturingImage(modelData)                                                        # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.commandQueue.put('RT9')                                                                            # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
-                    self.logQueue.put('{0} -\t Solving Image\n'.format(time.strftime("%H:%M:%S", time.localtime())))        # output for user GUI
-                    suc, mes, modelData = self.solveImage(modeltype, modelData)                                             # solve the position and returning the values
-                    self.logQueue.put('{0} -\t Image path: {1}\n'
-                                      .format(time.strftime("%H:%M:%S", time.localtime()), modelData['imagepath']))         # Gui output
+                    self.logQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                                   # output for user GUI
+                    if self.mount.driver_real:
+                        suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
+                    else:
+                        suc, mes, modelData = self.solveImageSimulation(modelData)                                          # solve the position and returning the values from Simulation
+                    self.logQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))         # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement']:                                                             #
                             suc = self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])               # sync the actual star to resolved coordinates in JNOW
                             if suc:
-                                self.logQueue.put('{0} -\t point added\n'
-                                                  .format(time.strftime("%H:%M:%S", time.localtime())))
+                                self.logQueue.put('{0} -\t point added\n'.format(self.timeStamp()))
                             else:
                                 self.cancel = True
                         numCheckPoints += 1                                                                                 # increase index for synced stars
@@ -728,16 +795,14 @@ class Model(QtCore.QThread):
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
                         self.logQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
-                                          .format(time.strftime("%H:%M:%S", time.localtime()),
-                                                  modelData['raError'], modelData['decError']))                             # data for User
+                                          .format(self.timeStamp(), modelData['raError'], modelData['decError']))           # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
                         os.remove(modelData['imagepath'])                                                                   # delete unsolved image
-                        self.logQueue.put('{0} -\t Solving error: {1}\n'
-                                          .format(time.strftime("%H:%M:%S", time.localtime()), mes))                        # Gui output
+                        self.logQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))                     # Gui output
         if not self.ui.checkKeepImages.isChecked():                                                                         # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
         self.logQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
-                          .format(time.strftime("%H:%M:%S", time.localtime()), modeltype, numCheckPoints))                  # GUI output
+                          .format(self.timeStamp(), modeltype, numCheckPoints))                                             # GUI output
         self.modelrun = False
         return results                                                                                                      # return results for analysing

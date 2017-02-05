@@ -130,6 +130,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_cancelBaseModel.clicked.connect(self.cancelBaseModel)
         self.ui.btn_runRefinementModel.clicked.connect(self.runRefinementModel)
         self.ui.btn_cancelRefinementModel.clicked.connect(self.cancelRefinementModel)
+        self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
         self.ui.btn_clearAlignmentModel.clicked.connect(self.clearAlignmentModel)
         self.ui.btn_selectImageDirectoryName.clicked.connect(self.selectImageDirectoryName)
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
@@ -760,6 +761,9 @@ class MountWizzardApp(MwWidget):
 
     def cancelAnalyseModel(self):
         self.model.signalModelCommand.emit('CancelAnalyseModel')
+
+    def runBatchModel(self):
+        self.model.signalModelCommand.emit('RunBatchModel')
 
     def runTimeChangeModel(self):
         self.model.signalModelCommand.emit('RunTimeChangeModel')

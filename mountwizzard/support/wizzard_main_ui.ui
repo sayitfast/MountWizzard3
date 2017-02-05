@@ -3002,6 +3002,22 @@
       <string>Point 2    Altitude</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_runBatchModel">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>280</y>
+       <width>281</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Make Batch Model from Analyse</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
@@ -7869,22 +7885,6 @@
      </property>
      <property name="text">
       <string>Close Popup</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_cancelAnalyseModel_2">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>300</y>
-       <width>281</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Make Batch Model from Analyse</string>
      </property>
     </widget>
    </widget>

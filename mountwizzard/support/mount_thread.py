@@ -226,7 +226,7 @@ class Mount(QtCore.QThread):
             elif command == 'GS':
                 value = self.decimalToDegree(self.ascom.SiderealTime, False, False)
             elif command == 'GRTMP':
-                value = '0.0'
+                value = '10.0'
             elif command == 'Ginfo':
                 self.raJnow = self.ascom.RightAscension
                 self.decJnow = self.ascom.Declination
@@ -240,7 +240,10 @@ class Mount(QtCore.QThread):
                     else:
                         stat = 7
                 jd = self.ascom.SiderealTime + 2440587.5    # TODO: better time simulation
-                pierside = self.ascom.SideOfPier
+                if self.ascom.SideOfPier == 0:
+                    pierside = 'E'
+                else:
+                    pierside = 'W'
                 if self.ascom.Slewing:
                     slew = 1
                 else:
@@ -254,8 +257,30 @@ class Mount(QtCore.QThread):
                 self.ascom.Tracking = True
             elif command == 'RT9':
                 self.ascom.Tracking = False
+            elif command == 'GTMP1':
+                value = '10.0'
+            elif command == 'GTMP2':
+                value = '10.0'
+            elif command == 'GRPRS':
+                value = '990.0'
+            elif command == 'Guaf':
+                value = '0'
+            elif command == 'GMs':
+                value = '15'
+            elif command == 'Gh':
+                value = '90'
+            elif command == 'Go':
+                value = '00'
+            elif command == 'Gdat':
+                value = '0'
+            elif command in ['GVD', 'GVN', 'GVP', 'GVT', 'GVZ']:
+                value = 'Simulation'
+            elif command == 'GREF':
+                value = '1'
             elif command == 'CMS':
                 value = 'V'
+            else:
+                print(command)
         self.sendCommandLock.release()
         return value
 
@@ -316,7 +341,7 @@ class Mount(QtCore.QThread):
         minute = int((value - hour) * 60)
         second = int(((value - hour) * 60 - minute) * 60)
         if with_decimal:
-            second_dec = '.{0:1d}'.format(int((((value - hour) * 60 - minute) * 60 - second) * 100))
+            second_dec = '.{0:1d}'.format(int((((value - hour) * 60 - minute) * 60 - second) * 10))
         else:
             second_dec = ''
         if with_sign:
