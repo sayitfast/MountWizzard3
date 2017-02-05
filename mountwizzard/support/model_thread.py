@@ -436,8 +436,8 @@ class Model(QtCore.QThread):
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('All', points, directory, settlingTime)                                   # run the analyse
         else:                                                                                                               # otherwise omit the run
-            self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
-        name = directory + '_check.dat'                                                                                     # generate name of analyse file
+            self.logger.warning('runAllModel -> There are no Refinement or Base Points to model')                           # write error log
+        name = directory + '_all.dat'                                                                                       # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
             self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
@@ -538,23 +538,20 @@ class Model(QtCore.QThread):
             while self.mount.slewing:                                                                                       # wait for tracking = 7 or dome not slewing
                 time.sleep(0.1)                                                                                             # loop time
 
-    def prepareCaptureImageSubframes(self, scale, modelData):                                                               # get camera data for doing subframes
-
-        suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
-        self.logger.debug('prepareCaptureSubframe-> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))         # debug data
+    def prepareCaptureImageSubframes(self, scale, sizeX, sizeY, canSubframe, modelData):                                    # get camera data for doing subframes
         modelData['sizeX'] = 0                                                                                              # size inner window
         modelData['sizeY'] = 0                                                                                              # size inner window
         modelData['offX'] = 0                                                                                               # offset is half of the rest
         modelData['offY'] = 0                                                                                               # same in y
         modelData['canSubframe'] = False
-        if suc and canSubframe:                                                                                             # if camera could do subframes
-                modelData['sizeX'] = int(sizeX * scale)                                                                     # size inner window
-                modelData['sizeY'] = int(sizeY * scale)                                                                     # size inner window
-                modelData['offX'] = int((sizeX - sizeX) / 2)                                                                # offset is half of the rest
-                modelData['offY'] = int((sizeY - sizeY) / 2)                                                                # same in y
-                modelData['canSubframe'] = True                                                                             # same in y
+        if canSubframe:                                                                                                     # if camera could do subframes
+            modelData['sizeX'] = int(sizeX * scale)                                                                         # size inner window
+            modelData['sizeY'] = int(sizeY * scale)                                                                         # size inner window
+            modelData['offX'] = int((sizeX - sizeX) / 2)                                                                    # offset is half of the rest
+            modelData['offY'] = int((sizeY - sizeY) / 2)                                                                    # same in y
+            modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
-                self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe error: {0}'.format(mes))     # log message
+            self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message
         return modelData                                                                                                    # default without subframe
 
     def getTestImage(self, index, imagepath):
@@ -721,7 +718,13 @@ class Model(QtCore.QThread):
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.ui.le_imageDirectoryName.text() + '/' + directory                               # define subdirectory for storing the images
         scaleSubframe = self.ui.scaleSubframe.value() / 100                                                                 # scale subframe in percent
-        modelData = self.prepareCaptureImageSubframes(scaleSubframe, modelData)                                             # calculate the necessary data
+        suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
+        if suc:
+            self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
+            modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)              # calculate the necessary data
+        else:
+            self.logger.warning('runModel       -> SgGetCameraProps with error:{0}'.format(mes))                            # log message
+            return
         if not self.ui.checkDoSubframe.isChecked():                                                                         # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
