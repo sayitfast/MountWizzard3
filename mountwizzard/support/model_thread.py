@@ -100,6 +100,12 @@ class Model(QtCore.QThread):
                     self.runCheckModel()                                                                                    #
                     self.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
                     self.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                     # button back to default color
+                elif self.command == 'RunAllModel':
+                    self.command = ''
+                    self.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                        # button blue (running)
+                    self.runAllModel()
+                    self.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
+                    self.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                     # button back to default color
                 elif self.command == 'RunTimeChangeModel':                                                                  #
                     self.command = ''                                                                                       #
                     self.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
@@ -415,7 +421,20 @@ class Model(QtCore.QThread):
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = self.BasePoints + self.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
-            self.modelAnalyseData = self.runModel('Analyse', points, directory, settlingTime)                               # run the analyse
+            self.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)                                 # run the analyse
+        else:                                                                                                               # otherwise omit the run
+            self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
+        name = directory + '_check.dat'                                                                                     # generate name of analyse file
+        if len(self.modelAnalyseData) > 0:
+            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
+            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
+
+    def runAllModel(self):
+        settlingTime = int(float(self.ui.settlingTime.value()))
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        points = self.BasePoints + self.RefinementPoints
+        if len(points) > 0:                                                                                                 # there should be some points
+            self.modelAnalyseData = self.runModel('All', points, directory, settlingTime)                                   # run the analyse
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
         name = directory + '_check.dat'                                                                                     # generate name of analyse file
@@ -491,19 +510,23 @@ class Model(QtCore.QThread):
                                           int(data['azimuth'][i]), int(data['altitude'][i])))                               # Gui Output
         reply = self.mount.sendCommand('endalig')
         if reply == 'V':
-            self.logQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                             # Gui Output
+            self.logQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                               # Gui Output
             self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
         else:
-            self.logQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))       # Gui Output
+            self.logQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))         # Gui Output
             self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
 
-    def slewMountDome(self, az, alt):                                                                                           # slewing mount and dome to alt az point
+    def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                    # Azimuth setting
         self.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                                  # Altitude Setting
         self.commandQueue.put('MS')                                                                                         # initiate slewing with tracking at the end
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.dome.connected))
+        break_counter = 0
         while not self.mount.slewing:                                                                                       # wait for mount starting slewing
             time.sleep(0.1)                                                                                                 # loop time
+            break_counter += 1
+            if break_counter == 10:
+                break
         if self.dome.connected == 1:                                                                                        # if there is a dome, should be slewed as well
             self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
             self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
@@ -769,7 +792,7 @@ class Model(QtCore.QThread):
                         suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
                     self.logQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))         # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
-                        if modeltype in ['Base', 'Refinement']:                                                             #
+                        if modeltype in ['Base', 'Refinement', 'All']:                                                      #
                             suc = self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])               # sync the actual star to resolved coordinates in JNOW
                             if suc:
                                 self.logQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))

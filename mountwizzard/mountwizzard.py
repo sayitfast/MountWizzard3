@@ -155,6 +155,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
         self.ui.btn_generateBasePoints.clicked.connect(self.generateBasePoints)
         self.ui.btn_runCheckModel.clicked.connect(self.runCheckModel)
+        self.ui.btn_runAllModel.clicked.connect(self.runAllModel)
         self.ui.btn_runTimeChangeModel.clicked.connect(self.runTimeChangeModel)
         self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModel)
         self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
@@ -749,6 +750,9 @@ class MountWizzardApp(MwWidget):
 
     def runCheckModel(self):
         self.model.signalModelCommand.emit('RunCheckModel')
+
+    def runAllModel(self):
+        self.model.signalModelCommand.emit('RunAllModel')
 
     def cancelModel(self):
         self.model.signalModelCommand.emit('CancelModel')

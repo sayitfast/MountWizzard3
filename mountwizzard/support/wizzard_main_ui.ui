@@ -1245,7 +1245,7 @@
       <string>Runs the base model, if ther are any points</string>
      </property>
      <property name="text">
-      <string>Run</string>
+      <string>Run Base Model</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkUseBlindSolve">
@@ -1789,7 +1789,7 @@
       <string>Run refinment model</string>
      </property>
      <property name="text">
-      <string>Run</string>
+      <string>Run Refinement Model</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_deleteBelowHorizonLine">
@@ -1978,7 +1978,7 @@
        <x>150</x>
        <y>30</y>
        <width>21</width>
-       <height>431</height>
+       <height>391</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -2068,6 +2068,22 @@
      </property>
      <property name="text">
       <string>Clear Model Points in Window</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_runAllModel">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>430</y>
+       <width>441</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run base and refinement model directly after another&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Run Base and Refinement Model</string>
      </property>
     </widget>
    </widget>

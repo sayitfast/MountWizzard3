@@ -280,7 +280,7 @@ class Mount(QtCore.QThread):
             elif command == 'CMS':
                 value = 'V'
             else:
-                print(command)
+                pass
         self.sendCommandLock.release()
         return value
 
