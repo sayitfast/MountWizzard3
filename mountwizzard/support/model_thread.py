@@ -205,7 +205,6 @@ class Model(QtCore.QThread):
     def getStatusFast(self):                                                                                                # fast status
         pass                                                                                                                # actually no fast status
 
-    @property
     def timeStamp(self):
         return time.strftime("%H:%M:%S", time.localtime())
 
@@ -472,11 +471,11 @@ class Model(QtCore.QThread):
         nameDataFile = self.ui.le_analyseFileName.text()
         self.logger.debug('runBatchModel  -> model from {0}'.format(nameDataFile))                                          # debug output
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
-        if not('ra_JNow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
+        if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
             self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
             self.logQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                                 # Gui Output
             return
-        if not('ra_sol_JNow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
+        if not('ra_sol_Jnow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
             self.logger.error('runBatchModel  -> ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
             self.logQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                                       # Gui Output
             return
@@ -505,10 +504,10 @@ class Model(QtCore.QThread):
                                           int(data['azimuth'][i]), int(data['altitude'][i])))                               # Gui Output
         reply = self.mount.sendCommand('endalig')
         if reply == 'V':
-            self.logQueue.put('{0} - \tModel successful finished! \n'.format(self.timeStamp()))                             # Gui Output
+            self.logQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                             # Gui Output
             self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
         else:
-            self.logQueue.put('{0} - \tModel could not be calculated with current data! \n'.format(self.timeStamp()))       # Gui Output
+            self.logQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))       # Gui Output
             self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                           # slewing mount and dome to alt az point

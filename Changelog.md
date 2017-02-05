@@ -1,4 +1,8 @@
 # Changelog:
+1.1.8
+- optimisations
+- adding feature batch model calculation
+
 1.1.7
 - cyclic logs per day
 - correction simulation ascom telescope simulator
