@@ -1,4 +1,7 @@
 # Changelog:
+1.1.10
+- changing setup.py
+
 1.1.9
 - changing simulation values
 
