@@ -1,4 +1,8 @@
 # Changelog:
+1.1.11
+- adding first unittests
+- refactoring
+
 1.1.10
 - changing setup.py
 

@@ -198,20 +198,31 @@ class Model(QtCore.QThread):
     def getStatusFast(self):                                                                                                # fast status
         pass                                                                                                                # actually no fast status
 
-    def timeStamp(self):
+    @staticmethod
+    def timeStamp():
         return time.strftime("%H:%M:%S", time.localtime())
 
     def loadModelPoints(self, modelPointsFileName, modeltype):                                                              # load model point file from MM als list from tuples
         p = []
+        number = 0
         try:                                                                                                                # fault tolerance, if file io fails
             with open('config/' + modelPointsFileName) as fileHandle:                                                       # run over complete file
                 for line in fileHandle:                                                                                     # run over lines
-                    convertedLine = line.rstrip('\n').split(':')                                                            # format is same as Per's MM
-                    Point = (int(convertedLine[0]), int(convertedLine[1]))                                                  # take data from line
-                    if len(convertedLine) == 2 and modeltype == 'refinement':                                               # in MM format base and refinement are included
-                        p.append(Point)                                                                                     # add data to the adequate list
-                    elif len(convertedLine) != 2 and modeltype == 'base':
-                        p.append(Point)
+                    if line.startswith('GRID'):                                                                             # if grid, then its a TSX file
+                        convertedLine = line.rstrip('\n').split()                                                           # format is TSX format
+                        point = (float(convertedLine[2]), float(convertedLine[3]))                                          # take data from line
+                        number += 1
+                        if modeltype == 'refinement' and number > 3:                                                        # in MM format base and refinement are included
+                            p.append(point)                                                                                 # add data to the adequate list
+                        elif modeltype == 'base' and number <= 3:
+                            p.append(point)                                                                                 # add data to the adequate list
+                    else:
+                        convertedLine = line.rstrip('\n').split(':')                                                        # format is same as Per's MM
+                        point = (int(convertedLine[0]), int(convertedLine[1]))                                              # take data from line
+                        if len(convertedLine) == 2 and modeltype == 'refinement':                                           # in MM format base and refinement are included
+                            p.append(point)                                                                                 # add data to the adequate list
+                        elif len(convertedLine) != 2 and modeltype == 'base':
+                            p.append(point)
             fileHandle.close()                                                                                              # close file
         except Exception as e:                                                                                              # handle exception
             self.messageQueue.put('Error loading model points from {0} error:{1}!'.format(modelPointsFileName, e))          # Gui message
@@ -525,7 +536,7 @@ class Model(QtCore.QThread):
         while not self.mount.slewing:                                                                                       # wait for mount starting slewing
             time.sleep(0.1)                                                                                                 # loop time
             break_counter += 1
-            if break_counter == 10:
+            if break_counter == 30:
                 break
         if self.dome.connected == 1:                                                                                        # if there is a dome, should be slewed as well
             self.dome.ascom.SlewToAzimuth(float(az))                                                                        # set azimuth coordinate
@@ -772,6 +783,7 @@ class Model(QtCore.QThread):
                 modelData['blind'] = self.ui.checkUseBlindSolve.isChecked()
                 modelData['hint'] = float(self.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.ui.focalLength.value())
                 modelData['sidereal_time'] = self.mount.sidereal_time[0:9]
+                modelData['sidereal_time_float'] = self.mount.degStringToDecimal(self.mount.sidereal_time[0:9])
                 modelData['ra_J2000'] = self.mount.ra
                 modelData['dec_J2000'] = self.mount.dec
                 modelData['ra_Jnow'] = self.mount.raJnow

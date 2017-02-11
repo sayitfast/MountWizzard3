@@ -221,7 +221,7 @@
     <string>Model Error Polar</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_9">
+  <widget class="QPushButton" name="btn_selectRaErrorDeviation">
    <property name="geometry">
     <rect>
      <x>140</x>
@@ -239,7 +239,7 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>RA Error Deviation</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectRaErrorAzimuth">
@@ -482,7 +482,7 @@
     <double>10.000000000000000</double>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_10">
+  <widget class="QPushButton" name="btn_selectDecErrorDeviation">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -500,7 +500,7 @@
     <string>Sets dual tracking on / off</string>
    </property>
    <property name="text">
-    <string>...</string>
+    <string>DEC Error Deviation</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectAnalyseFileName_11">
