@@ -119,6 +119,7 @@ class ShowCoordinatePopup(MwWidget):
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:03.0f} min'.format(fliptime, delta))
         self.pointerTrack.update()
+        QGuiApplication.processEvents()
 
     def constructTrackWidget(self, esize):
         group = QGraphicsItemGroup()
