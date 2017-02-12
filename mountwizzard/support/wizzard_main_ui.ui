@@ -7627,7 +7627,7 @@
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>151</width>
+       <width>331</width>
        <height>20</height>
       </rect>
      </property>
@@ -7640,7 +7640,7 @@
       <string>no pictures are taken, but fetched from directory with test data</string>
      </property>
      <property name="text">
-      <string>Test without camera</string>
+      <string>Test without plate solver (only Simulation)</string>
      </property>
     </widget>
     <widget class="Line" name="line_31">
