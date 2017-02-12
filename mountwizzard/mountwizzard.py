@@ -585,24 +585,6 @@ class MountWizzardApp(MwWidget):
                 self.ui.le_refractionStatus.setText('OFF')
         if data['Name'] == 'GetMountStatus':
             self.ui.le_mountStatus.setText(str(self.mount.statusReference[data['Value']]))
-            self.ui.btn_startTracking.setStyleSheet(self.DEFAULT)
-            self.ui.btn_stopTracking.setStyleSheet(self.DEFAULT)
-            self.ui.btn_mountPark.setStyleSheet(self.DEFAULT)
-            self.ui.btn_mountUnpark.setStyleSheet(self.DEFAULT)
-            self.ui.btn_stop.setStyleSheet(self.DEFAULT)
-            if data['Value'] == '0':
-                self.ui.btn_startTracking.setStyleSheet(self.BLUE)
-                self.ui.btn_mountUnpark.setStyleSheet(self.BLUE)
-            elif data['Value'] == '1':
-                self.ui.btn_stop.setStyleSheet(self.BLUE)
-                self.ui.btn_stopTracking.setStyleSheet(self.BLUE)
-                self.ui.btn_mountUnpark.setStyleSheet(self.BLUE)
-            elif data['Value'] == '5':
-                self.ui.btn_mountPark.setStyleSheet(self.BLUE)
-                self.ui.btn_stopTracking.setStyleSheet(self.BLUE)
-            elif data['Value'] == '7':
-                self.ui.btn_stopTracking.setStyleSheet(self.BLUE)
-                self.ui.btn_mountUnpark.setStyleSheet(self.BLUE)
         if data['Name'] == 'GetTelescopeDEC':
             self.ui.le_telescopeDEC.setText(data['Value'])
         if data['Name'] == 'GetTelescopeRA':
