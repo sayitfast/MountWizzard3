@@ -126,42 +126,52 @@ class Model(QtCore.QThread):
                     self.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 elif self.command == 'LoadBasePoints':
                     self.command = ''
-                    self.showBasePoints()
+                    self.BasePoints = self.showBasePoints()
+                    self.signalModelRedraw.emit(True)
                 elif self.command == 'LoadRefinementPoints':
                     self.command = ''
-                    self.showRefinementPoints()
+                    self.RefinementPoints = self.showRefinementPoints()
+                    self.signalModelRedraw.emit(True)
                 elif self.command == 'SortRefinementPoints':                                                                #
                     self.command = ''                                                                                       #
-                    self.sortPoints('refinement')                                                                           #
+                    self.sortPoints('refinement')
+                    self.signalModelRedraw.emit(True)
                 elif self.command == 'GenerateDSOPoints':                                                                   #
                     self.command = ''                                                                                       #
                     self.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)                                                  # take some time, therefore coloring button during execution
-                    self.generateDSOPoints()                                                                                #
+                    self.RefinementPoints = self.generateDSOPoints()
+                    self.signalModelRedraw.emit(True)
                     self.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                               # color button back, routine finished
                 elif self.command == 'GenerateDensePoints':                                                                 #
                     self.command = ''                                                                                       #
                     self.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)                                                # tale some time, color button fro showing running
-                    self.generateDensePoints()                                                                              #
+                    self.RefinementPoints = self.generateDensePoints()
+                    self.signalModelRedraw.emit(True)
                     self.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                             # routing finished, coloring default
                 elif self.command == 'GenerateNormalPoints':                                                                #
                     self.command = ''                                                                                       #
                     self.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)                                               # tale some time, color button fro showing running
-                    self.generateNormalPoints()                                                                             #
+                    self.RefinementPoints = self.generateNormalPoints()
+                    self.signalModelRedraw.emit(True)
                     self.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                            # routing finished, coloring default
                 elif self.command == 'GenerateGridPoints':                                                                  #
                     self.command = ''                                                                                       #
                     self.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)                                                 # take some time, therefore coloring button during execution
-                    self.generateGridPoints()                                                                               #
+                    self.RefinementPoints = self.generateGridPoints()
+                    self.signalModelRedraw.emit(True)
                     self.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
                 elif self.command == 'GenerateBasePoints':                                                                  #
                     self.command = ''                                                                                       #
-                    self.generateBasePoints()                                                                               #
+                    self.BasePoints = self.generateBasePoints()
+                    self.signalModelRedraw.emit(True)
                 elif self.command == 'DeleteBelowHorizonLine':
                     self.command = ''
                     self.deleteBelowHorizonLine()
+                    self.signalModelRedraw.emit(True)
                 elif self.command == 'DeletePoints':
                     self.command = ''
                     self.deletePoints()
+                    self.signalModelRedraw.emit(True)
             if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow
@@ -250,10 +260,8 @@ class Model(QtCore.QThread):
         eastSide = sorted(eastSide, key=itemgetter(1))                                                                      # sort east flipside
         if modeltype == 'base':
             self.BasePoints = eastSide + westSide                                                                           # put them together
-            self.signalModelRedraw.emit(True)                                                                               # update graphics
         else:
             self.RefinementPoints = eastSide + westSide                                                                     # put them together
-            self.signalModelRedraw.emit(True)                                                                               # update graphics
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
         if self.ui.checkUseMinimumHorizonLine.isChecked():
@@ -309,34 +317,31 @@ class Model(QtCore.QThread):
                 i += 1                                                                                                      # if ok , keep him
             else:                                                                                                           #
                 del self.RefinementPoints[i]                                                                                # otherwise delete point from list
-        self.signalModelRedraw.emit(True)
 
     def deletePoints(self):
         self.BasePoints = []
         self.RefinementPoints = []
-        self.signalModelRedraw.emit(True)
 
     def showBasePoints(self):
-        self.BasePoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
-        self.signalModelRedraw.emit(True)
+        value = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'base')
+        return value
 
     def showRefinementPoints(self):
-        self.RefinementPoints = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
-        self.signalModelRedraw.emit(True)
+        value = self.loadModelPoints(self.ui.le_modelPointsFileName.text(), 'refinement')
+        return value
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
         raCopy = copy.copy(self.mount.ra)
         decCopy = copy.copy(self.mount.dec)
-        self.RefinementPoints = []                                                                                          # clear point list
+        value = []                                                                                                          # clear point list
         for i in range(0, 20):                                                                                              # round model point from actual az alt position 24 hours
             ra = raCopy - float(i) * 6 / 20                                                                                 # 6 hours of track test
             az, alt = self.mount.transformNovas(ra, decCopy, 1)                                                             # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
-                self.RefinementPoints.append((az, alt))                                                                     # add point to list
-        self.signalModelRedraw.emit(True)
+                value.append((az, alt))                                                                                     # add point to list
+        return value
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
-        self.RefinementPoints = []                                                                                          # clear pointlist
         west = []                                                                                                           # no sorting, point will be for west and east prepared
         east = []                                                                                                           #
         for dec in range(-10, 90, 10):                                                                                      # range, actually referenced from european situation
@@ -353,11 +358,9 @@ class Model(QtCore.QThread):
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
-            self.RefinementPoints = west + east                                                                             # combine pointlist
-        self.signalModelRedraw.emit(True)
+        return west + east                                                                                                  # combine pointlist
 
     def generateNormalPoints(self):
-        self.RefinementPoints = []                                                                                          # clear pointlist
         west = []                                                                                                           # no sorting, point will be for west and east prepared
         east = []                                                                                                           #
         for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european situation
@@ -372,21 +375,19 @@ class Model(QtCore.QThread):
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
-            self.RefinementPoints = west + east                                                                             # combine pointlist
-        self.signalModelRedraw.emit(True)
+        return west + east                                                                                                  # combine pointlist
 
     def generateGridPoints(self):                                                                                           # model points along dso path
         row = int(float(self.ui.numberGridPointsRow.value()))
         col = int(float(self.ui.numberGridPointsCol.value()))
-        self.RefinementPoints = []                                                                                          # clear point list
+        value = []                                                                                                          # clear point list
         for az in range(5, 360, int(360 / col)):                                                                            # make point for all azimuth
             for alt in range(10, 90, int(90 / row)):                                                                        # make point for all altitudes
-                self.RefinementPoints.append((az, alt))                                                                     # add point to list
-            time.sleep(.05)
-        self.signalModelRedraw.emit(True)
+                value.append((az, alt))                                                                                     # add point to list
+        return value
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
-        self.BasePoints = []                                                                                                # clear it
+        value = []
         az = int(float(self.ui.azimuthBase.value()))                                                                        # get az value from gui
         alt = int(float(self.ui.altitudeBase.value()))                                                                      # same to alt value
         for i in range(0, 3):                                                                                               # we need 3 basepoints
@@ -394,8 +395,8 @@ class Model(QtCore.QThread):
             if azp > 360:                                                                                                   # value range 0-360
                 azp -= 360                                                                                                  # shift it if necessary
             point = (azp, alt)                                                                                              # generate the point value az,alt
-            self.BasePoints.append(point)                                                                                   # put it to list
-        self.signalModelRedraw.emit(True)
+            value.append(point)                                                                                             # put it to list
+        return value
 
     def clearAlignmentModel(self):
         self.modelAnalyseData = []
