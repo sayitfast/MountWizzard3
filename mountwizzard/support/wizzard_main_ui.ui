@@ -1868,10 +1868,10 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels the model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Cancel Model Run</string>
+      <string>Cancel any Model Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runCheckModel">
@@ -2112,7 +2112,7 @@
     <widget class="QPushButton" name="btn_cancelAnalyseModel">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>230</y>
        <width>281</width>
        <height>31</height>
@@ -2463,9 +2463,9 @@
     <widget class="QLineEdit" name="le_analyseFileName">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>50</y>
-       <width>281</width>
+       <width>311</width>
        <height>21</height>
       </rect>
      </property>
@@ -2496,9 +2496,9 @@
     <widget class="Line" name="line_29">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>30</y>
-       <width>281</width>
+       <width>311</width>
        <height>21</height>
       </rect>
      </property>
@@ -2512,7 +2512,7 @@
     <widget class="QPushButton" name="btn_openAnalyseWindow">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>130</y>
        <width>281</width>
        <height>31</height>
@@ -2528,7 +2528,7 @@
     <widget class="QPushButton" name="btn_selectAnalyseFileName">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>80</y>
        <width>121</width>
        <height>31</height>
@@ -2549,7 +2549,7 @@
     <widget class="QLabel" name="label_99">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>20</y>
        <width>161</width>
        <height>21</height>
@@ -2973,7 +2973,7 @@
     <widget class="QPushButton" name="btn_runBatchModel">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>430</x>
        <y>280</y>
        <width>281</width>
        <height>31</height>
@@ -3230,7 +3230,7 @@
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>140</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3246,7 +3246,7 @@
      <property name="geometry">
       <rect>
        <x>590</x>
-       <y>140</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3278,7 +3278,7 @@
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>120</y>
+       <y>160</y>
        <width>321</width>
        <height>21</height>
       </rect>
@@ -3294,7 +3294,7 @@
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>170</y>
+       <y>210</y>
        <width>321</width>
        <height>21</height>
       </rect>
@@ -3310,7 +3310,7 @@
      <property name="geometry">
       <rect>
        <x>590</x>
-       <y>190</y>
+       <y>230</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3326,7 +3326,7 @@
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>190</y>
+       <y>230</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3336,6 +3336,22 @@
      </property>
      <property name="text">
       <string>Save Simple Model</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_deleteWorstPoint">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>130</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Deletes worst point of actual model until error is below target RMS</string>
+     </property>
+     <property name="text">
+      <string>Delete worst Point</string>
      </property>
     </widget>
    </widget>
@@ -3584,7 +3600,7 @@
      <property name="geometry">
       <rect>
        <x>140</x>
-       <y>260</y>
+       <y>250</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -3629,7 +3645,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>230</y>
+       <y>220</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -3647,7 +3663,7 @@
      <property name="geometry">
       <rect>
        <x>140</x>
-       <y>230</y>
+       <y>220</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -3692,7 +3708,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>260</y>
+       <y>250</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -3710,7 +3726,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>230</y>
+       <y>220</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -3731,7 +3747,7 @@
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>260</y>
+       <y>250</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -3791,7 +3807,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>200</y>
+       <y>190</y>
        <width>181</width>
        <height>21</height>
       </rect>
@@ -3809,7 +3825,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>200</y>
        <width>241</width>
        <height>21</height>
       </rect>
@@ -3989,7 +4005,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>230</y>
+       <y>220</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -4007,7 +4023,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>260</y>
+       <y>250</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -4165,7 +4181,7 @@
       <rect>
        <x>470</x>
        <y>100</y>
-       <width>41</width>
+       <width>31</width>
        <height>20</height>
       </rect>
      </property>
@@ -4354,7 +4370,7 @@
       <rect>
        <x>590</x>
        <y>100</y>
-       <width>41</width>
+       <width>31</width>
        <height>20</height>
       </rect>
      </property>
@@ -4484,30 +4500,6 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="label_79">
-     <property name="geometry">
-      <rect>
-       <x>710</x>
-       <y>70</y>
-       <width>21</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>12</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>°C</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="le_humidityWeather">
      <property name="geometry">
       <rect>
@@ -4615,7 +4607,7 @@
       <rect>
        <x>330</x>
        <y>410</y>
-       <width>221</width>
+       <width>291</width>
        <height>31</height>
       </rect>
      </property>
@@ -4628,7 +4620,7 @@
       <string>Pushes the refraction temp and pressur to mount</string>
      </property>
      <property name="text">
-      <string>Push to Mount Manually</string>
+      <string>Push Parameter Update to Mount Manually</string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -4837,7 +4829,7 @@
       <rect>
        <x>330</x>
        <y>350</y>
-       <width>101</width>
+       <width>181</width>
        <height>20</height>
       </rect>
      </property>
@@ -4850,7 +4842,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Correction Status</string>
+      <string>Refraction Correction Status is</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -5121,7 +5113,7 @@
     <widget class="QLineEdit" name="le_refractionStatus">
      <property name="geometry">
       <rect>
-       <x>450</x>
+       <x>520</x>
        <y>350</y>
        <width>61</width>
        <height>21</height>
@@ -5321,7 +5313,7 @@
       <rect>
        <x>710</x>
        <y>100</y>
-       <width>41</width>
+       <width>31</width>
        <height>20</height>
       </rect>
      </property>
@@ -5369,7 +5361,7 @@
       <rect>
        <x>330</x>
        <y>380</y>
-       <width>141</width>
+       <width>291</width>
        <height>20</height>
       </rect>
      </property>
@@ -5382,10 +5374,10 @@
       <string>sets the refraction param updates to automatic</string>
      </property>
      <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
+      <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Autosync Correction</string>
+      <string>Periodic Parameter Update from Mountwizzard</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -5409,16 +5401,13 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Set Refraction Correction Parameters</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
+      <string>Refraction Correction in Mount</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_setRefractionCorrection">
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>590</x>
        <y>350</y>
        <width>31</width>
        <height>21</height>
@@ -5476,6 +5465,30 @@
      </property>
      <property name="text">
       <string>deg</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_79">
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>70</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°C</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -7454,7 +7467,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>371</width>
+       <width>331</width>
        <height>21</height>
       </rect>
      </property>
@@ -7521,8 +7534,11 @@
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Here the actually used working directory is shown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
-      <string>Product Number</string>
+      <string>Diectory Name</string>
      </property>
     </widget>
    </widget>
@@ -7534,8 +7550,8 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
-       <width>271</width>
+       <y>30</y>
+       <width>331</width>
        <height>21</height>
       </rect>
      </property>
@@ -7550,7 +7566,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>20</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -7567,8 +7583,8 @@
     <widget class="QLineEdit" name="le_ipRelaybox">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>250</y>
+       <x>450</x>
+       <y>270</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -7603,14 +7619,14 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="readOnly">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkTestWithoutCamera">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>50</y>
        <width>151</width>
        <height>20</height>
       </rect>
@@ -7630,8 +7646,8 @@
     <widget class="Line" name="line_31">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>110</y>
+       <x>360</x>
+       <y>30</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -7646,8 +7662,8 @@
     <widget class="QPushButton" name="btn_bootMount">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>130</y>
+       <x>360</x>
+       <y>50</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -7662,8 +7678,8 @@
     <widget class="QPushButton" name="btn_switchHeater">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>210</y>
+       <x>360</x>
+       <y>130</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -7678,8 +7694,8 @@
     <widget class="QPushButton" name="btn_switchCCD">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>170</y>
+       <x>360</x>
+       <y>90</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -7694,8 +7710,8 @@
     <widget class="QLabel" name="label_97">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>250</y>
+       <x>360</x>
+       <y>270</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -7712,8 +7728,8 @@
     <widget class="QLabel" name="label_96">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>100</y>
+       <x>360</x>
+       <y>20</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -7730,8 +7746,8 @@
     <widget class="QLabel" name="label_91">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>170</y>
+       <x>470</x>
+       <y>410</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -7748,8 +7764,8 @@
     <widget class="QLineEdit" name="le_localTimeDelta">
      <property name="geometry">
       <rect>
-       <x>440</x>
-       <y>170</y>
+       <x>550</x>
+       <y>410</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -7787,8 +7803,8 @@
     <widget class="QCheckBox" name="checkAutoTime">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>170</y>
+       <x>640</x>
+       <y>410</y>
        <width>81</width>
        <height>20</height>
       </rect>
@@ -7808,8 +7824,8 @@
     <widget class="QLabel" name="label_92">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>170</y>
+       <x>600</x>
+       <y>410</y>
        <width>21</width>
        <height>21</height>
       </rect>
@@ -7826,8 +7842,8 @@
     <widget class="QPushButton" name="btn_popup">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>260</y>
+       <x>460</x>
+       <y>440</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -7842,8 +7858,8 @@
     <widget class="QPushButton" name="btn_popup_close">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>260</y>
+       <x>620</x>
+       <y>440</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -8073,7 +8089,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>SGPro</string>
+    <string>Camera</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

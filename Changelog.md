@@ -1,6 +1,7 @@
 # Changelog:
 1.1.13
--
+- small internal bugfixes for gui
+- delete worst model point
 
 1.1.12
 - for loading model points file, TSX (TheSkyX Format is also supported)

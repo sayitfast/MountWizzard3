@@ -87,8 +87,6 @@ class MountWizzardApp(MwWidget):
         self.show()                                                                                                         # show window
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration second time
-        if not os.path.isfile(os.getcwd() + '/mw.txt'):                                                                     # check existing file for enable the features
-            self.ui.tabWidget.setTabEnabled(8, False)                                                                       # disable the tab for internal features
         if self.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
             self.showAnalyseWindow()                                                                                        # show it
         if self.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
@@ -139,6 +137,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_getActualModel.clicked.connect(self.getAlignmentModel)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(self.runTargetRMSAlignment)
+        self.ui.btn_deleteWorstPoint.clicked.connect(self.deleteWorstPoint)
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
         self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
@@ -521,6 +520,9 @@ class MountWizzardApp(MwWidget):
 
     def runTargetRMSAlignment(self):
         self.commandQueue.put('RunTargetRMSAlignment')
+
+    def deleteWorstPoint(self):
+        self.commandQueue.put('DeleteWorstPoint')
 
     def backupModel(self):
         self.commandQueue.put('BackupModel')

@@ -116,6 +116,10 @@ class Mount(QtCore.QThread):
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
                         self.runTargetRMSAlignment()
                         self.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
+                    elif command == 'DeleteWorstPoint':
+                        self.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
+                        self.deleteWorstPoint()
+                        self.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
                     elif command == 'BackupModel':
                         self.ui.btn_backupModel.setStyleSheet(self.BLUE)                                                    # button blue
                         self.backupModel()
@@ -279,6 +283,8 @@ class Mount(QtCore.QThread):
                 value = '1'
             elif command == 'CMS':
                 value = 'V'
+            elif command == 'getalst':
+                value = '0'
             else:
                 pass
         self.sendCommandLock.release()
@@ -363,13 +369,13 @@ class Mount(QtCore.QThread):
         self.mountAlignmentPoints = []                                                                                      # clear the alignment points downloaded
         self.mountAlignNumberStars = int(self.sendCommand('getalst').rstrip('#').strip())                                   # get number of stars
         if self.mountAlignNumberStars == 0:                                                                                 # if no stars, finish
-            return
+            return False
         for i in range(1, self.mountAlignNumberStars+1):                                                                    # otherwise download them step for step
             try:
                 reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
             except pythoncom.com_error as e:
                 self.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-                return 0, 0
+                return False
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             errorRMS = float(reply[2].strip())
@@ -383,13 +389,28 @@ class Mount(QtCore.QThread):
         self.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                      # write them to gui
         self.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
                                 .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})                    # set the error values in gui
+        return True
 
     def runTargetRMSAlignment(self):
-        self.getAlignmentModel()                                                                                            # get model first
+        if not self.getAlignmentModel():
+            return
         self.mountAlignRMSsum = 999.9                                                                                       # set maximum
         self.mountAlignNumberStars = 4                                                                                      # set minimum for stars
         while math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars) > float(self.ui.targetRMS.value()) \
                 and self.mountAlignNumberStars > 3:
+            a = sorted(self.mountAlignmentPoints, key=itemgetter(1), reverse=True)                                          # index 0 ist the worst star
+            try:                                                                                                            # delete the worst star
+                self.sendCommand('delalst{0:d}'.format(a[0][0]))
+            except pythoncom.com_error as e:
+                self.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
+            self.getAlignmentModel()
+
+    def deleteWorstPoint(self):
+        if not self.getAlignmentModel():
+            return
+        self.mountAlignRMSsum = 999.9                                                                                       # set maximum
+        self.mountAlignNumberStars = 4                                                                                      # set minimum for stars
+        if self.mountAlignNumberStars > 3:
             a = sorted(self.mountAlignmentPoints, key=itemgetter(1), reverse=True)                                          # index 0 ist the worst star
             try:                                                                                                            # delete the worst star
                 self.sendCommand('delalst{0:d}'.format(a[0][0]))
