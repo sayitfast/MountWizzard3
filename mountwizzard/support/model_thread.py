@@ -185,6 +185,7 @@ class Model(QtCore.QThread):
     def __del__(self):                                                                                                      # remove thread
         self.wait()
 
+    @QtCore.Slot(str)
     def command(self, command):                                                                                             # dispatcher of commands inside thread
         if self.modelrun:
             if command == 'CancelModel':                                                                                    # check the command

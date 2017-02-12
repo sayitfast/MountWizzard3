@@ -31,7 +31,7 @@ class Mount(QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # enable logging
     signalMountConnected = QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
     signalMountAzAltPointer = QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
-    signalMountTrackPreview = QtCore.pyqtSignal([bool], name='mountTrackPreview')
+    signalMountTrackPreview = QtCore.pyqtSignal(name='mountTrackPreview')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
@@ -510,7 +510,7 @@ class Mount(QtCore.QThread):
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
                     self.logger.debug('getStatusMedium-> no autorefraction: {0}'.format(message))                           # no autorefraction is possible
-        self.signalMountTrackPreview.emit(True)
+        self.signalMountTrackPreview.emit()
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
         self.timeToFlip = self.sendCommand('Gmte')
