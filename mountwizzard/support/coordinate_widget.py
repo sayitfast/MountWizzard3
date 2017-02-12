@@ -75,6 +75,7 @@ class ShowCoordinatePopup(MwWidget):
         self.setVisible(False)                                                                                              # hide it
 
     def setAzAltPointer(self, az, alt):                                                                                     # method for pointer drawing
+        print('AltAz widget')
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)               # get the right coordinates
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
@@ -96,6 +97,7 @@ class ShowCoordinatePopup(MwWidget):
             self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):                                                                                             # method for drawing the track
+        print('track Widget')
         if not self.uiMain.checkRunTrackingWidget.isChecked():
             return
         raCopy = copy.copy(self.mount.ra)                                                                                   # start wit the actual coordinates of the mount
