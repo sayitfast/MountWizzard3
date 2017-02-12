@@ -541,7 +541,7 @@ class MountWizzardApp(MwWidget):
     def setupMountDriver(self):
         self.mount.setupDriver()
 
-    @QtCore.Slot(list)
+    @QtCore.Slot(dict)
     def fillMountData(self, data):
         if data['Name'] == 'Reply':
             pass
@@ -635,6 +635,7 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
+    @QtCore.Slot(dict)
     def fillStickData(self, data):
         # data from Stickstation via signal connected
         self.ui.le_dewPointStick.setText(str(data['DewPoint']))
@@ -655,7 +656,7 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
-    @QtCore.Slot(list)
+    @QtCore.Slot(dict)
     def fillWeatherData(self, data):
         # data from Stickstation via signal connected
         self.ui.le_dewPointWeather.setText(str(data['DewPoint']))

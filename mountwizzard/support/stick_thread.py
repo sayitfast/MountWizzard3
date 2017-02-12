@@ -24,7 +24,7 @@ class Stick(QtCore.QThread):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger(__name__)
     signalStickData = QtCore.pyqtSignal([dict], name='stickData')
-    signalStickConnected = QtCore.pyqtSignal([float], name='stickConnected')
+    signalStickConnected = QtCore.pyqtSignal([int], name='stickConnected')
 
     def __init__(self, messageQueue):
         super().__init__()
