@@ -87,7 +87,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDome.setPos(x, y)
         self.pointerDome.setVisible(True)
         self.pointerDome.update()
-        #ShowCoordinatePopup.processEvents()
+        QGuiApplication.processEvents()
 
     def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
         if self.uiMain.checkRunTrackingWidget.isChecked():
@@ -118,6 +118,8 @@ class ShowCoordinatePopup(MwWidget):
         delta = float(self.mount.timeToFlip)
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:03.0f} min'.format(fliptime, delta))
+        self.pointerTrack.update()
+        QGuiApplication.processEvents()
 
     def constructTrackWidget(self, esize):
         group = QGraphicsItemGroup()
