@@ -358,7 +358,8 @@ class Model(QtCore.QThread):
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
-        return west + east                                                                                                  # combine pointlist
+        value = west + east
+        return value                                                                                                        # combine pointlist
 
     def generateNormalPoints(self):
         west = []                                                                                                           # no sorting, point will be for west and east prepared
@@ -375,7 +376,8 @@ class Model(QtCore.QThread):
                         east.append((int(az), int(alt)))                                                                    # add to east
                     else:
                         west.append((int(az), int(alt)))                                                                    # add to west
-        return west + east                                                                                                  # combine pointlist
+        value = west + east
+        return value                                                                                                        # combine pointlist
 
     def generateGridPoints(self):                                                                                           # model points along dso path
         row = int(float(self.ui.numberGridPointsRow.value()))
@@ -421,12 +423,12 @@ class Model(QtCore.QThread):
         if len(self.RefinementPoints) > 0:
             self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints,
                                                   directory, settlingTime)
+            name = directory + '_refinement.dat'  # generate name of analyse file
+            if len(self.modelAnalyseData) > 0:
+                self.ui.le_analyseFileName.setText(name)  # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)  # save the data
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
-        name = directory + '_refinement.dat'                                                                                # generate name of analyse file
-        if len(self.modelAnalyseData) > 0:
-            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runCheckModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
@@ -434,12 +436,12 @@ class Model(QtCore.QThread):
         points = self.BasePoints + self.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)                                 # run the analyse
+            name = directory + '_check.dat'  # generate name of analyse file
+            if len(self.modelAnalyseData) > 0:
+                self.ui.le_analyseFileName.setText(name)  # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)  # save the data
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
-        name = directory + '_check.dat'                                                                                     # generate name of analyse file
-        if len(self.modelAnalyseData) > 0:
-            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runAllModel(self):
         settlingTime = int(float(self.ui.settlingTime.value()))
@@ -447,12 +449,12 @@ class Model(QtCore.QThread):
         points = self.BasePoints + self.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('All', points, directory, settlingTime)                                   # run the analyse
+            name = directory + '_all.dat'  # generate name of analyse file
+            if len(self.modelAnalyseData) > 0:
+                self.ui.le_analyseFileName.setText(name)  # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)  # save the data
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAllModel -> There are no Refinement or Base Points to model')                           # write error log
-        name = directory + '_all.dat'                                                                                       # generate name of analyse file
-        if len(self.modelAnalyseData) > 0:
-            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
-            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runTimeChangeModel(self):
         settlingTime = int(float(self.ui.delayTimeTimeChange.value()))                                                      # using settling time also for waiting / delay
@@ -483,6 +485,7 @@ class Model(QtCore.QThread):
         name = directory + '_hysterese.dat'                                                                                 # generate name of analyse file
         self.ui.le_analyseFileName.setText(name)                                                                            # set data name in GUI to start over quickly
         if len(self.modelAnalyseData) > 0:
+            self.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
             self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runBatchModel(self):
