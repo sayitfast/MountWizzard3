@@ -7585,7 +7585,7 @@
       <rect>
        <x>450</x>
        <y>270</y>
-       <width>121</width>
+       <width>141</width>
        <height>21</height>
       </rect>
      </property>
@@ -7612,8 +7612,11 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="inputMask">
+      <string>999.999.999.999</string>
+     </property>
      <property name="text">
-      <string>192.168.2.14</string>
+      <string>192.168.002.014</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
