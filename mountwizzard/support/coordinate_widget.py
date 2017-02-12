@@ -56,7 +56,7 @@ class ShowCoordinatePopup(MwWidget):
         self.dome = dome                                                                                                    # access to the dome class
         self.modelLogQueue = modelLogQueue                                                                                  # queue for transferring data to the model log window
         self.showStatus = False                                                                                             # show coordinate window
-        self.ui = Ui_CoordinateDialog()                                                                                     # PYQT5 dialog ui
+        self.ui = Ui_CoordinateDialog()                                                                                     # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
         self.initUI()                                                                                                       # adaptions to ui setup
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
@@ -79,6 +79,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
         self.pointerAzAlt.update()                                                                                          # initiate redrawing
+        print(self.pointerAzAlt)
 
     def setDomePointer(self, az):                                                                                           # same for dome
         width = self.ui.modelPointsPlot.width()

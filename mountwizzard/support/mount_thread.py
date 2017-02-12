@@ -497,6 +497,7 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 self.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                                  # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
+            print('send signal')
             self.timeToFlip = self.sendCommand('Gmte')
             self.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                           # Flip time
 
