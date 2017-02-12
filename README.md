@@ -6,8 +6,8 @@
 Because I'm going to use the pip installer for beta versions as well and there is no way to rollback a version number or to get one in
 between, I will name the release and beta versions explicitly on this page. You can switch between any version with this pip command.
 
-### Version 1.1.11 for upcoming next release 1.2rc
-<pre>pip install mountwizzard==1.1.11 </pre>
+### Version 1.1.12 for upcoming next release 1.2rc
+<pre>pip install mountwizzard==1.1.12 </pre>
 
 ### Version release 1.1.0
 <pre>pip install mountwizzard==1.1.0 </pre>
@@ -44,10 +44,16 @@ This is indicated, that the DOME status on top of the window in grey. You can di
 by calling the ASCOM chooser for dome an in the selection window upcoming just press "Cancel". This should disable the
 driver.
 
-##Remarks
+## Remarks
+There were some videos for installation and first use out:
+
+Installation: https://youtu.be/di4yqzfns5E
+
+First Use: https://youtu.be/JMAfZoq8rBI
 
 ### DSLR
-Actually the SGPro API has some problems with DSLR Cam's. It doesn't work out properly.
+Actually the SGPro API has some problems with DSLR Cam's. With the current betas, there should be an improvement if not
+finally fixes all issues. Unfortunately I have no DSLR to test it..
 
 ### Analytics
 Ist just a demo so far. Get some good view from Thomas (thanks for his work). Anyhow: Each modeling session ist stored

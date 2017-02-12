@@ -1,4 +1,7 @@
 # Changelog:
+1.1.12
+- for loading model points file, TSX (TheSkyX Format is also supported)
+
 1.1.11
 - adding first unittests
 - refactoring
