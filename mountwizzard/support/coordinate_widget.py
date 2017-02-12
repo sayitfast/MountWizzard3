@@ -16,6 +16,7 @@ import logging
 import datetime
 import copy
 # import for the PyQt5 Framework
+from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -74,12 +75,14 @@ class ShowCoordinatePopup(MwWidget):
         self.showStatus = False                                                                                             # status = off
         self.setVisible(False)                                                                                              # hide it
 
+    @QtCore.Slot(float, float)
     def setAzAltPointer(self, az, alt):                                                                                     # method for pointer drawing
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)               # get the right coordinates
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
         self.pointerAzAlt.update()                                                                                          # initiate redrawing
 
+    @QtCore.Slot(float)
     def setDomePointer(self, az):                                                                                           # same for dome
         width = self.ui.modelPointsPlot.width()
         x, y = getXYRectangle(az, width, BORDER_VIEW)

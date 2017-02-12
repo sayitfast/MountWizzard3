@@ -21,6 +21,7 @@ import time
 import datetime
 import os
 # import for the PyQt5 Framework
+from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -509,6 +510,7 @@ class MountWizzardApp(MwWidget):
     # mount handling
     #
 
+    @QtCore.Slot(bool)
     def setMountStatus(self, status):
         if status:
             self.ui.le_driverMountConnected.setStyleSheet('QLineEdit {background-color: green;}')
@@ -539,6 +541,7 @@ class MountWizzardApp(MwWidget):
     def setupMountDriver(self):
         self.mount.setupDriver()
 
+    @QtCore.Slot(list)
     def fillMountData(self, data):
         if data['Name'] == 'Reply':
             pass
@@ -623,6 +626,7 @@ class MountWizzardApp(MwWidget):
     def setupStickDriver(self):
         self.stick.setupDriver()
 
+    @QtCore.Slot(int)
     def setStickStatus(self, status):
         if status == 1:
             self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: green;}')
@@ -644,12 +648,14 @@ class MountWizzardApp(MwWidget):
     def setupWeatherDriver(self):
         self.weather.setupDriver()
 
+    @QtCore.Slot(bool)
     def setWeatherStatus(self, status):
         if status:
             self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: green;}')
         else:
             self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
+    @QtCore.Slot(list)
     def fillWeatherData(self, data):
         # data from Stickstation via signal connected
         self.ui.le_dewPointWeather.setText(str(data['DewPoint']))
@@ -676,6 +682,7 @@ class MountWizzardApp(MwWidget):
     # SGPRO and Modelling handling
     #
 
+    @QtCore.Slot(bool)
     def setSGProStatus(self, status):
         if status:
             self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: green;}')
@@ -685,6 +692,7 @@ class MountWizzardApp(MwWidget):
     def setupDomeDriver(self):
         self.dome.setupDriver()
 
+    @QtCore.Slot(int)
     def setDomeStatus(self, status):
         if status == 1:
             self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: green;}')
