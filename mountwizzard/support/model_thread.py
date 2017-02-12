@@ -801,7 +801,7 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.logQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                                   # output for user GUI
-                    if not self.mount.driver_real or self.ui.checkTestWithoutCamera.isChecked():
+                    if not self.mount.driver_real or self.ui.checkTestWithoutSolver.isChecked():
                         suc, mes, modelData = self.solveImageSimulation(modelData)                                          # solve the position and returning the values from Simulation
                     else:
                         suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values

@@ -7622,7 +7622,7 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkTestWithoutCamera">
+    <widget class="QCheckBox" name="checkTestWithoutSolver">
      <property name="geometry">
       <rect>
        <x>10</x>

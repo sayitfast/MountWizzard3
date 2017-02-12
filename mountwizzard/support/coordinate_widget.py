@@ -79,7 +79,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
         self.pointerAzAlt.update()                                                                                          # initiate redrawing
-        print(self.pointerAzAlt)
+        QApplication.processEvents()
 
     def setDomePointer(self, az):                                                                                           # same for dome
         width = self.ui.modelPointsPlot.width()
@@ -87,6 +87,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDome.setPos(x, y)
         self.pointerDome.setVisible(True)
         self.pointerDome.update()
+        QApplication.processEvents()
 
     def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
         if self.uiMain.checkRunTrackingWidget.isChecked():
