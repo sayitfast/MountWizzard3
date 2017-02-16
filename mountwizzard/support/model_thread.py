@@ -675,7 +675,6 @@ class Model(QtCore.QThread):
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            print(mes)
             if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
                 solved = True
