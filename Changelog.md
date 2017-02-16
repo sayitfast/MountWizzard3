@@ -1,7 +1,12 @@
 # Changelog:
+1.1.14
+- bugfix DSO model point
+
+
 1.1.13
 - small internal bugfixes for gui
 - delete worst model point
+- bugfix (hopefully) for froze pointer
 
 1.1.12
 - for loading model points file, TSX (TheSkyX Format is also supported)
