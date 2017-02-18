@@ -646,7 +646,7 @@ class Model(QtCore.QThread):
 
     def solveImageSimulation(self, modeltype, modelData):
         modelData['imagepath'] = os.getcwd() + '/testimages/model000.fit'
-        self.solveImage(modeltype, modelData)
+        suc, mes, modelData = self.solveImage(modeltype, modelData)
         modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
         modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 3600
         modelData['scale'] = 1.3
@@ -658,7 +658,7 @@ class Model(QtCore.QThread):
         modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600
         modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600
         modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
-        return True, 'OK', modelData
+        return suc, mes, modelData
 
     def solveImage(self, modeltype, modelData):                                                                             # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve

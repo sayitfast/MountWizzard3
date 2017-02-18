@@ -804,7 +804,7 @@ if __name__ == "__main__":
                                 format='%(asctime)s [%(threadName)15s] - %(message)s',
                                 handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
     else:                                                                                                                   # set logging level accordingly
-        logging.basicConfig(level=logging.ERROR,
+        logging.basicConfig(level=logging.DEBUG,
                             format='%(asctime)s [%(threadName)15s] - %(message)s',
                             handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
