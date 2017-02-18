@@ -82,6 +82,7 @@ class Mount(QtCore.QThread):
         self.mountAlignNumberStars = 0                                                                                      # number of stars
         self.counter = 0                                                                                                    # counter im main loop
         self.connected = False                                                                                              # connection status
+        self.transformConnected = False
         self.driverName = 'ASCOM.FrejvallGM.Telescope'                                                                      # default driver name is Per's driver
         self.chooser = None                                                                                                 # object space
         self.driver_real = False                                                                                            # identifier, if data is real (or simulation
@@ -94,6 +95,7 @@ class Mount(QtCore.QThread):
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
         try:                                                                                                                # start accessing a com object
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
+            self.transformConnected = True
         except Exception as e:                                                                                              # exception handling
             self.messageQueue.put('Error loading ASCOM transform Driver')                                                   # write to gui
             self.logger.error('run Mount      -> loading ASCOM transform error:{0}'.format(e))                              # write logfile
@@ -329,6 +331,21 @@ class Mount(QtCore.QThread):
             self.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
+    def ra_dec_lst_to_az_alt(self, ra, dec, lst):
+        LAT = self.site_lat
+        HA = (lst - ra) * 15
+        if HA >= 360:
+            HA -= 360
+        elif HA <= 0:
+            HA += 360
+        alt = math.asin(math.sin(dec) * math.sin(LAT) + math.cos(dec) * math.cos(LAT) * math.cos(HA))
+        A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(LAT)) / (math.cos(alt) * math.cos(LAT)))
+        if math.sin(HA) < 0:
+            az = 360 - A
+        else:
+            az = A
+        return az, alt
+
     def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
         sign = 1
         if '-' in value:
@@ -337,12 +354,15 @@ class Mount(QtCore.QThread):
         elif '+' in value:
             value = value.replace('+', '')
         try:
-            hour, minute, second = value.split(splitter)
+            if len(value.split(splitter)) == 3:
+                hour, minute, second = value.split(splitter)
+                return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
+            elif len(value.split(splitter)) == 2:
+                hour, minute = value.split(splitter)
+                return (float(hour) + float(minute) / 60) * sign
         except Exception as e:
-            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'
-                              .format(value, splitter, e))
+            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
             return 0
-        return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
 
     @staticmethod
     def decimalToDegree(value, with_sign, with_decimal, spl=':'):                                                           # format decimal value to string in degree format

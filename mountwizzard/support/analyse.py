@@ -12,10 +12,11 @@
 #
 ############################################################
 # standard solutions
-import logging
+from logging import getLogger
 import os
 import json
 import numpy
+import math
 # import for the PyQt5 Framework
 import PyQt5.QtWidgets
 from support.mw_widget import MwWidget
@@ -56,24 +57,27 @@ class ShowAnalyseData(FigureCanvas):
 def calculateTimeConstant(x_time, y_value):
     timeconstant = 0
     print(x_time)
+    print(y_value)
     x = 0
     y = 0
     return timeconstant, x, y
 
 
+# noinspection PyUnresolvedReferences
 class ShowAnalysePopup(MwWidget):
-    logger = logging.getLogger(__name__)
+    logger = getLogger(__name__)
 
-    def __init__(self, uiMain):
+    def __init__(self, uiMain, mount):
         super(ShowAnalysePopup, self).__init__()
 
         self.uiMain = uiMain
+        self.mount = mount
         self.showStatus = False
         self.scaleRA = 10
         self.scaleDEC = 10
         self.scaleError = 10
         self.data = {}
-        self.analyse = Analyse()
+        self.analyse = Analyse(self.mount)
         self.ui = Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
@@ -99,13 +103,13 @@ class ShowAnalysePopup(MwWidget):
         self.setVisible(False)
 
     def getData(self):
-        filenameData = self.uiMain.le_analyseFileName.text()
+        filename = self.uiMain.le_analyseFileName.text()
+        if filename == '' or not self.mount.transformConnected:
+            return
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()
         self.scaleError = self.ui.scalePlotError.value()
-        self.data = self.analyse.loadData(filenameData)
-        if len(self.data) > 0:
-            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        self.data = self.analyse.loadData(filename)
 
     def setFigure(self, projection=None):
         self.plotWidget.plt.clf()
@@ -124,7 +128,9 @@ class ShowAnalysePopup(MwWidget):
         self.setVisible(False)
 
     def showDecError(self):
-        if len(self.data) == 0:
+        if len(self.data) > 0:
+            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
             return
         self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')                                                  # x axis
@@ -139,11 +145,11 @@ class ShowAnalysePopup(MwWidget):
     def showDecErrorDeviation(self):
         if len(self.data) == 0:
             return
-        #timeconstant, x, y = calculateTimeConstant(self.data['sidereal_time'], self.data['decError'])
+        # timeconstant, x, y = calculateTimeConstant(self.data['sidereal_time'], self.data['decError'])
         self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')                                                  # x axis
         self.plotWidget.plt.ylabel('DEC Error(arcsec)', color='white')                                                      # y axis
-        self.plotWidget.plt.title('DEC Error referenced to 0 over Modeling\n ', color='white')                                              # title
+        self.plotWidget.plt.title('DEC Error referenced to 0 over Modeling\n ', color='white')                              # title
         self.plotWidget.plt.axis([0, len(self.data['index']), -self.scaleDEC, self.scaleDEC])                               # defining the scaling of the plot
         decErrorDeviation = numpy.asarray(self.data['decError'])
         self.plotWidget.plt.plot(self.data['index'], decErrorDeviation - decErrorDeviation[0], color='black')               # Basic Data
@@ -152,6 +158,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.draw()                                                                                              # put the plot in the widget
 
     def showRaError(self):
+        if len(self.data) > 0:
+            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
+            return
         self.setFigure()
         self.plotWidget.plt.xlabel('Number of Model Point', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
@@ -175,6 +185,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.draw()
 
     def showDecErrorAltitude(self):
+        if len(self.data) > 0:
+            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
+            return
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
@@ -186,6 +200,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.draw()
 
     def showRaErrorAltitude(self):
+        if len(self.data) > 0:
+            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
+            return
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
@@ -197,6 +215,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.draw()
 
     def showDecErrorAzimuth(self):
+        if len(self.data) > 0:
+            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
+            return
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('DEC Error (arcsec)', color='white')
@@ -208,6 +230,10 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.draw()
 
     def showRaErrorAzimuth(self):
+        if len(self.data) > 0:
+            self.data = self.analyse.prepareData(self.data, self.scaleRA, self.scaleDEC)
+        else:
+            return
         self.setFigure()
         self.plotWidget.plt.xlabel('Altitude', color='white')
         self.plotWidget.plt.ylabel('RA Error (arcsec)', color='white')
@@ -262,10 +288,11 @@ class ShowAnalysePopup(MwWidget):
 
 
 class Analyse:
-    logger = logging.getLogger(__name__)
+    logger = getLogger(__name__)
 
-    def __init__(self):
+    def __init__(self, mount):
         self.filepath = '/analysedata'
+        self.mount = mount
 
     def saveData(self, dataProcess, name):                                                                                  # saving data from list to file
         filenameData = os.getcwd() + self.filepath + '/' + name                                                             # built the filename
@@ -277,14 +304,111 @@ class Analyse:
             self.logger.error('saveData       -> analyse data file {0}, Error : {1}'.format(filenameData, e))
             return
 
-    def loadData(self, name):                                                                                               # loading data
-        filenameData = os.getcwd() + self.filepath + '/' + name                                                             # generate filename
+    def processTheSkyXLine(self, line):
+        ra_sol = self.mount.degStringToDecimal(line[0:13], ' ')
+        dec_sol = self.mount.degStringToDecimal(line[15:28], ' ')
+        ra = self.mount.degStringToDecimal(line[30:43], ' ')
+        dec = self.mount.degStringToDecimal(line[45:58], ' ')
+        lst = self.mount.degStringToDecimal(line[61:70], ' ')
+        return ra, dec, ra_sol, dec_sol, lst
+
+    def loadTheSkyXData(self, filename):
+        resultData = {}
+        try:
+            with open(filename) as infile:
+                lines = infile.read().splitlines()
+            infile.close()
+            site_latitude = self.mount.degStringToDecimal(lines[4][0:9], ' ')
+            for i in range(5, len(lines)):
+                ra, dec, ra_sol, dec_sol, lst = self.processTheSkyXLine(lines[i])
+                if 'ra_J2000' in resultData:
+                    resultData['ra_J2000'].append(ra)
+                else:
+                    resultData['ra_J2000'] = [ra]
+                if 'dec_J2000' in resultData:
+                    resultData['dec_J2000'].append(dec)
+                else:
+                    resultData['dec_J2000'] = [dec]
+                ra_Jnow, dec_Jnow = self.mount.transformNovas(ra, dec, 3)
+                if 'ra_Jnow' in resultData:
+                    resultData['ra_Jnow'].append(ra_Jnow)
+                else:
+                    resultData['ra_Jnow'] = [ra_Jnow]
+                if 'dec_Jnow' in resultData:
+                    resultData['dec_Jnow'].append(dec_Jnow)
+                else:
+                    resultData['dec_Jnow'] = [dec_Jnow]
+                if 'sidereal_time_float' in resultData:
+                    resultData['sidereal_time_float'].append(lst)
+                else:
+                    resultData['sidereal_time_float'] = [lst]
+                if 'sidereal_time' in resultData:
+                    resultData['sidereal_time'].append(self.mount.decimalToDegree(lst, False, True))
+                else:
+                    resultData['sidereal_time'] = [self.mount.decimalToDegree(lst, False, True)]
+                if 'ra_sol' in resultData:
+                    resultData['ra_sol'].append(ra_sol)
+                else:
+                    resultData['ra_sol'] = [ra_sol]
+                if 'dec_sol' in resultData:
+                    resultData['dec_sol'].append(dec_sol)
+                else:
+                    resultData['dec_sol'] = [dec_sol]
+                ra_sol_Jnow, dec_sol_Jnow = self.mount.transformNovas(ra_sol, dec_sol, 3)
+                if 'ra_sol_Jnow' in resultData:
+                    resultData['ra_sol_Jnow'].append(ra_sol_Jnow)
+                else:
+                    resultData['ra_sol_Jnow'] = [ra_sol_Jnow]
+                if 'dec_sol_Jnow' in resultData:
+                    resultData['dec_sol_Jnow'].append(dec_sol_Jnow)
+                else:
+                    resultData['dec_sol_Jnow'] = [dec_sol_Jnow]
+                ha = ra - lst
+                az, alt = self.mount.transformNovas(ha, dec, 4)
+                if 'azimuth' in resultData:
+                    resultData['azimuth'].append(az)
+                else:
+                    resultData['azimuth'] = [az]
+                if 'altitude' in resultData:
+                    resultData['altitude'].append(alt)
+                else:
+                    resultData['altitude'] = [alt]
+                if az <= 180:
+                    pierside = 'E'
+                else:
+                    pierside = 'W'
+                if 'pierside' in resultData:
+                    resultData['pierside'].append(pierside)
+                else:
+                    resultData['pierside'] = [pierside]
+                if 'index' in resultData:
+                    resultData['index'].append(i - 5)
+                else:
+                    resultData['index'] = [i - 5]
+                if 'raError' in resultData:
+                    resultData['raError'].append((ra - ra_sol) * 3600)
+                else:
+                    resultData['raError'] = [(ra - ra_sol) * 3600]
+                if 'decError' in resultData:
+                    resultData['decError'].append((dec - dec_sol) * 3600)
+                else:
+                    resultData['decError'] = [(dec - dec_sol) * 3600]
+                if 'modelError' in resultData:
+                    resultData['modelError'].append(math.sqrt((ra - ra_sol) * 3600 * (ra - ra_sol) * 3600 + (dec - dec_sol) * 3600 * (dec - dec_sol) * 3600))
+                else:
+                    resultData['modelError'] = [math.sqrt((ra - ra_sol) * 3600 * (ra - ra_sol) * 3600 + (dec - dec_sol) * 3600 * (dec - dec_sol) * 3600)]
+        except Exception as e:
+            self.logger.error('loadTheSkyXData-> error processing file {0}, Error : {1}'.format(filename, e))
+            return {}
+        return resultData
+
+    def loadMountWizzardData(self, filename):
         try:                                                                                                                # try to read the file
-            infileData = open(filenameData, 'r')
-            dataJson = json.load(infileData)
-            infileData.close()                                                                                                  # close
+            infile = open(filename, 'r')
+            dataJson = json.load(infile)
+            infile.close()                                                                                                  # close
         except Exception as e:                                                                                              # exception handling
-            self.logger.error('loadData       ->  analyse data file {0}, Error : {1}'.format(filenameData, e))
+            self.logger.error('loadMountWizzar->  analyse data file {0}, Error : {1}'.format(filename, e))
             return {}                                                                                                       # loading doesn't work
         resultData = dict()
         for timestepdict in dataJson:
@@ -294,6 +418,17 @@ class Analyse:
                 else:
                     resultData[keyData] = [valueData]
         return resultData                                                                                                   # successful loading
+
+    def loadData(self, filename):                                                                                           # loading data
+        filenameData = os.getcwd() + self.filepath + '/' + filename                                                         # generate filename
+        infile = open(filenameData, 'r')
+        check = infile.read(8)
+        infile.close()
+        if check == '!TheSkyX':
+            data = self.loadTheSkyXData(filenameData)
+        else:
+            data = self.loadMountWizzardData(filenameData)
+        return data
 
     @staticmethod
     def prepareData(dataProcess, scaleRA, scaleDEC):
@@ -306,18 +441,11 @@ class Analyse:
         return dataProcess
 
 if __name__ == "__main__":
-    filename = 'C:/Users/mw/Projects/mountwizzard/mountwizzard/analysedata/2017-01-22-19-46-07_test.dat'
-    infile = open(filename, 'r')
-    data = json.load(infile)
-    infile.close()  # close
-    result = dict()
-    for timedict in data:
-        for (key, value) in timedict.items():
-            if key in result:
-                pass
-                result[key].append(value)
-            else:
-                result[key] = [value]
-    print(result['ra'])
-    b = [5 if x > 5 else x for x in result['ra']]
-    print(b)
+    import logging
+    logger = getLogger(__name__)
+    from support.mount_thread import Mount
+    filename = '10micron_model.dat'
+    m = Mount
+    a = Analyse(m)
+    data = a.loadData(filename)
+    print(data)

@@ -68,7 +68,7 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self.ui, self.mount, self.dome,
                            self.messageQueue, self.commandQueue, self.mountDataQueue,
                            self.modelLogQueue)                                                                              # transferring ui and mount object as well
-        self.analysePopup = ShowAnalysePopup(self.ui)                                                                       # windows for analyse data
+        self.analysePopup = ShowAnalysePopup(self.ui, self.mount)                                                           # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)          # window for modeling points
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread

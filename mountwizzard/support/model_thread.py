@@ -53,7 +53,7 @@ class Model(QtCore.QThread):
         self.dataQueue = dataQueue                                                                                          # Feedback queue for Data
         self.logQueue = logQueue                                                                                            # GUI output windows messages in modeling windows
         self.SGPro = SGPro()                                                                                                # wrapper class SGPro REST API
-        self.analyse = Analyse()                                                                                            # use Class for saving analyse data
+        self.analyse = Analyse(self.mount)                                                                                  # use Class for saving analyse data
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
         self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
@@ -515,7 +515,7 @@ class Model(QtCore.QThread):
                                                               data['pierside'][i],
                                                               self.mount.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
                                                               self.mount.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
-                                                              data['sidereal_time'][i])
+                                                              self.mount.decimalToDegree(data['sidereal_time_float'][i]), False, True)
             reply = self.mount.sendCommand(command)
             if reply == 'E':
                 self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
