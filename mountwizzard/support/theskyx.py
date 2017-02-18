@@ -82,7 +82,7 @@ class TheSkyX:
             # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return success, response, '00000000000000000000000000000000'
         except Exception as e:
-            self.logger.error('TheSkyX SgCaptureImage -> error: {0}'.format(e))
+            self.logger.error('TXCaptureImage -> error: {0}'.format(e))
             return False, 'Request failed', ''
 
     def SgAbortImage(self):
@@ -98,8 +98,7 @@ class TheSkyX:
         try:
             command = '/* Java Script */'
             command += 'ImageLink.pathToFITS="'+path+'";'
-
-            if(scaleHint == None):
+            if scaleHint == None:
                 command += 'ImageLink.unknownScale=1;'
                 command += 'ImageLink.scale=2;'
             else:
@@ -135,7 +134,7 @@ class TheSkyX:
             else:
                 return False, 'Request failed', '', '', '', '', ''
         except Exception as e:
-            self.logger.error('TheSkyX SgGetSolvedImag -> error: {0}'.format(e))
+            self.logger.error('TXGetSolvedImag-> error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
     def SgGetImagePath(self, _guid):
@@ -144,7 +143,7 @@ class TheSkyX:
             success, response = self.sendCommand(command)
             return success, response
         except Exception as e:
-            self.logger.error('TheSkyX SgGetImagePath -> error: {0}'.format(e))
+            self.logger.error('TXGetImagePath -> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetDeviceStatus(self, device):
@@ -163,7 +162,7 @@ class TheSkyX:
 
             return success, response
         except Exception as e:
-            self.logger.error('TheSkyX SgGetDeviceStatus -> error: {0}'.format(e))
+            self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetCameraProps(self):
@@ -174,7 +173,7 @@ class TheSkyX:
             captureResponse = json.loads(response)
             return success, '', captureResponse['WidthInPixels'], captureResponse['HeightInPixels'], True
         except Exception as e:
-            self.logger.error('TheSkyX SgGetCameraProp -> error: {0}'.format(e))
+            self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
 
     def SgGetTelescopePosition(self):
@@ -188,5 +187,5 @@ class TheSkyX:
             captureResponse = json.loads(response)
             return success, '', captureResponse['Ra'], captureResponse['Dec']
         except Exception as e:
-            self.logger.error('TheSkyX SgGetCameraProp -> error: {0}'.format(e))
+            self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', ''
