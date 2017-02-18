@@ -653,8 +653,10 @@ class Model(QtCore.QThread):
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
     def solveImageSimulation(self, modeltype, modelData):
-        modelData['imagepath'] = os.getcwd() + '/testimages/model000.fit'
+        tempPath = modelData['imagepath']
+        modelData['imagepath'] = os.getcwd() + '/testimages/model001.fit'
         suc, mes, modelData = self.solveImage(modeltype, modelData)
+        modelData['imagepath'] = tempPath
         modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
         modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 3600
         modelData['scale'] = 1.3
@@ -834,7 +836,7 @@ class Model(QtCore.QThread):
                             if suc:
                                 self.logQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
                             else:
-                                self.cancel = True
+                                self.logQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
                         numCheckPoints += 1                                                                                 # increase index for synced stars
                         results.append(copy.copy(modelData))                                                                # adding point for matrix
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
