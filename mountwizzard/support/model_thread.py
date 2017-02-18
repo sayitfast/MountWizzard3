@@ -644,7 +644,9 @@ class Model(QtCore.QThread):
         else:                                                                                                               # otherwise
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
-    def solveImageSimulation(self, modelData):
+    def solveImageSimulation(self, modeltype, modelData):
+        modelData['imagepath'] = os.getcwd() + '/testimages/model000.fit'
+        self.solveImage(modeltype, modelData)
         modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
         modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 3600
         modelData['scale'] = 1.3
@@ -813,10 +815,10 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.logQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                                   # output for user GUI
-                    if not self.mount.driver_real or self.ui.checkTestWithoutSolver.isChecked():
-                        suc, mes, modelData = self.solveImageSimulation(modelData)                                          # solve the position and returning the values from Simulation
-                    else:
+                    if self.mount.driver_real:
                         suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
+                    else:
+                        suc, mes, modelData = self.solveImageSimulation(modeltype, modelData)                               # solve the position and returning the values from Simulation
                     self.logQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))         # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement', 'All']:                                                      #
