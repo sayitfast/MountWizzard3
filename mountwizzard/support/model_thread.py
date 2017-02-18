@@ -29,6 +29,7 @@ import pyfits
 from operator import itemgetter
 # for handling SGPro interface
 from support.sgpro import SGPro
+from support.theskyx import TheSkyX
 from support.analyse import Analyse
 
 
@@ -53,6 +54,7 @@ class Model(QtCore.QThread):
         self.dataQueue = dataQueue                                                                                          # Feedback queue for Data
         self.logQueue = logQueue                                                                                            # GUI output windows messages in modeling windows
         self.SGPro = SGPro()                                                                                                # wrapper class SGPro REST API
+        self.TSX = TheSkyX()                                                                                                # wrapper class TheSkyX REST API
         self.analyse = Analyse(self.mount)                                                                                  # use Class for saving analyse data
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
