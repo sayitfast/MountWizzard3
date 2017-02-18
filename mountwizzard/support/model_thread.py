@@ -678,8 +678,16 @@ class Model(QtCore.QThread):
             if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
                 solved = True
+                modelData['dec_sol'] = float(dec_sol)  # convert to float
+                modelData['ra_sol'] = float(ra_sol)
+                modelData['scale'] = float(scale)
+                modelData['angle'] = float(angle)
+                modelData['timeTS'] = float(timeTS)
                 break
             elif mes != 'Solving':                                                                                          # general error
+                solved = False
+                break
+            elif self.cancel:
                 solved = False
                 break
             else:                                                                                                           # otherwise
@@ -687,11 +695,6 @@ class Model(QtCore.QThread):
                     time.sleep(5)                                                                                           # therefore slow cycle
                 else:                                                                                                       # local solver takes 1-2 s
                     time.sleep(.25)                                                                                         # therefore quicker cycle
-        modelData['dec_sol'] = float(dec_sol)                                                                           # convert to float
-        modelData['ra_sol'] = float(ra_sol)
-        modelData['scale'] = float(scale)
-        modelData['angle'] = float(angle)
-        modelData['timeTS'] = float(timeTS)
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if solved:
             ra, dec = self.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
