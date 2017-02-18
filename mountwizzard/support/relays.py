@@ -34,7 +34,7 @@ class Relays:
             connected = True
         except Exception as e:
             connected = False
-            print(e)
+            self.logger.error('checkConnection-> connection error:{0}'.format(e))
         finally:
             return connected
 
