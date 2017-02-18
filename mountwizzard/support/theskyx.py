@@ -12,7 +12,6 @@ class TheSkyX:
         self.port = 3040
         self.responseSuccess = '|No error. Error = 0.'
 
-
     def sendCommand(self, command):
         try:
             tsxSocket = socket.socket()
@@ -20,7 +19,7 @@ class TheSkyX:
             tsxSocket.send(command.encode())
             response = str(tsxSocket.recv(1024).decode())
 
-            if(response.endswith(self.responseSuccess)):
+            if response.endswith(self.responseSuccess):
                 response = response.replace(self.responseSuccess, '')
                 return True, response
             else:
@@ -61,7 +60,7 @@ class TheSkyX:
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=1;'
-            if(useSubframe):
+            if useSubframe :
                 command += 'ccdsoftCamera.Subframe=1;'
                 command += 'ccdsoftCamera.SubframeLeft=' + str(posX) + ';'
                 command += 'ccdsoftCamera.SubframeTop=' + str(posY) + ';'

@@ -91,8 +91,8 @@ class SGPro:
         # reference "Path":"String","UseSubframe":false,"X":0,"Y":0,"Width":0,"Height":0}
         data = {"BinningMode": binningMode, "ExposureLength": exposureLength, "UseSubframe": useSubframe, "X": posX, "Y ": posY,
                 "Width": width, "Height": height}
-        if isoMode:
-            data['IsoMode'] = isoMode
+        # if isoMode:
+        #    data['IsoMode'] = isoMode
         if gain:
             data['Gain'] = gain
         if iso:
