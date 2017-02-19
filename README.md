@@ -14,6 +14,8 @@ between, I will name the release and beta versions explicitly on this page. You 
 
 # Important:
 
+##### MW runs also with ASCOM 6.3 and is tested with ASCOM 6.2. Please stay with SGPro with v 2.6.11 or earlier, because change in API could make you camera not work
+
 ##### I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
 On GitHub you will find from now on most probably only the package version under
 <pre>https://github.com/mworion/mountwizzard.git</pre>

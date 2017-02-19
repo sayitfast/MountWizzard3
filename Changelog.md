@@ -1,6 +1,8 @@
 # Changelog:
 1.1.15
--
+- added Camera chooser
+- refactoring for multiple software support
+- refactoring of classes inside mw
 
 1.1.14
 - bugfix DSO model point
