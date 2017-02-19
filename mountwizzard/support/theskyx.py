@@ -34,11 +34,15 @@ class TheSkyX:
         try:
             tsxSocket = socket.socket()
             tsxSocket.connect((self.host, self.port))
-            return True, 'TheSkyX TCP server is available'
+            connected = True
+            message = 'TheSkyX TCP server is available'
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
+            connected = False
+            message = 'TheSkyX TCP server is missing'
         finally:
             tsxSocket.close()
+            return connected, message
 
     def SgEnumerateDevice(self, device):
         return '', False, 'Not implemented'

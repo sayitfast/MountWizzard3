@@ -180,7 +180,7 @@ class Model(QtCore.QThread):
         self.wait()
 
     @QtCore.Slot(str)
-    def sendCommand(self, command):                                                                                             # dispatcher of commands inside thread
+    def sendCommand(self, command):                                                                                         # dispatcher of commands inside thread
         if self.modelrun:
             if command == 'CancelModel':                                                                                    # check the command
                 self.command = ''                                                                                           # reset the command
@@ -194,7 +194,7 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusSlow(self):                                                                                                # check SGPro running
-        suc, mes = self.app.cpObject.checkConnection()                                                                             # check status of SGPro
+        suc, mes = self.app.cpObject.checkConnection()                                                                      # check status of cpObject
         self.connected = suc                                                                                                # set status for internal use
         self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
         if not suc:                                                                                                         # otherwise
