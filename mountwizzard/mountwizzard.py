@@ -31,14 +31,14 @@ from support.wizzard_main_ui import Ui_WizzardMainDialog
 # commands to threads
 from queue import Queue
 # import mount functions of other classes
-from support.weather_thread import Weather
-from support.stick_thread import Stick
 from support.mount_thread import Mount
 from support.model_thread import Model
-from support.analyse import ShowAnalysePopup
-from support.relays import Relays
-from support.dome_thread import Dome
 from support.coordinate_widget import ShowCoordinatePopup
+from support.analyse import ShowAnalysePopup
+from support.dome_thread import Dome
+from support.weather_thread import Weather
+from support.stick_thread import Stick
+from support.relays import Relays
 from support.popup_dialogs import MyPopup
 
 
@@ -54,23 +54,20 @@ class MountWizzardApp(MwWidget):
         self.config = {}                                                                                                    # configuration data, which is stored
         self.ui = Ui_WizzardMainDialog()                                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
-        self.initUI()                                                                                                       # adapt the window to our purpose
         self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
+        self.initUI()                                                                                                       # adapt the window to our purpose
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
-        self.relays = Relays(self.ui)                                                                                       # Web base relays box for Booting and CCD / Heater On / OFF
-        self.dome = Dome(self.messageQueue)                                                                                 # dome control
+        self.relays = Relays(self)                                                                                          # Web base relays box for Booting and CCD / Heater On / OFF
+        self.dome = Dome(self)                                                                                              # dome control
         self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
-        self.weather = Weather(self.messageQueue)                                                                           # Stickstation Thread
-        self.stick = Stick(self.messageQueue)                                                                               # Stickstation Thread
-        self.model = Model(self.ui, self.mount, self.dome,
-                           self.messageQueue, self.commandQueue, self.mountDataQueue,
-                           self.modelLogQueue)                                                                              # transferring ui and mount object as well
-        self.analysePopup = ShowAnalysePopup(self.ui, self.mount)                                                           # windows for analyse data
-        self.coordinatePopup = ShowCoordinatePopup(self.ui, self.model, self.mount, self.dome, self.modelLogQueue)          # window for modeling points
-        self.mappingFunctions()                                                                                             # mapping the functions to ui
+        self.weather = Weather(self)                                                                                        # Stickstation Thread
+        self.stick = Stick(self)                                                                                            # Stickstation Thread
+        self.model = Model(self)                                                                                            # transferring ui and mount object as well
+        self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
+        self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -81,11 +78,11 @@ class MountWizzardApp(MwWidget):
         self.stick.start()                                                                                                  # starting polling thread
         self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
         self.dome.start()                                                                                                   # starting polling thread
-        self.model.signalModelConnected.connect(self.setSGProStatus)                                                        # status from thread
+        self.model.signalModelConnected.connect(self.setCameraPlateStatus)                                                  # status from thread
         self.model.start()                                                                                                  # starting polling thread
+        self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.loadConfig()                                                                                                   # loading configuration
-        self.show()                                                                                                         # show window
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration second time
         if self.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
@@ -166,6 +163,9 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
         self.ui.btn_popup.clicked.connect(self.doit)
         self.ui.btn_popup_close.clicked.connect(self.doit_close)
+        self.ui.rb_cameraSGPro.clicked.connect(self.cameraPlateChooser)
+        self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
+        self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
 
     def setParkPos1Text(self):                                                                                              # set text for button 1
         self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
@@ -683,8 +683,13 @@ class MountWizzardApp(MwWidget):
     # SGPRO and Modelling handling
     #
 
+    def cameraPlateChooser(self):
+        print('SGPro: ', self.ui.rb_cameraSGPro.isChecked())
+        print('TSX:   ', self.ui.rb_cameraTSX.isChecked())
+        print('ASCOM: ', self.ui.rb_cameraASCOM.isChecked())
+
     @QtCore.Slot(bool)
-    def setSGProStatus(self, status):
+    def setCameraPlateStatus(self, status):
         if status:
             self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: green;}')
         else:
@@ -792,7 +797,6 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
-
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
@@ -822,4 +826,5 @@ if __name__ == "__main__":
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
+    mountApp.show()                                                                                                         # show window
     sys.exit(app.exec_())                                                                                                   # close application

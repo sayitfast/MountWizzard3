@@ -43,29 +43,25 @@ ELLIPSE_VIEW = 12                                                               
 class ShowCoordinatePopup(MwWidget):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, uiMain, model, mount, dome, modelLogQueue):
+    def __init__(self, app):
         super(ShowCoordinatePopup, self).__init__()
+        self.app = app
         self.pointerAzAlt = QGraphicsItemGroup()                                                                            # object placeholder for AzAlt Pointer
         self.pointerTrack = QGraphicsItemGroup()                                                                            # same for tracking widget
         self.pointerTrackLine = []                                                                                          # same for Track line
         self.itemFlipTime = QGraphicsItemGroup()                                                                            # same for flip indicator
         self.itemFlipTimeText = QGraphicsTextItem('')                                                                       # and the flip time
         self.pointerDome = QGraphicsRectItem(0, 0, 0, 0)                                                                    # shape for the Dome
-        self.uiMain = uiMain                                                                                                # we have to access the main UI class
-        self.model = model                                                                                                  # access to the model class
-        self.mount = mount                                                                                                  # access to the mount class
-        self.dome = dome                                                                                                    # access to the dome class
-        self.modelLogQueue = modelLogQueue                                                                                  # queue for transferring data to the model log window
         self.showStatus = False                                                                                             # show coordinate window
         self.ui = Ui_CoordinateDialog()                                                                                     # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
         self.initUI()                                                                                                       # adaptions to ui setup
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
-        self.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                    # connect signal for AzAlt pointer
-        self.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                                   # same for track preview
-        self.uiMain.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                 # if tracking widget is switched on / off, here is the signal for it
-        self.model.signalModelRedraw.connect(self.redrawCoordinateWindow)                                                   # signal for redrawing the window content
-        self.dome.signalDomPointer.connect(self.setDomePointer)                                                             # signal for redrawing the dome
+        self.app.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
+        self.app.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
+        self.app.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                 # if tracking widget is switched on / off, here is the signal for it
+        self.app.model.signalModelRedraw.connect(self.redrawCoordinateWindow)                                               # signal for redrawing the window content
+        self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
         self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)                                                  # signal for closing (not destroying) the window
         self.redrawCoordinateWindow()                                                                                       # at the beginning, initialize the content
         self.show()                                                                                                         # construct the window
@@ -95,32 +91,32 @@ class ShowCoordinatePopup(MwWidget):
         QCoreApplication.processEvents()
 
     def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
-        if self.uiMain.checkRunTrackingWidget.isChecked():
+        if self.app.ui.checkRunTrackingWidget.isChecked():
             self.drawTrackPreview()
         else:
             self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):                                                                                             # method for drawing the track
-        if not self.uiMain.checkRunTrackingWidget.isChecked():
+        if not self.app.ui.checkRunTrackingWidget.isChecked():
             return
-        raCopy = copy.copy(self.mount.ra)                                                                                   # start wit the actual coordinates of the mount
-        decCopy = copy.copy(self.mount.dec)                                                                                 # but copy it (otherwise it will be changes during the calculation -> python object model)
+        raCopy = copy.copy(self.app.mount.ra)                                                                               # start wit the actual coordinates of the mount
+        decCopy = copy.copy(self.app.mount.dec)                                                                             # but copy it (otherwise it will be changes during the calculation -> python object model)
         width = self.ui.modelPointsPlot.width()                                                                             # get data from ui
         height = self.ui.modelPointsPlot.height()
         self.pointerTrack.setVisible(True)
         for i in range(0, 50):                                                                                              # round model point from actual az alt position 24 hours
             ra = raCopy - float(i) * 10 / 50                                                                                # 12 hours line max
-            az, alt = self.mount.transformNovas(ra, decCopy, 1)                                                             # transform to az alt
+            az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
             x, y = getXY(az, alt, height, width, BORDER_VIEW)
             self.pointerTrackLine[i].setPos(x, y)
             if alt > 0:
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.mount.transformNovas(self.mount.ra - float(self.mount.timeToFlip) / 60, decCopy, 1)                  # transform to az alt
+        az, alt = self.app.mount.transformNovas(self.app.mount.ra - float(self.app.mount.timeToFlip) / 60, decCopy, 1)       # transform to az alt
         x, y = getXY(az, alt, height, width, BORDER_VIEW)
         self.itemFlipTime.setPos(x, y)
-        delta = float(self.mount.timeToFlip)
+        delta = float(self.app.mount.timeToFlip)
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:03.0f} min'.format(fliptime, delta))
         self.pointerTrack.update()
@@ -227,8 +223,8 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDome.setVisible(False)
         self.pointerDome.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, BORDER_VIEW, TEXTHEIGHT_VIEW, scene)
-        scene = self.constructHorizon(scene, self.model.horizonPoints, height, width, BORDER_VIEW)
-        for i, p in enumerate(self.model.BasePoints):                                                                       # show the points
+        scene = self.constructHorizon(scene, self.app.model.horizonPoints, height, width, BORDER_VIEW)
+        for i, p in enumerate(self.app.model.BasePoints):                                                                   # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -240,8 +236,8 @@ class ShowCoordinatePopup(MwWidget):
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.model.BasePoints[i] = (p[0], p[1], item, True)                                                             # storing the objects in the list
-        for i, p in enumerate(self.model.RefinementPoints):                                                                 # show the points
+            self.app.model.BasePoints[i] = (p[0], p[1], item, True)                                                         # storing the objects in the list
+        for i, p in enumerate(self.app.model.RefinementPoints):                                                             # show the points
             pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -253,7 +249,7 @@ class ShowCoordinatePopup(MwWidget):
             text_item.setDefaultTextColor(self.COLOR_WHITE)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                       # storing the objects in the list
+            self.app.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                   # storing the objects in the list
         self.pointerAzAlt = self.constructAzAltPointer(ELLIPSE_VIEW)
         self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(ELLIPSE_VIEW)
         scene.addItem(self.pointerAzAlt)

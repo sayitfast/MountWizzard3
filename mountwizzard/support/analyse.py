@@ -67,17 +67,15 @@ def calculateTimeConstant(x_time, y_value):
 class ShowAnalysePopup(MwWidget):
     logger = getLogger(__name__)
 
-    def __init__(self, uiMain, mount):
+    def __init__(self, app):
         super(ShowAnalysePopup, self).__init__()
-
-        self.uiMain = uiMain
-        self.mount = mount
+        self.app = app
         self.showStatus = False
         self.scaleRA = 10
         self.scaleDEC = 10
         self.scaleError = 10
         self.data = {}
-        self.analyse = Analyse(self.mount)
+        self.analyse = Analyse(self.app)
         self.ui = Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
@@ -103,8 +101,8 @@ class ShowAnalysePopup(MwWidget):
         self.setVisible(False)
 
     def getData(self):
-        filename = self.uiMain.le_analyseFileName.text()
-        if filename == '' or not self.mount.transformConnected:
+        filename = self.app.ui.le_analyseFileName.text()
+        if filename == '' or not self.app.mount.transformConnected:
             return
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()
@@ -290,9 +288,9 @@ class ShowAnalysePopup(MwWidget):
 class Analyse:
     logger = getLogger(__name__)
 
-    def __init__(self, mount):
+    def __init__(self, app):
         self.filepath = '/analysedata'
-        self.mount = mount
+        self.app = app
 
     def saveData(self, dataProcess, name):                                                                                  # saving data from list to file
         filenameData = os.getcwd() + self.filepath + '/' + name                                                             # built the filename
@@ -305,11 +303,11 @@ class Analyse:
             return
 
     def processTheSkyXLine(self, line):
-        ra_sol = self.mount.degStringToDecimal(line[0:13], ' ')
-        dec_sol = self.mount.degStringToDecimal(line[15:28], ' ')
-        ra = self.mount.degStringToDecimal(line[30:43], ' ')
-        dec = self.mount.degStringToDecimal(line[45:58], ' ')
-        lst = self.mount.degStringToDecimal(line[61:70], ' ')
+        ra_sol = self.app.mount.degStringToDecimal(line[0:13], ' ')
+        dec_sol = self.app.mount.degStringToDecimal(line[15:28], ' ')
+        ra = self.app.mount.degStringToDecimal(line[30:43], ' ')
+        dec = self.app.mount.degStringToDecimal(line[45:58], ' ')
+        lst = self.app.mount.degStringToDecimal(line[61:70], ' ')
         return ra, dec, ra_sol, dec_sol, lst
 
     def loadTheSkyXData(self, filename):
@@ -318,7 +316,7 @@ class Analyse:
             with open(filename) as infile:
                 lines = infile.read().splitlines()
             infile.close()
-            site_latitude = self.mount.degStringToDecimal(lines[4][0:9], ' ')
+            site_latitude = self.app.mount.degStringToDecimal(lines[4][0:9], ' ')
             for i in range(5, len(lines)):
                 ra, dec, ra_sol, dec_sol, lst = self.processTheSkyXLine(lines[i])
                 if 'ra_J2000' in resultData:
@@ -329,7 +327,7 @@ class Analyse:
                     resultData['dec_J2000'].append(dec)
                 else:
                     resultData['dec_J2000'] = [dec]
-                ra_Jnow, dec_Jnow = self.mount.transformNovas(ra, dec, 3)
+                ra_Jnow, dec_Jnow = self.app.mount.transformNovas(ra, dec, 3)
                 if 'ra_Jnow' in resultData:
                     resultData['ra_Jnow'].append(ra_Jnow)
                 else:
@@ -343,9 +341,9 @@ class Analyse:
                 else:
                     resultData['sidereal_time_float'] = [lst]
                 if 'sidereal_time' in resultData:
-                    resultData['sidereal_time'].append(self.mount.decimalToDegree(lst, False, True))
+                    resultData['sidereal_time'].append(self.app.mount.decimalToDegree(lst, False, True))
                 else:
-                    resultData['sidereal_time'] = [self.mount.decimalToDegree(lst, False, True)]
+                    resultData['sidereal_time'] = [self.app.mount.decimalToDegree(lst, False, True)]
                 if 'ra_sol' in resultData:
                     resultData['ra_sol'].append(ra_sol)
                 else:
@@ -354,7 +352,7 @@ class Analyse:
                     resultData['dec_sol'].append(dec_sol)
                 else:
                     resultData['dec_sol'] = [dec_sol]
-                ra_sol_Jnow, dec_sol_Jnow = self.mount.transformNovas(ra_sol, dec_sol, 3)
+                ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(ra_sol, dec_sol, 3)
                 if 'ra_sol_Jnow' in resultData:
                     resultData['ra_sol_Jnow'].append(ra_sol_Jnow)
                 else:
@@ -364,7 +362,7 @@ class Analyse:
                 else:
                     resultData['dec_sol_Jnow'] = [dec_sol_Jnow]
                 ha = ra - lst
-                az, alt = self.mount.transformNovas(ha, dec, 4)
+                az, alt = self.app.mount.transformNovas(ha, dec, 4)
                 if 'azimuth' in resultData:
                     resultData['azimuth'].append(az)
                 else:
@@ -441,7 +439,6 @@ class Analyse:
         return dataProcess
 
 if __name__ == "__main__":
-    import logging
     logger = getLogger(__name__)
     from support.mount_thread import Mount
     filename = '10micron_model.dat'

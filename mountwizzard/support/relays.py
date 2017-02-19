@@ -20,8 +20,8 @@ from urllib import request
 class Relays:
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
-    def __init__(self, ui):
-        self.ui = ui
+    def __init__(self, app):
+        self.app = app
         self.stat = [False, False, False, False, False, False, False, False]
         self.connected = self.checkConnection()
         if self.connected:
@@ -30,7 +30,7 @@ class Relays:
     def checkConnection(self):
         connected = False
         try:
-            request.urlopen('http://' + self.ui.le_ipRelaybox.text(), None, .5).getcode()
+            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text(), None, .5).getcode()
             connected = True
         except Exception as e:
             connected = False
@@ -51,19 +51,19 @@ class Relays:
             self.stat[7] = (lines[9][8] == '1')
             self.logger.debug('relay setStatus-> status: {0}'.format(self.stat))
         if self.stat[0]:
-            self.ui.btn_switchCCD.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_switchCCD.setStyleSheet('background-color: rgb(42, 130, 218)')
         else:
-            self.ui.btn_switchCCD.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_switchCCD.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
         if self.stat[1]:
-            self.ui.btn_switchHeater.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_switchHeater.setStyleSheet('background-color: rgb(42, 130, 218)')
         else:
-            self.ui.btn_switchHeater.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_switchHeater.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def bootMount(self):
         try:
-            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FF0801')
+            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/FF0801')
             time.sleep(1)
-            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FF0800')
+            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/FF0800')
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchHeater -> error {0}'.format(e))
@@ -72,7 +72,7 @@ class Relays:
 
     def requestStatus(self):
         try:
-            f = request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/status.xml', None, .5)
+            f = request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/status.xml', None, .5)
             self.setStatus(f.read().decode('utf-8'))
         except Exception as e:
             self.logger.error('requestStatus -> error {0}'.format(e))
@@ -81,7 +81,7 @@ class Relays:
 
     def switchAllOff(self):
         try:
-            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/FFE000', None, .5)
+            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/FFE000', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchAllOff -> error {0}'.format(e))
@@ -90,7 +90,7 @@ class Relays:
 
     def switchCCD(self):
         try:
-            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/relays.cgi?relay=1', None, .5)
+            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/relays.cgi?relay=1', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchCCD -> error {0}'.format(e))
@@ -99,7 +99,7 @@ class Relays:
 
     def switchHeater(self):
         try:
-            request.urlopen('http://' + self.ui.le_ipRelaybox.text() + '/relays.cgi?relay=2', None, .5)
+            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/relays.cgi?relay=2', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchHeater -> error {0}'.format(e))

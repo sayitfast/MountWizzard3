@@ -26,9 +26,9 @@ class Dome(QtCore.QThread):
     signalDomeConnected = QtCore.pyqtSignal([int], name='domeConnected')
     signalDomPointer = QtCore.pyqtSignal([float], name='domePointer')
 
-    def __init__(self, messageQueue):
+    def __init__(self, app):
         super().__init__()
-        self.messageQueue = messageQueue
+        self.app = app
         self.connected = 2
         self.ascom = None                                                                                                   # placeholder for ascom driver object
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
@@ -101,7 +101,7 @@ class Dome(QtCore.QThread):
             else:
                 self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
-            self.messageQueue.put('Driver Exception in setupDome')                                                          # write to gui
+            self.app.messageQueue.put('Driver Exception in setupDome')                                                      # write to gui
             self.logger.error('setupDriverDome -> general exception:{0}'.format(e))                                         # write to log
             if self.driverName == '':
                 self.connected = 2
