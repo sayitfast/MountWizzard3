@@ -696,9 +696,6 @@ class MountWizzardApp(MwWidget):
             self.cpObject = self.TheSkyX
         elif self.ui.rb_cameraASSCOM.isChecked():
             self.cpObject = self.SGPro
-        print('SGPro: ', self.ui.rb_cameraSGPro.isChecked())
-        print('TSX:   ', self.ui.rb_cameraTSX.isChecked())
-        print('ASCOM: ', self.ui.rb_cameraASCOM.isChecked())
 
     @QtCore.Slot(bool)
     def setCameraPlateStatus(self, status):
