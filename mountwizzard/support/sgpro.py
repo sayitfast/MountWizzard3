@@ -235,8 +235,8 @@ class SGPro:
             return False, 'Request failed', ''
 
 if __name__ == "__main__":
-    import time
+
     import os
     cam = SGPro()
-    dev, suc, mes = cam.SgEnumerateDevice('Camera')
+    dev, suc, mes = cam.SgCaptureImage(exposureLength=1, gain='50', path= os.getcwd()+'/test.fit')
     print(dev, suc, mes)

@@ -81,6 +81,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
         self.pointerAzAlt.update()                                                                                          # initiate redrawing
+        self.pointerAzAlt.show()
         QCoreApplication.processEvents()
 
     @QtCore.Slot(float)
@@ -90,6 +91,7 @@ class ShowCoordinatePopup(MwWidget):
         self.pointerDome.setPos(x, y)
         self.pointerDome.setVisible(True)
         self.pointerDome.update()
+        self.pointerDome.show()
         QCoreApplication.processEvents()
 
     def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
@@ -122,6 +124,7 @@ class ShowCoordinatePopup(MwWidget):
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:03.0f} min'.format(fliptime, delta))
         self.pointerTrack.update()
+        self.pointerTrack.show()
         QCoreApplication.processEvents()
 
     def constructTrackWidget(self, esize):
