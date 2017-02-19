@@ -27,9 +27,7 @@ from PyQt5 import QtWidgets
 import pyfits
 # for the sorting
 from operator import itemgetter
-# for handling SGPro interface
-from support.sgpro import SGPro
-from support.theskyx import TheSkyX
+# for data storing
 from support.analyse import Analyse
 
 
@@ -47,8 +45,6 @@ class Model(QtCore.QThread):
         super().__init__()
         self.app = app                                                                                                      # class reference for dome control
 
-        self.SGPro = SGPro()                                                                                                # wrapper class SGPro REST API
-        self.TSX = TheSkyX()                                                                                                # wrapper class TheSkyX REST API
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
 
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
@@ -198,7 +194,7 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusSlow(self):                                                                                                # check SGPro running
-        suc, mes = self.SGPro.checkConnection()                                                                             # check status of SGPro
+        suc, mes = self.app.cpObject.checkConnection()                                                                             # check status of SGPro
         self.connected = suc                                                                                                # set status for internal use
         self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
         if not suc:                                                                                                         # otherwise
@@ -601,23 +597,23 @@ class Model(QtCore.QThread):
         else:
             pierside_fits_header = 'W'
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
-        suc, mes, guid = self.SGPro.SgCaptureImage(binningMode=modelData['binning'],
-                                                   exposureLength=modelData['exposure'],
-                                                   isoMode=modelData['isoMode'],
-                                                   iso=str(modelData['isoMode']),
-                                                   gain='High',
-                                                   speed=modelData['speed'],
-                                                   frameType='Light',
-                                                   path=modelData['file'],
-                                                   useSubframe=modelData['canSubframe'],
-                                                   posX=modelData['offX'],
-                                                   posY=modelData['offY'],
-                                                   width=modelData['sizeX'],
-                                                   height=modelData['sizeY'])                                               # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
+        suc, mes, guid = self.app.cpObject.SgCaptureImage(binningMode=modelData['binning'],
+                                                          exposureLength=modelData['exposure'],
+                                                          isoMode=modelData['isoMode'],
+                                                          iso=str(modelData['isoMode']),
+                                                          gain='High',
+                                                          speed=modelData['speed'],
+                                                          frameType='Light',
+                                                          path=modelData['file'],
+                                                          useSubframe=modelData['canSubframe'],
+                                                          posX=modelData['offX'],
+                                                          posY=modelData['offY'],
+                                                          width=modelData['sizeX'],
+                                                          height=modelData['sizeY'])                                        # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
         modelData['imagepath'] = ''
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
             while True:                                                                                                     # waiting for the image download before proceeding
-                suc, modelData['imagepath'] = self.SGPro.SgGetImagePath(guid)                                               # there is the image path, once the image is downloaded
+                suc, modelData['imagepath'] = self.app.cpObject.SgGetImagePath(guid)                                        # there is the image path, once the image is downloaded
                 if suc:                                                                                                     # until then, the link is only the receipt
                     break                                                                                                   # stopping the loop
                 else:                                                                                                       # otherwise
@@ -669,20 +665,20 @@ class Model(QtCore.QThread):
 
     def solveImage(self, modeltype, modelData):                                                                             # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
-            suc, mes, guid = self.SGPro.SgSolveImage(modelData['imagepath'],
-                                                     scaleHint=modelData['hint'],
-                                                     blindSolve=modelData['blind'],
-                                                     useFitsHeaders=True)
+            suc, mes, guid = self.app.cpObject.SgSolveImage(modelData['imagepath'],
+                                                            scaleHint=modelData['hint'],
+                                                            blindSolve=modelData['blind'],
+                                                            useFitsHeaders=True)
         else:                                                                                                               # otherwise we have no chance for blind solve
-            suc, mes, guid = self.SGPro.SgSolveImage(modelData['imagepath'],
-                                                     scaleHint=modelData['hint'],
-                                                     blindSolve=False,
-                                                     useFitsHeaders=True)                                                   # solve without blind
+            suc, mes, guid = self.app.cpObject.SgSolveImage(modelData['imagepath'],
+                                                            scaleHint=modelData['hint'],
+                                                            blindSolve=False,
+                                                            useFitsHeaders=True)                                            # solve without blind
         if not suc:
             self.logger.warning('solveImage     -> no start {0}'.format(mes))                                               # debug output
             return False, mes, modelData
         while True:                                                                                                         # retrieving solving data in loop
-            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SGPro.SgGetSolvedImageData(guid)                         # retrieving the data from solver
+            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.app.cpObject.SgGetSolvedImageData(guid)                  # retrieving the data from solver
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
             if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
@@ -745,12 +741,12 @@ class Model(QtCore.QThread):
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
-        self.app.logQueue.put('delete')                                                                                     # deleting the logfile view
-        self.app.logQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                                # Start informing user
+        self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
+        self.app.modelLogQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory                           # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe = self.SGPro.SgGetCameraProps()                                                 # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe = self.app.cpObject.SgGetCameraProps()                                          # look for capabilities of cam
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
             modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)              # calculate the necessary data
@@ -770,12 +766,12 @@ class Model(QtCore.QThread):
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
-                    self.app.logQueue.put('{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))             # we keep all the stars before
+                    self.app.modelLogQueue.put('{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
-                self.app.logQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
-                                  .format(self.timeStamp(), i+1, p_az, p_alt))                                              # Gui Output
+                self.app.modelLogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
+                                           .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p_az, p_alt))        # Debug output
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
@@ -783,15 +779,15 @@ class Model(QtCore.QThread):
                         self.app.commandQueue.put('RT9')                                                                    # stop tracking until next round
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
-                self.app.logQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
-                                  .format(self.timeStamp(), settlingTime))                                                  # Gui Output
+                self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
+                                           .format(self.timeStamp(), settlingTime))                                         # Gui Output
                 timeCounter = settlingTime
                 while timeCounter > 0:                                                                                      # waiting for settling time and showing data
                     time.sleep(1)                                                                                           # only step n seconds
                     timeCounter -= 1                                                                                        # count down
-                    self.app.logQueue.put('backspace')
-                    self.app.logQueue.put('{0:02d} sec'.format(timeCounter))                                                # write to gui
-                self.app.logQueue.put('\n')                                                                                 # clear gui for next line
+                    self.app.modelLogQueue.put('backspace')
+                    self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))                                           # write to gui
+                self.app.modelLogQueue.put('\n')                                                                            # clear gui for next line
             if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = true ?
                 if self.app.ui.checkFastDownload.isChecked():                                                               # if camera is supporting high speed download
                     modelData['speed'] = 'HiSpeed'
@@ -815,39 +811,39 @@ class Model(QtCore.QThread):
                 modelData['refractionPress'] = self.app.mount.refractionPressure                                            # set it if string available
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
-                self.app.logQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))   # gui output
+                self.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))   # gui output
                 suc, mes, imagepath = self.capturingImage(modelData)                                                        # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
-                    self.app.logQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                               # output for user GUI
+                    self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
                     if self.app.mount.driver_real:
                         suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
                     else:
                         suc, mes, modelData = self.solveImageSimulation(modeltype, modelData)                               # solve the position and returning the values from Simulation
-                    self.app.logQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))     # Gui output
+                    self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))     # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement', 'All']:                                                      #
                             suc = self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])               # sync the actual star to resolved coordinates in JNOW
                             if suc:
-                                self.app.logQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
+                                self.app.modelLogQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
                             else:
-                                self.app.logQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
+                                self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
                         numCheckPoints += 1                                                                                 # increase index for synced stars
                         results.append(copy.copy(modelData))                                                                # adding point for matrix
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible
-                        self.app.logQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
-                                          .format(self.timeStamp(), modelData['raError'], modelData['decError']))           # data for User
+                        self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
+                                                   .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
                         os.remove(modelData['imagepath'])                                                                   # delete unsolved image
-                        self.app.logQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))                 # Gui output
+                        self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))            # Gui output
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
-        self.app.logQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
-                          .format(self.timeStamp(), modeltype, numCheckPoints))                                             # GUI output
+        self.app.modelLogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
+                                   .format(self.timeStamp(), modeltype, numCheckPoints))                                    # GUI output
         self.modelrun = False
         return results                                                                                                      # return results for analysing

@@ -39,6 +39,9 @@ from support.dome_thread import Dome
 from support.weather_thread import Weather
 from support.stick_thread import Stick
 from support.relays import Relays
+# for handling camera and plate solving interface
+from support.sgpro import SGPro
+from support.theskyx import TheSkyX
 from support.popup_dialogs import MyPopup
 
 
@@ -62,10 +65,13 @@ class MountWizzardApp(MwWidget):
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.relays = Relays(self)                                                                                          # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self)                                                                                              # dome control
-        self.mount = Mount(self.ui, self.messageQueue, self.commandQueue, self.mountDataQueue)                              # Mount -> everything with mount and alignment
+        self.mount = Mount(self)                                                                                            # Mount -> everything with mount and alignment
         self.weather = Weather(self)                                                                                        # Stickstation Thread
         self.stick = Stick(self)                                                                                            # Stickstation Thread
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
+        self.SGPro = SGPro()
+        self.TheSkyX = TheSkyX()
+        self.cpObject = self.SGPro
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
