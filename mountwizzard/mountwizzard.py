@@ -69,11 +69,12 @@ class MountWizzardApp(MwWidget):
         self.weather = Weather(self)                                                                                        # Stickstation Thread
         self.stick = Stick(self)                                                                                            # Stickstation Thread
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
-        self.SGPro = SGPro()
-        self.TheSkyX = TheSkyX()
-        self.cpObject = self.SGPro
+        self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
+        self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
+        self.cpObject = self.SGPro                                                                                          # set default to SGPro
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
+        self.loadConfig()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -88,14 +89,6 @@ class MountWizzardApp(MwWidget):
         self.model.start()                                                                                                  # starting polling thread
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
-        self.loadConfig()                                                                                                   # loading configuration
-        # noinspection PyCallByClass,PyTypeChecker
-        QTimer.singleShot(1000, self.loadConfig)                                                                            # loading configuration second time
-        if self.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
-            self.showAnalyseWindow()                                                                                        # show it
-        if self.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
-            self.coordinatePopup.redrawCoordinateWindow()                                                                   # update content
-            self.showCoordinateWindow()                                                                                     # show it
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
         self.w = None
 
@@ -835,5 +828,11 @@ if __name__ == "__main__":
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
-    mountApp.show()                                                                                                         # show window
+    mountApp.loadConfig()
+    mountApp.show()
+    # if mountApp.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
+    #    mountApp.showAnalyseWindow()                                                                                        # show it
+    if mountApp.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
+        mountApp.coordinatePopup.redrawCoordinateWindow()                                                                   # update content
+        mountApp.showCoordinateWindow()                                                                                     # show it
     sys.exit(app.exec_())                                                                                                   # close application

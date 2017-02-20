@@ -152,8 +152,8 @@ class SGPro:
             with request.urlopen(req) as f:
                 captureResponse = json.loads(f.read().decode('utf-8'))
             # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['NumPixelsX'], captureResponse[
-                'NumPixelsY'], captureResponse['SupportsSubframe']
+            return captureResponse['Success'], captureResponse['Message'], int(captureResponse['NumPixelsX']), int(captureResponse[
+                'NumPixelsY']), captureResponse['SupportsSubframe']
         except Exception as e:
             self.logger.error('SgGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''

@@ -1,4 +1,7 @@
 # Changelog:
+1.1.16
+-
+
 1.1.15
 - added Camera chooser
 - refactoring for multiple software support

@@ -97,6 +97,7 @@ class ShowAnalysePopup(MwWidget):
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
+#        self.move(self.app.config['AnalysePopupWindowPositionX'], self.app.config['AnalysePopupWindowPositionY'])
         self.show()
         self.setVisible(False)
 
