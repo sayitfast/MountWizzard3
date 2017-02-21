@@ -36,7 +36,7 @@ class Mount(QtCore.QThread):
 
     def __init__(self, app):
         super().__init__()                                                                                                  # init of the class parent with super
-        self.app = app                                                                                                        # accessing ui object from mount class
+        self.app = app                                                                                                      # accessing ui object from mount class
 
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
@@ -92,7 +92,7 @@ class Mount(QtCore.QThread):
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
             self.transformConnected = True
         except Exception as e:                                                                                              # exception handling
-            self.app.messageQueue.put('Error loading ASCOM transform Driver')                                                   # write to gui
+            self.app.messageQueue.put('Error loading ASCOM transform Driver')                                               # write to gui
             self.logger.error('run Mount      -> loading ASCOM transform error:{0}'.format(e))                              # write logfile
         finally:                                                                                                            # we don't stop on error the wizzard
             pass                                                                                                            # python specific
@@ -101,14 +101,14 @@ class Mount(QtCore.QThread):
         while True:                                                                                                         # main loop in thread
             self.signalMountConnected.emit(self.connected)                                                                  # sending the connection status
             if self.connected:                                                                                              # when connected, starting the work
-                if not self.app.commandQueue.empty():                                                                           # checking if in queue is something to do
-                    command = self.app.commandQueue.get()                                                                       # if yes, getting the work command
+                if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
+                    command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
                     if command == 'GetAlignmentModel':                                                                      # checking which command was sent
                         self.app.ui.btn_getActualModel.setStyleSheet(self.BLUE)
                         self.getAlignmentModel()                                                                            # running the appropriate method
                         self.app.ui.btn_getActualModel.setStyleSheet(self.DEFAULT)
-                    elif command == 'ClearAlign':                                                                           #
-                        self.sendCommand('delalig')                                                                         #
+                    elif command == 'ClearAlign':
+                        self.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
                         self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
                         self.runTargetRMSAlignment()
@@ -118,9 +118,9 @@ class Mount(QtCore.QThread):
                         self.deleteWorstPoint()
                         self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
                     elif command == 'BackupModel':
-                        self.app.ui.btn_backupModel.setStyleSheet(self.BLUE)                                                    # button blue
+                        self.app.ui.btn_backupModel.setStyleSheet(self.BLUE)                                                # button blue
                         self.backupModel()
-                        self.app.ui.btn_backupModel.setStyleSheet(self.DEFAULT)                                                 # button to default back
+                        self.app.ui.btn_backupModel.setStyleSheet(self.DEFAULT)                                             # button to default back
                     elif command == 'RestoreModel':
                         self.app.ui.btn_restoreModel.setStyleSheet(self.BLUE)
                         self.restoreModel()
@@ -185,7 +185,7 @@ class Mount(QtCore.QThread):
                 else:                                                                                                       #
                     reply = self.ascom.CommandString(command)                                                               # with return value do regular command
             except pythoncom.com_error as e:                                                                                # error handling
-                self.app.messageQueue.put('Driver COM Error in sendCommand')                                                    # gui
+                self.app.messageQueue.put('Driver COM Error in sendCommand')                                                # gui
                 self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger
                 self.connected = False                                                                                      # in case of error, the connection might be broken
             finally:                                                                                                        # we don't stop
@@ -323,7 +323,7 @@ class Mount(QtCore.QThread):
     def flipMount(self):                                                                                                    # doing the flip of the mount
         reply = self.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
-            self.app.messageQueue.put('Flip Mount could not be executed !')                                                     # write to gui
+            self.app.messageQueue.put('Flip Mount could not be executed !')                                                 # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
     def ra_dec_lst_to_az_alt(self, ra, dec, lst):
@@ -379,7 +379,7 @@ class Mount(QtCore.QThread):
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
     def getAlignmentModel(self):                                                                                            # download alignment model from mount
-        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})                                              # clear the window in gui
+        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})                                          # clear the window in gui
         self.mountAlignRMSsum = 0                                                                                           # set RMS sum to 0 for calculation
         self.mountAlignmentPoints = []                                                                                      # clear the alignment points downloaded
         self.mountAlignNumberStars = int(self.sendCommand('getalst').rstrip('#').strip())                                   # get number of stars
@@ -401,9 +401,9 @@ class Mount(QtCore.QThread):
             self.app.mountDataQueue.put({'Name': 'ModelStarError',
                                          'Value': '#{0:02d} HA: {1} DEC: {2} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
                                         .format(i, ha, dec, errorRMS, errorAngle)})
-        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                      # write them to gui
+        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                  # write them to gui
         self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
-                                    .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})                    # set the error values in gui
+                                    .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})                # set the error values in gui
         return True
 
     def runTargetRMSAlignment(self):
@@ -475,7 +475,7 @@ class Mount(QtCore.QThread):
             self.logger.debug('loadSimpleModel-> Model SIMPLE could not be loaded')                                         # log it
 
     def setRefractionParameter(self):
-        if self.app.ui.le_pressureStick.text() != '':                                                                           # value must be there
+        if self.app.ui.le_pressureStick.text() != '':                                                                       # value must be there
             self.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
             if float(self.app.ui.le_temperatureStick.text()) > 0:
                 self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
@@ -488,7 +488,7 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('GS')
         if reply:
             self.sidereal_time = reply.strip('#')
-            self.app.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                    # Sidereal local time
+            self.app.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                # Sidereal local time
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
@@ -502,25 +502,25 @@ class Mount(QtCore.QThread):
             self.ra, self.dec = self.transformNovas(self.raJnow, self.decJnow, 2)                                           # convert J2000
             ra_show = self.decimalToDegree(self.ra, False, False)
             dec_show = self.decimalToDegree(self.dec, True, False)
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                           # put dec to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                             # put ra to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})                # Altitude
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})                  # Azimuth
-            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                           # Mount status -> slew to stop
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                       # put dec to gui
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                         # put ra to gui
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})            # Altitude
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})              # Azimuth
+            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                       # Mount status -> slew to stop
             if str(self.pierside) == str('W'):                                                                              # pier side
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                                  # Transfer to test in GUI
+                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                              # Transfer to test in GUI
             else:                                                                                                           #
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                                  # Transfer to Text for GUI
+                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                              # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
             self.timeToFlip = self.sendCommand('Gmte')
-            self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                           # Flip time
+            self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                       # Flip time
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
-        if self.app.ui.checkAutoRefraction.isChecked():                                                                         # check if autorefraction is set
+        if self.app.ui.checkAutoRefraction.isChecked():                                                                     # check if autorefraction is set
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
                 self.setRefractionParameter()                                                                               # transfer refraction from to mount
             else:                                                                                                           #
-                success, message = self.app.SGPro.SgGetDeviceStatus('Camera')                                                   # getting the Camera status
+                success, message = self.app.cpObject.SgGetDeviceStatus('Camera')                                            # getting the Camera status
                 if success and message in ['IDLE', 'DOWNLOADING']:                                                          # if tracking, when camera is idle or downloading
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
@@ -529,19 +529,19 @@ class Mount(QtCore.QThread):
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
         self.timeToFlip = self.sendCommand('Gmte')
-        self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                               # Flip time
+        self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                           # Flip time
         self.refractionTemp = self.sendCommand('GRTMP')
-        self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                         # refraction temp out of mount
+        self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                     # refraction temp out of mount
         self.refractionPressure = self.sendCommand('GRPRS')
-        self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                        # refraction pressure out of mount
-        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1')})                         # temp of RA motor
-        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP2')})                        # temp of dec motor
-        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                                  # get actual slew rate
-        self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})                         #
-        self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})                           #
-        self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})                         #
-        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})                    #
-        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})                     #
+        self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                    # refraction pressure out of mount
+        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1')})                     # temp of RA motor
+        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP2')})                    # temp of dec motor
+        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                              # get actual slew rate
+        self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})
+        self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})
+        self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})
+        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})
+        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})
 
     def getStatusOnce(self):                                                                                                # one time updates for settings
         self.site_height = self.sendCommand('Gev')                                                                          # site height
@@ -555,14 +555,14 @@ class Mount(QtCore.QThread):
         self.transform.SiteElevation = float(self.site_height)                                                              # height
         self.transform.SiteLatitude = self.degStringToDecimal(self.site_lat)                                                # site lat
         self.transform.SiteLongitude = self.degStringToDecimal(self.site_lon)                                               # site lon
-        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                             # write data to GUI
-        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})                                         #
-        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})                                 #
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD')})                              #
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN')})                            #
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP')})                       #
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.sendCommand('GVT')})                              #
-        self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.sendCommand('GVZ')})                           #
+        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                         # write data to GUI
+        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})
+        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD')})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN')})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP')})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.sendCommand('GVT')})
+        self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.sendCommand('GVZ')})
         self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.sendCommand('GVN')))                                       # firmware version for checking
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat

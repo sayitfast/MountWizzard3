@@ -198,7 +198,7 @@ class Model(QtCore.QThread):
         self.connected = suc                                                                                                # set status for internal use
         self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
         if not suc:                                                                                                         # otherwise
-            self.logger.debug('getStatusSlow  -> No SGPro connection: {0}'.format(mes))                                     # debug message
+            self.logger.debug('getStatusSlow  -> No Camera connection: {0}'.format(mes))                                    # debug message
 
     def getStatusFast(self):                                                                                                # fast status
         pass                                                                                                                # actually no fast status
