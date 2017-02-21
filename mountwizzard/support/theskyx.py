@@ -64,7 +64,7 @@ class TheSkyX:
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=1;'
-            if useSubframe :
+            if useSubframe:
                 command += 'ccdsoftCamera.Subframe=1;'
                 command += 'ccdsoftCamera.SubframeLeft=' + str(posX) + ';'
                 command += 'ccdsoftCamera.SubframeTop=' + str(posY) + ';'
@@ -88,15 +88,6 @@ class TheSkyX:
             self.logger.error('TXCaptureImage -> error: {0}'.format(e))
             return False, 'Request failed', ''
 
-    def SgAbortImage(self):
-        try:
-            command = '/* Java Script */ ccdsoftCamera.Abort();'
-            success, response = self.sendCommand(command)
-            return success, response
-        except Exception as e:
-            self.logger.error('TheSkyX SgAbortImage -> error: {0}'.format(e))
-            return False, 'Request failed'
-
     def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
         try:
             command = '/* Java Script */'
@@ -116,9 +107,6 @@ class TheSkyX:
         except Exception as e:
             self.logger.error('TheSkyX SgSolveImage -> error: {0}'.format(e))
             return False, 'Request failed'
-
-    def SgAbortSolve(self, _guid):
-        return False, 'Not supported'
 
     def SgGetSolvedImageData(self, _guid):
         try:
@@ -178,17 +166,3 @@ class TheSkyX:
         except Exception as e:
             self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
-
-    def SgGetTelescopePosition(self):
-        try:
-            command = '/* Java Script */'
-            command += 'sky6RASCOMTele.Connect();';
-            command += 'sky6RASCOMTele.GetRaDec();'
-            command += 'var Out = "";'
-            command += 'Out=String(\'{"Ra":"\'+sky6RASCOMTele.dRa+\'","Dec":"\'+sky6RASCOMTele.dDec+\'"}\');'
-            success, response = self.sendCommand(command)
-            captureResponse = json.loads(response)
-            return success, '', captureResponse['Ra'], captureResponse['Dec']
-        except Exception as e:
-            self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
-            return False, 'Request failed', '', ''

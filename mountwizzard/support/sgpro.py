@@ -24,31 +24,13 @@ class SGPro:
     def __init__(self):
         self.ipSGProBase = 'http://localhost:59590'
         self.ipSGPro = 'http://localhost:59590/json/reply/'
-        self.abortImagePath = 'SgAbortImage'
-        self.abortSolvePath = 'SgAbortSolve'
-        self.captureGuiderImagePath = 'SgCaptureGuiderImagePath'
         self.captureImagePath = 'SgCaptureImage'
         self.connectDevicePath = 'SgConnectDevicePath'
         self.disconnectDevicePath = 'SgDisconnectDevicePath'
-        self.enumerateDevicePath = 'SgEnumerateDevices'
         self.getCameraPropsPath = 'SgGetCameraProps'
-        self.getCameraTempPath = ''                                     # not needed
         self.getDeviceStatusPath = 'SgGetDeviceStatus'
-        self.getFilterPositionPath = ''                                 # not needed
-        self.getFocuserPositionPath = ''                                # not needed
-        self.getFocuserTempPath = ''                                    # not needed
-        self.getGuiderImagePath = ''                                    # not needed
-        self.getGuiderInfoPath = ''                                     # not needed
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
-        self.getTelescopeIsSlewingPath = ''                             # not needed
-        self.getTelescopePositionPath = 'SgGetTelescopePosition'        # not needed
-        self.parkTelescopePath = ''                                     # not needed
-        self.sendGuidePulsePath = ''                                    # not needed
-        self.setCameraTempPath = ''                                     # not needed
-        self.setFilterPositionPath = ''                                 # not needed
-        self.setFocuserPositionPath = ''                                # not needed
-        self.slewTelescopePath = ''                                     # not needed
         self.solveImagePath = 'SgSolveImage'
 
     def checkConnection(self):
@@ -114,35 +96,6 @@ class SGPro:
             self.logger.error('SgCaptureImage -> error: {0}'.format(e))
             return False, 'Request failed', ''
 
-    def SgAbortImage(self):
-        # reference {}
-        data = {}
-        try:
-            req = request.Request(self.ipSGPro + self.abortImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['Message']
-        except Exception as e:
-            self.logger.error('SgAbortImage   -> error: {0}'.format(e))
-            return False, 'Request failed'
-
-    def SgAbortSolve(self, _guid):
-        # reference {"Receipt":"00000000000000000000000000000000"}
-        # The guid (GUID) returned from the "/solve" (SgSolveImage) call
-        data = {'Receipt': _guid}
-        try:
-            req = request.Request(self.ipSGPro + self.abortImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
-            return captureResponse['Success'], captureResponse['Message']
-        except Exception as e:
-            self.logger.error('SgAbortSolve   -> error: {0}'.format(e))
-            return False, 'Request failed'
-
     def SgGetCameraProps(self):
         # reference {}
         data = {}
@@ -186,20 +139,6 @@ class SGPro:
         except Exception as e:
             self.logger.error('SgGetImagePath -> error: {0}'.format(e))
             return False, 'Request failed'
-
-    def SgGetTelescopePosition(self):
-        # reference {}
-        data = {}
-        try:
-            req = request.Request(self.ipSGPro + self.getTelescopePositionPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Ra":0,"Dec":0}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec']
-        except Exception as e:
-            self.logger.error('SgGetTelescopePo-> error: {0}'.format(e))
-            return False, 'Request failed', '', ''
 
     def SgGetSolvedImageData(self, _guid):
         # reference {"Receipt":"00000000000000000000000000000000"}

@@ -544,7 +544,6 @@ class MountWizzardApp(MwWidget):
     def fillMountData(self, data):
         if data['Name'] == 'Reply':
             pass
-            # print(data['Value'])
         if data['Name'] == 'GetDualAxisTracking':
             if data['Value'] == '1':
                 self.ui.le_telescopeDualTrack.setText('ON')
@@ -687,7 +686,7 @@ class MountWizzardApp(MwWidget):
             self.cpObject = self.SGPro
         elif self.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
-        elif self.ui.rb_cameraASSCOM.isChecked():
+        elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.SGPro
 
     @QtCore.Slot(bool)
@@ -828,7 +827,6 @@ if __name__ == "__main__":
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
-    mountApp.loadConfig()
     mountApp.show()
     # if mountApp.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
     #    mountApp.showAnalyseWindow()                                                                                        # show it
