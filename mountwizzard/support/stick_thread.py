@@ -61,6 +61,7 @@ class Stick(QtCore.QThread):
                         self.ascom = Dispatch(self.driverName)                                                              # load driver
                         self.ascom.connected = True
                         self.connected = 1                                                                                  # set status to connected
+                        self.logger.debug('run            -> driver chosen:{0}'.format(self.driverName))
                 except Exception as e:                                                                                      # if general exception
                     if self.driverName != '':
                         self.logger.error('run Stick      -> general exception: {0}'.format(e))                             # write to logger
@@ -100,6 +101,7 @@ class Stick(QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)
+            self.logger.debug('setupDriverStick-> driver chosen:{0}'.format(self.driverName))
             if self.driverName == '':
                 self.connected = 2
             else:

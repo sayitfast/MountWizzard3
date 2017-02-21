@@ -573,6 +573,7 @@ class Mount(QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Telescope'
             self.driverName = self.chooser.Choose(self.driverName)
+            self.logger.debug('setupDriverMoun-> driver chosen:{0}'.format(self.driverName))
             if self.driverName == 'ASCOM.FrejvallGM.Telescope':
                 self.driver_real = True
             else:

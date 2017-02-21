@@ -658,7 +658,6 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
-
     @QtCore.Slot(dict)
     def fillWeatherData(self, data):
         # data from Stickstation via signal connected
