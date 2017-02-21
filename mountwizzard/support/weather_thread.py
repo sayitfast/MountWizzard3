@@ -29,7 +29,9 @@ class Weather(QtCore.QThread):
         super().__init__()                                                                                                  #
         self.app = app                                                                                                      # get message queue for error to gui
         self.ascom = None                                                                                                   # place for ascom driver
-        self.connected = False                                                                                              # set to no connection
+        self.connected = 2                                                                                                  # set to no connection
+        self.driverName = ''                                                                                                # driver object name
+        self.chooser = None                                                                                                 # placeholder for ascom chooser object
 
     def run(self):                                                                                                          # main loop
         pythoncom.CoInitialize()                                                                                            # needed for threading and win32com
