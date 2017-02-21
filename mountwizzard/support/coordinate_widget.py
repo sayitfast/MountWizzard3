@@ -64,7 +64,6 @@ class ShowCoordinatePopup(MwWidget):
         self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
         self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)                                                  # signal for closing (not destroying) the window
         self.redrawCoordinateWindow()                                                                                       # at the beginning, initialize the content
-#        self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
         self.show()                                                                                                         # construct the window
         self.setVisible(False)                                                                                              # but hide it first
 

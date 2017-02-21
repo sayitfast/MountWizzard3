@@ -684,10 +684,13 @@ class MountWizzardApp(MwWidget):
     def cameraPlateChooser(self):
         if self.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
         elif self.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.SGPro
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
 
     @QtCore.Slot(bool)
     def setCameraPlateStatus(self, status):
@@ -794,6 +797,7 @@ class MountWizzardApp(MwWidget):
                 self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText() + text)     # otherwise add text at the end
             self.coordinatePopup.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
             self.modelLogQueue.task_done()
+        QCoreApplication.processEvents()
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
@@ -819,7 +823,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard started !')                                                                                 # start message logger
+    logging.error('MountWizzard v 1.1.16 started !')                                                                        # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application
