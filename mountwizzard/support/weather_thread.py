@@ -104,7 +104,7 @@ class Weather(QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverWeath-> driver chosen:{0}'.format(self.driverName))
+            self.logger.debug('setupDriverWeat-> driver chosen:{0}'.format(self.driverName))
             if self.driverName == '':
                 self.connected = 2
             else:
