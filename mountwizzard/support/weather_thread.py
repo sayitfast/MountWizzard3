@@ -23,61 +23,96 @@ import pythoncom
 class Weather(QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
     signalWeatherData = QtCore.pyqtSignal([dict], name='weatherData')                                                       # single for data transfer to gui
-    signalWeatherConnected = QtCore.pyqtSignal([bool], name='weatherConnected')                                             # signal for connection status
+    signalWeatherConnected = QtCore.pyqtSignal([int], name='weatherConnected')                                              # signal for connection status
 
-    def __init__(self, app):                                                                                                # inti for thread
-        super().__init__()                                                                                                  #
-        self.app = app                                                                                                      # get message queue for error to gui
-        self.ascom = None                                                                                                   # place for ascom driver
-        self.connected = 2                                                                                                  # set to no connection
-        self.driverName = ''                                                                                                # driver object name
+    def __init__(self, app):
+        super().__init__()
+        self.app = app
+        self.connected = 2
+        self.ascom = None                                                                                                   # placeholder for ascom driver object
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
+        self.driverName = ''                                                                                                # driver object name
+        self.slewing = False
+        self.counter = 0
 
-    def run(self):                                                                                                          # main loop
-        pythoncom.CoInitialize()                                                                                            # needed for threading and win32com
-        data = dict()                                                                                                       # set data type for transfer
-        self.connected = False                                                                                              # no connection
-        while True:                                                                                                         # run main loop
-            self.signalWeatherConnected.emit(self.connected)                                                                # send status
-            if self.connected:                                                                                              # if connected transmit the data through signals
-                try:                                                                                                        # target should be queue
-                    data['DewPoint'] = self.ascom.DewPoint                                                                  #
-                    data['Temperature'] = self.ascom.Temperature                                                            #
-                    data['Humidity'] = self.ascom.Humidity                                                                  #
-                    data['Pressure'] = self.ascom.Pressure                                                                  #
-                    data['CloudCover'] = self.ascom.CloudCover                                                              #
-                    data['RainRate'] = self.ascom.RainRate                                                                  #
-                    data['WindSpeed'] = self.ascom.WindSpeed                                                                #
-                    data['WindDirection'] = self.ascom.WindDirection                                                        #
-                    self.signalWeatherData.emit(data)                                                                       # send data
-                except pythoncom.com_error as e:                                                                            # error handling
-                    self.app.messageQueue.put('Driver win32com error in connectWeather')                                        # write to gui
-                    self.logger.error('run Weather    -> win32com error in connectWeather: {0}'.format(e))                  # write to log
+    def run(self):                                                                                                          # runnable for doing the work
+        pythoncom.CoInitialize()                                                                                            # needed for doing CO objects in threads
+        self.connected = 0                                                                                                  # set connection flag for stick itself
+        self.counter = 0
+        while True:                                                                                                         # main loop for stick thread
+            self.signalWeatherConnected.emit(self.connected)                                                                # send status to GUI
+            if self.connected == 1:                                                                                         # differentiate between dome connected or not
+                if self.counter == 0:                                                                                       # jobs once done at the beginning
+                    self.getStatusOnce()                                                                                    # task once
+                if self.counter % 2 == 0:                                                                                   # all tasks with 200 ms
+                    self.getStatusFast()                                                                                    # polling the mount status Ginfo
+                if self.counter % 20 == 0:                                                                                  # all tasks with 3 s
+                    self.getStatusMedium()                                                                                  # polling the mount
+                if self.counter % 300 == 0:                                                                                 # all task with 1 minute
+                    self.getStatusSlow()                                                                                    # slow ones
+                self.counter += 1                                                                                           # increasing counter for selection
+                time.sleep(.1)
             else:
                 try:
-                    self.ascom = Dispatch('ASCOM.OpenWeatherMap.Observingconditions')                                       # load driver
-                    self.connected = True                                                                                   # set connected
-                    self.ascom.connected = True                                                                             # enables data connection
-                except Exception as e:                                                                                      # general exception
-                    self.app.messageQueue.put('Driver COM Error in dispatchWeather')                                        # write to gui
-                    self.logger.error('run Weather    -> general exception in connectWeather: {0}'.format(e))               # write to log
-                    self.connected = False                                                                                  # set to disconnected
-                finally:                                                                                                    # continue to work
-                    pass
-            time.sleep(1)                                                                                                   # time loop
+                    if self.driverName == '':
+                        self.connected = 2
+                    else:
+                        self.ascom = Dispatch(self.driverName)                                                              # load driver
+                        self.ascom.connected = True
+                        self.connected = 1                                                                                  # set status to connected
+                except Exception as e:                                                                                      # if general exception
+                    if self.driverName != '':
+                        self.logger.error('run Weather    -> general exception: {0}'.format(e))                             # write to logger
+                    if self.driverName == '':
+                        self.connected = 2
+                    else:
+                        self.connected = 0                                                                                  # run the driver setup dialog
+                finally:                                                                                                    # still continua and try it again
+                    pass                                                                                                    # needed for continue
+                time.sleep(1)                                                                                               # wait for the next cycle
         self.ascom.Quit()
-        pythoncom.CoUninitialize()                                                                                          # destruct driver
-        self.terminate()                                                                                                    # shutdown task
+        pythoncom.CoUninitialize()                                                                                          # needed for doing COm objects in threads
+        self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread
-        self.wait()                                                                                                         #
+        self.wait()
 
-    def setupDriver(self):                                                                                                  # ascom driver dialog
+    def getStatusFast(self):
+        pass
+
+    def getStatusMedium(self):
+        data = dict()
+        data['DewPoint'] = self.ascom.DewPoint
+        data['Temperature'] = self.ascom.Temperature
+        data['Humidity'] = self.ascom.Humidity
+        data['Pressure'] = self.ascom.Pressure
+        data['CloudCover'] = self.ascom.CloudCover
+        data['RainRate'] = self.ascom.RainRate
+        data['WindSpeed'] = self.ascom.WindSpeed
+        data['WindDirection'] = self.ascom.WindDirection
+        self.signalWeatherData.emit(data)                                                                                   # send data
+
+    def getStatusSlow(self):
+        pass
+
+    def getStatusOnce(self):
+        pass
+
+    def setupDriver(self):  #
         try:
-            self.ascom.SetupDialog()                                                                                        # run ascom setup Dialog
+            self.chooser = Dispatch('ASCOM.Utilities.Chooser')
+            self.chooser.DeviceType = 'ObservingConditions'
+            self.driverName = self.chooser.Choose(self.driverName)
+            if self.driverName == '':
+                self.connected = 2
+            else:
+                self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.app.messageQueue.put('Driver Exception in setupWeather')                                                   # write to gui
-            self.logger.error('setupDriverWeather -> general exception:{0}'.format(e))                                      # write to log
-            self.connected = False                                                                                          # set to disconnected
-        finally:                                                                                                            # continue working
-            return
+            self.logger.error('setupWeather    -> general exception:{0}'.format(e))                                         # write to log
+            if self.driverName == '':
+                self.connected = 2
+            else:
+                self.connected = 0                                                                                          # run the driver setup dialog
+        finally:                                                                                                            # continue to work
+            pass                                                                                                            # python necessary

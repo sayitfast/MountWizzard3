@@ -242,6 +242,7 @@ class MountWizzardApp(MwWidget):
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.stick.driverName = self.config['ASCOMStickDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
+            self.weather.driverName = self.config['ASCOMWeatherDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
             self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
@@ -315,6 +316,7 @@ class MountWizzardApp(MwWidget):
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMStickDriverName'] = self.stick.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
+        self.config['ASCOMWeatherDriverName'] = self.weather.driverName
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -647,12 +649,15 @@ class MountWizzardApp(MwWidget):
     def setupWeatherDriver(self):
         self.weather.setupDriver()
 
-    @QtCore.Slot(bool)
+    @QtCore.Slot(int)
     def setWeatherStatus(self, status):
-        if status:
+        if status == 1:
             self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: green;}')
+        elif status == 2:
+            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: grey;}')
         else:
             self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: red;}')
+
 
     @QtCore.Slot(dict)
     def fillWeatherData(self, data):
