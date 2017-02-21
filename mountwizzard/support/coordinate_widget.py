@@ -76,7 +76,7 @@ class ShowCoordinatePopup(MwWidget):
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)               # get the right coordinates
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
-        self.repaint()                                                                                                      # initiate redrawing
+        self.app.coordinatePopup.repaint()                                                                                  # initiate redrawing
 
     @QtCore.Slot(float)
     def setDomePointer(self, az):                                                                                           # same for dome
