@@ -836,6 +836,7 @@ if __name__ == "__main__":
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
+    mountApp.loadConfig()
     mountApp.show()
     # if mountApp.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
     #    mountApp.showAnalyseWindow()                                                                                        # show it
