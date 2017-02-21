@@ -3348,7 +3348,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>Deletes worst point of actual model until error is below target RMS</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes worst point of actual model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Delete worst Point</string>
@@ -7320,6 +7320,9 @@
        <height>61</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selects the program, which is used for imaging and plat solving&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="title">
       <string>Camera / Plate Solver Chooser</string>
      </property>
@@ -7339,6 +7342,9 @@
        <font>
         <pointsize>12</pointsize>
        </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;SGPro for imaging and plate solving&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
       <property name="text">
        <string>SGPro</string>

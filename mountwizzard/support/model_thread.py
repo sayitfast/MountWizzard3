@@ -333,7 +333,7 @@ class Model(QtCore.QThread):
             ra = raCopy - float(i) * 6 / 20                                                                                 # 6 hours of track test
             az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
-                value.append((int(az), int(alt)))                                                                           # add point to list
+                value.append((az, alt))                                                                                     # add point to list
         return value
 
     def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
@@ -350,9 +350,9 @@ class Model(QtCore.QThread):
                 az, alt = self.app.mount.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
-                        east.append((int(az), int(alt)))                                                                    # add to east
+                        east.append((az, alt))                                                                              # add to east
                     else:
-                        west.append((int(az), int(alt)))                                                                    # add to west
+                        west.append((az, alt))                                                                              # add to west
         value = west + east
         return value                                                                                                        # combine pointlist
 
@@ -368,9 +368,9 @@ class Model(QtCore.QThread):
                 az, alt = self.app.mount.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
-                        east.append((int(az), int(alt)))                                                                    # add to east
+                        east.append((az, alt))                                                                              # add to east
                     else:
-                        west.append((int(az), int(alt)))                                                                    # add to west
+                        west.append((az, alt))                                                                              # add to west
         value = west + east
         return value                                                                                                        # combine pointlist
 
@@ -385,8 +385,8 @@ class Model(QtCore.QThread):
 
     def generateBasePoints(self):                                                                                           # do base point equally distributed
         value = []
-        az = int(float(self.app.ui.azimuthBase.value()))                                                                    # get az value from gui
-        alt = int(float(self.app.ui.altitudeBase.value()))                                                                  # same to alt value
+        az = float(self.app.ui.azimuthBase.value())                                                                         # get az value from gui
+        alt = float(self.app.ui.altitudeBase.value())                                                                       # same to alt value
         for i in range(0, 3):                                                                                               # we need 3 basepoints
             azp = i * 120 + az                                                                                              # equal distance of 120 degree in az
             if azp > 360:                                                                                                   # value range 0-360
@@ -526,8 +526,8 @@ class Model(QtCore.QThread):
             self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
-        self.app.commandQueue.put('Sz{0:03d}*00'.format(az))                                                                # Azimuth setting
-        self.app.commandQueue.put('Sa+{0:02d}*00'.format(alt))                                                              # Altitude Setting
+        self.app.commandQueue.put('Sz{0:03d}*00'.format(int(az)))                                                           # Azimuth setting
+        self.app.commandQueue.put('Sa+{0:02d}*00'.format(int(alt)))                                                         # Altitude Setting
         self.app.commandQueue.put('MS')                                                                                     # initiate slewing with tracking at the end
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.app.dome.connected))
         break_counter = 0
@@ -770,9 +770,9 @@ class Model(QtCore.QThread):
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
-                self.app.modelLogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3d}\xb0 Alt: {3:2d}\xb0\n'
+                self.app.modelLogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
                                            .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
-                self.logger.debug('runModel       -> point {0:2d}  Az: {1:3d} Alt: {2:2d}'.format(i+1, p_az, p_alt))        # Debug output
+                self.logger.debug('runModel       -> point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))    # Debug output
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
                         self.slewMountDome(p_az, p_alt)                                                                     # slewing mount and dome to az/alt for first slew only
