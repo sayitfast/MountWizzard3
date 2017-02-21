@@ -76,9 +76,7 @@ class ShowCoordinatePopup(MwWidget):
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)               # get the right coordinates
         self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
         self.pointerAzAlt.setVisible(True)                                                                                  # show it
-        self.pointerAzAlt.update()                                                                                          # initiate redrawing
-        self.pointerAzAlt.show()
-        QCoreApplication.processEvents()
+        self.repaint()                                                                                                      # initiate redrawing
 
     @QtCore.Slot(float)
     def setDomePointer(self, az):                                                                                           # same for dome
@@ -86,9 +84,7 @@ class ShowCoordinatePopup(MwWidget):
         x, y = getXYRectangle(az, width, BORDER_VIEW)
         self.pointerDome.setPos(x, y)
         self.pointerDome.setVisible(True)
-        self.pointerDome.update()
-        self.pointerDome.show()
-        QCoreApplication.processEvents()
+        self.repaint()
 
     def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
         if self.app.ui.checkRunTrackingWidget.isChecked():
@@ -119,9 +115,7 @@ class ShowCoordinatePopup(MwWidget):
         delta = float(self.app.mount.timeToFlip)
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:03.0f} min'.format(fliptime, delta))
-        self.pointerTrack.update()
-        self.pointerTrack.show()
-        QCoreApplication.processEvents()
+        self.repaint()
 
     def constructTrackWidget(self, esize):
         group = QGraphicsItemGroup()
