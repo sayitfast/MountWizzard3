@@ -115,7 +115,7 @@ class Model(QtCore.QThread):
                 elif self.command == 'ClearAlignmentModel':                                                                 #
                     self.command = ''                                                                                       #
                     self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
-                    self.app.logQueue.put('Clearing alignment model - taking 4 seconds.\n')
+                    self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
                     self.clearAlignmentModel()                                                                              #
                     self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 elif self.command == 'LoadBasePoints':
@@ -526,8 +526,8 @@ class Model(QtCore.QThread):
             self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
-        self.app.commandQueue.put('Sz{0:03d}*00'.format(int(az)))                                                           # Azimuth setting
-        self.app.commandQueue.put('Sa+{0:02d}*00'.format(int(alt)))                                                         # Altitude Setting
+        self.app.commandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))                      # Azimuth setting
+        self.app.commandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))                  # Altitude Setting
         self.app.commandQueue.put('MS')                                                                                     # initiate slewing with tracking at the end
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.app.dome.connected))
         break_counter = 0

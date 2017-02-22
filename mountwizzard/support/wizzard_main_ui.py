@@ -2327,6 +2327,7 @@ class Ui_WizzardMainDialog(object):
         self.settlingTime.setGeometry(QtCore.QRect(670, 390, 51, 22))
         self.settlingTime.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.settlingTime.setDecimals(0)
+        self.settlingTime.setMinimum(1.0)
         self.settlingTime.setMaximum(10.0)
         self.settlingTime.setSingleStep(1.0)
         self.settlingTime.setProperty("value", 1.0)

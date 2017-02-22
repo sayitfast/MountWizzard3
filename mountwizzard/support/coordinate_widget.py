@@ -27,13 +27,13 @@ from support.coordinate_dialog_ui import Ui_CoordinateDialog
 def getXYRectangle(az, width, border):
     x = (az - 15) * (width - 2 * border) / 360 + border
     y = border
-    return int(x), int(y)
+    return int(x + 0.5), int(y + 0.5)
 
 
 def getXY(az, alt, height, width, border):                                                                                  # calculation of the position
-    x = border + int(az / 360 * (width - 2 * border))
-    y = height - border - int(alt / 90 * (height - 2 * border))
-    return int(x), int(y)
+    x = border + (az / 360 * (width - 2 * border))
+    y = height - border - (alt / 90 * (height - 2 * border))
+    return int(x + 0.5), int(y + 0.5)
 
 BORDER_VIEW = 20                                                                                                            # 20 point from graphics border
 TEXTHEIGHT_VIEW = 10                                                                                                        # text size for drawing

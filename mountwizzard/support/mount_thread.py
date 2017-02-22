@@ -213,9 +213,9 @@ class Mount(QtCore.QThread):
                     lon1 = lon.replace('+', '-')                                                                            # and vice versa
                 value = lon1
             elif command.startswith('Sz'):
-                self.value_azimuth = float(command[2:5])
+                self.value_azimuth = float(command[2:5]) + float(command[6:8]) / 60
             elif command.startswith('Sa'):
-                self.value_altitude = float(command[2:5])
+                self.value_altitude = float(command[2:5]) + float(command[6:8]) / 60
             elif command == 'MS':
                 self.ascom.Tracking = False
                 self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
