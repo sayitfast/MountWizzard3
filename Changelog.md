@@ -1,6 +1,8 @@
 # Changelog:
 1.1.16
--
+- bugfix clear model -> thanks to TONK
+- refactoring az alt from int to float
+- error logging in stick / weather implem,ented
 
 1.1.15
 - added Camera chooser

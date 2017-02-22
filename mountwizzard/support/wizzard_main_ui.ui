@@ -4145,6 +4145,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -4232,6 +4235,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -4270,6 +4276,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4357,6 +4366,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4493,6 +4505,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -4532,6 +4547,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -4570,6 +4588,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4658,6 +4679,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -4720,6 +4744,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -4962,6 +4989,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -5001,6 +5031,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="maxLength">
+      <number>8</number>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -5039,6 +5072,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5102,6 +5138,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5183,6 +5222,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="maxLength">
+      <number>8</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

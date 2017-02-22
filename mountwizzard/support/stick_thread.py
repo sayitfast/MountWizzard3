@@ -84,11 +84,14 @@ class Stick(QtCore.QThread):
 
     def getStatusMedium(self):
         data = dict()
-        data['DewPoint'] = self.ascom.DewPoint                                                                              # storing data in the signal object
-        data['Temperature'] = self.ascom.Temperature                                                                        # actually there is single based communication
-        data['Humidity'] = self.ascom.Humidity                                                                              # target should be queue
-        data['Pressure'] = self.ascom.Pressure
-        self.signalStickData.emit(data)                                                                                     # sending the data via signal
+        try:
+            data['DewPoint'] = self.ascom.DewPoint                                                                              # storing data in the signal object
+            data['Temperature'] = self.ascom.Temperature                                                                        # actually there is single based communication
+            data['Humidity'] = self.ascom.Humidity                                                                              # target should be queue
+            data['Pressure'] = self.ascom.Pressure
+            self.signalStickData.emit(data)                                                                                     # sending the data via signal
+        except Exception as e:
+            self.logger.error('getStatusMedium-> error accessing stick ascom data: {}'.format(e))
 
     def getStatusSlow(self):
         pass

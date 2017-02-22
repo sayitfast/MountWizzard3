@@ -83,15 +83,18 @@ class Weather(QtCore.QThread):
 
     def getStatusMedium(self):
         data = dict()
-        data['DewPoint'] = self.ascom.DewPoint
-        data['Temperature'] = self.ascom.Temperature
-        data['Humidity'] = self.ascom.Humidity
-        data['Pressure'] = self.ascom.Pressure
-        data['CloudCover'] = self.ascom.CloudCover
-        data['RainRate'] = self.ascom.RainRate
-        data['WindSpeed'] = self.ascom.WindSpeed
-        data['WindDirection'] = self.ascom.WindDirection
-        self.signalWeatherData.emit(data)                                                                                   # send data
+        try:
+            data['DewPoint'] = self.ascom.DewPoint
+            data['Temperature'] = self.ascom.Temperature
+            data['Humidity'] = self.ascom.Humidity
+            data['Pressure'] = self.ascom.Pressure
+            data['CloudCover'] = self.ascom.CloudCover
+            data['RainRate'] = self.ascom.RainRate
+            data['WindSpeed'] = self.ascom.WindSpeed
+            data['WindDirection'] = self.ascom.WindDirection
+            self.signalWeatherData.emit(data)                                                                               # send data
+        except Exception as e:
+            self.logger.error('getStatusMedium-> error accessing weather ascom data: {}'.format(e))
 
     def getStatusSlow(self):
         pass

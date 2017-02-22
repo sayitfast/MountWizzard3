@@ -638,10 +638,10 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(dict)
     def fillStickData(self, data):
         # data from Stickstation via signal connected
-        self.ui.le_dewPointStick.setText(str(data['DewPoint']))
-        self.ui.le_temperatureStick.setText(str(data['Temperature']))
-        self.ui.le_humidityStick.setText(str(data['Humidity']))
-        self.ui.le_pressureStick.setText(str(data['Pressure']))
+        self.ui.le_dewPointStick.setText('{0:4.1f}'.format(data['DewPoint']))
+        self.ui.le_temperatureStick.setText('{0:4.1f}'.format(data['Temperature']))
+        self.ui.le_humidityStick.setText('{0:4.1f}'.format(data['Humidity']))
+        self.ui.le_pressureStick.setText('{0:4.1f}'.format(data['Pressure']))
 
     #
     # open weather handling
@@ -661,14 +661,14 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(dict)
     def fillWeatherData(self, data):
         # data from Stickstation via signal connected
-        self.ui.le_dewPointWeather.setText(str(data['DewPoint']))
-        self.ui.le_temperatureWeather.setText(str(data['Temperature']))
-        self.ui.le_humidityWeather.setText(str(data['Humidity']))
-        self.ui.le_pressureWeather.setText(str(data['Pressure']))
-        self.ui.le_cloudCoverWeather.setText(str(data['CloudCover']))
-        self.ui.le_rainRateWeather.setText(str(data['RainRate']))
-        self.ui.le_windSpeedWeather.setText(str(data['WindSpeed']))
-        self.ui.le_windDirectionWeather.setText(str(data['WindDirection']))
+        self.ui.le_dewPointWeather.setText('{0:4.1f}'.format(data['DewPoint']))
+        self.ui.le_temperatureWeather.setText('{0:4.1f}'.format(data['Temperature']))
+        self.ui.le_humidityWeather.setText('{0:4.1f}'.format(data['Humidity']))
+        self.ui.le_pressureWeather.setText('{0:4.1f}'.format(data['Pressure']))
+        self.ui.le_cloudCoverWeather.setText('{0:4.1f}'.format(data['CloudCover']))
+        self.ui.le_rainRateWeather.setText('{0:4.1f}'.format(data['RainRate']))
+        self.ui.le_windSpeedWeather.setText('{0:4.1f}'.format(data['WindSpeed']))
+        self.ui.le_windDirectionWeather.setText('{0:4.1f}'.format(data['WindDirection']))
     #
     # Relay Box Handling
     #
