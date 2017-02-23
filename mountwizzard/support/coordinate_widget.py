@@ -149,6 +149,7 @@ class ShowCoordinatePopup(MwWidget):
         itemText = QGraphicsTextItem(' 19:20\n000 min', None)
         itemText.setDefaultTextColor(self.COLOR_TRACKWIDGETTEXT)
         groupFlipTime.addToGroup(itemText)
+        pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         item = QGraphicsEllipseItem(- esize / 4, -esize / 4, esize / 2, esize / 2)
         item.setPen(pen)
         groupFlipTime.addToGroup(item)
