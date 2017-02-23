@@ -537,11 +537,14 @@ class Model(QtCore.QThread):
             if break_counter == 30:
                 break
         if self.app.dome.connected == 1:                                                                                    # if there is a dome, should be slewed as well
-            if az >= 360:
-                az -= 360
-            elif az < 0:
-                az += 360
-            self.app.dome.ascom.SlewToAzimuth(float(az))                                                                    # set azimuth coordinate
+            if az >= 359.9:
+                az = 359.0
+            elif az < 0.0:
+                az = 0.0
+            try:
+                self.app.dome.ascom.SlewToAzimuth(float(az))                                                                # set azimuth coordinate
+            except Exception as e:
+                self.logger.error('slewMountDome  -> value: {0}, error: {1}'.format(az, e))
             self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
             while not self.app.mount.slewing:                                                                               # wait for mount starting slewing
                 if self.cancel:

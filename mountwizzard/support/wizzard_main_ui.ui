@@ -5251,7 +5251,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Stick</string>
+      <string>ObsCond</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -6258,7 +6258,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Stick</string>
+      <string>ObsCond</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_setupWeatherDriver">
@@ -7033,7 +7033,7 @@
       <double>1.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>10.000000000000000</double>
+      <double>100.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>1.000000000000000</double>
@@ -8126,7 +8126,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Stick</string>
+    <string>ObsCond</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
