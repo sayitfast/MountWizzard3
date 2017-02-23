@@ -2,7 +2,10 @@
 1.1.16
 - bugfix clear model -> thanks to TONK
 - refactoring az alt from int to float
-- error logging in stick / weather implem,ented
+- error logging in stick / weather implemented
+- improvement readability tracking widget
+- bugfix Dome support
+- bugfix camere chooser
 
 1.1.15
 - added Camera chooser

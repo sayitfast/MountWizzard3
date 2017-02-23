@@ -537,8 +537,8 @@ class Model(QtCore.QThread):
             if break_counter == 30:
                 break
         if self.app.dome.connected == 1:                                                                                    # if there is a dome, should be slewed as well
-            if az >= 359.9:
-                az = 359.0
+            if az >= 360:
+                az = 359.9
             elif az < 0.0:
                 az = 0.0
             try:
