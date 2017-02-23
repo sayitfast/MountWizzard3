@@ -128,6 +128,18 @@ class ShowCoordinatePopup(MwWidget):
         groupFlipTime = QGraphicsItemGroup()
         track = []
         group.setVisible(False)
+        poly = QPolygonF()
+        poly.append(QPointF(-5, -15))
+        poly.append(QPointF(45, -15))
+        poly.append(QPointF(45, 35))
+        poly.append(QPointF(-5, 35))
+        poly.append(QPointF(-5, -15))
+        item = QGraphicsPolygonItem(poly)
+        pen = QPen(self.COLOR_BLACK, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        item.setPen(pen)
+        item.setBrush(QBrush(self.COLOR_BACKGROUND))
+        item.setOpacity(0.8)
+        groupFlipTime.addToGroup(item)
         pen = QPen(self.COLOR_TRACKWIDGETPOINTS, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         for i in range(0, 50):
             item = QGraphicsEllipseItem(-esize / 8, -esize / 8, esize / 4, esize / 4)
