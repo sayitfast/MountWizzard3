@@ -2086,6 +2086,98 @@
       <string>Run Base and Refinement Model</string>
      </property>
     </widget>
+    <widget class="QDoubleSpinBox" name="numberHoursDSO">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>300</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>15.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>10.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_181">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>300</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Hours</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_188">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>330</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Points</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="numberPointsDSO">
+     <property name="geometry">
+      <rect>
+       <x>260</x>
+       <y>330</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>50.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>10.000000000000000</double>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
@@ -8195,7 +8287,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard  v1.2rc</string>
+    <string>MountWizzard  v2.0RC</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

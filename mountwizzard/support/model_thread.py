@@ -326,11 +326,13 @@ class Model(QtCore.QThread):
         return value
 
     def generateDSOPoints(self):                                                                                            # model points along dso path
+        hours = int(float(self.app.ui.numberHoursDSO.value()))
+        number = int(float(self.app.ui.numberPointsDSO.value()))
         raCopy = copy.copy(self.app.mount.ra)
         decCopy = copy.copy(self.app.mount.dec)
         value = []                                                                                                          # clear point list
-        for i in range(0, 20):                                                                                              # round model point from actual az alt position 24 hours
-            ra = raCopy - float(i) * 6 / 20                                                                                 # 6 hours of track test
+        for i in range(0, number):                                                                                          # round model point from actual az alt position 24 hours
+            ra = raCopy - float(i) * hours / number
             az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 value.append((az, alt))                                                                                     # add point to list

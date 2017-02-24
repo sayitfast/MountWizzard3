@@ -1,4 +1,10 @@
 # Changelog:
+1.9.1
+- added customization of DSO Track
+
+1.9.0
+- finalizing the release candidate
+
 1.1.16
 - bugfix clear model -> thanks to TONK
 - refactoring az alt from int to float
