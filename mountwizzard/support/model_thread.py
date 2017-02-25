@@ -643,7 +643,7 @@ class Model(QtCore.QThread):
 
     def solveImageSimulation(self, modeltype, modelData):
         tempPath = modelData['imagepath']
-        modelData['imagepath'] = os.path.dirname(os.path.realpath(__file__)) + '/model001.fit'
+        modelData['imagepath'] = os.path.dirname(os.path.realpath(__file__)) + '/model001.py'
         suc, mes, modelData = self.solveImage(modeltype, modelData)
         modelData['imagepath'] = tempPath
         modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
