@@ -117,6 +117,7 @@ class Model(QtCore.QThread):
                     self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
                     self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
                     self.clearAlignmentModel()                                                                              #
+                    self.app.modelLogQueue.put('Model cleared!\n')
                     self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 elif self.command == 'LoadBasePoints':
                     self.command = ''
