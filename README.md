@@ -1,27 +1,28 @@
 # MountWizzard
 
-###Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
-(C) Michael Würtenberger 2016
+### Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
+(C) Michael Würtenberger 2016, 2017
 
 Because I'm going to use the pip installer for beta versions as well and there is no way to rollback a version number or to get one in
 between, I will name the release and beta versions explicitly on this page. You can switch between any version with this pip command.
 
-### Version 1.9.2 for upcoming next release 2.0rc
-<pre>pip install mountwizzard==1.9.2 </pre>
+### Version 1.9.3 for upcoming next release 2.0rc
+<pre>pip install mountwizzard==1.9.3 </pre>
 
 ### Version release 1.1.0
 <pre>pip install mountwizzard==1.1.0 </pre>
 
 # Important:
 
-##### MW runs also with ASCOM 6.3 and is tested with ASCOM 6.2. Please stay with SGPro with v 2.6.11 or earlier, because change in API could make you camera not work
+MW runs also with ASCOM 6.3 and is tested with ASCOM 6.2. Please go with SGPro 2.6.14 release. If you would like to test in simulation,
+please choose the camera simulator v2 and the .NET versions fo telescope and dome simulator. Some older stuff won't work properly.
 
-##### I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
+I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
 On GitHub you will find from now on most probably only the package version under
 <pre>https://github.com/mworion/mountwizzard.git</pre>
 the older version under 'mount' will disappear !
 
-##Features:
+## Features:
 - Blind solve for base points
 - Generate model point track for observing objects for modeling along track
 - Optimize model (even when not modeled with tool)

@@ -421,10 +421,10 @@ class Model(QtCore.QThread):
         if len(self.RefinementPoints) > 0:
             self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints,
                                                   directory, settlingTime)
-            name = directory + '_refinement.dat'  # generate name of analyse file
+            name = directory + '_refinement.dat'                                                                            # generate name of analyse file
             if len(self.modelAnalyseData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)  # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelAnalyseData, name)  # save the data
+                self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
 
@@ -434,10 +434,10 @@ class Model(QtCore.QThread):
         points = self.BasePoints + self.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)                                 # run the analyse
-            name = directory + '_check.dat'  # generate name of analyse file
+            name = directory + '_check.dat'                                                                                 # generate name of analyse file
             if len(self.modelAnalyseData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)  # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelAnalyseData, name)  # save the data
+                self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
 
@@ -447,10 +447,10 @@ class Model(QtCore.QThread):
         points = self.BasePoints + self.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('All', points, directory, settlingTime)                                   # run the analyse
-            name = directory + '_all.dat'  # generate name of analyse file
+            name = directory + '_all.dat'                                                                                   # generate name of analyse file
             if len(self.modelAnalyseData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)  # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelAnalyseData, name)  # save the data
+                self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
             self.logger.warning('runAllModel -> There are no Refinement or Base Points to model')                           # write error log
 
@@ -617,6 +617,7 @@ class Model(QtCore.QThread):
                                                           width=modelData['sizeX'],
                                                           height=modelData['sizeY'])                                        # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
         modelData['imagepath'] = ''
+        self.logger.debug('captureImage   -> message: {0}'.format(mes))
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
             while True:                                                                                                     # waiting for the image download before proceeding
                 suc, modelData['imagepath'] = self.app.cpObject.SgGetImagePath(guid)                                        # there is the image path, once the image is downloaded
@@ -747,6 +748,7 @@ class Model(QtCore.QThread):
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
+        _simulation = False
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
         self.app.modelLogQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
@@ -755,10 +757,11 @@ class Model(QtCore.QThread):
         suc, mes, sizeX, sizeY, canSubframe = self.app.cpObject.SgGetCameraProps()                                          # look for capabilities of cam
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
-            modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)              # calculate the necessary data
         else:
-            self.logger.warning('runModel       -> SgGetCameraProps with error:{0}'.format(mes))                            # log message
-            return
+            self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
+            self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
+            return {}
+        modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
@@ -794,7 +797,7 @@ class Model(QtCore.QThread):
                     self.app.modelLogQueue.put('backspace')
                     self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))                                           # write to gui
                 self.app.modelLogQueue.put('\n')                                                                            # clear gui for next line
-            if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = true ?
+            if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = visible and to be evaluated p_solve = True
                 if self.app.ui.checkFastDownload.isChecked():                                                               # if camera is supporting high speed download
                     modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
@@ -824,10 +827,10 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
-                    if self.app.mount.driver_real:
-                        suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
-                    else:
+                    if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
                         suc, mes, modelData = self.solveImageSimulation(modeltype, modelData)                               # solve the position and returning the values from Simulation
+                    else:
+                        suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))     # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement', 'All']:                                                      #

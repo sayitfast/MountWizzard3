@@ -29,6 +29,7 @@ class SGPro:
         self.disconnectDevicePath = 'SgDisconnectDevicePath'
         self.getCameraPropsPath = 'SgGetCameraProps'
         self.getDeviceStatusPath = 'SgGetDeviceStatus'
+        self.enumerateDevicePath = 'SgEnumerateDevices'
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
@@ -177,5 +178,5 @@ if __name__ == "__main__":
 
     import os
     cam = SGPro()
-    dev, suc, mes = cam.SgCaptureImage(exposureLength=1, gain='50', path= os.getcwd()+'/test.fit')
-    print(dev, suc, mes)
+    suc, mes, x, y, can = cam.SgGetCameraProps()
+    print(x, y, can)

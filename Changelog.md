@@ -1,4 +1,7 @@
 # Changelog:
+1.9.3
+- rehearsal mode
+
 1.9.2
 - message for model clearing
 
@@ -14,7 +17,7 @@
 - error logging in stick / weather implemented
 - improvement readability tracking widget
 - bugfix Dome support
-- bugfix camere chooser
+- bugfix camera chooser
 
 1.1.15
 - added Camera chooser

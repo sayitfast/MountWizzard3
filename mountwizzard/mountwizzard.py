@@ -830,7 +830,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v 1.9.2 started !')                                                                         # start message logger
+    logging.error('MountWizzard v 1.9.3 started !')                                                                         # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application
