@@ -1,5 +1,5 @@
 # Changelog:
-1.9.3
+1.9.3, 1.9.4
 - rehearsal mode
 
 1.9.2

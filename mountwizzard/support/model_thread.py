@@ -579,17 +579,6 @@ class Model(QtCore.QThread):
             self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message
         return modelData                                                                                                    # default without subframe
 
-    def getTestImage(self, index, imagepath):
-        if os.path.isfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index)):                                      # check existing image file
-            shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(index), imagepath)                          # copy testfile instead of imaging
-        else:
-            if index == 0:                                                                                                  # test images should start with 0
-                self.logger.error('getTestImage   -> no test image files available !')
-                return False
-            else:
-                shutil.copyfile(os.getcwd() + '/testimages/model{0:03d}.fit'.format(0), imagepath)                          # copy first testfile instead of imaging
-                return True
-
     def capturingImage(self, modelData):                                                                                    # capturing image
         if self.cancel:
             return False, 'Cancel modeling pressed', modelData
@@ -654,7 +643,7 @@ class Model(QtCore.QThread):
 
     def solveImageSimulation(self, modeltype, modelData):
         tempPath = modelData['imagepath']
-        modelData['imagepath'] = os.getcwd() + '/testimages/model001.fit'
+        modelData['imagepath'] = os.path.dirname(os.path.realpath(__file__)) + '/model001.fit'
         suc, mes, modelData = self.solveImage(modeltype, modelData)
         modelData['imagepath'] = tempPath
         modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
