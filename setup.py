@@ -5,7 +5,7 @@ setup(
     version='1.9.3',
     packages=[
         'mountwizzard',
-        'mountwizzard/support',
+        'mountwizzard/support'
     ],
     install_requires=[
         'PyQt5>=5.7',

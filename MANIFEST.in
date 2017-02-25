@@ -1,2 +1,3 @@
 include README.md
 include Changelog.md
+include mountwizzard/testimages/model001.fit
