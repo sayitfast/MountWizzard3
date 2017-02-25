@@ -1,4 +1,7 @@
 # Changelog:
+1.9.2
+- message for model clearing
+
 1.9.1
 - added customization of DSO Track
 

@@ -1697,6 +1697,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of rows in the grid build&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -1756,6 +1759,9 @@
        <width>51</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of coloms in the grid build&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1966,7 +1972,7 @@
       </rect>
      </property>
      <property name="toolTip">
-      <string>Generates refinment point along DSO track</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a given number of refinement points along DSO track for a give time&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Generate DSO Track</string>
@@ -2095,6 +2101,9 @@
        <height>21</height>
       </rect>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Length of the DSO track in hours.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
@@ -2158,6 +2167,9 @@
        <width>51</width>
        <height>21</height>
       </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of points in the DSO track for the given time in hours&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5375,7 +5387,7 @@
       <rect>
        <x>390</x>
        <y>40</y>
-       <width>71</width>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -5388,7 +5400,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>OpenW.</string>
+      <string>OpenWeather</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -7830,6 +7842,25 @@
      </property>
      <property name="text">
       <string>Diectory Name</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="le_firmwareProductName_2">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>450</y>
+       <width>351</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Mount Wizzard v2.0 (C) MWORION build 1.9.2</string>
      </property>
     </widget>
    </widget>

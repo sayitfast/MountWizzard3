@@ -830,7 +830,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v 1.1.16 started !')                                                                        # start message logger
+    logging.error('MountWizzard v 1.9.2 started !')                                                                         # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application
@@ -840,8 +840,8 @@ if __name__ == "__main__":
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
     mountApp.loadConfig()
     mountApp.show()
-    # if mountApp.analysePopup.showStatus:                                                                                    # if windows was shown last run, open it directly
-    #    mountApp.showAnalyseWindow()                                                                                        # show it
+    # if mountApp.analysePopup.showStatus:                                                                                  # if windows was shown last run, open it directly
+    #    mountApp.showAnalyseWindow()                                                                                       # show it
     if mountApp.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
         mountApp.coordinatePopup.redrawCoordinateWindow()                                                                   # update content
         mountApp.showCoordinateWindow()                                                                                     # show it
