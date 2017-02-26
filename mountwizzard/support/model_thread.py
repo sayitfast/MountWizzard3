@@ -512,7 +512,7 @@ class Model(QtCore.QThread):
                                                               data['pierside'][i],
                                                               self.app.mount.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
                                                               self.app.mount.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
-                                                              self.app.mount.decimalToDegree(data['sidereal_time_float'][i]), False, True)
+                                                              self.app.mount.decimalToDegree(data['sidereal_time_float'][i], False, True))
             reply = self.app.mount.sendCommand(command)
             if reply == 'E':
                 self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output

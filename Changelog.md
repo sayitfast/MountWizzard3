@@ -1,5 +1,5 @@
 # Changelog:
-2.0.2
+2.0.2, 2.0.3
 - bugfix in batch modeling
 
 2.0.1
