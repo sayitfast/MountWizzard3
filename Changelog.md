@@ -1,4 +1,7 @@
 # Changelog:
+2.0.1
+- improved mounts handling
+
 2.0.0
 - added tooltips in analyses window
 - added save config button (thanks for the hint BrokeAstronomer)

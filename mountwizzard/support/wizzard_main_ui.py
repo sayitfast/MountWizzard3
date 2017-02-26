@@ -3226,7 +3226,7 @@ class Ui_WizzardMainDialog(object):
         self.firmwareProductName_7.setText(_translate("WizzardMainDialog", "Working directory of MountWizzard is actually: "))
         self.le_mwWorkingDir.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Here the actually used working directory is shown</p></body></html>"))
         self.le_mwWorkingDir.setText(_translate("WizzardMainDialog", "Diectory Name"))
-        self.le_firmwareProductName_2.setText(_translate("WizzardMainDialog", "Mount Wizzard 2 (C) MWORION build 2.0.0"))
+        self.le_firmwareProductName_2.setText(_translate("WizzardMainDialog", "Mount Wizzard 2 (C) MWORION build 2.0.1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("WizzardMainDialog", "Version"))
         self.le_ipRelaybox.setToolTip(_translate("WizzardMainDialog", "IP Adress of relay switch"))
         self.le_ipRelaybox.setText(_translate("WizzardMainDialog", "192.168.2.14"))
