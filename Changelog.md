@@ -1,4 +1,7 @@
 # Changelog:
+2.0.2
+- bugfix in batch modeling
+
 2.0.1
 - improved mounts handling
 

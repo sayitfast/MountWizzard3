@@ -492,20 +492,20 @@ class Model(QtCore.QThread):
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
         if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
             self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
-            self.app.logQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                             # Gui Output
+            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                             # Gui Output
             return
         if not('ra_sol_Jnow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
             self.logger.error('runBatchModel  -> ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
-            self.app.logQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                                   # Gui Output
+            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                                   # Gui Output
             return
         if not('pierside' in data and 'sidereal_time' in data):                                                             # you need sidereal time and pierside
             self.logger.error('runBatchModel  -> pierside and sidereal time not in data file')                              # debug output
-            self.app.logQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                             # Gui Output
+            self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                             # Gui Output
             return
         self.app.mount.saveActualModel('BATCH')
-        self.app.logQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))           # Gui Output
+        self.app.modelLogQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))           # Gui Output
         self.app.mount.sendCommand('newalig')
-        self.app.logQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                     # Gui Output
+        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                     # Gui Output
         for i in range(0, len(data['index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.mount.decimalToDegree(data['ra_Jnow'][i], False, True),
                                                               self.app.mount.decimalToDegree(data['dec_Jnow'][i], True, False),
@@ -516,16 +516,16 @@ class Model(QtCore.QThread):
             reply = self.app.mount.sendCommand(command)
             if reply == 'E':
                 self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
-                self.app.logQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                        # Gui Output
+                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                        # Gui Output
             else:
-                self.app.logQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
+                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
                                       .format(self.timeStamp(), reply, int(data['azimuth'][i]), int(data['altitude'][i])))  # Gui Output
         reply = self.app.mount.sendCommand('endalig')
         if reply == 'V':
-            self.app.logQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                           # Gui Output
+            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                           # Gui Output
             self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
         else:
-            self.app.logQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))     # Gui Output
+            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))     # Gui Output
             self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
