@@ -1,6 +1,7 @@
 # Changelog:
-1.9.7
--
+2.0.0
+- added tooltips in analyses window
+- added save config button (thanks for the hint BrokeAstronomer)
 
 1.9.3, 1.9.4, 1.9.5, 1.9.6
 - rehearsal mode

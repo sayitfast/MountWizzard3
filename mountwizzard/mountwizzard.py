@@ -90,10 +90,10 @@ class MountWizzardApp(MwWidget):
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
-        self.w = None
 
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
+        self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_selectClose.clicked.connect(self.selectClose)
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
         self.ui.btn_mountPark.clicked.connect(self.mountPark)
@@ -160,8 +160,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_bootMount.clicked.connect(self.bootMount)
         self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
         self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
-        self.ui.btn_popup.clicked.connect(self.doit)
-        self.ui.btn_popup_close.clicked.connect(self.doit_close)
         self.ui.rb_cameraSGPro.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
@@ -216,7 +214,6 @@ class MountWizzardApp(MwWidget):
             self.ui.focalLength.setValue(self.config['FocalLength'])
             self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
             self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
-            self.ui.checkTestWithoutSolver.setChecked(self.config['CheckTestWithoutSolver'])
             self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
             self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
@@ -284,7 +281,6 @@ class MountWizzardApp(MwWidget):
         self.config['FocalLength'] = self.ui.focalLength.value()
         self.config['ScaleSubframe'] = self.ui.scaleSubframe.value()
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
-        self.config['CheckTestWithoutSolver'] = self.ui.checkTestWithoutSolver.isChecked()
         self.config['CheckAutoRefraction'] = self.ui.checkAutoRefraction.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
         self.config['CheckRunTrackingWidget'] = self.ui.checkRunTrackingWidget.isChecked()
@@ -336,6 +332,10 @@ class MountWizzardApp(MwWidget):
         self.saveConfig()
         # noinspection PyArgumentList
         QCoreApplication.instance().quit()
+
+    def saveConfigCont(self):
+        self.saveConfig()
+        self.messageQueue.put('Configuration saved.')
 
     @staticmethod
     def selectClose():
@@ -779,12 +779,6 @@ class MountWizzardApp(MwWidget):
     def runHystereseModel(self):
         self.model.signalModelCommand.emit('RunHystereseModel')
 
-    def doit(self):
-        self.w = MyPopup()
-
-    def doit_close(self):
-        self.w = None
-
     def mainLoop(self):
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
             data = self.mountDataQueue.get()                                                                                # get the data from the queue
@@ -830,7 +824,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v 1.9.7 started !')                                                                         # start message logger
+    logging.error('MountWizzard v 2.0.0 started !')                                                                         # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application

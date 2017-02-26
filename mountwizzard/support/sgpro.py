@@ -70,7 +70,7 @@ class SGPro:
                        gain=None, iso=None, speed=None, frameType=None,
                        path=None, useSubframe=False, posX=0, posY=0,
                        width=1, height=1):
-        # reference {"BinningMode":0,"IsoMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
+        # reference {"BinningMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
         # reference "Path":"String","UseSubframe":false,"X":0,"Y":0,"Width":0,"Height":0}
         data = {"BinningMode": binningMode, "ExposureLength": exposureLength, "UseSubframe": useSubframe, "X": posX, "Y ": posY,
                 "Width": width, "Height": height}

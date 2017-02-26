@@ -81,9 +81,9 @@ class ShowAnalysePopup(MwWidget):
         self.initUI()
         self.ui.windowTitle.setPalette(self.palette)
         self.ui.btn_selectClose.clicked.connect(self.hideAnalyseWindow)
-        self.ui.scalePlotDEC.valueChanged.connect(self.getData)
-        self.ui.scalePlotRA.valueChanged.connect(self.getData)
-        self.ui.scalePlotError.valueChanged.connect(self.getData)
+        self.ui.scalePlotDEC.valueChanged.connect(self.changedDECScale)
+        self.ui.scalePlotRA.valueChanged.connect(self.changedRAScale)
+        self.ui.scalePlotError.valueChanged.connect(self.changedPlotError)
         self.ui.btn_selectDecError.clicked.connect(self.showDecError)
         self.ui.btn_selectDecErrorDeviation.clicked.connect(self.showDecErrorDeviation)
         self.ui.btn_selectRaError.clicked.connect(self.showRaError)
@@ -101,14 +101,27 @@ class ShowAnalysePopup(MwWidget):
         self.show()
         self.setVisible(False)
 
+    def changedDECScale(self):
+        if self.getData():
+            self.showDecError()
+
+    def changedRAScale(self):
+        if self.getData():
+            self.showRaError()
+
+    def changedPlotError(self):
+        if self.getData():
+            self.showModelPointErrorPolar()
+
     def getData(self):
         filename = self.app.ui.le_analyseFileName.text()
         if filename == '' or not self.app.mount.transformConnected:
-            return
+            return False
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()
         self.scaleError = self.ui.scalePlotError.value()
         self.data = self.analyse.loadData(filename)
+        return True
 
     def setFigure(self, projection=None):
         self.plotWidget.plt.clf()

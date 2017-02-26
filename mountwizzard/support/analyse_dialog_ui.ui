@@ -65,7 +65,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Dec Error</string>
@@ -86,7 +86,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Ra Error</string>
@@ -107,7 +107,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file over Altitude.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Dec Error over Alt</string>
@@ -128,7 +128,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file over Altitude.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Ra Error over Alt</string>
@@ -149,7 +149,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show model points in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Model Points Polar</string>
@@ -170,7 +170,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file over Azimuth.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Dec Error over Az</string>
@@ -215,7 +215,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show total error in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Model Error Polar</string>
@@ -236,10 +236,10 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file with respect to the first model point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>RA Error Deviation</string>
+    <string>RA Error Flexure</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectRaErrorAzimuth">
@@ -257,7 +257,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file over Azimuth.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Ra Error over Az</string>
@@ -497,10 +497,10 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file with respect to the first model point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>DEC Error Deviation</string>
+    <string>DEC Error Flexure</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectAnalyseFileName_11">
