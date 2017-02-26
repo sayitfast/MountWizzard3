@@ -56,6 +56,8 @@ class MwWidget(QWidget):
         if mouseEvent.button() == Qt.LeftButton:
             self.moving = True
             self.offset = mouseEvent.pos()
+        if mouseEvent.button() == Qt.RightButton:
+            self.moving = False
 
     def mouseMoveEvent(self, mouseEvent):
         if self.moving:
@@ -66,7 +68,7 @@ class MwWidget(QWidget):
         if self.moving:
             cursor = QCursor()
             self.move(cursor.pos() - self.offset)
-            self.moving = False
+        self.moving = False
 
     def initUI(self):
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
