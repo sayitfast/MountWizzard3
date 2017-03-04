@@ -539,7 +539,7 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                     # refraction temp out of mount
         self.refractionPressure = self.sendCommand('GRPRS')
         self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                    # refraction pressure out of mount
-        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempRA', 'Value': self.sendCommand('GTMP1')})                     # temp motor circuit of both axes
+        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP1')})                    # temp motor circuit of both axes
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                              # get actual slew rate
         self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})
         self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})

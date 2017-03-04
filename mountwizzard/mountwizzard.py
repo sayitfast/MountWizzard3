@@ -147,9 +147,13 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
         self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
+        self.ui.numberHoursDSO.valueChanged.connect(self.generateDSOPoints)
+        self.ui.numberPointsDSO.valueChanged.connect(self.generateDSOPoints)
         self.ui.btn_generateDensePoints.clicked.connect(self.generateDensePoints)
         self.ui.btn_generateNormalPoints.clicked.connect(self.generateNormalPoints)
         self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
+        self.ui.numberGridPointsRow.valueChanged.connect(self.generateGridPoints)
+        self.ui.numberGridPointsCol.valueChanged.connect(self.generateGridPoints)
         self.ui.btn_generateBasePoints.clicked.connect(self.generateBasePoints)
         self.ui.btn_runCheckModel.clicked.connect(self.runCheckModel)
         self.ui.btn_runAllModel.clicked.connect(self.runAllModel)
@@ -578,8 +582,6 @@ class MountWizzardApp(MwWidget):
             self.ui.le_siteElevation.setText(str(data['Value']))
         if data['Name'] == 'GetLocalTime':
             self.ui.le_localTime.setText(str(data['Value']))
-        if data['Name'] == 'GetTelescopeTempRA':
-            self.ui.le_telescopeTempRAMotor.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopeTempDEC':
             self.ui.le_telescopeTempDECMotor.setText(str(data['Value']))
         if data['Name'] == 'GetRefractionTemperature':

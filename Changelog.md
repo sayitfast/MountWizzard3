@@ -4,6 +4,7 @@
 - removed error message "horizon points file could not be loaded" if filename is empty
 - corrected behaviour when changing horizon mask setting and enabling direct redraw
 - bugfix to access file model001.py while simulation reported by Steffen (Smayer)
+- improved responsiveness for selecting DSO points and Grid points (immediate redraw)
 
 
 2.0.2, 2.0.3
