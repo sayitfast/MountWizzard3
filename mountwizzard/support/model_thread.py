@@ -706,20 +706,21 @@ class Model(QtCore.QThread):
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra
             modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600                                  # calculate the alignment error dec
             modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
-            fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
-            fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
-            fitsHeader['MW_PRA'] = modelData['ra_sol_Jnow']
-            fitsHeader['MW_PDEC'] = modelData['dec_sol_Jnow']
-            fitsHeader['MW_SRA'] = modelData['ra_sol']
-            fitsHeader['MW_SDEC'] = modelData['dec_sol']
-            fitsHeader['MW_PSCAL'] = modelData['scale']
-            fitsHeader['MW_PANGL'] = modelData['angle']
-            fitsHeader['MW_PTS'] = modelData['timeTS']
-            self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
-                              format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
-                                     fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                          # write all header data to debug
-            fitsFileHandle.flush()                                                                                           # write all to disk
-            fitsFileHandle.close()                                                                                           # close FIT file
+            if 'model001.py' not in modelData['imagepath']:
+                fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
+                fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
+                fitsHeader['MW_PRA'] = modelData['ra_sol_Jnow']
+                fitsHeader['MW_PDEC'] = modelData['dec_sol_Jnow']
+                fitsHeader['MW_SRA'] = modelData['ra_sol']
+                fitsHeader['MW_SDEC'] = modelData['dec_sol']
+                fitsHeader['MW_PSCAL'] = modelData['scale']
+                fitsHeader['MW_PANGL'] = modelData['angle']
+                fitsHeader['MW_PTS'] = modelData['timeTS']
+                self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
+                                  format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
+                                         fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                          # write all header data to debug
+                fitsFileHandle.flush()                                                                                           # write all to disk
+                fitsFileHandle.close()                                                                                           # close FIT file
             return True, mes, modelData
         else:
             return False, mes, modelData
@@ -739,7 +740,6 @@ class Model(QtCore.QThread):
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
-        _simulation = False
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
         self.app.modelLogQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
