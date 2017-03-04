@@ -240,7 +240,7 @@ class Mount(QtCore.QThread):
                         stat = 0
                     else:
                         stat = 7
-                jd = self.ascom.SiderealTime + 2440587.5    # TODO: better time simulation
+                jd = self.ascom.SiderealTime + 2440587.5
                 if self.ascom.SideOfPier == 0:
                     pierside = 'E'
                 else:
@@ -489,11 +489,17 @@ class Mount(QtCore.QThread):
         if reply:
             self.sidereal_time = reply.strip('#')
             self.app.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                # Sidereal local time
+        reply = self.sendCommand('GR')
+        if reply:
+            self.raJnow = self.degStringToDecimal(reply)
+        reply = self.sendCommand('GD')
+        if reply:
+            self.decJnow = self.degStringToDecimal(reply)
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
-            self.raJnow = float(ra)
-            self.decJnow = float(dec)
+            # self.raJnow = float(ra)
+            # self.decJnow = float(dec)
             self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
@@ -514,6 +520,7 @@ class Mount(QtCore.QThread):
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
             self.timeToFlip = self.sendCommand('Gmte')
             self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                       # Flip time
+            # TODO:  precision of moutn jnow data # print(self.raJnow - float(ra), self.decJnow - float(dec))
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
         if self.app.ui.checkAutoRefraction.isChecked():                                                                     # check if autorefraction is set
@@ -544,6 +551,7 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})
 
     def getStatusOnce(self):                                                                                                # one time updates for settings
+        self.sendCommand('U2')                                                                                              # Set high precision mode
         self.site_height = self.sendCommand('Gev')                                                                          # site height
         lon1 = self.sendCommand('Gg')                                                                                       # get site lon
         if lon1[0] == '-':                                                                                                  # due to compatibility to LX200 protocol east is negative
