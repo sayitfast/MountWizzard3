@@ -616,38 +616,37 @@ class Model(QtCore.QThread):
                     break                                                                                                   # stopping the loop
                 else:                                                                                                       # otherwise
                     time.sleep(0.5)                                                                                         # wait for 0.5 seconds
-            self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))             # debug output
-            fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
-            fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
-            fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
-            fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
-            fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
-            fitsHeader['CDELT1'] = modelData['hint']                                                                        # x is the same as y
-            fitsHeader['CDELT2'] = modelData['hint']                                                                        # and vice versa
-            fitsHeader['MW_MRA'] = raJnow_fits_header                                                                       # reported RA of mount in JNOW
-            fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                     # reported DEC of mount in JNOW
-            fitsHeader['MW_ST'] = st_fits_header                                                                            # reported local sideral time of mount from GS command
-            fitsHeader['MW_MSIDE'] = pierside_fits_header                                                                   # reported pierside of mount from SD command
-            fitsHeader['MW_EXP'] = modelData['exposure']                                                                    # store the exposure time as well
-            fitsHeader['MW_AZ'] = modelData['azimuth']                                                                      # x is the same as y
-            fitsHeader['MW_ALT'] = modelData['altitude']                                                                    # and vice versa
-            self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
-                              'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
-                              .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
-                                      fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
-                                      fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
-                                      fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                           # write all header data to debug
-            fitsFileHandle.flush()                                                                                          # write all to disk
-            fitsFileHandle.close()                                                                                          # close FIT file
+            if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:                                                     # looking for simulation
+                shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + '/model001.py', modelData['imagepath'])       # copy reference file as simulation target
+            else:
+                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))             # debug output
+                fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
+                fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
+                fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
+                fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
+                fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
+                fitsHeader['CDELT1'] = modelData['hint']                                                                        # x is the same as y
+                fitsHeader['CDELT2'] = modelData['hint']                                                                        # and vice versa
+                fitsHeader['MW_MRA'] = raJnow_fits_header                                                                       # reported RA of mount in JNOW
+                fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                     # reported DEC of mount in JNOW
+                fitsHeader['MW_ST'] = st_fits_header                                                                            # reported local sideral time of mount from GS command
+                fitsHeader['MW_MSIDE'] = pierside_fits_header                                                                   # reported pierside of mount from SD command
+                fitsHeader['MW_EXP'] = modelData['exposure']                                                                    # store the exposure time as well
+                fitsHeader['MW_AZ'] = modelData['azimuth']                                                                      # x is the same as y
+                fitsHeader['MW_ALT'] = modelData['altitude']                                                                    # and vice versa
+                self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
+                                  'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
+                                  .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
+                                          fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
+                                          fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
+                                          fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                           # write all header data to debug
+                fitsFileHandle.flush()                                                                                          # write all to disk
+                fitsFileHandle.close()                                                                                          # close FIT file
             return True, 'OK', modelData                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back
 
-    def solveImageSimulation(self, modeltype, modelData):
-        tempPath = modelData['imagepath']
-        modelData['imagepath'] = os.path.dirname(os.path.realpath(__file__)) + '/model001.py'
-        suc, mes, modelData = self.solveImage(modeltype, modelData)
-        modelData['imagepath'] = tempPath
+    def addSolveRandomValues(self, modelData):
         modelData['dec_sol'] = modelData['dec_J2000'] + (2 * random.random() - 1) / 360
         modelData['ra_sol'] = modelData['ra_J2000'] + (2 * random.random() - 1) / 3600
         modelData['scale'] = 1.3
@@ -659,7 +658,7 @@ class Model(QtCore.QThread):
         modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600
         modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600
         modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
-        return suc, mes, modelData
+        return modelData
 
     def solveImage(self, modeltype, modelData):                                                                             # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
@@ -706,21 +705,22 @@ class Model(QtCore.QThread):
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra
             modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600                                  # calculate the alignment error dec
             modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
-            if 'model001.py' not in modelData['imagepath']:
-                fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
-                fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
-                fitsHeader['MW_PRA'] = modelData['ra_sol_Jnow']
-                fitsHeader['MW_PDEC'] = modelData['dec_sol_Jnow']
-                fitsHeader['MW_SRA'] = modelData['ra_sol']
-                fitsHeader['MW_SDEC'] = modelData['dec_sol']
-                fitsHeader['MW_PSCAL'] = modelData['scale']
-                fitsHeader['MW_PANGL'] = modelData['angle']
-                fitsHeader['MW_PTS'] = modelData['timeTS']
-                self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
-                                  format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
-                                         fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                          # write all header data to debug
-                fitsFileHandle.flush()                                                                                           # write all to disk
-                fitsFileHandle.close()                                                                                           # close FIT file
+            fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
+            fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
+            fitsHeader['MW_PRA'] = modelData['ra_sol_Jnow']
+            fitsHeader['MW_PDEC'] = modelData['dec_sol_Jnow']
+            fitsHeader['MW_SRA'] = modelData['ra_sol']
+            fitsHeader['MW_SDEC'] = modelData['dec_sol']
+            fitsHeader['MW_PSCAL'] = modelData['scale']
+            fitsHeader['MW_PANGL'] = modelData['angle']
+            fitsHeader['MW_PTS'] = modelData['timeTS']
+            self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
+                              format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
+                                     fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                         # write all header data to debug
+            fitsFileHandle.flush()                                                                                          # write all to disk
+            fitsFileHandle.close()                                                                                          # close FIT file
+            if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:                                                     # looking for simulation run
+                modelData = self.addSolveRandomValues(modelData)
             return True, mes, modelData
         else:
             return False, mes, modelData
@@ -818,10 +818,7 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
-                    if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
-                        suc, mes, modelData = self.solveImageSimulation(modeltype, modelData)                               # solve the position and returning the values from Simulation
-                    else:
-                        suc, mes, modelData = self.solveImage(modeltype, modelData)                                         # solve the position and returning the values
+                    suc, mes, modelData = self.solveImage(modeltype, modelData)                                             # solve the position and returning the values
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))     # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement', 'All']:                                                      #
