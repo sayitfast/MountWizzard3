@@ -129,6 +129,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_selectImageDirectoryName.clicked.connect(self.selectImageDirectoryName)
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
+        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_getActualModel.clicked.connect(self.getAlignmentModel)

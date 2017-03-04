@@ -260,10 +260,13 @@ class Model(QtCore.QThread):
             self.RefinementPoints = eastSide + westSide                                                                     # put them together
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
+        self.horizonPoints = []                                                                                             # clear horizon variable
         if self.app.ui.checkUseMinimumHorizonLine.isChecked():
             minAlt = int(float(self.app.ui.altitudeMinimumHorizon.value()))
             hp = ((0, minAlt), (359, minAlt))
         else:
+            if horizonPointsFileName == '':
+                return
             hp = []                                                                                                         # clear cache
             if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName):
                 self.app.messageQueue.put('Horizon points file does not exist !')                                           # show on GUI
@@ -281,7 +284,6 @@ class Model(QtCore.QThread):
                     self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                   # write to logger
                     return                                                                                                  # stop routine
             hp = sorted(hp, key=itemgetter(0))                                                                              # list should be sorted, but I do it for security anyway
-        self.horizonPoints = []                                                                                             # clear horizon variable
         az_last = 0                                                                                                         # starting azimuth
         alt_last = 0                                                                                                        # starting altitude
         for i in range(0, len(hp)):                                                                                         # run through all points an link them via line
