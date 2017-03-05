@@ -1,4 +1,8 @@
 # Changelog:
+2.1
+- added timeshift for DSO track
+- optimized GUI for model management
+
 2.0.8
 - prepare for hint in FITS header
 
