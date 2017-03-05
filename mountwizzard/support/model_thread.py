@@ -598,12 +598,12 @@ class Model(QtCore.QThread):
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
         suc, mes, guid = self.app.cpObject.SgCaptureImage(binningMode=modelData['binning'],
                                                           exposureLength=modelData['exposure'],
-                                                          iso=str(modelData['iso']),
-                                                          gain=modelData['gainValue'],
+                                                          isoMode=modelData['isoMode'],
+                                                          iso=str(modelData['isoMode']),
+                                                          gain='High',
                                                           speed=modelData['speed'],
                                                           frameType='Light',
-                                                          filename=modelData['file'],
-                                                          path=modelData['base_dir_images'],
+                                                          path=modelData['file'],
                                                           useSubframe=modelData['canSubframe'],
                                                           posX=modelData['offX'],
                                                           posY=modelData['offY'],
@@ -679,7 +679,7 @@ class Model(QtCore.QThread):
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.app.cpObject.SgGetSolvedImageData(guid)                  # retrieving the data from solver
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:                                                     # if there is success, we can move on
+            if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
                 solved = True
                 modelData['dec_sol'] = float(dec_sol)                                                                       # convert values to float, should be stored in float not string
@@ -757,10 +757,6 @@ class Model(QtCore.QThread):
             self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
             return {}                                                                                                       # if cancel or failure, that empty dict has to returned
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
-        if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
-            simulation = True
-        else:
-            simulation = False
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
@@ -801,10 +797,10 @@ class Model(QtCore.QThread):
                     modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
                     modelData['speed'] = 'Normal'
-                modelData['file'] = self.captureFile + '{0:03d}'.format(i) + '.fit'                                         # generate filename for storing image
+                modelData['file'] = modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'    # generate filepath for storing image
                 modelData['binning'] = int(float(self.app.ui.cameraBin.value()))
                 modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
-                modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
+                modelData['isoMode'] = int(float(self.app.ui.isoSetting.value()))
                 modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
                 modelData['hint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
                 modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]
@@ -844,6 +840,8 @@ class Model(QtCore.QThread):
                                                    .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
+                        if os.path.isfile(modelData['imagepath']):
+                            os.remove(modelData['imagepath'])                                                               # delete unsolved image
                         self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))            # Gui output
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
