@@ -625,6 +625,10 @@ class MountWizzardApp(MwWidget):
                 self.ui.le_telescopeUnattendedFlip.setText('ON')
             else:
                 self.ui.le_telescopeUnattendedFlip.setText('OFF')
+        if data['Name'] == 'GetTimeToFlip':
+            self.ui.le_timeToFlip.setText(str(data['Value']))
+        if data['Name'] == 'GetTimeToMeridian':
+            self.ui.le_timeToMeridian.setText(str(data['Value']))
         if data['Name'] == 'GetFirmwareProductName':
             self.ui.le_firmwareProductName.setText(str(data['Value']))
         if data['Name'] == 'GetFirmwareNumber':
@@ -637,8 +641,6 @@ class MountWizzardApp(MwWidget):
             self.ui.le_hardwareVersion.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopePierSide':
             self.ui.le_telescopePierSide.setText(str(data['Value']))
-        if data['Name'] == 'GetTimeToTrackingLimit':
-            self.ui.le_timeToTrackingLimit.setText(str(data['Value']))
 
     #
     # stick handling
