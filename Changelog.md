@@ -2,6 +2,8 @@
 2.1
 - added timeshift for DSO track
 - optimized GUI for model management
+- adding meridian limit for tracking
+- adding meridian limit for slewing
 
 2.0.4
 - GTMP1 and GTMP2 show same temperature: 10micron: that's right, because its the temp of the motor circuit. changed that
