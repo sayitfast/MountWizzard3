@@ -291,7 +291,7 @@ class Mount(QtCore.QThread):
             elif command == 'getalst':
                 value = '0'
             else:
-                value = '0'
+                pass
         self.sendCommandLock.release()
         return value
 
@@ -320,14 +320,6 @@ class Mount(QtCore.QThread):
             if ra >= 24:                                                                                                    # so set it right
                 ra -= 24
             self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
-            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
-            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
-        elif transform == 5:                                                                                                # 5 = Apparent -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
-            self.transform.SetApparent(ra, dec)                                                                             # set apparent ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
         else:
@@ -414,11 +406,8 @@ class Mount(QtCore.QThread):
             self.mountAlignRMSsum += errorRMS ** 2
             self.mountAlignmentPoints.append((i, errorRMS))
             dec = dec.replace('*', ':')
-            # ha_n = self.degStringToDecimal(ha)
-            # dec_n = self.degStringToDecimal(dec)
-            # az, alt = self.transformNovas(ha_n, dec_n, 4)
             self.app.mountDataQueue.put({'Name': 'ModelStarError',
-                                         'Value': '#{0:02d}   HA: {1}   DEC: {2}   Err: {3:4.1f}\x22   EA: {4:3s}\xb0\n'
+                                         'Value': '#{0:02d} HA: {1} DEC: {2} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
                                         .format(i, ha, dec, errorRMS, errorAngle)})
         self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                  # write them to gui
         self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
@@ -557,7 +546,7 @@ class Mount(QtCore.QThread):
             self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': int(float(self.sendCommand('Glms')))})
             self.app.mountDataQueue.put({'Name': 'GetTimeToFlip', 'Value': self.timeToFlip})                                # Flip time
             self.app.mountDataQueue.put({'Name': 'GetTimeToMeridian', 'Value': self.timeToMeridian})                        # Time to meridian
-            # TODO:  precision of mount jnow data # print(self.raJnow - float(ra), self.decJnow - float(dec))
+            # TODO:  precision of moutn jnow data # print(self.raJnow - float(ra), self.decJnow - float(dec))
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
         if self.app.ui.checkAutoRefraction.isChecked():                                                                     # check if autorefraction is set
@@ -582,8 +571,6 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                              # get actual slew rate
         self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})
         self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.sendCommand('Glmt')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': self.sendCommand('Glms')})
         self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})

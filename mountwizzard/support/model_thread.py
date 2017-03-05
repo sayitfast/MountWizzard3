@@ -749,10 +749,6 @@ class Model(QtCore.QThread):
         modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory                           # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
         suc, mes, sizeX, sizeY, canSubframe = self.app.cpObject.SgGetCameraProps()                                          # look for capabilities of cam
-        if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
-            simulation = True
-        else:
-            simulation = False
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
         else:
