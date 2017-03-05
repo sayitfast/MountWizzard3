@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -2126,7 +2126,7 @@
     <widget class="QLabel" name="label_181">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>190</x>
        <y>300</y>
        <width>61</width>
        <height>21</height>
@@ -2144,7 +2144,7 @@
     <widget class="QLabel" name="label_188">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>190</x>
        <y>330</y>
        <width>61</width>
        <height>21</height>
@@ -2188,6 +2188,55 @@
      </property>
      <property name="value">
       <double>10.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_189">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>300</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>TimeShift [h]</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="numberHoursPreview">
+     <property name="geometry">
+      <rect>
+       <x>410</x>
+       <y>300</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Length of the DSO track in hours.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>12.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>0.000000000000000</double>
      </property>
     </widget>
    </widget>
@@ -3098,9 +3147,9 @@
     <widget class="QLineEdit" name="le_alignNumberStars">
      <property name="geometry">
       <rect>
-       <x>650</x>
-       <y>20</y>
-       <width>61</width>
+       <x>299</x>
+       <y>50</y>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -3137,30 +3186,12 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="label_34">
-     <property name="geometry">
-      <rect>
-       <x>720</x>
-       <y>20</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Stars</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>580</x>
-       <y>20</y>
-       <width>71</width>
+       <x>160</x>
+       <y>50</y>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -3170,15 +3201,15 @@
       </font>
      </property>
      <property name="text">
-      <string>Count</string>
+      <string>Number of Stars</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignError">
      <property name="geometry">
       <rect>
-       <x>650</x>
-       <y>50</y>
-       <width>61</width>
+       <x>299</x>
+       <y>80</y>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -3219,9 +3250,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>250</y>
        <width>401</width>
-       <height>451</height>
+       <height>221</height>
       </rect>
      </property>
      <property name="font">
@@ -3243,9 +3274,9 @@
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>580</x>
-       <y>50</y>
-       <width>81</width>
+       <x>160</x>
+       <y>80</y>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -3255,14 +3286,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Error RMS</string>
+      <string>Error RMS [arcsec]</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_getActualModel">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>20</y>
+       <x>10</x>
+       <y>50</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3277,9 +3308,9 @@
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>580</x>
-       <y>90</y>
-       <width>91</width>
+       <x>160</x>
+       <y>150</y>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -3289,14 +3320,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Target RMS</string>
+      <string>Target RMS [arcsec]</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runTargetRMSAlignment">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>90</y>
+       <x>10</x>
+       <y>150</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3311,9 +3342,9 @@
     <widget class="QDoubleSpinBox" name="targetRMS">
      <property name="geometry">
       <rect>
-       <x>660</x>
-       <y>90</y>
-       <width>62</width>
+       <x>300</x>
+       <y>150</y>
+       <width>51</width>
        <height>22</height>
       </rect>
      </property>
@@ -3330,12 +3361,12 @@
       <double>0.100000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_backupModel">
+    <widget class="QPushButton" name="btn_saveBackupModel">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>180</y>
-       <width>131</width>
+       <x>440</x>
+       <y>50</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -3343,15 +3374,15 @@
       <string>Saves actual model und name &quot;BACKUP&quot; in mount</string>
      </property>
      <property name="text">
-      <string>Backup Model</string>
+      <string>Save</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_restoreModel">
+    <widget class="QPushButton" name="btn_loadBackupModel">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>180</y>
-       <width>131</width>
+       <x>660</x>
+       <y>50</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -3359,15 +3390,15 @@
       <string>Restores the actual model from stored model with name &quot;BACKUP&quot;</string>
      </property>
      <property name="text">
-      <string>Restore Model</string>
+      <string>Load</string>
      </property>
     </widget>
     <widget class="Line" name="line_17">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>70</y>
-       <width>321</width>
+       <x>10</x>
+       <y>130</y>
+       <width>341</width>
        <height>21</height>
       </rect>
      </property>
@@ -3381,25 +3412,9 @@
     <widget class="Line" name="line_18">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>160</y>
-       <width>321</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_19">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>210</y>
-       <width>321</width>
+       <x>440</x>
+       <y>30</y>
+       <width>311</width>
        <height>21</height>
       </rect>
      </property>
@@ -3413,9 +3428,9 @@
     <widget class="QPushButton" name="btn_loadSimpleModel">
      <property name="geometry">
       <rect>
-       <x>590</x>
-       <y>230</y>
-       <width>131</width>
+       <x>660</x>
+       <y>130</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -3423,15 +3438,15 @@
       <string>Restores the actual model from stored model with name &quot;SIMPLE&quot;</string>
      </property>
      <property name="text">
-      <string>Load Simple Model</string>
+      <string>Load</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_saveSimpleModel">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>230</y>
-       <width>131</width>
+       <x>440</x>
+       <y>130</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
@@ -3439,14 +3454,14 @@
       <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
      </property>
      <property name="text">
-      <string>Save Simple Model</string>
+      <string>Save</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>130</y>
+       <x>10</x>
+       <y>190</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3456,6 +3471,180 @@
      </property>
      <property name="text">
       <string>Delete worst Point</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_123">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Actual Model</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_44">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>341</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_124">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Optimize Actual Model</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_125">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>20</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Load / Save Model in Mount Controller</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_loadBaseModel">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>90</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Restores the actual model from stored model with name &quot;SIMPLE&quot;</string>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_saveBaseModel">
+     <property name="geometry">
+      <rect>
+       <x>440</x>
+       <y>90</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_126">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>50</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier New</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>BACKUP</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_127">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>90</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier New</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>BASE</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_128">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>130</y>
+       <width>111</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier New</family>
+       <pointsize>16</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>SIMPLE</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </widget>
@@ -8340,8 +8529,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>alignErrorStars</tabstop>
   <tabstop>btn_getActualModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
-  <tabstop>btn_backupModel</tabstop>
-  <tabstop>btn_restoreModel</tabstop>
+  <tabstop>btn_saveBackupModel</tabstop>
+  <tabstop>btn_loadBackupModel</tabstop>
   <tabstop>btn_loadSimpleModel</tabstop>
   <tabstop>btn_saveSimpleModel</tabstop>
   <tabstop>btn_clearAlignmentModel</tabstop>

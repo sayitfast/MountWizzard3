@@ -42,7 +42,6 @@ from support.relays import Relays
 # for handling camera and plate solving interface
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
-from support.popup_dialogs import MyPopup
 
 
 class MountWizzardApp(MwWidget):
@@ -139,16 +138,19 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
         self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
-        self.ui.btn_backupModel.clicked.connect(self.backupModel)
-        self.ui.btn_restoreModel.clicked.connect(self.restoreModel)
         self.ui.btn_flipMount.clicked.connect(self.flipMount)
         self.ui.btn_loadRefinementPoints.clicked.connect(self.loadRefinementPoints)
         self.ui.btn_loadBasePoints.clicked.connect(self.loadBasePoints)
+        self.ui.btn_saveBackupModel.clicked.connect(self.saveBackupModel)
+        self.ui.btn_loadBackupModel.clicked.connect(self.loadBackupModel)
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
+        self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
+        self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
         self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
         self.ui.numberHoursDSO.valueChanged.connect(self.generateDSOPoints)
         self.ui.numberPointsDSO.valueChanged.connect(self.generateDSOPoints)
+        self.ui.numberHoursPreview.valueChanged.connect(self.generateDSOPoints)
         self.ui.btn_generateDensePoints.clicked.connect(self.generateDensePoints)
         self.ui.btn_generateNormalPoints.clicked.connect(self.generateNormalPoints)
         self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
@@ -536,11 +538,17 @@ class MountWizzardApp(MwWidget):
     def deleteWorstPoint(self):
         self.commandQueue.put('DeleteWorstPoint')
 
-    def backupModel(self):
-        self.commandQueue.put('BackupModel')
+    def saveBackupModel(self):
+        self.commandQueue.put('SaveBackupModel')
 
-    def restoreModel(self):
-        self.commandQueue.put('RestoreModel')
+    def loadBackupModel(self):
+        self.commandQueue.put('LoadBackupModel')
+
+    def saveBaseModel(self):
+        self.commandQueue.put('SaveBaseModel')
+
+    def loadBaseModel(self):
+        self.commandQueue.put('LoadBaseModel')
 
     def saveSimpleModel(self):
         self.commandQueue.put('SaveSimpleModel')
