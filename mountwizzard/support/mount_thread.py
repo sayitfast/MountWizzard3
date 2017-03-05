@@ -67,7 +67,9 @@ class Mount(QtCore.QThread):
         self.jd = 2451544.5                                                                                                 # julian date
         self.sidereal_time = ''                                                                                             # local sidereal time
         self.pierside = 0                                                                                                   # side of pier (E/W)
-        self.timeToFlip = '200'                                                                                             # minutes to flip
+        self.timeToFlip = 200                                                                                               # minutes to flip
+        self.timeToMeridian = 0
+        self.meridianLimitTrack = 5.0                                                                                       # degrees after meridian to flip
         self.refractionTemp = '20.0'                                                                                        # coordinate transformation need temp
         self.refractionPressure = '900.0'                                                                                   # and pressure
         self.transform = None                                                                                               # ascom novas library entry point
@@ -537,8 +539,13 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                              # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
-            self.timeToFlip = self.sendCommand('Gmte')
-            self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                       # Flip time
+            self.timeToFlip = int(float(self.sendCommand('Gmte')))
+            self.meridianLimitTrack = int(float(self.sendCommand('Glmt')))
+            self.timeToMeridian = int(self.timeToFlip - self.meridianLimitTrack / 360 * 24 * 60)
+            self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.meridianLimitTrack})
+            self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': int(float(self.sendCommand('Glms')))})
+            self.app.mountDataQueue.put({'Name': 'GetTimeToFlip', 'Value': self.timeToFlip})                                # Flip time
+            self.app.mountDataQueue.put({'Name': 'GetTimeToMeridian', 'Value': self.timeToMeridian})                        # Time to meridian
             # TODO:  precision of moutn jnow data # print(self.raJnow - float(ra), self.decJnow - float(dec))
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
@@ -564,8 +571,6 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                              # get actual slew rate
         self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})
         self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.sendCommand('Glmt')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': self.sendCommand('Glms')})
         self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})
