@@ -407,7 +407,7 @@ class Mount(QtCore.QThread):
             self.mountAlignmentPoints.append((i, errorRMS))
             dec = dec.replace('*', ':')
             self.app.mountDataQueue.put({'Name': 'ModelStarError',
-                                         'Value': '#{0:02d} HA: {1} DEC: {2} Err: {3:4.1f}\x22 EA: {4:3s}\xb0\n'
+                                         'Value': '#{0:02d}   HA: {1}   DEC: {2}   Err: {3:4.1f}\x22   EA: {4:3s}\xb0\n'
                                         .format(i, ha, dec, errorRMS, errorAngle)})
         self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                  # write them to gui
         self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
@@ -546,7 +546,7 @@ class Mount(QtCore.QThread):
             self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': int(float(self.sendCommand('Glms')))})
             self.app.mountDataQueue.put({'Name': 'GetTimeToFlip', 'Value': self.timeToFlip})                                # Flip time
             self.app.mountDataQueue.put({'Name': 'GetTimeToMeridian', 'Value': self.timeToMeridian})                        # Time to meridian
-            # TODO:  precision of moutn jnow data # print(self.raJnow - float(ra), self.decJnow - float(dec))
+            # TODO:  precision of mount jnow data # print(self.raJnow - float(ra), self.decJnow - float(dec))
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
         if self.app.ui.checkAutoRefraction.isChecked():                                                                     # check if autorefraction is set
