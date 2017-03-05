@@ -1,6 +1,7 @@
 # Changelog:
-2.0.5, 2.0.6
-- adjusting to interface change SGPro release 2.6.17 for CMOS cams
+2.1
+- added timeshift for DSO track
+- optimized GUI for model management
 
 2.0.4
 - GTMP1 and GTMP2 show same temperature: 10micron: that's right, because its the temp of the motor circuit. changed that
