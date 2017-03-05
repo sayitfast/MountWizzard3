@@ -4,6 +4,7 @@
 - optimized GUI for model management
 - adding meridian limit for tracking
 - adding meridian limit for slewing
+- adding time to meridian in gui
 
 2.0.8
 - prepare for hint in FITS header
