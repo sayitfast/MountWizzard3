@@ -2,6 +2,8 @@
 2.1
 - added timeshift for DSO track
 - optimized GUI for model management
+- adding meridian limit for tracking
+- adding meridian limit for slewing
 
 2.0.7
 - bugfix for subframe reported by tonk
