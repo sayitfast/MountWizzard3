@@ -117,14 +117,22 @@ class Mount(QtCore.QThread):
                         self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
                         self.deleteWorstPoint()
                         self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
-                    elif command == 'BackupModel':
-                        self.app.ui.btn_backupModel.setStyleSheet(self.BLUE)                                                # button blue
-                        self.backupModel()
-                        self.app.ui.btn_backupModel.setStyleSheet(self.DEFAULT)                                             # button to default back
-                    elif command == 'RestoreModel':
-                        self.app.ui.btn_restoreModel.setStyleSheet(self.BLUE)
-                        self.restoreModel()
-                        self.app.ui.btn_restoreModel.setStyleSheet(self.DEFAULT)
+                    elif command == 'SaveBackupModel':
+                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.BLUE)                                                # button blue
+                        self.saveBackupModel()
+                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.DEFAULT)                                             # button to default back
+                    elif command == 'LoadBackupModel':
+                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.BLUE)
+                        self.loadBackupModel()
+                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.DEFAULT)
+                    elif command == 'LoadBaseModel':
+                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.BLUE)
+                        self.loadBaseModel()
+                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.DEFAULT)
+                    elif command == 'SaveBaseModel':
+                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.BLUE)
+                        self.saveBaseModel()
+                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.DEFAULT)
                     elif command == 'LoadSimpleModel':
                         self.app.ui.btn_loadSimpleModel.setStyleSheet(self.BLUE)
                         self.loadSimpleModel()
@@ -446,18 +454,31 @@ class Mount(QtCore.QThread):
         else:
             return False
 
-    def backupModel(self):
+    def saveBackupModel(self):
         if self.saveActualModel('BACKUP'):
             self.app.messageQueue.put('Actual Model save to BACKUP')
         else:
-            self.logger.debug('backupModel    -> Model BACKUP could not be saved')                                          # log it
+            self.logger.debug('saveBackupModel-> Model BACKUP could not be saved')                                          # log it
 
-    def restoreModel(self):
+    def loadBackupModel(self):
         if self.loadActualModel('BACKUP'):
             self.app.messageQueue.put('Actual Model loaded from BACKUP')
         else:
             self.app.messageQueue.put('There is no model named BACKUP or error while loading')
-            self.logger.debug('backupModel    -> Model BACKUP could not be loaded')                                         # log it
+            self.logger.debug('loadBackupModel-> Model BACKUP could not be loaded')                                         # log it
+
+    def saveBaseModel(self):
+        if self.saveActualModel('BASE'):
+            self.app.messageQueue.put('Actual Model save to BASE')
+        else:
+            self.logger.debug('saveBaseModel  -> Model BASE could not be saved')                                            # log it
+
+    def loadBaseModel(self):
+        if self.loadActualModel('BASE'):
+            self.app.messageQueue.put('Actual Model loaded from BASE')
+        else:
+            self.app.messageQueue.put('There is no model named BASE or error while loading')
+            self.logger.debug('loadBaseModel  -> Model BASE could not be loaded')                                           # log it
 
     def saveSimpleModel(self):
         if self.saveActualModel('SIMPLE'):

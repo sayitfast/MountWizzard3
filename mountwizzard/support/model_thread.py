@@ -40,6 +40,7 @@ class Model(QtCore.QThread):
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
+    REF_PICTURE = '/model001.py'
 
     def __init__(self, app):
         super().__init__()
