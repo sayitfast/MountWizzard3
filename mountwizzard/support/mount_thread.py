@@ -322,6 +322,14 @@ class Mount(QtCore.QThread):
             self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        elif transform == 5:                                                                                                # 5 = Apparent -> alt/az
+            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
+                ra += 24
+            if ra >= 24:                                                                                                    # so set it right
+                ra -= 24
+            self.transform.SetApparent(ra, dec)                                                                             # set apparent ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
         else:
             val1 = ra
             val2 = dec
@@ -406,6 +414,9 @@ class Mount(QtCore.QThread):
             self.mountAlignRMSsum += errorRMS ** 2
             self.mountAlignmentPoints.append((i, errorRMS))
             dec = dec.replace('*', ':')
+            # ha_n = self.degStringToDecimal(ha)
+            # dec_n = self.degStringToDecimal(dec)
+            # az, alt = self.transformNovas(ha_n, dec_n, 4)
             self.app.mountDataQueue.put({'Name': 'ModelStarError',
                                          'Value': '#{0:02d}   HA: {1}   DEC: {2}   Err: {3:4.1f}\x22   EA: {4:3s}\xb0\n'
                                         .format(i, ha, dec, errorRMS, errorAngle)})
