@@ -4,16 +4,6 @@
 - optimized GUI for model management
 - adding meridian limit for tracking
 - adding meridian limit for slewing
-- adding time to meridian in gui
-
-2.0.8
-- prepare for hint in FITS header
-
-2.0.7
-- bugfix for subframe reported by tonk
-
-2.0.5, 2.0.6
-- adjusting to interface change SGPro release 2.6.17 for CMOS cams
 
 2.0.4
 - GTMP1 and GTMP2 show same temperature: 10micron: that's right, because its the temp of the motor circuit. changed that
