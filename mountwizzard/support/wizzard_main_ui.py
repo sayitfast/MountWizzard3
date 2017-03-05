@@ -1128,7 +1128,7 @@ class Ui_WizzardMainDialog(object):
         self.le_alignError.setReadOnly(True)
         self.le_alignError.setObjectName("le_alignError")
         self.alignErrorStars = QtWidgets.QTextBrowser(self.tab_8)
-        self.alignErrorStars.setGeometry(QtCore.QRect(10, 250, 401, 221))
+        self.alignErrorStars.setGeometry(QtCore.QRect(10, 250, 451, 221))
         font = QtGui.QFont()
         font.setFamily("Courier New")
         font.setPointSize(8)
