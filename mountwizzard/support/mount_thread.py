@@ -582,6 +582,8 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                              # get actual slew rate
         self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})
         self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})
+        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.sendCommand('Glmt')})
+        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': self.sendCommand('Glms')})
         self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})
