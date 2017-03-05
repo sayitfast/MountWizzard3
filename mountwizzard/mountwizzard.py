@@ -615,6 +615,10 @@ class MountWizzardApp(MwWidget):
             self.coordinatePopup.ui.le_telescopeAzimut.setText(str(data['Value']))
         if data['Name'] == 'GetSlewRate':
             self.ui.le_slewRate.setText(str(data['Value']))
+        if data['Name'] == 'GetMeridianLimitTrack':
+            self.ui.le_meridianLimitTrack.setText(str(data['Value']))
+        if data['Name'] == 'GetMeridianLimitSlew':
+            self.ui.le_meridianLimitSlew.setText(str(data['Value']))
         if data['Name'] == 'GetUnattendedFlip':
             if data['Value'] == '1':
                 self.ui.le_telescopeUnattendedFlip.setText('ON')
