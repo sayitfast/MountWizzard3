@@ -600,7 +600,7 @@ class Model(QtCore.QThread):
                                                           exposureLength=modelData['exposure'],
                                                           isoMode=modelData['isoMode'],
                                                           iso=str(modelData['isoMode']),
-                                                          gain='High',
+                                                          gain=modelData['gainValue'],
                                                           speed=modelData['speed'],
                                                           frameType='Light',
                                                           path=modelData['file'],
