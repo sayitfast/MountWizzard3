@@ -600,7 +600,7 @@ class Model(QtCore.QThread):
                                                           exposureLength=modelData['exposure'],
                                                           isoMode=modelData['isoMode'],
                                                           iso=str(modelData['isoMode']),
-                                                          gain='High',
+                                                          gain=modelData['gainValue'],
                                                           speed=modelData['speed'],
                                                           frameType='Light',
                                                           path=modelData['file'],
@@ -748,7 +748,8 @@ class Model(QtCore.QThread):
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory                           # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe = self.app.cpObject.SgGetCameraProps()                                          # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.cpObject.SgGetCameraProps()                               # look for capabilities of cam
+        modelData['gainValue'] = gainValue
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
         else:
