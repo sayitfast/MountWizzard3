@@ -1,4 +1,7 @@
 # Changelog:
+2.0.5
+- adjusting to interface change SGPro release 2.6.17 for CMOS cams
+
 2.0.4
 - GTMP1 and GTMP2 show same temperature: 10micron: that's right, because its the temp of the motor circuit. changed that
 - removed error message "horizon points file could not be loaded" if filename is empty
