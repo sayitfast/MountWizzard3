@@ -291,7 +291,7 @@ class Mount(QtCore.QThread):
             elif command == 'getalst':
                 value = '0'
             else:
-                pass
+                value = '0'
         self.sendCommandLock.release()
         return value
 
