@@ -108,8 +108,7 @@ class SGPro:
             # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
             if 'GainValues' not in captureResponse:
                 captureResponse['GainValues'] = ['High']
-            return captureResponse['Success'], captureResponse['Message'], int(captureResponse['NumPixelsX']), int(captureResponse[
-                'NumPixelsY']), captureResponse['SupportsSubframe'], captureResponse['GainValues'][0]
+            return captureResponse['Success'], captureResponse['Message'], int(captureResponse['NumPixelsX']), int(captureResponse['NumPixelsY']), captureResponse['SupportsSubframe'], captureResponse['GainValues'][0]
         except Exception as e:
             self.logger.error('SgGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
