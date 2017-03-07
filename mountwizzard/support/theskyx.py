@@ -162,7 +162,7 @@ class TheSkyX:
             success, response = self.sendCommand(command)
             # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
             captureResponse = json.loads(response)
-            return success, '', int(captureResponse['WidthInPixels']), int(captureResponse['HeightInPixels']), True
+            return success, '', int(captureResponse['WidthInPixels']), int(captureResponse['HeightInPixels']), True, 'High'
         except Exception as e:
             self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
