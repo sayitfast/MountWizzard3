@@ -811,15 +811,9 @@ if __name__ == "__main__":
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
-    if len(sys.argv) > 1:                                                                                                   # some arguments are given, at least 1
-        if sys.argv[1] == '-d':                                                                                             # than we can check for debug option
-            logging.basicConfig(level=logging.DEBUG,
-                                format='%(asctime)s [%(threadName)15s] - %(message)s',
-                                handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
-    else:                                                                                                                   # set logging level accordingly
-        logging.basicConfig(level=logging.ERROR,
-                            format='%(asctime)s [%(threadName)15s] - %(message)s',
-                            handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(level=logging.DEBUG,
+                        format='%(asctime)s [%(threadName)15s] - %(message)s',
+                        handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/images'):                                                                          # if images dir doesn't exist, make it
@@ -827,7 +821,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v 2.0.3 started !')                                                                         # start message logger
+    logging.error('MountWizzard v 2.0.6 started !')                                                                         # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application
