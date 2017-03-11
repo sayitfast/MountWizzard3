@@ -44,6 +44,7 @@ class TheSkyX:
             tsxSocket.close()
             return connected, message
 
+    @staticmethod
     def SgEnumerateDevice(self, device):
         return '', False, 'Not implemented'
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
@@ -63,7 +64,7 @@ class TheSkyX:
                        frameType=None, filename=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
         try:
             command = '/* Java Script */'
-            command += 'ccdsoftCamera.Asynchronous=1;'
+            command += 'ccdsoftCamera.Asynchronous=0;'
             if useSubframe:
                 command += 'ccdsoftCamera.Subframe=1;'
                 command += 'ccdsoftCamera.SubframeLeft=' + str(posX) + ';'
@@ -130,7 +131,7 @@ class TheSkyX:
 
     def SgGetImagePath(self, _guid):
         try:
-            command = '/* Java Script */ var Out = ""; Out=ccdsoftCamera.LastImageFileName';
+            command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0; Out=ccdsoftCamera.LastImageFileName';
             success, response = self.sendCommand(command)
             return success, response
         except Exception as e:
@@ -140,7 +141,7 @@ class TheSkyX:
     def SgGetDeviceStatus(self, device):
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
         try:
-            command = '/* Java Script */ var Out = ""; Out=ccdsoftCamera.ExposureStatus';
+            command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0; Out=ccdsoftCamera.ExposureStatus';
             success, response = self.sendCommand(command)
             # states are  "IDLE", "CAPTURING", "BUSY", "MOVING", "DISCONNECTED", "PARKED"
 
@@ -158,11 +159,24 @@ class TheSkyX:
 
     def SgGetCameraProps(self):
         try:
-            command = '/* Java Script */ var Out = ""; Out=String(\'{"WidthInPixels":"\'+ccdsoftCamera.WidthInPixels+\'","HeightInPixels":"\'+ccdsoftCamera.HeightInPixels+\'"}\');'
+            command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0;Out=String(\'{"WidthInPixels":"\'+ccdsoftCamera.WidthInPixels+\'","HeightInPixels":"\'+ccdsoftCamera.HeightInPixels+\'"}\');'
             success, response = self.sendCommand(command)
             # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
             captureResponse = json.loads(response)
-            return success, '', int(captureResponse['WidthInPixels']), int(captureResponse['HeightInPixels']), True, 'High'
+            return success, '', int(captureResponse['WidthInPixels']), int(captureResponse['HeightInPixels']), True, 'Not Set'
         except Exception as e:
             self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
-            return False, 'Request failed', '', '', ''
+            return False, 'Request failed', '', '', '', ''
+
+if __name__ == "__main__":
+
+    import os
+    cam = TheSkyX()
+    suc, mes, x, y, can, gain = cam.SgGetCameraProps()
+    print(suc, mes, x, y, can, gain)
+    suc, mes, guid = cam.SgCaptureImage(binningMode=1, exposureLength=1, gain=gain, iso=None, speed=None, frameType='cdLight', filename=None, path='c:/temp', useSubframe=False, posX=0, posY=0, width=1, height=1)
+    while True:
+        suc, mes = cam.SgGetImagePath(guid)
+        if suc:
+            break
+    print(suc, mes)
