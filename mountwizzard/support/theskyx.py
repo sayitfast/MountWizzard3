@@ -62,6 +62,8 @@ class TheSkyX:
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1, gain=None, iso=None, speed=None,
                        frameType=None, filename=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
+        if frameType =='Light':
+            frameType = 'cdLight'
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=0;'
@@ -92,6 +94,7 @@ class TheSkyX:
     def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
         try:
             command = '/* Java Script */'
+            command += 'ccdsoftCamera.Asynchronous=0;'
             command += 'ImageLink.pathToFITS="'+path+'";'
             if scaleHint == None:
                 command += 'ImageLink.unknownScale=1;'
@@ -109,9 +112,10 @@ class TheSkyX:
             self.logger.error('TheSkyX SgSolveImage -> error: {0}'.format(e))
             return False, 'Request failed'
 
-    def SgGetSolvedImageData(self, _guid):
+    def SgGetSolvedImageData(self, guid):
         try:
             command = '/* Java Script */'
+            command += 'ccdsoftCamera.Asynchronous=0;'
             command += 'var Out = "";'
             command += 'Out=String(\'{"succeeded":"\'+ImageLinkResults.succeeded+\'","imageCenterRAJ2000":"\'+ImageLinkResults.imageCenterRAJ2000+\'","imageCenterDecJ2000":"\'+ImageLinkResults.imageCenterDecJ2000+\'","imageScale":"\'+ImageLinkResults.imageScale+\'","imagePositionAngle":"\'+ImageLinkResults.imagePositionAngle+\'"}\');'
             success, response = self.sendCommand(command)
@@ -129,7 +133,7 @@ class TheSkyX:
             self.logger.error('TXGetSolvedImag-> error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
-    def SgGetImagePath(self, _guid):
+    def SgGetImagePath(self, guid):
         try:
             command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0; Out=ccdsoftCamera.LastImageFileName';
             success, response = self.sendCommand(command)
@@ -170,13 +174,14 @@ class TheSkyX:
 
 if __name__ == "__main__":
 
-    import os
     cam = TheSkyX()
     suc, mes, x, y, can, gain = cam.SgGetCameraProps()
     print(suc, mes, x, y, can, gain)
     suc, mes, guid = cam.SgCaptureImage(binningMode=1, exposureLength=1, gain=gain, iso=None, speed=None, frameType='cdLight', filename=None, path='c:/temp', useSubframe=False, posX=0, posY=0, width=1, height=1)
     while True:
-        suc, mes = cam.SgGetImagePath(guid)
+        suc, path = cam.SgGetImagePath(guid)
         if suc:
             break
+    print(suc, path)
+    suc, mes = cam.SgSolveImage(path=path, raHint=None, decHint=None, scaleHint=3.7, blindSolve=False, useFitsHeaders=False)
     print(suc, mes)
