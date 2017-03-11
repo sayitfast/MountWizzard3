@@ -6,7 +6,7 @@
 - adding meridian limit for slewing
 - adding time to meridian in gui
 
-2.0.5
+2.0.5, 2.0.6
 - adjusting to interface change SGPro release 2.6.17 for CMOS cams
 
 2.0.4

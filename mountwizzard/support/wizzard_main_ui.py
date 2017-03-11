@@ -797,7 +797,7 @@ class Ui_WizzardMainDialog(object):
         self.numberHoursPreview.setGeometry(QtCore.QRect(410, 300, 41, 21))
         self.numberHoursPreview.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.numberHoursPreview.setDecimals(0)
-        self.numberHoursPreview.setMinimum(0.0)
+        self.numberHoursPreview.setMinimum(-12.0)
         self.numberHoursPreview.setMaximum(12.0)
         self.numberHoursPreview.setSingleStep(1.0)
         self.numberHoursPreview.setProperty("value", 0.0)
