@@ -5,6 +5,7 @@
 - adding meridian limit for tracking
 - adding meridian limit for slewing
 - adding time to meridian in gui
+- added support for TheSkyX as experimental trial !!!!!
 
 2.0.5, 2.0.6
 - adjusting to interface change SGPro release 2.6.17 for CMOS cams
