@@ -3357,7 +3357,7 @@ class Ui_WizzardMainDialog(object):
         self.cameraPlateChooser.setTitle(_translate("WizzardMainDialog", "Camera / Plate Solver Chooser"))
         self.rb_cameraSGPro.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">SGPro for imaging and plate solving</span></p></body></html>"))
         self.rb_cameraSGPro.setText(_translate("WizzardMainDialog", "SGPro"))
-        self.rb_cameraTSX.setText(_translate("WizzardMainDialog", "Test"))
+        self.rb_cameraTSX.setText(_translate("WizzardMainDialog", "TheSkyX"))
         self.rb_cameraASCOM.setText(_translate("WizzardMainDialog", "Test"))
         self.btn_setupStickDriver_2.setText(_translate("WizzardMainDialog", "Camera"))
         self.btn_setupStickDriver_3.setText(_translate("WizzardMainDialog", "PlateSolver"))
