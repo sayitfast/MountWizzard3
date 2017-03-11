@@ -94,8 +94,8 @@ class TheSkyX:
     def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
         try:
             command = '/* Java Script */'
-            command += 'ccdsoftCamera.Asynchronous=0;'
-            command += 'ImageLink.pathToFITS="'+path+'";'
+            command += 'ccdsoftCamera.Asynchronous=1;'
+            command += 'ImageLink.pathToFITS="' + path.replace('\\', '/') + '";'
             if scaleHint == None:
                 command += 'ImageLink.unknownScale=1;'
                 command += 'ImageLink.scale=2;'
@@ -135,7 +135,7 @@ class TheSkyX:
 
     def SgGetImagePath(self, guid):
         try:
-            command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0; Out=ccdsoftCamera.LastImageFileName';
+            command = '/* Java Script */ var Out = ""; Out=ccdsoftCamera.LastImageFileName';
             success, response = self.sendCommand(command)
             return success, response
         except Exception as e:
@@ -173,6 +173,7 @@ class TheSkyX:
             return False, 'Request failed', '', '', '', ''
 
 if __name__ == "__main__":
+    import time
 
     cam = TheSkyX()
     suc, mes, x, y, can, gain = cam.SgGetCameraProps()
@@ -183,5 +184,7 @@ if __name__ == "__main__":
         if suc:
             break
     print(suc, path)
-    suc, mes = cam.SgSolveImage(path=path, raHint=None, decHint=None, scaleHint=3.7, blindSolve=False, useFitsHeaders=False)
-    print(suc, mes)
+    suc, mes, guid = cam.SgSolveImage(path=path, raHint=None, decHint=None, scaleHint=3.7, blindSolve=False, useFitsHeaders=False)
+    print(suc, mes, guid)
+    suc, mes, ra, dec, scale, angle, time = cam.SgGetSolvedImageData(guid)
+    print(suc, mes, ra, dec, scale, angle, time)
