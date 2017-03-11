@@ -602,7 +602,8 @@ class Model(QtCore.QThread):
                                                           gain=modelData['gainValue'],
                                                           speed=modelData['speed'],
                                                           frameType='Light',
-                                                          path=modelData['file'],
+                                                          filename=modelData['file'],
+                                                          path=modelData['base_dir_images'],
                                                           useSubframe=modelData['canSubframe'],
                                                           posX=modelData['offX'],
                                                           posY=modelData['offY'],
@@ -800,7 +801,7 @@ class Model(QtCore.QThread):
                     modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
                     modelData['speed'] = 'Normal'
-                modelData['file'] = modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'    # generate filepath for storing image
+                modelData['file'] = self.captureFile + '{0:03d}'.format(i) + '.fit'                                         # generate filename for storing image
                 modelData['binning'] = int(float(self.app.ui.cameraBin.value()))
                 modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
                 modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
