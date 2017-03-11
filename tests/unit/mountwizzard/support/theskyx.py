@@ -18,7 +18,7 @@ class TheSkyXTestCase(unittest.TestCase):
         self.assertEqual(True, res)
 
     def test_SgCaptureImage(self):
-        success, response, receipt = self.theskyx.SgCaptureImage(1, None, 5, None, None, None, 'cdLight', 'd:/test_mw/', False, 0, 0, 1, 1)
+        success, response, receipt = self.theskyx.SgCaptureImage(1, None, 5, None, None, None, 'cdLight', '', False, 0, 0, 1, 1)
         self.assertEqual(True, success)
         self.assertEqual('0', response)
 
