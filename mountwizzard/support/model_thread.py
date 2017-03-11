@@ -598,8 +598,7 @@ class Model(QtCore.QThread):
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
         suc, mes, guid = self.app.cpObject.SgCaptureImage(binningMode=modelData['binning'],
                                                           exposureLength=modelData['exposure'],
-                                                          isoMode=modelData['isoMode'],
-                                                          iso=str(modelData['isoMode']),
+                                                          iso=str(modelData['iso']),
                                                           gain=modelData['gainValue'],
                                                           speed=modelData['speed'],
                                                           frameType='Light',
@@ -804,7 +803,7 @@ class Model(QtCore.QThread):
                 modelData['file'] = modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'    # generate filepath for storing image
                 modelData['binning'] = int(float(self.app.ui.cameraBin.value()))
                 modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
-                modelData['isoMode'] = int(float(self.app.ui.isoSetting.value()))
+                modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
                 modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
                 modelData['hint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
                 modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]

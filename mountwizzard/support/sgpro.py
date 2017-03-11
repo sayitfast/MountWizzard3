@@ -66,7 +66,7 @@ class SGPro:
             self.logger.error('SgEnumerateDevi-> error: {0}'.format(e))
             return '', False, 'Request failed'
 
-    def SgCaptureImage(self, binningMode=1, isoMode=None, exposureLength=1,
+    def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None,
                        path=None, useSubframe=False, posX=0, posY=0,
                        width=1, height=1):
@@ -74,8 +74,6 @@ class SGPro:
         # reference "Path":"String","UseSubframe":false,"X":0,"Y":0,"Width":0,"Height":0}
         data = {"BinningMode": binningMode, "ExposureLength": exposureLength, "UseSubframe": useSubframe, "X": posX, "Y ": posY,
                 "Width": width, "Height": height}
-        # if isoMode:
-        #    data['IsoMode'] = isoMode
         if gain:
             data['Gain'] = gain
         if iso:
