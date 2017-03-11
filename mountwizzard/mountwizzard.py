@@ -42,7 +42,6 @@ from support.relays import Relays
 # for handling camera and plate solving interface
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
-from support.popup_dialogs import MyPopup
 
 
 class MountWizzardApp(MwWidget):
@@ -59,6 +58,7 @@ class MountWizzardApp(MwWidget):
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
         self.initUI()                                                                                                       # adapt the window to our purpose
+        self.ui.build.setText(BUILD_NO)
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
@@ -806,6 +806,8 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
+    BUILD_NO = '2.0.6'
+
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
@@ -821,7 +823,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v 2.0.6 started !')                                                                         # start message logger
+    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                         # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application
