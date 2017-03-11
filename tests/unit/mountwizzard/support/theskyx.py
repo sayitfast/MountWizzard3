@@ -18,20 +18,20 @@ class TheSkyXTestCase(unittest.TestCase):
         self.assertEqual(True, res)
 
     def test_SgCaptureImage(self):
-        success, response, receipt = self.theskyx.SgCaptureImage(1, None, 5, None, None, None, 'cdLight', None, 'c:/temp', False, 0, 0, 1, 1)
+        success, response, receipt = self.theskyx.SgCaptureImage(1, None, 5, None, None, None, 'cdLight', '', False, 0, 0, 1, 1)
         self.assertEqual(True, success)
         self.assertEqual('0', response)
 
     @unittest.skip("skipping")
     def test_SgCaptureImage_withSubFrame(self):
         success, response, receipt = self.theskyx.SgCaptureImage(1, None, 5, None, None, None, 'cdLight',
-                                                                 None, 'c:/temp', True, 100, 100, 300, 300)
+                                                                 'd:/test_mw/', True, 100, 100, 300, 300)
         self.assertEqual(True, success)
         self.assertEqual('0', response)
 
     @unittest.skip("skipping")
     def test_SgSolveImage(self):
-        success, response, receipt = self.theskyx.SgSolveImage('c:/temp/', None, None, 2.47, False, False)
+        success, response, receipt = self.theskyx.SgSolveImage('d:/test_mw/test.fit', None, None, 2.47, False, False)
         self.assertEqual(True, success)
         self.assertEqual('0', response)
 
