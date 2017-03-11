@@ -67,7 +67,7 @@ class SGPro:
             return '', False, 'Request failed'
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
-                       gain=None, iso=None, speed=None, frameType=None,
+                       gain=None, iso=None, speed=None, frameType=None, filename=None,
                        path=None, useSubframe=False, posX=0, posY=0,
                        width=1, height=1):
         # reference {"BinningMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
@@ -82,8 +82,8 @@ class SGPro:
             data['Speed'] = speed
         if frameType:
             data['FrameType'] = frameType
-        if path:
-            data['Path'] = path
+        if path and filename:
+            data['Path'] = path + '/' + filename
         try:
             req = request.Request(self.ipSGPro + self.captureImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')

@@ -60,7 +60,7 @@ class TheSkyX:
         #     return '', False, 'Request failed'
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1, gain=None, iso=None, speed=None,
-                       frameType=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
+                       frameType=None, filename=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=1;'
