@@ -1,8 +1,8 @@
 from distutils.core import setup
 
 setup(
-    name='mountwizzard-beta',
-    version='2.0.5',
+    name='mountwizzard',
+    version='2.0.7',
     packages=[
         'mountwizzard',
         'mountwizzard/support'
@@ -13,7 +13,7 @@ setup(
         'pypiwin32>=219',
         'pyfits>=3.4'
     ],
-    url='https://pypi.python.org/pypi/mountwizzard-beta',
+    url='https://pypi.python.org/pypi/mountwizzard',
     license='APL 2.0',
     author='mw',
     author_email='michael@wuertenberger.org',
