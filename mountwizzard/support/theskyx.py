@@ -59,7 +59,7 @@ class TheSkyX:
         #     self.logger.error('SgEnumerateDevi-> error: {0}'.format(e))
         #     return '', False, 'Request failed'
 
-    def SgCaptureImage(self, binningMode=1, isoMode=None, exposureLength=1, gain=None, iso=None, speed=None,
+    def SgCaptureImage(self, binningMode=1, exposureLength=1, gain=None, iso=None, speed=None,
                        frameType=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
         try:
             command = '/* Java Script */'

@@ -35,24 +35,22 @@ class SGPro:
         self.solveImagePath = 'SgSolveImage'
 
     def checkConnection(self):
+        reply = ''
         try:
             reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
-            connected = True
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
-            connected = False
         finally:
-            if connected:
-                if str(reply) == '200':
-                    success, response = self.SgGetDeviceStatus('Camera')
-                    if success and response != 'DISCONNECTED':
-                        if self.SgGetDeviceStatus('PlateSolver'):
-                            return True, 'Camera and Solver OK'
-                        else:
-                            return False, 'PlateSolver not available !'
+            if str(reply) == '200':
+                if self.SgGetDeviceStatus('Camera'):
+                    if self.SgGetDeviceStatus('PlateSolver'):
+                        return True, 'Camera and Solver OK'
                     else:
-                        return False, 'Camera not available !'
-            return False, 'SGPro Server not running'
+                        return False, 'PlateSolver not available !'
+                else:
+                    return False, 'Camera not available !'
+            else:
+                return False, 'Timeout !'
 
     def SgEnumerateDevice(self, device):
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
@@ -69,7 +67,7 @@ class SGPro:
             return '', False, 'Request failed'
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
-                       gain=None, iso=None, speed=None, frameType=None, filename=None,
+                       gain=None, iso=None, speed=None, frameType=None,
                        path=None, useSubframe=False, posX=0, posY=0,
                        width=1, height=1):
         # reference {"BinningMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
@@ -84,8 +82,8 @@ class SGPro:
             data['Speed'] = speed
         if frameType:
             data['FrameType'] = frameType
-        if path and filename:
-            data['Path'] = path + '/' + filename
+        if path:
+            data['Path'] = path
         try:
             req = request.Request(self.ipSGPro + self.captureImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')
