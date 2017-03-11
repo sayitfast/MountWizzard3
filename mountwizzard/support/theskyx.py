@@ -148,7 +148,6 @@ class TheSkyX:
             command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0; Out=ccdsoftCamera.ExposureStatus';
             success, response = self.sendCommand(command)
             # states are  "IDLE", "CAPTURING", "BUSY", "MOVING", "DISCONNECTED", "PARKED"
-
             if response == 'Not Connected':
                 response = 'DISCONNECTED'
             elif response == 'Ready':
@@ -173,7 +172,6 @@ class TheSkyX:
             return False, 'Request failed', '', '', '', ''
 
 if __name__ == "__main__":
-    import time
 
     cam = TheSkyX()
     suc, mes, x, y, can, gain = cam.SgGetCameraProps()

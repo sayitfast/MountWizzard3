@@ -7883,7 +7883,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Test</string>
+       <string>TheSkyX</string>
       </property>
      </widget>
      <widget class="QRadioButton" name="rb_cameraASCOM">
