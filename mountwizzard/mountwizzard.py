@@ -211,6 +211,9 @@ class MountWizzardApp(MwWidget):
             self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
             self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
             self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
+            self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
+            self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
+            self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
             self.ui.cameraBin.setValue(self.config['CameraBin'])
             self.ui.cameraExposure.setValue(self.config['CameraExposure'])
             self.ui.isoSetting.setValue(self.config['ISOSetting'])
@@ -278,6 +281,9 @@ class MountWizzardApp(MwWidget):
         self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
         self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
         self.config['ImageDirectoryName'] = self.ui.le_imageDirectoryName.text()
+        self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
+        self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
+        self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
@@ -821,7 +827,7 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
-    BUILD_NO = '2.1.0'
+    BUILD_NO = '2.1.1'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
@@ -838,7 +844,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                         # start message logger
+    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application

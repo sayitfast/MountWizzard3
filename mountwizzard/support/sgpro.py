@@ -35,22 +35,23 @@ class SGPro:
         self.solveImagePath = 'SgSolveImage'
 
     def checkConnection(self):
-        reply = ''
         try:
             reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
+            connected = True
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
+            connected = False
         finally:
-            if str(reply) == '200':
-                if self.SgGetDeviceStatus('Camera'):
-                    if self.SgGetDeviceStatus('PlateSolver'):
-                        return True, 'Camera and Solver OK'
+            if connected:
+                if str(reply) == '200':
+                    if self.SgGetDeviceStatus('Camera'):
+                        if self.SgGetDeviceStatus('PlateSolver'):
+                            return True, 'Camera and Solver OK'
+                        else:
+                            return False, 'PlateSolver not available !'
                     else:
-                        return False, 'PlateSolver not available !'
-                else:
-                    return False, 'Camera not available !'
-            else:
-                return False, 'Timeout !'
+                        return False, 'Camera not available !'
+            return False, 'SGPro Server not running'
 
     def SgEnumerateDevice(self, device):
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
