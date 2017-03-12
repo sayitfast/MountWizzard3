@@ -44,8 +44,8 @@ class SGPro:
         finally:
             if connected:
                 if str(reply) == '200':
-                    suc, mes = self.SgGetDeviceStatus('Camera')
-                    if suc and mes != 'DISCONNECTED':
+                    success, response = self.SgGetDeviceStatus('Camera')
+                    if success and response != 'DISCONNECTED':
                         if self.SgGetDeviceStatus('PlateSolver'):
                             return True, 'Camera and Solver OK'
                         else:
