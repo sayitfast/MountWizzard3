@@ -41,7 +41,8 @@ class TheSkyX:
         finally:
             tsxSocket.close()
             if connected:
-                if self.SgGetDeviceStatus('Camera'):
+                suc, mes = self.SgGetDeviceStatus('Camera')
+                if suc and mes != 'DISCONNECTED':
                     if self.SgGetDeviceStatus('PlateSolver'):
                         return True, 'Camera and Solver OK'
                     else:
@@ -135,7 +136,6 @@ class TheSkyX:
 
     def SgGetDeviceStatus(self, device):
         if device == 'Camera':
-            # TODO: actually a not connected camera is to seen
             try:
                 command = '/* Java Script */'
                 command += 'var Out = "";'
