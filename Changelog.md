@@ -1,5 +1,8 @@
 # Changelog:
-2.1
+2.1.1
+- enabled storing status TSX interface
+
+2.1.0
 - added timeshift for DSO track
 - optimized GUI for model management
 - adding meridian limit for tracking

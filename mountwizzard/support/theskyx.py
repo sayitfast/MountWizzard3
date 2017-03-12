@@ -35,34 +35,28 @@ class TheSkyX:
             tsxSocket = socket.socket()
             tsxSocket.connect((self.host, self.port))
             connected = True
-            message = 'TheSkyX TCP server is available'
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
             connected = False
-            message = 'TheSkyX TCP server is missing'
         finally:
             tsxSocket.close()
-            return connected, message
+            if connected:
+                if self.SgGetDeviceStatus('Camera'):
+                    if self.SgGetDeviceStatus('PlateSolver'):
+                        return True, 'Camera and Solver OK'
+                    else:
+                        return False, 'PlateSolver not available !'
+                else:
+                    return False, 'Camera not available !'
+            return False, 'SGPro server not running'
 
     @staticmethod
     def SgEnumerateDevice(self, device):
         return '', False, 'Not implemented'
-        # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
-        # data = {'Device': device}
-        # try:
-        #     req = request.Request(self.ipTheSkyX + self.enumerateDevicePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-        #     req.add_header('Content-Type', 'application/json')
-        #     with request.urlopen(req) as f:
-        #        captureResponse = json.loads(f.read().decode('utf-8'))
-        #     # {"Devices":["String"],"Success":false,"Message":"String"}
-        #     return captureResponse['Devices'], captureResponse['Success'], 'Request OK'
-        # except Exception as e:
-        #     self.logger.error('SgEnumerateDevi-> error: {0}'.format(e))
-        #     return '', False, 'Request failed'
 
-    def SgCaptureImage(self, binningMode=1, exposureLength=1, gain=None, iso=None, speed=None,
-                       frameType=None, filename=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
-        if frameType =='Light':
+    def SgCaptureImage(self, binningMode=1, exposureLength=1, gain=None, iso=None, speed=None, frameType=None,
+                       filename=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
+        if frameType == 'Light':
             frameType = 'cdLight'
         try:
             command = '/* Java Script */'
@@ -75,7 +69,6 @@ class TheSkyX:
                 command += 'ccdsoftCamera.SubframeBottom=' + str(posY + width) + ';'
             else:
                 command += 'ccdsoftCamera.Subframe=0;'
-
             command += 'ccdsoftCamera.BinX='+str(binningMode)+';'
             command += 'ccdsoftCamera.BinY='+str(binningMode)+';'
             command += 'ccdsoftCamera.ExposureTime='+str(exposureLength)+';'
@@ -83,9 +76,7 @@ class TheSkyX:
             command += 'ccdsoftCamera.AutoSaveOn=1;'
             command += 'ccdsoftCamera.Frame="'+frameType+'";'
             command += 'ccdsoftCamera.TakeImage();'
-
             success, response = self.sendCommand(command)
-            # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return success, response, '00000000000000000000000000000000'
         except Exception as e:
             self.logger.error('TXCaptureImage -> error: {0}'.format(e))
@@ -102,7 +93,6 @@ class TheSkyX:
             else:
                 command += 'ImageLink.unknownScale=0;'
                 command += 'ImageLink.scale=' + str(scaleHint) + ';'
-
             command += 'ImageLink.execute();'
             command += 'var Out = "";'
             command += 'Out=ImageLinkResults.succeeded'
@@ -119,7 +109,6 @@ class TheSkyX:
             command += 'var Out = "";'
             command += 'Out=String(\'{"succeeded":"\'+ImageLinkResults.succeeded+\'","imageCenterRAJ2000":"\'+ImageLinkResults.imageCenterRAJ2000+\'","imageCenterDecJ2000":"\'+ImageLinkResults.imageCenterDecJ2000+\'","imageScale":"\'+ImageLinkResults.imageScale+\'","imagePositionAngle":"\'+ImageLinkResults.imagePositionAngle+\'"}\');'
             success, response = self.sendCommand(command)
-            # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
             if success:
                 captureResponse = json.loads(response)
                 if captureResponse['succeeded'] == '1':
@@ -135,7 +124,9 @@ class TheSkyX:
 
     def SgGetImagePath(self, guid):
         try:
-            command = '/* Java Script */ var Out = ""; Out=ccdsoftCamera.LastImageFileName';
+            command = '/* Java Script */'
+            command += 'var Out = "";'
+            command += 'Out=ccdsoftCamera.LastImageFileName;'
             success, response = self.sendCommand(command)
             return success, response
         except Exception as e:
@@ -143,28 +134,37 @@ class TheSkyX:
             return False, 'Request failed'
 
     def SgGetDeviceStatus(self, device):
-        # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
-        try:
-            command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0; Out=ccdsoftCamera.ExposureStatus';
-            success, response = self.sendCommand(command)
-            # states are  "IDLE", "CAPTURING", "BUSY", "MOVING", "DISCONNECTED", "PARKED"
-            if response == 'Not Connected':
-                response = 'DISCONNECTED'
-            elif response == 'Ready':
-                response = 'IDLE'
-            elif 'Exposing' in response:
-                response = 'CAPTURING'
-
-            return success, response
-        except Exception as e:
-            self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
-            return False, 'Request failed'
+        if device == 'Camera':
+            # TODO: actually a not connected camera is to seen
+            try:
+                command = '/* Java Script */'
+                command += 'var Out = "";'
+                command += 'ccdsoftCamera.Asynchronous=0;'
+                command += 'Out=ccdsoftCamera.ExposureStatus;'
+                success, response = self.sendCommand(command)
+                if response == 'Not Connected':
+                    response = 'DISCONNECTED'
+                elif response == 'Ready':
+                    response = 'IDLE'
+                elif 'Exposing' in response:
+                    response = 'CAPTURING'
+                return success, response
+            except Exception as e:
+                self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
+                return False, 'Request failed'
+        elif device == 'PlateSolver':
+            # TODO: we need at least the check if a plate solver is available
+            return True, 'No check currently'
+        else:
+            return False, 'Device has no status'
 
     def SgGetCameraProps(self):
         try:
-            command = '/* Java Script */ var Out = "";ccdsoftCamera.Asynchronous=0;Out=String(\'{"WidthInPixels":"\'+ccdsoftCamera.WidthInPixels+\'","HeightInPixels":"\'+ccdsoftCamera.HeightInPixels+\'"}\');'
+            command = '/* Java Script */'
+            command += 'var Out = "";'
+            command += 'ccdsoftCamera.Asynchronous=0;'
+            command += 'Out=String(\'{"WidthInPixels":"\'+ccdsoftCamera.WidthInPixels+\'","HeightInPixels":"\'+ccdsoftCamera.HeightInPixels+\'"}\');'
             success, response = self.sendCommand(command)
-            # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
             captureResponse = json.loads(response)
             return success, '', int(captureResponse['WidthInPixels']), int(captureResponse['HeightInPixels']), True, 'Not Set'
         except Exception as e:
