@@ -71,10 +71,15 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.cpObject = self.SGPro                                                                                          # set default to SGPro
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.loadConfig()
+        if self.ui.rb_cameraSGPro.isChecked():
+            self.cpObject = self.SGPro
+        elif self.ui.rb_cameraTSX.isChecked():
+            self.cpObject = self.TheSkyX
+        elif self.ui.rb_cameraASCOM.isChecked():
+            self.cpObject = self.SGPro
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
