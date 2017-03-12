@@ -42,6 +42,7 @@ from support.relays import Relays
 # for handling camera and plate solving interface
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
+from support.ascom_camera import AscomCamera
 
 
 class MountWizzardApp(MwWidget):
@@ -71,6 +72,7 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
+        self.AscomCamera = AscomCamera()
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.loadConfig()
@@ -79,7 +81,7 @@ class MountWizzardApp(MwWidget):
         elif self.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
         elif self.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.SGPro
+            self.cpObject = self.AscomCamera
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -125,6 +127,10 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setupDomeDriver.clicked.connect(self.setupDomeDriver)
         self.ui.btn_setupStickDriver.clicked.connect(self.setupStickDriver)
         self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
+        self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
+        self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
+        self.ui.btn_setupAscomCameraDriver.clicked.connect(self.setupAscomCameraDriver)
+
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
         self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
         self.ui.btn_cancelModel.clicked.connect(self.cancelModel)
@@ -747,6 +753,15 @@ class MountWizzardApp(MwWidget):
             self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: grey;}')
         else:
             self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: red;}')
+
+    def setupAscomCameraDriver(self):
+        self.AscomCamera.setupDriverCamera()
+
+    def connectCamPS(self):
+        self.AscomCamera.connectCameraPlateSolver()
+
+    def disconnectCamPS(self):
+        self.AscomCamera.disconnectCameraPlateSolver()
 
     def runBaseModel(self):
         self.model.signalModelCommand.emit('RunBaseModel')

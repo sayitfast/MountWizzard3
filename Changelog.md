@@ -1,6 +1,6 @@
 # Changelog:
 2.1.2
--
+- adding ascom camera
 
 2.1.1
 - enabled storing status TSX interface
