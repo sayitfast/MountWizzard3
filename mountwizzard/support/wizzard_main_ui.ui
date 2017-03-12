@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7905,7 +7905,7 @@
       </property>
      </widget>
     </widget>
-    <widget class="QPushButton" name="btn_setupStickDriver_2">
+    <widget class="QPushButton" name="btn_setupAscomCameraDriver">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -7923,7 +7923,7 @@
       <string>Camera</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_setupStickDriver_3">
+    <widget class="QPushButton" name="btn_setupPlateSolver">
      <property name="geometry">
       <rect>
        <x>490</x>
@@ -7939,6 +7939,42 @@
      </property>
      <property name="text">
       <string>PlateSolver</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_connectCamPS">
+     <property name="geometry">
+      <rect>
+       <x>580</x>
+       <y>200</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Connect</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_disconnectCamPS">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>200</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Disconnect</string>
      </property>
     </widget>
    </widget>
