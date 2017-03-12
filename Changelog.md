@@ -1,6 +1,10 @@
 # Changelog:
+2.1.2
+-
+
 2.1.1
 - enabled storing status TSX interface
+- changing camera status. for green the SGPro / TSX server have to be there and connected !
 
 2.1.0
 - added timeshift for DSO track
