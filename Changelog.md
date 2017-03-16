@@ -14,6 +14,9 @@
 - adding time to meridian in gui
 - added support for TheSkyX as experimental trial !!!!!
 
+2.0.7
+- bugfix subframe handling from tonk
+
 2.0.5, 2.0.6
 - adjusting to interface change SGPro release 2.6.17 for CMOS cams
 
