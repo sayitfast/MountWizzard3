@@ -619,29 +619,29 @@ class Model(QtCore.QThread):
             if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:                                                     # looking for simulation
                 shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + '/model001.py', modelData['imagepath'])       # copy reference file as simulation target
             else:
-                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))             # debug output
-                fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                             # open for adding field info
-                fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
-                fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                    # set time to current time of the mount
-                fitsHeader['OBJCTRA'] = ra_fits_header                                                                          # set ra in header from solver in J2000
-                fitsHeader['OBJCTDEC'] = dec_fits_header                                                                        # set dec in header from solver in J2000
-                fitsHeader['CDELT1'] = modelData['hint']                                                                        # x is the same as y
-                fitsHeader['CDELT2'] = modelData['hint']                                                                        # and vice versa
-                fitsHeader['MW_MRA'] = raJnow_fits_header                                                                       # reported RA of mount in JNOW
-                fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                     # reported DEC of mount in JNOW
-                fitsHeader['MW_ST'] = st_fits_header                                                                            # reported local sideral time of mount from GS command
-                fitsHeader['MW_MSIDE'] = pierside_fits_header                                                                   # reported pierside of mount from SD command
-                fitsHeader['MW_EXP'] = modelData['exposure']                                                                    # store the exposure time as well
-                fitsHeader['MW_AZ'] = modelData['azimuth']                                                                      # x is the same as y
-                fitsHeader['MW_ALT'] = modelData['altitude']                                                                    # and vice versa
+                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
+                fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                         # open for adding field info
+                fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
+                fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
+                fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
+                fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
+                fitsHeader['CDELT1'] = str(modelData['hint'])                                                               # x is the same as y
+                fitsHeader['CDELT2'] = str(modelData['hint'])                                                               # and vice versa
+                fitsHeader['MW_MRA'] = raJnow_fits_header                                                                   # reported RA of mount in JNOW
+                fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                 # reported DEC of mount in JNOW
+                fitsHeader['MW_ST'] = st_fits_header                                                                        # reported local sideral time of mount from GS command
+                fitsHeader['MW_MSIDE'] = pierside_fits_header                                                               # reported pierside of mount from SD command
+                fitsHeader['MW_EXP'] = modelData['exposure']                                                                # store the exposure time as well
+                fitsHeader['MW_AZ'] = modelData['azimuth']                                                                  # x is the same as y
+                fitsHeader['MW_ALT'] = modelData['altitude']                                                                # and vice versa
                 self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
                                   'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
                                   .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
                                           fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
                                           fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
-                                          fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                           # write all header data to debug
-                fitsFileHandle.flush()                                                                                          # write all to disk
-                fitsFileHandle.close()                                                                                          # close FIT file
+                                          fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                       # write all header data to debug
+                fitsFileHandle.flush()                                                                                      # write all to disk
+                fitsFileHandle.close()                                                                                      # close FIT file
             return True, 'OK', modelData                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back

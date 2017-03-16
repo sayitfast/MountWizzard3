@@ -1,4 +1,7 @@
 # Changelog:
+2.0.8
+- prepare for hint in FITS header
+
 2.0.7
 - bugfix for subframe reported by tonk
 
