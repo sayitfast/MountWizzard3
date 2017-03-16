@@ -574,8 +574,8 @@ class Model(QtCore.QThread):
         if canSubframe:                                                                                                     # if camera could do subframes
             modelData['sizeX'] = int(sizeX * scale)                                                                         # size inner window
             modelData['sizeY'] = int(sizeY * scale)                                                                         # size inner window
-            modelData['offX'] = int((sizeX - sizeX) / 2)                                                                    # offset is half of the rest
-            modelData['offY'] = int((sizeY - sizeY) / 2)                                                                    # same in y
+            modelData['offX'] = int((sizeX - modelData['sizeX']) / 2)                                                       # offset is half of the rest
+            modelData['offY'] = int((sizeY - modelData['sizeY']) / 2)                                                       # same in y
             modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
             self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message

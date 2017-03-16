@@ -1,4 +1,7 @@
 # Changelog:
+2.0.7
+- bugfix for subframe reported by tonk
+
 2.0.5, 2.0.6
 - adjusting to interface change SGPro release 2.6.17 for CMOS cams
 
