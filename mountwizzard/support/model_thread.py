@@ -576,8 +576,8 @@ class Model(QtCore.QThread):
         if canSubframe:                                                                                                     # if camera could do subframes
             modelData['sizeX'] = int(sizeX * scale)                                                                         # size inner window
             modelData['sizeY'] = int(sizeY * scale)                                                                         # size inner window
-            modelData['offX'] = int((sizeX - sizeX) / 2)                                                                    # offset is half of the rest
-            modelData['offY'] = int((sizeY - sizeY) / 2)                                                                    # same in y
+            modelData['offX'] = int((sizeX - modelData['sizeX']) / 2)                                                       # offset is half of the rest
+            modelData['offY'] = int((sizeY - modelData['sizeY']) / 2)                                                       # same in y
             modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
             self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message
@@ -629,6 +629,8 @@ class Model(QtCore.QThread):
                 fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
                 fitsHeader['CDELT1'] = modelData['hint']                                                                    # x is the same as y
                 fitsHeader['CDELT2'] = modelData['hint']                                                                    # and vice versa
+                fitsHeader['PIXSCALE'] = modelData['hint']                                                                  # and vice versa
+                fitsHeader['SCALE'] = modelData['hint']                                                                     # and vice versa
                 fitsHeader['MW_MRA'] = raJnow_fits_header                                                                   # reported RA of mount in JNOW
                 fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                 # reported DEC of mount in JNOW
                 fitsHeader['MW_ST'] = st_fits_header                                                                        # reported local sideral time of mount from GS command
