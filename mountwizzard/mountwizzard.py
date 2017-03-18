@@ -47,9 +47,6 @@ from support.ascom_camera import AscomCamera
 
 class MountWizzardApp(MwWidget):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
-    BLUE = 'background-color: rgb(42, 130, 218)'                                                                            # colors for changing skin while running
-    RED = 'background-color: red'                                                                                           #
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'                                                    #
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
@@ -121,6 +118,8 @@ class MountWizzardApp(MwWidget):
         self.ui.le_parkPos2Text.textChanged.connect(self.setParkPos2Text)
         self.ui.le_parkPos3Text.textChanged.connect(self.setParkPos3Text)
         self.ui.le_parkPos4Text.textChanged.connect(self.setParkPos4Text)
+        self.ui.le_parkPos5Text.textChanged.connect(self.setParkPos5Text)
+        self.ui.le_parkPos6Text.textChanged.connect(self.setParkPos6Text)
         self.ui.btn_setHorizonLimitHigh.clicked.connect(self.setHorizonLimitHigh)
         self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
@@ -132,7 +131,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
         self.ui.btn_setupAscomCameraDriver.clicked.connect(self.setupAscomCameraDriver)
-
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
         self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
         self.ui.btn_cancelModel.clicked.connect(self.cancelModel)
@@ -577,9 +575,9 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(bool)
     def setMountStatus(self, status):
         if status:
-            self.ui.le_driverMountConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
-            self.ui.le_driverMountConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def getAlignmentModel(self):
         self.commandQueue.put('GetAlignmentModel')
@@ -714,11 +712,11 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(int)
     def setStickStatus(self, status):
         if status == 1:
-            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: gray;}')
+            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: gray;}')
         else:
-            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     @QtCore.Slot(dict)
     def fillStickData(self, data):
@@ -737,11 +735,11 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(int)
     def setWeatherStatus(self, status):
         if status == 1:
-            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: grey;}')
+            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: grey;}')
         else:
-            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     @QtCore.Slot(dict)
     def fillWeatherData(self, data):
@@ -784,9 +782,9 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(bool)
     def setCameraPlateStatus(self, status):
         if status:
-            self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
-            self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def setupDomeDriver(self):
         self.dome.setupDriver()
@@ -794,11 +792,11 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(int)
     def setDomeStatus(self, status):
         if status == 1:
-            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: grey;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: grey;}')
         else:
-            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def setupAscomCameraDriver(self):
         self.AscomCamera.setupDriverCamera()

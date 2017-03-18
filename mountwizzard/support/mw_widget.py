@@ -24,6 +24,9 @@ from PyQt5.QtCore import *
 class MwWidget(QWidget):
 
     logger = logging.getLogger(__name__)
+    BLUE = 'background-color: rgb(42, 130, 218);'
+    RED = 'background-color: red; color: red'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
     COLOR_YELLOW = QColor(192, 192, 0)

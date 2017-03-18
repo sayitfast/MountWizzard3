@@ -1518,6 +1518,64 @@
       <string>Park Pos5</string>
      </property>
     </widget>
+    <zorder>le_telescopeRA</zorder>
+    <zorder>le_telescopeAzimut</zorder>
+    <zorder>le_telescopeDEC</zorder>
+    <zorder>le_telescopeAltitude</zorder>
+    <zorder>label_9</zorder>
+    <zorder>label_10</zorder>
+    <zorder>label_8</zorder>
+    <zorder>label_11</zorder>
+    <zorder>label_17</zorder>
+    <zorder>le_meridianLimitTrack</zorder>
+    <zorder>le_telescopePierSide</zorder>
+    <zorder>label_18</zorder>
+    <zorder>label_21</zorder>
+    <zorder>le_telescopeDualTrack</zorder>
+    <zorder>btn_setDualTracking</zorder>
+    <zorder>label_52</zorder>
+    <zorder>le_timeToFlip</zorder>
+    <zorder>btn_setUnattendedFlip</zorder>
+    <zorder>le_telescopeUnattendedFlip</zorder>
+    <zorder>label_23</zorder>
+    <zorder>label_61</zorder>
+    <zorder>label_62</zorder>
+    <zorder>label_80</zorder>
+    <zorder>line_12</zorder>
+    <zorder>line_13</zorder>
+    <zorder>label_81</zorder>
+    <zorder>btn_startTracking</zorder>
+    <zorder>btn_mountPark</zorder>
+    <zorder>btn_mountUnpark</zorder>
+    <zorder>line_16</zorder>
+    <zorder>label_83</zorder>
+    <zorder>label_84</zorder>
+    <zorder>btn_mountPos4</zorder>
+    <zorder>line_15</zorder>
+    <zorder>label_85</zorder>
+    <zorder>btn_mountPos2</zorder>
+    <zorder>btn_mountPos3</zorder>
+    <zorder>btn_mountPos1</zorder>
+    <zorder>btn_stopTracking</zorder>
+    <zorder>line_14</zorder>
+    <zorder>btn_stop</zorder>
+    <zorder>btn_flipMount</zorder>
+    <zorder>btn_setTrackingLunar</zorder>
+    <zorder>btn_setTrackingSolar</zorder>
+    <zorder>btn_setTrackingSideral</zorder>
+    <zorder>label_100</zorder>
+    <zorder>label_34</zorder>
+    <zorder>label_65</zorder>
+    <zorder>le_meridianLimitSlew</zorder>
+    <zorder>label_88</zorder>
+    <zorder>label_89</zorder>
+    <zorder>le_slewRate</zorder>
+    <zorder>label_90</zorder>
+    <zorder>le_timeToMeridian</zorder>
+    <zorder>label_91</zorder>
+    <zorder>btn_mountPos6</zorder>
+    <zorder>btn_mountPos5</zorder>
+    <zorder>windowTitle</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
@@ -8962,84 +9020,6 @@
     <string>Shutdown / Quit</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_driverStickConnected">
-   <property name="geometry">
-    <rect>
-     <x>150</x>
-     <y>40</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="mouseTracking">
-    <bool>false</bool>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
-   </property>
-   <property name="toolTip">
-    <string>Shows the status of Stickstation in red / green</string>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>ObsCond</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="le_driverMountConnected">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="mouseTracking">
-    <bool>false</bool>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
-   </property>
-   <property name="toolTip">
-    <string>Shows the connection status to mount in red / green</string>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Mount</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLabel" name="windowTitle">
    <property name="geometry">
     <rect>
@@ -9067,45 +9047,6 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_driverWeatherConnected">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>40</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="mouseTracking">
-    <bool>false</bool>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
-   </property>
-   <property name="toolTip">
-    <string>Shows the status of open weather in red / green</string>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Weather</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QPushButton" name="btn_mountQuit">
    <property name="geometry">
     <rect>
@@ -9125,45 +9066,6 @@
    </property>
    <property name="text">
     <string>Save / Quit</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="le_sgproConnected">
-   <property name="geometry">
-    <rect>
-     <x>290</x>
-     <y>40</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="mouseTracking">
-    <bool>false</bool>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
-   </property>
-   <property name="toolTip">
-    <string>Shows the connection status to SGPro in red / green</string>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Camera</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
    </property>
   </widget>
   <widget class="QTextBrowser" name="errorStatus">
@@ -9199,45 +9101,6 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="acceptRichText">
     <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="le_domeConnected">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>40</y>
-     <width>61</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="mouseTracking">
-    <bool>false</bool>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::NoFocus</enum>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
-   </property>
-   <property name="toolTip">
-    <string>Shows the connection status to SGPro in red / green / gray</string>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Dome</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="readOnly">
-    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="label_104">
@@ -9301,6 +9164,111 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Save</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_camPlateConnected">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>40</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Set tracking speed to lunar</string>
+   </property>
+   <property name="text">
+    <string>Camera</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_domeConnected">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>40</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Set tracking speed to lunar</string>
+   </property>
+   <property name="text">
+    <string>Dome</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_driverMountConnected">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Set tracking speed to lunar</string>
+   </property>
+   <property name="text">
+    <string>Mount</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_driverWeatherConnected">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>40</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Set tracking speed to lunar</string>
+   </property>
+   <property name="text">
+    <string>Weather</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_driverStickConnected">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>40</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Set tracking speed to lunar</string>
+   </property>
+   <property name="text">
+    <string>ObsCond</string>
    </property>
   </widget>
  </widget>
