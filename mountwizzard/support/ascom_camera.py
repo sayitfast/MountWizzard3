@@ -26,6 +26,7 @@ class AscomCamera:
         self.connectedPlateSolver = False
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverNameCamera = ''                                                                                          # driver object name
+        self.driverNamePlateSolver = ''
         self.ascomCamera = None                                                                                             # placeholder for ascom driver object
         self.win32PlateSolver = None
 
@@ -40,6 +41,7 @@ class AscomCamera:
 
     def connectCameraPlateSolver(self):
         try:
+            self.ascomCamera = Dispatch(self.driverNameCamera)
             self.ascomCamera.connected = True
             self.connectedCamera = True
         except Exception as e:
@@ -50,7 +52,7 @@ class AscomCamera:
             return
         try:
             self.win32PlateSolver = Dispatch('PinPoint.Plate')
-            self.win32PlateSolver.Catalog = 3                                                                               # Corrected GSC
+            self.win32PlateSolver.Catalog = 3
             self.win32PlateSolver.CatalogPath = 'C:\GSC11'
             self.connectedPlateSolver = True
         except Exception as e:
@@ -220,7 +222,7 @@ class AscomCamera:
 
     def setupDriverPlateSolver(self):
         try:
-            self.driverNameCamera = Dispatch('PinPoint.Plate')
+            self.driverNamePlateSolver = Dispatch('PinPoint.Plate')
             self.connectedPlateSolver = False                                                                               # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.messageQueue.put('Driver Exception in setup PlateSolver')                                                  # write to gui
