@@ -288,6 +288,8 @@ class MountWizzardApp(MwWidget):
             self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
             self.coordinatePopup.move(self.config['CoordinatePopupWindowPositionX'], self.config['CoordinatePopupWindowPositionY'])
             self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
+            self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
+            self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -367,6 +369,8 @@ class MountWizzardApp(MwWidget):
         self.config['ASCOMStickDriverName'] = self.stick.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
         self.config['ASCOMWeatherDriverName'] = self.weather.driverName
+        self.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
+        self.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -781,7 +785,8 @@ class MountWizzardApp(MwWidget):
             self.cpObject = self.TheSkyX
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.SGPro
+            self.cpObject = self.AscomCamera
+            self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
 
     @QtCore.Slot(bool)
