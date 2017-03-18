@@ -128,7 +128,7 @@ class Ui_CoordinateDialog(object):
     def retranslateUi(self, CoordinateDialog):
         _translate = QtCore.QCoreApplication.translate
         CoordinateDialog.setWindowTitle(_translate("CoordinateDialog", "Form"))
-        self.windowTitle.setText(_translate("CoordinateDialog", "Pointing Coordinates / Modeling"))
+        self.windowTitle.setText(_translate("CoordinateDialog", "Modeling Plot Window"))
         self.btn_selectClose.setToolTip(_translate("CoordinateDialog", "Sets dual tracking on / off"))
         self.btn_selectClose.setText(_translate("CoordinateDialog", "X"))
         self.modellingLog.setHtml(_translate("CoordinateDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"

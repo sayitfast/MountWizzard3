@@ -34,7 +34,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Pointing Coordinates / Modeling</string>
+    <string>Modeling Plot Window</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

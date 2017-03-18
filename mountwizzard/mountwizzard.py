@@ -115,6 +115,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
         self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
         self.ui.btn_mountPos4.clicked.connect(self.mountPosition4)
+        self.ui.btn_mountPos5.clicked.connect(self.mountPosition5)
+        self.ui.btn_mountPos6.clicked.connect(self.mountPosition6)
         self.ui.le_parkPos1Text.textChanged.connect(self.setParkPos1Text)
         self.ui.le_parkPos2Text.textChanged.connect(self.setParkPos2Text)
         self.ui.le_parkPos3Text.textChanged.connect(self.setParkPos3Text)
@@ -195,6 +197,12 @@ class MountWizzardApp(MwWidget):
     def setParkPos4Text(self):                                                                                              # set text for button 4
         self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
 
+    def setParkPos5Text(self):                                                                                              # set text for button 3
+        self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
+
+    def setParkPos6Text(self):                                                                                              # set text for button 4
+        self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
+
     def loadConfig(self):
         try:
             with open('config/config.cfg', 'r') as data_file:
@@ -217,6 +225,14 @@ class MountWizzardApp(MwWidget):
             self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
             self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
             self.setParkPos4Text()
+            self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
+            self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
+            self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
+            self.setParkPos5Text()
+            self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
+            self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
+            self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
+            self.setParkPos6Text()
             self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
             self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
             self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
@@ -287,6 +303,12 @@ class MountWizzardApp(MwWidget):
         self.config['ParkPosText4'] = self.ui.le_parkPos4Text.text()
         self.config['ParkPosAlt4'] = self.ui.le_altParkPos4.text()
         self.config['ParkPosAz4'] = self.ui.le_azParkPos4.text()
+        self.config['ParkPosText5'] = self.ui.le_parkPos5Text.text()
+        self.config['ParkPosAlt5'] = self.ui.le_altParkPos5.text()
+        self.config['ParkPosAz5'] = self.ui.le_azParkPos5.text()
+        self.config['ParkPosText6'] = self.ui.le_parkPos6Text.text()
+        self.config['ParkPosAlt6'] = self.ui.le_altParkPos6.text()
+        self.config['ParkPosAz6'] = self.ui.le_azParkPos6.text()
         self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
         self.config['HorizonPointsFileName'] = self.ui.le_horizonPointsFileName.text()
         self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
@@ -536,6 +558,18 @@ class MountWizzardApp(MwWidget):
         self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
         self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
         self.commandQueue.put('MA')                                                                                         # start Slewing
+
+    def mountPosition5(self):
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
+
+    def mountPosition6(self):
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
     #
     # mount handling
     #
@@ -573,6 +607,18 @@ class MountWizzardApp(MwWidget):
 
     def loadSimpleModel(self):
         self.commandQueue.put('LoadSimpleModel')
+
+    def saveDSO1Model(self):
+        self.commandQueue.put('SaveDSO1Model')
+
+    def loadDSO1Model(self):
+        self.commandQueue.put('LoadDSO1Model')
+
+    def saveDSO2Model(self):
+        self.commandQueue.put('SaveDSO2Model')
+
+    def loadDSO2Model(self):
+        self.commandQueue.put('LoadDSO2Model')
 
     def setupMountDriver(self):
         self.mount.setupDriver()
@@ -847,7 +893,7 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
-    BUILD_NO = '2.1.3'
+    BUILD_NO = '2.1.5'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

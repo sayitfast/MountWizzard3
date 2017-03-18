@@ -1,4 +1,13 @@
 # Changelog:
+2.1.5
+- added more names for model save in mount
+
+2.1.4
+- bugfix for hints
+
+2.1.3
+- bugfix for subframe
+
 2.1.2
 - adding ascom camera
 

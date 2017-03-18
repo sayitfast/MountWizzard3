@@ -143,6 +143,22 @@ class Mount(QtCore.QThread):
                         self.app.ui.btn_saveSimpleModel.setStyleSheet(self.BLUE)
                         self.saveSimpleModel()
                         self.app.ui.btn_saveSimpleModel.setStyleSheet(self.DEFAULT)
+                    elif command == 'LoadDSO1Model':
+                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.BLUE)
+                        self.loadDSO1Model()
+                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.DEFAULT)
+                    elif command == 'SaveDSO1Model':
+                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.BLUE)
+                        self.saveDSO1Model()
+                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.DEFAULT)
+                    elif command == 'LoadDSO2Model':
+                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.BLUE)
+                        self.loadDSO2Model()
+                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.DEFAULT)
+                    elif command == 'SaveDSO2Model':
+                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.BLUE)
+                        self.saveDSO2Model()
+                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.DEFAULT)
                     elif command == 'SetRefractionParameter':
                         self.setRefractionParameter()
                     elif command == 'FLIP':
@@ -505,6 +521,32 @@ class Mount(QtCore.QThread):
         else:
             self.app.messageQueue.put('There is no model named SIMPLE or error while loading')
             self.logger.debug('loadSimpleModel-> Model SIMPLE could not be loaded')                                         # log it
+
+    def saveDSO1Model(self):
+        if self.saveActualModel('DSO1'):
+            self.app.messageQueue.put('Actual Model save to DSO1')
+        else:
+            self.logger.debug('saveDSO1Model  -> Model DSO1 could not be saved')                                          # log it
+
+    def loadDSO1Model(self):
+        if self.loadActualModel('DSO1'):
+            self.app.messageQueue.put('Actual Model loaded from DSO1')
+        else:
+            self.app.messageQueue.put('There is no model named DSO1 or error while loading')
+            self.logger.debug('loadDSO1Model  -> Model DSO1 could not be loaded')                                         # log it
+
+    def saveDSO2Model(self):
+        if self.saveActualModel('DSO2'):
+            self.app.messageQueue.put('Actual Model save to DSO2')
+        else:
+            self.logger.debug('saveDSO2Model  -> Model DSO1 could not be saved')                                          # log it
+
+    def loadDSO2Model(self):
+        if self.loadActualModel('DSO2'):
+            self.app.messageQueue.put('Actual Model loaded from DSO1')
+        else:
+            self.app.messageQueue.put('There is no model named DSO2 or error while loading')
+            self.logger.debug('loadDSO2Model  -> Model DSO2 could not be loaded')                                         # log it
 
     def setRefractionParameter(self):
         if self.app.ui.le_pressureStick.text() != '':                                                                       # value must be there
