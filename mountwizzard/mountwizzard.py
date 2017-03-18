@@ -25,6 +25,9 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+# loading applications
+import win32api
+from win32com.client.dynamic import Dispatch
 # import the UI part, which is done via QT Designer and exported
 from support.mw_widget import MwWidget
 from support.wizzard_main_ui import Ui_WizzardMainDialog
@@ -73,6 +76,7 @@ class MountWizzardApp(MwWidget):
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.loadConfig()
+        self.cpAppHandler = None
         if self.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
         elif self.ui.rb_cameraTSX.isChecked():
@@ -100,6 +104,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_selectClose.clicked.connect(self.selectClose)
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
+        self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
         self.ui.btn_mountPark.clicked.connect(self.mountPark)
         self.ui.btn_mountUnpark.clicked.connect(self.mountUnpark)
         self.ui.btn_startTracking.clicked.connect(self.startTracking)
@@ -866,6 +871,11 @@ class MountWizzardApp(MwWidget):
 
     def runHystereseModel(self):
         self.model.signalModelCommand.emit('RunHystereseModel')
+
+    def startCamPlateApp(self):
+        #self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
+        #self.cpAppHandler.close()
+        pass
 
     def mainLoop(self):
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
