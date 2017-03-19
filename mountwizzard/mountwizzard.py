@@ -25,6 +25,9 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+# loading applications
+import win32api
+from win32com.client.dynamic import Dispatch
 # import the UI part, which is done via QT Designer and exported
 from support.mw_widget import MwWidget
 from support.wizzard_main_ui import Ui_WizzardMainDialog
@@ -42,13 +45,11 @@ from support.relays import Relays
 # for handling camera and plate solving interface
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
+from support.ascom_camera import AscomCamera
 
 
 class MountWizzardApp(MwWidget):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
-    BLUE = 'background-color: rgb(42, 130, 218)'                                                                            # colors for changing skin while running
-    RED = 'background-color: red'                                                                                           #
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'                                                    #
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
@@ -71,10 +72,17 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.cpObject = self.SGPro                                                                                          # set default to SGPro
+        self.AscomCamera = AscomCamera()
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.loadConfig()
+        self.cpAppHandler = None
+        if self.ui.rb_cameraSGPro.isChecked():
+            self.cpObject = self.SGPro
+        elif self.ui.rb_cameraTSX.isChecked():
+            self.cpObject = self.TheSkyX
+        elif self.ui.rb_cameraASCOM.isChecked():
+            self.cpObject = self.AscomCamera
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -96,6 +104,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_selectClose.clicked.connect(self.selectClose)
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
+        self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
         self.ui.btn_mountPark.clicked.connect(self.mountPark)
         self.ui.btn_mountUnpark.clicked.connect(self.mountUnpark)
         self.ui.btn_startTracking.clicked.connect(self.startTracking)
@@ -108,10 +117,14 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
         self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
         self.ui.btn_mountPos4.clicked.connect(self.mountPosition4)
+        self.ui.btn_mountPos5.clicked.connect(self.mountPosition5)
+        self.ui.btn_mountPos6.clicked.connect(self.mountPosition6)
         self.ui.le_parkPos1Text.textChanged.connect(self.setParkPos1Text)
         self.ui.le_parkPos2Text.textChanged.connect(self.setParkPos2Text)
         self.ui.le_parkPos3Text.textChanged.connect(self.setParkPos3Text)
         self.ui.le_parkPos4Text.textChanged.connect(self.setParkPos4Text)
+        self.ui.le_parkPos5Text.textChanged.connect(self.setParkPos5Text)
+        self.ui.le_parkPos6Text.textChanged.connect(self.setParkPos6Text)
         self.ui.btn_setHorizonLimitHigh.clicked.connect(self.setHorizonLimitHigh)
         self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
@@ -120,6 +133,9 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setupDomeDriver.clicked.connect(self.setupDomeDriver)
         self.ui.btn_setupStickDriver.clicked.connect(self.setupStickDriver)
         self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
+        self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
+        self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
+        self.ui.btn_setupAscomCameraDriver.clicked.connect(self.setupAscomCameraDriver)
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
         self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
         self.ui.btn_cancelModel.clicked.connect(self.cancelModel)
@@ -139,16 +155,19 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
         self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
-        self.ui.btn_backupModel.clicked.connect(self.backupModel)
-        self.ui.btn_restoreModel.clicked.connect(self.restoreModel)
         self.ui.btn_flipMount.clicked.connect(self.flipMount)
         self.ui.btn_loadRefinementPoints.clicked.connect(self.loadRefinementPoints)
         self.ui.btn_loadBasePoints.clicked.connect(self.loadBasePoints)
+        self.ui.btn_saveBackupModel.clicked.connect(self.saveBackupModel)
+        self.ui.btn_loadBackupModel.clicked.connect(self.loadBackupModel)
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
+        self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
+        self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
         self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
         self.ui.numberHoursDSO.valueChanged.connect(self.generateDSOPoints)
         self.ui.numberPointsDSO.valueChanged.connect(self.generateDSOPoints)
+        self.ui.numberHoursPreview.valueChanged.connect(self.generateDSOPoints)
         self.ui.btn_generateDensePoints.clicked.connect(self.generateDensePoints)
         self.ui.btn_generateNormalPoints.clicked.connect(self.generateNormalPoints)
         self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
@@ -181,6 +200,12 @@ class MountWizzardApp(MwWidget):
     def setParkPos4Text(self):                                                                                              # set text for button 4
         self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
 
+    def setParkPos5Text(self):                                                                                              # set text for button 3
+        self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
+
+    def setParkPos6Text(self):                                                                                              # set text for button 4
+        self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
+
     def loadConfig(self):
         try:
             with open('config/config.cfg', 'r') as data_file:
@@ -203,11 +228,22 @@ class MountWizzardApp(MwWidget):
             self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
             self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
             self.setParkPos4Text()
+            self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
+            self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
+            self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
+            self.setParkPos5Text()
+            self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
+            self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
+            self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
+            self.setParkPos6Text()
             self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
             self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
             self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
             self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
             self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
+            self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
+            self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
+            self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
             self.ui.cameraBin.setValue(self.config['CameraBin'])
             self.ui.cameraExposure.setValue(self.config['CameraExposure'])
             self.ui.isoSetting.setValue(self.config['ISOSetting'])
@@ -252,6 +288,8 @@ class MountWizzardApp(MwWidget):
             self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
             self.coordinatePopup.move(self.config['CoordinatePopupWindowPositionX'], self.config['CoordinatePopupWindowPositionY'])
             self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
+            self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
+            self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -270,11 +308,20 @@ class MountWizzardApp(MwWidget):
         self.config['ParkPosText4'] = self.ui.le_parkPos4Text.text()
         self.config['ParkPosAlt4'] = self.ui.le_altParkPos4.text()
         self.config['ParkPosAz4'] = self.ui.le_azParkPos4.text()
+        self.config['ParkPosText5'] = self.ui.le_parkPos5Text.text()
+        self.config['ParkPosAlt5'] = self.ui.le_altParkPos5.text()
+        self.config['ParkPosAz5'] = self.ui.le_azParkPos5.text()
+        self.config['ParkPosText6'] = self.ui.le_parkPos6Text.text()
+        self.config['ParkPosAlt6'] = self.ui.le_altParkPos6.text()
+        self.config['ParkPosAz6'] = self.ui.le_azParkPos6.text()
         self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
         self.config['HorizonPointsFileName'] = self.ui.le_horizonPointsFileName.text()
         self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
         self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
         self.config['ImageDirectoryName'] = self.ui.le_imageDirectoryName.text()
+        self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
+        self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
+        self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
@@ -322,6 +369,8 @@ class MountWizzardApp(MwWidget):
         self.config['ASCOMStickDriverName'] = self.stick.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
         self.config['ASCOMWeatherDriverName'] = self.weather.driverName
+        self.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
+        self.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -516,6 +565,18 @@ class MountWizzardApp(MwWidget):
         self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
         self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
         self.commandQueue.put('MA')                                                                                         # start Slewing
+
+    def mountPosition5(self):
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
+
+    def mountPosition6(self):
+        self.commandQueue.put('PO')                                                                                         # unpark first
+        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
+        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
+        self.commandQueue.put('MA')                                                                                         # start Slewing
     #
     # mount handling
     #
@@ -523,9 +584,9 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(bool)
     def setMountStatus(self, status):
         if status:
-            self.ui.le_driverMountConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
-            self.ui.le_driverMountConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def getAlignmentModel(self):
         self.commandQueue.put('GetAlignmentModel')
@@ -536,17 +597,35 @@ class MountWizzardApp(MwWidget):
     def deleteWorstPoint(self):
         self.commandQueue.put('DeleteWorstPoint')
 
-    def backupModel(self):
-        self.commandQueue.put('BackupModel')
+    def saveBackupModel(self):
+        self.commandQueue.put('SaveBackupModel')
 
-    def restoreModel(self):
-        self.commandQueue.put('RestoreModel')
+    def loadBackupModel(self):
+        self.commandQueue.put('LoadBackupModel')
+
+    def saveBaseModel(self):
+        self.commandQueue.put('SaveBaseModel')
+
+    def loadBaseModel(self):
+        self.commandQueue.put('LoadBaseModel')
 
     def saveSimpleModel(self):
         self.commandQueue.put('SaveSimpleModel')
 
     def loadSimpleModel(self):
         self.commandQueue.put('LoadSimpleModel')
+
+    def saveDSO1Model(self):
+        self.commandQueue.put('SaveDSO1Model')
+
+    def loadDSO1Model(self):
+        self.commandQueue.put('LoadDSO1Model')
+
+    def saveDSO2Model(self):
+        self.commandQueue.put('SaveDSO2Model')
+
+    def loadDSO2Model(self):
+        self.commandQueue.put('LoadDSO2Model')
 
     def setupMountDriver(self):
         self.mount.setupDriver()
@@ -607,11 +686,19 @@ class MountWizzardApp(MwWidget):
             self.coordinatePopup.ui.le_telescopeAzimut.setText(str(data['Value']))
         if data['Name'] == 'GetSlewRate':
             self.ui.le_slewRate.setText(str(data['Value']))
+        if data['Name'] == 'GetMeridianLimitTrack':
+            self.ui.le_meridianLimitTrack.setText(str(data['Value']))
+        if data['Name'] == 'GetMeridianLimitSlew':
+            self.ui.le_meridianLimitSlew.setText(str(data['Value']))
         if data['Name'] == 'GetUnattendedFlip':
             if data['Value'] == '1':
                 self.ui.le_telescopeUnattendedFlip.setText('ON')
             else:
                 self.ui.le_telescopeUnattendedFlip.setText('OFF')
+        if data['Name'] == 'GetTimeToFlip':
+            self.ui.le_timeToFlip.setText(str(data['Value']))
+        if data['Name'] == 'GetTimeToMeridian':
+            self.ui.le_timeToMeridian.setText(str(data['Value']))
         if data['Name'] == 'GetFirmwareProductName':
             self.ui.le_firmwareProductName.setText(str(data['Value']))
         if data['Name'] == 'GetFirmwareNumber':
@@ -624,8 +711,6 @@ class MountWizzardApp(MwWidget):
             self.ui.le_hardwareVersion.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopePierSide':
             self.ui.le_telescopePierSide.setText(str(data['Value']))
-        if data['Name'] == 'GetTimeToTrackingLimit':
-            self.ui.le_timeToTrackingLimit.setText(str(data['Value']))
 
     #
     # stick handling
@@ -636,11 +721,11 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(int)
     def setStickStatus(self, status):
         if status == 1:
-            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: gray;}')
+            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: gray;}')
         else:
-            self.ui.le_driverStickConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     @QtCore.Slot(dict)
     def fillStickData(self, data):
@@ -659,11 +744,11 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(int)
     def setWeatherStatus(self, status):
         if status == 1:
-            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: grey;}')
+            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: grey;}')
         else:
-            self.ui.le_driverWeatherConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     @QtCore.Slot(dict)
     def fillWeatherData(self, data):
@@ -700,15 +785,16 @@ class MountWizzardApp(MwWidget):
             self.cpObject = self.TheSkyX
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.SGPro
+            self.cpObject = self.AscomCamera
+            self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
 
     @QtCore.Slot(bool)
     def setCameraPlateStatus(self, status):
         if status:
-            self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
-            self.ui.le_sgproConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def setupDomeDriver(self):
         self.dome.setupDriver()
@@ -716,11 +802,20 @@ class MountWizzardApp(MwWidget):
     @QtCore.Slot(int)
     def setDomeStatus(self, status):
         if status == 1:
-            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: green;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: grey;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: grey;}')
         else:
-            self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: red;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
+
+    def setupAscomCameraDriver(self):
+        self.AscomCamera.setupDriverCamera()
+
+    def connectCamPS(self):
+        self.AscomCamera.connectCameraPlateSolver()
+
+    def disconnectCamPS(self):
+        self.AscomCamera.disconnectCameraPlateSolver()
 
     def runBaseModel(self):
         self.model.signalModelCommand.emit('RunBaseModel')
@@ -782,6 +877,11 @@ class MountWizzardApp(MwWidget):
     def runHystereseModel(self):
         self.model.signalModelCommand.emit('RunHystereseModel')
 
+    def startCamPlateApp(self):
+        #self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
+        #self.cpAppHandler.close()
+        pass
+
     def mainLoop(self):
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
             data = self.mountDataQueue.get()                                                                                # get the data from the queue
@@ -806,7 +906,7 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
-    BUILD_NO = '2.0.8'
+    BUILD_NO = '2.1.5'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
@@ -823,7 +923,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                         # start message logger
+    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application

@@ -1,9 +1,31 @@
 # Changelog:
-2.0.8
-- prepare for hint in FITS header
+2.1.5
+- added more names for model save in mount
+- added two more mount park positions
+
+2.1.4
+- bugfix for hints
+
+2.1.3
+- bugfix for subframe
+
+2.1.2
+- adding ascom camera
+
+2.1.1
+- enabled storing status TSX interface
+- changing camera status. for green the SGPro / TSX server have to be there and connected !
+
+2.1.0
+- added timeshift for DSO track
+- optimized GUI for model management
+- adding meridian limit for tracking
+- adding meridian limit for slewing
+- adding time to meridian in gui
+- added support for TheSkyX as experimental trial !!!!!
 
 2.0.7
-- bugfix for subframe reported by tonk
+- bugfix subframe handling from tonk
 
 2.0.5, 2.0.6
 - adjusting to interface change SGPro release 2.6.17 for CMOS cams

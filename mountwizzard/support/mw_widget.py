@@ -24,6 +24,9 @@ from PyQt5.QtCore import *
 class MwWidget(QWidget):
 
     logger = logging.getLogger(__name__)
+    BLUE = 'background-color: rgb(42, 130, 218);'
+    RED = 'background-color: red;'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
     COLOR_YELLOW = QColor(192, 192, 0)
@@ -72,8 +75,9 @@ class MwWidget(QWidget):
 
     def initUI(self):
         self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
+        # self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
         self.setMouseTracking(True)
-        darkPalette = QPalette()                                                                                            # set dark palette
+        darkPalette = QPalette()
         darkPalette.setColor(QPalette.Window, self.COLOR_WINDOW)
         darkPalette.setColor(QPalette.WindowText, self.COLOR_WINDOW_TEXT)
         darkPalette.setColor(QPalette.Base, self.COLOR_BASE)
