@@ -42,7 +42,6 @@ from support.relays import Relays
 # for handling camera and plate solving interface
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
-from support.ascom_camera import AscomCamera
 
 
 class MountWizzardApp(MwWidget):
@@ -72,16 +71,10 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = AscomCamera()
+        self.cpObject = self.SGPro                                                                                          # set default to SGPro
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.loadConfig()
-        if self.ui.rb_cameraSGPro.isChecked():
-            self.cpObject = self.SGPro
-        elif self.ui.rb_cameraTSX.isChecked():
-            self.cpObject = self.TheSkyX
-        elif self.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.AscomCamera
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -127,10 +120,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setupDomeDriver.clicked.connect(self.setupDomeDriver)
         self.ui.btn_setupStickDriver.clicked.connect(self.setupStickDriver)
         self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
-        self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
-        self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
-        self.ui.btn_setupAscomCameraDriver.clicked.connect(self.setupAscomCameraDriver)
-
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
         self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
         self.ui.btn_cancelModel.clicked.connect(self.cancelModel)
@@ -150,19 +139,16 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
         self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
+        self.ui.btn_backupModel.clicked.connect(self.backupModel)
+        self.ui.btn_restoreModel.clicked.connect(self.restoreModel)
         self.ui.btn_flipMount.clicked.connect(self.flipMount)
         self.ui.btn_loadRefinementPoints.clicked.connect(self.loadRefinementPoints)
         self.ui.btn_loadBasePoints.clicked.connect(self.loadBasePoints)
-        self.ui.btn_saveBackupModel.clicked.connect(self.saveBackupModel)
-        self.ui.btn_loadBackupModel.clicked.connect(self.loadBackupModel)
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
-        self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
-        self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
         self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
         self.ui.numberHoursDSO.valueChanged.connect(self.generateDSOPoints)
         self.ui.numberPointsDSO.valueChanged.connect(self.generateDSOPoints)
-        self.ui.numberHoursPreview.valueChanged.connect(self.generateDSOPoints)
         self.ui.btn_generateDensePoints.clicked.connect(self.generateDensePoints)
         self.ui.btn_generateNormalPoints.clicked.connect(self.generateNormalPoints)
         self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
@@ -222,9 +208,6 @@ class MountWizzardApp(MwWidget):
             self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
             self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
             self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
-            self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
-            self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
-            self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
             self.ui.cameraBin.setValue(self.config['CameraBin'])
             self.ui.cameraExposure.setValue(self.config['CameraExposure'])
             self.ui.isoSetting.setValue(self.config['ISOSetting'])
@@ -292,9 +275,6 @@ class MountWizzardApp(MwWidget):
         self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
         self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
         self.config['ImageDirectoryName'] = self.ui.le_imageDirectoryName.text()
-        self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
-        self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
-        self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
@@ -556,17 +536,11 @@ class MountWizzardApp(MwWidget):
     def deleteWorstPoint(self):
         self.commandQueue.put('DeleteWorstPoint')
 
-    def saveBackupModel(self):
-        self.commandQueue.put('SaveBackupModel')
+    def backupModel(self):
+        self.commandQueue.put('BackupModel')
 
-    def loadBackupModel(self):
-        self.commandQueue.put('LoadBackupModel')
-
-    def saveBaseModel(self):
-        self.commandQueue.put('SaveBaseModel')
-
-    def loadBaseModel(self):
-        self.commandQueue.put('LoadBaseModel')
+    def restoreModel(self):
+        self.commandQueue.put('RestoreModel')
 
     def saveSimpleModel(self):
         self.commandQueue.put('SaveSimpleModel')
@@ -633,19 +607,11 @@ class MountWizzardApp(MwWidget):
             self.coordinatePopup.ui.le_telescopeAzimut.setText(str(data['Value']))
         if data['Name'] == 'GetSlewRate':
             self.ui.le_slewRate.setText(str(data['Value']))
-        if data['Name'] == 'GetMeridianLimitTrack':
-            self.ui.le_meridianLimitTrack.setText(str(data['Value']))
-        if data['Name'] == 'GetMeridianLimitSlew':
-            self.ui.le_meridianLimitSlew.setText(str(data['Value']))
         if data['Name'] == 'GetUnattendedFlip':
             if data['Value'] == '1':
                 self.ui.le_telescopeUnattendedFlip.setText('ON')
             else:
                 self.ui.le_telescopeUnattendedFlip.setText('OFF')
-        if data['Name'] == 'GetTimeToFlip':
-            self.ui.le_timeToFlip.setText(str(data['Value']))
-        if data['Name'] == 'GetTimeToMeridian':
-            self.ui.le_timeToMeridian.setText(str(data['Value']))
         if data['Name'] == 'GetFirmwareProductName':
             self.ui.le_firmwareProductName.setText(str(data['Value']))
         if data['Name'] == 'GetFirmwareNumber':
@@ -658,6 +624,8 @@ class MountWizzardApp(MwWidget):
             self.ui.le_hardwareVersion.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopePierSide':
             self.ui.le_telescopePierSide.setText(str(data['Value']))
+        if data['Name'] == 'GetTimeToTrackingLimit':
+            self.ui.le_timeToTrackingLimit.setText(str(data['Value']))
 
     #
     # stick handling
@@ -754,15 +722,6 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.le_domeConnected.setStyleSheet('QLineEdit {background-color: red;}')
 
-    def setupAscomCameraDriver(self):
-        self.AscomCamera.setupDriverCamera()
-
-    def connectCamPS(self):
-        self.AscomCamera.connectCameraPlateSolver()
-
-    def disconnectCamPS(self):
-        self.AscomCamera.disconnectCameraPlateSolver()
-
     def runBaseModel(self):
         self.model.signalModelCommand.emit('RunBaseModel')
 
@@ -847,7 +806,7 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
-    BUILD_NO = '2.1.2'
+    BUILD_NO = '2.0.8'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
@@ -864,7 +823,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                # start message logger
+    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                         # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application

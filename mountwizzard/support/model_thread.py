@@ -40,7 +40,6 @@ class Model(QtCore.QThread):
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
-    REF_PICTURE = '/model001.py'
 
     def __init__(self, app):
         super().__init__()
@@ -332,12 +331,11 @@ class Model(QtCore.QThread):
     def generateDSOPoints(self):                                                                                            # model points along dso path
         hours = int(float(self.app.ui.numberHoursDSO.value()))
         number = int(float(self.app.ui.numberPointsDSO.value()))
-        preview = int(float(self.app.ui.numberHoursPreview.value()))
         raCopy = copy.copy(self.app.mount.ra)
         decCopy = copy.copy(self.app.mount.dec)
         value = []                                                                                                          # clear point list
         for i in range(0, number):                                                                                          # round model point from actual az alt position 24 hours
-            ra = raCopy - float(i) * hours / number - preview
+            ra = raCopy - float(i) * hours / number
             az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 value.append((az, alt))                                                                                     # add point to list
@@ -496,20 +494,20 @@ class Model(QtCore.QThread):
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
         if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
             self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
-            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                        # Gui Output
+            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                             # Gui Output
             return
         if not('ra_sol_Jnow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
             self.logger.error('runBatchModel  -> ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
-            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                              # Gui Output
+            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                                   # Gui Output
             return
         if not('pierside' in data and 'sidereal_time' in data):                                                             # you need sidereal time and pierside
             self.logger.error('runBatchModel  -> pierside and sidereal time not in data file')                              # debug output
-            self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
+            self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                             # Gui Output
             return
         self.app.mount.saveActualModel('BATCH')
-        self.app.modelLogQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))      # Gui Output
+        self.app.modelLogQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))           # Gui Output
         self.app.mount.sendCommand('newalig')
-        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output
+        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                     # Gui Output
         for i in range(0, len(data['index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.mount.decimalToDegree(data['ra_Jnow'][i], False, True),
                                                               self.app.mount.decimalToDegree(data['dec_Jnow'][i], True, False),
@@ -520,16 +518,16 @@ class Model(QtCore.QThread):
             reply = self.app.mount.sendCommand(command)
             if reply == 'E':
                 self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
-                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                   # Gui Output
+                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                        # Gui Output
             else:
                 self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
-                                           .format(self.timeStamp(), reply, int(data['azimuth'][i]), int(data['altitude'][i])))  # Gui Output
+                                      .format(self.timeStamp(), reply, int(data['azimuth'][i]), int(data['altitude'][i])))  # Gui Output
         reply = self.app.mount.sendCommand('endalig')
         if reply == 'V':
-            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                      # Gui Output
+            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                           # Gui Output
             self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
         else:
-            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))    # Gui Output
+            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))     # Gui Output
             self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
@@ -576,14 +574,14 @@ class Model(QtCore.QThread):
         if canSubframe:                                                                                                     # if camera could do subframes
             modelData['sizeX'] = int(sizeX * scale)                                                                         # size inner window
             modelData['sizeY'] = int(sizeY * scale)                                                                         # size inner window
-            modelData['offX'] = int((sizeX - sizeX) / 2)                                                                    # offset is half of the rest
-            modelData['offY'] = int((sizeY - sizeY) / 2)                                                                    # same in y
+            modelData['offX'] = int((sizeX - modelData['sizeX']) / 2)                                                       # offset is half of the rest
+            modelData['offY'] = int((sizeY - modelData['sizeY']) / 2)                                                       # same in y
             modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
             self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message
         return modelData                                                                                                    # default without subframe
 
-    def capturingImage(self, modelData, simulation):                                                                        # capturing image
+    def capturingImage(self, modelData):                                                                                    # capturing image
         if self.cancel:
             return False, 'Cancel modeling pressed', modelData
         st_fits_header = modelData['sidereal_time'][0:10]                                                                   # store local sideral time as well
@@ -598,12 +596,12 @@ class Model(QtCore.QThread):
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
         suc, mes, guid = self.app.cpObject.SgCaptureImage(binningMode=modelData['binning'],
                                                           exposureLength=modelData['exposure'],
-                                                          iso=str(modelData['iso']),
+                                                          isoMode=modelData['isoMode'],
+                                                          iso=str(modelData['isoMode']),
                                                           gain=modelData['gainValue'],
                                                           speed=modelData['speed'],
                                                           frameType='Light',
-                                                          filename=modelData['file'],
-                                                          path=modelData['base_dir_images'],
+                                                          path=modelData['file'],
                                                           useSubframe=modelData['canSubframe'],
                                                           posX=modelData['offX'],
                                                           posY=modelData['offY'],
@@ -618,8 +616,8 @@ class Model(QtCore.QThread):
                     break                                                                                                   # stopping the loop
                 else:                                                                                                       # otherwise
                     time.sleep(0.5)                                                                                         # wait for 0.5 seconds
-            if simulation:
-                shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + self.REF_PICTURE, modelData['imagepath'])     # copy reference file as simulation target
+            if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:                                                     # looking for simulation
+                shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + '/model001.py', modelData['imagepath'])       # copy reference file as simulation target
             else:
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
                 fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                         # open for adding field info
@@ -627,8 +625,8 @@ class Model(QtCore.QThread):
                 fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
                 fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
                 fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
-                fitsHeader['CDELT1'] = modelData['hint']                                                                    # x is the same as y
-                fitsHeader['CDELT2'] = modelData['hint']                                                                    # and vice versa
+                fitsHeader['CDELT1'] = str(modelData['hint'])                                                               # x is the same as y
+                fitsHeader['CDELT2'] = str(modelData['hint'])                                                               # and vice versa
                 fitsHeader['MW_MRA'] = raJnow_fits_header                                                                   # reported RA of mount in JNOW
                 fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                 # reported DEC of mount in JNOW
                 fitsHeader['MW_ST'] = st_fits_header                                                                        # reported local sideral time of mount from GS command
@@ -662,7 +660,7 @@ class Model(QtCore.QThread):
         modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
         return modelData
 
-    def solveImage(self, modeltype, modelData, simulation):                                                                 # solving image based on information inside the FITS files, no additional info
+    def solveImage(self, modeltype, modelData):                                                                             # solving image based on information inside the FITS files, no additional info
         if modeltype == 'Base':                                                                                             # base type could be done with blind solve
             suc, mes, guid = self.app.cpObject.SgSolveImage(modelData['imagepath'],
                                                             scaleHint=modelData['hint'],
@@ -679,10 +677,10 @@ class Model(QtCore.QThread):
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.app.cpObject.SgGetSolvedImageData(guid)                  # retrieving the data from solver
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:                                                     # if there is success, we can move on
+            if mes[:7] in ['Matched', 'Solve t', 'Valid s']:                                                                # if there is success, we can move on
                 self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
                 solved = True
-                modelData['dec_sol'] = float(dec_sol)                                                                       # convert values to float, should be stored in float not string
+                modelData['dec_sol'] = float(dec_sol)  # convert to float
                 modelData['ra_sol'] = float(ra_sol)
                 modelData['scale'] = float(scale)
                 modelData['angle'] = float(angle)
@@ -701,9 +699,9 @@ class Model(QtCore.QThread):
                     time.sleep(.25)                                                                                         # therefore quicker cycle
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if solved:
-            ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
-            modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
-            modelData['dec_sol_Jnow'] = dec_sol_Jnow                                                                        # dec in  Jnow
+            ra, dec = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
+            modelData['ra_sol_Jnow'] = ra                                                                                   # ra in Jnow
+            modelData['dec_sol_Jnow'] = dec                                                                                 # dec in  Jnow
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra
             modelData['decError'] = (modelData['dec_sol'] - modelData['dec_J2000']) * 3600                                  # calculate the alignment error dec
             modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
@@ -721,7 +719,7 @@ class Model(QtCore.QThread):
                                      fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                         # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
-            if simulation:
+            if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:                                                     # looking for simulation run
                 modelData = self.addSolveRandomValues(modelData)
             return True, mes, modelData
         else:
@@ -732,11 +730,10 @@ class Model(QtCore.QThread):
         self.app.mount.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
         self.app.mount.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
         reply = self.app.mount.sendCommand('CMS')                                                                           # send sync command (regardless what driver tells)
-        if reply == 'E':                                                                                                    # 'E' says star could not be added
+        if reply == 'E':
             self.logger.error('addRefinementSt-> error adding star')
             return False
         else:
-            self.logger.debug('addRefinementSt-> refinement star added')
             return True                                                                                                     # simulation OK
 
     # noinspection PyUnresolvedReferences
@@ -755,12 +752,8 @@ class Model(QtCore.QThread):
         else:
             self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
             self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
-            return {}                                                                                                       # if cancel or failure, that empty dict has to returned
+            return {}
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
-        if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
-            simulation = True
-        else:
-            simulation = False
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
@@ -801,10 +794,10 @@ class Model(QtCore.QThread):
                     modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
                     modelData['speed'] = 'Normal'
-                modelData['file'] = self.captureFile + '{0:03d}'.format(i) + '.fit'                                         # generate filename for storing image
+                modelData['file'] = modelData['base_dir_images'] + '/' + self.captureFile + '{0:03d}'.format(i) + '.fit'    # generate filepath for storing image
                 modelData['binning'] = int(float(self.app.ui.cameraBin.value()))
                 modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
-                modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
+                modelData['isoMode'] = int(float(self.app.ui.isoSetting.value()))
                 modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
                 modelData['hint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
                 modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]
@@ -820,13 +813,13 @@ class Model(QtCore.QThread):
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                 self.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))   # gui output
-                suc, mes, imagepath = self.capturingImage(modelData, simulation)                                            # capturing image and store position (ra,dec), time, (az,alt)
+                suc, mes, imagepath = self.capturingImage(modelData)                                                        # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('RT9')                                                                        # stop tracking until next round
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
-                    suc, mes, modelData = self.solveImage(modeltype, modelData, simulation)                                 # solve the position and returning the values
+                    suc, mes, modelData = self.solveImage(modeltype, modelData)                                             # solve the position and returning the values
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))     # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement', 'All']:                                                      #
@@ -844,6 +837,8 @@ class Model(QtCore.QThread):
                                                    .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
+                        if os.path.isfile(modelData['imagepath']):
+                            os.remove(modelData['imagepath'])                                                               # delete unsolved image
                         self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))            # Gui output
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them

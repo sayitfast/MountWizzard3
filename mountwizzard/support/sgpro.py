@@ -74,7 +74,7 @@ class SGPro:
                        width=1, height=1):
         # reference {"BinningMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
         # reference "Path":"String","UseSubframe":false,"X":0,"Y":0,"Width":0,"Height":0}
-        data = {"BinningMode": binningMode, "ExposureLength": exposureLength, "UseSubframe": useSubframe, "X": posX, "Y ": posY,
+        data = {"BinningMode": binningMode, "ExposureLength": exposureLength, "UseSubframe": useSubframe, "X": posX, "Y": posY,
                 "Width": width, "Height": height}
         if gain:
             data['Gain'] = gain
