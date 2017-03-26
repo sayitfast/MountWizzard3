@@ -15,6 +15,7 @@
 # import basic stuff
 import logging
 import time
+import numpy
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 
@@ -56,7 +57,7 @@ class AscomCamera:
                 while not self.ascomCamera.ImageReady:
                     time.sleep(0.2)
                 # self.ascomCamera.ReadoutModes = modelData['speed']
-
+                arr = numpy.arr(self.ascomCamera.ImageArray)
 
                 modelData['imagepath'] = modelData['base_dir_images'] + modelData['file']
                 suc = True
