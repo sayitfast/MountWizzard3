@@ -16,6 +16,7 @@
 import logging
 import time
 import numpy
+import pyfits
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 
@@ -57,9 +58,10 @@ class AscomCamera:
                 while not self.ascomCamera.ImageReady:
                     time.sleep(0.2)
                 # self.ascomCamera.ReadoutModes = modelData['speed']
-                arr = numpy.arr(self.ascomCamera.ImageArray)
-
-                modelData['imagepath'] = modelData['base_dir_images'] + modelData['file']
+                arr = numpy.array(self.ascomCamera.ImageArray)
+                hdu = pyfits.PrimaryHDU(arr)
+                modelData['imagepath'] = modelData['base_dir_images'] + '/' + modelData['file']
+                hdu.writeto(modelData['imagepath'])
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
@@ -116,7 +118,7 @@ class AscomCamera:
             return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def getCameraStatus(self):
-        if self.ascomCamera:
+        if self.connectedCamera:
             value = self.ascomCamera.CameraState
         else:
             return False, 'NOT CONNECTED'
