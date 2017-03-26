@@ -144,8 +144,7 @@ class AscomCamera:
             self.connectedCamera = False
             self.logger.error('connectCameraPl-> error: {0}'.format(e))
         finally:
-            self.connectedPlateSolver = True
-            return
+            pass
         try:
             self.win32PlateSolver = Dispatch('PinPoint.Plate')
             self.win32PlateSolver.Catalog = 3

@@ -756,7 +756,7 @@ class Model(QtCore.QThread):
                 modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
                 modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
                 modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-                modelData['hint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
+                modelData['scaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
                 modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]
                 modelData['sidereal_time_float'] = self.app.mount.degStringToDecimal(self.app.mount.sidereal_time[0:9])
                 modelData['ra_J2000'] = self.app.mount.ra

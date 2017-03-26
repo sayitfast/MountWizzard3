@@ -82,7 +82,7 @@ class SGPro:
 
     def solveImage(self, modelData):
         suc, mes, guid = self.SgSolveImage(modelData['imagepath'],
-                                           scaleHint=modelData['hint'],
+                                           scaleHint=modelData['scaleHint'],
                                            blindSolve=modelData['blind'],
                                            useFitsHeaders=modelData['usefitsheaders'])
         if not suc:

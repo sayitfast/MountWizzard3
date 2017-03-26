@@ -51,103 +51,65 @@ class TheSkyX:
                     return False, 'Camera not available !'
             return False, 'SGPro server not running'
 
-    @staticmethod
-    def SgEnumerateDevice(self, device):
-        # TODO: implement
-        return '', False, 'Not implemented'
-
-    def SgCaptureImage(self, binningMode=1, exposureLength=1, gain=None, iso=None, speed=None, frameType=None,
-                       filename=None, path=None, useSubframe=False, posX=0, posY=0, width=1, height=1):
-        # TODO: is there any chance to set filename in script to TSX ?
-        # TODO: or is there a way to set at least the sequence number ?
-        # TODO: how is TSX dealing with ISO settings for DSLR?
-        # TODO: how is TSX dealing with download speeds for CCD, who support this feature ?
-        if frameType == 'Light':
-            frameType = 'cdLight'
+    def solveImage(self, modelData):
+        # TODO: implementation with blind fail over (if it is possible to enable / disable in TSX)
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=0;'
-            if useSubframe:
+            command += 'ImageLink.pathToFITS="' + path.replace('\\', '/') + '";'
+            if modelData['scaleHint']:
+                command += 'ImageLink.unknownScale=0;'
+                command += 'ImageLink.scale=' + str(modelData['scaleHint']) + ';'
+            else:
+                command += 'ImageLink.unknownScale=1;'
+                command += 'ImageLink.scale=2;'
+            command += 'ImageLink.execute();'
+            command += 'Out=String(\'{"succeeded":"\'+ImageLinkResults.succeeded+\'","imageCenterRAJ2000":"\'+ImageLinkResults.imageCenterRAJ2000+\'","imageCenterDecJ2000":"\'+ImageLinkResults.imageCenterDecJ2000+\'","imageScale":"\'+ImageLinkResults.imageScale+\'","imagePositionAngle":"\'+ImageLinkResults.imagePositionAngle+\'"}\');'
+            success, response = self.sendCommand(command)
+            if success:
+                captureResponse = json.loads(response)
+                if captureResponse['succeeded'] == '1':
+                    success = True
+                else:
+                    success = False
+                return success, 'succeeded', captureResponse['imageCenterRAJ2000'], captureResponse[
+                    'imageCenterDecJ2000'], captureResponse['imageScale'], captureResponse[
+                           'imagePositionAngle'], '1'
+            else:
+                return False, 'Request failed', '', '', '', '', ''
+        except Exception as e:
+            self.logger.error('TXGetSolvedImag-> error: {0}'.format(e))
+            return False, 'Request failed', '', '', '', '', ''
+
+    def getImage(self, modelData):
+        # TODO: how is TSX dealing with ISO settings for DSLR?
+        # TODO: how is TSX dealing with download speeds for CCD, who support this feature ?
+        frameType = 'cdLight'
+        try:
+            command = '/* Java Script */'
+            command += 'ccdsoftCamera.Asynchronous=0;'
+            if modelData['canSubframe']:
                 command += 'ccdsoftCamera.Subframe=1;'
-                command += 'ccdsoftCamera.SubframeLeft=' + str(posX) + ';'
-                command += 'ccdsoftCamera.SubframeTop=' + str(posY) + ';'
-                command += 'ccdsoftCamera.SubframeRight=' + str(posX + height) + ';'
-                command += 'ccdsoftCamera.SubframeBottom=' + str(posY + width) + ';'
+                command += 'ccdsoftCamera.SubframeLeft=' + str(modelData['offX']) + ';'
+                command += 'ccdsoftCamera.SubframeTop=' + str(modelData['offY']) + ';'
+                command += 'ccdsoftCamera.SubframeRight=' + str(modelData['offX'] + modelData['sizeX']) + ';'
+                command += 'ccdsoftCamera.SubframeBottom=' + str(modelData['offY'] + modelData['sizeY']) + ';'
             else:
                 command += 'ccdsoftCamera.Subframe=0;'
-            command += 'ccdsoftCamera.BinX='+str(binningMode)+';'
-            command += 'ccdsoftCamera.BinY='+str(binningMode)+';'
-            command += 'ccdsoftCamera.ExposureTime='+str(exposureLength)+';'
+            command += 'ccdsoftCamera.BinX='+str(modelData['binning'])+';'
+            command += 'ccdsoftCamera.BinY='+str(modelData['binning'])+';'
+            command += 'ccdsoftCamera.ExposureTime='+str(modelData['exposure'])+';'
             command += 'ccdsoftCamera.AutoSavePath="'+path+'";'
             command += 'ccdsoftCamera.AutoSaveOn=1;'
             command += 'ccdsoftCamera.Frame="'+frameType+'";'
             command += 'ccdsoftCamera.TakeImage();'
+            command += 'var Out = "";'
+            command += 'Out=ccdsoftCamera.LastImageFileName;'
             success, response = self.sendCommand(command)
             return success, response, '00000000000000000000000000000000'
         except Exception as e:
             self.logger.error('TXCaptureImage -> error: {0}'.format(e))
             return False, 'Request failed', ''
-
-    def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
-        # TODO: implementation with blind fail over (if it is possible to enable / disable in TSX)
-        try:
-            command = '/* Java Script */'
-            command += 'ccdsoftCamera.Asynchronous=1;'
-            command += 'ImageLink.pathToFITS="' + path.replace('\\', '/') + '";'
-            if scaleHint:
-                command += 'ImageLink.unknownScale=0;'
-                command += 'ImageLink.scale=' + str(scaleHint) + ';'
-            else:
-                command += 'ImageLink.unknownScale=1;'
-                command += 'ImageLink.scale=2;'
-            command += 'ImageLink.execute();'
-            command += 'var Out = "";'
-            command += 'Out=ImageLinkResults.succeeded'
-            success, response = self.sendCommand(command)
-            return success, response, '00000000000000000000000000000000'
-        except Exception as e:
-            self.logger.error('TheSkyX SgSolveImage -> error: {0}'.format(e))
-            return False, 'Request failed'
-
-    def SgGetSolvedImageData(self, guid=None):
-        try:
-            if guid:
-                command = '/* Java Script */'
-                command += 'ccdsoftCamera.Asynchronous=0;'
-                command += 'var Out = "";'
-                command += 'Out=String(\'{"succeeded":"\'+ImageLinkResults.succeeded+\'","imageCenterRAJ2000":"\'+ImageLinkResults.imageCenterRAJ2000+\'","imageCenterDecJ2000":"\'+ImageLinkResults.imageCenterDecJ2000+\'","imageScale":"\'+ImageLinkResults.imageScale+\'","imagePositionAngle":"\'+ImageLinkResults.imagePositionAngle+\'"}\');'
-                success, response = self.sendCommand(command)
-                if success:
-                    captureResponse = json.loads(response)
-                    if captureResponse['succeeded'] == '1':
-                        success = True
-                    else:
-                        success = False
-                    return success, 'succeeded', captureResponse['imageCenterRAJ2000'], captureResponse['imageCenterDecJ2000'], captureResponse['imageScale'], captureResponse['imagePositionAngle'], '1'
-                else:
-                    return False, 'Request failed', '', '', '', '', ''
-            else:
-                self.logger.error('TXGetSolvedImag-> no GUID')
-                return False, 'No GUID'
-        except Exception as e:
-            self.logger.error('TXGetSolvedImag-> error: {0}'.format(e))
-            return False, 'Request failed', '', '', '', '', ''
-
-    def SgGetImagePath(self, guid=None):
-        # TODO: as TSX don't use references, but the latest one, is there any chance to ensure sequence (I did it with asynchronous = 0 in all use cases)
-        try:
-            if guid:
-                command = '/* Java Script */'
-                command += 'var Out = "";'
-                command += 'Out=ccdsoftCamera.LastImageFileName;'
-                success, response = self.sendCommand(command)
-                return success, response
-            else:
-                self.logger.error('TXGetImagePath -> no GUID')
-                return False, 'No GUID'
-        except Exception as e:
-            self.logger.error('TXGetImagePath -> error: {0}'.format(e))
-            return False, 'Request failed'
 
     def getCameraStatus(self):
         try:
