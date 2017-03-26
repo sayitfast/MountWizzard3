@@ -147,8 +147,8 @@ class AscomCamera:
             pass
         try:
             self.win32PlateSolver = Dispatch('PinPoint.Plate')
-            self.win32PlateSolver.Catalog = 3
-            self.win32PlateSolver.CatalogPath = 'C:\GSC11'
+            self.win32PlateSolver.Catalog = 11
+            self.win32PlateSolver.CatalogPath = 'C:/UCAC4'
             self.connectedPlateSolver = True
         except Exception as e:
             self.connectedPlateSolver = False

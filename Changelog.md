@@ -1,6 +1,6 @@
 # Changelog:
 2.1.6
-- refactoring interface to imager and solver
+- refactoring interface to imager and solver for ascom, sgpro and theskyx
 
 2.1.5
 - added more names for model save in mount
