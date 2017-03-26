@@ -149,31 +149,25 @@ class TheSkyX:
             self.logger.error('TXGetImagePath -> error: {0}'.format(e))
             return False, 'Request failed'
 
-    def SgGetDeviceStatus(self, device):
-        if device == 'Camera':
-            try:
-                command = '/* Java Script */'
-                command += 'var Out = "";'
-                command += 'ccdsoftCamera.Asynchronous=0;'
-                command += 'Out=ccdsoftCamera.ExposureStatus;'
-                success, response = self.sendCommand(command)
-                if response == 'Not Connected':
-                    response = 'DISCONNECTED'
-                elif response == 'Ready':
-                    response = 'IDLE'
-                elif 'Exposing' in response:
-                    response = 'CAPTURING'
-                return success, response
-            except Exception as e:
-                self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
-                return False, 'Request failed'
-        elif device == 'PlateSolver':
-            # TODO: we need at least the check if a plate solver is available
-            return True, 'No check currently'
-        else:
-            return False, 'Device has no status'
+    def getCameraStatus(self):
+        try:
+            command = '/* Java Script */'
+            command += 'var Out = "";'
+            command += 'ccdsoftCamera.Asynchronous=0;'
+            command += 'Out=ccdsoftCamera.ExposureStatus;'
+            success, response = self.sendCommand(command)
+            if response == 'Not Connected':
+                response = 'DISCONNECTED'
+            elif response == 'Ready':
+                response = 'IDLE'
+            elif 'Exposing' in response:
+                response = 'CAPTURING'
+            return success, response
+        except Exception as e:
+            self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
+            return False, 'Request failed'
 
-    def SgGetCameraProps(self):
+    def getCameraProps(self):
         # TODO: Get the chance to implement subframe on / off if a camera doesn't support this
         # TODO: Gain setting in CMOS Cameras necessary ?
         try:

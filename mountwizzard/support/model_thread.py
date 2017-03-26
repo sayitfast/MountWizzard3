@@ -596,28 +596,8 @@ class Model(QtCore.QThread):
         else:
             pierside_fits_header = 'W'
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
-        suc, mes, guid = self.app.cpObject.SgCaptureImage(binningMode=modelData['binning'],
-                                                          exposureLength=modelData['exposure'],
-                                                          iso=str(modelData['iso']),
-                                                          gain=modelData['gainValue'],
-                                                          speed=modelData['speed'],
-                                                          frameType='Light',
-                                                          filename=modelData['file'],
-                                                          path=modelData['base_dir_images'],
-                                                          useSubframe=modelData['canSubframe'],
-                                                          posX=modelData['offX'],
-                                                          posY=modelData['offY'],
-                                                          width=modelData['sizeX'],
-                                                          height=modelData['sizeY'])                                        # start imaging with parameters. HiSpeed and DSLR doesn't work with SGPro
-        modelData['imagepath'] = ''
-        self.logger.debug('captureImage   -> message: {0}'.format(mes))
-        if suc:                                                                                                             # if we successfully starts imaging, we ca move on
-            while True:                                                                                                     # waiting for the image download before proceeding
-                suc, modelData['imagepath'] = self.app.cpObject.SgGetImagePath(guid)                                        # there is the image path, once the image is downloaded
-                if suc:                                                                                                     # until then, the link is only the receipt
-                    break                                                                                                   # stopping the loop
-                else:                                                                                                       # otherwise
-                    time.sleep(0.5)                                                                                         # wait for 0.5 seconds
+        suc, mes, modelData = self.app.cpObject.getImage(modelData)                                                         # imaging app specific abstraction
+        if suc:
             if simulation:
                 shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + self.REF_PICTURE, modelData['imagepath'])     # copy reference file as simulation target
             else:
@@ -665,44 +645,12 @@ class Model(QtCore.QThread):
         return modelData
 
     def solveImage(self, modeltype, modelData, simulation):                                                                 # solving image based on information inside the FITS files, no additional info
-        if modeltype == 'Base':                                                                                             # base type could be done with blind solve
-            suc, mes, guid = self.app.cpObject.SgSolveImage(modelData['imagepath'],
-                                                            scaleHint=modelData['hint'],
-                                                            blindSolve=modelData['blind'],
-                                                            useFitsHeaders=True)
-        else:                                                                                                               # otherwise we have no chance for blind solve
-            suc, mes, guid = self.app.cpObject.SgSolveImage(modelData['imagepath'],
-                                                            scaleHint=modelData['hint'],
-                                                            blindSolve=False,
-                                                            useFitsHeaders=True)                                            # solve without blind
-        if not suc:
-            self.logger.warning('solveImage     -> no start {0}'.format(mes))                                               # debug output
-            return False, mes, modelData
-        while True:                                                                                                         # retrieving solving data in loop
-            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.app.cpObject.SgGetSolvedImageData(guid)                  # retrieving the data from solver
-            mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:                                                     # if there is success, we can move on
-                self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
-                solved = True
-                modelData['dec_sol'] = float(dec_sol)                                                                       # convert values to float, should be stored in float not string
-                modelData['ra_sol'] = float(ra_sol)
-                modelData['scale'] = float(scale)
-                modelData['angle'] = float(angle)
-                modelData['timeTS'] = float(timeTS)
-                break
-            elif mes != 'Solving':                                                                                          # general error
-                solved = False
-                break
-            elif self.cancel:
-                solved = False
-                break
-            else:                                                                                                           # otherwise
-                if modelData['blind']:                                                                                      # when using blind solve, it takes 30-60 s
-                    time.sleep(5)                                                                                           # therefore slow cycle
-                else:                                                                                                       # local solver takes 1-2 s
-                    time.sleep(.25)                                                                                         # therefore quicker cycle
+        modelData['usefitsheaders'] = True
+        if modeltype == 'Base':
+            modelData['blind'] = False
+        suc, mes, modelData = self.app.cpObject.solveImage(modelData)                                                       # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
-        if solved:
+        if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
             modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
             modelData['dec_sol_Jnow'] = dec_sol_Jnow                                                                        # dec in  Jnow
@@ -750,7 +698,7 @@ class Model(QtCore.QThread):
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory                           # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.cpObject.SgGetCameraProps()                               # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.cpObject.getCameraProps()                                 # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data

@@ -1,7 +1,11 @@
 # Changelog:
+2.1.6
+- refactoring interface to imager and solver
+
 2.1.5
 - added more names for model save in mount
 - added two more mount park positions
+- added state ready for autorefraction
 
 2.1.4
 - bugfix for hints
