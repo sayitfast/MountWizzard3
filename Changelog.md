@@ -1,4 +1,7 @@
 # Changelog:
+2.1.7
+-
+
 2.1.6
 - refactoring interface to imager and solver for ascom, sgpro and theskyx
 
