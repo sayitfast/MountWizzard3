@@ -14,6 +14,7 @@
 
 # import basic stuff
 import logging
+import time
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 
@@ -40,7 +41,35 @@ class AscomCamera:
             return False, 'Camera not available !'
 
     def getImage(self, modelData):
-        return suc, mes, modelData
+        suc = False
+        mes = ''
+        if self.ascomCamera:
+            try:
+                self.ascomCamera.BinX = int(modelData['binning'])
+                self.ascomCamera.BinY = int(modelData['binning'])
+                self.ascomCamera.NumX = int(modelData['sizeX'])
+                self.ascomCamera.NumY = int(modelData['sizeY'])
+                self.ascomCamera.StartX = int(modelData['offX'])
+                self.ascomCamera.StartY = int(modelData['offY'])
+                # self.ascomCamera.Gains = modelData['gainValue']
+                self.ascomCamera.StartExposure(modelData['exposure'], True)
+                while not self.ascomCamera.ImageReady:
+                    time.sleep(0.2)
+                # self.ascomCamera.ReadoutModes = modelData['speed']
+
+
+                modelData['imagepath'] = modelData['base_dir_images'] + modelData['file']
+                suc = True
+                mes = 'Image integrated'
+            except Exception as e:
+                self.logger.error('ASC-getImage    -> error: {0}'.format(e))
+                suc = False
+                mes = '{0}'.format(e)
+                self.logger.debug('ASC-getImage   -> message: {0}'.format(mes))
+            finally:
+                return suc, mes, modelData
+        else:
+            return False, 'Camera not Connected', modelData
 
     def solveImage(self, modelData):
         mes = 'started'
@@ -76,7 +105,7 @@ class AscomCamera:
             sizeY = self.ascomCamera.CameraYSize
             canSubframe = True
             # gains = self.ascomCamera.Gains
-            gains = ['HighSpeed']
+            gains = ['Not Set']
         except Exception as e:
             self.win32PlateSolver.DetachFITS()
             self.logger.error('ASC-getCamProp -> error: {0}'.format(e))
@@ -86,7 +115,22 @@ class AscomCamera:
             return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def getCameraStatus(self):
-        return status
+        if self.ascomCamera:
+            value = self.ascomCamera.CameraState
+        else:
+            return False, 'NOT CONNECTED'
+        if value == 0:
+            return True, 'READY'
+        elif value == 1:
+            return True, 'PREPARATION'
+        elif value == 2:
+            return True, 'INTEGRATING'
+        elif value == 3:
+            return True, 'READOUT'
+        elif value == 4:
+            return True, 'DOWNLOADING'
+        else:
+            return False, 'ERROR'
 
     def connectCameraPlateSolver(self):
         try:
@@ -154,7 +198,9 @@ class AscomCamera:
 
 if __name__ == "__main__":
     cam = AscomCamera()
+    # cam.setupDriverCamera()
     cam.driverNameCamera = 'ASCOM.Simulator.Camera'
     cam.connectCameraPlateSolver()
-    suc, mes, x, y, can, gains = cam.getCamProps()
+    print(cam.ascomCamera.ReadoutModes)
+    suc, mes, x, y, can, gains = cam.getCameraProps()
     print(x, y, gains)
