@@ -13,13 +13,14 @@
 ############################################################
 
 import logging
+import time
 # packages for handling web interface to SGPro
 from urllib import request
 import json
 
 
 class SGPro:
-    logger = logging.getLogger(__name__)                                         # logging enabling
+    logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
     def __init__(self):
         self.ipSGProBase = 'http://localhost:59590'
@@ -54,19 +55,70 @@ class SGPro:
                         return False, 'Camera not available !'
             return False, 'SGPro Server not running'
 
-    def SgEnumerateDevice(self, device):
-        # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
-        data = {'Device': device}
-        try:
-            req = request.Request(self.ipSGPro + self.enumerateDevicePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Devices":["String"],"Success":false,"Message":"String"}
-            return captureResponse['Devices'], captureResponse['Success'], 'Request OK'
-        except Exception as e:
-            self.logger.error('SgEnumerateDevi-> error: {0}'.format(e))
-            return '', False, 'Request failed'
+    def getImage(self, modelData):
+        suc, mes, guid = self.SgCaptureImage(binningMode=modelData['binning'],
+                                             exposureLength=modelData['exposure'],
+                                             iso=str(modelData['iso']),
+                                             gain=modelData['gainValue'],
+                                             speed=modelData['speed'],
+                                             frameType='Light',
+                                             filename=modelData['file'],
+                                             path=modelData['base_dir_images'],
+                                             useSubframe=modelData['canSubframe'],
+                                             posX=modelData['offX'],
+                                             posY=modelData['offY'],
+                                             width=modelData['sizeX'],
+                                             height=modelData['sizeY'])
+        modelData['imagepath'] = ''
+        self.logger.debug('SGP-getImage   -> message: {0}'.format(mes))
+        if suc:                                                                                                             # if we successfully starts imaging, we ca move on
+            while True:                                                                                                     # waiting for the image download before proceeding
+                suc, modelData['imagepath'] = self.SgGetImagePath(guid)                                                     # there is the image path, once the image is downloaded
+                if suc:                                                                                                     # until then, the link is only the receipt
+                    break                                                                                                   # stopping the loop
+                else:                                                                                                       # otherwise
+                    time.sleep(0.5)                                                                                         # wait for 0.5 seconds
+        return suc, mes, modelData
+
+    def solveImage(self, modelData):
+        suc, mes, guid = self.SgSolveImage(modelData['imagepath'],
+                                           scaleHint=modelData['scaleHint'],
+                                           blindSolve=modelData['blind'],
+                                           useFitsHeaders=modelData['usefitsheaders'])
+        if not suc:
+            self.logger.warning('SGP-solveImage -> no start {0}'.format(mes))                                               # debug output
+            return False, mes, modelData
+        while True:                                                                                                         # retrieving solving data in loop
+            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)                               # retrieving the data from solver
+            mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
+            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:                                                     # if there is success, we can move on
+                self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
+                solved = True
+                modelData['dec_sol'] = float(dec_sol)                                                                       # convert values to float, should be stored in float not string
+                modelData['ra_sol'] = float(ra_sol)
+                modelData['scale'] = float(scale)
+                modelData['angle'] = float(angle)
+                modelData['timeTS'] = float(timeTS)
+                break
+            elif mes != 'Solving':                                                                                          # general error
+                solved = False
+                break
+            # TODO: clarification should we again introduce model run cancel during plate solving -> very complicated solver should cancel if not possible after some time
+            # elif app.model.cancel:
+            #    solved = False
+            #    break
+            else:                                                                                                           # otherwise
+                if modelData['blind']:                                                                                      # when using blind solve, it takes 30-60 s
+                    time.sleep(5)                                                                                           # therefore slow cycle
+                else:                                                                                                       # local solver takes 1-2 s
+                    time.sleep(.25)                                                                                         # therefore quicker cycle
+        return solved, mes, modelData
+
+    def getCameraProps(self):
+        return self.SgGetCameraProps()
+
+    def getCameraStatus(self):
+        return self.SgGetDeviceStatus('Camera')
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

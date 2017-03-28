@@ -7,7 +7,7 @@ Because I'm going to use the pip installer for beta versions as well and there i
 between, I will name the release and beta versions explicitly on this page. You can switch between any version with this pip command.
 
 ### Version for upcoming next release
-<pre>pip install mountwizzard==2.1.4 </pre>
+<pre>pip install mountwizzard==2.1.6 </pre>
 
 ### Version release 2
 <pre>pip install mountwizzard==2.0.8 </pre>
@@ -73,12 +73,13 @@ implement it.
 You need and actual installation of Python 3.5 and PyQt5 and it runs only under Windows. I use Windows10 64 bit.
 
 ### Python
-So we start with the installation of Python. Necessary ist python 3.5.2 There might be some newer versions existing, but
-still I only tested version 3.5.2. If you have some experience with newer version, please let me know, I would like to
-add these in the readme. So far version 3.6.0 doesn't work with PyQt5, so please stay with 3.5.2
+So we start with the installation of Python. Necessary ist python >3.5 There might be some newer versions existing, but
+still I tested version 3.5.2 and 3.6.1. If you have some experience with newer version, please let me know, I would like to
+add these in the readme. If you don't mind, please stay on the 32 Bit version of python. It is sufficient and allows more
+functionality due to the fact that some software packages only exist in 32 bit versions.
 You will find the download at:
 <pre>https://www.python.org/downloads/</pre>
-The actual version is v 3.5.2. Please download it and install the package on your computer. Please remind to check the
+The actual version is v 3.6.1. Please download it and install the package on your computer. Please remind to check the
 'add to python path' checkbox before starting the installation, otherwise you will not find the appropriate path set in
 your environment.
 

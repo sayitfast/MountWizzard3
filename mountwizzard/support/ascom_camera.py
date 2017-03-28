@@ -14,6 +14,9 @@
 
 # import basic stuff
 import logging
+import time
+import numpy
+import pyfits
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 
@@ -39,6 +42,99 @@ class AscomCamera:
         else:
             return False, 'Camera not available !'
 
+    def getImage(self, modelData):
+        suc = False
+        mes = ''
+        if self.ascomCamera:
+            try:
+                self.ascomCamera.BinX = int(modelData['binning'])
+                self.ascomCamera.BinY = int(modelData['binning'])
+                self.ascomCamera.NumX = int(modelData['sizeX'])
+                self.ascomCamera.NumY = int(modelData['sizeY'])
+                self.ascomCamera.StartX = int(modelData['offX'])
+                self.ascomCamera.StartY = int(modelData['offY'])
+                # self.ascomCamera.Gains = modelData['gainValue']
+                self.ascomCamera.StartExposure(modelData['exposure'], True)
+                while not self.ascomCamera.ImageReady:
+                    time.sleep(0.2)
+                # self.ascomCamera.ReadoutModes = modelData['speed']
+                arr = numpy.array(self.ascomCamera.ImageArray)
+                hdu = pyfits.PrimaryHDU(arr)
+                modelData['imagepath'] = modelData['base_dir_images'] + '/' + modelData['file']
+                hdu.writeto(modelData['imagepath'])
+                suc = True
+                mes = 'Image integrated'
+            except Exception as e:
+                self.logger.error('ASC-getImage    -> error: {0}'.format(e))
+                suc = False
+                mes = '{0}'.format(e)
+                self.logger.debug('ASC-getImage   -> message: {0}'.format(mes))
+            finally:
+                return suc, mes, modelData
+        else:
+            return False, 'Camera not Connected', modelData
+
+    def solveImage(self, modelData):
+        mes = 'started'
+        suc = False
+        try:
+            self.win32PlateSolver.AttachFITS(modelData['imagepath'])
+            self.win32PlateSolver.ArcsecPerPixelHoriz = modelData['scaleHint']
+            self.win32PlateSolver.ArcsecPerPixelVert = modelData['scaleHint']
+            self.win32PlateSolver.RightAscension = self.win32PlateSolver.TargetRightAscension
+            self.win32PlateSolver.Declination = self.win32PlateSolver.TargetDeclination
+            self.win32PlateSolver.Solve()
+            self.win32PlateSolver.DetachFITS()
+            suc = True
+            mes = 'Solved'
+            modelData['dec_sol'] = float(self.win32PlateSolver.Declination)
+            modelData['ra_sol'] = float(self.win32PlateSolver.RightAscension)
+            modelData['scale'] = float(self.win32PlateSolver.ArcsecPerPixelHoriz)
+            modelData['angle'] = float(self.win32PlateSolver.RollAngle)
+            modelData['timeTS'] = 2.0
+        except Exception as e:
+            self.win32PlateSolver.DetachFITS()
+            self.logger.error('ASC-solveImage -> error: {0}'.format(e))
+            suc = False
+            mes = '{0}'.format(e)
+        finally:
+            return suc, mes, modelData
+
+    def getCameraProps(self):
+        suc = True
+        mes = 'OK'
+        try:
+            sizeX = self.ascomCamera.CameraXSize
+            sizeY = self.ascomCamera.CameraYSize
+            canSubframe = True
+            # gains = self.ascomCamera.Gains
+            gains = ['Not Set']
+        except Exception as e:
+            self.win32PlateSolver.DetachFITS()
+            self.logger.error('ASC-getCamProp -> error: {0}'.format(e))
+            suc = False
+            mes = '{0}'.format(e)
+        finally:
+            return suc, mes, sizeX, sizeY, canSubframe, gains
+
+    def getCameraStatus(self):
+        if self.connectedCamera:
+            value = self.ascomCamera.CameraState
+        else:
+            return False, 'NOT CONNECTED'
+        if value == 0:
+            return True, 'READY'
+        elif value == 1:
+            return True, 'PREPARATION'
+        elif value == 2:
+            return True, 'INTEGRATING'
+        elif value == 3:
+            return True, 'READOUT'
+        elif value == 4:
+            return True, 'DOWNLOADING'
+        else:
+            return False, 'ERROR'
+
     def connectCameraPlateSolver(self):
         try:
             self.ascomCamera = Dispatch(self.driverNameCamera)
@@ -48,12 +144,11 @@ class AscomCamera:
             self.connectedCamera = False
             self.logger.error('connectCameraPl-> error: {0}'.format(e))
         finally:
-            self.connectedPlateSolver = True
-            return
+            pass
         try:
             self.win32PlateSolver = Dispatch('PinPoint.Plate')
-            self.win32PlateSolver.Catalog = 3
-            self.win32PlateSolver.CatalogPath = 'C:\GSC11'
+            self.win32PlateSolver.Catalog = 11
+            self.win32PlateSolver.CatalogPath = 'C:/UCAC4'
             self.connectedPlateSolver = True
         except Exception as e:
             self.connectedPlateSolver = False
@@ -80,133 +175,6 @@ class AscomCamera:
         finally:
             pass
 
-    def SgEnumerateDevice(self, device):
-        # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
-        data = {'Device': device}
-        try:
-            req = request.Request(self.ipSGPro + self.enumerateDevicePath,
-                                  data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Devices":["String"],"Success":false,"Message":"String"}
-            return captureResponse['Devices'], captureResponse['Success'], 'Request OK'
-        except Exception as e:
-            self.logger.error('SgEnumerateDevi-> error: {0}'.format(e))
-            return '', False, 'Request failed'
-
-    def SgCaptureImage(self, binningMode=1, exposureLength=1,
-                       gain=None, iso=None, speed=None, frameType=None, filename=None,
-                       path=None, useSubframe=False, posX=0, posY=0,
-                       width=1, height=1):
-        # reference {"BinningMode":0,"ExposureLength":0,"Gain":"String","Speed":"Normal","FrameType":"Light",
-        # reference "Path":"String","UseSubframe":false,"X":0,"Y":0,"Width":0,"Height":0}
-        data = {
-            "BinningMode": binningMode, "ExposureLength": exposureLength, "UseSubframe": useSubframe, "X": posX,
-            "Y ": posY,
-            "Width": width, "Height": height
-            }
-        if gain:
-            data['Gain'] = gain
-        if iso:
-            data['Iso'] = iso
-        if speed:
-            data['Speed'] = speed
-        if frameType:
-            data['FrameType'] = frameType
-        if path and filename:
-            data['Path'] = path + '/' + filename
-        try:
-            req = request.Request(self.ipSGPro + self.captureImagePath,
-                                  data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
-        except Exception as e:
-            self.logger.error('SgCaptureImage -> error: {0}'.format(e))
-            return False, 'Request failed', ''
-
-    def SgGetCameraProps(self):
-        # reference {}
-        data = {}
-        try:
-            req = request.Request(self.ipSGPro + self.getCameraPropsPath,
-                                  data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
-            if 'GainValues' not in captureResponse:
-                captureResponse['GainValues'] = ['High']
-            return captureResponse['Success'], captureResponse['Message'], int(captureResponse['NumPixelsX']), int(
-                captureResponse['NumPixelsY']), captureResponse['SupportsSubframe'], captureResponse['GainValues'][
-                       0]
-        except Exception as e:
-            self.logger.error('SgGetCameraProp-> error: {0}'.format(e))
-            return False, 'Request failed', '', '', ''
-
-    def SgGetDeviceStatus(self, device):
-        # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
-        data = {'Device': device}
-        try:
-            req = request.Request(self.ipSGPro + self.getDeviceStatusPath,
-                                  data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # states are  "IDLE", "CAPTURING", "BUSY", "MOVING", "DISCONNECTED", "PARKED"
-            # {"State":"IDLE","Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['State']
-        except Exception as e:
-            self.logger.error('SgGetDeviceStat-> error: {0}'.format(e))
-            return False, 'Request failed'
-
-    def SgGetImagePath(self, _guid):
-        # reference {"Receipt":"00000000000000000000000000000000"}
-        data = {'Receipt': _guid}
-        try:
-            req = request.Request(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')),
-                                  method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['Message']
-        except Exception as e:
-            self.logger.error('SgGetImagePath -> error: {0}'.format(e))
-            return False, 'Request failed'
-
-    def SgGetSolvedImageData(self, guid):
-        if guid:
-            try:
-                self.win32PlateSolver.Solve()
-                # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
-                return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse[
-                    'Dec'], captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
-            except Exception as e:
-                self.logger.error('SgGetSolvedImag-> error: {0}'.format(e))
-                return False, 'Request failed', '', '', '', '', ''
-
-    def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
-        try:
-            self.win32PlateSolver.AttachFITS(path)
-        except Exception as e:
-            pass
-        self.win32PlateSolver.ArcsecPerPixelHoriz = scaleHint
-        self.win32PlateSolver.ArcsecPerPixelVert = scaleHint
-        self.win32PlateSolver.RightAscension = self.win32PlateSolver.TargetRightAscension
-        self.win32PlateSolver.Declination = self.win32PlateSolver.TargetDeclination
-        try:
-            self.win32PlateSolver.Solve()
-            self.win32PlateSolver.DetachFITS()
-            return 'True', 'Solving started', '00000000000000000000000000000000'
-        except Exception as e:
-            self.win32PlateSolver.DetachFITS()
-            self.logger.error('SgSolveImage   -> error: {0}'.format(e))
-            return False, 'Request failed', ''
-
     def setupDriverCamera(self):
         try:
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
@@ -214,7 +182,6 @@ class AscomCamera:
             self.driverNameCamera = self.chooser.Choose(self.driverNameCamera)
             self.connectedCamera = False                                                                                    # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
-            self.messageQueue.put('Driver Exception in setup Camera')                                                       # write to gui
             self.logger.error('setupDriverCame-> general exception:{0}'.format(e))                                          # write to log
             self.connectedCamera = False                                                                                    # run the driver setup dialog
         finally:                                                                                                            # continue to work
@@ -222,10 +189,9 @@ class AscomCamera:
 
     def setupDriverPlateSolver(self):
         try:
-            self.driverNamePlateSolver = Dispatch('PinPoint.Plate')
+            self.driverNamePlateSolver = 'PinPoint.Plate'
             self.connectedPlateSolver = False                                                                               # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
-            self.messageQueue.put('Driver Exception in setup PlateSolver')                                                  # write to gui
             self.logger.error('setupDriverPlat-> general exception:{0}'.format(e))                                          # write to log
             self.connectedPlateSolver = False                                                                               # run the driver setup dialog
         finally:                                                                                                            # continue to work
@@ -234,5 +200,9 @@ class AscomCamera:
 
 if __name__ == "__main__":
     cam = AscomCamera()
-    suc, mes, x, y, can = cam.SgGetCameraProps()
-    print(x, y, can)
+    # cam.setupDriverCamera()
+    cam.driverNameCamera = 'ASCOM.Simulator.Camera'
+    cam.connectCameraPlateSolver()
+    print(cam.ascomCamera.ReadoutModes)
+    suc, mes, x, y, can, gains = cam.getCameraProps()
+    print(x, y, gains)
