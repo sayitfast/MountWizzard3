@@ -164,6 +164,10 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
         self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
         self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
+        self.ui.btn_saveDOS01Model.clicked.connect(self.saveDSO01Model)
+        self.ui.btn_loadDSO01Model.clicked.connect(self.loadDSO01Model)
+        self.ui.btn_saveDOS02Model.clicked.connect(self.saveDSO02Model)
+        self.ui.btn_loadDSO02Model.clicked.connect(self.loadDSO02Model)
         self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
         self.ui.numberHoursDSO.valueChanged.connect(self.generateDSOPoints)
         self.ui.numberPointsDSO.valueChanged.connect(self.generateDSOPoints)
@@ -906,7 +910,7 @@ class MountWizzardApp(MwWidget):
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
 if __name__ == "__main__":
-    BUILD_NO = '2.1.7'
+    BUILD_NO = '2.1.8'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

@@ -1,6 +1,10 @@
 # Changelog:
+2.1.8
+- bugfix save load DSO01 / DSO02 model : didn't do anything
+- extending messages to main window
+
 2.1.7
--
+- bugfix
 
 2.1.6
 - refactoring interface to imager and solver for ascom, sgpro and theskyx
