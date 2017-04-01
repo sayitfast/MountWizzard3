@@ -2,6 +2,7 @@
 2.1.8
 - bugfix save load DSO01 / DSO02 model : didn't do anything
 - extending messages to main window
+- adding imaging popup for use with ASCOM Cameras
 
 2.1.7
 - bugfix

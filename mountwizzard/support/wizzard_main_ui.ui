@@ -1518,64 +1518,6 @@
       <string>Park Pos5</string>
      </property>
     </widget>
-    <zorder>le_telescopeRA</zorder>
-    <zorder>le_telescopeAzimut</zorder>
-    <zorder>le_telescopeDEC</zorder>
-    <zorder>le_telescopeAltitude</zorder>
-    <zorder>label_9</zorder>
-    <zorder>label_10</zorder>
-    <zorder>label_8</zorder>
-    <zorder>label_11</zorder>
-    <zorder>label_17</zorder>
-    <zorder>le_meridianLimitTrack</zorder>
-    <zorder>le_telescopePierSide</zorder>
-    <zorder>label_18</zorder>
-    <zorder>label_21</zorder>
-    <zorder>le_telescopeDualTrack</zorder>
-    <zorder>btn_setDualTracking</zorder>
-    <zorder>label_52</zorder>
-    <zorder>le_timeToFlip</zorder>
-    <zorder>btn_setUnattendedFlip</zorder>
-    <zorder>le_telescopeUnattendedFlip</zorder>
-    <zorder>label_23</zorder>
-    <zorder>label_61</zorder>
-    <zorder>label_62</zorder>
-    <zorder>label_80</zorder>
-    <zorder>line_12</zorder>
-    <zorder>line_13</zorder>
-    <zorder>label_81</zorder>
-    <zorder>btn_startTracking</zorder>
-    <zorder>btn_mountPark</zorder>
-    <zorder>btn_mountUnpark</zorder>
-    <zorder>line_16</zorder>
-    <zorder>label_83</zorder>
-    <zorder>label_84</zorder>
-    <zorder>btn_mountPos4</zorder>
-    <zorder>line_15</zorder>
-    <zorder>label_85</zorder>
-    <zorder>btn_mountPos2</zorder>
-    <zorder>btn_mountPos3</zorder>
-    <zorder>btn_mountPos1</zorder>
-    <zorder>btn_stopTracking</zorder>
-    <zorder>line_14</zorder>
-    <zorder>btn_stop</zorder>
-    <zorder>btn_flipMount</zorder>
-    <zorder>btn_setTrackingLunar</zorder>
-    <zorder>btn_setTrackingSolar</zorder>
-    <zorder>btn_setTrackingSideral</zorder>
-    <zorder>label_100</zorder>
-    <zorder>label_34</zorder>
-    <zorder>label_65</zorder>
-    <zorder>le_meridianLimitSlew</zorder>
-    <zorder>label_88</zorder>
-    <zorder>label_89</zorder>
-    <zorder>le_slewRate</zorder>
-    <zorder>label_90</zorder>
-    <zorder>le_timeToMeridian</zorder>
-    <zorder>label_91</zorder>
-    <zorder>btn_mountPos6</zorder>
-    <zorder>btn_mountPos5</zorder>
-    <zorder>windowTitle</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
@@ -6260,7 +6202,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configuration of the imaging / plate solving program and the ASCOM drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -7282,42 +7224,6 @@
          <string>ASCOM</string>
         </property>
        </widget>
-      </widget>
-      <widget class="QPushButton" name="btn_disconnectCamPS">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>140</y>
-         <width>81</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Disconnect</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_connectCamPS">
-       <property name="geometry">
-        <rect>
-         <x>200</x>
-         <y>140</y>
-         <width>81</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Connect</string>
-       </property>
       </widget>
       <widget class="QLabel" name="label_87">
        <property name="geometry">

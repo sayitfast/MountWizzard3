@@ -37,6 +37,7 @@ from queue import Queue
 from support.mount_thread import Mount
 from support.model_thread import Model
 from support.coordinate_widget import ShowCoordinatePopup
+from support.image_widget import ShowImagePopup
 from support.analyse import ShowAnalysePopup
 from support.dome_thread import Dome
 from support.weather_thread import Weather
@@ -75,6 +76,7 @@ class MountWizzardApp(MwWidget):
         self.AscomCamera = AscomCamera()
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
+        self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
         self.loadConfig()
         self.cpAppHandler = None
         if self.ui.rb_cameraSGPro.isChecked():
@@ -83,6 +85,7 @@ class MountWizzardApp(MwWidget):
             self.cpObject = self.TheSkyX
         elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.AscomCamera
+        self.cameraPlateChooser()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -133,8 +136,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setupDomeDriver.clicked.connect(self.setupDomeDriver)
         self.ui.btn_setupStickDriver.clicked.connect(self.setupStickDriver)
         self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
-        self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
-        self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
         self.ui.btn_setupAscomCameraDriver.clicked.connect(self.setupAscomCameraDriver)
         self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
         self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
@@ -292,6 +293,8 @@ class MountWizzardApp(MwWidget):
             self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
             self.coordinatePopup.move(self.config['CoordinatePopupWindowPositionX'], self.config['CoordinatePopupWindowPositionY'])
             self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
+            self.imagePopup.move(self.config['ImagePopupWindowPositionX'], self.config['ImagePopupWindowPositionY'])
+            self.imagePopup.showStatus = self.config['ImagePopupWindowShowStatus']
             self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
             self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
         except Exception as e:
@@ -354,6 +357,9 @@ class MountWizzardApp(MwWidget):
         self.config['CoordinatePopupWindowPositionX'] = self.coordinatePopup.pos().x()
         self.config['CoordinatePopupWindowPositionY'] = self.coordinatePopup.pos().y()
         self.config['CoordinatePopupWindowShowStatus'] = self.coordinatePopup.showStatus
+        self.config['ImagePopupWindowPositionX'] = self.imagePopup.pos().x()
+        self.config['ImagePopupWindowPositionY'] = self.imagePopup.pos().y()
+        self.config['ImagePopupWindowShowStatus'] = self.imagePopup.showStatus
         self.config['ScalePlotRA'] = self.analysePopup.ui.scalePlotRA.value()
         self.config['ScalePlotDEC'] = self.analysePopup.ui.scalePlotDEC.value()
         self.config['ScalePlotError'] = self.analysePopup.ui.scalePlotError.value()
@@ -784,13 +790,19 @@ class MountWizzardApp(MwWidget):
     def cameraPlateChooser(self):
         if self.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
+            self.imagePopup.showStatus = False
+            self.imagePopup.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
         elif self.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
+            self.imagePopup.showStatus = False
+            self.imagePopup.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.AscomCamera
             self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
+            self.imagePopup.showStatus = True
+            self.imagePopup.setVisible(True)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
 
     @QtCore.Slot(bool)
@@ -814,12 +826,6 @@ class MountWizzardApp(MwWidget):
 
     def setupAscomCameraDriver(self):
         self.AscomCamera.setupDriverCamera()
-
-    def connectCamPS(self):
-        self.AscomCamera.connectCameraPlateSolver()
-
-    def disconnectCamPS(self):
-        self.AscomCamera.disconnectCameraPlateSolver()
 
     def runBaseModel(self):
         self.model.signalModelCommand.emit('RunBaseModel')
