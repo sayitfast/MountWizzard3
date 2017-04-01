@@ -54,9 +54,15 @@ class ShowImagePopup(MwWidget):
     def __init__(self, app):
         super(ShowImagePopup, self).__init__()
         self.app = app
-        self.showStatus = False                                                                                             # show coordinate window
+        self.showStatus = False
+        self.param = {}
+        self.imageVmin = 1
+        self.imageVmax = 65535
+        self.image = numpy.array(0)
         self.ui = Ui_ImageDialog()                                                                                          # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
+        self.ui.btn_strechLow.setChecked(True)
+        self.ui.btn_size100.setChecked(True)
         self.initUI()                                                                                                       # adaptions to ui setup
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.show()                                                                                                         # construct the window
@@ -68,6 +74,12 @@ class ShowImagePopup(MwWidget):
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
         self.ui.btn_expose.clicked.connect(self.expose)
+        self.ui.btn_size25.clicked.connect(self.zoom25)
+        self.ui.btn_size50.clicked.connect(self.zoom50)
+        self.ui.btn_size100.clicked.connect(self.zoom100)
+        self.ui.btn_strechLow.clicked.connect(self.strechLow)
+        self.ui.btn_strechMid.clicked.connect(self.strechMid)
+        self.ui.btn_strechHigh.clicked.connect(self.strechHigh)
 
     def connectCamPS(self):
         self.app.AscomCamera.connectCameraPlateSolver()
@@ -75,31 +87,78 @@ class ShowImagePopup(MwWidget):
     def disconnectCamPS(self):
         self.app.AscomCamera.disconnectCameraPlateSolver()
 
-    def showFitsImage(self, filename):
-        hdulist = pyfits.open(filename)
-        image = hdulist[0].data
-        self.imageWidget.plt.imshow(image, cmap='gray', norm=LogNorm(vmin=numpy.min(image) * 1.05, vmax=numpy.max(image)/10))
+    def strechLow(self):
+        self.imageVmin = numpy.min(self.image) * 1
+        self.imageVmax = numpy.max(self.image) / 2
+        self.imageWidget.plt.imshow(self.image, cmap='gray', norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
-    def showImage(self, image):
-        self.imageWidget.plt.imshow(image)
+    def strechMid(self):
+        self.imageVmin = numpy.min(self.image) * 1.05
+        self.imageVmax = numpy.max(self.image) / 10
+        self.imageWidget.plt.imshow(self.image, cmap='gray', norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.draw()
+
+    def strechHigh(self):
+        self.imageVmin = numpy.min(self.image) * 1.1
+        self.imageVmax = numpy.max(self.image) / 20
+        self.imageWidget.plt.imshow(self.image, cmap='gray', norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.draw()
+
+    def zoom25(self):
+        if self.param['sizeX']:
+            minx = int(self.param['sizeX'] * 3 / 8)
+            maxx = minx + int(self.param['sizeX'] / 4)
+            miny = int(self.param['sizeY'] * 3 / 8)
+            maxy = miny + int(self.param['sizeY'] / 4)
+            plt.xlim(minx, maxx)
+            plt.ylim(miny, maxy)
+            self.imageWidget.draw()
+
+    def zoom50(self):
+        if self.param['sizeX']:
+            minx = int(self.param['sizeX'] / 4)
+            maxx = minx + int(self.param['sizeX'] / 2)
+            miny = int(self.param['sizeY'] / 4)
+            maxy = miny + int(self.param['sizeY'] / 2)
+            plt.xlim(minx, maxx)
+            plt.ylim(miny, maxy)
+            self.imageWidget.draw()
+
+    def zoom100(self):
+        if self.param['sizeX']:
+            minx = 0
+            maxx = self.param['sizeX']
+            miny = 0
+            maxy = self.param['sizeY']
+            plt.xlim(minx, maxx)
+            plt.ylim(miny, maxy)
+            self.imageWidget.draw()
+
+    def showFitsImage(self, filename):
+        hdulist = pyfits.open(filename)
+        self.image = hdulist[0].data
+        self.strechLow()
+
+    def showImage(self, imagedata):
+        self.image = imagedata
+        self.imageWidget.plt.imshow(self.image)
         self.imageWidget.draw()
 
     def expose(self):
         if self.app.AscomCamera.connectedCamera:
-            param = {}
             suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.AscomCamera.getCameraProps()
-            param['binning'] = 1
-            param['exposure'] = 1
+            self.param['binning'] = 1
+            self.param['exposure'] = 1
             directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
-            param['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory
+            self.param['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory
             number = 0
-            while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
+            while os.path.isfile(self.param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
                 number += 1
-            param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
-            param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
-            if not os.path.isdir(param['base_dir_images']):
-                os.makedirs(param['base_dir_images'])
+            self.param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
+            self.param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, self.param)
+            if not os.path.isdir(self.param['base_dir_images']):
+                os.makedirs(self.param['base_dir_images'])
             # suc, mes, image = self.app.AscomCamera.getImageRaw(param)
             if suc:
                 self.showFitsImage('C:/Program Files (x86)/Common Files/ASCOM/Camera/ASCOM.Simulator.Camera/M101.fit')
