@@ -21,10 +21,13 @@ from support.mw_widget import MwWidget
 from support.image_dialog_ui import Ui_ImageDialog
 # FIT file handling
 import pyfits
+# numpy
+import numpy
 # matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib import pyplot as plt
+from matplotlib.colors import LogNorm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
@@ -67,17 +70,15 @@ class ShowImagePopup(MwWidget):
         self.ui.btn_expose.clicked.connect(self.expose)
 
     def connectCamPS(self):
-        print('connect')
         self.app.AscomCamera.connectCameraPlateSolver()
 
     def disconnectCamPS(self):
-        print('disconnect')
         self.app.AscomCamera.disconnectCameraPlateSolver()
 
     def showFitsImage(self, filename):
         hdulist = pyfits.open(filename)
         image = hdulist[0].data
-        self.imageWidget.plt.imshow(image)
+        self.imageWidget.plt.imshow(image, cmap='gray', norm=LogNorm(vmin=numpy.min(image) * 1.05, vmax=numpy.max(image)/10))
         self.imageWidget.draw()
 
     def showImage(self, image):
@@ -93,12 +94,12 @@ class ShowImagePopup(MwWidget):
             directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
             param['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory
             number = 0
-            while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}'.format(number)):
+            while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
                 number += 1
-            param['file'] = self.BASENAME + '{0:04d}'.format(number)
+            param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
             param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
             if not os.path.isdir(param['base_dir_images']):
                 os.makedirs(param['base_dir_images'])
-            suc, mes, image = self.app.AscomCamera.getImageRaw(param)
+            # suc, mes, image = self.app.AscomCamera.getImageRaw(param)
             if suc:
-                self.showImage(image)
+                self.showFitsImage('C:/Program Files (x86)/Common Files/ASCOM/Camera/ASCOM.Simulator.Camera/M101.fit')

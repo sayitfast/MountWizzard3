@@ -62,8 +62,6 @@ class AscomCamera:
                 hdu = pyfits.PrimaryHDU(arr)
                 modelData['imagepath'] = modelData['base_dir_images'] + '/' + modelData['file']
                 hdu.writeto(modelData['imagepath'])
-                hdu.close()
-                hdu.flush()
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
@@ -93,6 +91,7 @@ class AscomCamera:
                     time.sleep(0.2)
                 # self.ascomCamera.ReadoutModes = modelData['speed']
                 image = numpy.rot90(numpy.array(self.ascomCamera.ImageArray))
+                image = numpy.flipud(image)
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
