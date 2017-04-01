@@ -58,10 +58,12 @@ class AscomCamera:
                 while not self.ascomCamera.ImageReady:
                     time.sleep(0.2)
                 # self.ascomCamera.ReadoutModes = modelData['speed']
-                arr = numpy.array(self.ascomCamera.ImageArray)
+                arr = numpy.rot90(numpy.array(self.ascomCamera.ImageArray))
                 hdu = pyfits.PrimaryHDU(arr)
                 modelData['imagepath'] = modelData['base_dir_images'] + '/' + modelData['file']
                 hdu.writeto(modelData['imagepath'])
+                hdu.close()
+                hdu.flush()
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
@@ -73,6 +75,35 @@ class AscomCamera:
                 return suc, mes, modelData
         else:
             return False, 'Camera not Connected', modelData
+
+    def getImageRaw(self, modelData):
+        suc = False
+        mes = ''
+        if self.ascomCamera:
+            try:
+                self.ascomCamera.BinX = int(modelData['binning'])
+                self.ascomCamera.BinY = int(modelData['binning'])
+                self.ascomCamera.NumX = int(modelData['sizeX'])
+                self.ascomCamera.NumY = int(modelData['sizeY'])
+                self.ascomCamera.StartX = int(modelData['offX'])
+                self.ascomCamera.StartY = int(modelData['offY'])
+                # self.ascomCamera.Gains = modelData['gainValue']
+                self.ascomCamera.StartExposure(modelData['exposure'], True)
+                while not self.ascomCamera.ImageReady:
+                    time.sleep(0.2)
+                # self.ascomCamera.ReadoutModes = modelData['speed']
+                image = numpy.rot90(numpy.array(self.ascomCamera.ImageArray))
+                suc = True
+                mes = 'Image integrated'
+            except Exception as e:
+                self.logger.error('ASC-getImage    -> error: {0}'.format(e))
+                suc = False
+                mes = '{0}'.format(e)
+                self.logger.debug('ASC-getImage   -> message: {0}'.format(mes))
+            finally:
+                return suc, mes, image
+        else:
+            return False, 'Camera not Connected', []
 
     def solveImage(self, modelData):
         mes = 'started'

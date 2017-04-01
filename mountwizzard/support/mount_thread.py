@@ -539,11 +539,11 @@ class Mount(QtCore.QThread):
         if self.saveActualModel('DSO2'):
             self.app.messageQueue.put('Actual Model save to DSO2')
         else:
-            self.logger.debug('saveDSO2Model  -> Model DSO1 could not be saved')                                          # log it
+            self.logger.debug('saveDSO2Model  -> Model DSO2 could not be saved')                                          # log it
 
     def loadDSO2Model(self):
         if self.loadActualModel('DSO2'):
-            self.app.messageQueue.put('Actual Model loaded from DSO1')
+            self.app.messageQueue.put('Actual Model loaded from DSO2')
         else:
             self.app.messageQueue.put('There is no model named DSO2 or error while loading')
             self.logger.debug('loadDSO2Model  -> Model DSO2 could not be loaded')                                         # log it

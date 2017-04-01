@@ -607,10 +607,10 @@ class Model(QtCore.QThread):
                 fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
                 fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
                 fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
-                fitsHeader['CDELT1'] = str(modelData['hint'])                                                               # x is the same as y
-                fitsHeader['CDELT2'] = str(modelData['hint'])                                                               # and vice versa
-                fitsHeader['PIXSCALE'] = str(modelData['hint'])                                                             # and vice versa
-                fitsHeader['SCALE'] = str(modelData['hint'])                                                                # and vice versa
+                fitsHeader['CDELT1'] = str(modelData['scaleHint'])                                                               # x is the same as y
+                fitsHeader['CDELT2'] = str(modelData['scaleHint'])                                                               # and vice versa
+                fitsHeader['PIXSCALE'] = str(modelData['scaleHint'])                                                             # and vice versa
+                fitsHeader['SCALE'] = str(modelData['scaleHint'])                                                                # and vice versa
                 fitsHeader['MW_MRA'] = raJnow_fits_header                                                                   # reported RA of mount in JNOW
                 fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                 # reported DEC of mount in JNOW
                 fitsHeader['MW_ST'] = st_fits_header                                                                        # reported local sideral time of mount from GS command
