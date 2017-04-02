@@ -4,6 +4,8 @@
 - extending messages to main window
 - adding imaging popup for use with ASCOM Cameras
 - image widget with zoom and strech for pictures
+- changed modeling behaviour for all: first base then refine in separate steps
+- auto save base model and refinement model in mount und referenced names
 
 2.1.7
 - bugfix

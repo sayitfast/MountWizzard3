@@ -896,8 +896,8 @@ class MountWizzardApp(MwWidget):
         self.model.signalModelCommand.emit('RunHystereseModel')
 
     def startCamPlateApp(self):
-        #self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
-        #self.cpAppHandler.close()
+        # self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
+        # self.cpAppHandler.close()
         pass
 
     def mainLoop(self):
