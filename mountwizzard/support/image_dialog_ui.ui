@@ -34,7 +34,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Image</string>
+    <string>Imaging with ASCOM Camera</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -72,7 +72,7 @@ Shot</string>
    <property name="geometry">
     <rect>
      <x>340</x>
-     <y>50</y>
+     <y>60</y>
      <width>81</width>
      <height>31</height>
     </rect>
@@ -83,62 +83,13 @@ Shot</string>
     </font>
    </property>
    <property name="text">
-    <string>Crosshair</string>
+    <string>Crosshairs</string>
    </property>
-  </widget>
-  <widget class="QGroupBox" name="groupBox">
-   <property name="geometry">
-    <rect>
-     <x>680</x>
-     <y>40</y>
-     <width>101</width>
-     <height>91</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Camera</string>
-   </property>
-   <widget class="QPushButton" name="btn_connectCamPS">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>20</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Connect</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="btn_disconnectCamPS">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>50</y>
-      <width>81</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Disconnect</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>600</x>
+     <x>710</x>
      <y>40</y>
      <width>71</width>
      <height>91</height>
@@ -190,7 +141,7 @@ Shot</string>
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>630</x>
      <y>40</y>
      <width>71</width>
      <height>91</height>
@@ -243,7 +194,7 @@ Shot</string>
    <property name="geometry">
     <rect>
      <x>340</x>
-     <y>90</y>
+     <y>100</y>
      <width>81</width>
      <height>31</height>
     </rect>
@@ -260,7 +211,7 @@ Shot</string>
   <widget class="QGroupBox" name="groupBox_4">
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>540</x>
      <y>40</y>
      <width>81</width>
      <height>91</height>
@@ -343,6 +294,110 @@ Exposures</string>
     <string>Stop
 cont.
 Exposures</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_connectCamPS">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>60</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Connect</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_disconnectCamPS">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>100</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Disconnect</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_13">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>40</y>
+     <width>31</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_81">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>40</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Camera</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_82">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>40</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Views</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_14">
+   <property name="geometry">
+    <rect>
+     <x>390</x>
+     <y>40</y>
+     <width>31</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
    </property>
   </widget>
  </widget>
