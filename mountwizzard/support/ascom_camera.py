@@ -81,7 +81,6 @@ class AscomCamera:
     def getImageRaw(self, modelData):
         suc = False
         mes = ''
-        image = None
         if self.ascomCamera:
             try:
                 self.ascomCamera.BinX = int(modelData['binning'])

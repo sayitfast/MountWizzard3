@@ -55,11 +55,11 @@ class ShowImagePopup(MwWidget):
         super(ShowImagePopup, self).__init__()
         self.app = app
         self.showStatus = False
-        self.sizeX = 1
-        self.sizeY = 1
+        self.sizeX = 10
+        self.sizeY = 10
         self.imageVmin = 1
         self.imageVmax = 65535
-        self.image = None
+        self.image = numpy.random.randint(low=5, high=100, size=(20, 20))
         self.cmapColor = 'gray'
         self.ui = Ui_ImageDialog()                                                                                          # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
@@ -106,7 +106,7 @@ class ShowImagePopup(MwWidget):
         self.cmapColor = 'gray'
 
     def setColorCool(self):
-        self.cmapColor = 'cool'
+        self.cmapColor = 'plasma'
 
     def setColorRainbow(self):
         self.cmapColor = 'rainbow'
@@ -203,6 +203,6 @@ class ShowImagePopup(MwWidget):
             param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
             if not os.path.isdir(param['base_dir_images']):
                 os.makedirs(param['base_dir_images'])
-            # suc, mes, image = self.app.AscomCamera.getImageRaw(param)
+            suc, mes, image = self.app.AscomCamera.getImageRaw(param)
             if suc:
-                self.showFitsImage('C:/Program Files (x86)/Common Files/ASCOM/Camera/ASCOM.Simulator.Camera/M101.fit')
+                self.showImage(image)
