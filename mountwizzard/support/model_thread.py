@@ -120,54 +120,59 @@ class Model(QtCore.QThread):
                     self.clearAlignmentModel()                                                                              #
                     self.app.modelLogQueue.put('Model cleared!\n')
                     self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
-                elif self.command == 'LoadBasePoints':
-                    self.command = ''
-                    self.BasePoints = self.showBasePoints()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'LoadRefinementPoints':
-                    self.command = ''
-                    self.RefinementPoints = self.showRefinementPoints()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'SortRefinementPoints':                                                                #
-                    self.command = ''                                                                                       #
-                    self.sortPoints('refinement')
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'GenerateDSOPoints':                                                                   #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)                                              # take some time, therefore coloring button during execution
-                    self.RefinementPoints = self.generateDSOPoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                           # color button back, routine finished
-                elif self.command == 'GenerateDensePoints':                                                                 #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)                                            # tale some time, color button fro showing running
-                    self.RefinementPoints = self.generateDensePoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                         # routing finished, coloring default
-                elif self.command == 'GenerateNormalPoints':                                                                #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)                                           # tale some time, color button fro showing running
-                    self.RefinementPoints = self.generateNormalPoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                        # routing finished, coloring default
-                elif self.command == 'GenerateGridPoints':                                                                  #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)                                             # take some time, therefore coloring button during execution
-                    self.RefinementPoints = self.generateGridPoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                          # color button back, routine finished
-                elif self.command == 'GenerateBasePoints':                                                                  #
-                    self.command = ''                                                                                       #
-                    self.BasePoints = self.generateBasePoints()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'DeleteBelowHorizonLine':
-                    self.command = ''
-                    self.deleteBelowHorizonLine()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'DeletePoints':
-                    self.command = ''
-                    self.deletePoints()
-                    self.signalModelRedraw.emit(True)
+            if self.command == 'LoadBasePoints':
+                self.command = ''
+                self.BasePoints = self.showBasePoints()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'LoadRefinementPoints':
+                self.command = ''
+                self.RefinementPoints = self.showRefinementPoints()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'SortRefinementPoints':
+                self.command = ''
+                self.sortPoints('refinement')
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'GenerateDSOPoints':
+                self.command = ''
+                self.app.ui.btn_generateDSOPoints.setStyleSheet(
+                    self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.RefinementPoints = self.generateDSOPoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                               # color button back, routine finished
+            elif self.command == 'GenerateDensePoints':
+                self.command = ''
+                self.app.ui.btn_generateDensePoints.setStyleSheet(
+                    self.BLUE)                                                                                              # tale some time, color button fro showing running
+                self.RefinementPoints = self.generateDensePoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                             # routing finished, coloring default
+            elif self.command == 'GenerateNormalPoints':
+                self.command = ''
+                self.app.ui.btn_generateNormalPoints.setStyleSheet(
+                    self.BLUE)                                                                                              # tale some time, color button fro showing running
+                self.RefinementPoints = self.generateNormalPoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                            # routing finished, coloring default
+            elif self.command == 'GenerateGridPoints':
+                self.command = ''
+                self.app.ui.btn_generateGridPoints.setStyleSheet(
+                    self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.RefinementPoints = self.generateGridPoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
+            elif self.command == 'GenerateBasePoints':
+                self.command = ''
+                self.BasePoints = self.generateBasePoints()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'DeleteBelowHorizonLine':
+                self.command = ''
+                self.deleteBelowHorizonLine()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'DeletePoints':
+                self.command = ''
+                self.deletePoints()
+                self.signalModelRedraw.emit(True)
+
             if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow

@@ -8,6 +8,7 @@
 - auto save base model and refinement model in mount und referenced names
 - added color schemes for image view
 - added automatic image show, if ascom camera is used
+- model point could be generated without having a camera connected
 
 2.1.7
 - bugfix
