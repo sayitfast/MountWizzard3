@@ -172,7 +172,6 @@ class Model(QtCore.QThread):
                 self.command = ''
                 self.deletePoints()
                 self.signalModelRedraw.emit(True)
-
             if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow

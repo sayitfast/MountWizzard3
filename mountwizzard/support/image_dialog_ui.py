@@ -30,7 +30,7 @@ class Ui_ImageDialog(object):
         self.btn_expose.setGeometry(QtCore.QRect(10, 50, 81, 81))
         self.btn_expose.setObjectName("btn_expose")
         self.btn_crosshair = QtWidgets.QPushButton(ImageDialog)
-        self.btn_crosshair.setGeometry(QtCore.QRect(270, 50, 81, 31))
+        self.btn_crosshair.setGeometry(QtCore.QRect(340, 50, 81, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.btn_crosshair.setFont(font)
@@ -75,7 +75,7 @@ class Ui_ImageDialog(object):
         self.btn_size100.setGeometry(QtCore.QRect(10, 60, 51, 21))
         self.btn_size100.setObjectName("btn_size100")
         self.btn_crosshair_2 = QtWidgets.QPushButton(ImageDialog)
-        self.btn_crosshair_2.setGeometry(QtCore.QRect(270, 90, 81, 31))
+        self.btn_crosshair_2.setGeometry(QtCore.QRect(340, 90, 81, 31))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.btn_crosshair_2.setFont(font)
@@ -92,6 +92,12 @@ class Ui_ImageDialog(object):
         self.btn_colorRainbow = QtWidgets.QRadioButton(self.groupBox_4)
         self.btn_colorRainbow.setGeometry(QtCore.QRect(10, 60, 71, 21))
         self.btn_colorRainbow.setObjectName("btn_colorRainbow")
+        self.btn_stasrContExposures = QtWidgets.QPushButton(ImageDialog)
+        self.btn_stasrContExposures.setGeometry(QtCore.QRect(100, 50, 81, 81))
+        self.btn_stasrContExposures.setObjectName("btn_stasrContExposures")
+        self.btn_stopContExposures = QtWidgets.QPushButton(ImageDialog)
+        self.btn_stopContExposures.setGeometry(QtCore.QRect(190, 50, 81, 81))
+        self.btn_stopContExposures.setObjectName("btn_stopContExposures")
 
         self.retranslateUi(ImageDialog)
         QtCore.QMetaObject.connectSlotsByName(ImageDialog)
@@ -101,7 +107,9 @@ class Ui_ImageDialog(object):
         ImageDialog.setWindowTitle(_translate("ImageDialog", "Form"))
         self.windowTitle.setText(_translate("ImageDialog", "Image"))
         self.btn_expose.setToolTip(_translate("ImageDialog", "Saves actual model und name \"SIMPLE\" in mount"))
-        self.btn_expose.setText(_translate("ImageDialog", "Expose"))
+        self.btn_expose.setText(_translate("ImageDialog", "Expose\n"
+"single\n"
+"Shot"))
         self.btn_crosshair.setText(_translate("ImageDialog", "Crosshair"))
         self.groupBox.setTitle(_translate("ImageDialog", "Camera"))
         self.btn_connectCamPS.setText(_translate("ImageDialog", "Connect"))
@@ -119,4 +127,12 @@ class Ui_ImageDialog(object):
         self.btn_colorGray.setText(_translate("ImageDialog", "Gray"))
         self.btn_colorCool.setText(_translate("ImageDialog", "Cool"))
         self.btn_colorRainbow.setText(_translate("ImageDialog", "Rainbow"))
+        self.btn_stasrContExposures.setToolTip(_translate("ImageDialog", "Saves actual model und name \"SIMPLE\" in mount"))
+        self.btn_stasrContExposures.setText(_translate("ImageDialog", "Start\n"
+"cont.\n"
+"Exposures"))
+        self.btn_stopContExposures.setToolTip(_translate("ImageDialog", "Saves actual model und name \"SIMPLE\" in mount"))
+        self.btn_stopContExposures.setText(_translate("ImageDialog", "Stop\n"
+"cont.\n"
+"Exposures"))
 

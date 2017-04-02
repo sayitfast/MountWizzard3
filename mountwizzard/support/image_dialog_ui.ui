@@ -63,13 +63,15 @@
     <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
    </property>
    <property name="text">
-    <string>Expose</string>
+    <string>Expose
+single
+Shot</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_crosshair">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>340</x>
      <y>50</y>
      <width>81</width>
      <height>31</height>
@@ -240,7 +242,7 @@
   <widget class="QPushButton" name="btn_crosshair_2">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>340</x>
      <y>90</y>
      <width>81</width>
      <height>31</height>
@@ -306,6 +308,42 @@
      <string>Rainbow</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="btn_stasrContExposures">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>50</y>
+     <width>81</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
+   </property>
+   <property name="text">
+    <string>Start
+cont.
+Exposures</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_stopContExposures">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>50</y>
+     <width>81</width>
+     <height>81</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
+   </property>
+   <property name="text">
+    <string>Stop
+cont.
+Exposures</string>
+   </property>
   </widget>
  </widget>
  <resources/>
