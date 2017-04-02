@@ -77,6 +77,7 @@ class AscomCamera:
     def getImageRaw(self, modelData):
         suc = False
         mes = ''
+        image = None
         if self.ascomCamera:
             try:
                 self.ascomCamera.BinX = int(modelData['binning'])
@@ -133,6 +134,10 @@ class AscomCamera:
     def getCameraProps(self):
         suc = True
         mes = 'OK'
+        canSubframe = False
+        gains = ''
+        sizeX = 1
+        sizeY = 1
         try:
             sizeX = self.ascomCamera.CameraXSize
             sizeY = self.ascomCamera.CameraYSize

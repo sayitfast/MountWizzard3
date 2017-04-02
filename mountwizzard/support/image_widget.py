@@ -58,7 +58,7 @@ class ShowImagePopup(MwWidget):
         self.param = {}
         self.imageVmin = 1
         self.imageVmax = 65535
-        self.image = numpy.array(0)
+        self.image = None
         self.ui = Ui_ImageDialog()                                                                                          # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
         self.ui.btn_strechLow.setChecked(True)
