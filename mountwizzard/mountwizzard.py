@@ -73,7 +73,7 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = AscomCamera()
+        self.AscomCamera = AscomCamera(self)
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
@@ -808,7 +808,7 @@ class MountWizzardApp(MwWidget):
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.AscomCamera
-            self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
+            # self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
             self.imagePopup.showStatus = True
             self.imagePopup.setVisible(True)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')

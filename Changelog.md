@@ -6,6 +6,8 @@
 - image widget with zoom and strech for pictures
 - changed modeling behaviour for all: first base then refine in separate steps
 - auto save base model and refinement model in mount und referenced names
+- added color schemes for image view
+- added automatic image show, if ascom camera is used
 
 2.1.7
 - bugfix

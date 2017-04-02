@@ -4077,7 +4077,7 @@
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_saveRefinementSimpleModel">
+    <widget class="QPushButton" name="btn_saveRefinementModel">
      <property name="geometry">
       <rect>
        <x>480</x>
