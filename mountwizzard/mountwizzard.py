@@ -163,6 +163,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_loadBackupModel.clicked.connect(self.loadBackupModel)
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
+        self.ui.btn_saveRefinementModel.clicked.connect(self.saveRefinementModel)
+        self.ui.btn_loadRefinementModel.clicked.connect(self.loadRefinementModel)
         self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
         self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
         self.ui.btn_saveDSO1Model.clicked.connect(self.saveDSO1Model)
@@ -618,6 +620,12 @@ class MountWizzardApp(MwWidget):
 
     def loadBaseModel(self):
         self.commandQueue.put('LoadBaseModel')
+
+    def saveRefinementModel(self):
+        self.commandQueue.put('SaveRefinementModel')
+
+    def loadRefinementModel(self):
+        self.commandQueue.put('LoadRefinementModel')
 
     def saveSimpleModel(self):
         self.commandQueue.put('SaveSimpleModel')

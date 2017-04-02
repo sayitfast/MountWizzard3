@@ -3,6 +3,7 @@
 - bugfix save load DSO01 / DSO02 model : didn't do anything
 - extending messages to main window
 - adding imaging popup for use with ASCOM Cameras
+- image widget with zoom and strech for pictures
 
 2.1.7
 - bugfix

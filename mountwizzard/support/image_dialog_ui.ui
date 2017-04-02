@@ -56,7 +56,7 @@
      <x>10</x>
      <y>50</y>
      <width>81</width>
-     <height>31</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="toolTip">
@@ -70,7 +70,7 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>70</y>
+     <y>110</y>
      <width>121</width>
      <height>20</height>
     </rect>
@@ -94,7 +94,7 @@
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>40</y>
+     <y>80</y>
      <width>41</width>
      <height>22</height>
     </rect>
@@ -127,7 +127,7 @@
    <property name="geometry">
     <rect>
      <x>100</x>
-     <y>40</y>
+     <y>80</y>
      <width>41</width>
      <height>21</height>
     </rect>
@@ -145,7 +145,7 @@
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>40</y>
+     <y>80</y>
      <width>16</width>
      <height>21</height>
     </rect>
@@ -162,8 +162,8 @@
   <widget class="QPushButton" name="btn_crosshair">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>90</y>
+     <x>430</x>
+     <y>50</y>
      <width>81</width>
      <height>31</height>
     </rect>
@@ -180,10 +180,10 @@
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>680</x>
      <y>40</y>
-     <width>191</width>
-     <height>71</height>
+     <width>101</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="title">
@@ -193,7 +193,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
+      <y>20</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -210,8 +210,8 @@
    <widget class="QPushButton" name="btn_disconnectCamPS">
     <property name="geometry">
      <rect>
-      <x>100</x>
-      <y>30</y>
+      <x>10</x>
+      <y>50</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -229,7 +229,7 @@
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>600</x>
      <y>40</y>
      <width>71</width>
      <height>91</height>
@@ -281,7 +281,7 @@
   <widget class="QGroupBox" name="groupBox_3">
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>520</x>
      <y>40</y>
      <width>71</width>
      <height>91</height>
@@ -329,6 +329,75 @@
      <string>100%</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="btn_crosshair_2">
+   <property name="geometry">
+    <rect>
+     <x>430</x>
+     <y>90</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Solve</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_40">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>50</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Binning</string>
+   </property>
+  </widget>
+  <widget class="QSpinBox" name="cameraBin">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>50</y>
+     <width>41</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::ActionsContextMenu</enum>
+   </property>
+   <property name="toolTip">
+    <string>sets the camera bin</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="minimum">
+    <number>1</number>
+   </property>
+   <property name="maximum">
+    <number>3</number>
+   </property>
+   <property name="value">
+    <number>1</number>
+   </property>
   </widget>
  </widget>
  <resources/>
