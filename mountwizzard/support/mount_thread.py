@@ -135,6 +135,14 @@ class Mount(QtCore.QThread):
                         self.app.ui.btn_saveBaseModel.setStyleSheet(self.BLUE)
                         self.saveBaseModel()
                         self.app.ui.btn_saveBaseModel.setStyleSheet(self.DEFAULT)
+                    elif command == 'LoadRefinementModel':
+                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.BLUE)
+                        self.loadRefinementModel()
+                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.DEFAULT)
+                    elif command == 'SaveRefinementModel':
+                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.BLUE)
+                        self.saveRefinementModel()
+                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.DEFAULT)
                     elif command == 'LoadSimpleModel':
                         self.app.ui.btn_loadSimpleModel.setStyleSheet(self.BLUE)
                         self.loadSimpleModel()
@@ -508,6 +516,19 @@ class Mount(QtCore.QThread):
         else:
             self.app.messageQueue.put('There is no model named BASE or error while loading')
             self.logger.debug('loadBaseModel  -> Model BASE could not be loaded')                                           # log it
+
+    def saveRefinementModel(self):
+        if self.saveActualModel('REFINE'):
+            self.app.messageQueue.put('Actual Model save to REFINE')
+        else:
+            self.logger.debug('saveSimpleModel-> Model REFINE could not be saved')                                          # log it
+
+    def loadRefinementModel(self):
+        if self.loadActualModel('REFINE'):
+            self.app.messageQueue.put('Actual Model loaded from REFINE')
+        else:
+            self.app.messageQueue.put('There is no model named REFINE or error while loading')
+            self.logger.debug('loadSimpleModel-> Model REFINE could not be loaded')                                         # log it
 
     def saveSimpleModel(self):
         if self.saveActualModel('SIMPLE'):

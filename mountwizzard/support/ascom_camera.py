@@ -24,7 +24,8 @@ from win32com.client.dynamic import Dispatch
 class AscomCamera:
     logger = logging.getLogger(__name__)
 
-    def __init__(self):
+    def __init__(self, app):
+        self.app = app
         self.connectedCamera = False
         self.connectedPlateSolver = False
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
@@ -58,12 +59,13 @@ class AscomCamera:
                 while not self.ascomCamera.ImageReady:
                     time.sleep(0.2)
                 # self.ascomCamera.ReadoutModes = modelData['speed']
-                arr = numpy.rot90(numpy.array(self.ascomCamera.ImageArray))
-                hdu = pyfits.PrimaryHDU(arr)
+                image = numpy.rot90(numpy.array(self.ascomCamera.ImageArray))
+                image = numpy.flipud(image)
+                hdu = pyfits.PrimaryHDU(image)
                 modelData['imagepath'] = modelData['base_dir_images'] + '/' + modelData['file']
                 hdu.writeto(modelData['imagepath'])
-                hdu.close()
-                hdu.flush()
+                if self.app.imagePopup.showStatus:
+                    self.app.imagePopup.showImage(image)
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
@@ -93,6 +95,7 @@ class AscomCamera:
                     time.sleep(0.2)
                 # self.ascomCamera.ReadoutModes = modelData['speed']
                 image = numpy.rot90(numpy.array(self.ascomCamera.ImageArray))
+                image = numpy.flipud(image)
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
@@ -134,6 +137,10 @@ class AscomCamera:
     def getCameraProps(self):
         suc = True
         mes = 'OK'
+        canSubframe = False
+        gains = ''
+        sizeX = 1
+        sizeY = 1
         try:
             sizeX = self.ascomCamera.CameraXSize
             sizeY = self.ascomCamera.CameraYSize

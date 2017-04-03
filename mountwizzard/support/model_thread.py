@@ -120,54 +120,58 @@ class Model(QtCore.QThread):
                     self.clearAlignmentModel()                                                                              #
                     self.app.modelLogQueue.put('Model cleared!\n')
                     self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
-                elif self.command == 'LoadBasePoints':
-                    self.command = ''
-                    self.BasePoints = self.showBasePoints()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'LoadRefinementPoints':
-                    self.command = ''
-                    self.RefinementPoints = self.showRefinementPoints()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'SortRefinementPoints':                                                                #
-                    self.command = ''                                                                                       #
-                    self.sortPoints('refinement')
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'GenerateDSOPoints':                                                                   #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)                                              # take some time, therefore coloring button during execution
-                    self.RefinementPoints = self.generateDSOPoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                           # color button back, routine finished
-                elif self.command == 'GenerateDensePoints':                                                                 #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)                                            # tale some time, color button fro showing running
-                    self.RefinementPoints = self.generateDensePoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                         # routing finished, coloring default
-                elif self.command == 'GenerateNormalPoints':                                                                #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)                                           # tale some time, color button fro showing running
-                    self.RefinementPoints = self.generateNormalPoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                        # routing finished, coloring default
-                elif self.command == 'GenerateGridPoints':                                                                  #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)                                             # take some time, therefore coloring button during execution
-                    self.RefinementPoints = self.generateGridPoints()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                          # color button back, routine finished
-                elif self.command == 'GenerateBasePoints':                                                                  #
-                    self.command = ''                                                                                       #
-                    self.BasePoints = self.generateBasePoints()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'DeleteBelowHorizonLine':
-                    self.command = ''
-                    self.deleteBelowHorizonLine()
-                    self.signalModelRedraw.emit(True)
-                elif self.command == 'DeletePoints':
-                    self.command = ''
-                    self.deletePoints()
-                    self.signalModelRedraw.emit(True)
+            if self.command == 'LoadBasePoints':
+                self.command = ''
+                self.BasePoints = self.showBasePoints()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'LoadRefinementPoints':
+                self.command = ''
+                self.RefinementPoints = self.showRefinementPoints()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'SortRefinementPoints':
+                self.command = ''
+                self.sortPoints('refinement')
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'GenerateDSOPoints':
+                self.command = ''
+                self.app.ui.btn_generateDSOPoints.setStyleSheet(
+                    self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.RefinementPoints = self.generateDSOPoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                               # color button back, routine finished
+            elif self.command == 'GenerateDensePoints':
+                self.command = ''
+                self.app.ui.btn_generateDensePoints.setStyleSheet(
+                    self.BLUE)                                                                                              # tale some time, color button fro showing running
+                self.RefinementPoints = self.generateDensePoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                             # routing finished, coloring default
+            elif self.command == 'GenerateNormalPoints':
+                self.command = ''
+                self.app.ui.btn_generateNormalPoints.setStyleSheet(
+                    self.BLUE)                                                                                              # tale some time, color button fro showing running
+                self.RefinementPoints = self.generateNormalPoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                            # routing finished, coloring default
+            elif self.command == 'GenerateGridPoints':
+                self.command = ''
+                self.app.ui.btn_generateGridPoints.setStyleSheet(
+                    self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.RefinementPoints = self.generateGridPoints()
+                self.signalModelRedraw.emit(True)
+                self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
+            elif self.command == 'GenerateBasePoints':
+                self.command = ''
+                self.BasePoints = self.generateBasePoints()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'DeleteBelowHorizonLine':
+                self.command = ''
+                self.deleteBelowHorizonLine()
+                self.signalModelRedraw.emit(True)
+            elif self.command == 'DeletePoints':
+                self.command = ''
+                self.deletePoints()
+                self.signalModelRedraw.emit(True)
             if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow
@@ -412,23 +416,24 @@ class Model(QtCore.QThread):
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.BasePoints) > 0:
             self.modelAnalyseData = self.runModel('Base', self.BasePoints, directory, settlingTime)
+            name = directory + '_base.dat'                                                                                  # generate name of analyse file
+            if len(self.modelAnalyseData) > 0:
+                self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
+                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
+                self.app.mount.saveBaseModel()                                                                              # and saving the model in the mount
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
-        name = directory + '_test.dat'                                                                                      # generate name of analyse file
-        if len(self.modelAnalyseData) > 0:
-            self.app.ui.le_analyseFileName.setText(name)                                                                    # set data name in GUI to start over quickly
-            self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runRefinementModel(self):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.RefinementPoints) > 0:
-            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints,
-                                                  directory, settlingTime)
+            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
             name = directory + '_refinement.dat'                                                                            # generate name of analyse file
             if len(self.modelAnalyseData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
+                self.app.mount.saveRefinementModel()                                                                        # and saving the model in the mount
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
 
@@ -443,20 +448,11 @@ class Model(QtCore.QThread):
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
-            self.logger.warning('runAnalyseModel -> There are no Refinement or Base Points to model')                       # write error log
+            self.logger.warning('runCheckModel  -> There are no Refinement or Base Points to model')                        # write error log
 
     def runAllModel(self):
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        points = self.BasePoints + self.RefinementPoints
-        if len(points) > 0:                                                                                                 # there should be some points
-            self.modelAnalyseData = self.runModel('All', points, directory, settlingTime)                                   # run the analyse
-            name = directory + '_all.dat'                                                                                   # generate name of analyse file
-            if len(self.modelAnalyseData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
-        else:                                                                                                               # otherwise omit the run
-            self.logger.warning('runAllModel -> There are no Refinement or Base Points to model')                           # write error log
+        self.runBaseModel()
+        self.runRefinementModel()
 
     def runTimeChangeModel(self):
         settlingTime = int(float(self.app.ui.delayTimeTimeChange.value()))                                                  # using settling time also for waiting / delay

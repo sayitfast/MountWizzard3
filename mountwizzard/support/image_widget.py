@@ -21,10 +21,13 @@ from support.mw_widget import MwWidget
 from support.image_dialog_ui import Ui_ImageDialog
 # FIT file handling
 import pyfits
+# numpy
+import numpy
 # matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib import pyplot as plt
+from matplotlib.colors import LogNorm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
@@ -51,9 +54,18 @@ class ShowImagePopup(MwWidget):
     def __init__(self, app):
         super(ShowImagePopup, self).__init__()
         self.app = app
-        self.showStatus = False                                                                                             # show coordinate window
+        self.showStatus = False
+        self.sizeX = 10
+        self.sizeY = 10
+        self.imageVmin = 1
+        self.imageVmax = 65535
+        self.image = numpy.random.randint(low=5, high=100, size=(20, 20))
+        self.cmapColor = 'gray'
         self.ui = Ui_ImageDialog()                                                                                          # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
+        self.ui.btn_strechLow.setChecked(True)
+        self.ui.btn_size100.setChecked(True)
+        self.ui.btn_colorGray.setChecked(True)
         self.initUI()                                                                                                       # adaptions to ui setup
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.show()                                                                                                         # construct the window
@@ -65,24 +77,116 @@ class ShowImagePopup(MwWidget):
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
         self.ui.btn_expose.clicked.connect(self.expose)
+        self.ui.btn_colorGray.clicked.connect(self.setColor)
+        self.ui.btn_colorCool.clicked.connect(self.setColor)
+        self.ui.btn_colorRainbow.clicked.connect(self.setColor)
+        self.ui.btn_size25.clicked.connect(self.setZoom)
+        self.ui.btn_size50.clicked.connect(self.setZoom)
+        self.ui.btn_size100.clicked.connect(self.setZoom)
+        self.ui.btn_strechLow.clicked.connect(self.setStrech)
+        self.ui.btn_strechMid.clicked.connect(self.setStrech)
+        self.ui.btn_strechHigh.clicked.connect(self.setStrech)
 
     def connectCamPS(self):
-        print('connect')
         self.app.AscomCamera.connectCameraPlateSolver()
 
     def disconnectCamPS(self):
-        print('disconnect')
         self.app.AscomCamera.disconnectCameraPlateSolver()
+
+    def setColor(self):
+        if self.ui.btn_colorCool.isChecked():
+            self.setColorCool()
+        elif self.ui.btn_colorRainbow.isChecked():
+            self.setColorRainbow()
+        else:
+            self.setColorGrey()
+        self.setStrech()
+
+    def setColorGrey(self):
+        self.cmapColor = 'gray'
+
+    def setColorCool(self):
+        self.cmapColor = 'plasma'
+
+    def setColorRainbow(self):
+        self.cmapColor = 'rainbow'
+
+    def setStrech(self):
+        if self.ui.btn_strechLow.isChecked():
+            self.strechLow()
+        elif self.ui.btn_strechMid.isChecked():
+            self.strechMid()
+        else:
+            self.strechHigh()
+
+    def strechLow(self):
+        self.imageVmin = numpy.min(self.image) * 1
+        self.imageVmax = max(numpy.max(self.image) / 2, self.imageVmin + 1)
+        self.imageWidget.plt.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.draw()
+
+    def strechMid(self):
+        self.imageVmin = numpy.min(self.image) * 1.05
+        self.imageVmax = max(numpy.max(self.image) / 10, self.imageVmin + 1)
+        self.imageWidget.plt.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.draw()
+
+    def strechHigh(self):
+        self.imageVmin = numpy.min(self.image) * 1.1
+        self.imageVmax = max(numpy.max(self.image) / 20, self.imageVmin + 1)
+        self.imageWidget.plt.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.draw()
+
+    def setZoom(self):
+        if self.ui.btn_size25.isChecked():
+            self.zoom25()
+        elif self.ui.btn_size50.isChecked():
+            self.zoom50()
+        else:
+            self.zoom100()
+
+    def zoom25(self):
+        if self.sizeX:
+            minx = int(self.sizeX * 3 / 8)
+            maxx = minx + int(self.sizeX / 4)
+            miny = int(self.sizeY * 3 / 8)
+            maxy = miny + int(self.sizeY / 4)
+            plt.xlim(minx, maxx)
+            plt.ylim(miny, maxy)
+            self.imageWidget.draw()
+
+    def zoom50(self):
+        if self.sizeX:
+            minx = int(self.sizeX / 4)
+            maxx = minx + int(self.sizeX / 2)
+            miny = int(self.sizeY / 4)
+            maxy = miny + int(self.sizeY / 2)
+            plt.xlim(minx, maxx)
+            plt.ylim(miny, maxy)
+            self.imageWidget.draw()
+
+    def zoom100(self):
+        if self.sizeX:
+            minx = 0
+            maxx = self.sizeX
+            miny = 0
+            maxy = self.sizeY
+            plt.xlim(minx, maxx)
+            plt.ylim(miny, maxy)
+            self.imageWidget.draw()
 
     def showFitsImage(self, filename):
         hdulist = pyfits.open(filename)
-        image = hdulist[0].data
-        self.imageWidget.plt.imshow(image)
-        self.imageWidget.draw()
+        self.image = hdulist[0].data
+        self.sizeY, self.sizeX = self.image.shape
+        self.setStrech()
+        self.setZoom()
 
-    def showImage(self, image):
-        self.imageWidget.plt.imshow(image)
-        self.imageWidget.draw()
+    def showImage(self, imagedata):
+        self.image = imagedata
+        self.sizeY, self.sizeX = self.image.shape
+        self.setStrech()
+        self.setZoom()
 
     def expose(self):
         if self.app.AscomCamera.connectedCamera:
@@ -93,9 +197,9 @@ class ShowImagePopup(MwWidget):
             directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
             param['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory
             number = 0
-            while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}'.format(number)):
+            while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
                 number += 1
-            param['file'] = self.BASENAME + '{0:04d}'.format(number)
+            param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
             param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
             if not os.path.isdir(param['base_dir_images']):
                 os.makedirs(param['base_dir_images'])

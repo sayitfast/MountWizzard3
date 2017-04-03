@@ -14,13 +14,27 @@ between, I will name the release and beta versions explicitly on this page. You 
 
 # Important:
 
-MW runs also with ASCOM 6.3 and is tested with ASCOM 6.2. Please go with SGPro 2.6.14 release. If you would like to test in simulation,
+MW runs also with ASCOM 6.2 and 6.3 and is tested with both. Please go with SGPro 2.6.17 release. If you would like to test in simulation,
 please choose the camera V2 simulator and the .NET versions fo telescope and dome simulator. Some older stuff won't work properly.
 
 I changed the distribution model to python package (makes it a lot easier to install) and the tool got a name: MountWizzard :-)
 On GitHub you will find from now on most probably only the package version under
 <pre>https://github.com/mworion/mountwizzard.git</pre>
 the older version under 'mount' will disappear !
+
+#### Installation without internet on the target computer
+Some hints from TONK out of the 10micron forum: If anyone like me who has an observatory off the grid (no internet) you can install Mount Wizzard via a
+memory stick (or such like). The commands I used on computer with internet access ...
+
+<pre>
+cd "some directory"
+pip download mountwizzard==2.1.8
+</pre>
+
+This grabs the package and its dependencies and leaves then in the compressed file state in <some directory>
+Then copy the contents of <some directory> to a memory stick (etc.) e.g. to <some directory on mem stick>.
+Then on the remote observatory computer plug in the mem stick and issue these commands (via command window -
+possibly with admin privileges depending how you installed python) ...
 
 ## Features:
 - Blind solve for base points
@@ -111,7 +125,7 @@ place.
 If you didn't already install the ASCOM Framework on you computer for astronomy use, please do so now.
 You will find the download at:
 <pre>http://ascom-standards.org</pre>
-The actual version is 6.2. Please download it and install the package on your computer.
+The actual version is 6.3. Please download it and install the package on your computer.
 
 ### ASCOM drivers
 Please install Per Frejval 10micron ASCOM driver and if you have the Stickstation as well, please do so with Per Frejval

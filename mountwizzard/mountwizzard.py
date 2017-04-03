@@ -73,7 +73,7 @@ class MountWizzardApp(MwWidget):
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = AscomCamera()
+        self.AscomCamera = AscomCamera(self)
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
@@ -163,6 +163,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_loadBackupModel.clicked.connect(self.loadBackupModel)
         self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
         self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
+        self.ui.btn_saveRefinementModel.clicked.connect(self.saveRefinementModel)
+        self.ui.btn_loadRefinementModel.clicked.connect(self.loadRefinementModel)
         self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
         self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
         self.ui.btn_saveDSO1Model.clicked.connect(self.saveDSO1Model)
@@ -619,6 +621,12 @@ class MountWizzardApp(MwWidget):
     def loadBaseModel(self):
         self.commandQueue.put('LoadBaseModel')
 
+    def saveRefinementModel(self):
+        self.commandQueue.put('SaveRefinementModel')
+
+    def loadRefinementModel(self):
+        self.commandQueue.put('LoadRefinementModel')
+
     def saveSimpleModel(self):
         self.commandQueue.put('SaveSimpleModel')
 
@@ -800,7 +808,7 @@ class MountWizzardApp(MwWidget):
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.AscomCamera
-            self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
+            # self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
             self.imagePopup.showStatus = True
             self.imagePopup.setVisible(True)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
@@ -888,8 +896,8 @@ class MountWizzardApp(MwWidget):
         self.model.signalModelCommand.emit('RunHystereseModel')
 
     def startCamPlateApp(self):
-        #self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
-        #self.cpAppHandler.close()
+        # self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
+        # self.cpAppHandler.close()
         pass
 
     def mainLoop(self):
