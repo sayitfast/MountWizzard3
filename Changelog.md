@@ -1,4 +1,10 @@
 # Changelog:
+2.1.10
+-
+
+2.1.9
+- first bugfix for missing analyse window
+
 2.1.8
 - bugfix save load DSO01 / DSO02 model : didn't do anything
 - extending messages to main window

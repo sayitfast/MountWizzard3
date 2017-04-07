@@ -49,6 +49,9 @@
      <height>531</height>
     </rect>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btn_expose">
    <property name="geometry">

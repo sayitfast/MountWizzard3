@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'image_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.8.1
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,6 +25,7 @@ class Ui_ImageDialog(object):
         self.windowTitle.setObjectName("windowTitle")
         self.image = QtWidgets.QWidget(ImageDialog)
         self.image.setGeometry(QtCore.QRect(0, 140, 791, 531))
+        self.image.setAutoFillBackground(True)
         self.image.setObjectName("image")
         self.btn_expose = QtWidgets.QPushButton(ImageDialog)
         self.btn_expose.setGeometry(QtCore.QRect(10, 50, 81, 81))
