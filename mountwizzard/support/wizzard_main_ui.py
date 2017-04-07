@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'wizzard_main_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.8.1
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -3575,14 +3575,14 @@ class Ui_WizzardMainDialog(object):
         self.btn_selectClose.setText(_translate("WizzardMainDialog", "X"))
         self.btn_mountSave.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Saves the settings data in config.cfg</p></body></html>"))
         self.btn_mountSave.setText(_translate("WizzardMainDialog", "Save"))
-        self.btn_camPlateConnected.setToolTip(_translate("WizzardMainDialog", "Set tracking speed to lunar"))
+        self.btn_camPlateConnected.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Status of Camera: green = available and connected</p></body></html>"))
         self.btn_camPlateConnected.setText(_translate("WizzardMainDialog", "Camera"))
-        self.btn_domeConnected.setToolTip(_translate("WizzardMainDialog", "Set tracking speed to lunar"))
+        self.btn_domeConnected.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Status of dome: grey: no dome configured</p></body></html>"))
         self.btn_domeConnected.setText(_translate("WizzardMainDialog", "Dome"))
-        self.btn_driverMountConnected.setToolTip(_translate("WizzardMainDialog", "Set tracking speed to lunar"))
+        self.btn_driverMountConnected.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Status of mount</p></body></html>"))
         self.btn_driverMountConnected.setText(_translate("WizzardMainDialog", "Mount"))
-        self.btn_driverWeatherConnected.setToolTip(_translate("WizzardMainDialog", "Set tracking speed to lunar"))
+        self.btn_driverWeatherConnected.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Status of Open Weather</p></body></html>"))
         self.btn_driverWeatherConnected.setText(_translate("WizzardMainDialog", "Weather"))
-        self.btn_driverStickConnected.setToolTip(_translate("WizzardMainDialog", "Set tracking speed to lunar"))
+        self.btn_driverStickConnected.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Status of Obervation conditions (e.g. Stickstation)</p></body></html>"))
         self.btn_driverStickConnected.setText(_translate("WizzardMainDialog", "ObsCond"))
 

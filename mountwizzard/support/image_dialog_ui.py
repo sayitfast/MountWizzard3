@@ -126,7 +126,7 @@ class Ui_ImageDialog(object):
         _translate = QtCore.QCoreApplication.translate
         ImageDialog.setWindowTitle(_translate("ImageDialog", "Form"))
         self.windowTitle.setText(_translate("ImageDialog", "Imaging with ASCOM Camera"))
-        self.btn_expose.setToolTip(_translate("ImageDialog", "Saves actual model und name \"SIMPLE\" in mount"))
+        self.btn_expose.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Single exposure</p></body></html>"))
         self.btn_expose.setText(_translate("ImageDialog", "Expose\n"
 "single\n"
 "Shot"))
@@ -141,14 +141,17 @@ class Ui_ImageDialog(object):
         self.btn_size100.setText(_translate("ImageDialog", "100%"))
         self.btn_crosshair_2.setText(_translate("ImageDialog", "Solve"))
         self.groupBox_4.setTitle(_translate("ImageDialog", "Colors"))
+        self.btn_colorGray.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Color scheme black /white</p></body></html>"))
         self.btn_colorGray.setText(_translate("ImageDialog", "Gray"))
+        self.btn_colorCool.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Color scheme red/blue</p></body></html>"))
         self.btn_colorCool.setText(_translate("ImageDialog", "Cool"))
+        self.btn_colorRainbow.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Color scheme rainbow</p></body></html>"))
         self.btn_colorRainbow.setText(_translate("ImageDialog", "Rainbow"))
-        self.btn_stasrContExposures.setToolTip(_translate("ImageDialog", "Saves actual model und name \"SIMPLE\" in mount"))
+        self.btn_stasrContExposures.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Starting taking continously exposures</p></body></html>"))
         self.btn_stasrContExposures.setText(_translate("ImageDialog", "Start\n"
 "cont.\n"
 "Exposures"))
-        self.btn_stopContExposures.setToolTip(_translate("ImageDialog", "Saves actual model und name \"SIMPLE\" in mount"))
+        self.btn_stopContExposures.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Stopping taking continously exposures</p></body></html>"))
         self.btn_stopContExposures.setText(_translate("ImageDialog", "Stop\n"
 "cont.\n"
 "Exposures"))

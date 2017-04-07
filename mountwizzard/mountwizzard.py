@@ -271,9 +271,6 @@ class MountWizzardApp(MwWidget):
             self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
             self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
             self.ui.numberHoursDSO.setValue(self.config['NumberHoursDSO'])
-            self.analysePopup.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
-            self.analysePopup.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
-            self.analysePopup.ui.scalePlotError.setValue(self.config['ScalePlotError'])
             self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
             self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
@@ -290,15 +287,18 @@ class MountWizzardApp(MwWidget):
             self.stick.driverName = self.config['ASCOMStickDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
             self.weather.driverName = self.config['ASCOMWeatherDriverName']
+            self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
+            self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+            self.analysePopup.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
+            self.analysePopup.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
+            self.analysePopup.ui.scalePlotError.setValue(self.config['ScalePlotError'])
             self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
             self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
             self.coordinatePopup.move(self.config['CoordinatePopupWindowPositionX'], self.config['CoordinatePopupWindowPositionY'])
             self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
             self.imagePopup.move(self.config['ImagePopupWindowPositionX'], self.config['ImagePopupWindowPositionY'])
             self.imagePopup.showStatus = self.config['ImagePopupWindowShowStatus']
-            self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
-            self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -927,7 +927,7 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.10'
+    BUILD_NO = '2.1.11'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

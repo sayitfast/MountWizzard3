@@ -1,4 +1,7 @@
 # Changelog:
+2.1.11
+-
+
 2.1.10
 - changed matplotlib integration from pyplot to figure. this enables multi window solution with plots
 - suppressed the unnecessary warning of not found visual c runtime
