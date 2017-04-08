@@ -34,29 +34,25 @@ class TheSkyX:
         try:
             tsxSocket = socket.socket()
             tsxSocket.connect((self.host, self.port))
-            connected = True
+            command = '/* Java Script */ '
+            command += 'ccdsoftCamera.Connect();'
+            connected, response = self.sendCommand(command)
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
             connected = False
         finally:
             tsxSocket.close()
             if connected:
-                success, response = self.SgGetDeviceStatus('Camera')
-                if success and response != 'DISCONNECTED':
-                    if self.SgGetDeviceStatus('PlateSolver'):
-                        return True, 'Camera and Solver OK'
-                    else:
-                        return False, 'PlateSolver not available !'
-                else:
-                    return False, 'Camera not available !'
-            return False, 'SGPro server not running'
+                return True, 'Camera and Solver OK';
+            else:
+                return connected, 'Unable to connect camera';
 
     def solveImage(self, modelData):
         # TODO: implementation with blind fail over (if it is possible to enable / disable in TSX)
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=0;'
-            command += 'ImageLink.pathToFITS="' + path.replace('\\', '/') + '";'
+            command += 'ImageLink.pathToFITS="' + str(modelData['imagepath']).replace('\\', '/') + '";'
             if modelData['scaleHint']:
                 command += 'ImageLink.unknownScale=0;'
                 command += 'ImageLink.scale=' + str(modelData['scaleHint']) + ';'
@@ -68,23 +64,26 @@ class TheSkyX:
             success, response = self.sendCommand(command)
             if success:
                 captureResponse = json.loads(response)
+
                 if captureResponse['succeeded'] == '1':
-                    success = True
+                    modelData['dec_sol'] = float(captureResponse['imageCenterDecJ2000'])
+                    modelData['ra_sol'] = float(captureResponse['imageCenterRAJ2000'])
+                    modelData['scale'] = float(captureResponse['imageScale'])
+                    modelData['angle'] = float(captureResponse['imagePositionAngle'])
+                    modelData['timeTS'] = float(2.0)
+                    return True, 'Solved', modelData
                 else:
-                    success = False
-                return success, 'succeeded', captureResponse['imageCenterRAJ2000'], captureResponse[
-                    'imageCenterDecJ2000'], captureResponse['imageScale'], captureResponse[
-                           'imagePositionAngle'], '1'
+                    return False, 'Unsolved', modelData
             else:
-                return False, 'Request failed', '', '', '', '', ''
+                return False, 'Request failed', modelData
         except Exception as e:
             self.logger.error('TXGetSolvedImag-> error: {0}'.format(e))
-            return False, 'Request failed', '', '', '', '', ''
+            return False, 'Request failed', modelData
 
     def getImage(self, modelData):
         # TODO: how is TSX dealing with ISO settings for DSLR?
         # TODO: how is TSX dealing with download speeds for CCD, who support this feature ?
-        frameType = 'cdLight'
+        
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=0;'
@@ -99,14 +98,17 @@ class TheSkyX:
             command += 'ccdsoftCamera.BinX='+str(modelData['binning'])+';'
             command += 'ccdsoftCamera.BinY='+str(modelData['binning'])+';'
             command += 'ccdsoftCamera.ExposureTime='+str(modelData['exposure'])+';'
-            command += 'ccdsoftCamera.AutoSavePath="'+path+'";'
+            command += 'ccdsoftCamera.AutoSavePath="'+str(modelData['base_dir_images'])+'";'
             command += 'ccdsoftCamera.AutoSaveOn=1;'
-            command += 'ccdsoftCamera.Frame="'+frameType+'";'
+            command += 'ccdsoftCamera.Frame="cdLight";'
             command += 'ccdsoftCamera.TakeImage();'
             command += 'var Out = "";'
             command += 'Out=ccdsoftCamera.LastImageFileName;'
             success, response = self.sendCommand(command)
-            return success, response, '00000000000000000000000000000000'
+
+            modelData['imagepath'] = response
+
+            return success, response, modelData
         except Exception as e:
             self.logger.error('TXCaptureImage -> error: {0}'.format(e))
             return False, 'Request failed', ''
