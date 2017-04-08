@@ -49,6 +49,9 @@
      <height>531</height>
     </rect>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btn_expose">
    <property name="geometry">
@@ -60,7 +63,7 @@
     </rect>
    </property>
    <property name="toolTip">
-    <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Single exposure&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Expose
@@ -229,6 +232,9 @@ Shot</string>
       <height>21</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color scheme black /white&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>Gray</string>
     </property>
@@ -242,6 +248,9 @@ Shot</string>
       <height>21</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color scheme red/blue&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>Cool</string>
     </property>
@@ -254,6 +263,9 @@ Shot</string>
       <width>71</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color scheme rainbow&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>Rainbow</string>
@@ -270,7 +282,7 @@ Shot</string>
     </rect>
    </property>
    <property name="toolTip">
-    <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Starting taking continously exposures&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Start
@@ -288,7 +300,7 @@ Exposures</string>
     </rect>
    </property>
    <property name="toolTip">
-    <string>Saves actual model und name &quot;SIMPLE&quot; in mount</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Stopping taking continously exposures&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Stop

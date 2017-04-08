@@ -9143,7 +9143,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="toolTip">
-    <string>Set tracking speed to lunar</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Camera</string>
@@ -9164,7 +9164,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="toolTip">
-    <string>Set tracking speed to lunar</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of dome: grey: no dome configured&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Dome</string>
@@ -9185,7 +9185,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="toolTip">
-    <string>Set tracking speed to lunar</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Mount</string>
@@ -9206,7 +9206,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="toolTip">
-    <string>Set tracking speed to lunar</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Open Weather&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Weather</string>
@@ -9227,7 +9227,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="toolTip">
-    <string>Set tracking speed to lunar</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Obervation conditions (e.g. Stickstation)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>ObsCond</string>

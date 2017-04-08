@@ -1,4 +1,14 @@
 # Changelog:
+2.1.11
+-
+
+2.1.10
+- changed matplotlib integration from pyplot to figure. this enables multi window solution with plots
+- suppressed the unnecessary warning of not found visual c runtime
+
+2.1.9
+- first bugfix for missing analyse window
+
 2.1.8
 - bugfix save load DSO01 / DSO02 model : didn't do anything
 - extending messages to main window

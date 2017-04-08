@@ -26,7 +26,9 @@ import numpy
 # matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
-from matplotlib import pyplot as plt
+# when using multiple embedded plots in different windows you should use figure instead of pyplot, because the state
+# machine from pyplot mixed multiple instances up.
+from matplotlib import figure as figure
 from matplotlib.colors import LogNorm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -34,14 +36,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 class ShowImageData(FigureCanvas):
 
     def __init__(self, parent=None):
-        self.plt = plt
-        self.fig = self.plt.figure(dpi=75, frameon=True)
-        rect = self.fig.patch
-        rect.set_facecolor((25/256, 25/256, 25/256))
-        plt.axis('off')
-        ax = plt.Axes(self.fig, [0., 0., 1., 1.])
-        ax.set_axis_off()
-        self.fig.add_axes(ax)
+        self.fig = figure.Figure(dpi=75, frameon=True, facecolor=(25/256, 25/256, 25/256))
+        self.axes = self.fig.add_axes([0., 0., 1., 1.])
         FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
         FigureCanvas.updateGeometry(self)
@@ -73,6 +69,7 @@ class ShowImagePopup(MwWidget):
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.image)
         self.imageWidget = ShowImageData(self.ui.image)
         helper.addWidget(self.imageWidget)
+        self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
 
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
@@ -122,19 +119,19 @@ class ShowImagePopup(MwWidget):
     def strechLow(self):
         self.imageVmin = numpy.min(self.image) * 1
         self.imageVmax = max(numpy.max(self.image) / 2, self.imageVmin + 1)
-        self.imageWidget.plt.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
     def strechMid(self):
         self.imageVmin = numpy.min(self.image) * 1.05
         self.imageVmax = max(numpy.max(self.image) / 10, self.imageVmin + 1)
-        self.imageWidget.plt.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
     def strechHigh(self):
         self.imageVmin = numpy.min(self.image) * 1.1
         self.imageVmax = max(numpy.max(self.image) / 20, self.imageVmin + 1)
-        self.imageWidget.plt.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
     def setZoom(self):
@@ -151,8 +148,8 @@ class ShowImagePopup(MwWidget):
             maxx = minx + int(self.sizeX / 4)
             miny = int(self.sizeY * 3 / 8)
             maxy = miny + int(self.sizeY / 4)
-            plt.xlim(minx, maxx)
-            plt.ylim(miny, maxy)
+            self.imageWidget.axes.set_xlim(xmin=minx, xmax=maxx)
+            self.imageWidget.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageWidget.draw()
 
     def zoom50(self):
@@ -161,8 +158,8 @@ class ShowImagePopup(MwWidget):
             maxx = minx + int(self.sizeX / 2)
             miny = int(self.sizeY / 4)
             maxy = miny + int(self.sizeY / 2)
-            plt.xlim(minx, maxx)
-            plt.ylim(miny, maxy)
+            self.imageWidget.axes.set_xlim(xmin=minx, xmax=maxx)
+            self.imageWidget.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageWidget.draw()
 
     def zoom100(self):
@@ -171,8 +168,8 @@ class ShowImagePopup(MwWidget):
             maxx = self.sizeX
             miny = 0
             maxy = self.sizeY
-            plt.xlim(minx, maxx)
-            plt.ylim(miny, maxy)
+            self.imageWidget.axes.set_xlim(xmin=minx, xmax=maxx)
+            self.imageWidget.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageWidget.draw()
 
     def showFitsImage(self, filename):
