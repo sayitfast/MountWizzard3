@@ -26,8 +26,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 # loading applications
-import win32api
-from win32com.client.dynamic import Dispatch
+import subprocess
 # import the UI part, which is done via QT Designer and exported
 from support.mw_widget import MwWidget
 from support.wizzard_main_ui import Ui_WizzardMainDialog
@@ -194,6 +193,7 @@ class MountWizzardApp(MwWidget):
         self.ui.rb_cameraSGPro.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
+        self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
 
     def setParkPos1Text(self):                                                                                              # set text for button 1
         self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
@@ -896,9 +896,9 @@ class MountWizzardApp(MwWidget):
         self.model.signalModelCommand.emit('RunHystereseModel')
 
     def startCamPlateApp(self):
-        # self.cpAppHandler = Dispatch('C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe')
-        # self.cpAppHandler.close()
-        pass
+        # subprocess.Popen(['C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe'])
+        import win32ui
+        print(win32ui.FindWindow('Sequence Generator', 'Sequence Generator'))
 
     def mainLoop(self):
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
