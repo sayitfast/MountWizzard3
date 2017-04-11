@@ -48,7 +48,9 @@ class TheSkyX:
                 return connected, 'Unable to connect camera';
 
     def solveImage(self, modelData):
-        # TODO: implementation with blind fail over (if it is possible to enable / disable in TSX)
+        if modelData['blind']:
+            self.logger.warning('Blind mode is not supported. TheSkyX allows to switch to All Sky Image Link by scripting. Please, enable All Sky Image Link manually in TheSkyX')
+
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=0;'
