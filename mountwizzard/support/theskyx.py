@@ -2,6 +2,7 @@ import logging
 from urllib import request
 import json
 import socket
+import timeit
 
 
 class TheSkyX:
@@ -63,7 +64,11 @@ class TheSkyX:
                 command += 'ImageLink.scale=2;'
             command += 'ImageLink.execute();'
             command += 'Out=String(\'{"succeeded":"\'+ImageLinkResults.succeeded+\'","imageCenterRAJ2000":"\'+ImageLinkResults.imageCenterRAJ2000+\'","imageCenterDecJ2000":"\'+ImageLinkResults.imageCenterDecJ2000+\'","imageScale":"\'+ImageLinkResults.imageScale+\'","imagePositionAngle":"\'+ImageLinkResults.imagePositionAngle+\'"}\');'
+
+            startTime = timeit.default_timer()
             success, response = self.sendCommand(command)
+            solveTime = timeit.default_timer() - startTime
+
             if success:
                 captureResponse = json.loads(response)
 
@@ -72,7 +77,7 @@ class TheSkyX:
                     modelData['ra_sol'] = float(captureResponse['imageCenterRAJ2000'])
                     modelData['scale'] = float(captureResponse['imageScale'])
                     modelData['angle'] = float(captureResponse['imagePositionAngle'])
-                    modelData['timeTS'] = float(2.0)
+                    modelData['timeTS'] = solveTime
                     return True, 'Solved', modelData
                 else:
                     return False, 'Unsolved', modelData
