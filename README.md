@@ -49,7 +49,7 @@ by calling the ASCOM chooser for dome an in the selection window upcoming just p
 driver.
 
 ## Modeling Workflow
-![Modeling Workflow](/mountwizzard/pics/do_modeling.png)
+![Modeling Workflow](mountwizzard/pics/do_modeling.png)
 
 ## Remarks
 There were some videos for installation and first use out:

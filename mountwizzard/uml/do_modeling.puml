@@ -1,0 +1,80 @@
+@startuml start
+start
+: start modeling;
+: choosing the model points;
+fork
+    : select type of base points;
+    fork
+    : show base points;
+    fork again
+    : generate base points;
+    end fork
+    : show points in modeling window;
+fork again
+    : select type of refine points;
+    fork
+    : show refine points;
+    fork again
+    : grid points;
+    fork again
+    : point cloud dense;
+    fork again
+    : point cloud normal;
+    fork again
+    : generate dso track;
+    end fork
+    : show points in modeling window;
+    if (points below horizon ?) then (yes)
+        : delete all points below horizon;
+    else (no)
+    endif
+end fork
+: go for modeling;
+fork
+    partition base_modeling {
+    : save actual model under "BACKUP" in mount;
+    : clear model;
+    : run base model;
+    : store base model under "BASE" in mount;
+    : store data file "base.dat" in directory "analyse";
+    }
+fork again
+    partition refinement_modeling {
+    if (base model existing ?) then (yes)
+        : load model from "BASE" in mount;
+        : load data file "base.dat" from analyse
+    else (no)
+        : refine can't be done;
+        stop
+    endif
+    : run refinement model;
+    : store model under "REFINE" in mount;
+    : store data file "refine.dat" in directory "analyse";
+    }
+fork again
+    partition base_refinement_modeling {
+    : save actual model under "BACKUP" in mount;
+    : clear model;
+    : run base model;
+    : store base model under "BASE" in mount;
+    : store data file "base.dat" in directory "analyse";
+    : run refinement model;
+    : store model under "REFINE" in mount;
+    : store data file "refine.dat" in directory "analyse";
+    }
+fork again
+    partition analyse_modeling{
+    if (base model existing ?) then (yes)
+    else (no)
+        : analyse can't be done;
+        stop
+    endif
+    : run analyse model;
+    : store data file "analyse.dat" in directory "analyse";
+    }
+end fork
+: user can store model under "SIMPLE", "DSO1", "DSO2";
+: raw model finished;
+
+stop
+@enduml
