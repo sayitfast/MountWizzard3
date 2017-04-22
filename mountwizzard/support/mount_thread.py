@@ -226,7 +226,7 @@ class Mount(QtCore.QThread):
     def sendCommand(self, command):                                                                                         # core routine for sending commands to mount
         reply = ''                                                                                                          # reply is empty
         self.sendCommandLock.acquire()
-        if self.driver_real:
+        if self.driver_real and self.connected:
             try:                                                                                                            # all with error handling
                 if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                                 # these are the commands, which do not expect a return value
                     self.ascom.CommandBlind(command)                                                                        # than do blind command
@@ -435,7 +435,7 @@ class Mount(QtCore.QThread):
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
     def testBaseModelAvailable(self):
-        number = int(self.sendCommand('getalst').rstrip('#').strip())
+        number = int(self.sendCommand('getalst'))
         if number > 2:
             return True, number
         else:
