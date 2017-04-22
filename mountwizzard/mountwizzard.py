@@ -154,6 +154,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_deleteWorstPoint.clicked.connect(self.deleteWorstPoint)
         self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
         self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
+        self.ui.btn_plateSolveSync.clicked.connect(self.plateSolveSync)
         self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
         self.ui.btn_flipMount.clicked.connect(self.flipMount)
         self.ui.btn_loadRefinementPoints.clicked.connect(self.loadRefinementPoints)
@@ -847,6 +848,9 @@ class MountWizzardApp(MwWidget):
 
     def deleteBelowHorizonLine(self):
         self.model.signalModelCommand.emit('DeleteBelowHorizonLine')
+
+    def plateSolveSync(self):
+        self.model.signalModelCommand.emit('PlateSolveSync')
 
     def deletePoints(self):
         self.model.signalModelCommand.emit('DeletePoints')

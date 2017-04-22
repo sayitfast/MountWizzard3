@@ -89,10 +89,15 @@ class Model(QtCore.QThread):
                     if ok:
                         self.runRefinementModel()
                     else:
-                        self.app.modelLogQueue.put('Refine stopped, not BASE model available !')
-                        self.app.messageQueue.put('Refine stopped, not BASE model available !')
+                        self.app.modelLogQueue.put('Refine stopped, not BASE model available !\n')
+                        self.app.messageQueue.put('Refine stopped, not BASE model available !\n')
                     self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                elif self.command == 'PlateSolveSync':                                                                      # actually doing by receiving signals which enables
+                    self.command = ''                                                                                       # only one command at a time, last wins
+                    self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
+                    self.plateSolveSync()                                                                                   # should be refactored to queue only without signal
+                    self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
                 elif self.command == 'RunBatchModel':                                                                       #
                     self.command = ''                                                                                       #
                     self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
@@ -103,10 +108,10 @@ class Model(QtCore.QThread):
                     self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                  # button blue (running)
                     ok, num = self.app.mount.testBaseModelAvailable()
                     if ok:
-                        self.runCheckModel()                                                                                    #
+                        self.runCheckModel()
                     else:
-                        self.app.modelLogQueue.put('Check stopped, not BASE model available !')
-                        self.app.messageQueue.put('Check stopped, not BASE model available !')
+                        self.app.modelLogQueue.put('Run Analyse stopped, not BASE model available !\n')
+                        self.app.messageQueue.put('Run Analyse stopped, not BASE model available !\n')
                     self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'RunAllModel':
@@ -428,6 +433,70 @@ class Model(QtCore.QThread):
         self.app.commandQueue.put('ClearAlign')
         time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (don't know if necessary)
 
+    def plateSolveSync(self):
+        self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
+        self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))                               # Start informing user
+        modelData = {}
+        scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
+        modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/platesolvesync'                         # define subdirectory for storing the images
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.cpObject.getCameraProps()                                 # look for capabilities of cam
+        modelData['gainValue'] = gainValue
+        if suc:
+            self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
+        else:
+            self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
+            self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), 'Base', mes))
+            return {}                                                                                                       # if cancel or failure, that empty dict has to returned
+        modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
+        if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
+            simulation = True
+        else:
+            simulation = False
+        if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
+            modelData['canSubframe'] = False                                                                                # set default values
+        self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
+        self.app.commandQueue.put('PO')                                                                                     # unpark to start slewing
+        self.app.commandQueue.put('AP')                                                                                     # tracking on during the picture taking
+        if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
+            os.makedirs(modelData['base_dir_images'])                                                                       # if path doesn't exist, generate is
+        if self.app.ui.checkFastDownload.isChecked():
+            modelData['speed'] = 'HiSpeed'
+        else:
+            modelData['speed'] = 'Normal'
+        modelData['file'] = 'platesolvesync.fit'
+        modelData['binning'] = int(float(self.app.ui.cameraBin.value()))
+        modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
+        modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
+        modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
+        modelData['scaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
+        modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]
+        modelData['sidereal_time_float'] = self.app.mount.degStringToDecimal(self.app.mount.sidereal_time[0:9])
+        modelData['ra_J2000'] = self.app.mount.ra
+        modelData['dec_J2000'] = self.app.mount.dec
+        modelData['ra_Jnow'] = self.app.mount.raJnow
+        modelData['dec_Jnow'] = self.app.mount.decJnow
+        modelData['pierside'] = self.app.mount.pierside
+        modelData['refractionTemp'] = self.app.mount.refractionTemp
+        modelData['refractionPress'] = self.app.mount.refractionPressure
+        self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
+        suc, mes, imagepath = self.capturingImage(modelData, simulation)
+        self.logger.debug('plateSolveSync -> suc:{0} mes:{1}'.format(suc, mes))
+        if suc:
+            self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
+            suc, mes, modelData = self.solveImage('Base', modelData, simulation)
+            self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))
+            if suc:
+                suc = self.syncMountModel(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])
+                if suc:
+                    self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
+                else:
+                    self.app.modelLogQueue.put('{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
+            else:
+                self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
+        if not self.app.ui.checkKeepImages.isChecked():
+            shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)
+        self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
+
     def runBaseModel(self):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
@@ -445,7 +514,11 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.RefinementPoints) > 0:
-            self.modelData = self.modelData + self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
+            self.app.mount.loadBaseModel()
+            refinePoints = self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
+            for i in range(0, len(refinePoints)):
+                refinePoints[i]['index'] += 3
+            self.modelData = self.modelData + refinePoints
             name = directory + '_refinement.dat'                                                                            # generate name of analyse file
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
@@ -701,6 +774,19 @@ class Model(QtCore.QThread):
         else:
             self.logger.debug('addRefinementSt-> refinement star added')
             return True                                                                                                     # simulation OK
+
+    def syncMountModel(self, ra, dec):                                                                                      # add refinement star during model run
+        self.logger.debug('syncMountModel -> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
+        self.app.mount.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
+        self.app.mount.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
+        self.app.mount.sendCommand('CMCFG0')
+        reply = self.app.mount.sendCommand('CM')                                                                            # send sync command (regardless what driver tells)
+        if reply[:5] == 'Coord':
+            self.logger.debug('syncMountModel -> mount model synced')
+            return True
+        else:
+            self.logger.error('syncMountModel -> error in sync mount model')
+            return False                                                                                                     # simulation OK
 
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing

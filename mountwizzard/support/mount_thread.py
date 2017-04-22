@@ -447,7 +447,7 @@ class Mount(QtCore.QThread):
         baseOK, numberStars = self.testBaseModelAvailable()                                                                 # get number of stars
         if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
             return points, 0
-        for i in range(1, numberStars):                                                                                     # otherwise download them step for step
+        for i in range(1, numberStars + 1):                                                                                 # otherwise download them step for step
             try:
                 reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
             except pythoncom.com_error as e:
@@ -556,7 +556,7 @@ class Mount(QtCore.QThread):
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelData, 'refine.dat')                      # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'refine.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data for REFINE')
 
@@ -569,7 +569,7 @@ class Mount(QtCore.QThread):
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelData, 'actual.dat')                      # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'actual.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
 
@@ -582,7 +582,7 @@ class Mount(QtCore.QThread):
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelData, 'simple.dat')                      # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'simple.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
 

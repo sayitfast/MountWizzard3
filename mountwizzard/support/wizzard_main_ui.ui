@@ -1865,8 +1865,8 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>180</y>
-       <width>251</width>
+       <y>190</y>
+       <width>121</width>
        <height>31</height>
       </rect>
      </property>
@@ -1874,7 +1874,7 @@
       <string>Sort the order of modeling points. East-West-Low-High Altitude</string>
      </property>
      <property name="text">
-      <string>Sort Order of Points East/West</string>
+      <string>Sort East/West</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_generateGridPoints">
@@ -2093,7 +2093,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>100</y>
+       <y>150</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -2354,9 +2354,9 @@
     <widget class="QPushButton" name="btn_deletePoints">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>140</y>
-       <width>251</width>
+       <x>620</x>
+       <y>190</y>
+       <width>121</width>
        <height>31</height>
       </rect>
      </property>
@@ -2364,7 +2364,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Clear Model Points in Window</string>
+      <string>Clear Window</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runAllModel">
@@ -2555,6 +2555,22 @@
      </property>
      <property name="checked">
       <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_plateSolveSync">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>100</y>
+       <width>251</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image, Platesolve and Sync the model of the mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Plate Solve and Sync Model</string>
      </property>
     </widget>
    </widget>

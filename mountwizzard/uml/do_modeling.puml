@@ -42,7 +42,7 @@ fork again
     partition refinement_modeling {
     if (base model existing ?) then (yes)
         : load model from "BASE" in mount;
-        : load data file "base.dat" from analyse
+        : load data file "base.dat" from analyse;
     else (no)
         : refine can't be done;
         stop
