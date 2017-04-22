@@ -56,6 +56,7 @@ class Model(QtCore.QThread):
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for model
+        self.modelData = []
         self.captureFile = 'model'                                                                                          # filename for capturing file
         self.counter = 0                                                                                                    # counter for main loop
         self.command = ''                                                                                                   # command buffer
@@ -431,11 +432,11 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.BasePoints) > 0:
-            self.modelAnalyseData = self.runModel('Base', self.BasePoints, directory, settlingTime)
+            self.modelData = self.runModel('Base', self.BasePoints, directory, settlingTime)
             name = directory + '_base.dat'                                                                                  # generate name of analyse file
-            if len(self.modelAnalyseData) > 0:
+            if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data according to date
+                self.analyse.saveData(self.modelData, name)                                                                 # save the data according to date
                 self.app.mount.saveBaseModel()                                                                              # and saving the model in the mount
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
@@ -444,11 +445,11 @@ class Model(QtCore.QThread):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.RefinementPoints) > 0:
-            self.modelAnalyseData = self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
+            self.modelData = self.modelData + self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
             name = directory + '_refinement.dat'                                                                            # generate name of analyse file
-            if len(self.modelAnalyseData) > 0:
+            if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
+                self.analyse.saveData(self.modelData, name)                                                                 # save the data
                 self.app.mount.saveRefinementModel()                                                                        # and saving the model in the mount
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
@@ -795,10 +796,10 @@ class Model(QtCore.QThread):
                             suc = self.addRefinementStar(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])               # sync the actual star to resolved coordinates in JNOW
                             if suc:
                                 self.app.modelLogQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
+                                numCheckPoints += 1                                                                         # increase index for synced stars
+                                results.append(copy.copy(modelData))                                                        # adding point for matrix
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
-                        numCheckPoints += 1                                                                                 # increase index for synced stars
-                        results.append(copy.copy(modelData))                                                                # adding point for matrix
                         self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
                                           .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
                         p_item.setVisible(False)                                                                            # set the relating modeled point invisible

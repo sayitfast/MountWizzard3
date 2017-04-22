@@ -531,90 +531,90 @@ class Mount(QtCore.QThread):
 
     def saveBackupModel(self):
         if self.saveModel('BACKUP'):
-            if self.app.model.modelAnalyseData:
-                self.app.analyse.saveData(self.app.model.mmodelAnalyseData, 'backup.dat')                                   # save the data
+            if self.app.model.modelData:
+                self.app.analyse.saveData(self.app.model.mmodelData, 'backup.dat')                                   # save the data
 
     def loadBackupModel(self):
         if self.loadModel('BACKUP'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('backup.dat')
-            if not self.app.model.modelAnalyseData:
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('backup.dat')
+            if not self.app.model.modelData:
                 self.app.messageQueue.put('No data file for BACKUP')
 
     def saveBaseModel(self):
         if self.saveModel('BASE'):
-            if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'base.dat')                        # save the data
+            if self.app.model.modelData:
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'base.dat')                        # save the data
             else:
                 self.app.messageQueue.put('No data for BASE')
 
     def loadBaseModel(self):
         if self.loadModel('BASE'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('base.dat')
-            if not self.app.model.modelAnalyseData:
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('base.dat')
+            if not self.app.model.modelData:
                 self.app.messageQueue.put('No data file for BASE')
 
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
-            if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'refine.dat')                      # save the data
+            if self.app.model.modelData:
+                self.app.analysePopup.analyse.saveData(self.app.model.mmodelData, 'refine.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data for REFINE')
 
     def loadRefinementModel(self):
         if self.loadModel('REFINE'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('refine.dat')
-            if not self.app.model.modelAnalyseData:
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('refine.dat')
+            if not self.app.model.modelData:
                 self.app.messageQueue.put('No data file for REFINE')
 
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
-            if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'actual.dat')                      # save the data
+            if self.app.model.modelData:
+                self.app.analysePopup.analyse.saveData(self.app.model.mmodelData, 'actual.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
 
     def loadActualModel(self):
         if self.loadModel('ACTUAL'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('actual.dat')
-            if not self.app.model.modelAnalyseData:
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('actual.dat')
+            if not self.app.model.modelData:
                 self.app.messageQueue.put('No data file for ACTUAL')
 
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
-            if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'simple.dat')                      # save the data
+            if self.app.model.modelData:
+                self.app.analysePopup.analyse.saveData(self.app.model.mmodelData, 'simple.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
     def loadSimpleModel(self):
         if self.loadModel('SIMPLE'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('simple.dat')
-            if not self.app.model.modelAnalyseData:
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('simple.dat')
+            if not self.app.model.modelData:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
-            if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelAnalyseData, 'DSO1.dat')                         # save the data
+            if self.app.model.modelData:
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO1.dat')                         # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO1')
 
     def loadDSO1Model(self):
         if self.loadModel('DSO1'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('DSO1.dat')
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('DSO1.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for DSO1')
 
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
-            if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelAnalyseData, 'DSO2.dat')                         # save the data
+            if self.app.model.modelData:
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO2.dat')                         # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO2')
 
     def loadDSO2Model(self):
         if self.loadModel('DSO2'):
-            self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('dso2.dat')
+            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('dso2.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for DSO2')
 
