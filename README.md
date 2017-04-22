@@ -22,37 +22,24 @@ On GitHub you will find from now on most probably only the package version under
 <pre>https://github.com/mworion/mountwizzard.git</pre>
 the older version under 'mount' will disappear !
 
-#### Installation without internet on the target computer
-Some hints from TONK out of the 10micron forum: If anyone like me who has an observatory off the grid (no internet) you can install Mount Wizzard via a
-memory stick (or such like). The commands I used on computer with internet access ...
-
-<pre>
-cd "some directory"
-pip download mountwizzard==2.1.8
-</pre>
-
-This grabs the package and its dependencies and leaves then in the compressed file state in <some directory>
-Then copy the contents of <some directory> to a memory stick (etc.) e.g. to <some directory on mem stick>.
-Then on the remote observatory computer plug in the mem stick and issue these commands (via command window -
-possibly with admin privileges depending how you installed python) ...
-
 ## Features:
-- Blind solve for base points
+- Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.
+- Blind solve for base points. All options of imaging Software is accepted.
 - Generate model point track for observing objects for modeling along track
-- Optimize model (even when not modeled with tool)
+- Optimize model (even when model was done manually)
 - Auto refraction - even when not slewing, checking IDLE times of camera
 - A lot of settings of mount visible and changeable
 - Pointing display ra/dec az/alt at the same time
-- Define up to 4 mount positions, which could be slew directly (e.g. flat panel, check ccd etc.)
+- Define up to 6 mount positions, which could be slew directly (e.g. flat panel, check ccd etc.)
 - Getting data from open weather (API key needed) and Stickstation
-- Set tracking on/off, set tracking speed Sideral / Lunar / Solar
-- Set dual tracking on/off
+- Set tracking on/off, set dual tracking on/off, set tracking speed Sideral / Lunar / Solar
 - Flip mount
 - Driver stays always in sync aligns model (no model change through sync)
-- Model Analysis with separate plots.
+- Analyse modeling data with separate plots.
+- Modeling chart with meridian flip information
 
 ## Usage:
-Please setup SGPro as you would image. Please also do some sort of focusing (should be obvious) and test some images
+Please setup SGPro / TheSkyX as you would image. Please also do some sort of focusing (should be obvious) and test some images
 before start. If you would like to speed-up the modeling, please disable in SGPro star analysis. It takes 4-5 s per
 image in addition.
 
@@ -60,6 +47,9 @@ There is an entry for dome support. If you don't hav a dome to slew, please ensu
 This is indicated, that the DOME status on top of the window in grey. You can disable the dome driver under settings
 by calling the ASCOM chooser for dome an in the selection window upcoming just press "Cancel". This should disable the
 driver.
+
+## Modeling Workflow
+![Modeling Workflow](mountwizzard/pics/do_modeling.png)
 
 ## Remarks
 There were some videos for installation and first use out:
@@ -107,6 +97,20 @@ directory and start the MountWizzard like you've done it before.
 You can upgrade the MountWizzard by
 <pre>pip install --upgrade --no-cache-dir mountwizzard</pre>
 In most cases all dependencies were solved and installed as well.
+
+#### Installation without internet on the target computer
+Some hints from TONK out of the 10micron forum: If anyone like me who has an observatory off the grid (no internet) you can install Mount Wizzard via a
+memory stick (or such like). The commands I used on computer with internet access ...
+
+<pre>
+cd "some directory"
+pip download mountwizzard==2.1.8
+</pre>
+
+This grabs the package and its dependencies and leaves then in the compressed file state in <some directory>
+Then copy the contents of <some directory> to a memory stick (etc.) e.g. to <some directory on mem stick>.
+Then on the remote observatory computer plug in the mem stick and issue these commands (via command window -
+possibly with admin privileges depending how you installed python) ...
 
 ### Running MountWizzard
 You can run the MountWizzard from any working directory where you have write access to. You run the the MountWizzard out
