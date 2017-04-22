@@ -431,16 +431,27 @@ class Analyse:
                     resultData[keyData] = [valueData]
         return resultData                                                                                                   # successful loading
 
+    def loadDataRaw(self, filename):                                                                                        # saving data from list to file
+        filenameData = os.getcwd() + self.filepath + '/' + filename                                                         # generate filename
+        if os.path.isfile(filenameData):
+            infile = open(filenameData, 'r')
+            dataJson = json.load(infile)
+            infile.close()
+            return dataJson
+        else:
+            return None
+
     def loadData(self, filename):                                                                                           # loading data
         filenameData = os.getcwd() + self.filepath + '/' + filename                                                         # generate filename
-        infile = open(filenameData, 'r')
-        check = infile.read(8)
-        infile.close()
-        if check == '!TheSkyX':
-            data = self.loadTheSkyXData(filenameData)
-        else:
-            data = self.loadMountWizzardData(filenameData)
-        return data
+        if os.path.isfile(filenameData):
+            infile = open(filenameData, 'r')
+            check = infile.read(8)
+            infile.close()
+            if check == '!TheSkyX':
+                data = self.loadTheSkyXData(filenameData)
+            else:
+                data = self.loadMountWizzardData(filenameData)
+            return data
 
     @staticmethod
     def prepareData(dataProcess, scaleRA, scaleDEC):

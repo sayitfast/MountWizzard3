@@ -393,6 +393,7 @@ class MountWizzardApp(MwWidget):
             self.messageQueue.put('Config.cfg could not be saved !')
             self.logger.error('loadConfig -> item in config.cfg not saved error {0}'.format(e))
             return
+        self.mount.saveActualModel()                                                                                        # save current loaded model from mount
 
     def saveConfigQuit(self):
         self.saveConfig()
