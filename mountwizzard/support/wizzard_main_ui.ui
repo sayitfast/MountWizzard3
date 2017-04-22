@@ -2184,7 +2184,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs a analyse cycle without updating the mount model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Run</string>
+      <string>Run Analyse (Base &amp; Refine)</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_98">
@@ -2202,7 +2202,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Analyse - Batch Modeling (Base &amp; Refine)</string>
+      <string>Analyse - (including Base &amp; Refine)</string>
      </property>
     </widget>
     <widget class="Line" name="line_32">
@@ -3607,7 +3607,7 @@
       <string>Error RMS [arcsec]</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_getActualModel">
+    <widget class="QPushButton" name="btn_showActualModel">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -3620,7 +3620,7 @@
       <string>Download actual model from mount</string>
      </property>
      <property name="text">
-      <string>Get Actual Model</string>
+      <string>Show Actual Model</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_37">
@@ -9249,7 +9249,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_setRefractionParameters</tabstop>
   <tabstop>checkAutoRefraction</tabstop>
   <tabstop>alignErrorStars</tabstop>
-  <tabstop>btn_getActualModel</tabstop>
+  <tabstop>btn_showActualModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_saveBackupModel</tabstop>
   <tabstop>btn_loadBackupModel</tabstop>

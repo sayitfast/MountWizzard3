@@ -148,7 +148,7 @@ class MountWizzardApp(MwWidget):
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
-        self.ui.btn_getActualModel.clicked.connect(self.getAlignmentModel)
+        self.ui.btn_showActualModel.clicked.connect(self.showAlignmentModel)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(self.runTargetRMSAlignment)
         self.ui.btn_deleteWorstPoint.clicked.connect(self.deleteWorstPoint)
@@ -600,8 +600,8 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    def getAlignmentModel(self):
-        self.commandQueue.put('GetAlignmentModel')
+    def showAlignmentModel(self):
+        self.commandQueue.put('ShowAlignmentModel')
 
     def runTargetRMSAlignment(self):
         self.commandQueue.put('RunTargetRMSAlignment')

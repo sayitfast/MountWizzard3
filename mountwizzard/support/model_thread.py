@@ -420,7 +420,6 @@ class Model(QtCore.QThread):
             if len(self.modelAnalyseData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data according to date
-                self.analyse.saveData(self.modelAnalyseData, 'base.dat')                                                    # save the data according to date
                 self.app.mount.saveBaseModel()                                                                              # and saving the model in the mount
         else:
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
@@ -434,7 +433,6 @@ class Model(QtCore.QThread):
             if len(self.modelAnalyseData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
-                self.analyse.saveData(self.modelAnalyseData, 'refinement.dat')                                              # save the data
                 self.app.mount.saveRefinementModel()                                                                        # and saving the model in the mount
         else:
             self.logger.warning('runRefinementModel -> There are no Refinement Points to model')

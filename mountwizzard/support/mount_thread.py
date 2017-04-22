@@ -74,9 +74,6 @@ class Mount(QtCore.QThread):
         self.refractionPressure = '900.0'                                                                                   # and pressure
         self.transform = None                                                                                               # ascom novas library entry point
         self.ascom = None                                                                                                   # ascom mount driver entry point
-        self.mountAlignRMSsum = 0                                                                                           # variable for counting RMS over stars
-        self.mountAlignmentPoints = []                                                                                      # alignment point for modeling
-        self.mountAlignNumberStars = 0                                                                                      # number of stars
         self.counter = 0                                                                                                    # counter im main loop
         self.connected = False                                                                                              # connection status
         self.transformConnected = False
@@ -105,10 +102,10 @@ class Mount(QtCore.QThread):
             if self.connected:                                                                                              # when connected, starting the work
                 if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
                     command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
-                    if command == 'GetAlignmentModel':                                                                      # checking which command was sent
-                        self.app.ui.btn_getActualModel.setStyleSheet(self.BLUE)
-                        self.getAlignmentModel()                                                                            # running the appropriate method
-                        self.app.ui.btn_getActualModel.setStyleSheet(self.DEFAULT)
+                    if command == 'ShowAlignmentModel':                                                                      # checking which command was sent
+                        self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
+                        self.showAlignmentModel()                                                                            # running the appropriate method
+                        self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':
                         self.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
@@ -366,20 +363,22 @@ class Mount(QtCore.QThread):
             self.app.messageQueue.put('Flip Mount could not be executed !')                                                 # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
-    def ra_dec_lst_to_az_alt(self, ra, dec, lst):
-        LAT = self.site_lat
-        HA = (lst - ra) * 15
-        if HA >= 360:
-            HA -= 360
-        elif HA <= 0:
-            HA += 360
-        alt = math.asin(math.sin(dec) * math.sin(LAT) + math.cos(dec) * math.cos(LAT) * math.cos(HA))
-        A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(LAT)) / (math.cos(alt) * math.cos(LAT)))
-        if math.sin(HA) < 0:
-            az = 360 - A
+    @staticmethod
+    def ra_dec_lst_to_az_alt(ra, dec, LAT):
+        ra = (ra * 15 + 360.0 ) % 360.0
+        dec = dec * math.pi / 180.0
+        ra = ra * math.pi / 180.0
+        lat = LAT * math.pi / 180.0
+        alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
+        A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat)))
+        A = A * 180 / math.pi
+        alt = alt * 180 / math.pi
+
+        if math.sin(ra) >= 0.0:
+            az = 360.0 - A
         else:
             az = A
-        return az, alt
+        return int(az), int(alt)
 
     def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
         sign = 1
@@ -418,58 +417,67 @@ class Mount(QtCore.QThread):
         else:
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
+    def testBaseModelAvailable(self):
+        number = int(self.sendCommand('getalst').rstrip('#').strip())
+        if number > 2:
+            return True, number
+        else:
+            return False, number
+
     def getAlignmentModel(self):                                                                                            # download alignment model from mount
-        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})                                          # clear the window in gui
-        self.mountAlignRMSsum = 0                                                                                           # set RMS sum to 0 for calculation
-        self.mountAlignmentPoints = []                                                                                      # clear the alignment points downloaded
-        self.mountAlignNumberStars = int(self.sendCommand('getalst').rstrip('#').strip())                                   # get number of stars
-        if self.mountAlignNumberStars == 0:                                                                                 # if no stars, finish
-            return False
-        for i in range(1, self.mountAlignNumberStars+1):                                                                    # otherwise download them step for step
+        RMSsum = 0                                                                                                          # set RMS sum to 0 for calculation
+        points = []                                                                                                         # clear the alignment points downloaded
+        baseOK, numberStars = self.testBaseModelAvailable()                                                                 # get number of stars
+        if numberStars == 0:                                                                                                # if no stars, finish
+            return points
+        for i in range(1, numberStars):                                                                                     # otherwise download them step for step
             try:
                 reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
             except pythoncom.com_error as e:
                 self.app.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-                return False
+                return points
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             errorRMS = float(reply[2].strip())
             errorAngle = reply[3].strip().rstrip('#')
-            self.mountAlignRMSsum += errorRMS ** 2
-            self.mountAlignmentPoints.append((i, errorRMS))
+            RMSsum += errorRMS ** 2
             dec = dec.replace('*', ':')
-            # ha_n = self.degStringToDecimal(ha)
-            # dec_n = self.degStringToDecimal(dec)
-            # az, alt = self.transformNovas(ha_n, dec_n, 4)
-            self.app.mountDataQueue.put({'Name': 'ModelStarError',
-                                         'Value': '#{0:02d}   HA: {1}   DEC: {2}   Err: {3:4.1f}\x22   EA: {4:3s}\xb0\n'
-                                        .format(i, ha, dec, errorRMS, errorAngle)})
-        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': self.mountAlignNumberStars})                  # write them to gui
-        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'
-                                    .format(math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars))})                # set the error values in gui
-        return True
+            ra_J2000 = self.degStringToDecimal(ha)
+            dec_J2000 = self.degStringToDecimal(dec)
+            az, alt = self.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000, self.degStringToDecimal(self.site_lat))
+            points.append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, errorAngle))
+        return points, math.sqrt(RMSsum / len(points))
+
+    def showAlignmentModel(self):
+        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading data\n'})
+        points, RMS = self.getAlignmentModel()
+        for i in range(0, len(points)):
+            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3s}\xb0\n'
+                                        .format(i, points[i][3], points[i][4], points[i][5], points[i][6])})
+        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading finished\n'})
+        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': len(points)})                                 # write them to gui
+        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(RMS)})                             # set the error values in gui
+        return points, RMS
 
     def runTargetRMSAlignment(self):
-        if not self.getAlignmentModel():
-            return
-        self.mountAlignRMSsum = 999.9                                                                                       # set maximum
-        self.mountAlignNumberStars = 4                                                                                      # set minimum for stars
-        while math.sqrt(self.mountAlignRMSsum / self.mountAlignNumberStars) > float(self.app.ui.targetRMS.value()) \
-                and self.mountAlignNumberStars > 3:
-            a = sorted(self.mountAlignmentPoints, key=itemgetter(1), reverse=True)                                          # index 0 ist the worst star
+        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
+        points, RMS = self.showAlignmentModel()
+        if len(points) < 4:
+            return                                                                                                          # set maximum
+        while RMS > float(self.app.ui.targetRMS.value()) and len(points) > 3:
+            a = sorted(points, key=itemgetter(5), reverse=True)                                                             # index 0 ist the worst star
             try:                                                                                                            # delete the worst star
-                self.sendCommand('delalst{0:d}'.format(a[0][0]))
+                self.sendCommand('delalst{0:d}'.format(a[0][0]+1))
             except pythoncom.com_error as e:
                 self.app.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-            self.getAlignmentModel()
+            points, RMS = self.showAlignmentModel()
 
     def deleteWorstPoint(self):
-        if not self.getAlignmentModel():
+        points, RMS = self.getAlignmentModel()
+        if len(points) < 4:
             return
-        self.mountAlignRMSsum = 999.9                                                                                       # set maximum
-        self.mountAlignNumberStars = 4                                                                                      # set minimum for stars
-        if self.mountAlignNumberStars > 3:
-            a = sorted(self.mountAlignmentPoints, key=itemgetter(1), reverse=True)                                          # index 0 ist the worst star
+        if len(points) > 3:
+            a = sorted(points, key=itemgetter(1), reverse=True)                                                             # index 0 ist the worst star
             try:                                                                                                            # delete the worst star
                 self.sendCommand('delalst{0:d}'.format(a[0][0]))
             except pythoncom.com_error as e:
@@ -494,6 +502,8 @@ class Mount(QtCore.QThread):
     def saveBackupModel(self):
         if self.saveActualModel('BACKUP'):
             self.app.messageQueue.put('Actual Model save to BACKUP')
+            if len(self.app.model.modelAnalyseData) > 0:
+                self.app.analyse.saveData(self.app.model.mmodelAnalyseData, 'backup.dat')                                   # save the data
         else:
             self.logger.debug('saveBackupModel-> Model BACKUP could not be saved')                                          # log it
 
@@ -507,6 +517,8 @@ class Mount(QtCore.QThread):
     def saveBaseModel(self):
         if self.saveActualModel('BASE'):
             self.app.messageQueue.put('Actual Model save to BASE')
+            if len(self.app.model.modelAnalyseData) > 0:
+                self.app.analyse.saveData(self.app.model.mmodelAnalyseData, 'base.dat')                                     # save the data
         else:
             self.logger.debug('saveBaseModel  -> Model BASE could not be saved')                                            # log it
 
@@ -520,6 +532,8 @@ class Mount(QtCore.QThread):
     def saveRefinementModel(self):
         if self.saveActualModel('REFINE'):
             self.app.messageQueue.put('Actual Model save to REFINE')
+            if len(self.app.model.modelAnalyseData) > 0:
+                self.app.analyse.saveData(self.app.model.mmodelAnalyseData, 'refine.dat')                                   # save the data
         else:
             self.logger.debug('saveSimpleModel-> Model REFINE could not be saved')                                          # log it
 
@@ -533,6 +547,8 @@ class Mount(QtCore.QThread):
     def saveSimpleModel(self):
         if self.saveActualModel('SIMPLE'):
             self.app.messageQueue.put('Actual Model save to SIMPLE')
+            if len(self.app.model.modelAnalyseData) > 0:
+                self.app.analyse.saveData(self.app.model.mmodelAnalyseData, 'simple.dat')                                   # save the data
         else:
             self.logger.debug('saveSimpleModel-> Model SIMPLE could not be saved')                                          # log it
 
@@ -546,28 +562,32 @@ class Mount(QtCore.QThread):
     def saveDSO1Model(self):
         if self.saveActualModel('DSO1'):
             self.app.messageQueue.put('Actual Model save to DSO1')
+            if len(self.app.model.modelAnalyseData) > 0:
+                self.app.analyse.saveData(self.app.model.modelAnalyseData, 'DSO1.dat')                                      # save the data
         else:
-            self.logger.debug('saveDSO1Model  -> Model DSO1 could not be saved')                                          # log it
+            self.logger.debug('saveDSO1Model  -> Model DSO1 could not be saved')                                            # log it
 
     def loadDSO1Model(self):
         if self.loadActualModel('DSO1'):
             self.app.messageQueue.put('Actual Model loaded from DSO1')
         else:
             self.app.messageQueue.put('There is no model named DSO1 or error while loading')
-            self.logger.debug('loadDSO1Model  -> Model DSO1 could not be loaded')                                         # log it
+            self.logger.debug('loadDSO1Model  -> Model DSO1 could not be loaded')                                           # log it
 
     def saveDSO2Model(self):
         if self.saveActualModel('DSO2'):
             self.app.messageQueue.put('Actual Model save to DSO2')
+            if len(self.app.model.modelAnalyseData) > 0:
+                self.app.analyse.saveData(self.app.model.modelAnalyseData, 'DSO2.dat')                                      # save the data
         else:
-            self.logger.debug('saveDSO2Model  -> Model DSO2 could not be saved')                                          # log it
+            self.logger.debug('saveDSO2Model  -> Model DSO2 could not be saved')                                            # log it
 
     def loadDSO2Model(self):
         if self.loadActualModel('DSO2'):
             self.app.messageQueue.put('Actual Model loaded from DSO2')
         else:
             self.app.messageQueue.put('There is no model named DSO2 or error while loading')
-            self.logger.debug('loadDSO2Model  -> Model DSO2 could not be loaded')                                         # log it
+            self.logger.debug('loadDSO2Model  -> Model DSO2 could not be loaded')                                           # log it
 
     def setRefractionParameter(self):
         if self.app.ui.le_pressureStick.text() != '':                                                                       # value must be there
@@ -676,6 +696,7 @@ class Mount(QtCore.QThread):
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
+        self.showAlignmentModel()
 
     def setupDriver(self):
         try:
