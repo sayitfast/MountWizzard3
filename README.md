@@ -49,7 +49,7 @@ by calling the ASCOM chooser for dome an in the selection window upcoming just p
 driver.
 
 ## Modeling Workflow
-![Modeling Workflow](mountwizzard/pics/do_modeling.png)
+![Modeling Workflow](/mountwizzard/pics/do_modeling.png)
 
 ## Remarks
 There were some videos for installation and first use out:
@@ -151,6 +151,7 @@ could be ignored. This is an issue from ctype python library, which is already k
 functionality of mountwizzard. See:
 <pre> mscvrt not found when calling fits.open() on Python 3.5 on Win10 #4342
 </pre>
+Anyway: actual beta should suppress this output.
 
 ### Remarks for professionals:
 The mount_ui.ui file is the PyQt Designer file. If you would like to change designs or rearrangements, you could
