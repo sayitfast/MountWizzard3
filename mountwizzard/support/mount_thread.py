@@ -107,6 +107,7 @@ class Mount(QtCore.QThread):
                         if num == -1:
                             self.app.messageQueue.put('Show Model not available without real mount')
                         else:
+                            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
                             self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
                             self.showAlignmentModel()                                                                            # running the appropriate method
                             self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)

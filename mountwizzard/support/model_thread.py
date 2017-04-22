@@ -75,13 +75,21 @@ class Model(QtCore.QThread):
                 if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                     self.command = ''                                                                                       # only one command at a time, last wins
                     self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
+                    self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+                    self.clearAlignmentModel()                                                                              #
+                    self.app.modelLogQueue.put('Model cleared!\n')
                     self.runBaseModel()                                                                                     # should be refactored to queue only without signal
                     self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'RunRefinementModel':                                                                  #
                     self.command = ''                                                                                       #
                     self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
-                    self.runRefinementModel()                                                                               #
+                    ok, num = self.app.mount.testBaseModelAvailable()
+                    if ok:
+                        self.runRefinementModel()
+                    else:
+                        self.app.modelLogQueue.put('Refine stopped, not BASE model available !')
+                        self.app.messageQueue.put('Refine stopped, not BASE model available !')
                     self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'RunBatchModel':                                                                       #
@@ -92,12 +100,20 @@ class Model(QtCore.QThread):
                 elif self.command == 'RunCheckModel':                                                                       #
                     self.command = ''                                                                                       #
                     self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                  # button blue (running)
-                    self.runCheckModel()                                                                                    #
+                    ok, num = self.app.mount.testBaseModelAvailable()
+                    if ok:
+                        self.runCheckModel()                                                                                    #
+                    else:
+                        self.app.modelLogQueue.put('Check stopped, not BASE model available !')
+                        self.app.messageQueue.put('Check stopped, not BASE model available !')
                     self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'RunAllModel':
                     self.command = ''
                     self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
+                    self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+                    self.clearAlignmentModel()                                                                              #
+                    self.app.modelLogQueue.put('Model cleared!\n')
                     self.runAllModel()
                     self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
