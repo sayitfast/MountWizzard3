@@ -103,19 +103,35 @@ class Mount(QtCore.QThread):
                 if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
                     command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
                     if command == 'ShowAlignmentModel':                                                                      # checking which command was sent
-                        self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
-                        self.showAlignmentModel()                                                                            # running the appropriate method
-                        self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
+                        ok, num = self.testBaseModelAvailable()
+                        if num == -1:
+                            self.app.messageQueue.put('Show Model not available without real mount')
+                        else:
+                            self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
+                            self.showAlignmentModel()                                                                            # running the appropriate method
+                            self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':
-                        self.sendCommand('delalig')
+                        ok, num = self.testBaseModelAvailable()
+                        if num == -1:
+                            self.app.messageQueue.put('Clear Align not available without real mount')
+                        else:
+                            self.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
-                        self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
-                        self.runTargetRMSAlignment()
-                        self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
+                        ok, num = self.testBaseModelAvailable()
+                        if num == -1:
+                            self.app.messageQueue.put('Run Optimize not available without real mount')
+                        else:
+                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
+                            self.runTargetRMSAlignment()
+                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
                     elif command == 'DeleteWorstPoint':
-                        self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
-                        self.deleteWorstPoint()
-                        self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
+                        ok, num = self.testBaseModelAvailable()
+                        if num == -1:
+                            self.app.messageQueue.put('Delete worst point not available without real mount')
+                        else:
+                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
+                            self.deleteWorstPoint()
+                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
                     elif command == 'SaveBackupModel':
                         self.app.ui.btn_saveBackupModel.setStyleSheet(self.BLUE)                                                # button blue
                         self.saveBackupModel()
@@ -310,7 +326,7 @@ class Mount(QtCore.QThread):
             elif command == 'CMS':
                 value = 'V'
             elif command == 'getalst':
-                value = '0'
+                value = '-1'
             else:
                 value = '0'
         self.sendCommandLock.release()
@@ -428,14 +444,14 @@ class Mount(QtCore.QThread):
         RMSsum = 0                                                                                                          # set RMS sum to 0 for calculation
         points = []                                                                                                         # clear the alignment points downloaded
         baseOK, numberStars = self.testBaseModelAvailable()                                                                 # get number of stars
-        if numberStars == 0:                                                                                                # if no stars, finish
-            return points
+        if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
+            return points, 0
         for i in range(1, numberStars):                                                                                     # otherwise download them step for step
             try:
                 reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
             except pythoncom.com_error as e:
                 self.app.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-                return points
+                return points, 0
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             errorRMS = float(reply[2].strip())
@@ -485,157 +501,121 @@ class Mount(QtCore.QThread):
             self.getAlignmentModel()
 
     def saveModel(self, target):
+        ok, num = self.testBaseModelAvailable()
+        if num == -1:
+            self.app.messageQueue.put('Save Model not available without real mount')
+            return False
         self.sendCommand('modeldel0' + target)
         reply = self.sendCommand('modelsv0' + target)
         if reply == '1':
+            self.app.messageQueue.put('Actual Mount Model saved to {0}'.format(target))
             return True
         else:
+            self.logger.debug('saveBackupModel-> Model {0} could not be saved'.format(target))                              # log it
             return False
 
     def loadModel(self, target):
+        ok, num = self.testBaseModelAvailable()
+        if num == -1:
+            self.app.messageQueue.put('Load Model not available without real mount')
+            return False
         reply = self.sendCommand('modelld0' + target)
         if reply == '1':
+            self.app.messageQueue.put('Actual Mount Model loaded from {0}'.format(target))
             return True
         else:
+            self.app.messageQueue.put('There is no model named {0} or error while loading'.format(target))
+            self.logger.debug('loadBackupModel-> Model {0} could not be loaded'.format(target))                             # log it
             return False
 
     def saveBackupModel(self):
         if self.saveModel('BACKUP'):
-            self.app.messageQueue.put('Actual Mount Model saved to BACKUP')
             if self.app.model.modelAnalyseData:
                 self.app.analyse.saveData(self.app.model.mmodelAnalyseData, 'backup.dat')                                   # save the data
-        else:
-            self.logger.debug('saveBackupModel-> Model BACKUP could not be saved')                                          # log it
 
     def loadBackupModel(self):
         if self.loadModel('BACKUP'):
-            self.app.messageQueue.put('Actual Mount Model loaded from BACKUP')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('backup.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for BACKUP')
-        else:
-            self.app.messageQueue.put('There is no model named BACKUP or error while loading')
-            self.logger.debug('loadBackupModel-> Model BACKUP could not be loaded')                                         # log it
 
     def saveBaseModel(self):
         if self.saveModel('BASE'):
-            self.app.messageQueue.put('Actual Mount Model saved to BASE')
             if self.app.model.modelAnalyseData:
-                self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'base.dat')                                     # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'base.dat')                        # save the data
             else:
                 self.app.messageQueue.put('No data for BASE')
-        else:
-            self.logger.debug('saveBaseModel  -> Model BASE could not be saved')                                            # log it
 
     def loadBaseModel(self):
         if self.loadModel('BASE'):
-            self.app.messageQueue.put('Actual Mount Model loaded from BASE')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('base.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for BASE')
-        else:
-            self.app.messageQueue.put('There is no model named BASE or error while loading')
-            self.logger.debug('loadBaseModel  -> Model BASE could not be loaded')                                           # log it
 
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
-            self.app.messageQueue.put('Actual Mount Model saved to REFINE')
             if self.app.model.modelAnalyseData:
                 self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'refine.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data for REFINE')
-        else:
-            self.logger.debug('saveRefineModel-> Model REFINE could not be saved')                                          # log it
 
     def loadRefinementModel(self):
         if self.loadModel('REFINE'):
-            self.app.messageQueue.put('Actual Mount Model loaded from REFINE')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('refine.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for REFINE')
-        else:
-            self.app.messageQueue.put('There is no model named REFINE or error while loading')
-            self.logger.debug('loadRefineModel-> Model REFINE could not be loaded')                                         # log it
 
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
-            self.app.messageQueue.put('Actual Mount Model saved to ACTUAL')
             if self.app.model.modelAnalyseData:
                 self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'actual.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
-        else:
-            self.logger.debug('saveActualModel-> Model ACTUAL could not be saved')                                          # log it
 
     def loadActualModel(self):
         if self.loadModel('ACTUAL'):
-            self.app.messageQueue.put('Actual Mount Model loaded from ACTUAL')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('actual.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for ACTUAL')
-        else:
-            self.app.messageQueue.put('There is no model named ACTUAL or error while loading')
-            self.logger.debug('loadActualModel-> Model ACTUAL could not be loaded')                                         # log it
 
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
-            self.app.messageQueue.put('Actual Mount Model saved to SIMPLE')
             if self.app.model.modelAnalyseData:
                 self.app.analysePopup.analyse.saveData(self.app.model.mmodelAnalyseData, 'simple.dat')                      # save the data
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
-        else:
-            self.logger.debug('saveSimpleModel-> Model SIMPLE could not be saved')                                          # log it
 
     def loadSimpleModel(self):
         if self.loadModel('SIMPLE'):
-            self.app.messageQueue.put('Actual Mount Model loaded from SIMPLE')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('simple.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for SIMPLE')
-        else:
-            self.app.messageQueue.put('There is no model named SIMPLE or error while loading')
-            self.logger.debug('loadSimpleModel-> Model SIMPLE could not be loaded')                                         # log it
 
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
-            self.app.messageQueue.put('Actual Mount Model saved to DSO1')
             if self.app.model.modelAnalyseData:
                 self.app.analysePopup.analyse.saveData(self.app.model.modelAnalyseData, 'DSO1.dat')                         # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO1')
-        else:
-            self.logger.debug('saveDSO1Model  -> Model DSO1 could not be saved')                                            # log it
 
     def loadDSO1Model(self):
         if self.loadModel('DSO1'):
-            self.app.messageQueue.put('Actual Mount Model loaded from DSO1')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('DSO1.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for DSO1')
-        else:
-            self.app.messageQueue.put('There is no model named DSO1 or error while loading')
-            self.logger.debug('loadDSO1Model  -> Model DSO1 could not be loaded')                                           # log it
 
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
-            self.app.messageQueue.put('Actual Mount Model saved to DSO2')
             if self.app.model.modelAnalyseData:
                 self.app.analysePopup.analyse.saveData(self.app.model.modelAnalyseData, 'DSO2.dat')                         # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO2')
-        else:
-            self.logger.debug('saveDSO2Model  -> Model DSO2 could not be saved')                                            # log it
 
     def loadDSO2Model(self):
         if self.loadModel('DSO2'):
-            self.app.messageQueue.put('Actual Mount Model loaded from DSO2')
             self.app.model.modelAnalyseData = self.app.analysePopup.analyse.loadDataRaw('dso2.dat')
             if not self.app.model.modelAnalyseData:
                 self.app.messageQueue.put('No data file for DSO2')
-        else:
-            self.app.messageQueue.put('There is no model named DSO2 or error while loading')
-            self.logger.debug('loadDSO2Model  -> Model DSO2 could not be loaded')                                           # log it
 
     def setRefractionParameter(self):
         if self.app.ui.le_pressureStick.text() != '':                                                                       # value must be there
