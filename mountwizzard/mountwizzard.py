@@ -96,6 +96,7 @@ class MountWizzardApp(MwWidget):
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
 
         helper = QVBoxLayout(self.ui.model)
+        helper.setContentsMargins(0, 0, 0, 0)
         self.modelWidget = ShowModel(self.ui.model)
         helper.addWidget(self.modelWidget)
 
@@ -222,7 +223,6 @@ class MountWizzardApp(MwWidget):
 
     def showModelErrorPolar(self):
         data = dict()
-        scaleError = 20
         for i in range(0, len(self.model.modelData)):
             for (keyData, valueData) in self.model.modelData[i].items():
                 if keyData in data:
@@ -232,10 +232,10 @@ class MountWizzardApp(MwWidget):
         self.modelWidget.fig.clf()
         self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
         self.modelWidget.axes.grid(True, color='gray')
+        self.modelWidget.fig.subplots_adjust(left=0.025, right=0.975, bottom=0.075, top=0.925)
         self.modelWidget.axes.set_facecolor((32/256, 32/256, 32/256))
         self.modelWidget.axes.tick_params(axis='x', colors='white')
         self.modelWidget.axes.tick_params(axis='y', colors='white')
-
         self.modelWidget.axes.set_theta_zero_location('N')
         self.modelWidget.axes.set_theta_direction(-1)
         self.modelWidget.axes.set_yticks(range(0, 90, 10))
@@ -243,13 +243,14 @@ class MountWizzardApp(MwWidget):
         self.modelWidget.axes.set_yticklabels(yLabel, color='white')
         azimuth = numpy.asarray(data['azimuth'])
         altitude = numpy.asarray(data['altitude'])
-        self.modelWidget.axes.plot(azimuth / 180.0 * math.pi, 90 - altitude, color='black')
+        # self.modelWidget.axes.plot(azimuth / 180.0 * math.pi, 90 - altitude, color='black')
         cm = plt.cm.get_cmap('RdYlGn_r')
         colors = numpy.asarray(data['modelError'])
-        area = colors * 100 / scaleError + 20
+        scaleError = int(max(colors) / 4 + 1) * 4
+        area = 50
         theta = azimuth / 180.0 * math.pi
         r = 90 - altitude
-        scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=1, vmax=scaleError, s=area, cmap=cm)
+        scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
         scatter.set_alpha(0.75)
         colorbar = self.modelWidget.fig.colorbar(scatter)
         colorbar.set_label('Error [arcsec]', color='white')
