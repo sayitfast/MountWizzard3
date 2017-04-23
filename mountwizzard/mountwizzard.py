@@ -247,7 +247,7 @@ class MountWizzardApp(MwWidget):
         cm = plt.cm.get_cmap('RdYlGn_r')
         colors = numpy.asarray(data['modelError'])
         scaleError = int(max(colors) / 4 + 1) * 4
-        area = 50
+        area = [125 if x >= max(colors) else 50 for x in data['modelError']]
         theta = azimuth / 180.0 * math.pi
         r = 90 - altitude
         scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
