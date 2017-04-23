@@ -1,6 +1,11 @@
 # Changelog:
 2.1.13
--
+- added polar plot to model optimization
+- auto saving mount models and model data according to workflow
+- improved optimization (still cancel capability is missing - > just raise the target rms stops it right now)
+- automatic model clear when doing new base model (checkbox)
+- you can reuse and extend a refinement model (checkbox)
+- calculation original ALT / AZ coordinates from downloaded mount model
 
 2.1.12
 - adding save of base / refinement of last model run for model analyses and optimizing

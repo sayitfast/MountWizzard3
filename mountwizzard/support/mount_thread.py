@@ -471,7 +471,7 @@ class Mount(QtCore.QThread):
     def showAlignmentModel(self, points, RMS):
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading data\n'})
         for i in range(0, len(points)):
-            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3f}\xb0\n'
+            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3.0f}\xb0\n'
                                         .format(i, int(points[i][3]), int(points[i][4]), points[i][5], points[i][6])})
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading finished\n'})
         self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': len(points)})                                 # write them to gui

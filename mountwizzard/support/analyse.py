@@ -286,10 +286,11 @@ class ShowAnalysePopup(MwWidget):
         self.plotWidget.axes.plot(azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
         cm = plt.cm.get_cmap('RdYlGn_r')
         colors = numpy.asarray(self.data['modelError'])
+        scaleError = int(max(colors) / 4 + 1) * 4
         area = colors * 100 / self.scaleError + 20
         theta = azimuth / 180.0 * 3.141593
         r = 90 - altitude
-        scatter = self.plotWidget.axes.scatter(theta, r, c=colors, vmin=1, vmax=self.scaleError, s=area, cmap=cm)
+        scatter = self.plotWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
         scatter.set_alpha(0.75)
         colorbar = self.plotWidget.fig.colorbar(scatter)
         colorbar.set_label('Error [arcsec]', color='white')
