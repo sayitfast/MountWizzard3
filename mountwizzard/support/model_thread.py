@@ -493,8 +493,8 @@ class Model(QtCore.QThread):
             self.app.mount.showAlignmentModel(points, RMS)                                                                  # get mount points
             for i in range(0, num):                                                                                         # run through all the points
                 data[i]['modelError'] = float(points[i][5])                                                                 # and for the total error
-                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(float(points[i][6])))                    # set raError new from total error mount with polar error angle from mount
-                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(float(points[i][6])))                   # same to dec
+                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(points[i][6]))                           # set raError new from total error mount with polar error angle from mount
+                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(points[i][6]))                          # same to dec
             self.app.modelLogQueue.put('{0} - Mount Model and Model Data synced\n'.format(self.timeStamp()))
         else:
             self.logger.error('retrofitMountDa-> size mount model {0} and model data {1} do not fit !'.format(num, len(data)))
@@ -640,7 +640,8 @@ class Model(QtCore.QThread):
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.app.commandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))                      # Azimuth setting
         self.app.commandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))                  # Altitude Setting
-        self.app.commandQueue.put('MS')                                                                                     # initiate slewing with tracking at the end
+        self.app.commandQueue.put('MA')                                                                                     # initiate slewing with stop tracking
+        self.app.commandQueue.put('AP')                                                                                     # tracking on
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.app.dome.connected))
         break_counter = 0
         while not self.app.mount.slewing:                                                                                   # wait for mount starting slewing

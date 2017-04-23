@@ -465,13 +465,13 @@ class Mount(QtCore.QThread):
             ra_J2000 = self.degStringToDecimal(ha)
             dec_J2000 = self.degStringToDecimal(dec)
             az, alt = self.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000, self.degStringToDecimal(self.site_lat))
-            points.append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, errorAngle))
+            points.append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                                 # index should start with 0, but numbering in mount starts with 1
         return points, math.sqrt(RMSsum / len(points))
 
     def showAlignmentModel(self, points, RMS):
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading data\n'})
         for i in range(0, len(points)):
-            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3s}\xb0\n'
+            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3f}\xb0\n'
                                         .format(i, int(points[i][3]), int(points[i][4]), points[i][5], points[i][6])})
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading finished\n'})
         self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': len(points)})                                 # write them to gui
@@ -479,33 +479,35 @@ class Mount(QtCore.QThread):
         self.app.showModelErrorPolar()
         return
 
-    def runTargetRMSAlignment(self):
-        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
-        ok, num = self.testBaseModelAvailable()
-        RMS = 999
-        if num < 4:
-            return                                                                                                          # set maximum
-        while RMS > float(self.app.ui.targetRMS.value()) and num > 3:
-            points, RMS = self.deleteWorstPoint()
-            num = len(points)
-
     def deleteWorstPoint(self):
         points, RMS = self.getAlignmentModel()
+        self.deleteWorstPointRaw(points, RMS)
+
+    def runTargetRMSAlignment(self):
+        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
+        points, RMS = self.getAlignmentModel()
+        if len(points) < 4:
+            return                                                                                                          # set maximum
+        while RMS > float(self.app.ui.targetRMS.value()) and len(points) > 3:
+            points, RMS = self.deleteWorstPointRaw(points, RMS)
+
+    def deleteWorstPointRaw(self, points, RMS):
         if len(points) < 4:
             return
         if len(points) > 3:
-            a = sorted(points, key=itemgetter(1), reverse=True)                                                             # index 0 ist the worst star
-            reply = self.sendCommand('delalst{0:d}'.format(a[0][0]))
+            a = sorted(points, key=itemgetter(5), reverse=True)                                                             # index 0 is the worst star, index starts with 0
+            index = a[0][0]
+            reply = self.sendCommand('delalst{0:d}'.format(index + 1))                                                      # numbering in mount starts with 1
             if reply == '1':                                                                                                # worst point could be deleted
                 points, RMS = self.getAlignmentModel()
-                self.app.model.modelData.pop(a[0][0])
+                self.app.model.modelData.pop(index)
                 for i in range(0, len(points)):
                     self.app.model.modelData[i]['modelError'] = float(points[i][5])
                     self.app.model.modelData[i]['raError'] = self.app.model.modelData[i]['modelError'] * math.sin(math.radians(float(points[i][6])))
                     self.app.model.modelData[i]['decError'] = self.app.model.modelData[i]['modelError'] * math.cos(math.radians(float(points[i][6])))
                 self.showAlignmentModel(points, RMS)
             else:
-                self.logger.error('deleteWorstPoin-> Point {0} could not be deleted').format(a[0][0])
+                self.logger.error('deleteWorstPoin-> Point {0} could not be deleted').format(index)
         return points, RMS
 
     def saveModel(self, target):
