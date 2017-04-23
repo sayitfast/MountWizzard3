@@ -76,21 +76,13 @@ class Model(QtCore.QThread):
                 if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                     self.command = ''                                                                                       # only one command at a time, last wins
                     self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
-                    self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
-                    self.clearAlignmentModel()                                                                              #
-                    self.app.modelLogQueue.put('Model cleared!\n')
                     self.runBaseModel()                                                                                     # should be refactored to queue only without signal
                     self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'RunRefinementModel':                                                                  #
                     self.command = ''                                                                                       #
                     self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
-                    ok, num = self.app.mount.testBaseModelAvailable()
-                    if ok:
-                        self.runRefinementModel()
-                    else:
-                        self.app.modelLogQueue.put('Refine stopped, not BASE model available !\n')
-                        self.app.messageQueue.put('Refine stopped, not BASE model available !\n')
+                    self.runRefinementModel()
                     self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                 elif self.command == 'PlateSolveSync':                                                                      # actually doing by receiving signals which enables
@@ -500,16 +492,24 @@ class Model(QtCore.QThread):
     def retrofitMountData(self, data):
         ok, num = self.app.mount.testBaseModelAvailable()                                                                   # size mount model
         if num == len(data):
-            points, RMS = self.app.mount.showAlignmentModel()                                                               # get mount points
+            points, RMS = self.app.mount.getAlignmentModel()                                                                # get mount points
+            self.app.mount.showAlignmentModel(points, RMS)                                                                  # get mount points
             for i in range(0, num):                                                                                         # run through all the points
                 data[i]['modelError'] = float(points[i][5])                                                                 # and for the total error
                 data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(float(points[i][6])))                    # set raError new from total error mount with polar error angle from mount
                 data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(float(points[i][6])))                   # same to dec
+            self.app.modelLogQueue.put('{0} - Mount Model and Model Data synced\n'.format(self.timeStamp()))
         else:
             self.logger.error('retrofitMountDa-> size mount model {0} and model data {1} do not fit !'.format(num, len(data)))
+            self.app.modelLogQueue.put('{0} - Mount Model and Model Data could not be synced\n'.format(self.timeStamp()))
+            self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
         return data
 
     def runBaseModel(self):
+        if self.app.ui.checkClearModelFirst.isChecked():
+            self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+            self.clearAlignmentModel()
+            self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.BasePoints) > 0:
@@ -524,22 +524,30 @@ class Model(QtCore.QThread):
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
 
     def runRefinementModel(self):
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        if len(self.RefinementPoints) > 0:
-            self.app.mount.loadBaseModel()
-            refinePoints = self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
-            for i in range(0, len(refinePoints)):
-                refinePoints[i]['index'] += 3
-            self.modelData = self.modelData + refinePoints
-            self.modelData = self.retrofitMountData(self.modelData)
-            name = directory + '_refinement.dat'                                                                            # generate name of analyse file
-            if len(self.modelData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
-                self.analyse.saveData(self.modelData, name)                                                                 # save the data
-                self.app.mount.saveRefinementModel()                                                                        # and saving the model in the mount
+        ok, num = self.app.mount.testBaseModelAvailable()
+        if ok:
+            settlingTime = int(float(self.app.ui.settlingTime.value()))
+            directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+            if len(self.RefinementPoints) > 0:
+                if self.app.ui.checkKeepRefinement.isChecked():
+                    self.app.mount.loadRefinementModel()
+                else:
+                    self.app.mount.loadBaseModel()
+                refinePoints = self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
+                for i in range(0, len(refinePoints)):
+                    refinePoints[i]['index'] += len(self.modelData)
+                self.modelData = self.modelData + refinePoints
+                self.modelData = self.retrofitMountData(self.modelData)
+                name = directory + '_refinement.dat'                                                                            # generate name of analyse file
+                if len(self.modelData) > 0:
+                    self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
+                    self.analyse.saveData(self.modelData, name)                                                                 # save the data
+                    self.app.mount.saveRefinementModel()                                                                        # and saving the model in the mount
+            else:
+                self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
         else:
-            self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
+            self.app.modelLogQueue.put('Refine stopped, not BASE model available !\n')
+            self.app.messageQueue.put('Refine stopped, not BASE model available !\n')
 
     def runCheckModel(self):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
@@ -606,7 +614,7 @@ class Model(QtCore.QThread):
             self.logger.error('runBatchModel  -> pierside and sidereal time not in data file')                              # debug output
             self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
-        self.app.mount.saveActualModel('BATCH')
+        self.app.mount.saveBackupModel()
         self.app.modelLogQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))      # Gui Output
         self.app.mount.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output

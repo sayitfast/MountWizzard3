@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1527,7 +1527,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>390</y>
+       <y>400</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1564,7 +1564,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>50</y>
+       <y>310</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -1573,7 +1573,7 @@
       <string>Clear the model in mount. Can't be revised.</string>
      </property>
      <property name="text">
-      <string>Clear Pointing Model</string>
+      <string>Clear Model</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadBasePoints">
@@ -1717,7 +1717,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>370</y>
+       <y>350</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -1733,7 +1733,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>360</y>
+       <y>340</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -1849,7 +1849,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>240</y>
+       <y>100</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -1865,8 +1865,8 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>190</y>
-       <width>121</width>
+       <y>260</y>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -1914,8 +1914,8 @@
     <widget class="QLabel" name="label_179">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>170</y>
+       <x>340</x>
+       <y>140</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -1951,7 +1951,7 @@
      <property name="geometry">
       <rect>
        <x>320</x>
-       <y>210</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -1967,7 +1967,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>210</y>
+       <y>180</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -2030,7 +2030,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>370</y>
+       <y>350</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -2045,8 +2045,8 @@
     <widget class="QDoubleSpinBox" name="numberGridPointsCol">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>170</y>
+       <x>400</x>
+       <y>140</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -2077,7 +2077,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>390</y>
+       <y>400</y>
        <width>271</width>
        <height>31</height>
       </rect>
@@ -2093,7 +2093,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>150</y>
+       <y>220</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -2109,7 +2109,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>240</y>
+       <y>210</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -2141,7 +2141,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>360</y>
+       <y>340</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -2159,7 +2159,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>320</y>
+       <y>440</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -2168,14 +2168,14 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Cancel Model Run</string>
+      <string>Cancel any Model Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runCheckModel">
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>390</y>
+       <y>400</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -2191,7 +2191,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>360</y>
+       <y>370</y>
        <width>251</width>
        <height>21</height>
       </rect>
@@ -2209,7 +2209,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>370</y>
+       <y>380</y>
        <width>251</width>
        <height>21</height>
       </rect>
@@ -2257,7 +2257,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>260</y>
+       <y>230</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -2275,7 +2275,7 @@
        <x>150</x>
        <y>30</y>
        <width>21</width>
-       <height>391</height>
+       <height>401</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -2339,7 +2339,7 @@
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>190</y>
+       <y>160</y>
        <width>271</width>
        <height>21</height>
       </rect>
@@ -2354,9 +2354,9 @@
     <widget class="QPushButton" name="btn_deletePoints">
      <property name="geometry">
       <rect>
-       <x>620</x>
-       <y>190</y>
-       <width>121</width>
+       <x>490</x>
+       <y>180</y>
+       <width>251</width>
        <height>31</height>
       </rect>
      </property>
@@ -2364,14 +2364,14 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Clear Window</string>
+      <string>Clear Modeling Plot Window</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runAllModel">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>430</y>
+       <y>440</y>
        <width>441</width>
        <height>31</height>
       </rect>
@@ -2387,7 +2387,7 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>300</y>
+       <y>270</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -2418,7 +2418,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>300</y>
+       <y>270</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -2436,7 +2436,7 @@
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>330</y>
+       <y>300</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -2454,7 +2454,7 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>330</y>
+       <y>300</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -2485,7 +2485,7 @@
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>300</y>
+       <y>270</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -2503,7 +2503,7 @@
      <property name="geometry">
       <rect>
        <x>410</x>
-       <y>300</y>
+       <y>270</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -2534,8 +2534,8 @@
      <property name="geometry">
       <rect>
        <x>500</x>
-       <y>280</y>
-       <width>251</width>
+       <y>140</y>
+       <width>241</width>
        <height>20</height>
       </rect>
      </property>
@@ -2561,7 +2561,7 @@
      <property name="geometry">
       <rect>
        <x>490</x>
-       <y>100</y>
+       <y>50</y>
        <width>251</width>
        <height>31</height>
       </rect>
@@ -2571,6 +2571,99 @@
      </property>
      <property name="text">
       <string>Plate Solve and Sync Model</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkClearModelFirst">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>370</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Clear Model first</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkKeepRefinement">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>370</y>
+       <width>261</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Keep Refinement model</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_30">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>80</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_38">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>290</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="Line" name="line_45">
+     <property name="geometry">
+      <rect>
+       <x>490</x>
+       <y>160</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </widget>
@@ -2600,7 +2693,7 @@
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>230</y>
+       <y>280</y>
        <width>281</width>
        <height>31</height>
       </rect>
@@ -3461,7 +3554,7 @@
      <property name="geometry">
       <rect>
        <x>430</x>
-       <y>280</y>
+       <y>200</y>
        <width>281</width>
        <height>31</height>
       </rect>
@@ -3470,7 +3563,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Make Batch Model from Analyse</string>
+      <string>Make Mount Model from stored Analyse Data</string>
      </property>
     </widget>
    </widget>
@@ -3481,9 +3574,9 @@
     <widget class="QLineEdit" name="le_alignNumberStars">
      <property name="geometry">
       <rect>
-       <x>299</x>
-       <y>50</y>
-       <width>51</width>
+       <x>50</x>
+       <y>90</y>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -3523,9 +3616,9 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>50</y>
-       <width>121</width>
+       <x>10</x>
+       <y>90</y>
+       <width>41</width>
        <height>21</height>
       </rect>
      </property>
@@ -3535,14 +3628,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Number of Stars</string>
+      <string>Stars</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignError">
      <property name="geometry">
       <rect>
-       <x>299</x>
-       <y>80</y>
+       <x>130</x>
+       <y>90</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -3584,9 +3677,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>240</y>
-       <width>451</width>
-       <height>231</height>
+       <y>120</y>
+       <width>431</width>
+       <height>351</height>
       </rect>
      </property>
      <property name="font">
@@ -3608,9 +3701,9 @@
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>80</y>
-       <width>121</width>
+       <x>100</x>
+       <y>90</y>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -3620,7 +3713,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Error RMS [arcsec]</string>
+      <string>RMS</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_showActualModel">
@@ -3642,9 +3735,9 @@
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>160</x>
-       <y>150</y>
-       <width>131</width>
+       <x>200</x>
+       <y>90</y>
+       <width>41</width>
        <height>21</height>
       </rect>
      </property>
@@ -3654,14 +3747,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Target RMS [arcsec]</string>
+      <string>Target</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runTargetRMSAlignment">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>150</y>
+       <x>160</x>
+       <y>50</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3676,8 +3769,8 @@
     <widget class="QDoubleSpinBox" name="targetRMS">
      <property name="geometry">
       <rect>
-       <x>300</x>
-       <y>150</y>
+       <x>240</x>
+       <y>90</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -3725,22 +3818,6 @@
      </property>
      <property name="text">
       <string>Load</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_17">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>130</y>
-       <width>341</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <widget class="Line" name="line_18">
@@ -3794,8 +3871,8 @@
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>190</y>
+       <x>310</x>
+       <y>50</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -3807,30 +3884,12 @@
       <string>Delete worst Point</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_123">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Actual Model</string>
-     </property>
-    </widget>
     <widget class="Line" name="line_44">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>341</width>
+       <width>431</width>
        <height>21</height>
       </rect>
      </property>
@@ -3845,7 +3904,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>20</y>
        <width>161</width>
        <height>21</height>
       </rect>
@@ -4149,6 +4208,94 @@
       <string>Load</string>
      </property>
     </widget>
+    <widget class="Line" name="line_46">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>20</y>
+       <width>21</width>
+       <height>451</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QWidget" name="model" native="true">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>120</y>
+       <width>431</width>
+       <height>351</height>
+      </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkPolarPlot">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>90</y>
+       <width>101</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Polar Plot</string>
+     </property>
+    </widget>
+    <zorder>le_alignNumberStars</zorder>
+    <zorder>label</zorder>
+    <zorder>le_alignError</zorder>
+    <zorder>label_14</zorder>
+    <zorder>btn_showActualModel</zorder>
+    <zorder>label_37</zorder>
+    <zorder>btn_runTargetRMSAlignment</zorder>
+    <zorder>targetRMS</zorder>
+    <zorder>btn_saveBackupModel</zorder>
+    <zorder>btn_loadBackupModel</zorder>
+    <zorder>line_18</zorder>
+    <zorder>btn_loadSimpleModel</zorder>
+    <zorder>btn_saveSimpleModel</zorder>
+    <zorder>btn_deleteWorstPoint</zorder>
+    <zorder>line_44</zorder>
+    <zorder>label_124</zorder>
+    <zorder>label_125</zorder>
+    <zorder>btn_loadBaseModel</zorder>
+    <zorder>btn_saveBaseModel</zorder>
+    <zorder>label_126</zorder>
+    <zorder>label_127</zorder>
+    <zorder>label_128</zorder>
+    <zorder>btn_saveDSO1Model</zorder>
+    <zorder>btn_loadDSO1Model</zorder>
+    <zorder>btn_saveDSO2Model</zorder>
+    <zorder>btn_loadDSO2Model</zorder>
+    <zorder>label_129</zorder>
+    <zorder>label_130</zorder>
+    <zorder>btn_saveRefinementModel</zorder>
+    <zorder>label_133</zorder>
+    <zorder>btn_loadRefinementModel</zorder>
+    <zorder>line_46</zorder>
+    <zorder>model</zorder>
+    <zorder>alignErrorStars</zorder>
+    <zorder>checkPolarPlot</zorder>
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">

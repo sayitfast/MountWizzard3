@@ -46,6 +46,24 @@ from support.relays import Relays
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
 from support.ascom_camera import AscomCamera
+# matplotlib
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib import pyplot as plt
+from matplotlib import figure as figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+# numerics
+import numpy
+import math
+
+
+class ShowModel(FigureCanvas):
+
+    def __init__(self, parent=None):
+        self.fig = figure.Figure(dpi=75, facecolor=(25/256, 25/256, 25/256))
+        FigureCanvas.__init__(self, self.fig)
+        self.setParent(parent)
+        FigureCanvas.updateGeometry(self)
 
 
 class MountWizzardApp(MwWidget):
@@ -76,6 +94,11 @@ class MountWizzardApp(MwWidget):
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
+
+        helper = QVBoxLayout(self.ui.model)
+        self.modelWidget = ShowModel(self.ui.model)
+        helper.addWidget(self.modelWidget)
+
         self.loadConfig()
         self.cpAppHandler = None
         if self.ui.rb_cameraSGPro.isChecked():
@@ -149,6 +172,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_showActualModel.clicked.connect(self.showAlignmentModel)
+        self.ui.checkPolarPlot.clicked.connect(self.setShowAlignmentModelMode)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(self.runTargetRMSAlignment)
         self.ui.btn_deleteWorstPoint.clicked.connect(self.deleteWorstPoint)
@@ -195,6 +219,44 @@ class MountWizzardApp(MwWidget):
         self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
         self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
+
+    def showModelErrorPolar(self):
+        data = dict()
+        scaleError = 20
+        for i in range(0, len(self.model.modelData)):
+            for (keyData, valueData) in self.model.modelData[i].items():
+                if keyData in data:
+                    data[keyData].append(valueData)
+                else:
+                    data[keyData] = [valueData]
+        self.modelWidget.fig.clf()
+        self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
+        self.modelWidget.axes.grid(True, color='gray')
+        self.modelWidget.axes.set_facecolor((32/256, 32/256, 32/256))
+        self.modelWidget.axes.tick_params(axis='x', colors='white')
+        self.modelWidget.axes.tick_params(axis='y', colors='white')
+
+        self.modelWidget.axes.set_theta_zero_location('N')
+        self.modelWidget.axes.set_theta_direction(-1)
+        self.modelWidget.axes.set_yticks(range(0, 90, 10))
+        yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
+        self.modelWidget.axes.set_yticklabels(yLabel, color='white')
+        azimuth = numpy.asarray(data['azimuth'])
+        altitude = numpy.asarray(data['altitude'])
+        self.modelWidget.axes.plot(azimuth / 180.0 * math.pi, 90 - altitude, color='black')
+        cm = plt.cm.get_cmap('RdYlGn_r')
+        colors = numpy.asarray(data['modelError'])
+        area = colors * 100 / scaleError + 20
+        theta = azimuth / 180.0 * math.pi
+        r = 90 - altitude
+        scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=1, vmax=scaleError, s=area, cmap=cm)
+        scatter.set_alpha(0.75)
+        colorbar = self.modelWidget.fig.colorbar(scatter)
+        colorbar.set_label('Error [arcsec]', color='white')
+        plt.setp(plt.getp(colorbar.ax.axes, 'yticklabels'), color='white')
+        self.modelWidget.axes.set_rmax(90)
+        self.modelWidget.axes.set_rmin(0)
+        self.modelWidget.draw()
 
     def setParkPos1Text(self):                                                                                              # set text for button 1
         self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
@@ -266,6 +328,8 @@ class MountWizzardApp(MwWidget):
             self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
             self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
+            self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
+            self.ui.checkKeepRefinement.setChecked(self.config['CheckKeepRefinement'])
             self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
             self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
             self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
@@ -384,6 +448,8 @@ class MountWizzardApp(MwWidget):
         self.config['ASCOMWeatherDriverName'] = self.weather.driverName
         self.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
         self.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
+        self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
+        self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -604,6 +670,12 @@ class MountWizzardApp(MwWidget):
 
     def showAlignmentModel(self):
         self.commandQueue.put('ShowAlignmentModel')
+
+    def setShowAlignmentModelMode(self):
+        if self.ui.checkPolarPlot.isChecked():
+            self.ui.alignErrorStars.setVisible(False)
+        else:
+            self.ui.alignErrorStars.setVisible(True)
 
     def runTargetRMSAlignment(self):
         self.commandQueue.put('RunTargetRMSAlignment')
