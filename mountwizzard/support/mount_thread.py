@@ -394,7 +394,7 @@ class Mount(QtCore.QThread):
             az = 360.0 - A
         else:
             az = A
-        return int(az), int(alt)
+        return az, alt
 
     def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
         sign = 1
@@ -469,7 +469,7 @@ class Mount(QtCore.QThread):
         points, RMS = self.getAlignmentModel()
         for i in range(0, len(points)):
             self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3s}\xb0\n'
-                                        .format(i, points[i][3], points[i][4], points[i][5], points[i][6])})
+                                        .format(i, int(points[i][3]), int(points[i][4]), points[i][5], points[i][6])})
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading finished\n'})
         self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': len(points)})                                 # write them to gui
         self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(RMS)})                             # set the error values in gui
@@ -641,8 +641,6 @@ class Mount(QtCore.QThread):
         reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
-            # self.raJnow = float(ra)
-            # self.decJnow = float(dec)
             self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
