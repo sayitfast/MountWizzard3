@@ -109,9 +109,6 @@ class Model(QtCore.QThread):
                 elif self.command == 'RunAllModel':
                     self.command = ''
                     self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
-                    self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
-                    self.clearAlignmentModel()                                                                              #
-                    self.app.modelLogQueue.put('Model cleared!\n')
                     self.runAllModel()
                     self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
                     self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
