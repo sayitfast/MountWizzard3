@@ -383,14 +383,13 @@ class Mount(QtCore.QThread):
     @staticmethod
     def ra_dec_lst_to_az_alt(ra, dec, LAT):
         ra = (ra * 15 + 360.0) % 360.0
-        dec = dec * math.pi / 180.0
-        ra = ra * math.pi / 180.0
-        lat = LAT * math.pi / 180.0
+        dec = math.radians(dec)
+        ra = math.radians(ra)
+        lat = math.radians(LAT)
         alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
         A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat)))
-        A = A * 180 / math.pi
-        alt = alt * 180 / math.pi
-
+        A = math.degrees(A)
+        alt = math.degrees(alt)
         if math.sin(ra) >= 0.0:
             az = 360.0 - A
         else:
