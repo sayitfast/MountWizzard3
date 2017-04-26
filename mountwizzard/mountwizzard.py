@@ -25,8 +25,6 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
-# loading applications
-import subprocess
 # import the UI part, which is done via QT Designer and exported
 from support.mw_widget import MwWidget
 from support.wizzard_main_ui import Ui_WizzardMainDialog
@@ -98,6 +96,7 @@ class MountWizzardApp(MwWidget):
         helper = QVBoxLayout(self.ui.model)
         helper.setContentsMargins(0, 0, 0, 0)
         self.modelWidget = ShowModel(self.ui.model)
+        # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)
 
         self.loadConfig()
@@ -222,6 +221,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
 
     def showModelErrorPolar(self):
+        if not self.model.modelData:
+            return
         data = dict()
         for i in range(0, len(self.model.modelData)):
             for (keyData, valueData) in self.model.modelData[i].items():
@@ -246,6 +247,7 @@ class MountWizzardApp(MwWidget):
         # self.modelWidget.axes.plot(azimuth / 180.0 * math.pi, 90 - altitude, color='black')
         cm = plt.cm.get_cmap('RdYlGn_r')
         colors = numpy.asarray(data['modelError'])
+        # noinspection PyTypeChecker
         scaleError = int(max(colors) / 4 + 1) * 4
         area = [125 if x >= max(colors) else 50 for x in data['modelError']]
         theta = azimuth / 180.0 * math.pi
@@ -1005,7 +1007,7 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.13'
+    BUILD_NO = '2.1.14'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

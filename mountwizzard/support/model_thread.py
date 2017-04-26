@@ -56,7 +56,7 @@ class Model(QtCore.QThread):
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for model
-        self.modelData = []
+        self.modelData = None
         self.captureFile = 'model'                                                                                          # filename for capturing file
         self.counter = 0                                                                                                    # counter for main loop
         self.command = ''                                                                                                   # command buffer

@@ -1,4 +1,7 @@
 # Changelog:
+2.1.14
+- bugfix error reported from Barry
+
 2.1.13
 - added polar plot to model optimization
 - auto saving mount models and model data according to workflow
