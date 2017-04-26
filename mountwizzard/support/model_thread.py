@@ -17,6 +17,7 @@ import math
 import time
 import datetime
 import os
+import sys
 import shutil
 import copy
 import random
@@ -40,7 +41,7 @@ class Model(QtCore.QThread):
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
-    REF_PICTURE = '/model001.py'
+    REF_PICTURE = '/model001.fit'
 
     def __init__(self, app):
         super().__init__()
@@ -640,8 +641,7 @@ class Model(QtCore.QThread):
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.app.commandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))                      # Azimuth setting
         self.app.commandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))                  # Altitude Setting
-        self.app.commandQueue.put('MA')                                                                                     # initiate slewing with stop tracking
-        self.app.commandQueue.put('AP')                                                                                     # tracking on
+        self.app.commandQueue.put('MS')                                                                                     # initiate slewing with stop tracking
         self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.app.dome.connected))
         break_counter = 0
         while not self.app.mount.slewing:                                                                                   # wait for mount starting slewing
@@ -672,6 +672,7 @@ class Model(QtCore.QThread):
                 if self.cancel:
                     break
                 time.sleep(0.1)                                                                                             # loop time
+        # self.app.commandQueue.put('AP')                                                                                     # tracking on
 
     def prepareCaptureImageSubframes(self, scale, sizeX, sizeY, canSubframe, modelData):                                    # get camera data for doing subframes
         modelData['sizeX'] = 0                                                                                              # size inner window
@@ -705,7 +706,13 @@ class Model(QtCore.QThread):
         suc, mes, modelData = self.app.cpObject.getImage(modelData)                                                         # imaging app specific abstraction
         if suc:
             if simulation:
-                shutil.copyfile(os.path.dirname(os.path.realpath(__file__)) + self.REF_PICTURE, modelData['imagepath'])     # copy reference file as simulation target
+                if getattr(sys, 'frozen', False):
+                    # we are running in a bundle
+                    bundle_dir = sys._MEIPASS
+                else:
+                    # we are running in a normal Python environment
+                    bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
+                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['imagepath'])     # copy reference file as simulation target
             else:
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
                 fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                         # open for adding field info

@@ -1,4 +1,19 @@
 # Changelog:
+2.1.20
+- first set for a pyinstaller
+
+2.1.17, 2.1.18, 2.1.19
+- bugfix for package location
+
+2.1.16
+- changing the packaging behaviour
+- reduced size
+- explicit reference image for simulation
+- preparation for single .exe distribution
+
+2.1.15
+- another bugfix
+
 2.1.14
 - bugfix error reported from Barry
 

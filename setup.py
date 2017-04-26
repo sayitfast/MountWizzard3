@@ -1,8 +1,8 @@
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='mountwizzard',
-    version='2.1.14',
+    version='2.1.20',
     packages=[
         'mountwizzard',
         'mountwizzard/support'
@@ -13,6 +13,8 @@ setup(
         'pypiwin32>=219',
         'pyfits>=3.4'
     ],
+    include_package_data=True,
+    package_data={'': ['model001.fit']},
     url='https://pypi.python.org/pypi/mountwizzard',
     license='APL 2.0',
     author='mw',
