@@ -468,6 +468,22 @@ class Mount(QtCore.QThread):
             points.append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                                 # index should start with 0, but numbering in mount starts with 1
         return points, math.sqrt(RMSsum / len(points))
 
+    def retrofitMountData(self, data):
+        ok, num = self.testBaseModelAvailable()                                                                             # size mount model
+        if num == len(data):
+            points, RMS = self.getAlignmentModel()                                                                          # get mount points
+            self.showAlignmentModel(points, RMS)                                                                            # get mount points
+            for i in range(0, num):                                                                                         # run through all the points
+                data[i]['modelError'] = float(points[i][5])                                                                 # and for the total error
+                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(points[i][6]))                           # set raError new from total error mount with polar error angle from mount
+                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(points[i][6]))                          # same to dec
+            self.app.modelLogQueue.put('{0} - Mount Model and Model Data synced\n'.format(self.timeStamp()))
+        else:
+            self.logger.error('retrofitMountDa-> size mount model {0} and model data {1} do not fit !'.format(num, len(data)))
+            self.app.modelLogQueue.put('{0} - Mount Model and Model Data could not be synced\n'.format(self.timeStamp()))
+            self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
+        return data
+
     def showAlignmentModel(self, points, RMS):
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading data\n'})
         for i in range(0, len(points)):

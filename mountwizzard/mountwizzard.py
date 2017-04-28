@@ -92,13 +92,11 @@ class MountWizzardApp(MwWidget):
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
-
-        helper = QVBoxLayout(self.ui.model)
-        helper.setContentsMargins(0, 0, 0, 0)
-        self.modelWidget = ShowModel(self.ui.model)
+        helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib
+        helper.setContentsMargins(0, 0, 0, 0)                                                                               # set margins to 0 -> box in qt is frameless
+        self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
         # noinspection PyArgumentList
-        helper.addWidget(self.modelWidget)
-
+        helper.addWidget(self.modelWidget)                                                                                  # add widget to view
         self.loadConfig()
         self.cpAppHandler = None
         if self.ui.rb_cameraSGPro.isChecked():

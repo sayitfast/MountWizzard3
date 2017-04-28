@@ -487,22 +487,6 @@ class Model(QtCore.QThread):
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)
         self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
 
-    def retrofitMountData(self, data):
-        ok, num = self.app.mount.testBaseModelAvailable()                                                                   # size mount model
-        if num == len(data):
-            points, RMS = self.app.mount.getAlignmentModel()                                                                # get mount points
-            self.app.mount.showAlignmentModel(points, RMS)                                                                  # get mount points
-            for i in range(0, num):                                                                                         # run through all the points
-                data[i]['modelError'] = float(points[i][5])                                                                 # and for the total error
-                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(points[i][6]))                           # set raError new from total error mount with polar error angle from mount
-                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(points[i][6]))                          # same to dec
-            self.app.modelLogQueue.put('{0} - Mount Model and Model Data synced\n'.format(self.timeStamp()))
-        else:
-            self.logger.error('retrofitMountDa-> size mount model {0} and model data {1} do not fit !'.format(num, len(data)))
-            self.app.modelLogQueue.put('{0} - Mount Model and Model Data could not be synced\n'.format(self.timeStamp()))
-            self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
-        return data
-
     def runBaseModel(self):
         if self.app.ui.checkClearModelFirst.isChecked():
             self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
@@ -512,7 +496,7 @@ class Model(QtCore.QThread):
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         if len(self.BasePoints) > 0:
             self.modelData = self.runModel('Base', self.BasePoints, directory, settlingTime)
-            self.modelData = self.retrofitMountData(self.modelData)
+            self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_base.dat'                                                                                  # generate name of analyse file
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
@@ -535,7 +519,7 @@ class Model(QtCore.QThread):
                 for i in range(0, len(refinePoints)):
                     refinePoints[i]['index'] += len(self.modelData)
                 self.modelData = self.modelData + refinePoints
-                self.modelData = self.retrofitMountData(self.modelData)
+                self.modelData = self.app.mount.retrofitMountData(self.modelData)
                 name = directory + '_refinement.dat'                                                                            # generate name of analyse file
                 if len(self.modelData) > 0:
                     self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
