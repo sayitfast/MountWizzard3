@@ -1,6 +1,8 @@
 # Changelog:
 2.1.20
 - first set for a pyinstaller
+- omit bad values for pressure and temp if obscond doesn't work
+- generate actual model from download if the is no model available
 
 2.1.17, 2.1.18, 2.1.19
 - bugfix for package location

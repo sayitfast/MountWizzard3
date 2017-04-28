@@ -617,7 +617,7 @@ class Mount(QtCore.QThread):
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO2.dat')                         # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO2.dat')                                # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO2')
 
@@ -628,14 +628,18 @@ class Mount(QtCore.QThread):
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
-        if self.app.ui.le_pressureStick.text() != '':                                                                       # value must be there
+        pressure = float('0' + self.app.ui.le_pressureStick.text())
+        temperature = float(self.app.ui.le_temperatureStick.text())
+        if (900 < pressure < 1100) and (-40.0 < temperature < 50.0):
             self.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
-            if float(self.app.ui.le_temperatureStick.text()) > 0:
+            if temperature > 0:
                 self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
             else:
                 self.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperatureStick.text())))
             self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP')})
             self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS')})
+        else:
+            self.logger.error('setRefractionPa-> parameters out of range ! Temp:{0}  Pressure: {1}'.format(temperature, pressure))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.sendCommand('GS')
