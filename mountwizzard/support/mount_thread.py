@@ -628,9 +628,9 @@ class Mount(QtCore.QThread):
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
-        pressure = float('0' + self.app.ui.le_pressureStick.text())
-        temperature = float(self.app.ui.le_temperatureStick.text())
-        if (900 < pressure < 1100) and (-40.0 < temperature < 50.0):
+        pressure = float(self.app.ui.le_pressureStick.text() + '0')
+        temperature = float(self.app.ui.le_temperatureStick.text() + '0')
+        if (900 < pressure < 1100) and (-40.0 < temperature < 50.0) and self.app.stick.connected == 1:
             self.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
             if temperature > 0:
                 self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
@@ -639,7 +639,8 @@ class Mount(QtCore.QThread):
             self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP')})
             self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS')})
         else:
-            self.logger.error('setRefractionPa-> parameters out of range ! Temp:{0}  Pressure: {1}'.format(temperature, pressure))
+            self.logger.error('setRefractionPa-> parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
+            self.logger.error('setRefractionPa-> parameters out of range ! driver:{0} object:{1}'.format(self.app.stick.driverName, self.app.stick.ascom))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.sendCommand('GS')
