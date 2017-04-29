@@ -1,4 +1,7 @@
 # Changelog:
+2.1.22
+- bugfix for logger
+
 2.1.21
 - added download feature for various download parts
 

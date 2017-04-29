@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='mountwizzard',
-    version='2.1.21',
+    version='2.1.22',
     packages=[
         'mountwizzard',
         'mountwizzard/support'
