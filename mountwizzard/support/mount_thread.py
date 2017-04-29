@@ -495,10 +495,6 @@ class Mount(QtCore.QThread):
         self.app.showModelErrorPolar()
         return
 
-    def deleteWorstPoint(self):
-        points, RMS = self.getAlignmentModel()
-        self.deleteWorstPointRaw(points, RMS)
-
     def runTargetRMSAlignment(self):
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
         points, RMS = self.getAlignmentModel()
@@ -506,6 +502,10 @@ class Mount(QtCore.QThread):
             return                                                                                                          # set maximum
         while RMS > float(self.app.ui.targetRMS.value()) and len(points) > 3:
             points, RMS = self.deleteWorstPointRaw(points, RMS)
+
+    def deleteWorstPoint(self):
+        points, RMS = self.getAlignmentModel()
+        self.deleteWorstPointRaw(points, RMS)
 
     def deleteWorstPointRaw(self, points, RMS):
         if len(points) < 4:
@@ -594,7 +594,8 @@ class Mount(QtCore.QThread):
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'actual.dat')                              # save the data
+                if 'index' in self.app.model.modelData[0].keys():                                                           # if not available, reconstructed data
+                    self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'actual.dat')                          # save the data
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
 
@@ -607,7 +608,7 @@ class Mount(QtCore.QThread):
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'simple.dat')                      # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'simple.dat')                              # save the data
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
@@ -620,7 +621,7 @@ class Mount(QtCore.QThread):
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
             if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO1.dat')                         # save the data
+                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO1.dat')                                # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO1')
 
@@ -752,9 +753,18 @@ class Mount(QtCore.QThread):
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
-        self.loadActualModel()
-        points, RMS = self.getAlignmentModel()
-        self.showAlignmentModel(points, RMS)
+        self.loadActualModel()                                                                                              # prepare data synchronisation, load model data
+        points, RMS = self.getAlignmentModel()                                                                              # get model data from mount
+        if not self.app.model.modelData:
+            self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
+            self.app.model.modelData = []
+            for i in range(0, len(points)):                                                                                 # run through all the points
+                self.app.model.modelData.append({'modelError': float(points[i][5]),
+                                                 'raError': float(points[i][5]) * math.sin(math.radians(points[i][6])),
+                                                 'decError': float(points[i][5]) * math.cos(math.radians(points[i][6])),
+                                                 'azimuth': float(points[i][3]),
+                                                 'altitude': float(points[i][4])})
+        self.showAlignmentModel(points, RMS)                                                                                # show data
 
     def setupDriver(self):
         try:
