@@ -3722,7 +3722,7 @@ class Ui_WizzardMainDialog(object):
         self.le_azParkPos6.setText(_translate("WizzardMainDialog", "90"))
         self.tabWidget_2.setTabText(self.tabWidget_2.indexOf(self.tab_10), _translate("WizzardMainDialog", "Park Positions"))
         self.btn_downloadEarthrotation.setText(_translate("WizzardMainDialog", "Download Earth Rotation and UTC files"))
-        self.label_123.setText(_translate("WizzardMainDialog", "ASCOM Drivers Setup"))
+        self.label_123.setText(_translate("WizzardMainDialog", "Webservices for space data"))
         self.btn_downloadSpacestations.setText(_translate("WizzardMainDialog", "Download Space Stations TLE Elements"))
         self.btn_downloadSatbrighest.setText(_translate("WizzardMainDialog", "Download Brightest Satellite TLE Elements"))
         self.btn_downloadAsteroids.setText(_translate("WizzardMainDialog", "Download Asteroids MPC File"))

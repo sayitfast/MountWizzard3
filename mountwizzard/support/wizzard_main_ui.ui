@@ -8701,7 +8701,7 @@
         </font>
        </property>
        <property name="text">
-        <string>ASCOM Drivers Setup</string>
+        <string>Webservices for space data</string>
        </property>
       </widget>
       <widget class="Line" name="line_17">

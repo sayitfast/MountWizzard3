@@ -227,6 +227,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadAsteroids.clicked.connect(self.downloadAsteroids)
         self.ui.btn_downloadComets.clicked.connect(self.downloadComets)
         self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
+        self.ui.btn_uploadMount.clicked.connect(self.uploadMount)
+
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -1004,6 +1006,9 @@ class MountWizzardApp(MwWidget):
         self.commandDataQueue.put('SATBRIGHTEST')
         self.commandDataQueue.put('ASTEROIDS')
         self.commandDataQueue.put('COMETS')
+
+    def uploadMount(self):
+        self.commandDataQueue.put('UPLOADMOUNT')
 
     def startCamPlateApp(self):
         # subprocess.Popen(['C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe'])

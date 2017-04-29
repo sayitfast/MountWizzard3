@@ -19,6 +19,9 @@ from PyQt5 import QtCore
 import time
 import urllib.request as urllib2
 import urllib.parse as urlparse
+# windows automation
+from pywinauto import Application, timings, findwindows
+from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
 class Data(QtCore.QThread):
@@ -31,6 +34,14 @@ class Data(QtCore.QThread):
     SPACESTATIONS = 'http://www.celestrak.com/NORAD/elements/stations.txt'
     SATBRIGHTEST = 'http://www.celestrak.com/NORAD/elements/visual.txt'
     TARGET_DIR = os.getcwd() + '\\config\\'
+    COMETS_FILE = 'comets.mpc'
+    ASTEROIDS_FILE = 'asteroids.mpc'
+    SPACESTATIONS_FILE = 'spacestations.tle'
+    SATBRIGHTEST_FILE = 'satbrightest.tle'
+    UTC_1_FILE = 'finals.data'
+    UTC_2_FILE = 'tai-utc.dat'
+
+    updater_file = 'C:/Program Files (x86)/10micron/Updater/GmQCIv2.exe'
 
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
@@ -46,25 +57,29 @@ class Data(QtCore.QThread):
                 command = self.app.commandDataQueue.get()
                 if command == 'SPACESTATIONS':
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + 'spacestations.tle')
+                    self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
                 elif command == 'SATBRIGHTEST':
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + 'satbrightest.tle')
+                    self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
                 elif command == 'ASTEROIDS':
                     self.app.ui.btn_downloadAsteroids.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + 'asteroids.mpc')
+                    self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + self.ASTEROIDS_FILE)
                     self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
                 elif command == 'COMETS':
                     self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.COMETS, self.TARGET_DIR + 'comets.mpc')
+                    self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
                     self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
                 elif command == 'EARTHROTATION':
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.UTC_1, self.TARGET_DIR + 'finals.data')
-                    self.downloadFile(self.UTC_2, self.TARGET_DIR + 'tai-utc.dat')
+                    self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
+                    self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
+                elif command == 'UPLOADMOUNT':
+                    self.app.ui.btn_uploadMount.setStyleSheet(self.BLUE)
+                    self.uploadMount()
+                    self.app.ui.btn_uploadMount.setStyleSheet(self.DEFAULT)
                 else:
                     pass
             time.sleep(0.1)                                                                                                   # wait for the next cycle
@@ -111,11 +126,90 @@ class Data(QtCore.QThread):
             self.app.messageQueue.put('Download Error {0}'.format(e))
         return
 
+    def uploadMount(self):
+        app = Application(backend='uia')
+        app.start(self.updater_file)                                                                                        # start 10 micro updater
+        try:
+            dialog = timings.WaitUntilPasses(2, 0.5, lambda: findwindows.find_windows(title='GmQCIv2', class_name='#32770')[0])
+            winOK = app.window_(handle=dialog)
+            winOK['OK'].click()
+        except Exception as e:
+            self.logger.error('uploadMount    -> error{0}'.format(e))
+            # TODO: handle timeout error !
+            self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+        finally:
+            pass
+        try:
+            win = app['10 micron control box update']                                                                       # link handle
+            win['next'].click()                                                                                             # accept next
+            win['next'].click()                                                                                             # go upload select page
+            ButtonWrapper(win['Control box firmware']).uncheck()                                                            # no firmware updates
+        except Exception as e:
+            self.logger.error('uploadMount    -> error{0}'.format(e))
+            self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+            return
+        try:
+            uploadNecessary = False
+            if self.app.ui.checkComets.isChecked():
+                ButtonWrapper(win['Orbital parameters of comets']).check()
+                win['Edit...4'].click()
+                popup = app['Comet orbits']
+                popup['MPC file'].click()
+                filedialog = app['Öffnen']      # TODO: english version ?
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.COMETS_FILE)                               # filename box
+                filedialog['Button16'].click()                                                                              # accept filename selection and proceed
+                popup['Close'].click()
+                uploadNecessary = True
+            else:
+                ButtonWrapper(win['Orbital parameters of comets']).uncheck()
+            if self.app.ui.checkAsteroids.isChecked():
+                ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
+                uploadNecessary = True
+            else:
+                ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
+            if self.app.ui.checkSatellites.isChecked():
+                ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+                uploadNecessary = True
+            else:
+                ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+            if self.app.ui.checkSpacestations.isChecked():
+                ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+                uploadNecessary = True
+            else:
+                ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+            if self.app.ui.checkEarthrotation.isChecked():
+                ButtonWrapper(win['UTC / Earth rotation data']).uncheck()
+                uploadNecessary = True
+            else:
+                ButtonWrapper(win['UTC / Earth rotation data']).uncheck()
+        except Exception as e:
+            self.logger.error('uploadMount    -> error{0}'.format(e))
+            self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
+            return
+
+        if uploadNecessary:
+            try:
+                win['next'].click()
+                win['next'].click()
+                win['Update Now'].click()
+            except Exception as e:
+                self.logger.error('uploadMount    -> error{0}'.format(e))
+                self.app.messageQueue.put('Error in uploading files, please check 10micron updater!')
+                return
+            try:
+                dialog = timings.WaitUntilPasses(20, 0.5, lambda: findwindows.find_windows(title='Update completed', class_name='#32770')[0])
+                winOK = app.window_(handle=dialog)
+                winOK['OK'].click()
+            except Exception as e:
+                self.logger.error('uploadMount    -> error{0}'.format(e))
+                self.app.messageQueue.put('Error in closing 10micron updater, please check!')
+                return
+        else:
+            win.close()
+            winOK = app['Exit updater']
+            winOK['Yes'].click()
 
 if __name__ == "__main__":
-
-    from pywinauto import Application, timings, findwindows
-    from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
     updater_file = 'C:/Program Files (x86)/10micron/Updater/GmQCIv2.exe'
     app = Application(backend='uia')
@@ -151,7 +245,6 @@ if __name__ == "__main__":
     print(winOK)
     print(winOK['OK'])
     winOK['OK'].click()
-
 
 
 
