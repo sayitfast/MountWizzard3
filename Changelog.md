@@ -1,4 +1,7 @@
 # Changelog:
+2.1.21
+- added download feature for various download parts
+
 2.1.20
 - first set for a pyinstaller
 - omit bad values for pressure and temp if obscond doesn't work

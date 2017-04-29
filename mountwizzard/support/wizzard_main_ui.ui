@@ -8673,7 +8673,7 @@
         <rect>
          <x>20</x>
          <y>50</y>
-         <width>351</width>
+         <width>341</width>
          <height>31</height>
         </rect>
        </property>
@@ -8709,7 +8709,7 @@
         <rect>
          <x>20</x>
          <y>30</y>
-         <width>351</width>
+         <width>341</width>
          <height>21</height>
         </rect>
        </property>
@@ -8730,7 +8730,7 @@
         <rect>
          <x>20</x>
          <y>90</y>
-         <width>351</width>
+         <width>341</width>
          <height>31</height>
         </rect>
        </property>
@@ -8748,7 +8748,7 @@
         <rect>
          <x>20</x>
          <y>130</y>
-         <width>351</width>
+         <width>341</width>
          <height>31</height>
         </rect>
        </property>
@@ -8758,7 +8758,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Download Brightest Sat TLE Elements</string>
+        <string>Download Brightest Satellite TLE Elements</string>
        </property>
       </widget>
       <widget class="QPushButton" name="btn_downloadAsteroids">
@@ -8766,7 +8766,7 @@
         <rect>
          <x>20</x>
          <y>170</y>
-         <width>351</width>
+         <width>341</width>
          <height>31</height>
         </rect>
        </property>
@@ -8784,7 +8784,7 @@
         <rect>
          <x>20</x>
          <y>210</y>
-         <width>351</width>
+         <width>341</width>
          <height>31</height>
         </rect>
        </property>
@@ -8795,6 +8795,217 @@
        </property>
        <property name="text">
         <string>Download Comets MPC File</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkEarthrotation">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>50</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Upload  Earth Rotation and UTC files</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkSpacestations">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>90</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Upload Space Stations TLE Elements</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkSatellites">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>130</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Upload Brightest Satellite TLE Elements</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkAsteroids">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>170</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Upload Asteroids MPC File</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkComets">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>210</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Upload Comets MPC File</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_uploadMount">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>270</y>
+         <width>311</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Upload to Mount</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAll">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>270</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Download All Files</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_47">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>20</y>
+         <width>21</width>
+         <height>281</height>
+        </rect>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_134">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>20</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Mount Uploads</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_19">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>30</y>
+         <width>311</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </widget>

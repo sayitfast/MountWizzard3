@@ -226,6 +226,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadSatbrighest.clicked.connect(self.downloadSatbrighest)
         self.ui.btn_downloadAsteroids.clicked.connect(self.downloadAsteroids)
         self.ui.btn_downloadComets.clicked.connect(self.downloadComets)
+        self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -997,6 +998,13 @@ class MountWizzardApp(MwWidget):
     def downloadComets(self):
         self.commandDataQueue.put('COMETS')
 
+    def downloadAll(self):
+        self.commandDataQueue.put('EARTHROTATION')
+        self.commandDataQueue.put('SPACESTATIONS')
+        self.commandDataQueue.put('SATBRIGHTEST')
+        self.commandDataQueue.put('ASTEROIDS')
+        self.commandDataQueue.put('COMETS')
+
     def startCamPlateApp(self):
         # subprocess.Popen(['C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe'])
         import win32ui
@@ -1029,7 +1037,7 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.20'
+    BUILD_NO = '2.1.21'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

@@ -11,7 +11,8 @@ setup(
         'PyQt5>=5.6',
         'matplotlib>=1.5.3',
         'pypiwin32>=219',
-        'pyfits>=3.4'
+        'pyfits>=3.4',
+        'pywinauto>=0.6'
     ],
     include_package_data=True,
     package_data={'': ['model001.fit']},
