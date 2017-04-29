@@ -17,7 +17,8 @@ import os
 import logging
 from PyQt5 import QtCore
 import time
-import urllib
+import urllib.request as urllib2
+import urllib.parse as urlparse
 
 
 class Data(QtCore.QThread):
@@ -25,11 +26,15 @@ class Data(QtCore.QThread):
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
-    COMET = 'http://www.minorplanetcenter.net/iau/MPCORB/CometEls.txt'
+    COMETS = 'http://www.minorplanetcenter.net/iau/MPCORB/CometEls.txt'
     ASTEROIDS = 'http://www.ap-i.net/pub/skychart/mpc/mpc5000.dat'
-    SPACESTATIONS = 'https://www.celestrak.com/NORAD/elements/stations.txt'
-    SAT_BRIGHTEST = 'https://www.celestrak.com/NORAD/elements/visual.txt'
+    SPACESTATIONS = 'http://www.celestrak.com/NORAD/elements/stations.txt'
+    SATBRIGHTEST = 'http://www.celestrak.com/NORAD/elements/visual.txt'
     TARGET_DIR = os.getcwd() + '/config/'
+
+    BLUE = 'background-color: rgb(42, 130, 218)'
+    RED = 'background-color: red;'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
     def __init__(self, app):
         super().__init__()
@@ -40,31 +45,26 @@ class Data(QtCore.QThread):
             if not self.app.commandDataQueue.empty():
                 command = self.app.commandDataQueue.get()
                 if command == 'SPACESTATIONS':
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
-                    testfile = urllib.URLopener()
-                    testfile.retrieve(self.SPACESTATIONS, self.TARGET_DIR + 'spacestations.tle')
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
-                elif command == 'SAT_BRIGHTEST':
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
-                    testfile = urllib.URLopener()
-                    testfile.retrieve(self.SAT_BRIGHTEST, self.TARGET_DIR + 'sat_brightest.tle')
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
+                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + 'spacestations.tle')
+                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
+                elif command == 'SATBRIGHTEST':
+                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + 'satbrightest.tle')
+                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
                 elif command == 'ASTEROIDS':
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
-                    testfile = urllib.URLopener()
-                    testfile.retrieve(self.ASTEROIDS, self.TARGET_DIR + 'asteroids.mpc')
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
+                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + 'asteroids.mpc')
+                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
                 elif command == 'COMETS':
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
-                    testfile = urllib.URLopener()
-                    testfile.retrieve(self.COMETS, self.TARGET_DIR + 'comets.mpc')
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
+                    self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.COMETS, self.TARGET_DIR + 'comets.mpc')
+                    self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
                 elif command == 'EARTHROTATION':
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
-                    testfile = urllib.URLopener()
-                    testfile.retrieve(self.UTC_1, self.TARGET_DIR + 'finals.data')
-                    testfile.retrieve(self.UTC_2, self.TARGET_DIR + 'tai-utc.dat')
-                    self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
+                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.UTC_1, self.TARGET_DIR + 'finals.data')
+                    self.downloadFile(self.UTC_2, self.TARGET_DIR + 'tai-utc.dat')
+                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
                 else:
                     pass
             time.sleep(1)                                                                                                   # wait for the next cycle
@@ -85,11 +85,24 @@ class Data(QtCore.QThread):
     def getStatusOnce(self):
         pass
 
-    def downloadTLE(self):
-        pass
-
-    def downloadMPC(self):
-        pass
-
-    def downloadTest(self):
-        pass
+    def downloadFile(self, url, filename):
+        u = urllib2.urlopen(url)
+        scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
+        with open(filename, 'wb') as f:
+            meta = u.info()
+            meta_func = meta.getheaders if hasattr(meta, 'getheaders') else meta.get_all
+            meta_length = meta_func("Content-Length")
+            file_size = None
+            if meta_length:
+                file_size = int(meta_length[0])
+            self.app.messageQueue.put('{0}'.format(url))
+            file_size_dl = 0
+            block_sz = 8192
+            while True:
+                buffer = u.read(block_sz)
+                if not buffer:
+                    break
+                file_size_dl += len(buffer)
+                f.write(buffer)
+        self.app.messageQueue.put('Downloaded {0} Bytes'.format(file_size))
+        return

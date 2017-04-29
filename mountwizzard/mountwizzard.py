@@ -40,6 +40,7 @@ from support.dome_thread import Dome
 from support.weather_thread import Weather
 from support.stick_thread import Stick
 from support.relays import Relays
+from support.data_thread import Data
 # for handling camera and plate solving interface
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
@@ -80,12 +81,14 @@ class MountWizzardApp(MwWidget):
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
+        self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.relays = Relays(self)                                                                                          # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self)                                                                                              # dome control
         self.mount = Mount(self)                                                                                            # Mount -> everything with mount and alignment
         self.weather = Weather(self)                                                                                        # Stickstation Thread
         self.stick = Stick(self)                                                                                            # Stickstation Thread
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
+        self.data = Data(self)                                                                                              # data thread for downloading topics
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
         self.AscomCamera = AscomCamera(self)
@@ -118,6 +121,7 @@ class MountWizzardApp(MwWidget):
         self.dome.start()                                                                                                   # starting polling thread
         self.model.signalModelConnected.connect(self.setCameraPlateStatus)                                                  # status from thread
         self.model.start()                                                                                                  # starting polling thread
+        self.data.start()                                                                                                   # starting data thread
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
@@ -217,6 +221,11 @@ class MountWizzardApp(MwWidget):
         self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
         self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
+        self.ui.btn_downloadEarthrotation.clicked.connect(self.downloadEarthrotation)
+        self.ui.btn_downloadSpacestations.clicked.connect(self.downloadSpacestations)
+        self.ui.btn_downloadSatbrighest.clicked.connect(self.downloadSatbrighest)
+        self.ui.btn_downloadAsteroids.clicked.connect(self.downloadAsteroids)
+        self.ui.btn_downloadComets.clicked.connect(self.downloadComets)
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -972,6 +981,21 @@ class MountWizzardApp(MwWidget):
 
     def runHystereseModel(self):
         self.model.signalModelCommand.emit('RunHystereseModel')
+
+    def downloadEarthrotation(self):
+        self.commandDataQueue.put('EARTHROTATION')
+
+    def downloadSpacestations(self):
+        self.commandDataQueue.put('SPACESTATIONS')
+
+    def downloadSatbrighest(self):
+        self.commandDataQueue.put('SATBRIGHTEST')
+
+    def downloadAsteroids(self):
+        self.commandDataQueue.put('ASTEROIDS')
+
+    def downloadComets(self):
+        self.commandDataQueue.put('COMETS')
 
     def startCamPlateApp(self):
         # subprocess.Popen(['C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe'])
