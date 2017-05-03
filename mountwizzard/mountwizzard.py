@@ -25,6 +25,7 @@ from PyQt5 import QtCore
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+
 # import the UI part, which is done via QT Designer and exported
 from support.mw_widget import MwWidget
 from support.wizzard_main_ui import Ui_WizzardMainDialog
@@ -228,7 +229,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadComets.clicked.connect(self.downloadComets)
         self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
         self.ui.btn_uploadMount.clicked.connect(self.uploadMount)
-
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -1038,15 +1038,17 @@ class MountWizzardApp(MwWidget):
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
 
+
 if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.21'
+    BUILD_NO = '2.1.23'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
+
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.DEBUG,
@@ -1059,7 +1061,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
     logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v' + BUILD_NO + 'started !')                                                                # start message logger
+    logging.error('MountWizzard v' + BUILD_NO + ' started !')                                                                # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
     app = QApplication(sys.argv)                                                                                            # built application

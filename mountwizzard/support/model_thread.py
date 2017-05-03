@@ -468,6 +468,8 @@ class Model(QtCore.QThread):
         modelData['pierside'] = self.app.mount.pierside
         modelData['refractionTemp'] = self.app.mount.refractionTemp
         modelData['refractionPress'] = self.app.mount.refractionPressure
+        modelData['azimuth'] = 0
+        modelData['altitude'] = 0
         self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
         suc, mes, imagepath = self.capturingImage(modelData, simulation)
         self.logger.debug('plateSolveSync -> suc:{0} mes:{1}'.format(suc, mes))

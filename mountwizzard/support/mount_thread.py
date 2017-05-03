@@ -451,11 +451,7 @@ class Mount(QtCore.QThread):
         if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
             return points, 0
         for i in range(1, numberStars + 1):                                                                                 # otherwise download them step for step
-            try:
-                reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
-            except pythoncom.com_error as e:
-                self.app.messageQueue.put('Driver COM Error in sendCommand {0}'.format(e))
-                return points, 0
+            reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             errorRMS = float(reply[2].strip())
@@ -647,6 +643,7 @@ class Mount(QtCore.QThread):
     def setRefractionParameter(self):
         pressure = float(self.app.ui.le_pressureStick.text() + '0')
         temperature = float(self.app.ui.le_temperatureStick.text() + '0')
+        # noinspection PyTypeChecker
         if (900 < pressure < 1100) and (-40.0 < temperature < 50.0) and self.app.stick.connected == 1:
             self.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
             if temperature > 0:
@@ -755,7 +752,7 @@ class Mount(QtCore.QThread):
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
         self.loadActualModel()                                                                                              # prepare data synchronisation, load model data
         points, RMS = self.getAlignmentModel()                                                                              # get model data from mount
-        if not self.app.model.modelData:
+        if not self.app.model.modelData and RMS > 0:
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
             self.app.model.modelData = []
             for i in range(0, len(points)):                                                                                 # run through all the points

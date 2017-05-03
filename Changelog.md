@@ -1,4 +1,7 @@
 # Changelog:
+2.1.23
+- bugfix platesolve & sync
+
 2.1.22
 - bugfix for logger
 

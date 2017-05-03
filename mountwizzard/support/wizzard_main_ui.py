@@ -3249,7 +3249,7 @@ class Ui_WizzardMainDialog(object):
 
         self.retranslateUi(WizzardMainDialog)
         self.tabWidget.setCurrentIndex(0)
-        self.tabWidget_2.setCurrentIndex(4)
+        self.tabWidget_2.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(WizzardMainDialog)
         WizzardMainDialog.setTabOrder(self.btn_setDualTracking, self.btn_setUnattendedFlip)
         WizzardMainDialog.setTabOrder(self.btn_setUnattendedFlip, self.altitudeBase)
