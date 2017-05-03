@@ -130,105 +130,105 @@ class MountWizzardApp(MwWidget):
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
-        self.ui.btn_selectClose.clicked.connect(self.selectClose)
+        self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
         self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
-        self.ui.btn_mountPark.clicked.connect(self.mountPark)
-        self.ui.btn_mountUnpark.clicked.connect(self.mountUnpark)
-        self.ui.btn_startTracking.clicked.connect(self.startTracking)
-        self.ui.btn_stopTracking.clicked.connect(self.stopTracking)
-        self.ui.btn_setTrackingLunar.clicked.connect(self.setTrackingLunar)
-        self.ui.btn_setTrackingSolar.clicked.connect(self.setTrackingSolar)
-        self.ui.btn_setTrackingSideral.clicked.connect(self.setTrackingSideral)
-        self.ui.btn_stop.clicked.connect(self.stop)
+        self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
+        self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
+        self.ui.btn_startTracking.clicked.connect(lambda: self.commandQueue.put('AP'))
+        self.ui.btn_stopTracking.clicked.connect(lambda: self.commandQueue.put('RT9'))
+        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.commandQueue.put('RT0'))
+        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.commandQueue.put('RT1'))
+        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.commandQueue.put('RT2'))
+        self.ui.btn_stop.clicked.connect(lambda: self.commandQueue.put('STOP'))
         self.ui.btn_mountPos1.clicked.connect(self.mountPosition1)
         self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
         self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
         self.ui.btn_mountPos4.clicked.connect(self.mountPosition4)
         self.ui.btn_mountPos5.clicked.connect(self.mountPosition5)
         self.ui.btn_mountPos6.clicked.connect(self.mountPosition6)
-        self.ui.le_parkPos1Text.textChanged.connect(self.setParkPos1Text)
-        self.ui.le_parkPos2Text.textChanged.connect(self.setParkPos2Text)
-        self.ui.le_parkPos3Text.textChanged.connect(self.setParkPos3Text)
-        self.ui.le_parkPos4Text.textChanged.connect(self.setParkPos4Text)
-        self.ui.le_parkPos5Text.textChanged.connect(self.setParkPos5Text)
-        self.ui.le_parkPos6Text.textChanged.connect(self.setParkPos6Text)
+        self.ui.le_parkPos1Text.textChanged.connect(lambda: self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text()))
+        self.ui.le_parkPos2Text.textChanged.connect(lambda: self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text()))
+        self.ui.le_parkPos3Text.textChanged.connect(lambda: self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text()))
+        self.ui.le_parkPos4Text.textChanged.connect(lambda: self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text()))
+        self.ui.le_parkPos5Text.textChanged.connect(lambda: self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text()))
+        self.ui.le_parkPos6Text.textChanged.connect(lambda: self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text()))
         self.ui.btn_setHorizonLimitHigh.clicked.connect(self.setHorizonLimitHigh)
         self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupMountDriver.clicked.connect(self.setupMountDriver)
-        self.ui.btn_setupDomeDriver.clicked.connect(self.setupDomeDriver)
-        self.ui.btn_setupStickDriver.clicked.connect(self.setupStickDriver)
-        self.ui.btn_setupWeatherDriver.clicked.connect(self.setupWeatherDriver)
-        self.ui.btn_setupAscomCameraDriver.clicked.connect(self.setupAscomCameraDriver)
-        self.ui.btn_setRefractionParameters.clicked.connect(self.setRefractionParameters)
-        self.ui.btn_runBaseModel.clicked.connect(self.runBaseModel)
-        self.ui.btn_cancelModel.clicked.connect(self.cancelModel)
-        self.ui.btn_runRefinementModel.clicked.connect(self.runRefinementModel)
-        self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
-        self.ui.btn_clearAlignmentModel.clicked.connect(self.clearAlignmentModel)
+        self.ui.btn_setupMountDriver.clicked.connect(lambda: self.mount.setupDriver())
+        self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
+        self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
+        self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
+        self.ui.btn_setupAscomCameraDriver.clicked.connect(lambda: self.AscomCamera.setupDriverCamera())
+        self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
+        self.ui.btn_runBaseModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunBaseModel'))
+        self.ui.btn_cancelModel.clicked.connect(lambda: self.model.signalModelCommand.emit('CancelModel'))
+        self.ui.btn_runRefinementModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunRefinementModel'))
+        self.ui.btn_runBatchModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunBatchModel'))
+        self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.model.signalModelCommand.emit('ClearAlignmentModel'))
         self.ui.btn_selectImageDirectoryName.clicked.connect(self.selectImageDirectoryName)
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
-        self.ui.btn_showActualModel.clicked.connect(self.showAlignmentModel)
+        self.ui.btn_showActualModel.clicked.connect(lambda: self.commandQueue.put('ShowAlignmentModel'))
         self.ui.checkPolarPlot.clicked.connect(self.setShowAlignmentModelMode)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
-        self.ui.btn_runTargetRMSAlignment.clicked.connect(self.runTargetRMSAlignment)
-        self.ui.btn_deleteWorstPoint.clicked.connect(self.deleteWorstPoint)
-        self.ui.btn_sortRefinementPoints.clicked.connect(self.sortRefinementPoints)
-        self.ui.btn_deleteBelowHorizonLine.clicked.connect(self.deleteBelowHorizonLine)
-        self.ui.btn_plateSolveSync.clicked.connect(self.plateSolveSync)
-        self.ui.btn_deletePoints.clicked.connect(self.deletePoints)
-        self.ui.btn_flipMount.clicked.connect(self.flipMount)
-        self.ui.btn_loadRefinementPoints.clicked.connect(self.loadRefinementPoints)
-        self.ui.btn_loadBasePoints.clicked.connect(self.loadBasePoints)
-        self.ui.btn_saveBackupModel.clicked.connect(self.saveBackupModel)
-        self.ui.btn_loadBackupModel.clicked.connect(self.loadBackupModel)
-        self.ui.btn_saveSimpleModel.clicked.connect(self.saveSimpleModel)
-        self.ui.btn_loadSimpleModel.clicked.connect(self.loadSimpleModel)
-        self.ui.btn_saveRefinementModel.clicked.connect(self.saveRefinementModel)
-        self.ui.btn_loadRefinementModel.clicked.connect(self.loadRefinementModel)
-        self.ui.btn_saveBaseModel.clicked.connect(self.saveBaseModel)
-        self.ui.btn_loadBaseModel.clicked.connect(self.loadBaseModel)
-        self.ui.btn_saveDSO1Model.clicked.connect(self.saveDSO1Model)
-        self.ui.btn_loadDSO1Model.clicked.connect(self.loadDSO1Model)
-        self.ui.btn_saveDSO2Model.clicked.connect(self.saveDSO2Model)
-        self.ui.btn_loadDSO2Model.clicked.connect(self.loadDSO2Model)
-        self.ui.btn_generateDSOPoints.clicked.connect(self.generateDSOPoints)
-        self.ui.numberHoursDSO.valueChanged.connect(self.generateDSOPoints)
-        self.ui.numberPointsDSO.valueChanged.connect(self.generateDSOPoints)
-        self.ui.numberHoursPreview.valueChanged.connect(self.generateDSOPoints)
-        self.ui.btn_generateDensePoints.clicked.connect(self.generateDensePoints)
-        self.ui.btn_generateNormalPoints.clicked.connect(self.generateNormalPoints)
-        self.ui.btn_generateGridPoints.clicked.connect(self.generateGridPoints)
-        self.ui.numberGridPointsRow.valueChanged.connect(self.generateGridPoints)
-        self.ui.numberGridPointsCol.valueChanged.connect(self.generateGridPoints)
-        self.ui.btn_generateBasePoints.clicked.connect(self.generateBasePoints)
-        self.ui.btn_runCheckModel.clicked.connect(self.runCheckModel)
-        self.ui.btn_runAllModel.clicked.connect(self.runAllModel)
-        self.ui.btn_runTimeChangeModel.clicked.connect(self.runTimeChangeModel)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModel)
-        self.ui.btn_runHystereseModel.clicked.connect(self.runHystereseModel)
+        self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandQueue.put('RunTargetRMSAlignment'))
+        self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandQueue.put('DeleteWorstPoint'))
+        self.ui.btn_sortRefinementPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('SortRefinementPoints'))
+        self.ui.btn_deleteBelowHorizonLine.clicked.connect(lambda: self.model.signalModelCommand.emit('DeleteBelowHorizonLine'))
+        self.ui.btn_plateSolveSync.clicked.connect(lambda: self.model.signalModelCommand.emit('PlateSolveSync'))
+        self.ui.btn_deletePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('DeletePoints'))
+        self.ui.btn_flipMount.clicked.connect(lambda: self.commandQueue.put('FLIP'))
+        self.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('LoadRefinementPoints'))
+        self.ui.btn_loadBasePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('LoadBasePoints'))
+        self.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandQueue.put('SaveBackupModel'))
+        self.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandQueue.put('LoadBackupModel'))
+        self.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandQueue.put('SaveSimpleModel'))
+        self.ui.btn_loadSimpleModel.clicked.connect(lambda: self.commandQueue.put('LoadSimpleModel'))
+        self.ui.btn_saveRefinementModel.clicked.connect(lambda: self.commandQueue.put('SaveRefinementModel'))
+        self.ui.btn_loadRefinementModel.clicked.connect(lambda: self.commandQueue.put('LoadRefinementModel'))
+        self.ui.btn_saveBaseModel.clicked.connect(lambda: self.commandQueue.put('SaveBaseModel'))
+        self.ui.btn_loadBaseModel.clicked.connect(lambda: self.commandQueue.put('LoadBaseModel'))
+        self.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandQueue.put('SaveDSO1Model'))
+        self.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandQueue.put('LoadDSO1Model'))
+        self.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandQueue.put('SaveDSO2Model'))
+        self.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandQueue.put('LoadDSO2Model'))
+        self.ui.btn_generateDSOPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.numberHoursDSO.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.numberPointsDSO.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.numberHoursPreview.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.btn_generateDensePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateDensePoints'))
+        self.ui.btn_generateNormalPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateNormalPoints'))
+        self.ui.btn_generateGridPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.btn_generateBasePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateBasePoints'))
+        self.ui.btn_runCheckModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunCheckModel'))
+        self.ui.btn_runAllModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunAllModel'))
+        self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunTimeChangeModel'))
+        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.model.signalModelCommand.emit('CancelAnalyseModel'))
+        self.ui.btn_runHystereseModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunHystereseModel'))
         self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
         self.ui.btn_openCoordinateWindow.clicked.connect(self.showCoordinateWindow)
-        self.ui.btn_bootMount.clicked.connect(self.bootMount)
-        self.ui.btn_switchCCD.clicked.connect(self.switchCCD)
-        self.ui.btn_switchHeater.clicked.connect(self.switchHeater)
+        self.ui.btn_bootMount.clicked.connect(lambda: self.relays.bootMount())
+        self.ui.btn_switchCCD.clicked.connect(lambda: self.relays.switchCCD())
+        self.ui.btn_switchHeater.clicked.connect(lambda: self.relays.switchHeater())
         self.ui.rb_cameraSGPro.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
         self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
-        self.ui.btn_downloadEarthrotation.clicked.connect(self.downloadEarthrotation)
-        self.ui.btn_downloadSpacestations.clicked.connect(self.downloadSpacestations)
-        self.ui.btn_downloadSatbrighest.clicked.connect(self.downloadSatbrighest)
-        self.ui.btn_downloadAsteroids.clicked.connect(self.downloadAsteroids)
-        self.ui.btn_downloadComets.clicked.connect(self.downloadComets)
+        self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
+        self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
+        self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
+        self.ui.btn_downloadAsteroids.clicked.connect(lambda: self.commandDataQueue.put('ASTEROIDS'))
+        self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
-        self.ui.btn_uploadMount.clicked.connect(self.uploadMount)
+        self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -270,24 +270,6 @@ class MountWizzardApp(MwWidget):
         self.modelWidget.axes.set_rmax(90)
         self.modelWidget.axes.set_rmin(0)
         self.modelWidget.draw()
-
-    def setParkPos1Text(self):                                                                                              # set text for button 1
-        self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
-
-    def setParkPos2Text(self):                                                                                              # set text for button 2
-        self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
-
-    def setParkPos3Text(self):                                                                                              # set text for button 3
-        self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
-
-    def setParkPos4Text(self):                                                                                              # set text for button 4
-        self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
-
-    def setParkPos5Text(self):                                                                                              # set text for button 3
-        self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
-
-    def setParkPos6Text(self):                                                                                              # set text for button 4
-        self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
 
     def loadConfig(self):
         try:
@@ -484,11 +466,6 @@ class MountWizzardApp(MwWidget):
         self.saveConfig()
         self.messageQueue.put('Configuration saved.')
 
-    @staticmethod
-    def selectClose():
-        # noinspection PyArgumentList
-        QCoreApplication.instance().quit()
-
     def selectModelPointsFileName(self):
         dlg = QFileDialog()
         dlg.setViewMode(QFileDialog.List)
@@ -552,33 +529,6 @@ class MountWizzardApp(MwWidget):
             self.ui.checkUseMinimumHorizonLine.setChecked(False)
             self.coordinatePopup.redrawCoordinateWindow()
 
-    def mountPark(self):
-        self.commandQueue.put('hP')
-
-    def mountUnpark(self):
-        self.commandQueue.put('PO')
-
-    def startTracking(self):
-        self.commandQueue.put('AP')
-
-    def setTrackingLunar(self):
-        self.commandQueue.put('RT0')
-
-    def setTrackingSolar(self):
-        self.commandQueue.put('RT1')
-
-    def setTrackingSideral(self):
-        self.commandQueue.put('RT2')
-
-    def stopTracking(self):
-        self.commandQueue.put('RT9')
-
-    def stop(self):
-        self.commandQueue.put('STOP')
-
-    def flipMount(self):
-        self.commandQueue.put('FLIP')
-
     def shutdownQuit(self):
         self.saveConfig()
         self.commandQueue.put('shutdown')
@@ -632,9 +582,6 @@ class MountWizzardApp(MwWidget):
             self.ui.le_refractionStatus.setText('ON')
         self.commandQueue.put('SREF{0: 01d}'.format(_value))
 
-    def setRefractionParameters(self):
-        self.commandQueue.put('SetRefractionParameter')
-
     def mountPosition1(self):
         self.commandQueue.put('PO')                                                                                         # unpark first
         self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
@@ -681,59 +628,11 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    def showAlignmentModel(self):
-        self.commandQueue.put('ShowAlignmentModel')
-
     def setShowAlignmentModelMode(self):
         if self.ui.checkPolarPlot.isChecked():
             self.ui.alignErrorStars.setVisible(False)
         else:
             self.ui.alignErrorStars.setVisible(True)
-
-    def runTargetRMSAlignment(self):
-        self.commandQueue.put('RunTargetRMSAlignment')
-
-    def deleteWorstPoint(self):
-        self.commandQueue.put('DeleteWorstPoint')
-
-    def saveBackupModel(self):
-        self.commandQueue.put('SaveBackupModel')
-
-    def loadBackupModel(self):
-        self.commandQueue.put('LoadBackupModel')
-
-    def saveBaseModel(self):
-        self.commandQueue.put('SaveBaseModel')
-
-    def loadBaseModel(self):
-        self.commandQueue.put('LoadBaseModel')
-
-    def saveRefinementModel(self):
-        self.commandQueue.put('SaveRefinementModel')
-
-    def loadRefinementModel(self):
-        self.commandQueue.put('LoadRefinementModel')
-
-    def saveSimpleModel(self):
-        self.commandQueue.put('SaveSimpleModel')
-
-    def loadSimpleModel(self):
-        self.commandQueue.put('LoadSimpleModel')
-
-    def saveDSO1Model(self):
-        self.commandQueue.put('SaveDSO1Model')
-
-    def loadDSO1Model(self):
-        self.commandQueue.put('LoadDSO1Model')
-
-    def saveDSO2Model(self):
-        self.commandQueue.put('SaveDSO2Model')
-
-    def loadDSO2Model(self):
-        self.commandQueue.put('LoadDSO2Model')
-
-    def setupMountDriver(self):
-        self.mount.setupDriver()
 
     @QtCore.Slot(dict)
     def fillMountData(self, data):
@@ -817,12 +716,6 @@ class MountWizzardApp(MwWidget):
         if data['Name'] == 'GetTelescopePierSide':
             self.ui.le_telescopePierSide.setText(str(data['Value']))
 
-    #
-    # stick handling
-    #
-    def setupStickDriver(self):
-        self.stick.setupDriver()
-
     @QtCore.Slot(int)
     def setStickStatus(self, status):
         if status == 1:
@@ -839,12 +732,6 @@ class MountWizzardApp(MwWidget):
         self.ui.le_temperatureStick.setText('{0:4.1f}'.format(data['Temperature']))
         self.ui.le_humidityStick.setText('{0:4.1f}'.format(data['Humidity']))
         self.ui.le_pressureStick.setText('{0:4.1f}'.format(data['Pressure']))
-
-    #
-    # open weather handling
-    #
-    def setupWeatherDriver(self):
-        self.weather.setupDriver()
 
     @QtCore.Slot(int)
     def setWeatherStatus(self, status):
@@ -866,21 +753,6 @@ class MountWizzardApp(MwWidget):
         self.ui.le_rainRateWeather.setText('{0:4.1f}'.format(data['RainRate']))
         self.ui.le_windSpeedWeather.setText('{0:4.1f}'.format(data['WindSpeed']))
         self.ui.le_windDirectionWeather.setText('{0:4.1f}'.format(data['WindDirection']))
-    #
-    # Relay Box Handling
-    #
-
-    def bootMount(self):
-        self.relays.bootMount()
-
-    def switchHeater(self):
-        self.relays.switchHeater()
-
-    def switchCCD(self):
-        self.relays.switchCCD()
-    #
-    # SGPRO and Modelling handling
-    #
 
     def cameraPlateChooser(self):
         if self.ui.rb_cameraSGPro.isChecked():
@@ -907,9 +779,6 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    def setupDomeDriver(self):
-        self.dome.setupDriver()
-
     @QtCore.Slot(int)
     def setDomeStatus(self, status):
         if status == 1:
@@ -919,96 +788,12 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    def setupAscomCameraDriver(self):
-        self.AscomCamera.setupDriverCamera()
-
-    def runBaseModel(self):
-        self.model.signalModelCommand.emit('RunBaseModel')
-
-    def runRefinementModel(self):
-        self.model.signalModelCommand.emit('RunRefinementModel')
-
-    def sortRefinementPoints(self):
-        self.model.signalModelCommand.emit('SortRefinementPoints')
-
-    def deleteBelowHorizonLine(self):
-        self.model.signalModelCommand.emit('DeleteBelowHorizonLine')
-
-    def plateSolveSync(self):
-        self.model.signalModelCommand.emit('PlateSolveSync')
-
-    def deletePoints(self):
-        self.model.signalModelCommand.emit('DeletePoints')
-
-    def clearAlignmentModel(self):
-        self.model.signalModelCommand.emit('ClearAlignmentModel')
-
-    def loadBasePoints(self):
-        self.model.signalModelCommand.emit('LoadBasePoints')
-
-    def loadRefinementPoints(self):
-        self.model.signalModelCommand.emit('LoadRefinementPoints')
-
-    def generateDSOPoints(self):
-        self.model.signalModelCommand.emit('GenerateDSOPoints')
-
-    def generateDensePoints(self):
-        self.model.signalModelCommand.emit('GenerateDensePoints')
-
-    def generateNormalPoints(self):
-        self.model.signalModelCommand.emit('GenerateNormalPoints')
-
-    def generateGridPoints(self):
-        self.model.signalModelCommand.emit('GenerateGridPoints')
-
-    def generateBasePoints(self):
-        self.model.signalModelCommand.emit('GenerateBasePoints')
-
-    def runCheckModel(self):
-        self.model.signalModelCommand.emit('RunCheckModel')
-
-    def runAllModel(self):
-        self.model.signalModelCommand.emit('RunAllModel')
-
-    def cancelModel(self):
-        self.model.signalModelCommand.emit('CancelModel')
-
-    def runBatchModel(self):
-        self.model.signalModelCommand.emit('RunBatchModel')
-
-    def runTimeChangeModel(self):
-        self.model.signalModelCommand.emit('RunTimeChangeModel')
-
-    def cancelAnalyseModel(self):
-        self.model.signalModelCommand.emit('CancelAnalyseModel')
-
-    def runHystereseModel(self):
-        self.model.signalModelCommand.emit('RunHystereseModel')
-
-    def downloadEarthrotation(self):
-        self.commandDataQueue.put('EARTHROTATION')
-
-    def downloadSpacestations(self):
-        self.commandDataQueue.put('SPACESTATIONS')
-
-    def downloadSatbrighest(self):
-        self.commandDataQueue.put('SATBRIGHTEST')
-
-    def downloadAsteroids(self):
-        self.commandDataQueue.put('ASTEROIDS')
-
-    def downloadComets(self):
-        self.commandDataQueue.put('COMETS')
-
     def downloadAll(self):
         self.commandDataQueue.put('EARTHROTATION')
         self.commandDataQueue.put('SPACESTATIONS')
         self.commandDataQueue.put('SATBRIGHTEST')
         self.commandDataQueue.put('ASTEROIDS')
         self.commandDataQueue.put('COMETS')
-
-    def uploadMount(self):
-        self.commandDataQueue.put('UPLOADMOUNT')
 
     def startCamPlateApp(self):
         # subprocess.Popen(['C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe'])
