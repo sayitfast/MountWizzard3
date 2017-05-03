@@ -127,6 +127,7 @@ class MountWizzardApp(MwWidget):
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
 
+    # noinspection PyArgumentList
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
@@ -794,11 +795,6 @@ class MountWizzardApp(MwWidget):
         self.commandDataQueue.put('SATBRIGHTEST')
         self.commandDataQueue.put('ASTEROIDS')
         self.commandDataQueue.put('COMETS')
-
-    def startCamPlateApp(self):
-        # subprocess.Popen(['C:/Program Files (x86)/Sequence Generator/Sequence Generator.exe'])
-        import win32ui
-        print(win32ui.FindWindow('Sequence Generator', 'Sequence Generator'))
 
     def mainLoop(self):
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
