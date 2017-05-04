@@ -85,6 +85,18 @@ class Mount(QtCore.QThread):
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
         self.sendCommandLock = threading.Lock()
 
+    def relayIP(self):
+        value = self.app.ui.le_mountIP.text().split('.')
+        if len(value) != 4:
+            self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
+            self.app.messageQueue.put('Wrong IP configuration for mount, please check!')
+            return
+        v = []
+        for i in range(0, 4):
+            v.append(int(value[i]))
+        ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
+        return ip
+
     def run(self):                                                                                                          # runnable of the thread
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
         try:                                                                                                                # start accessing a com object
@@ -203,7 +215,7 @@ class Mount(QtCore.QThread):
             else:                                                                                                           # when not connected try to connect
                 try:
                     self.ascom = Dispatch(self.driverName)                                                                  # select win32 driver
-                    if self.driverName == 'ASCOM.FrejvallGM.Telescope':                                                     # identify real telescope against simulator
+                    if self.driverName == 'ASCOM.FrejvallGM.Telescope' or self.driverName == 'ASCOM.tenmicron_mount.Telescope':                                                     # identify real telescope against simulator
                         self.driver_real = True                                                                             # set it
                     else:
                         self.driver_real = False                                                                            # set it
@@ -769,7 +781,7 @@ class Mount(QtCore.QThread):
             self.chooser.DeviceType = 'Telescope'
             self.driverName = self.chooser.Choose(self.driverName)
             self.logger.debug('setupDriverMoun-> driver chosen:{0}'.format(self.driverName))
-            if self.driverName == 'ASCOM.FrejvallGM.Telescope':
+            if self.driverName == 'ASCOM.FrejvallGM.Telescope' or self.driverName == 'ASCOM.tenmicron_mount.Telescope':
                 self.driver_real = True
             else:
                 self.driver_real = False

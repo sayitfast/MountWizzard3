@@ -133,7 +133,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
-        self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
+        # self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
         self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
         self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
         self.ui.btn_startTracking.clicked.connect(lambda: self.commandQueue.put('AP'))
@@ -222,7 +222,6 @@ class MountWizzardApp(MwWidget):
         self.ui.rb_cameraSGPro.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
         self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
-        self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
@@ -230,6 +229,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
+        self.ui.btn_selectUpdaterFileName.clicked.connect(self.selectUpdaterFileName)
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -343,7 +343,8 @@ class MountWizzardApp(MwWidget):
             self.ui.azimuthHysterese2.setValue(self.config['AzimuthHysterese2'])
             self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
             self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
-            self.ui.le_ipRelaybox.setText(self.config['IPRelaybox'])
+            self.ui.le_mountIP.setText(self.config['MountIP'])
+            self.ui.le_relayIP.setText(self.config['RelayIP'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.stick.driverName = self.config['ASCOMStickDriverName']
             self.mount.driverName = self.config['ASCOMTelescopeDriverName']
@@ -360,6 +361,9 @@ class MountWizzardApp(MwWidget):
             self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
             self.imagePopup.move(self.config['ImagePopupWindowPositionX'], self.config['ImagePopupWindowPositionY'])
             self.imagePopup.showStatus = self.config['ImagePopupWindowShowStatus']
+            self.ui.rb_directMount.setChecked(self.config['DirectMount'])
+            self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
+            self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -437,7 +441,8 @@ class MountWizzardApp(MwWidget):
         self.config['AzimuthHysterese2'] = self.ui.azimuthHysterese2.value()
         self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
-        self.config['IPRelaybox'] = self.ui.le_ipRelaybox.text()
+        self.config['MountIP'] = self.ui.le_mountIP.text()
+        self.config['RelayIP'] = self.ui.le_relayIP.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMStickDriverName'] = self.stick.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
@@ -446,6 +451,9 @@ class MountWizzardApp(MwWidget):
         self.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
+        self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
+        self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
+        self.config['UpdaterFileName'] = self.ui.le_updaterFileName.text()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -529,6 +537,16 @@ class MountWizzardApp(MwWidget):
             self.model.loadHorizonPoints(os.path.basename(a[0]))
             self.ui.checkUseMinimumHorizonLine.setChecked(False)
             self.coordinatePopup.redrawCoordinateWindow()
+
+    def selectUpdaterFileName(self):
+        dlg = QFileDialog()
+        dlg.setViewMode(QFileDialog.List)
+        dlg.setNameFilter("Application (*.exe)")
+        dlg.setFileMode(QFileDialog.ExistingFile)
+        # noinspection PyArgumentList
+        a = dlg.getOpenFileName(self, 'Open file', 'c:\\', 'Application (*.exe)')
+        if a[0] != '':
+            self.ui.le_updaterFileName.setText(a[0])
 
     def shutdownQuit(self):
         self.saveConfig()

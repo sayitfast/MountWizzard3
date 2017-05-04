@@ -14,6 +14,7 @@
 
 # import basic stuff
 import os
+import sys
 import logging
 from PyQt5 import QtCore
 import time
@@ -40,9 +41,6 @@ class Data(QtCore.QThread):
     SATBRIGHTEST_FILE = 'satbrightest.tle'
     UTC_1_FILE = 'finals.data'
     UTC_2_FILE = 'tai-utc.dat'
-
-    updater_file = 'C:/Program Files (x86)/10micron/Updater/GmQCIv2.exe'
-
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
@@ -127,16 +125,21 @@ class Data(QtCore.QThread):
         return
 
     def uploadMount(self):
+        if not os.path.isfile(self.app.ui.le_updaterFileName.text()):
+            self.logger.error('uploadMount    -> no updater configured')
+            self.app.messageQueue.put('No Path to Updater configured, please check!')
         app = Application(backend='uia')
-        app.start(self.updater_file)                                                                                        # start 10 micro updater
+        app.start(self.app.ui.le_updaterFileName.text())                                                                    # start 10 micro updater
+
         try:
             dialog = timings.WaitUntilPasses(2, 0.5, lambda: findwindows.find_windows(title='GmQCIv2', class_name='#32770')[0])
             winOK = app.window_(handle=dialog)
             winOK['OK'].click()
         except Exception as e:
-            self.logger.error('uploadMount    -> error{0}'.format(e))
+            #self.logger.error('uploadMount    -> error{0}'.format(e))
             # TODO: handle timeout error !
-            self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+            #self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+            pass
         finally:
             pass
         try:
@@ -148,6 +151,10 @@ class Data(QtCore.QThread):
             self.logger.error('uploadMount    -> error{0}'.format(e))
             self.app.messageQueue.put('Error in starting 10micron updater, please check!')
             return
+        ButtonWrapper(win['Orbital parameters of comets']).uncheck()
+        ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
+        ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+        ButtonWrapper(win['UTC / Earth rotation data']).uncheck()
         try:
             uploadNecessary = False
             if self.app.ui.checkComets.isChecked():
@@ -163,22 +170,54 @@ class Data(QtCore.QThread):
             else:
                 ButtonWrapper(win['Orbital parameters of comets']).uncheck()
             if self.app.ui.checkAsteroids.isChecked():
-                ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
+                ButtonWrapper(win['Orbital parameters of asteroids']).check()
+                win['Edit...3'].click()
+                popup = app['Asteroid orbits']
+                popup['MPC file'].click()
+                filedialog = app['Öffnen']      # TODO: english version ?
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.ASTEROIDS_FILE)                            # filename box
+                filedialog['Button16'].click()                                                                              # accept filename selection and proceed
+                popup['Close'].click()
                 uploadNecessary = True
             else:
                 ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
             if self.app.ui.checkSatellites.isChecked():
-                ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+                ButtonWrapper(win['Orbital parameters of satellites']).check()
+                win['Edit...2'].click()
+                popup = app['Satellites orbits']
+                popup['Load from file'].click()
+                filedialog = app['Öffnen']      # TODO: english version ?
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.SATBRIGHTEST_FILE)                         # filename box
+                filedialog['Button16'].click()                                                                              # accept filename selection and proceed
+                popup['Close'].click()
                 uploadNecessary = True
             else:
                 ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
             if self.app.ui.checkSpacestations.isChecked():
-                ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
+                ButtonWrapper(win['Orbital parameters of satellites']).check()
+                win['Edit...2'].click()
+                popup = app['Satellites orbits']
+                popup['Load from file'].click()
+                filedialog = app['Öffnen']      # TODO: english version ?
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.SPACESTATIONS_FILE)                        # filename box
+                filedialog['Button16'].click()                                                                              # accept filename selection and proceed
+                popup['Close'].click()
                 uploadNecessary = True
             else:
                 ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
             if self.app.ui.checkEarthrotation.isChecked():
-                ButtonWrapper(win['UTC / Earth rotation data']).uncheck()
+                ButtonWrapper(win['UTC / Earth rotation data']).check()
+                win['Edit...1'].click()
+                popup = app['UTC / Earth rotation data']
+                popup['Import files...'].click()
+                filedialog = app['Open finals data']      # TODO: english version ?
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.UTC_1_FILE)                               # filename box
+                filedialog['Button16'].click()                                                                              # accept filename selection and proceed
+                filedialog = app['Open tai-utc.dat']      # TODO: english version ?
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.UTC_2_FILE)                               # filename box
+                filedialog['Button16'].click()                                                                              # accept filename selection and proceed
+                fileOK = app['UTC data']
+                fileOK['OK'].click()
                 uploadNecessary = True
             else:
                 ButtonWrapper(win['UTC / Earth rotation data']).uncheck()
@@ -186,7 +225,6 @@ class Data(QtCore.QThread):
             self.logger.error('uploadMount    -> error{0}'.format(e))
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
             return
-
         if uploadNecessary:
             try:
                 win['next'].click()
@@ -197,7 +235,7 @@ class Data(QtCore.QThread):
                 self.app.messageQueue.put('Error in uploading files, please check 10micron updater!')
                 return
             try:
-                dialog = timings.WaitUntilPasses(20, 0.5, lambda: findwindows.find_windows(title='Update completed', class_name='#32770')[0])
+                dialog = timings.WaitUntilPasses(60, 0.5, lambda: findwindows.find_windows(title='Update completed', class_name='#32770')[0])
                 winOK = app.window_(handle=dialog)
                 winOK['OK'].click()
             except Exception as e:
@@ -211,6 +249,36 @@ class Data(QtCore.QThread):
 
 if __name__ == "__main__":
 
+
+    def find_executable(executable, path=None):
+        """Find if 'executable' can be run. Looks for it in 'path'
+        (string that lists directories separated by 'os.pathsep';
+        defaults to os.environ['PATH']). Checks for all executable
+        extensions. Returns full path or None if no command is found.
+        """
+        if path is None:
+            path = os.environ['PATH']
+        paths = path.split(os.pathsep)
+        extlist = ['']
+        pathext = os.environ['PATHEXT'].lower().split(os.pathsep)
+        (base, ext) = os.path.splitext(executable)
+        if ext.lower() not in pathext:
+            extlist = pathext
+        for ext in extlist:
+            execname = executable + ext
+            if os.path.isfile(execname):
+                return execname
+            else:
+                for p in paths:
+                    f = os.path.join(p, execname)
+                    if os.path.isfile(f):
+                        return f
+        else:
+            return None
+
+    print(find_executable('GmQCIv2.exe', 'c:\\'))
+
+    '''
     updater_file = 'C:/Program Files (x86)/10micron/Updater/GmQCIv2.exe'
     app = Application(backend='uia')
     app.start(updater_file)
@@ -245,6 +313,6 @@ if __name__ == "__main__":
     print(winOK)
     print(winOK['OK'])
     winOK['OK'].click()
-
+    '''
 
 

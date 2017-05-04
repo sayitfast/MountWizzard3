@@ -27,10 +27,22 @@ class Relays:
         if self.connected:
             self.requestStatus()
 
+    def relayIP(self):
+        value = self.app.ui.le_relayIP.text().split('.')
+        if len(value) != 4:
+            self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
+            self.app.messageQueue.put('Wrong IP configuration for relay, please check!')
+            return
+        v = []
+        for i in range(0, 4):
+            v.append(int(value[i]))
+        ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
+        return ip
+
     def checkConnection(self):
         connected = False
         try:
-            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text(), None, .5).getcode()
+            request.urlopen('http://' + self.relayIP(), None, .5).getcode()
             connected = True
         except Exception as e:
             connected = False
@@ -61,9 +73,9 @@ class Relays:
 
     def bootMount(self):
         try:
-            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/FF0801')
+            request.urlopen('http://' + self.relayIP() + '/FF0801')
             time.sleep(1)
-            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/FF0800')
+            request.urlopen('http://' + self.relayIP() + '/FF0800')
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchHeater -> error {0}'.format(e))
@@ -72,7 +84,7 @@ class Relays:
 
     def requestStatus(self):
         try:
-            f = request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/status.xml', None, .5)
+            f = request.urlopen('http://' + self.relayIP() + '/status.xml', None, .5)
             self.setStatus(f.read().decode('utf-8'))
         except Exception as e:
             self.logger.error('requestStatus -> error {0}'.format(e))
@@ -81,7 +93,7 @@ class Relays:
 
     def switchAllOff(self):
         try:
-            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/FFE000', None, .5)
+            request.urlopen('http://' + self.relayIP() + '/FFE000', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchAllOff -> error {0}'.format(e))
@@ -90,7 +102,7 @@ class Relays:
 
     def switchCCD(self):
         try:
-            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/relays.cgi?relay=1', None, .5)
+            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay=1', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchCCD -> error {0}'.format(e))
@@ -99,7 +111,7 @@ class Relays:
 
     def switchHeater(self):
         try:
-            request.urlopen('http://' + self.app.ui.le_ipRelaybox.text() + '/relays.cgi?relay=2', None, .5)
+            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay=2', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchHeater -> error {0}'.format(e))
