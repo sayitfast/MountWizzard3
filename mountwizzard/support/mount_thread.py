@@ -390,7 +390,7 @@ class Mount(QtCore.QThread):
         if len(points) > 3:
             a = sorted(points, key=itemgetter(5), reverse=True)                                                             # index 0 is the worst star, index starts with 0
             index = a[0][0]
-            reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))                                                      # numbering in mount starts with 1
+            reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))                                         # numbering in mount starts with 1
             if reply == '1':                                                                                                # worst point could be deleted
                 points, RMS = self.getAlignmentModel()
                 self.app.model.modelData.pop(index)
@@ -548,7 +548,7 @@ class Mount(QtCore.QThread):
         reply = self.mountHandler.sendCommand('GD')
         if reply:
             self.decJnow = self.degStringToDecimal(reply)
-        reply = self.mountHandler.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
+        reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
             self.raJnow = float(ra)
@@ -598,8 +598,8 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                     # refraction temp out of mount
         self.refractionPressure = self.mountHandler.sendCommand('GRPRS')
         self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                    # refraction pressure out of mount
-        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.mountHandler.sendCommand('GTMP1')})                    # temp motor circuit of both axes
-        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                              # get actual slew rate
+        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.mountHandler.sendCommand('GTMP1')})       # temp motor circuit of both axes
+        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.mountHandler.sendCommand('GREF')})
         self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.mountHandler.sendCommand('Guaf')})
         self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.mountHandler.sendCommand('Glmt')})
@@ -609,14 +609,14 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.mountHandler.sendCommand('Go')})
 
     def getStatusOnce(self):                                                                                                # one time updates for settings
-        self.mountHandler.sendCommand('U2')                                                                                              # Set high precision mode
-        self.site_height = self.mountHandler.sendCommand('Gev')                                                                          # site height
-        lon1 = self.mountHandler.sendCommand('Gg')                                                                                       # get site lon
+        self.mountHandler.sendCommand('U2')                                                                                 # Set high precision mode
+        self.site_height = self.mountHandler.sendCommand('Gev')                                                             # site height
+        lon1 = self.mountHandler.sendCommand('Gg')                                                                          # get site lon
         if lon1[0] == '-':                                                                                                  # due to compatibility to LX200 protocol east is negative
             self.site_lon = lon1.replace('-', '+')                                                                          # change that
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
-        self.site_lat = self.mountHandler.sendCommand('Gt')                                                                              # get site latitude
+        self.site_lat = self.mountHandler.sendCommand('Gt')                                                                 # get site latitude
         self.transform.Refraction = False                                                                                   # set parameter for ascom nova library
         self.transform.SiteElevation = float(self.site_height)                                                              # height
         self.transform.SiteLatitude = self.degStringToDecimal(self.site_lat)                                                # site lat
@@ -629,7 +629,7 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.mountHandler.sendCommand('GVP')})
         self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.mountHandler.sendCommand('GVT')})
         self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.mountHandler.sendCommand('GVZ')})
-        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                                       # firmware version for checking
+        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                          # firmware version for checking
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height

@@ -522,11 +522,11 @@ class Model(QtCore.QThread):
                     refinePoints[i]['index'] += len(self.modelData)
                 self.modelData = self.modelData + refinePoints
                 self.modelData = self.app.mount.retrofitMountData(self.modelData)
-                name = directory + '_refinement.dat'                                                                            # generate name of analyse file
+                name = directory + '_refinement.dat'                                                                        # generate name of analyse file
                 if len(self.modelData) > 0:
-                    self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
-                    self.analyse.saveData(self.modelData, name)                                                                 # save the data
-                    self.app.mount.saveRefinementModel()                                                                        # and saving the model in the mount
+                    self.app.ui.le_analyseFileName.setText(name)                                                            # set data name in GUI to start over quickly
+                    self.analyse.saveData(self.modelData, name)                                                             # save the data
+                    self.app.mount.saveRefinementModel()                                                                    # and saving the model in the mount
             else:
                 self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
         else:
@@ -778,9 +778,9 @@ class Model(QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
-        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
-        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
-        reply = self.app.mount.mountHandler.sendCommand('CMS')                                                                           # send sync command (regardless what driver tells)
+        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
+        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
+        reply = self.app.mount.mountHandler.sendCommand('CMS')                                                              # send sync command (regardless what driver tells)
         if reply == 'E':                                                                                                    # 'E' says star could not be added
             self.logger.error('addRefinementSt-> error adding star')
             return False
@@ -790,16 +790,16 @@ class Model(QtCore.QThread):
 
     def syncMountModel(self, ra, dec):                                                                                      # add refinement star during model run
         self.logger.debug('syncMountModel -> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
-        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
-        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
+        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
+        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
         self.app.mount.mountHandler.sendCommand('CMCFG0')
-        reply = self.app.mount.mountHandler.sendCommand('CM')                                                                            # send sync command (regardless what driver tells)
+        reply = self.app.mount.mountHandler.sendCommand('CM')                                                               # send sync command (regardless what driver tells)
         if reply[:5] == 'Coord':
             self.logger.debug('syncMountModel -> mount model synced')
             return True
         else:
             self.logger.error('syncMountModel -> error in sync mount model')
-            return False                                                                                                     # simulation OK
+            return False                                                                                                    # simulation OK
 
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
