@@ -43,7 +43,6 @@ class Mount(QtCore.QThread):
         self.MountAscom = MountAscom(app)                                                                                   # set ascom driver class
         self.MountIpDirect = MountIpDirect(app)
         self.mountHandler = self.MountAscom
-        self.mountDriverChooser()
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
                                 '2': 'Slewing to park position',
