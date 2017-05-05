@@ -73,7 +73,7 @@ class Model(QtCore.QThread):
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
-            if self.connected and self.app.mount.connected:
+            if self.connected and self.app.mount.mountHandler.connected:
                 if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                     self.command = ''                                                                                       # only one command at a time, last wins
                     self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
@@ -600,7 +600,7 @@ class Model(QtCore.QThread):
             return
         self.app.mount.saveBackupModel()
         self.app.modelLogQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))      # Gui Output
-        self.app.mount.sendCommand('newalig')
+        self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output
         for i in range(0, len(data['index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.mount.decimalToDegree(data['ra_Jnow'][i], False, True),
@@ -609,14 +609,14 @@ class Model(QtCore.QThread):
                                                               self.app.mount.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
                                                               self.app.mount.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
                                                               self.app.mount.decimalToDegree(data['sidereal_time_float'][i], False, True))
-            reply = self.app.mount.sendCommand(command)
+            reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
                 self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                   # Gui Output
             else:
                 self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
                                            .format(self.timeStamp(), reply, int(data['azimuth'][i]), int(data['altitude'][i])))  # Gui Output
-        reply = self.app.mount.sendCommand('endalig')
+        reply = self.app.mount.mountHandler.sendCommand('endalig')
         if reply == 'V':
             self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                      # Gui Output
             self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
@@ -778,9 +778,9 @@ class Model(QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
-        self.app.mount.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
-        self.app.mount.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
-        reply = self.app.mount.sendCommand('CMS')                                                                           # send sync command (regardless what driver tells)
+        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
+        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
+        reply = self.app.mount.mountHandler.sendCommand('CMS')                                                                           # send sync command (regardless what driver tells)
         if reply == 'E':                                                                                                    # 'E' says star could not be added
             self.logger.error('addRefinementSt-> error adding star')
             return False
@@ -790,10 +790,10 @@ class Model(QtCore.QThread):
 
     def syncMountModel(self, ra, dec):                                                                                      # add refinement star during model run
         self.logger.debug('syncMountModel -> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
-        self.app.mount.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
-        self.app.mount.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
-        self.app.mount.sendCommand('CMCFG0')
-        reply = self.app.mount.sendCommand('CM')                                                                            # send sync command (regardless what driver tells)
+        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                                      # Write jnow ra to mount
+        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                                     # Write jnow dec to mount
+        self.app.mount.mountHandler.sendCommand('CMCFG0')
+        reply = self.app.mount.mountHandler.sendCommand('CM')                                                                            # send sync command (regardless what driver tells)
         if reply[:5] == 'Coord':
             self.logger.debug('syncMountModel -> mount model synced')
             return True

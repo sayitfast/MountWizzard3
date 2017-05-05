@@ -17,6 +17,8 @@ import logging
 import time
 import math
 import threading
+#  mount driver classes
+from support.mount_ascom import MountAscom
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
 from win32com.client.dynamic import Dispatch
@@ -37,7 +39,8 @@ class Mount(QtCore.QThread):
     def __init__(self, app):
         super().__init__()                                                                                                  # init of the class parent with super
         self.app = app                                                                                                      # accessing ui object from mount class
-
+        self.MountAscom = MountAscom(app)                                                                                   # set ascom driver class
+        self.mountHandler = self.MountAscom
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
                                 '2': 'Slewing to park position',
@@ -73,19 +76,11 @@ class Mount(QtCore.QThread):
         self.refractionTemp = '20.0'                                                                                        # coordinate transformation need temp
         self.refractionPressure = '900.0'                                                                                   # and pressure
         self.transform = None                                                                                               # ascom novas library entry point
-        self.ascom = None                                                                                                   # ascom mount driver entry point
         self.counter = 0                                                                                                    # counter im main loop
-        self.connected = False                                                                                              # connection status
         self.transformConnected = False
-        self.driverName = 'ASCOM.FrejvallGM.Telescope'                                                                      # default driver name is Per's driver
-        self.chooser = None                                                                                                 # object space
-        self.driver_real = False                                                                                            # identifier, if data is real (or simulation
-        self.value_azimuth = 0.0                                                                                            # object for Sz command
-        self.value_altitude = 0.0                                                                                           # object for Sa command
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
-        self.sendCommandLock = threading.Lock()
 
-    def relayIP(self):
+    def mountIP(self):
         value = self.app.ui.le_mountIP.text().split('.')
         if len(value) != 4:
             self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
@@ -107,11 +102,11 @@ class Mount(QtCore.QThread):
             self.logger.error('run Mount      -> loading ASCOM transform error:{0}'.format(e))                              # write logfile
         finally:                                                                                                            # we don't stop on error the wizzard
             pass                                                                                                            # python specific
-        self.connected = False                                                                                              # init of connection status
+        self.mountHandler.connected = False                                                                                 # init of connection status
         self.counter = 0                                                                                                    # init count for managing different cycle times
         while True:                                                                                                         # main loop in thread
-            self.signalMountConnected.emit(self.connected)                                                                  # sending the connection status
-            if self.connected:                                                                                              # when connected, starting the work
+            self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status
+            if self.mountHandler.connected:                                                                                              # when connected, starting the work
                 if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
                     command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
                     if command == 'ShowAlignmentModel':                                                                     # checking which command was sent
@@ -129,7 +124,7 @@ class Mount(QtCore.QThread):
                         if num == -1:
                             self.app.messageQueue.put('Clear Align not available without real mount')
                         else:
-                            self.sendCommand('delalig')
+                            self.mountHandler.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
                         ok, num = self.testBaseModelAvailable()
                         if num == -1:
@@ -199,7 +194,7 @@ class Mount(QtCore.QThread):
                     elif command == 'FLIP':
                         self.flipMount()
                     else:
-                        self.sendCommand(command)                                                                           # doing the command directly to mount (no method necessary)
+                        self.mountHandler.sendCommand(command)                                                              # doing the command directly to mount (no method necessary)
                     self.app.commandQueue.task_done()
                 else:                                                                                                       # if not connected, the we should do this
                     if self.counter == 0:                                                                                   # jobs once done at the beginning
@@ -213,141 +208,15 @@ class Mount(QtCore.QThread):
                 time.sleep(0.2)                                                                                             # time base is 200 ms
                 self.counter += 1                                                                                           # increasing counter for selection
             else:                                                                                                           # when not connected try to connect
-                try:
-                    self.ascom = Dispatch(self.driverName)                                                                  # select win32 driver
-                    if self.driverName == 'ASCOM.FrejvallGM.Telescope' or self.driverName == 'ASCOM.tenmicron_mount.Telescope':                                                     # identify real telescope against simulator
-                        self.driver_real = True                                                                             # set it
-                    else:
-                        self.driver_real = False                                                                            # set it
-                    self.ascom.connected = True                                                                             # connect to mount
-                    self.connected = True                                                                                   # setting connection status from driver
-                    self.counter = 0                                                                                        # whenever reconnect, then start from scratch
-                except Exception as e:                                                                                      # error handling
-                    if self.driverName != '':                                                                               # if driver is not empty, than error messages
-                        self.logger.error('run Mount      -> Driver COM Error in dispatchMount: {0}'.format(e))             # to logger
-                    self.connected = False                                                                                  # connection broken
-                finally:                                                                                                    # we don't stop, but try it again
-                    time.sleep(1)                                                                                           # try it every second, not more
-        self.ascom.Quit()                                                                                                   # close ascom mount object
+                self.mountHandler.connect()
+                time.sleep(1)                                                                                               # try it every second, not more
         self.transform.Quit()                                                                                               # close ascom novas transform object
+        self.mountHandler.disconnect()
         pythoncom.CoUninitialize()                                                                                          # needed for doing COM objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread
         self.wait()                                                                                                         # wait for stop of thread
-
-    def sendCommand(self, command):                                                                                         # core routine for sending commands to mount
-        reply = ''                                                                                                          # reply is empty
-        self.sendCommandLock.acquire()
-        if self.driver_real and self.connected:
-            try:                                                                                                            # all with error handling
-                if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                                 # these are the commands, which do not expect a return value
-                    self.ascom.CommandBlind(command)                                                                        # than do blind command
-                else:                                                                                                       #
-                    reply = self.ascom.CommandString(command)                                                               # with return value do regular command
-            except pythoncom.com_error as e:                                                                                # error handling
-                self.app.messageQueue.put('Driver COM Error in sendCommand')                                                # gui
-                self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger
-                self.connected = False                                                                                      # in case of error, the connection might be broken
-            finally:                                                                                                        # we don't stop
-                if len(reply) > 0:                                                                                          # if there is a reply
-                    value = reply.rstrip('#').strip()                                                                       # return the value
-                    if command == 'CMS':
-                        self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
-                else:                                                                                                       #
-                    if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                             # these are the commands, which do not expect a return value
-                        value = ''                                                                                          # nothing
-                    else:
-                        value = '0'
-            self.sendCommandLock.release()
-            return value
-        else:                                                                                                               # from here we doing the simulation for 10micron mounts commands
-            value = ''
-            if command == 'Gev':                                                                                            # which are special, but only for the most important for MW to run
-                value = str(self.ascom.SiteElevation)
-            elif command == 'Gmte':
-                value = '0125'
-            elif command == 'Gt':
-                value = self.decimalToDegree(self.ascom.SiteLatitude, True, False)
-            elif command == 'Gg':
-                lon = self.decimalToDegree(self.ascom.SiteLongitude, True, False)
-                if lon[0] == '-':                                                                                           # due to compatibility to LX200 protocol east is negative
-                    lon1 = lon.replace('-', '+')                                                                            # change that
-                else:
-                    lon1 = lon.replace('+', '-')                                                                            # and vice versa
-                value = lon1
-            elif command.startswith('Sz'):
-                self.value_azimuth = float(command[2:5]) + float(command[6:8]) / 60
-            elif command.startswith('Sa'):
-                self.value_altitude = float(command[2:5]) + float(command[6:8]) / 60
-            elif command == 'MS':
-                self.ascom.Tracking = False
-                self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
-                self.ascom.Tracking = True
-            elif command == 'MA':
-                self.ascom.Tracking = False
-                self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
-                self.ascom.Tracking = False
-            elif command == 'GS':
-                value = self.decimalToDegree(self.ascom.SiderealTime, False, False)
-            elif command == 'GRTMP':
-                value = '10.0'
-            elif command == 'Ginfo':
-                self.raJnow = self.ascom.RightAscension
-                self.decJnow = self.ascom.Declination
-                az = self.ascom.Azimuth
-                alt = self.ascom.Altitude
-                if self.ascom.Slewing:
-                    stat = 6
-                else:
-                    if self.ascom.Tracking:
-                        stat = 0
-                    else:
-                        stat = 7
-                jd = self.ascom.SiderealTime + 2440587.5
-                if self.ascom.SideOfPier == 0:
-                    pierside = 'E'
-                else:
-                    pierside = 'W'
-                if self.ascom.Slewing:
-                    slew = 1
-                else:
-                    slew = 0
-                value = '{0},{1},{2},{3},{4},{5},{6},{7}#'.format(self.raJnow, self.decJnow, pierside, az, alt, jd, stat, slew)
-            elif command == 'PO':
-                self.ascom.Unpark()
-            elif command == 'hP':
-                self.ascom.Park()
-            elif command == 'AP':
-                self.ascom.Tracking = True
-            elif command == 'RT9':
-                self.ascom.Tracking = False
-            elif command == 'GTMP1':
-                value = '10.0'
-            elif command == 'GRPRS':
-                value = '990.0'
-            elif command == 'Guaf':
-                value = '0'
-            elif command == 'GMs':
-                value = '15'
-            elif command == 'Gh':
-                value = '90'
-            elif command == 'Go':
-                value = '00'
-            elif command == 'Gdat':
-                value = '0'
-            elif command in ['GVD', 'GVN', 'GVP', 'GVT', 'GVZ']:
-                value = 'Simulation'
-            elif command == 'GREF':
-                value = '1'
-            elif command == 'CMS':
-                value = 'V'
-            elif command == 'getalst':
-                value = '-1'
-            else:
-                value = '0'
-        self.sendCommandLock.release()
-        return value
 
     def transformNovas(self, ra, dec, transform=1):                                                                         # wrapper for the novas ascom implementation
         self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
@@ -391,7 +260,7 @@ class Mount(QtCore.QThread):
         return val1, val2
 
     def flipMount(self):                                                                                                    # doing the flip of the mount
-        reply = self.sendCommand('FLIP').rstrip('#').strip()
+        reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
             self.app.messageQueue.put('Flip Mount could not be executed !')                                                 # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
@@ -450,7 +319,7 @@ class Mount(QtCore.QThread):
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
     def testBaseModelAvailable(self):
-        number = int(self.sendCommand('getalst'))
+        number = int(self.mountHandler.sendCommand('getalst'))
         if number > 2:
             return True, number
         else:
@@ -463,7 +332,7 @@ class Mount(QtCore.QThread):
         if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
             return points, 0
         for i in range(1, numberStars + 1):                                                                                 # otherwise download them step for step
-            reply = self.sendCommand('getalp{0:d}'.format(i)).split(',')
+            reply = self.mountHandler.sendCommand('getalp{0:d}'.format(i)).split(',')
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             errorRMS = float(reply[2].strip())
@@ -521,7 +390,7 @@ class Mount(QtCore.QThread):
         if len(points) > 3:
             a = sorted(points, key=itemgetter(5), reverse=True)                                                             # index 0 is the worst star, index starts with 0
             index = a[0][0]
-            reply = self.sendCommand('delalst{0:d}'.format(index + 1))                                                      # numbering in mount starts with 1
+            reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))                                                      # numbering in mount starts with 1
             if reply == '1':                                                                                                # worst point could be deleted
                 points, RMS = self.getAlignmentModel()
                 self.app.model.modelData.pop(index)
@@ -539,8 +408,8 @@ class Mount(QtCore.QThread):
         if num == -1:
             self.app.messageQueue.put('Save Model not available without real mount')
             return False
-        self.sendCommand('modeldel0' + target)
-        reply = self.sendCommand('modelsv0' + target)
+        self.mountHandler.sendCommand('modeldel0' + target)
+        reply = self.mountHandler.sendCommand('modelsv0' + target)
         if reply == '1':
             self.app.messageQueue.put('Actual Mount Model saved to {0}'.format(target))
             return True
@@ -553,7 +422,7 @@ class Mount(QtCore.QThread):
         if num == -1:
             self.app.messageQueue.put('Load Model not available without real mount')
             return False
-        reply = self.sendCommand('modelld0' + target)
+        reply = self.mountHandler.sendCommand('modelld0' + target)
         if reply == '1':
             self.app.messageQueue.put('Actual Mount Model loaded from {0}'.format(target))
             return True
@@ -657,31 +526,33 @@ class Mount(QtCore.QThread):
         temperature = float(self.app.ui.le_temperatureStick.text() + '0')
         # noinspection PyTypeChecker
         if (900 < pressure < 1100) and (-40.0 < temperature < 50.0) and self.app.stick.connected == 1:
-            self.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
+            self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
             if temperature > 0:
-                self.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
+                self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
             else:
-                self.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperatureStick.text())))
-            self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.sendCommand('GRTMP')})
-            self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.sendCommand('GRPRS')})
+                self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperatureStick.text())))
+            self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
+            self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
         else:
             self.logger.error('setRefractionPa-> parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
             self.logger.error('setRefractionPa-> parameters out of range ! driver:{0} object:{1}'.format(self.app.stick.driverName, self.app.stick.ascom))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
-        reply = self.sendCommand('GS')
+        reply = self.mountHandler.sendCommand('GS')
         if reply:
             self.sidereal_time = reply.strip('#')
             self.app.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                # Sidereal local time
-        reply = self.sendCommand('GR')
+        reply = self.mountHandler.sendCommand('GR')
         if reply:
             self.raJnow = self.degStringToDecimal(reply)
-        reply = self.sendCommand('GD')
+        reply = self.mountHandler.sendCommand('GD')
         if reply:
             self.decJnow = self.degStringToDecimal(reply)
-        reply = self.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
+        reply = self.mountHandler.sendCommand('Ginfo')                                                                                   # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
+            self.raJnow = float(ra)
+            self.decJnow = float(dec)
             self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
             self.az = float(az)                                                                                             # same to azimuth
             self.alt = float(alt)                                                                                           # and altitude
@@ -700,11 +571,11 @@ class Mount(QtCore.QThread):
             else:                                                                                                           #
                 self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                              # Transfer to Text for GUI
             self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
-            self.timeToFlip = int(float(self.sendCommand('Gmte')))
-            self.meridianLimitTrack = int(float(self.sendCommand('Glmt')))
+            self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
+            self.meridianLimitTrack = int(float(self.mountHandler.sendCommand('Glmt')))
             self.timeToMeridian = int(self.timeToFlip - self.meridianLimitTrack / 360 * 24 * 60)
             self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.meridianLimitTrack})
-            self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': int(float(self.sendCommand('Glms')))})
+            self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': int(float(self.mountHandler.sendCommand('Glms')))})
             self.app.mountDataQueue.put({'Name': 'GetTimeToFlip', 'Value': self.timeToFlip})                                # Flip time
             self.app.mountDataQueue.put({'Name': 'GetTimeToMeridian', 'Value': self.timeToMeridian})                        # Time to meridian
 
@@ -721,31 +592,31 @@ class Mount(QtCore.QThread):
         self.signalMountTrackPreview.emit()
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
-        self.timeToFlip = self.sendCommand('Gmte')
+        self.timeToFlip = self.mountHandler.sendCommand('Gmte')
         self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                           # Flip time
-        self.refractionTemp = self.sendCommand('GRTMP')
+        self.refractionTemp = self.mountHandler.sendCommand('GRTMP')
         self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                     # refraction temp out of mount
-        self.refractionPressure = self.sendCommand('GRPRS')
+        self.refractionPressure = self.mountHandler.sendCommand('GRPRS')
         self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                    # refraction pressure out of mount
-        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.sendCommand('GTMP1')})                    # temp motor circuit of both axes
-        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.sendCommand('GMs')})                              # get actual slew rate
-        self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.sendCommand('GREF')})
-        self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.sendCommand('Guaf')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.sendCommand('Glmt')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': self.sendCommand('Glms')})
-        self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.sendCommand('Gdat')})
-        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.sendCommand('Gh')})
-        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.sendCommand('Go')})
+        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.mountHandler.sendCommand('GTMP1')})                    # temp motor circuit of both axes
+        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                              # get actual slew rate
+        self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.mountHandler.sendCommand('GREF')})
+        self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.mountHandler.sendCommand('Guaf')})
+        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.mountHandler.sendCommand('Glmt')})
+        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': self.mountHandler.sendCommand('Glms')})
+        self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.mountHandler.sendCommand('Gdat')})
+        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.mountHandler.sendCommand('Gh')})
+        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.mountHandler.sendCommand('Go')})
 
     def getStatusOnce(self):                                                                                                # one time updates for settings
-        self.sendCommand('U2')                                                                                              # Set high precision mode
-        self.site_height = self.sendCommand('Gev')                                                                          # site height
-        lon1 = self.sendCommand('Gg')                                                                                       # get site lon
+        self.mountHandler.sendCommand('U2')                                                                                              # Set high precision mode
+        self.site_height = self.mountHandler.sendCommand('Gev')                                                                          # site height
+        lon1 = self.mountHandler.sendCommand('Gg')                                                                                       # get site lon
         if lon1[0] == '-':                                                                                                  # due to compatibility to LX200 protocol east is negative
             self.site_lon = lon1.replace('-', '+')                                                                          # change that
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
-        self.site_lat = self.sendCommand('Gt')                                                                              # get site latitude
+        self.site_lat = self.mountHandler.sendCommand('Gt')                                                                              # get site latitude
         self.transform.Refraction = False                                                                                   # set parameter for ascom nova library
         self.transform.SiteElevation = float(self.site_height)                                                              # height
         self.transform.SiteLatitude = self.degStringToDecimal(self.site_lat)                                                # site lat
@@ -753,12 +624,12 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                         # write data to GUI
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.sendCommand('GVD')})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.sendCommand('GVN')})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.sendCommand('GVP')})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.sendCommand('GVT')})
-        self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.sendCommand('GVZ')})
-        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.sendCommand('GVN')))                                       # firmware version for checking
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.mountHandler.sendCommand('GVD')})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.mountHandler.sendCommand('GVN')})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.mountHandler.sendCommand('GVP')})
+        self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.mountHandler.sendCommand('GVT')})
+        self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.mountHandler.sendCommand('GVZ')})
+        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                                       # firmware version for checking
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
@@ -774,21 +645,3 @@ class Mount(QtCore.QThread):
                                                  'azimuth': float(points[i][3]),
                                                  'altitude': float(points[i][4])})
         self.showAlignmentModel(points, RMS)                                                                                # show data
-
-    def setupDriver(self):
-        try:
-            self.chooser = Dispatch('ASCOM.Utilities.Chooser')
-            self.chooser.DeviceType = 'Telescope'
-            self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverMoun-> driver chosen:{0}'.format(self.driverName))
-            if self.driverName == 'ASCOM.FrejvallGM.Telescope' or self.driverName == 'ASCOM.tenmicron_mount.Telescope':
-                self.driver_real = True
-            else:
-                self.driver_real = False
-            self.connected = False                                                                                          # run the driver setup dialog
-        except Exception as e:                                                                                              # general exception
-            self.app.messageQueue.put('Driver Exception in setupMount')                                                         # write to gui
-            self.logger.error('setupDriver Mount -> general exception:{0}'.format(e))                                       # write to log
-            self.connected = False                                                                                          # set to disconnected
-        finally:                                                                                                            # won't stop the program, continue
-            return

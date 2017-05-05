@@ -158,7 +158,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupMountDriver.clicked.connect(lambda: self.mount.setupDriver())
+        self.ui.btn_setupMountDriver.clicked.connect(lambda: self.mount.MountAscom.setupDriver())
         self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
         self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
         self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
@@ -347,7 +347,7 @@ class MountWizzardApp(MwWidget):
             self.ui.le_relayIP.setText(self.config['RelayIP'])
             self.dome.driverName = self.config['ASCOMDomeDriverName']
             self.stick.driverName = self.config['ASCOMStickDriverName']
-            self.mount.driverName = self.config['ASCOMTelescopeDriverName']
+            self.mount.MountAscom.driverName = self.config['ASCOMTelescopeDriverName']
             self.weather.driverName = self.config['ASCOMWeatherDriverName']
             self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
             self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
@@ -445,7 +445,7 @@ class MountWizzardApp(MwWidget):
         self.config['RelayIP'] = self.ui.le_relayIP.text()
         self.config['ASCOMDomeDriverName'] = self.dome.driverName
         self.config['ASCOMStickDriverName'] = self.stick.driverName
-        self.config['ASCOMTelescopeDriverName'] = self.mount.driverName
+        self.config['ASCOMTelescopeDriverName'] = self.mount.MountAscom.driverName
         self.config['ASCOMWeatherDriverName'] = self.weather.driverName
         self.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
         self.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
