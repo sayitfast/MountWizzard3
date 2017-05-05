@@ -61,7 +61,7 @@ class MountIpDirect:
         pass
 
     def commandString(self, command):
-        return 0
+        return command
 
     def sendCommand(self, command):                                                                                         # core routine for sending commands to mount
         reply = ''                                                                                                          # reply is empty

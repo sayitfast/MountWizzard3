@@ -30,6 +30,10 @@ import pyfits
 from operator import itemgetter
 # for data storing
 from support.analyse import Analyse
+# for handling camera and plate solving interface
+from support.sgpro import SGPro
+from support.theskyx import TheSkyX
+from support.ascom_camera import AscomCamera
 
 
 class Model(QtCore.QThread):
@@ -46,9 +50,11 @@ class Model(QtCore.QThread):
     def __init__(self, app):
         super().__init__()
         self.app = app                                                                                                      # class reference for dome control
-
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
-
+        self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
+        self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
+        self.AscomCamera = AscomCamera(self)
+        self.cpObject = None
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
         self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
@@ -212,7 +218,7 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusSlow(self):                                                                                                # check SGPro running
-        suc, mes = self.app.cpObject.checkConnection()                                                                      # check status of cpObject
+        suc, mes = self.cpObject.checkConnection()                                                                      # check status of cpObject
         self.connected = suc                                                                                                # set status for internal use
         self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
         if not suc:                                                                                                         # otherwise
@@ -220,6 +226,23 @@ class Model(QtCore.QThread):
 
     def getStatusFast(self):                                                                                                # fast status
         pass                                                                                                                # actually no fast status
+
+    def cameraPlateChooser(self):
+        if self.app.ui.rb_cameraSGPro.isChecked():
+            self.cpObject = self.SGPro
+            self.app.imagePopup.showStatus = False
+            self.app.imagePopup.setVisible(False)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
+        elif self.app.ui.rb_cameraTSX.isChecked():
+            self.cpObject = self.TheSkyX
+            self.app.imagePopup.showStatus = False
+            self.app.imagePopup.setVisible(False)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
+        elif self.app.ui.rb_cameraASCOM.isChecked():
+            self.cpObject = self.AscomCamera
+            self.app.imagePopup.showStatus = True
+            self.app.imagePopup.setVisible(True)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
 
     @staticmethod
     def timeStamp():
@@ -429,7 +452,7 @@ class Model(QtCore.QThread):
         modelData = {}
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
         modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/platesolvesync'                         # define subdirectory for storing the images
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.cpObject.getCameraProps()                                 # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                 # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
@@ -689,7 +712,7 @@ class Model(QtCore.QThread):
         else:
             pierside_fits_header = 'W'
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
-        suc, mes, modelData = self.app.cpObject.getImage(modelData)                                                         # imaging app specific abstraction
+        suc, mes, modelData = self.cpObject.getImage(modelData)                                                         # imaging app specific abstraction
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -747,7 +770,7 @@ class Model(QtCore.QThread):
         modelData['usefitsheaders'] = True
         if modeltype == 'Base':
             modelData['blind'] = False
-        suc, mes, modelData = self.app.cpObject.solveImage(modelData)                                                       # abstraction of solver for image
+        suc, mes, modelData = self.cpObject.solveImage(modelData)                                                       # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
@@ -810,7 +833,7 @@ class Model(QtCore.QThread):
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory                           # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.cpObject.getCameraProps()                                 # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                 # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data

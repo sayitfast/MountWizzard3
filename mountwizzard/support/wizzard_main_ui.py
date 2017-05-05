@@ -3371,8 +3371,8 @@ class Ui_WizzardMainDialog(object):
         self.btn_driverStickConnected.setObjectName("btn_driverStickConnected")
 
         self.retranslateUi(WizzardMainDialog)
-        self.tabWidget.setCurrentIndex(0)
-        self.tabWidget_2.setCurrentIndex(0)
+        self.tabWidget.setCurrentIndex(5)
+        self.tabWidget_2.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(WizzardMainDialog)
         WizzardMainDialog.setTabOrder(self.btn_setDualTracking, self.btn_setUnattendedFlip)
         WizzardMainDialog.setTabOrder(self.btn_setUnattendedFlip, self.altitudeBase)

@@ -42,10 +42,7 @@ from support.weather_thread import Weather
 from support.stick_thread import Stick
 from support.relays import Relays
 from support.data_thread import Data
-# for handling camera and plate solving interface
-from support.sgpro import SGPro
-from support.theskyx import TheSkyX
-from support.ascom_camera import AscomCamera
+
 # matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -90,9 +87,6 @@ class MountWizzardApp(MwWidget):
         self.stick = Stick(self)                                                                                            # Stickstation Thread
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.data = Data(self)                                                                                              # data thread for downloading topics
-        self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
-        self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = AscomCamera(self)
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
@@ -102,14 +96,8 @@ class MountWizzardApp(MwWidget):
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)                                                                                  # add widget to view
         self.loadConfig()
-        self.cpAppHandler = None
-        if self.ui.rb_cameraSGPro.isChecked():
-            self.cpObject = self.SGPro
-        elif self.ui.rb_cameraTSX.isChecked():
-            self.cpObject = self.TheSkyX
-        elif self.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.AscomCamera
-        self.cameraPlateChooser()
+        self.model.cameraPlateChooser()
+        self.mount.mountDriverChooser()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
@@ -219,9 +207,9 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_bootMount.clicked.connect(lambda: self.relays.bootMount())
         self.ui.btn_switchCCD.clicked.connect(lambda: self.relays.switchCCD())
         self.ui.btn_switchHeater.clicked.connect(lambda: self.relays.switchHeater())
-        self.ui.rb_cameraSGPro.clicked.connect(self.cameraPlateChooser)
-        self.ui.rb_cameraTSX.clicked.connect(self.cameraPlateChooser)
-        self.ui.rb_cameraASCOM.clicked.connect(self.cameraPlateChooser)
+        self.ui.rb_cameraSGPro.clicked.connect(self.model.cameraPlateChooser)
+        self.ui.rb_cameraTSX.clicked.connect(self.model.cameraPlateChooser)
+        self.ui.rb_cameraASCOM.clicked.connect(self.model.cameraPlateChooser)
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
@@ -230,6 +218,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
         self.ui.btn_selectUpdaterFileName.clicked.connect(self.selectUpdaterFileName)
+        self.ui.rb_ascomMount.clicked.connect(self.mount.mountDriverChooser)
+        self.ui.rb_directMount.clicked.connect(self.mount.mountDriverChooser)
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -349,8 +339,8 @@ class MountWizzardApp(MwWidget):
             self.stick.driverName = self.config['ASCOMStickDriverName']
             self.mount.MountAscom.driverName = self.config['ASCOMTelescopeDriverName']
             self.weather.driverName = self.config['ASCOMWeatherDriverName']
-            self.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
-            self.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
+            self.model.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
+            self.model.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
             self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             self.analysePopup.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
             self.analysePopup.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
@@ -447,8 +437,8 @@ class MountWizzardApp(MwWidget):
         self.config['ASCOMStickDriverName'] = self.stick.driverName
         self.config['ASCOMTelescopeDriverName'] = self.mount.MountAscom.driverName
         self.config['ASCOMWeatherDriverName'] = self.weather.driverName
-        self.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
-        self.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
+        self.config['ASCOMCameraDriverName'] = self.model.AscomCamera.driverNameCamera
+        self.config['ASCOMPlateSolverDriverName'] = self.model.AscomCamera.driverNamePlateSolver
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
@@ -772,23 +762,6 @@ class MountWizzardApp(MwWidget):
         self.ui.le_rainRateWeather.setText('{0:4.1f}'.format(data['RainRate']))
         self.ui.le_windSpeedWeather.setText('{0:4.1f}'.format(data['WindSpeed']))
         self.ui.le_windDirectionWeather.setText('{0:4.1f}'.format(data['WindDirection']))
-
-    def cameraPlateChooser(self):
-        if self.ui.rb_cameraSGPro.isChecked():
-            self.cpObject = self.SGPro
-            self.imagePopup.showStatus = False
-            self.imagePopup.setVisible(False)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
-        elif self.ui.rb_cameraTSX.isChecked():
-            self.cpObject = self.TheSkyX
-            self.imagePopup.showStatus = False
-            self.imagePopup.setVisible(False)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
-        elif self.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.AscomCamera
-            self.imagePopup.showStatus = True
-            self.imagePopup.setVisible(True)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
 
     @QtCore.Slot(bool)
     def setCameraPlateStatus(self, status):
