@@ -158,7 +158,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupMountDriver.clicked.connect(lambda: self.mount.MountAscom.setupDriver())
+        self.ui.btn_setupMountDriver.clicked.connect(lambda: self.commandQueue.put('SetupAscomDriver'))
         self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
         self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
         self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
@@ -786,7 +786,6 @@ class MountWizzardApp(MwWidget):
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.AscomCamera
-            # self.cpObject.connectCameraPlateSolver()                                                                        # automatic connect when selected
             self.imagePopup.showStatus = True
             self.imagePopup.setVisible(True)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')

@@ -19,6 +19,7 @@ import math
 import threading
 #  mount driver classes
 from support.mount_ascom import MountAscom
+from support.mount_ipdirect import MountIpDirect
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
 from win32com.client.dynamic import Dispatch
@@ -40,7 +41,9 @@ class Mount(QtCore.QThread):
         super().__init__()                                                                                                  # init of the class parent with super
         self.app = app                                                                                                      # accessing ui object from mount class
         self.MountAscom = MountAscom(app)                                                                                   # set ascom driver class
+        self.MountIpDirect = MountIpDirect(app)
         self.mountHandler = self.MountAscom
+        self.mountDriverChooser()
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
                                 '2': 'Slewing to park position',
@@ -80,17 +83,13 @@ class Mount(QtCore.QThread):
         self.transformConnected = False
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
 
-    def mountIP(self):
-        value = self.app.ui.le_mountIP.text().split('.')
-        if len(value) != 4:
-            self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
-            self.app.messageQueue.put('Wrong IP configuration for mount, please check!')
-            return
-        v = []
-        for i in range(0, 4):
-            v.append(int(value[i]))
-        ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
-        return ip
+    def mountDriverChooser(self):
+        if self.app.ui.rb_directMount.isChecked():
+            self.mountHandler = self.MountIpDirect
+            self.logger.debug('mountDriverChoo-> actual driver is IpDirect')
+        elif self.app.ui.rb_ascomMount.isChecked():
+            self.mountHandler = self.MountAscom
+            self.logger.debug('mountDriverChoo-> actual driver is ASCOM')
 
     def run(self):                                                                                                          # runnable of the thread
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
@@ -193,6 +192,8 @@ class Mount(QtCore.QThread):
                         self.setRefractionParameter()
                     elif command == 'FLIP':
                         self.flipMount()
+                    elif command == 'SetupAscomDriver':
+                        self.MountAscom.setupDriver()
                     else:
                         self.mountHandler.sendCommand(command)                                                              # doing the command directly to mount (no method necessary)
                     self.app.commandQueue.task_done()
