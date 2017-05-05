@@ -83,7 +83,6 @@ class MountAscom:
                     else:
                         value = '0'
         else:                                                                                                               # from here we doing the simulation for 10micron mounts commands
-            value = ''
             if command == 'Gev':                                                                                            # which are special, but only for the most important for MW to run
                 value = str(self.ascom.SiteElevation)
             elif command == 'Gmte':

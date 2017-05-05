@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -379,7 +379,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Max. Slew Rate</string>
+      <string>Slew Rate</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_meridianLimitTrack">
@@ -736,7 +736,7 @@
     <widget class="QLabel" name="label_62">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>80</x>
        <y>240</y>
        <width>31</width>
        <height>20</height>
@@ -1380,7 +1380,7 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="inputMask">
-      <string>#9</string>
+      <string>99</string>
      </property>
      <property name="text">
       <string>10</string>
@@ -1392,7 +1392,7 @@
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
      <property name="readOnly">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_90">
@@ -1516,6 +1516,27 @@
      </property>
      <property name="text">
       <string>Park Pos5</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_setSlewRate">
+     <property name="geometry">
+      <rect>
+       <x>170</x>
+       <y>240</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Sets the horion limit low</string>
+     </property>
+     <property name="text">
+      <string>Set</string>
      </property>
     </widget>
    </widget>
@@ -6421,7 +6442,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configuration of the imaging / plate solving program and the ASCOM drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -7483,7 +7504,7 @@
      </widget>
      <widget class="QWidget" name="tab_12">
       <attribute name="title">
-       <string>Drivers</string>
+       <string>Driver Settings</string>
       </attribute>
       <widget class="QPushButton" name="btn_setupStickDriver">
        <property name="geometry">
@@ -7636,7 +7657,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>210</y>
+         <y>200</y>
          <width>351</width>
          <height>111</height>
         </rect>

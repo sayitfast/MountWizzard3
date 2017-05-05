@@ -29,7 +29,7 @@ class MountIpDirect:
 
     def connect(self):                                                                                                      # runnable of the thread
         try:
-            self.connected = True                                                                                           # setting connection status from driver
+            self.connected = False                                                                                      # setting connection status from driver
         except Exception as e:                                                                                              # error handling
             self.logger.error('connect Driver -> Driver COM Error in dispatchMount: {0}'.format(e))                         # to logger
             self.connected = False                                                                                          # connection broken
@@ -68,12 +68,12 @@ class MountIpDirect:
         self.sendCommandLock.acquire()
         if self.connected:
             try:                                                                                                            # all with error handling
-                if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                                 # these are the commands, which do not expect a return value
+                if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2', 'MS', 'MA']:                     # these are the commands, which do not expect a return value
                     self.commandBlind(command)                                                                              # than do blind command
                 else:                                                                                                       #
                     reply = self.commandString(command)                                                                     # with return value do regular command
             except Exception as e:                                                                                          # error handling
-                self.app.messageQueue.put('Driver COM Error in sendCommand')                                                # gui
+                self.app.messageQueue.put('TCP error in sendCommand')                                                       # gui
                 self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger
                 self.connected = False                                                                                      # in case of error, the connection might be broken
             finally:                                                                                                        # we don't stop
@@ -82,11 +82,48 @@ class MountIpDirect:
                     if command == 'CMS':
                         self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
-                    if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                             # these are the commands, which do not expect a return value
+                    if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2', 'MS', 'MA']:                 # these are the commands, which do not expect a return value
                         value = ''                                                                                          # nothing
                     else:
                         value = '0'
         else:
-            value = None
+            if command == 'Gev':
+                value = '01234.1'
+            elif command == 'Gmte':
+                value = '0125'
+            elif command == 'Gt':
+                value = '00:00:00'
+            elif command == 'Gg':
+                value = '00:00:00'
+            elif command == 'GS':
+                value = '00:00:00'
+            elif command == 'GRTMP':
+                value = '10.0'
+            elif command == 'Ginfo':
+                value = '0, 0, E, 0, 0, 0, 0'
+            elif command == 'GTMP1':
+                value = '10.0'
+            elif command == 'GRPRS':
+                value = '990.0'
+            elif command == 'Guaf':
+                value = '0'
+            elif command == 'GMs':
+                value = '15'
+            elif command == 'Gh':
+                value = '90'
+            elif command == 'Go':
+                value = '00'
+            elif command == 'Gdat':
+                value = '0'
+            elif command in ['GVD', 'GVN', 'GVP', 'GVT', 'GVZ']:
+                value = 'Simulation'
+            elif command == 'GREF':
+                value = '1'
+            elif command == 'CMS':
+                value = 'V'
+            elif command == 'getalst':
+                value = '-1'
+            else:
+                value = '0'
         self.sendCommandLock.release()
         return value

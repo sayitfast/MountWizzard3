@@ -144,6 +144,7 @@ class MountWizzardApp(MwWidget):
         self.ui.le_parkPos6Text.textChanged.connect(lambda: self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text()))
         self.ui.btn_setHorizonLimitHigh.clicked.connect(self.setHorizonLimitHigh)
         self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
+        self.ui.btn_setSlewRate.clicked.connect(self.setSlewRate)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
         self.ui.btn_setupMountDriver.clicked.connect(lambda: self.commandQueue.put('SetupAscomDriver'))
@@ -580,6 +581,14 @@ class MountWizzardApp(MwWidget):
             _value = 1
             self.ui.le_telescopeUnattendedFlip.setText('ON')
         self.commandQueue.put('Suaf{0: 01d}'.format(_value))
+
+    def setSlewRate(self):
+        _value = int(self.ui.le_slewRate.text())
+        if _value < 1:
+            _value = 1
+        elif _value > 15:
+            _value = 15
+        self.commandQueue.put('Sw{0:02d}'.format(_value))
 
     def setRefractionCorrection(self):
         _value = self.ui.le_refractionStatus.text()

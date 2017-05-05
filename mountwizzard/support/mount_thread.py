@@ -86,9 +86,11 @@ class Mount(QtCore.QThread):
     def mountDriverChooser(self):
         if self.app.ui.rb_directMount.isChecked():
             self.mountHandler = self.MountIpDirect
+            print('direct')
             self.logger.debug('mountDriverChoo-> actual driver is IpDirect')
         elif self.app.ui.rb_ascomMount.isChecked():
             self.mountHandler = self.MountAscom
+            print('ascom')
             self.logger.debug('mountDriverChoo-> actual driver is ASCOM')
 
     def run(self):                                                                                                          # runnable of the thread
@@ -101,7 +103,6 @@ class Mount(QtCore.QThread):
             self.logger.error('run Mount      -> loading ASCOM transform error:{0}'.format(e))                              # write logfile
         finally:                                                                                                            # we don't stop on error the wizzard
             pass                                                                                                            # python specific
-        self.mountHandler.connected = False                                                                                 # init of connection status
         self.counter = 0                                                                                                    # init count for managing different cycle times
         while True:                                                                                                         # main loop in thread
             self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status
