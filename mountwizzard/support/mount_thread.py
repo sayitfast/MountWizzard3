@@ -85,11 +85,9 @@ class Mount(QtCore.QThread):
     def mountDriverChooser(self):
         if self.app.ui.rb_directMount.isChecked():
             self.mountHandler = self.MountIpDirect
-            print('direct')
             self.logger.debug('mountDriverChoo-> actual driver is IpDirect')
         elif self.app.ui.rb_ascomMount.isChecked():
             self.mountHandler = self.MountAscom
-            print('ascom')
             self.logger.debug('mountDriverChoo-> actual driver is ASCOM')
 
     def run(self):                                                                                                          # runnable of the thread
