@@ -586,7 +586,7 @@ class Mount(QtCore.QThread):
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
                 self.setRefractionParameter()                                                                               # transfer refraction from to mount
             else:                                                                                                           #
-                success, message = self.app.cpObject.getCameraStatus()                                                      # getting the Camera status
+                success, message = self.app.model.cpObject.getCameraStatus()                                                # getting the Camera status
                 if success and message in ['IDLE', 'DOWNLOADING', 'READY']:                                                 # if tracking, when camera is idle or downloading
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise

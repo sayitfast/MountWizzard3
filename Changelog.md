@@ -1,4 +1,10 @@
 # Changelog:
+2.1.24
+- large refactoring
+- implemented direct mount connection
+- improved GUI
+- automatization for orbit and UTC parameters (experimental)
+
 2.1.23
 - bugfix platesolve & sync
 

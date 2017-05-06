@@ -85,10 +85,10 @@ class ShowImagePopup(MwWidget):
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
 
     def connectCamPS(self):
-        self.app.AscomCamera.connectCameraPlateSolver()
+        self.app.model.AscomCamera.connectCameraPlateSolver()
 
     def disconnectCamPS(self):
-        self.app.AscomCamera.disconnectCameraPlateSolver()
+        self.app.model.AscomCamera.disconnectCameraPlateSolver()
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
@@ -186,9 +186,9 @@ class ShowImagePopup(MwWidget):
         self.setZoom()
 
     def expose(self):
-        if self.app.AscomCamera.connectedCamera:
+        if self.app.model.AscomCamera.connectedCamera:
             param = {}
-            suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.AscomCamera.getCameraProps()
+            suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.model.AscomCamera.getCameraProps()
             param['binning'] = 1
             param['exposure'] = 1
             directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
@@ -200,6 +200,6 @@ class ShowImagePopup(MwWidget):
             param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
             if not os.path.isdir(param['base_dir_images']):
                 os.makedirs(param['base_dir_images'])
-            suc, mes, image = self.app.AscomCamera.getImageRaw(param)
+            suc, mes, image = self.app.model.AscomCamera.getImageRaw(param)
             if suc:
                 self.showImage(image)

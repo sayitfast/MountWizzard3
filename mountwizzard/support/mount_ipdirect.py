@@ -82,7 +82,6 @@ class MountIpDirect:
                 totalSent = totalSent + sent
         except Exception as e:                                                                                              # error handling
             self.logger.error('commandBlind   -> Socket send error: {0}'.format(e))                                         # to logger
-            print('send error ', e)
             self.disconnect()                                                                                               # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             pass
@@ -101,11 +100,9 @@ class MountIpDirect:
                     break
         except Exception as e:                                                                                              # error handling
             self.logger.error('commandBlind   -> Socket receive error: {0}'.format(e))                                      # to logger
-            print('receive error :', e)
             self.disconnect()                                                                                               # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             value = ''.join(chunks)
-            print(command, value)
             return value
 
     def sendCommand(self, command):                                                                                         # core routine for sending commands to mount
