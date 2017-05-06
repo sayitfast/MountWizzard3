@@ -64,7 +64,7 @@ class MountAscom:
         self.sendCommandLock.acquire()
         if self.driver_real and self.connected:
             try:                                                                                                            # all with error handling
-                if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                                 # these are the commands, which do not expect a return value
+                if command in self.app.mount.BLIND_COMMANDS:                                                                # these are the commands, which do not expect a return value
                     self.ascom.CommandBlind(command)                                                                        # than do blind command
                 else:                                                                                                       #
                     reply = self.ascom.CommandString(command)                                                               # with return value do regular command
@@ -78,7 +78,7 @@ class MountAscom:
                     if command == 'CMS':
                         self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
-                    if command in ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']:                             # these are the commands, which do not expect a return value
+                    if command in self.app.mount.BLIND_COMMANDS:                                                            # these are the commands, which do not expect a return value
                         value = ''                                                                                          # nothing
                     else:
                         value = '0'

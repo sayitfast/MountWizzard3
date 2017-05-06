@@ -36,6 +36,7 @@ class Mount(QtCore.QThread):
 
     BLUE = 'background-color: rgb(42, 130, 218)'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
+    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
     def __init__(self, app):
         super().__init__()                                                                                                  # init of the class parent with super
@@ -83,6 +84,8 @@ class Mount(QtCore.QThread):
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
 
     def mountDriverChooser(self):
+        if self.mountHandler.connected:
+            self.mountHandler.disconnect()
         if self.app.ui.rb_directMount.isChecked():
             self.mountHandler = self.MountIpDirect
             self.logger.debug('mountDriverChoo-> actual driver is IpDirect')
@@ -588,6 +591,7 @@ class Mount(QtCore.QThread):
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
                     self.logger.debug('getStatusMedium-> no autorefraction: {0}'.format(message))                           # no autorefraction is possible
+        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
@@ -598,7 +602,6 @@ class Mount(QtCore.QThread):
         self.refractionPressure = self.mountHandler.sendCommand('GRPRS')
         self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                    # refraction pressure out of mount
         self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.mountHandler.sendCommand('GTMP1')})       # temp motor circuit of both axes
-        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.mountHandler.sendCommand('GREF')})
         self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.mountHandler.sendCommand('Guaf')})
         self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.mountHandler.sendCommand('Glmt')})
