@@ -52,7 +52,6 @@ class MountIpDirect:
             self.connected = True                                                                                           # setting connection status from driver
         except Exception as e:                                                                                              # error handling
             self.logger.error('connect TCP    -> Socket connect error: {0}'.format(e))                                      # to logger
-            print(e)
             self.socket = None
             self.connected = False                                                                                          # connection broken
         finally:                                                                                                            # we don't stop, but try it again
@@ -66,7 +65,6 @@ class MountIpDirect:
                 self.connected = False
         except Exception as e:                                                                                              # error handling
             self.logger.error('disconnect TCP -> Socket disconnect error: {0}'.format(e))                                   # to logger
-            print(e)
             self.connected = False                                                                                          # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             pass

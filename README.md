@@ -54,9 +54,19 @@ driver.
 ## Remarks
 There were some videos for installation and first use out:
 
-Installation: https://youtu.be/di4yqzfns5E
+As I described, there is a simpler installation of MountWizzard available from now on. It has been tested with
+win7 (32/64 bit) and win10 (64bit). It basically puts all parts in one EXE file. So you don't have to install python and
+other stuff. I put it on dropbox and made a short video for explanation. It's a first step, please report back if starting
+the EXE leads to errors, but this should not influence earlier installations. You could also have different versions at the
+same time.
+
+New Installation method: https://youtu.be/mUcOZZIkKSE
+
+Traditional installation via python pip installer: https://youtu.be/di4yqzfns5E
 
 First Use: https://youtu.be/JMAfZoq8rBI
+
+Link to dropbox location for Executables: https://www.dropbox.com/sh/mjdouydjojoj ... RDLSa?dl=0
 
 ### DSLR
 Actually the SGPro API has some problems with DSLR Cam's. With the current betas, there should be an improvement if not
