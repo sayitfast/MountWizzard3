@@ -62,6 +62,10 @@ Traditional installation via python pip installer: https://youtu.be/di4yqzfns5E
 
 First Use: https://youtu.be/JMAfZoq8rBI
 
+Direct Mount Connection via IP: https://youtu.be/U4dty-PMXLo
+
+Download Orbital Elements and UTC Data for mount update: https://youtu.be/JmdhXn4ZDlE
+
 Link to dropbox location for Executables: https://www.dropbox.com/sh/mjdouydjojoj ... RDLSa?dl=0
 
 ## Modeling Workflow
