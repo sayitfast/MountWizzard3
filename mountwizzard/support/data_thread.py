@@ -14,7 +14,6 @@
 
 # import basic stuff
 import os
-import sys
 import logging
 from PyQt5 import QtCore
 import time
@@ -272,3 +271,4 @@ class Data(QtCore.QThread):
                 return
 
 if __name__ == "__main__":
+    pass

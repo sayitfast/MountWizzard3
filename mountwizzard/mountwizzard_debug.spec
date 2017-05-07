@@ -22,7 +22,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           name='mountwizzard',
-          debug=False,
+          debug=True,
           strip=False,
           upx=True,
-          console=False)
+          console=True )
