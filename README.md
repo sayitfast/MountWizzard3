@@ -48,11 +48,7 @@ This is indicated, that the DOME status on top of the window in grey. You can di
 by calling the ASCOM chooser for dome an in the selection window upcoming just press "Cancel". This should disable the
 driver.
 
-## Modeling Workflow
-![Modeling Workflow](mountwizzard/pics/do_modeling.png)
-
-## Remarks
-There were some videos for installation and first use out:
+### There were some videos for installation and first use out:
 
 As I described, there is a simpler installation of MountWizzard available from now on. It has been tested with
 win7 (32/64 bit) and win10 (64bit). It basically puts all parts in one EXE file. So you don't have to install python and
@@ -67,6 +63,9 @@ Traditional installation via python pip installer: https://youtu.be/di4yqzfns5E
 First Use: https://youtu.be/JMAfZoq8rBI
 
 Link to dropbox location for Executables: https://www.dropbox.com/sh/mjdouydjojoj ... RDLSa?dl=0
+
+## Modeling Workflow
+![Modeling Workflow](mountwizzard/pics/do_modeling.png)
 
 ### DSLR
 Actually the SGPro API has some problems with DSLR Cam's. With the current betas, there should be an improvement if not
