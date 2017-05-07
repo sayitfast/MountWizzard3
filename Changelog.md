@@ -1,4 +1,8 @@
 # Changelog:
+2.1.25
+- improved gui for orbit data
+- improved speed for automation of updater
+
 2.1.24
 - large refactoring
 - implemented direct mount connection

@@ -216,7 +216,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
         self.ui.btn_downloadAsteroids.clicked.connect(lambda: self.commandDataQueue.put('ASTEROIDS'))
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
-        self.ui.btn_downloadAll.clicked.connect(self.downloadAll)
+        self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
         self.ui.btn_selectUpdaterFileName.clicked.connect(self.selectUpdaterFileName)
         self.ui.rb_ascomMount.clicked.connect(self.mount.mountDriverChooser)
@@ -788,13 +788,6 @@ class MountWizzardApp(MwWidget):
         else:
             self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    def downloadAll(self):
-        self.commandDataQueue.put('EARTHROTATION')
-        self.commandDataQueue.put('SPACESTATIONS')
-        self.commandDataQueue.put('SATBRIGHTEST')
-        self.commandDataQueue.put('ASTEROIDS')
-        self.commandDataQueue.put('COMETS')
-
     def mainLoop(self):
         while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
             data = self.mountDataQueue.get()                                                                                # get the data from the queue
@@ -823,7 +816,7 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.24'
+    BUILD_NO = '2.1.25'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

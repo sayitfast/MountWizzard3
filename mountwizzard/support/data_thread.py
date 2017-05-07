@@ -74,6 +74,25 @@ class Data(QtCore.QThread):
                     self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
                     self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
+                elif command == 'ALL':
+                    self.app.ui.btn_downloadAll.setStyleSheet(self.BLUE)
+                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
+                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
+                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
+                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.BLUE)
+                    self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
+                    self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
+                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
+                    self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
+                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
+                    self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
+                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
+                    self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
+                    self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
+                    self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
+                    self.app.ui.btn_downloadAll.setStyleSheet(self.DEFAULT)
                 elif command == 'UPLOADMOUNT':
                     self.app.ui.btn_uploadMount.setStyleSheet(self.BLUE)
                     self.uploadMount()
@@ -128,17 +147,17 @@ class Data(QtCore.QThread):
         if not os.path.isfile(self.app.ui.le_updaterFileName.text()):
             self.logger.error('uploadMount    -> no updater configured')
             self.app.messageQueue.put('No Path to Updater configured, please check!')
-        app = Application(backend='uia')
+        app = Application(backend='win32')                                                                                  # backend win32 ist faster than uai
         app.start(self.app.ui.le_updaterFileName.text())                                                                    # start 10 micro updater
-
+        timings.Timings.Slow()
         try:
             dialog = timings.WaitUntilPasses(2, 0.5, lambda: findwindows.find_windows(title='GmQCIv2', class_name='#32770')[0])
             winOK = app.window_(handle=dialog)
             winOK['OK'].click()
+        except TimeoutError as e:
+            self.logger.error('uploadMount    -> error{0}'.format(e))
+            self.app.messageQueue.put('Error in starting 10micron updater, please check!')
         except Exception as e:
-            #self.logger.error('uploadMount    -> error{0}'.format(e))
-            # TODO: handle timeout error !
-            #self.app.messageQueue.put('Error in starting 10micron updater, please check!')
             pass
         finally:
             pass
@@ -243,9 +262,14 @@ class Data(QtCore.QThread):
                 self.app.messageQueue.put('Error in closing 10micron updater, please check!')
                 return
         else:
-            win.close()
-            winOK = app['Exit updater']
-            winOK['Yes'].click()
+            try:
+                win['Cancel'].click()
+                winOK = app['Exit updater']
+                winOK['Yes'].click()
+            except Exception as e:
+                self.logger.error('uploadMount    -> error{0}'.format(e))
+                self.app.messageQueue.put('Error in closing Updater, please check!')
+                return
 
 if __name__ == "__main__":
 

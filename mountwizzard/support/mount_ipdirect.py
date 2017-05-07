@@ -47,7 +47,7 @@ class MountIpDirect:
         try:
             if self.socket is None:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.socket.settimeout(2)
+                self.socket.settimeout(60)
             self.socket.connect((self.mountIP(), self.PORT))
             self.connected = True                                                                                           # setting connection status from driver
         except Exception as e:                                                                                              # error handling
