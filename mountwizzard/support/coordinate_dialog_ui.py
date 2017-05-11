@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'coordinate_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.7.1
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -121,6 +121,42 @@ class Ui_CoordinateDialog(object):
         self.label_110.setAlignment(QtCore.Qt.AlignCenter)
         self.label_110.setWordWrap(False)
         self.label_110.setObjectName("label_110")
+        self.label_142 = QtWidgets.QLabel(CoordinateDialog)
+        self.label_142.setGeometry(QtCore.QRect(330, 40, 61, 21))
+        font = QtGui.QFont()
+        font.setFamily("Courier")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_142.setFont(font)
+        self.label_142.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_142.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
+        self.label_142.setObjectName("label_142")
+        self.le_SQR = QtWidgets.QLineEdit(CoordinateDialog)
+        self.le_SQR.setGeometry(QtCore.QRect(370, 40, 81, 21))
+        font = QtGui.QFont()
+        font.setFamily("Courier")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.le_SQR.setFont(font)
+        self.le_SQR.setMouseTracking(False)
+        self.le_SQR.setFocusPolicy(QtCore.Qt.NoFocus)
+        self.le_SQR.setAcceptDrops(False)
+        self.le_SQR.setLayoutDirection(QtCore.Qt.RightToLeft)
+        self.le_SQR.setMaxLength(8)
+        self.le_SQR.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.le_SQR.setReadOnly(True)
+        self.le_SQR.setObjectName("le_SQR")
+        self.label_87 = QtWidgets.QLabel(CoordinateDialog)
+        self.label_87.setGeometry(QtCore.QRect(450, 40, 131, 20))
+        font = QtGui.QFont()
+        font.setFamily("Courier")
+        font.setPointSize(12)
+        self.label_87.setFont(font)
+        self.label_87.setAlignment(QtCore.Qt.AlignCenter)
+        self.label_87.setWordWrap(False)
+        self.label_87.setObjectName("label_87")
 
         self.retranslateUi(CoordinateDialog)
         QtCore.QMetaObject.connectSlotsByName(CoordinateDialog)
@@ -142,4 +178,8 @@ class Ui_CoordinateDialog(object):
         self.label_10.setText(_translate("CoordinateDialog", "ALT:"))
         self.label_109.setText(_translate("CoordinateDialog", "°"))
         self.label_110.setText(_translate("CoordinateDialog", "°"))
+        self.label_142.setText(_translate("CoordinateDialog", "SQR:"))
+        self.le_SQR.setToolTip(_translate("CoordinateDialog", "shows the refraction correction status on / off"))
+        self.le_SQR.setText(_translate("CoordinateDialog", "19.00"))
+        self.label_87.setText(_translate("CoordinateDialog", "mag/arcsec^2"))
 

@@ -42,6 +42,7 @@ from support.weather_thread import Weather
 from support.stick_thread import Stick
 from support.relays import Relays
 from support.data_thread import Data
+from support.unihedron_thread import Unihedron
 
 # matplotlib
 import matplotlib
@@ -85,6 +86,7 @@ class MountWizzardApp(MwWidget):
         self.mount = Mount(self)                                                                                            # Mount -> everything with mount and alignment
         self.weather = Weather(self)                                                                                        # Stickstation Thread
         self.stick = Stick(self)                                                                                            # Stickstation Thread
+        self.unihedron = Unihedron(self)                                                                                    # Unihedron Thread
         self.model = Model(self)                                                                                            # transferring ui and mount object as well
         self.data = Data(self)                                                                                              # data thread for downloading topics
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
@@ -106,6 +108,9 @@ class MountWizzardApp(MwWidget):
         self.stick.signalStickData.connect(self.fillStickData)                                                              # connecting the signal for data
         self.stick.signalStickConnected.connect(self.setStickStatus)                                                        # status from thread
         self.stick.start()                                                                                                  # starting polling thread
+        self.unihedron.signalUnihedronData.connect(self.fillUnihedronData)                                                  # connecting the signal for data
+        # self.unihedron.signalUnihedronConnected.connect(self.setUnihedronStatus)                                          # status from thread
+        self.unihedron.start()                                                                                              # starting polling thread
         self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
         self.dome.start()                                                                                                   # starting polling thread
         self.model.signalModelConnected.connect(self.setCameraPlateStatus)                                                  # status from thread
@@ -154,6 +159,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setupMountDriver.clicked.connect(lambda: self.commandQueue.put('SetupAscomDriver'))
         self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
         self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
+        self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
         self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
         self.ui.btn_setupAscomCameraDriver.clicked.connect(lambda: self.model.AscomCamera.setupDriverCamera())
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
@@ -359,6 +365,7 @@ class MountWizzardApp(MwWidget):
             self.ui.rb_directMount.setChecked(self.config['DirectMount'])
             self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
             self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
+            self.unihedron.driverName = self.config['ASCOMUnihedronDriverName']
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
@@ -449,6 +456,7 @@ class MountWizzardApp(MwWidget):
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
         self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
         self.config['UpdaterFileName'] = self.ui.le_updaterFileName.text()
+        self.config['ASCOMUnihedronDriverName'] = self.unihedron.driverName
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -754,6 +762,12 @@ class MountWizzardApp(MwWidget):
         self.ui.le_temperatureStick.setText('{0:4.1f}'.format(data['Temperature']))
         self.ui.le_humidityStick.setText('{0:4.1f}'.format(data['Humidity']))
         self.ui.le_pressureStick.setText('{0:4.1f}'.format(data['Pressure']))
+
+    @QtCore.Slot(dict)
+    def fillUnihedronData(self, data):
+        # data from Unihedron via signal connected
+        self.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
+        self.coordinatePopup.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
 
     @QtCore.Slot(int)
     def setWeatherStatus(self, status):
