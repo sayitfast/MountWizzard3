@@ -114,6 +114,10 @@ class MountWizzardApp(MwWidget):
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
+        # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
+        # self.ui.mainTabWidget.tabBar().setCurrentIndex(2)
+        # self.ui.mainTabWidget.currentWidget().setStyleSheet(self.RED)
+        # self.ui.mainTabWidget.tabBar().setStyleSheet(self.BLUE)
 
     # noinspection PyArgumentList
     def mappingFunctions(self):

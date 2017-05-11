@@ -7487,6 +7487,9 @@
           <pointsize>10</pointsize>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup plate solver driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string>PlateSolver</string>
         </property>
@@ -7504,6 +7507,9 @@
          <font>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM camera driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Camera</string>
@@ -7640,6 +7646,9 @@
          <pointsize>10</pointsize>
         </font>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM Stickstation / mBox driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>ObsCond</string>
        </property>
@@ -7657,6 +7666,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM open weather driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Weather</string>
@@ -7696,6 +7708,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM dome driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Dome</string>
@@ -7847,6 +7862,9 @@
           <pointsize>10</pointsize>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select ASCOM driver for mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
          <string>Mount</string>
         </property>
@@ -7875,7 +7893,7 @@
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>Button text park menu 1</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
@@ -8050,7 +8068,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 1</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -9154,6 +9172,9 @@
          <pointsize>10</pointsize>
         </font>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download earth rotation data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>Download Earth Rotation and UTC files</string>
        </property>
@@ -9211,6 +9232,9 @@
          <pointsize>10</pointsize>
         </font>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download space stations TLE (please note: alternatively to Satellite)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>Download Space Stations TLE Elements</string>
        </property>
@@ -9228,6 +9252,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download Satellite TLE (please note: alternatively to space stations)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Download Brightest Satellite TLE Elements</string>
@@ -9247,6 +9274,9 @@
          <pointsize>10</pointsize>
         </font>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>Download Asteroids MPC File</string>
        </property>
@@ -9264,6 +9294,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download comets MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Download Comets MPC File</string>
@@ -9284,7 +9317,7 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload earth rotation data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload  Earth Rotation and UTC files</string>
@@ -9308,7 +9341,7 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload space station data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload Space Stations TLE Elements</string>
@@ -9332,7 +9365,7 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload satellite data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload Brightest Satellite TLE Elements</string>
@@ -9356,7 +9389,7 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload asteroids data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload Asteroids MPC File</string>
@@ -9380,7 +9413,7 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload comets data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload Comets MPC File</string>
@@ -9403,6 +9436,9 @@
          <pointsize>10</pointsize>
         </font>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start upload with 10micron updater&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>Upload to Mount</string>
        </property>
@@ -9420,6 +9456,9 @@
         <font>
          <pointsize>10</pointsize>
         </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download all files (please note satellite and space stations work alternatively)  &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Download All Files</string>
@@ -9504,7 +9543,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 1</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Updater location from 10micron&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
