@@ -47,6 +47,7 @@ class MwWidget(QWidget):
     COLOR_HIGHLIGHT = QColor(42, 130, 218)
 
     def __init__(self):
+        # noinspection PyArgumentList
         super(MwWidget, self).__init__()                                                                                    # Initialize Class for UI
         self.palette = QPalette()                                                                                           # title text
         self.moving = False                                                                                                 # check if window moves with mouse pointer
@@ -93,4 +94,3 @@ class MwWidget(QWidget):
         self.setPalette(darkPalette)
         self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
         self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
-

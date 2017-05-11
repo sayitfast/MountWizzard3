@@ -1,4 +1,4 @@
-# MountWizzard
+# MountWizzard <img src="mountwizzard/pics/mw.png" width='64' height='64'/>
 
 ### Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017

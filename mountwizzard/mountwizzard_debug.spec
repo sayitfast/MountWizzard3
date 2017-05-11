@@ -22,7 +22,8 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           name='mountwizzard',
-          debug=True,
+          debug=False,
           strip=False,
           upx=True,
-          console=True )
+          console=True,
+          icon='./mountwizzard/mw.ico')

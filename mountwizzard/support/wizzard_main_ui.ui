@@ -106,7 +106,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QTabWidget" name="tabWidget">
+  <widget class="QTabWidget" name="mainTabWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -6495,7 +6495,7 @@
     <attribute name="title">
      <string>Settings</string>
     </attribute>
-    <widget class="QTabWidget" name="tabWidget_2">
+    <widget class="QTabWidget" name="settingsTabWidget">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -10269,7 +10269,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_loadBasePoints</tabstop>
   <tabstop>btn_mountPark</tabstop>
   <tabstop>btn_startTracking</tabstop>
-  <tabstop>tabWidget</tabstop>
+  <tabstop>mainTabWidget</tabstop>
   <tabstop>errorStatus</tabstop>
   <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>le_telescopeUnattendedFlip</tabstop>
