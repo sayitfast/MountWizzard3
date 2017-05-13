@@ -31,8 +31,7 @@ class MountIpDirect:
         self.sendCommandLock = threading.Lock()
 
     def mountIP(self):
-        # value = self.app.ui.le_mountIP.text().split('.')
-        value = '192.168.2.15'.split('.')
+        value = self.app.ui.le_mountIP.text().split('.')
         if len(value) != 4:
             self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
             self.app.messageQueue.put('Wrong IP configuration for mount, please check!')

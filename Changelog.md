@@ -1,4 +1,7 @@
 # Changelog:
+2.1.30
+- bugfix due to feedback from Tom
+
 2.1.29
 - bugfix for readme and installer
 

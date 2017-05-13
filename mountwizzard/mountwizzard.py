@@ -820,14 +820,14 @@ class MountWizzardApp(MwWidget):
 
 if __name__ == "__main__":
     import warnings
-    warnings.filterwarnings("ignore")
-
-    BUILD_NO = '2.1.29'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
+    BUILD_NO = '2.1.30'
+
+    warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.DEBUG,
@@ -840,6 +840,7 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/images')                                                                                # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
+
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('MountWizzard v' + BUILD_NO + ' started !')                                                                # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
