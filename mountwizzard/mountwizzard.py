@@ -109,7 +109,7 @@ class MountWizzardApp(MwWidget):
         self.stick.signalStickConnected.connect(self.setStickStatus)                                                        # status from thread
         self.stick.start()                                                                                                  # starting polling thread
         self.unihedron.signalUnihedronData.connect(self.fillUnihedronData)                                                  # connecting the signal for data
-        # self.unihedron.signalUnihedronConnected.connect(self.setUnihedronStatus)                                          # status from thread
+        self.unihedron.signalUnihedronConnected.connect(self.setUnihedronStatus)                                            # status from thread
         self.unihedron.start()                                                                                              # starting polling thread
         self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
         self.dome.start()                                                                                                   # starting polling thread
@@ -770,6 +770,15 @@ class MountWizzardApp(MwWidget):
         self.coordinatePopup.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
 
     @QtCore.Slot(int)
+    def setUnihedronStatus(self, status):
+        if status == 1:
+            self.ui.btn_unihedronConnected.setStyleSheet('QPushButton {background-color: green;}')
+        elif status == 2:
+            self.ui.btn_unihedronConnected.setStyleSheet('QPushButton {background-color: grey;}')
+        else:
+            self.ui.btn_unihedronConnected.setStyleSheet('QPushButton {background-color: red;}')
+
+    @QtCore.Slot(int)
     def setWeatherStatus(self, status):
         if status == 1:
             self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: green;}')
@@ -834,7 +843,7 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.25'
+    BUILD_NO = '2.1.27'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger

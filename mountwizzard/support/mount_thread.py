@@ -82,16 +82,21 @@ class Mount(QtCore.QThread):
         self.counter = 0                                                                                                    # counter im main loop
         self.transformConnected = False
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
+        self.chooserLock = threading.Lock()
 
     def mountDriverChooser(self):
+        self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time
         if self.mountHandler.connected:
-            self.mountHandler.disconnect()
+            self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
+            time.sleep(0.5)                                                                                                 # wait some time to get commands finished
+            self.mountHandler.disconnect()                                                                                  # do formal disconnection
         if self.app.ui.rb_directMount.isChecked():
             self.mountHandler = self.MountIpDirect
-            self.logger.debug('mountDriverChoo-> actual driver is IpDirect')
+            self.logger.debug('mountDriverChoo-> actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
         elif self.app.ui.rb_ascomMount.isChecked():
             self.mountHandler = self.MountAscom
             self.logger.debug('mountDriverChoo-> actual driver is ASCOM')
+        self.chooserLock.release()                                                                                          # free the lock to move again
 
     def run(self):                                                                                                          # runnable of the thread
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
@@ -211,6 +216,7 @@ class Mount(QtCore.QThread):
                 self.counter += 1                                                                                           # increasing counter for selection
             else:                                                                                                           # when not connected try to connect
                 self.mountHandler.connect()
+                self.counter = 0
                 time.sleep(1)                                                                                               # try it every second, not more
         self.transform.Quit()                                                                                               # close ascom novas transform object
         self.mountHandler.disconnect()
@@ -552,27 +558,32 @@ class Mount(QtCore.QThread):
             self.decJnow = self.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
-            ra, dec, self.pierside, az, alt, self.jd, stat, slew = reply.rstrip('#').strip().split(',')                     # split the response to its parts
-            self.raJnow = float(ra)
-            self.decJnow = float(dec)
-            self.jd = self.jd.rstrip('#')                                                                                   # needed for 2.14.8 beta firmware
-            self.az = float(az)                                                                                             # same to azimuth
-            self.alt = float(alt)                                                                                           # and altitude
-            self.stat = int(stat)                                                                                           # status should be int for referencing list
-            self.slewing = (slew == '1')                                                                                    # set status slewing
-            self.ra, self.dec = self.transformNovas(self.raJnow, self.decJnow, 2)                                           # convert J2000
-            ra_show = self.decimalToDegree(self.ra, False, False)
-            dec_show = self.decimalToDegree(self.dec, True, False)
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                       # put dec to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                         # put ra to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})            # Altitude
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})              # Azimuth
-            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                       # Mount status -> slew to stop
-            if str(self.pierside) == str('W'):                                                                              # pier side
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                              # Transfer to test in GUI
-            else:                                                                                                           #
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                              # Transfer to Text for GUI
-            self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
+            try:
+                ra, dec, self.pierside, az, alt, jd, stat, slew = reply.rstrip('#').strip().split(',')                      # split the response to its parts
+                self.raJnow = float(ra)
+                self.decJnow = float(dec)
+                self.jd = jd.rstrip('#')                                                                                    # needed for 2.14.8 beta firmware
+                self.az = float(az)                                                                                         # same to azimuth
+                self.alt = float(alt)                                                                                       # and altitude
+                self.stat = int(stat)                                                                                       # status should be int for referencing list
+                self.slewing = (slew == '1')                                                                                # set status slewing
+                self.ra, self.dec = self.transformNovas(self.raJnow, self.decJnow, 2)                                       # convert J2000
+                ra_show = self.decimalToDegree(self.ra, False, False)
+                dec_show = self.decimalToDegree(self.dec, True, False)
+                self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui
+                self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                     # put ra to gui
+                self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})        # Altitude
+                self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})          # Azimuth
+                self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                   # Mount status -> slew to stop
+                if str(self.pierside) == str('W'):                                                                          # pier side
+                    self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                          # Transfer to test in GUI
+                else:                                                                                                       #
+                    self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
+                self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
+            except Exception as e:
+                self.logger.error('getStatusFast  -> receive error: {0}'.format(e))
+            finally:
+                pass
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
             self.meridianLimitTrack = int(float(self.mountHandler.sendCommand('Glmt')))
             self.timeToMeridian = int(self.timeToFlip - self.meridianLimitTrack / 360 * 24 * 60)

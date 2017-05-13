@@ -72,7 +72,7 @@
     <rect>
      <x>10</x>
      <y>80</y>
-     <width>341</width>
+     <width>351</width>
      <height>21</height>
     </rect>
    </property>
@@ -10174,7 +10174,7 @@
     <rect>
      <x>240</x>
      <y>110</y>
-     <width>111</width>
+     <width>121</width>
      <height>31</height>
     </rect>
    </property>
@@ -10193,9 +10193,9 @@
   <widget class="QTextBrowser" name="errorStatus">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>370</x>
      <y>60</y>
-     <width>411</width>
+     <width>401</width>
      <height>81</height>
     </rect>
    </property>
@@ -10228,7 +10228,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_104">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>370</x>
      <y>40</y>
      <width>171</width>
      <height>16</height>
@@ -10291,9 +10291,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_camPlateConnected">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>250</x>
      <y>40</y>
-     <width>61</width>
+     <width>51</width>
      <height>31</height>
     </rect>
    </property>
@@ -10312,9 +10312,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_domeConnected">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>70</x>
      <y>40</y>
-     <width>61</width>
+     <width>51</width>
      <height>31</height>
     </rect>
    </property>
@@ -10335,7 +10335,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>61</width>
+     <width>51</width>
      <height>31</height>
     </rect>
    </property>
@@ -10354,15 +10354,15 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_driverWeatherConnected">
    <property name="geometry">
     <rect>
-     <x>220</x>
+     <x>190</x>
      <y>40</y>
-     <width>61</width>
+     <width>51</width>
      <height>31</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <pointsize>10</pointsize>
+     <pointsize>8</pointsize>
     </font>
    </property>
    <property name="toolTip">
@@ -10375,9 +10375,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_driverStickConnected">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>130</x>
      <y>40</y>
-     <width>61</width>
+     <width>51</width>
      <height>31</height>
     </rect>
    </property>
@@ -10390,7 +10390,28 @@ p, li { white-space: pre-wrap; }
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Obervation conditions (e.g. Stickstation)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>ObsCond</string>
+    <string>ObsCon</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_unihedronConnected">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>40</y>
+     <width>51</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Sky</string>
    </property>
   </widget>
  </widget>

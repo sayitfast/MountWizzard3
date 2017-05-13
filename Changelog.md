@@ -1,4 +1,12 @@
 # Changelog:
+2.1.27
+- bugfix for IP connction topic of TOM
+- status sky quality is up
+
+2.1.26
+- unihedron SQR support (Ascom driver from SGPro forum necessary)
+- Improved gui
+
 2.1.25
 - improved gui for orbit data
 - improved speed for automation of updater

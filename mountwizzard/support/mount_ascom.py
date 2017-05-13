@@ -50,8 +50,9 @@ class MountAscom:
 
     def disconnect(self):
         try:
-            self.ascom.Quit()
             self.connected = False
+            self.ascom.connected = False                                                                                    # connect to mount
+            self.ascom.Quit()
             self.ascom = None
         except Exception as e:                                                                                              # error handling
             self.logger.error('disconnect Driv-> Driver COM Error in dispatchMount: {0}'.format(e))                         # to logger

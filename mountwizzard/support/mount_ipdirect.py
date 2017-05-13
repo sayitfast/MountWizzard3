@@ -59,10 +59,11 @@ class MountIpDirect:
 
     def disconnect(self):
         try:
+            self.connected = False
             if self.socket:
                 self.socket.shutdown(1)
                 self.socket.close()
-                self.connected = False
+                self.socket = None
         except Exception as e:                                                                                              # error handling
             self.logger.error('disconnect TCP -> Socket disconnect error: {0}'.format(e))                                   # to logger
             self.connected = False                                                                                          # connection broken
@@ -100,6 +101,7 @@ class MountIpDirect:
             self.logger.error('commandBlind   -> Socket receive error: {0}'.format(e))                                      # to logger
             self.disconnect()                                                                                               # connection broken
         finally:                                                                                                            # we don't stop, but try it again
+            # noinspection PyUnboundLocalVariable
             value = ''.join(chunks)
             return value
 
