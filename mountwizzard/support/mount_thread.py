@@ -19,7 +19,7 @@ import math
 import threading
 #  mount driver classes
 from support.mount_ascom import MountAscom
-from support.handcontroller import MountIpDirect
+from support.mount_ipdirect import MountIpDirect
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
 from win32com.client.dynamic import Dispatch
