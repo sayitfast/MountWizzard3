@@ -241,6 +241,6 @@ if __name__ == "__main__":
     # cam.setupDriverCamera()
     cam.driverNameCamera = 'ASCOM.Simulator.Camera'
     cam.connectCameraPlateSolver()
-    print(cam.ascomCamera.ReadoutModes)
+    # print(cam.ascomCamera.ReadoutModes)
     suc, mes, x, y, can, gains = cam.getCameraProps()
-    print(x, y, gains)
+    # print(x, y, gains)

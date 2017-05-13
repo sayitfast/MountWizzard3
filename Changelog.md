@@ -1,4 +1,7 @@
 # Changelog:
+2.1.29
+- bugfix for readme and installer
+
 2.1.28
 - refactoring of config management, new parameters should not lead to a message config.cfg could not be loaded
 - adding debug output to EXE installer

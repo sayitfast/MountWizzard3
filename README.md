@@ -3,14 +3,10 @@
 ### Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017
 
-Because I'm going to use the pip installer for beta versions as well and there is no way to rollback a version number or to get one in
-between, I will name the release and beta versions explicitly on this page. You can switch between any version with this pip command.
+### Version for upcoming next release : 2.1.29
 
-### Version for upcoming next release
-<pre>pip install mountwizzard==2.1.28 </pre>
+### Version release : 2.0.8
 
-### Version release 2
-<pre>pip install mountwizzard==2.0.8 </pre>
 
 # Important:
 
@@ -66,7 +62,7 @@ Direct Mount Connection via IP: https://youtu.be/JmdhXn4ZDlE
 
 Download Orbital Elements and UTC Data for mount update: https://youtu.be/U4dty-PMXLo
 
-Link to dropbox location for Executables: https://www.dropbox.com/sh/mjdouydjojoj ... RDLSa?dl=0
+Link to dropbox location for Executables: https://www.dropbox.com/sh/mjdouydjojoj0hd/AABSPoPeWtr1cWazjLoyRDLSa?dl=0
 
 ## Modeling Workflow
 ![Modeling Workflow](mountwizzard/pics/do_modeling.png)

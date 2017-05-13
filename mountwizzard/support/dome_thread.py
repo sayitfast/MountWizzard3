@@ -105,14 +105,14 @@ class Dome(QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Dome'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverDome -> driver chosen:{0}'.format(self.driverName))
+            self.logger.debug('setupDriverDome-> driver chosen:{0}'.format(self.driverName))
             if self.driverName == '':
                 self.connected = 2
             else:
                 self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.app.messageQueue.put('Driver Exception in setupDome')                                                      # write to gui
-            self.logger.error('setupDriverDome -> general exception:{0}'.format(e))                                         # write to log
+            self.logger.error('setupDriverDome-> general exception:{0}'.format(e))                                          # write to log
             if self.driverName == '':
                 self.connected = 2
             else:

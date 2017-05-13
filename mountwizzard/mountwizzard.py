@@ -157,7 +157,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_setSlewRate.clicked.connect(self.setSlewRate)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupMountDriver.clicked.connect(lambda: self.commandQueue.put('SetupAscomDriver'))
+        self.ui.btn_setupMountDriver.clicked.connect(self.mount.MountAscom.setupDriver)
         self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
         self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
         self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
@@ -427,6 +427,7 @@ class MountWizzardApp(MwWidget):
 
     def saveConfig(self):
         self.storeConfig()
+        self.mount.storeConfig()
         self.model.storeConfig()
         self.stick.storeConfig()
         self.weather.storeConfig()
@@ -821,7 +822,7 @@ if __name__ == "__main__":
     import warnings
     warnings.filterwarnings("ignore")
 
-    BUILD_NO = '2.1.28'
+    BUILD_NO = '2.1.29'
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
@@ -832,6 +833,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s [%(threadName)15s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
+
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
     if not os.path.isdir(os.getcwd() + '/images'):                                                                          # if images dir doesn't exist, make it

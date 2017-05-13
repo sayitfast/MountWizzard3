@@ -47,8 +47,8 @@ class ShowAnalyseData(FigureCanvas):
 # noinspection PyTypeChecker
 def calculateTimeConstant(x_time, y_value):
     timeconstant = 0
-    print(x_time)
-    print(y_value)
+    # print(x_time)
+    # print(y_value)
     x = 0
     y = 0
     return timeconstant, x, y
@@ -495,4 +495,4 @@ if __name__ == "__main__":
     m = Mount
     a = Analyse(m)
     data = a.loadData(filename)
-    print(data)
+    # print(data)

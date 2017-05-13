@@ -90,7 +90,7 @@ class TheSkyX:
     def getImage(self, modelData):
         # TODO: how is TSX dealing with ISO settings for DSLR?
         # TODO: how is TSX dealing with download speeds for CCD, who support this feature ?
-        
+
         try:
             command = '/* Java Script */'
             command += 'ccdsoftCamera.Asynchronous=0;'
@@ -157,14 +157,14 @@ if __name__ == "__main__":
 
     cam = TheSkyX()
     suc, mes, x, y, can, gain = cam.SgGetCameraProps()
-    print(suc, mes, x, y, can, gain)
+    # print(suc, mes, x, y, can, gain)
     suc, mes, guid = cam.SgCaptureImage(binningMode=1, exposureLength=1, gain=gain, iso=None, speed=None, frameType='cdLight', filename=None, path='c:/temp', useSubframe=False, posX=0, posY=0, width=1, height=1)
     while True:
         suc, path = cam.SgGetImagePath(guid)
         if suc:
             break
-    print(suc, path)
+    # print(suc, path)
     suc, mes, guid = cam.SgSolveImage(path=path, raHint=None, decHint=None, scaleHint=3.7, blindSolve=False, useFitsHeaders=False)
-    print(suc, mes, guid)
+    # print(suc, mes, guid)
     suc, mes, ra, dec, scale, angle, time = cam.SgGetSolvedImageData(guid)
-    print(suc, mes, ra, dec, scale, angle, time)
+    # print(suc, mes, ra, dec, scale, angle, time)
