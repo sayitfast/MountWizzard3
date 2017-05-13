@@ -1,6 +1,10 @@
 # Changelog:
+2.1.28
+- refactoring of config management, new parameters should not lead to a message config.cfg could not be loaded
+- adding debug output to EXE installer
+
 2.1.27
-- bugfix for IP connction topic of TOM
+- bugfix for IP conncetion topic of TOM
 - status sky quality is up
 
 2.1.26
