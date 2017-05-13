@@ -52,7 +52,7 @@ class xMplCanvas(FigureCanvas):
         pass
 
 
-class popupData(xMplCanvas):
+class PopupData(xMplCanvas):
 
     def compute_initial_figure(self):
         plt.xlabel('DEC Error (arcsec)', color='white')
@@ -71,7 +71,7 @@ class MyPopup(QWidget):
         self.initUI()
         #self.setGeometry(QRect(100, 100, 600, 600))
         l = QVBoxLayout(self.ui.widgetPlot)
-        sc = popupData(self.ui.widgetPlot)
+        sc = PopupData(self.ui.widgetPlot)
         l.addWidget(sc)
         self.show()
 

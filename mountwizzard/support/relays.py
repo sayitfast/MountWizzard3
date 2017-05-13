@@ -27,6 +27,12 @@ class Relays:
         if self.connected:
             self.requestStatus()
 
+    def initConfig(self):
+        pass
+
+    def storeConfig(self):
+        pass
+
     def relayIP(self):
         value = self.app.ui.le_relayIP.text().split('.')
         if len(value) != 4:

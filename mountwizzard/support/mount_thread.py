@@ -83,6 +83,14 @@ class Mount(QtCore.QThread):
         self.transformConnected = False
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
         self.chooserLock = threading.Lock()
+        self.initConfig()
+
+    def initConfig(self):
+        if 'ASCOMTelescopeDriverName' in self.app.config:
+            self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
+
+    def storeConfig(self):
+        self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
 
     def mountDriverChooser(self):
         self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time

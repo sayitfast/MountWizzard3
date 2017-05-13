@@ -81,6 +81,8 @@ class MountWizzardApp(MwWidget):
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
+        self.loadConfig()                                                                                                   # load configuration
+        self.initConfig()
         self.relays = Relays(self)                                                                                          # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self)                                                                                              # dome control
         self.mount = Mount(self)                                                                                            # Mount -> everything with mount and alignment
@@ -97,7 +99,6 @@ class MountWizzardApp(MwWidget):
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)                                                                                  # add widget to view
-        self.loadConfig()
         self.model.cameraPlateChooser()
         self.mount.mountDriverChooser()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
@@ -273,105 +274,80 @@ class MountWizzardApp(MwWidget):
         self.modelWidget.axes.set_rmin(0)
         self.modelWidget.draw()
 
-    def loadConfig(self):
-        try:
-            with open('config/config.cfg', 'r') as data_file:
-                self.config = json.load(data_file)
-            data_file.close()
-            self.model.loadHorizonPoints(str(self.config['HorizonPointsFileName']))
-            self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
-            self.ui.le_altParkPos1.setText(self.config['ParkPosAlt1'])
-            self.ui.le_azParkPos1.setText(self.config['ParkPosAz1'])
-            self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
-            self.ui.le_parkPos2Text.setText(self.config['ParkPosText2'])
-            self.ui.le_altParkPos2.setText(self.config['ParkPosAlt2'])
-            self.ui.le_azParkPos2.setText(self.config['ParkPosAz2'])
-            self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
-            self.ui.le_parkPos3Text.setText(self.config['ParkPosText3'])
-            self.ui.le_altParkPos3.setText(self.config['ParkPosAlt3'])
-            self.ui.le_azParkPos3.setText(self.config['ParkPosAz3'])
-            self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
-            self.ui.le_parkPos4Text.setText(self.config['ParkPosText4'])
-            self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
-            self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
-            self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
-            self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
-            self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
-            self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
-            self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
-            self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
-            self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
-            self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
-            self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
-            self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
-            self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
-            self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
-            self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
-            self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
-            self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
-            self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
-            self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
-            self.ui.cameraBin.setValue(self.config['CameraBin'])
-            self.ui.cameraExposure.setValue(self.config['CameraExposure'])
-            self.ui.isoSetting.setValue(self.config['ISOSetting'])
-            self.ui.checkFastDownload.setChecked(self.config['CheckFastDownload'])
-            self.ui.settlingTime.setValue(self.config['SettlingTime'])
-            self.ui.checkUseBlindSolve.setChecked(self.config['CheckUseBlindSolve'])
-            self.ui.targetRMS.setValue(self.config['TargetRMS'])
-            self.ui.pixelSize.setValue(self.config['PixelSize'])
-            self.ui.focalLength.setValue(self.config['FocalLength'])
-            self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
-            self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
-            self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
-            self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
-            self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
-            self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
-            self.ui.checkKeepRefinement.setChecked(self.config['CheckKeepRefinement'])
-            self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
-            self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
-            self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
-            self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
-            self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
-            self.ui.numberHoursDSO.setValue(self.config['NumberHoursDSO'])
-            self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
-            self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
-            self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
-            self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
-            self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
-            self.ui.altitudeHysterese1.setValue(self.config['AltitudeHysterese1'])
-            self.ui.altitudeHysterese2.setValue(self.config['AltitudeHysterese2'])
-            self.ui.azimuthHysterese1.setValue(self.config['AzimuthHysterese1'])
-            self.ui.azimuthHysterese2.setValue(self.config['AzimuthHysterese2'])
-            self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
-            self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
-            self.ui.le_mountIP.setText(self.config['MountIP'])
-            self.ui.le_relayIP.setText(self.config['RelayIP'])
-            self.dome.driverName = self.config['ASCOMDomeDriverName']
-            self.stick.driverName = self.config['ASCOMStickDriverName']
-            self.mount.MountAscom.driverName = self.config['ASCOMTelescopeDriverName']
-            self.weather.driverName = self.config['ASCOMWeatherDriverName']
-            self.model.AscomCamera.driverNameCamera = self.config['ASCOMCameraDriverName']
-            self.model.AscomCamera.driverNamePlateSolver = self.config['ASCOMPlateSolverDriverName']
-            self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
-            self.analysePopup.ui.scalePlotRA.setValue(self.config['ScalePlotRA'])
-            self.analysePopup.ui.scalePlotDEC.setValue(self.config['ScalePlotDEC'])
-            self.analysePopup.ui.scalePlotError.setValue(self.config['ScalePlotError'])
-            self.analysePopup.move(self.config['AnalysePopupWindowPositionX'], self.config['AnalysePopupWindowPositionY'])
-            self.analysePopup.showStatus = self.config['AnalysePopupWindowShowStatus']
-            self.coordinatePopup.move(self.config['CoordinatePopupWindowPositionX'], self.config['CoordinatePopupWindowPositionY'])
-            self.coordinatePopup.showStatus = self.config['CoordinatePopupWindowShowStatus']
-            self.imagePopup.move(self.config['ImagePopupWindowPositionX'], self.config['ImagePopupWindowPositionY'])
-            self.imagePopup.showStatus = self.config['ImagePopupWindowShowStatus']
-            self.ui.rb_directMount.setChecked(self.config['DirectMount'])
-            self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
-            self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
-            self.unihedron.driverName = self.config['ASCOMUnihedronDriverName']
-        except Exception as e:
-            self.messageQueue.put('Config.cfg could not be loaded !')
-            self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
-            return
+    def initConfig(self):
+        self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
+        self.ui.le_altParkPos1.setText(self.config['ParkPosAlt1'])
+        self.ui.le_azParkPos1.setText(self.config['ParkPosAz1'])
+        self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
+        self.ui.le_parkPos2Text.setText(self.config['ParkPosText2'])
+        self.ui.le_altParkPos2.setText(self.config['ParkPosAlt2'])
+        self.ui.le_azParkPos2.setText(self.config['ParkPosAz2'])
+        self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
+        self.ui.le_parkPos3Text.setText(self.config['ParkPosText3'])
+        self.ui.le_altParkPos3.setText(self.config['ParkPosAlt3'])
+        self.ui.le_azParkPos3.setText(self.config['ParkPosAz3'])
+        self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
+        self.ui.le_parkPos4Text.setText(self.config['ParkPosText4'])
+        self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
+        self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
+        self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
+        self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
+        self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
+        self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
+        self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
+        self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
+        self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
+        self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
+        self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
+        self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
+        self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
+        self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
+        self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
+        self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
+        self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
+        self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
+        self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
+        self.ui.cameraBin.setValue(self.config['CameraBin'])
+        self.ui.cameraExposure.setValue(self.config['CameraExposure'])
+        self.ui.isoSetting.setValue(self.config['ISOSetting'])
+        self.ui.checkFastDownload.setChecked(self.config['CheckFastDownload'])
+        self.ui.settlingTime.setValue(self.config['SettlingTime'])
+        self.ui.checkUseBlindSolve.setChecked(self.config['CheckUseBlindSolve'])
+        self.ui.targetRMS.setValue(self.config['TargetRMS'])
+        self.ui.pixelSize.setValue(self.config['PixelSize'])
+        self.ui.focalLength.setValue(self.config['FocalLength'])
+        self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
+        self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
+        self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
+        self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
+        self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
+        self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
+        self.ui.checkKeepRefinement.setChecked(self.config['CheckKeepRefinement'])
+        self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
+        self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
+        self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
+        self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
+        self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
+        self.ui.numberHoursDSO.setValue(self.config['NumberHoursDSO'])
+        self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
+        self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
+        self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
+        self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
+        self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
+        self.ui.altitudeHysterese1.setValue(self.config['AltitudeHysterese1'])
+        self.ui.altitudeHysterese2.setValue(self.config['AltitudeHysterese2'])
+        self.ui.azimuthHysterese1.setValue(self.config['AzimuthHysterese1'])
+        self.ui.azimuthHysterese2.setValue(self.config['AzimuthHysterese2'])
+        self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
+        self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
+        self.ui.le_mountIP.setText(self.config['MountIP'])
+        self.ui.le_relayIP.setText(self.config['RelayIP'])
+        self.ui.rb_directMount.setChecked(self.config['DirectMount'])
+        self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
+        self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
+        self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
 
-    def saveConfig(self):
+    def storeConfig(self):
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
         self.config['ParkPosAlt1'] = self.ui.le_altParkPos1.text()
         self.config['ParkPosAz1'] = self.ui.le_azParkPos1.text()
@@ -420,18 +396,6 @@ class MountWizzardApp(MwWidget):
         self.config['NumberHoursDSO'] = self.ui.numberHoursDSO.value()
         self.config['WindowPositionX'] = self.pos().x()
         self.config['WindowPositionY'] = self.pos().y()
-        self.config['AnalysePopupWindowPositionX'] = self.analysePopup.pos().x()
-        self.config['AnalysePopupWindowPositionY'] = self.analysePopup.pos().y()
-        self.config['AnalysePopupWindowShowStatus'] = self.analysePopup.showStatus
-        self.config['CoordinatePopupWindowPositionX'] = self.coordinatePopup.pos().x()
-        self.config['CoordinatePopupWindowPositionY'] = self.coordinatePopup.pos().y()
-        self.config['CoordinatePopupWindowShowStatus'] = self.coordinatePopup.showStatus
-        self.config['ImagePopupWindowPositionX'] = self.imagePopup.pos().x()
-        self.config['ImagePopupWindowPositionY'] = self.imagePopup.pos().y()
-        self.config['ImagePopupWindowShowStatus'] = self.imagePopup.showStatus
-        self.config['ScalePlotRA'] = self.analysePopup.ui.scalePlotRA.value()
-        self.config['ScalePlotDEC'] = self.analysePopup.ui.scalePlotDEC.value()
-        self.config['ScalePlotError'] = self.analysePopup.ui.scalePlotError.value()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()
         self.config['AltitudeTimeChange'] = self.ui.altitudeTimeChange.value()
         self.config['AzimuthTimeChange'] = self.ui.azimuthTimeChange.value()
@@ -445,18 +409,32 @@ class MountWizzardApp(MwWidget):
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['MountIP'] = self.ui.le_mountIP.text()
         self.config['RelayIP'] = self.ui.le_relayIP.text()
-        self.config['ASCOMDomeDriverName'] = self.dome.driverName
-        self.config['ASCOMStickDriverName'] = self.stick.driverName
-        self.config['ASCOMTelescopeDriverName'] = self.mount.MountAscom.driverName
-        self.config['ASCOMWeatherDriverName'] = self.weather.driverName
-        self.config['ASCOMCameraDriverName'] = self.model.AscomCamera.driverNameCamera
-        self.config['ASCOMPlateSolverDriverName'] = self.model.AscomCamera.driverNamePlateSolver
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
         self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
         self.config['UpdaterFileName'] = self.ui.le_updaterFileName.text()
-        self.config['ASCOMUnihedronDriverName'] = self.unihedron.driverName
+
+    def loadConfig(self):
+        try:
+            with open('config/config.cfg', 'r') as data_file:
+                self.config = json.load(data_file)
+            data_file.close()
+        except Exception as e:
+            self.messageQueue.put('Config.cfg could not be loaded !')
+            self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
+            return
+
+    def saveConfig(self):
+        self.storeConfig()
+        self.model.storeConfig()
+        self.stick.storeConfig()
+        self.weather.storeConfig()
+        self.coordinatePopup.storeConfig()
+        self.dome.storeConfig()
+        self.imagePopup.storeConfig()
+        self.analysePopup.storeConfig()
+        self.unihedron.storeConfig()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -869,10 +847,7 @@ if __name__ == "__main__":
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
-    mountApp.loadConfig()
-    mountApp.show()
-    # if mountApp.analysePopup.showStatus:                                                                                  # if windows was shown last run, open it directly
-    #    mountApp.showAnalyseWindow()                                                                                       # show it
+    mountApp.show()                                                                                                         # show it
     if mountApp.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
         mountApp.coordinatePopup.redrawCoordinateWindow()                                                                   # update content
         mountApp.showCoordinateWindow()                                                                                     # show it

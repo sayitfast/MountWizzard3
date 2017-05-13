@@ -35,6 +35,14 @@ class Stick(QtCore.QThread):
         self.driverName = ''                                                                                                # driver object name
         self.slewing = False
         self.counter = 0
+        self.initConfig()
+
+    def initConfig(self):
+        if 'ASCOMStickDriverName' in self.app.config:
+            self.driverName = self.app.config['ASCOMStickDriverName']
+
+    def storeConfig(self):
+        self.app.config['ASCOMStickDriverName'] = self.driverName
 
     def run(self):                                                                                                          # runnable for doing the work
         pythoncom.CoInitialize()                                                                                            # needed for doing CO objects in threads

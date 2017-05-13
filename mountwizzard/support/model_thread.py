@@ -75,6 +75,19 @@ class Model(QtCore.QThread):
         self.offX = 0                                                                                                       # offsetX for subframe
         self.offY = 0                                                                                                       # offsetY for subframe
         self.signalModelCommand.connect(self.sendCommand)                                                                   # signal for receiving commands to modeling from GUI
+        self.initConfig()
+
+    def initConfig(self):
+        if 'ASCOMCameraDriverName' in self.app.config:
+            self.AscomCamera.driverNameCamera = self.app.config['ASCOMCameraDriverName']
+        if 'ASCOMPlateSolverDriverName' in self.app.config:
+            self.AscomCamera.driverNamePlateSolver = self.app.config['ASCOMPlateSolverDriverName']
+        if 'HorizonPointsFileName' in self.app.config:
+            self.loadHorizonPoints(str(self.app.config['HorizonPointsFileName']))
+
+    def storeConfig(self):
+        self.app.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
+        self.app.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
 
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter

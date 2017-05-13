@@ -70,6 +70,7 @@ class ShowImagePopup(MwWidget):
         self.imageWidget = ShowImageData(self.ui.image)
         helper.addWidget(self.imageWidget)
         self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
+        self.initConfig()
 
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
@@ -83,6 +84,17 @@ class ShowImagePopup(MwWidget):
         self.ui.btn_strechLow.clicked.connect(self.setStrech)
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
+
+    def initConfig(self):
+        if 'ImagePopupWindowPositionX' in self.app.config:
+            self.move(self.app.config['ImagePopupWindowPositionX'], self.app.config['ImagePopupWindowPositionY'])
+        if 'ImagePopupWindowShowStatus' in self.app.config:
+            self.showStatus = self.app.config['ImagePopupWindowShowStatus']
+
+    def storeConfig(self):
+        self.app.config['ImagePopupWindowPositionX'] = self.pos().x()
+        self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
+        self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
 
     def connectCamPS(self):
         self.app.model.AscomCamera.connectCameraPlateSolver()

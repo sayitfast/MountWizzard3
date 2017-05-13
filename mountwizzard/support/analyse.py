@@ -88,9 +88,29 @@ class ShowAnalysePopup(MwWidget):
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.plot)
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
-#        self.move(self.app.config['AnalysePopupWindowPositionX'], self.app.config['AnalysePopupWindowPositionY'])
+        self.initConfig()
         self.show()
         self.setVisible(False)
+
+    def initConfig(self):
+        if 'ScalePlotRA' in self.app.config:
+            self.ui.scalePlotRA.setValue(self.app.config['ScalePlotRA'])
+        if 'ScalePlotDEC' in self.app.config:
+            self.ui.scalePlotDEC.setValue(self.app.config['ScalePlotDEC'])
+        if 'ScalePlotError' in self.app.config:
+            self.ui.scalePlotError.setValue(self.app.config['ScalePlotError'])
+        if 'AnalysePopupWindowPositionX' in self.app.config:
+            self.move(self.app.config['AnalysePopupWindowPositionX'], self.app.config['AnalysePopupWindowPositionY'])
+        if 'AnalysePopupWindowShowStatus' in self.app.config:
+            self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
+
+    def storeConfig(self):
+        self.app.config['AnalysePopupWindowPositionX'] = self.pos().x()
+        self.app.config['AnalysePopupWindowPositionY'] = self.pos().y()
+        self.app.config['AnalysePopupWindowShowStatus'] = self.showStatus
+        self.app.config['ScalePlotRA'] = self.ui.scalePlotRA.value()
+        self.app.config['ScalePlotDEC'] = self.ui.scalePlotDEC.value()
+        self.app.config['ScalePlotError'] = self.ui.scalePlotError.value()
 
     def changedDECScale(self):
         if self.getData():

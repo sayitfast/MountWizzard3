@@ -48,6 +48,12 @@ class Data(QtCore.QThread):
         super().__init__()
         self.app = app
 
+    def initConfig(self):
+        pass
+
+    def storeConfig(self):
+        pass
+
     def run(self):                                                                                                          # runnable for doing the work
         while True:                                                                                                         # main loop for stick thread
             if not self.app.commandDataQueue.empty():
