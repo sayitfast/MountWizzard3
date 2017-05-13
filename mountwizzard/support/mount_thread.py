@@ -19,7 +19,7 @@ import math
 import threading
 #  mount driver classes
 from support.mount_ascom import MountAscom
-from support.mount_ipdirect import MountIpDirect
+from support.handcontroller import MountIpDirect
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
 from win32com.client.dynamic import Dispatch
@@ -274,7 +274,7 @@ class Mount(QtCore.QThread):
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
     @staticmethod
-    def ra_dec_lst_to_az_alt(ra, dec, LAT):
+    def ra_dec_lst_to_az_alt(ra, dec, LAT):                                                                                 # formula to make alt/az from hour angle and dec
         ra = (ra * 15 + 360.0) % 360.0
         dec = math.radians(dec)
         ra = math.radians(ra)
@@ -327,7 +327,7 @@ class Mount(QtCore.QThread):
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
     def testBaseModelAvailable(self):
-        number = int(self.mountHandler.sendCommand('getalst'))
+        number = int(self.mountHandler.sendCommand('getalst'))                                                              # if there are some points, a model must be there
         if number > 2:
             return True, number
         else:
