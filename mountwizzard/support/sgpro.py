@@ -34,16 +34,24 @@ class SGPro:
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
+        self.connected = False
+        self.cameraStatus = ''
+
+    def connect(self):
+        pass
+
+    def disconnect(self):
+        pass
 
     def checkConnection(self):
         try:
             reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
-            connected = True
+            self.connected = True
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
-            connected = False
+            self.connected = False
         finally:
-            if connected:
+            if self.connected:
                 if str(reply) == '200':
                     success, response = self.SgGetDeviceStatus('Camera')
                     if success and response != 'DISCONNECTED':
@@ -118,7 +126,7 @@ class SGPro:
         return self.SgGetCameraProps()
 
     def getCameraStatus(self):
-        return self.SgGetDeviceStatus('Camera')
+        self.cameraStatus = self.SgGetDeviceStatus('Camera')
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

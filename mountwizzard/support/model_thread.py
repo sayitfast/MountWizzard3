@@ -22,6 +22,7 @@ import shutil
 import copy
 import random
 # threading
+import threading
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 # library for fits file handling
@@ -34,6 +35,8 @@ from support.analyse import Analyse
 from support.sgpro import SGPro
 from support.theskyx import TheSkyX
 from support.ascom_camera import AscomCamera
+from support.maximdl_camera import MaximDLCamera
+import pythoncom
 
 
 class Model(QtCore.QThread):
@@ -53,8 +56,9 @@ class Model(QtCore.QThread):
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
         self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
         self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = AscomCamera(self)
-        self.cpObject = None
+        self.AscomCamera = AscomCamera(app)
+        self.MaximDL = MaximDLCamera(app)
+        self.cpObject = self.SGPro
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
         self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
@@ -76,6 +80,7 @@ class Model(QtCore.QThread):
         self.offY = 0                                                                                                       # offsetY for subframe
         self.signalModelCommand.connect(self.sendCommand)                                                                   # signal for receiving commands to modeling from GUI
         self.initConfig()
+        self.chooserLock = threading.Lock()
 
     def initConfig(self):
         if 'ASCOMCameraDriverName' in self.app.config:
@@ -89,68 +94,101 @@ class Model(QtCore.QThread):
         self.app.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
         self.app.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
 
+    def cameraPlateChooser(self):
+        self.chooserLock.acquire()
+        if self.cpObject.connected:
+            self.cpObject.connected = False                                                                                 # connection to False -> no commands emitted
+            time.sleep(0.5)                                                                                                 # wait some time to get commands finished
+            self.cpObject.disconnect()
+        if self.app.ui.rb_cameraSGPro.isChecked():
+            self.cpObject = self.SGPro
+            self.app.imagePopup.showStatus = False
+            self.app.imagePopup.setVisible(False)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
+        elif self.app.ui.rb_cameraTSX.isChecked():
+            self.cpObject = self.TheSkyX
+            self.app.imagePopup.showStatus = False
+            self.app.imagePopup.setVisible(False)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
+        elif self.app.ui.rb_cameraASCOM.isChecked():
+            self.cpObject = self.AscomCamera
+            self.app.imagePopup.showStatus = True
+            self.app.imagePopup.setVisible(True)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
+        elif self.app.ui.rb_cameraMaximDL.isChecked():
+            self.cpObject = self.MaximDL
+            self.app.imagePopup.showStatus = False
+            self.app.imagePopup.setVisible(False)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is MaximDL')
+        self.chooserLock.release()
+
     def run(self):                                                                                                          # runnable for doing the work
+        pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
-            if self.connected and self.app.mount.mountHandler.connected:
-                if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
-                    self.command = ''                                                                                       # only one command at a time, last wins
-                    self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
-                    self.runBaseModel()                                                                                     # should be refactored to queue only without signal
-                    self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                elif self.command == 'RunRefinementModel':                                                                  #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
-                    self.runRefinementModel()
-                    self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                elif self.command == 'PlateSolveSync':                                                                      # actually doing by receiving signals which enables
-                    self.command = ''                                                                                       # only one command at a time, last wins
-                    self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
-                    self.plateSolveSync()                                                                                   # should be refactored to queue only without signal
-                    self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
-                elif self.command == 'RunBatchModel':                                                                       #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
-                    self.runBatchModel()                                                                                    #
-                    self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
-                elif self.command == 'RunCheckModel':                                                                       #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                  # button blue (running)
-                    ok, num = self.app.mount.testBaseModelAvailable()
-                    if ok:
-                        self.runCheckModel()
-                    else:
-                        self.app.modelLogQueue.put('Run Analyse stopped, not BASE model available !\n')
-                        self.app.messageQueue.put('Run Analyse stopped, not BASE model available !\n')
-                    self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                elif self.command == 'RunAllModel':
-                    self.command = ''
-                    self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
-                    self.runAllModel()
-                    self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                elif self.command == 'RunTimeChangeModel':                                                                  #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
-                    self.runTimeChangeModel()                                                                               #
-                    self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                          # button back to default color
-                elif self.command == 'RunHystereseModel':                                                                   #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
-                    self.runHystereseModel()                                                                                #
-                    self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                          # button back to default color
-                elif self.command == 'ClearAlignmentModel':                                                                 #
-                    self.command = ''                                                                                       #
-                    self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
-                    self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
-                    self.clearAlignmentModel()                                                                              #
-                    self.app.modelLogQueue.put('Model cleared!\n')
-                    self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
+            if self.connected:
+                if self.app.mount.mountHandler.connected:
+                    if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
+                        self.command = ''                                                                                       # only one command at a time, last wins
+                        self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
+                        self.runBaseModel()                                                                                     # should be refactored to queue only without signal
+                        self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                    elif self.command == 'RunRefinementModel':                                                                  #
+                        self.command = ''                                                                                       #
+                        self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
+                        self.runRefinementModel()
+                        self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                    elif self.command == 'PlateSolveSync':                                                                      # actually doing by receiving signals which enables
+                        self.command = ''                                                                                       # only one command at a time, last wins
+                        self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
+                        self.plateSolveSync()                                                                                   # should be refactored to queue only without signal
+                        self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
+                    elif self.command == 'RunBatchModel':                                                                       #
+                        self.command = ''                                                                                       #
+                        self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
+                        self.runBatchModel()                                                                                    #
+                        self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
+                    elif self.command == 'RunCheckModel':                                                                       #
+                        self.command = ''                                                                                       #
+                        self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                  # button blue (running)
+                        ok, num = self.app.mount.testBaseModelAvailable()
+                        if ok:
+                            self.runCheckModel()
+                        else:
+                            self.app.modelLogQueue.put('Run Analyse stopped, not BASE model available !\n')
+                            self.app.messageQueue.put('Run Analyse stopped, not BASE model available !\n')
+                        self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                    elif self.command == 'RunAllModel':
+                        self.command = ''
+                        self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
+                        self.runAllModel()
+                        self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                    elif self.command == 'RunTimeChangeModel':                                                                  #
+                        self.command = ''                                                                                       #
+                        self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
+                        self.runTimeChangeModel()                                                                               #
+                        self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                          # button back to default color
+                    elif self.command == 'RunHystereseModel':                                                                   #
+                        self.command = ''                                                                                       #
+                        self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
+                        self.runHystereseModel()                                                                                #
+                        self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                          # button back to default color
+                    elif self.command == 'ClearAlignmentModel':                                                                 #
+                        self.command = ''                                                                                       #
+                        self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
+                        self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+                        self.clearAlignmentModel()                                                                              #
+                        self.app.modelLogQueue.put('Model cleared!\n')
+                        self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
+            else:
+                if not self.cpObject.connected:
+                    self.cpObject.connect()
             if self.command == 'LoadBasePoints':
                 self.command = ''
                 self.BasePoints = self.showBasePoints()
@@ -231,31 +269,14 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusSlow(self):                                                                                                # check SGPro running
-        suc, mes = self.cpObject.checkConnection()                                                                      # check status of cpObject
+        suc, mes = self.cpObject.checkConnection()                                                                          # check status of cpObject
         self.connected = suc                                                                                                # set status for internal use
         self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
         if not suc:                                                                                                         # otherwise
             self.logger.debug('getStatusSlow  -> No Camera connection: {0}'.format(mes))                                    # debug message
 
     def getStatusFast(self):                                                                                                # fast status
-        pass                                                                                                                # actually no fast status
-
-    def cameraPlateChooser(self):
-        if self.app.ui.rb_cameraSGPro.isChecked():
-            self.cpObject = self.SGPro
-            self.app.imagePopup.showStatus = False
-            self.app.imagePopup.setVisible(False)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
-        elif self.app.ui.rb_cameraTSX.isChecked():
-            self.cpObject = self.TheSkyX
-            self.app.imagePopup.showStatus = False
-            self.app.imagePopup.setVisible(False)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
-        elif self.app.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.AscomCamera
-            self.app.imagePopup.showStatus = True
-            self.app.imagePopup.setVisible(True)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
+        self.cpObject.getCameraStatus()
 
     @staticmethod
     def timeStamp():
@@ -725,7 +746,7 @@ class Model(QtCore.QThread):
         else:
             pierside_fits_header = 'W'
         self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
-        suc, mes, modelData = self.cpObject.getImage(modelData)                                                         # imaging app specific abstraction
+        suc, mes, modelData = self.cpObject.getImage(modelData)                                                             # imaging app specific abstraction
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -734,7 +755,7 @@ class Model(QtCore.QThread):
                 else:
                     # we are running in a normal Python environment
                     bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['imagepath'])     # copy reference file as simulation target
+                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['imagepath'])                                      # copy reference file as simulation target
             else:
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
                 fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                         # open for adding field info
@@ -742,10 +763,10 @@ class Model(QtCore.QThread):
                 fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
                 fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
                 fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
-                fitsHeader['CDELT1'] = str(modelData['scaleHint'])                                                               # x is the same as y
-                fitsHeader['CDELT2'] = str(modelData['scaleHint'])                                                               # and vice versa
-                fitsHeader['PIXSCALE'] = str(modelData['scaleHint'])                                                             # and vice versa
-                fitsHeader['SCALE'] = str(modelData['scaleHint'])                                                                # and vice versa
+                fitsHeader['CDELT1'] = str(modelData['scaleHint'])                                                          # x is the same as y
+                fitsHeader['CDELT2'] = str(modelData['scaleHint'])                                                          # and vice versa
+                fitsHeader['PIXSCALE'] = str(modelData['scaleHint'])                                                        # and vice versa
+                fitsHeader['SCALE'] = str(modelData['scaleHint'])                                                           # and vice versa
                 fitsHeader['MW_MRA'] = raJnow_fits_header                                                                   # reported RA of mount in JNOW
                 fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                 # reported DEC of mount in JNOW
                 fitsHeader['MW_ST'] = st_fits_header                                                                        # reported local sideral time of mount from GS command

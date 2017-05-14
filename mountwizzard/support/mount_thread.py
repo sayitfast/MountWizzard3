@@ -605,11 +605,10 @@ class Mount(QtCore.QThread):
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
                 self.setRefractionParameter()                                                                               # transfer refraction from to mount
             else:                                                                                                           #
-                success, message = self.app.model.cpObject.getCameraStatus()                                                # getting the Camera status
-                if success and message in ['IDLE', 'DOWNLOADING', 'READY']:                                                 # if tracking, when camera is idle or downloading
+                if self.app.model.cpObject.cameraStatus in ['IDLE', 'DOWNLOADING', 'READY']:                                # if tracking, when camera is idle or downloading
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
-                    self.logger.debug('getStatusMedium-> no autorefraction: {0}'.format(message))                           # no autorefraction is possible
+                    self.logger.debug('getStatusMedium-> no autorefraction')                                                # no autorefraction is possible
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()
 

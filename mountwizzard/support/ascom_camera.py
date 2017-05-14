@@ -26,16 +26,23 @@ class AscomCamera:
 
     def __init__(self, app):
         self.app = app
-        self.connectedCamera = False
+        self.connected = False
         self.connectedPlateSolver = False
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverNameCamera = ''                                                                                          # driver object name
         self.driverNamePlateSolver = ''
         self.ascomCamera = None                                                                                             # placeholder for ascom driver object
         self.win32PlateSolver = None
+        self.cameraStatus = ''
+
+    def connect(self):
+        pass
+
+    def disconnect(self):
+        pass
 
     def checkConnection(self):
-        if self.connectedCamera:
+        if self.connected:
             if self.connectedPlateSolver:
                 return True, 'Camera and Solver OK'
             else:
@@ -156,30 +163,30 @@ class AscomCamera:
             return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def getCameraStatus(self):
-        if self.connectedCamera:
+        if self.connected:
             value = self.ascomCamera.CameraState
         else:
-            return False, 'NOT CONNECTED'
+            self.cameraStatus = 'NOT CONNECTED'
         if value == 0:
-            return True, 'READY'
+            self.cameraStatus = 'READY'
         elif value == 1:
-            return True, 'PREPARATION'
+            self.cameraStatus = 'PREPARATION'
         elif value == 2:
-            return True, 'INTEGRATING'
+            self.cameraStatus = 'INTEGRATING'
         elif value == 3:
-            return True, 'READOUT'
+            self.cameraStatus = 'READOUT'
         elif value == 4:
-            return True, 'DOWNLOADING'
+            self.cameraStatus = 'DOWNLOADING'
         else:
-            return False, 'ERROR'
+            self.cameraStatus = 'ERROR'
 
     def connectCameraPlateSolver(self):
         try:
             self.ascomCamera = Dispatch(self.driverNameCamera)
             self.ascomCamera.connected = True
-            self.connectedCamera = True
+            self.connected = True
         except Exception as e:
-            self.connectedCamera = False
+            self.connected = False
             self.logger.error('connectCameraPl-> error: {0}'.format(e))
         finally:
             pass
@@ -197,10 +204,10 @@ class AscomCamera:
     def disconnectCameraPlateSolver(self):
         try:
             self.ascomCamera.connected = False
-            self.connectedCamera = False
+            self.connected = False
             self.ascomCamera = None
         except Exception as e:
-            self.connectedCamera = False
+            self.connected = False
             self.logger.error('disconnectCamer-> error: {0}'.format(e))
         finally:
             pass
@@ -218,10 +225,10 @@ class AscomCamera:
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Camera'
             self.driverNameCamera = self.chooser.Choose(self.driverNameCamera)
-            self.connectedCamera = False                                                                                    # run the driver setup dialog
+            self.connected = False                                                                                    # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.logger.error('setupDriverCame-> general exception:{0}'.format(e))                                          # write to log
-            self.connectedCamera = False                                                                                    # run the driver setup dialog
+            self.connected = False                                                                                    # run the driver setup dialog
         finally:                                                                                                            # continue to work
             pass                                                                                                            # python necessary
 

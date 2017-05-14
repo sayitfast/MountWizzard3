@@ -12,6 +12,14 @@ class TheSkyX:
         self.host = '127.0.0.1'
         self.port = 3040
         self.responseSuccess = '|No error. Error = 0.'
+        self.connected = False
+        self.cameraStatus = ''
+
+    def connect(self):
+        pass
+
+    def disconnect(self):
+        pass
 
     def sendCommand(self, command):
         try:
@@ -37,16 +45,16 @@ class TheSkyX:
             tsxSocket.connect((self.host, self.port))
             command = '/* Java Script */ '
             command += 'ccdsoftCamera.Connect();'
-            connected, response = self.sendCommand(command)
+            self.connected, response = self.sendCommand(command)
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
-            connected = False
+            self.connected = False
         finally:
             tsxSocket.close()
-            if connected:
+            if self.connected:
                 return True, 'Camera and Solver OK';
             else:
-                return connected, 'Unable to connect camera';
+                return self.connected, 'Unable to connect camera';
 
     def solveImage(self, modelData):
         if modelData['blind']:
@@ -133,10 +141,11 @@ class TheSkyX:
                 response = 'IDLE'
             elif 'Exposing' in response:
                 response = 'CAPTURING'
-            return success, response
+            self.cameraStatus = response
         except Exception as e:
             self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
-            return False, 'Request failed'
+        finally:
+            pass
 
     def getCameraProps(self):
         # TODO: Get the chance to implement subframe on / off if a camera doesn't support this

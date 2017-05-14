@@ -62,6 +62,7 @@ class MountAscom:
 
     def sendCommand(self, command):                                                                                         # core routine for sending commands to mount
         reply = ''                                                                                                          # reply is empty
+        value = '0'
         self.sendCommandLock.acquire()
         if self.driver_real and self.connected:
             try:                                                                                                            # all with error handling
