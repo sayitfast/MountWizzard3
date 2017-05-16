@@ -278,46 +278,46 @@ class MountWizzardApp(MwWidget):
     def initConfig(self):
         if 'ParkPosText1' in self.config:
             self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
+            self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
         if 'ParkPosAlt1' in self.config:
             self.ui.le_altParkPos1.setText(self.config['ParkPosAlt1'])
         if 'ParkPosAz1' in self.config:
             self.ui.le_azParkPos1.setText(self.config['ParkPosAz1'])
-            self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
         if 'ParkPosText2' in self.config:
             self.ui.le_parkPos2Text.setText(self.config['ParkPosText2'])
+            self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
         if 'ParkPosAlt2' in self.config:
             self.ui.le_altParkPos2.setText(self.config['ParkPosAlt2'])
         if 'ParkPosAz2' in self.config:
             self.ui.le_azParkPos2.setText(self.config['ParkPosAz2'])
-            self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
         if 'ParkPosText3' in self.config:
             self.ui.le_parkPos3Text.setText(self.config['ParkPosText3'])
+            self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
         if 'ParkPosAlt3' in self.config:
             self.ui.le_altParkPos3.setText(self.config['ParkPosAlt3'])
         if 'ParkPosAz3' in self.config:
             self.ui.le_azParkPos3.setText(self.config['ParkPosAz3'])
-            self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
         if 'ParkPosText4' in self.config:
             self.ui.le_parkPos4Text.setText(self.config['ParkPosText4'])
+            self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
         if 'ParkPosAlt4' in self.config:
             self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
         if 'ParkPosAz4' in self.config:
             self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
-            self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
         if 'ParkPosText5' in self.config:
             self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
+            self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
         if 'ParkPosAlt5' in self.config:
             self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
         if 'ParkPosAz5' in self.config:
             self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
-            self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
         if 'ParkPosText6' in self.config:
             self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
+            self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
         if 'ParkPosAlt6' in self.config:
             self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
         if 'ParkPosAz6' in self.config:
             self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
-            self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
         if 'ModelPointsFileName' in self.config:
             self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
         if 'HorizonPointsFileName' in self.config:
@@ -894,7 +894,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.1.30'
+    BUILD_NO = '2.1.31'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

@@ -1,4 +1,7 @@
 # Changelog:
+2.1.31
+- bugfix for loading parameters
+
 2.1.30
 - bugfix due to feedback from Tom
 
@@ -10,7 +13,7 @@
 - adding debug output to EXE installer
 
 2.1.27
-- bugfix for IP conncetion topic of TOM
+- bugfix for IP connection topic of TOM
 - status sky quality is up
 
 2.1.26
