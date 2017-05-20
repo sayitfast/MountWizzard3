@@ -899,7 +899,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.1.32'
+    BUILD_NO = '2.2 RC'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

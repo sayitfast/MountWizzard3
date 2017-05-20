@@ -1,4 +1,7 @@
 # Changelog
+2.2 RC
+- release candidate
+
 2.1.32
 - robustness for config loading
 
