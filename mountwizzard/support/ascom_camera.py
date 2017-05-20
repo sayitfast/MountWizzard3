@@ -165,20 +165,20 @@ class AscomCamera:
     def getCameraStatus(self):
         if self.connected:
             value = self.ascomCamera.CameraState
+            if value == 0:
+                self.cameraStatus = 'READY'
+            elif value == 1:
+                self.cameraStatus = 'PREPARATION'
+            elif value == 2:
+                self.cameraStatus = 'INTEGRATING'
+            elif value == 3:
+                self.cameraStatus = 'READOUT'
+            elif value == 4:
+                self.cameraStatus = 'DOWNLOADING'
+            else:
+                self.cameraStatus = 'ERROR'
         else:
             self.cameraStatus = 'NOT CONNECTED'
-        if value == 0:
-            self.cameraStatus = 'READY'
-        elif value == 1:
-            self.cameraStatus = 'PREPARATION'
-        elif value == 2:
-            self.cameraStatus = 'INTEGRATING'
-        elif value == 3:
-            self.cameraStatus = 'READOUT'
-        elif value == 4:
-            self.cameraStatus = 'DOWNLOADING'
-        else:
-            self.cameraStatus = 'ERROR'
 
     def connectCameraPlateSolver(self):
         try:

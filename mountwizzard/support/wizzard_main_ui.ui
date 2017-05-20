@@ -7678,6 +7678,9 @@
         </property>
        </widget>
        <widget class="QRadioButton" name="rb_cameraMaximDL">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="geometry">
          <rect>
           <x>10</x>
@@ -10199,7 +10202,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard 2</string>
+    <string>MountWizzard 2.2 RC</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
