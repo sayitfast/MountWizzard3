@@ -632,6 +632,16 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.mountHandler.sendCommand('Gdat')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.mountHandler.sendCommand('Gh')})
         self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.mountHandler.sendCommand('Go')})
+        try:
+            reply = self.mountHandler.sendCommand('GDUTV')
+            if reply:
+                valid, expirationDate = reply.split(',')
+                self.app.mountDataQueue.put({'Name': 'GetUTCDataValid', 'Value': valid})
+                self.app.mountDataQueue.put({'Name': 'GetUTCDataExpirationDate', 'Value': expirationDate})
+        except Exception as e:
+            self.logger.error('getStatusFast  -> receive error: {0}'.format(e))
+        finally:
+            pass
 
     def getStatusOnce(self):                                                                                                # one time updates for settings
         self.mountHandler.sendCommand('U2')                                                                                 # Set high precision mode

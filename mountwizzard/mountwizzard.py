@@ -798,6 +798,15 @@ class MountWizzardApp(MwWidget):
             self.ui.le_hardwareVersion.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopePierSide':
             self.ui.le_telescopePierSide.setText(str(data['Value']))
+        if data['Name'] == 'GetUTCDataValid':
+            if data['Value'] == 'V':
+                self.ui.le_UTCDataValid.setText('VALID')
+            elif data['Value'] == 'E':
+                self.ui.le_UTCDataValid.setText('EXPIRED')
+            else:
+                self.ui.le_UTCDataValid.setText('INVALID')
+        if data['Name'] == 'GetUTCDataExpirationDate':
+            self.ui.le_UTCDataExpirationDate.setText(str(data['Value']))
 
     @QtCore.Slot(int)
     def setStickStatus(self, status):

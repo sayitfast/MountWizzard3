@@ -1,6 +1,6 @@
 # Changelog
 2.3.1
--
+- UTC Data expiration date added under setting / updates
 
 2.2 RC
 - release candidate

@@ -9306,13 +9306,13 @@
      </widget>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
-       <string>MPC / TLE / UTC Data</string>
+       <string>UTC Data / MPC / TLE </string>
       </attribute>
       <widget class="QPushButton" name="btn_downloadEarthrotation">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>50</y>
+         <y>100</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9333,7 +9333,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>20</y>
+         <y>70</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -9351,7 +9351,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>30</y>
+         <y>80</y>
          <width>341</width>
          <height>21</height>
         </rect>
@@ -9372,7 +9372,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>90</y>
+         <y>140</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9393,7 +9393,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>130</y>
+         <y>180</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9414,7 +9414,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>170</y>
+         <y>220</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9435,7 +9435,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>210</y>
+         <y>260</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9456,7 +9456,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>50</y>
+         <y>100</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9480,7 +9480,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>90</y>
+         <y>140</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9504,7 +9504,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>130</y>
+         <y>180</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9528,7 +9528,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>170</y>
+         <y>220</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9552,7 +9552,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>210</y>
+         <y>260</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9576,7 +9576,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>270</y>
+         <y>320</y>
          <width>311</width>
          <height>31</height>
         </rect>
@@ -9597,7 +9597,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>270</y>
+         <y>320</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9618,7 +9618,7 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>10</y>
+         <y>60</y>
          <width>21</width>
          <height>311</height>
         </rect>
@@ -9634,7 +9634,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>20</y>
+         <y>70</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -9652,7 +9652,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>30</y>
+         <y>80</y>
          <width>311</width>
          <height>21</height>
         </rect>
@@ -9673,7 +9673,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>370</y>
+         <y>400</y>
          <width>641</width>
          <height>21</height>
         </rect>
@@ -9706,7 +9706,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>340</y>
+         <y>370</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9724,7 +9724,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>350</y>
+         <y>380</y>
          <width>691</width>
          <height>21</height>
         </rect>
@@ -9745,7 +9745,7 @@
        <property name="geometry">
         <rect>
          <x>670</x>
-         <y>370</y>
+         <y>400</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -9760,6 +9760,126 @@
        </property>
        <property name="text">
         <string>Select</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_151">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>UTC Data is</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_UTCDataValid">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>20</y>
+         <width>81</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Status of dual tracking</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string>-----</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_UTCDataExpirationDate">
+       <property name="geometry">
+        <rect>
+         <x>280</x>
+         <y>20</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Status of dual tracking</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="inputMask">
+        <string/>
+       </property>
+       <property name="text">
+        <string>-----</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_152">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>20</y>
+         <width>91</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>and expires on </string>
        </property>
       </widget>
      </widget>
