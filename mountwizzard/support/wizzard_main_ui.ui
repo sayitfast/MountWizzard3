@@ -3870,8 +3870,8 @@
     <widget class="QLineEdit" name="le_alignNumberStars">
      <property name="geometry">
       <rect>
-       <x>50</x>
-       <y>90</y>
+       <x>570</x>
+       <y>50</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -3900,7 +3900,7 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>10</string>
+      <string>NN</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -3912,9 +3912,9 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>90</y>
-       <width>41</width>
+       <x>460</x>
+       <y>50</y>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -3924,14 +3924,14 @@
       </font>
      </property>
      <property name="text">
-      <string>Stars</string>
+      <string>Number Stars</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_alignError">
+    <widget class="QLineEdit" name="le_alignErrorRMS">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>90</y>
+       <x>550</x>
+       <y>80</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -3954,13 +3954,13 @@
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Number of alignment stars in actual used pointing model</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>10.0</string>
+      <string>NN.N</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -3974,7 +3974,7 @@
       <rect>
        <x>10</x>
        <y>120</y>
-       <width>431</width>
+       <width>411</width>
        <height>351</height>
       </rect>
      </property>
@@ -3997,9 +3997,9 @@
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>90</y>
-       <width>31</width>
+       <x>460</x>
+       <y>80</y>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
@@ -4031,7 +4031,7 @@
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>150</x>
        <y>90</y>
        <width>41</width>
        <height>21</height>
@@ -4049,7 +4049,7 @@
     <widget class="QPushButton" name="btn_runTargetRMSAlignment">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>150</x>
        <y>50</y>
        <width>131</width>
        <height>31</height>
@@ -4065,7 +4065,7 @@
     <widget class="QDoubleSpinBox" name="targetRMS">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>230</x>
        <y>90</y>
        <width>51</width>
        <height>22</height>
@@ -4087,8 +4087,8 @@
     <widget class="QPushButton" name="btn_saveBackupModel">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>50</y>
+       <x>460</x>
+       <y>240</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4104,7 +4104,7 @@
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>50</y>
+       <y>240</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4119,9 +4119,9 @@
     <widget class="Line" name="line_18">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>30</y>
-       <width>271</width>
+       <x>460</x>
+       <y>220</y>
+       <width>291</width>
        <height>21</height>
       </rect>
      </property>
@@ -4136,7 +4136,7 @@
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>170</y>
+       <y>360</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4151,8 +4151,8 @@
     <widget class="QPushButton" name="btn_saveSimpleModel">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>170</y>
+       <x>460</x>
+       <y>360</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4167,7 +4167,7 @@
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>290</x>
        <y>50</y>
        <width>131</width>
        <height>31</height>
@@ -4185,7 +4185,7 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>431</width>
+       <width>411</width>
        <height>21</height>
       </rect>
      </property>
@@ -4217,8 +4217,8 @@
     <widget class="QLabel" name="label_125">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>20</y>
+       <x>460</x>
+       <y>210</y>
        <width>241</width>
        <height>21</height>
       </rect>
@@ -4236,7 +4236,7 @@
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>90</y>
+       <y>280</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4251,8 +4251,8 @@
     <widget class="QPushButton" name="btn_saveBaseModel">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>90</y>
+       <x>460</x>
+       <y>280</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4267,8 +4267,8 @@
     <widget class="QLabel" name="label_126">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>50</y>
+       <x>550</x>
+       <y>240</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4291,8 +4291,8 @@
     <widget class="QLabel" name="label_127">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>90</y>
+       <x>550</x>
+       <y>280</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4315,8 +4315,8 @@
     <widget class="QLabel" name="label_128">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>170</y>
+       <x>550</x>
+       <y>360</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4339,8 +4339,8 @@
     <widget class="QPushButton" name="btn_saveDSO1Model">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>210</y>
+       <x>460</x>
+       <y>400</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4356,7 +4356,7 @@
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>210</y>
+       <y>400</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4371,8 +4371,8 @@
     <widget class="QPushButton" name="btn_saveDSO2Model">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>250</y>
+       <x>460</x>
+       <y>440</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4388,7 +4388,7 @@
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>250</y>
+       <y>440</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4403,8 +4403,8 @@
     <widget class="QLabel" name="label_129">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>210</y>
+       <x>550</x>
+       <y>400</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4427,8 +4427,8 @@
     <widget class="QLabel" name="label_130">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>250</y>
+       <x>550</x>
+       <y>440</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4451,8 +4451,8 @@
     <widget class="QPushButton" name="btn_saveRefinementModel">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>130</y>
+       <x>460</x>
+       <y>320</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4467,8 +4467,8 @@
     <widget class="QLabel" name="label_133">
      <property name="geometry">
       <rect>
-       <x>560</x>
-       <y>130</y>
+       <x>550</x>
+       <y>320</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4492,7 +4492,7 @@
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>130</y>
+       <y>320</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -4507,7 +4507,7 @@
     <widget class="Line" name="line_46">
      <property name="geometry">
       <rect>
-       <x>450</x>
+       <x>430</x>
        <y>10</y>
        <width>21</width>
        <height>471</height>
@@ -4528,7 +4528,7 @@
       <rect>
        <x>10</x>
        <y>120</y>
-       <width>431</width>
+       <width>411</width>
        <height>351</height>
       </rect>
      </property>
@@ -4539,7 +4539,7 @@
     <widget class="QCheckBox" name="checkPolarPlot">
      <property name="geometry">
       <rect>
-       <x>320</x>
+       <x>20</x>
        <y>90</y>
        <width>101</width>
        <height>20</height>
@@ -4557,9 +4557,523 @@
       <string>Polar Plot</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="le_alignErrorPolar">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>110</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Polar Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>110</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Polar </string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_153">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>110</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Ortho</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorOrtho">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>110</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Ortho Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_154">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>50</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Number Terms</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignNumberTerms">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>50</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Terms in actual used pointing model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="Line" name="line_54">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>30</y>
+       <width>291</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_155">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>20</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Actual Model Status</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_156">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>170</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Turn AZ</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignKnobTurnAz">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>170</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_157">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>170</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Turn Alt</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignKnobTurnAlt">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>170</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_158">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>140</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AZ</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_159">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>140</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>ALT</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorAz">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>140</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Polar Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorAlt">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>140</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Ortho Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorPosAngle">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>80</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.N</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_160">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>80</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>PosAngle</string>
+     </property>
+    </widget>
     <zorder>le_alignNumberStars</zorder>
     <zorder>label</zorder>
-    <zorder>le_alignError</zorder>
+    <zorder>le_alignErrorRMS</zorder>
     <zorder>label_14</zorder>
     <zorder>btn_showActualModel</zorder>
     <zorder>label_37</zorder>
@@ -4592,6 +5106,24 @@
     <zorder>model</zorder>
     <zorder>alignErrorStars</zorder>
     <zorder>checkPolarPlot</zorder>
+    <zorder>le_alignErrorPolar</zorder>
+    <zorder>label_15</zorder>
+    <zorder>label_153</zorder>
+    <zorder>le_alignErrorOrtho</zorder>
+    <zorder>label_154</zorder>
+    <zorder>le_alignNumberTerms</zorder>
+    <zorder>line_54</zorder>
+    <zorder>label_155</zorder>
+    <zorder>label_156</zorder>
+    <zorder>le_alignKnobTurnAz</zorder>
+    <zorder>label_157</zorder>
+    <zorder>le_alignKnobTurnAlt</zorder>
+    <zorder>label_158</zorder>
+    <zorder>label_159</zorder>
+    <zorder>le_alignErrorAz</zorder>
+    <zorder>le_alignErrorAlt</zorder>
+    <zorder>le_alignErrorPosAngle</zorder>
+    <zorder>label_160</zorder>
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">
@@ -6580,7 +7112,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configuration of the imaging / plate solving program and the ASCOM drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -9804,7 +10336,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Status of dual tracking</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of UTC data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -9846,7 +10378,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Status of dual tracking</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Expiration date of UTC data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>

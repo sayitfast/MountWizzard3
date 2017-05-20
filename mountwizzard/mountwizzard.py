@@ -729,7 +729,23 @@ class MountWizzardApp(MwWidget):
         if data['Name'] == 'NumberAlignmentStars':
             self.ui.le_alignNumberStars.setText(str(data['Value']))
         if data['Name'] == 'ModelRMSError':
-            self.ui.le_alignError.setText(str(data['Value']))
+            self.ui.le_alignErrorRMS.setText(str(data['Value']))
+        if data['Name'] == 'ModelErrorPosAngle':
+            self.ui.le_alignErrorPosAngle.setText(str(data['Value']))
+        if data['Name'] == 'ModelPolarError':
+            self.ui.le_alignErrorPolar.setText(str(data['Value']))
+        if data['Name'] == 'ModelOrthoError':
+            self.ui.le_alignErrorOrtho.setText(str(data['Value']))
+        if data['Name'] == 'ModelTerms':
+            self.ui.le_alignNumberTerms.setText(str(data['Value']))
+        if data['Name'] == 'ModelKnobTurnAz':
+            self.ui.le_alignKnobTurnAz.setText(str(data['Value']))
+        if data['Name'] == 'ModelKnobTurnAlt':
+            self.ui.le_alignKnobTurnAlt.setText(str(data['Value']))
+        if data['Name'] == 'ModelErrorAz':
+            self.ui.le_alignErrorAz.setText(str(data['Value']))
+        if data['Name'] == 'ModelErrorAlt':
+            self.ui.le_alignErrorAlt.setText(str(data['Value']))
         if data['Name'] == 'ModelStarError':
             if data['Value'] == 'delete':
                 self.ui.alignErrorStars.setText('')

@@ -1,6 +1,7 @@
 # Changelog
 2.3.1
 - UTC Data expiration date added under setting / updates
+- added getain command to model management
 
 2.2 RC
 - release candidate
@@ -37,7 +38,7 @@
 - large refactoring
 - implemented direct mount connection
 - improved GUI
-- automatization for orbit and UTC parameters (experimental)
+- automatisation for orbit and UTC parameters (experimental)
 
 2.1.23
 - bugfix platesolve & sync
