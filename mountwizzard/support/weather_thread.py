@@ -37,8 +37,13 @@ class Weather(QtCore.QThread):
         self.initConfig()
 
     def initConfig(self):
-        if 'ASCOMWeatherDriverName' in self.app.config:
-            self.driverName = self.app.config['ASCOMWeatherDriverName']
+        try:
+            if 'ASCOMWeatherDriverName' in self.app.config:
+                self.driverName = self.app.config['ASCOMWeatherDriverName']
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         self.app.config['ASCOMWeatherDriverName'] = self.driverName

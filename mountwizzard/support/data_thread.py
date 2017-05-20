@@ -49,7 +49,12 @@ class Data(QtCore.QThread):
         self.app = app
 
     def initConfig(self):
-        pass
+        try:
+            pass
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         pass

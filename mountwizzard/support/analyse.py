@@ -93,16 +93,21 @@ class ShowAnalysePopup(MwWidget):
         self.setVisible(False)
 
     def initConfig(self):
-        if 'ScalePlotRA' in self.app.config:
-            self.ui.scalePlotRA.setValue(self.app.config['ScalePlotRA'])
-        if 'ScalePlotDEC' in self.app.config:
-            self.ui.scalePlotDEC.setValue(self.app.config['ScalePlotDEC'])
-        if 'ScalePlotError' in self.app.config:
-            self.ui.scalePlotError.setValue(self.app.config['ScalePlotError'])
-        if 'AnalysePopupWindowPositionX' in self.app.config:
-            self.move(self.app.config['AnalysePopupWindowPositionX'], self.app.config['AnalysePopupWindowPositionY'])
-        if 'AnalysePopupWindowShowStatus' in self.app.config:
-            self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
+        try:
+            if 'ScalePlotRA' in self.app.config:
+                self.ui.scalePlotRA.setValue(self.app.config['ScalePlotRA'])
+            if 'ScalePlotDEC' in self.app.config:
+                self.ui.scalePlotDEC.setValue(self.app.config['ScalePlotDEC'])
+            if 'ScalePlotError' in self.app.config:
+                self.ui.scalePlotError.setValue(self.app.config['ScalePlotError'])
+            if 'AnalysePopupWindowPositionX' in self.app.config:
+                self.move(self.app.config['AnalysePopupWindowPositionX'], self.app.config['AnalysePopupWindowPositionY'])
+            if 'AnalysePopupWindowShowStatus' in self.app.config:
+                self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         self.app.config['AnalysePopupWindowPositionX'] = self.pos().x()

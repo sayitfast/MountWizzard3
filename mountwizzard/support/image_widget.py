@@ -86,10 +86,15 @@ class ShowImagePopup(MwWidget):
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
 
     def initConfig(self):
-        if 'ImagePopupWindowPositionX' in self.app.config:
-            self.move(self.app.config['ImagePopupWindowPositionX'], self.app.config['ImagePopupWindowPositionY'])
-        if 'ImagePopupWindowShowStatus' in self.app.config:
-            self.showStatus = self.app.config['ImagePopupWindowShowStatus']
+        try:
+            if 'ImagePopupWindowPositionX' in self.app.config:
+                self.move(self.app.config['ImagePopupWindowPositionX'], self.app.config['ImagePopupWindowPositionY'])
+            if 'ImagePopupWindowShowStatus' in self.app.config:
+                self.showStatus = self.app.config['ImagePopupWindowShowStatus']
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         self.app.config['ImagePopupWindowPositionX'] = self.pos().x()

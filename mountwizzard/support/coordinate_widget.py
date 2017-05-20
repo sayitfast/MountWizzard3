@@ -69,10 +69,15 @@ class ShowCoordinatePopup(MwWidget):
         self.setVisible(False)                                                                                              # but hide it first
 
     def initConfig(self):
-        if 'CoordinatePopupWindowPositionX' in self.app.config:
-            self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
-        if 'CoordinatePopupWindowShowStatus' in self.app.config:
-            self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
+        try:
+            if 'CoordinatePopupWindowPositionX' in self.app.config:
+                self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
+            if 'CoordinatePopupWindowShowStatus' in self.app.config:
+                self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         self.app.config['CoordinatePopupWindowPositionX'] = self.pos().x()

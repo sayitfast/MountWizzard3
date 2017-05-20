@@ -276,144 +276,149 @@ class MountWizzardApp(MwWidget):
         self.modelWidget.draw()
 
     def initConfig(self):
-        if 'ParkPosText1' in self.config:
-            self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
-            self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
-        if 'ParkPosAlt1' in self.config:
-            self.ui.le_altParkPos1.setText(self.config['ParkPosAlt1'])
-        if 'ParkPosAz1' in self.config:
-            self.ui.le_azParkPos1.setText(self.config['ParkPosAz1'])
-        if 'ParkPosText2' in self.config:
-            self.ui.le_parkPos2Text.setText(self.config['ParkPosText2'])
-            self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
-        if 'ParkPosAlt2' in self.config:
-            self.ui.le_altParkPos2.setText(self.config['ParkPosAlt2'])
-        if 'ParkPosAz2' in self.config:
-            self.ui.le_azParkPos2.setText(self.config['ParkPosAz2'])
-        if 'ParkPosText3' in self.config:
-            self.ui.le_parkPos3Text.setText(self.config['ParkPosText3'])
-            self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
-        if 'ParkPosAlt3' in self.config:
-            self.ui.le_altParkPos3.setText(self.config['ParkPosAlt3'])
-        if 'ParkPosAz3' in self.config:
-            self.ui.le_azParkPos3.setText(self.config['ParkPosAz3'])
-        if 'ParkPosText4' in self.config:
-            self.ui.le_parkPos4Text.setText(self.config['ParkPosText4'])
-            self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
-        if 'ParkPosAlt4' in self.config:
-            self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
-        if 'ParkPosAz4' in self.config:
-            self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
-        if 'ParkPosText5' in self.config:
-            self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
-            self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
-        if 'ParkPosAlt5' in self.config:
-            self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
-        if 'ParkPosAz5' in self.config:
-            self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
-        if 'ParkPosText6' in self.config:
-            self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
-            self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
-        if 'ParkPosAlt6' in self.config:
-            self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
-        if 'ParkPosAz6' in self.config:
-            self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
-        if 'ModelPointsFileName' in self.config:
-            self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
-        if 'HorizonPointsFileName' in self.config:
-            self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
-        if 'CheckUseMinimumHorizonLine' in self.config:
-            self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
-        if 'AltitudeMinimumHorizon' in self.config:
-            self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
-        if 'ImageDirectoryName' in self.config:
-            self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
-        if 'CameraTSX' in self.config:
-            self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
-        if 'CameraSGPro' in self.config:
-            self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
-        if 'CameraASCOM' in self.config:
-            self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
-        if 'CameraMaximDL' in self.config:
-            self.ui.rb_cameraMaximDL.setChecked(self.config['CameraMaximDL'])
-        if 'CameraBin' in self.config:
-            self.ui.cameraBin.setValue(self.config['CameraBin'])
-        if 'CameraExposure' in self.config:
-            self.ui.cameraExposure.setValue(self.config['CameraExposure'])
-        if 'ISOSetting' in self.config:
-            self.ui.isoSetting.setValue(self.config['ISOSetting'])
-        if 'CheckFastDownload' in self.config:
-            self.ui.checkFastDownload.setChecked(self.config['CheckFastDownload'])
-        if 'SettlingTime' in self.config:
-            self.ui.settlingTime.setValue(self.config['SettlingTime'])
-        if 'CheckUseBlindSolve' in self.config:
-            self.ui.checkUseBlindSolve.setChecked(self.config['CheckUseBlindSolve'])
-        if 'TargetRMS' in self.config:
-            self.ui.targetRMS.setValue(self.config['TargetRMS'])
-        if 'PixelSize' in self.config:
-            self.ui.pixelSize.setValue(self.config['PixelSize'])
-        if 'FocalLength' in self.config:
-            self.ui.focalLength.setValue(self.config['FocalLength'])
-        if 'ScaleSubframe' in self.config:
-            self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
-        if 'CheckDoSubframe' in self.config:
-            self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
-        if 'CheckAutoRefraction' in self.config:
-            self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
-        if 'CheckKeepImages' in self.config:
-            self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
-        if 'CheckRunTrackingWidget' in self.config:
-            self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
-        if 'CheckClearModelFirst' in self.config:
-            self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
-        if 'CheckKeepRefinement' in self.config:
-            self.ui.checkKeepRefinement.setChecked(self.config['CheckKeepRefinement'])
-        if 'AltitudeBase' in self.config:
-            self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
-        if 'AzimuthBase' in self.config:
-            self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
-        if 'NumberGridPointsCol' in self.config:
-            self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
-        if 'NumberGridPointsRow' in self.config:
-            self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
-        if 'NumberPointsDSO' in self.config:
-            self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
-        if 'NumberHoursDSO' in self.config:
-            self.ui.numberHoursDSO.setValue(self.config['NumberHoursDSO'])
-        if 'AnalyseFileName' in self.config:
-            self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
-        if 'AltitudeTimeChange' in self.config:
-            self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
-        if 'AzimuthTimeChange' in self.config:
-            self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
-        if 'NumberRunsTimeChange' in self.config:
-            self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
-        if 'DelayTimeTimeChange' in self.config:
-            self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
-        if 'AltitudeHysterese1' in self.config:
-            self.ui.altitudeHysterese1.setValue(self.config['AltitudeHysterese1'])
-        if 'AltitudeHysterese2' in self.config:
-            self.ui.altitudeHysterese2.setValue(self.config['AltitudeHysterese2'])
-        if 'AzimuthHysterese1' in self.config:
-            self.ui.azimuthHysterese1.setValue(self.config['AzimuthHysterese1'])
-        if 'AzimuthHysterese2' in self.config:
-            self.ui.azimuthHysterese2.setValue(self.config['AzimuthHysterese2'])
-        if 'NumberRunsHysterese' in self.config:
-            self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
-        if 'DelayTimeHysterese' in self.config:
-            self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
-        if 'MountIP' in self.config:
-            self.ui.le_mountIP.setText(self.config['MountIP'])
-        if 'RelayIP' in self.config:
-            self.ui.le_relayIP.setText(self.config['RelayIP'])
-        if 'DirectMount' in self.config:
-            self.ui.rb_directMount.setChecked(self.config['DirectMount'])
-        if 'AscomMount' in self.config:
-            self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
-        if 'UpdaterFileName' in self.config:
-            self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
-        if 'WindowPositionX' in self.config:
-            self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+        try:
+            if 'ParkPosText1' in self.config:
+                self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
+                self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text())
+            if 'ParkPosAlt1' in self.config:
+                self.ui.le_altParkPos1.setText(self.config['ParkPosAlt1'])
+            if 'ParkPosAz1' in self.config:
+                self.ui.le_azParkPos1.setText(self.config['ParkPosAz1'])
+            if 'ParkPosText2' in self.config:
+                self.ui.le_parkPos2Text.setText(self.config['ParkPosText2'])
+                self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text())
+            if 'ParkPosAlt2' in self.config:
+                self.ui.le_altParkPos2.setText(self.config['ParkPosAlt2'])
+            if 'ParkPosAz2' in self.config:
+                self.ui.le_azParkPos2.setText(self.config['ParkPosAz2'])
+            if 'ParkPosText3' in self.config:
+                self.ui.le_parkPos3Text.setText(self.config['ParkPosText3'])
+                self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text())
+            if 'ParkPosAlt3' in self.config:
+                self.ui.le_altParkPos3.setText(self.config['ParkPosAlt3'])
+            if 'ParkPosAz3' in self.config:
+                self.ui.le_azParkPos3.setText(self.config['ParkPosAz3'])
+            if 'ParkPosText4' in self.config:
+                self.ui.le_parkPos4Text.setText(self.config['ParkPosText4'])
+                self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text())
+            if 'ParkPosAlt4' in self.config:
+                self.ui.le_altParkPos4.setText(self.config['ParkPosAlt4'])
+            if 'ParkPosAz4' in self.config:
+                self.ui.le_azParkPos4.setText(self.config['ParkPosAz4'])
+            if 'ParkPosText5' in self.config:
+                self.ui.le_parkPos5Text.setText(self.config['ParkPosText5'])
+                self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text())
+            if 'ParkPosAlt5' in self.config:
+                self.ui.le_altParkPos5.setText(self.config['ParkPosAlt5'])
+            if 'ParkPosAz5' in self.config:
+                self.ui.le_azParkPos5.setText(self.config['ParkPosAz5'])
+            if 'ParkPosText6' in self.config:
+                self.ui.le_parkPos6Text.setText(self.config['ParkPosText6'])
+                self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text())
+            if 'ParkPosAlt6' in self.config:
+                self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
+            if 'ParkPosAz6' in self.config:
+                self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
+            if 'ModelPointsFileName' in self.config:
+                self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
+            if 'HorizonPointsFileName' in self.config:
+                self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
+            if 'CheckUseMinimumHorizonLine' in self.config:
+                self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
+            if 'AltitudeMinimumHorizon' in self.config:
+                self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
+            if 'ImageDirectoryName' in self.config:
+                self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
+            if 'CameraTSX' in self.config:
+                self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
+            if 'CameraSGPro' in self.config:
+                self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
+            if 'CameraASCOM' in self.config:
+                self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
+            if 'CameraMaximDL' in self.config:
+                self.ui.rb_cameraMaximDL.setChecked(self.config['CameraMaximDL'])
+            if 'CameraBin' in self.config:
+                self.ui.cameraBin.setValue(self.config['CameraBin'])
+            if 'CameraExposure' in self.config:
+                self.ui.cameraExposure.setValue(self.config['CameraExposure'])
+            if 'ISOSetting' in self.config:
+                self.ui.isoSetting.setValue(self.config['ISOSetting'])
+            if 'CheckFastDownload' in self.config:
+                self.ui.checkFastDownload.setChecked(self.config['CheckFastDownload'])
+            if 'SettlingTime' in self.config:
+                self.ui.settlingTime.setValue(self.config['SettlingTime'])
+            if 'CheckUseBlindSolve' in self.config:
+                self.ui.checkUseBlindSolve.setChecked(self.config['CheckUseBlindSolve'])
+            if 'TargetRMS' in self.config:
+                self.ui.targetRMS.setValue(self.config['TargetRMS'])
+            if 'PixelSize' in self.config:
+                self.ui.pixelSize.setValue(self.config['PixelSize'])
+            if 'FocalLength' in self.config:
+                self.ui.focalLength.setValue(self.config['FocalLength'])
+            if 'ScaleSubframe' in self.config:
+                self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
+            if 'CheckDoSubframe' in self.config:
+                self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
+            if 'CheckAutoRefraction' in self.config:
+                self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
+            if 'CheckKeepImages' in self.config:
+                self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
+            if 'CheckRunTrackingWidget' in self.config:
+                self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
+            if 'CheckClearModelFirst' in self.config:
+                self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
+            if 'CheckKeepRefinement' in self.config:
+                self.ui.checkKeepRefinement.setChecked(self.config['CheckKeepRefinement'])
+            if 'AltitudeBase' in self.config:
+                self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
+            if 'AzimuthBase' in self.config:
+                self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
+            if 'NumberGridPointsCol' in self.config:
+                self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
+            if 'NumberGridPointsRow' in self.config:
+                self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
+            if 'NumberPointsDSO' in self.config:
+                self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
+            if 'NumberHoursDSO' in self.config:
+                self.ui.numberHoursDSO.setValue(self.config['NumberHoursDSO'])
+            if 'AnalyseFileName' in self.config:
+                self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
+            if 'AltitudeTimeChange' in self.config:
+                self.ui.altitudeTimeChange.setValue(self.config['AltitudeTimeChange'])
+            if 'AzimuthTimeChange' in self.config:
+                self.ui.azimuthTimeChange.setValue(self.config['AzimuthTimeChange'])
+            if 'NumberRunsTimeChange' in self.config:
+                self.ui.numberRunsTimeChange.setValue(self.config['NumberRunsTimeChange'])
+            if 'DelayTimeTimeChange' in self.config:
+                self.ui.delayTimeTimeChange.setValue(self.config['DelayTimeTimeChange'])
+            if 'AltitudeHysterese1' in self.config:
+                self.ui.altitudeHysterese1.setValue(self.config['AltitudeHysterese1'])
+            if 'AltitudeHysterese2' in self.config:
+                self.ui.altitudeHysterese2.setValue(self.config['AltitudeHysterese2'])
+            if 'AzimuthHysterese1' in self.config:
+                self.ui.azimuthHysterese1.setValue(self.config['AzimuthHysterese1'])
+            if 'AzimuthHysterese2' in self.config:
+                self.ui.azimuthHysterese2.setValue(self.config['AzimuthHysterese2'])
+            if 'NumberRunsHysterese' in self.config:
+                self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
+            if 'DelayTimeHysterese' in self.config:
+                self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
+            if 'MountIP' in self.config:
+                self.ui.le_mountIP.setText(self.config['MountIP'])
+            if 'RelayIP' in self.config:
+                self.ui.le_relayIP.setText(self.config['RelayIP'])
+            if 'DirectMount' in self.config:
+                self.ui.rb_directMount.setChecked(self.config['DirectMount'])
+            if 'AscomMount' in self.config:
+                self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
+            if 'UpdaterFileName' in self.config:
+                self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
+            if 'WindowPositionX' in self.config:
+                self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
@@ -894,7 +899,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.1.31'
+    BUILD_NO = '2.1.32'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

@@ -1,4 +1,7 @@
-# Changelog:
+# Changelog
+2.1.32
+- robustness for config loading
+
 2.1.31
 - bugfix for loading parameters
 

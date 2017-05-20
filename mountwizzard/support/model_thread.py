@@ -83,12 +83,17 @@ class Model(QtCore.QThread):
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
-        if 'ASCOMCameraDriverName' in self.app.config:
-            self.AscomCamera.driverNameCamera = self.app.config['ASCOMCameraDriverName']
-        if 'ASCOMPlateSolverDriverName' in self.app.config:
-            self.AscomCamera.driverNamePlateSolver = self.app.config['ASCOMPlateSolverDriverName']
-        if 'HorizonPointsFileName' in self.app.config:
-            self.loadHorizonPoints(str(self.app.config['HorizonPointsFileName']))
+        try:
+            if 'ASCOMCameraDriverName' in self.app.config:
+                self.AscomCamera.driverNameCamera = self.app.config['ASCOMCameraDriverName']
+            if 'ASCOMPlateSolverDriverName' in self.app.config:
+                self.AscomCamera.driverNamePlateSolver = self.app.config['ASCOMPlateSolverDriverName']
+            if 'HorizonPointsFileName' in self.app.config:
+                self.loadHorizonPoints(str(self.app.config['HorizonPointsFileName']))
+        except Exception as e:
+            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
 
     def storeConfig(self):
         self.app.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
