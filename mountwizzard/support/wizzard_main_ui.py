@@ -3394,7 +3394,7 @@ class Ui_WizzardMainDialog(object):
         self.btn_downloadAll.setFont(font)
         self.btn_downloadAll.setObjectName("btn_downloadAll")
         self.line_47 = QtWidgets.QFrame(self.tab_7)
-        self.line_47.setGeometry(QtCore.QRect(370, 60, 21, 311))
+        self.line_47.setGeometry(QtCore.QRect(370, 60, 21, 291))
         self.line_47.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line_47.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_47.setObjectName("line_47")
@@ -3714,7 +3714,7 @@ class Ui_WizzardMainDialog(object):
 
         self.retranslateUi(WizzardMainDialog)
         self.mainTabWidget.setCurrentIndex(0)
-        self.settingsTabWidget.setCurrentIndex(4)
+        self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(WizzardMainDialog)
         WizzardMainDialog.setTabOrder(self.btn_setDualTracking, self.btn_setUnattendedFlip)
         WizzardMainDialog.setTabOrder(self.btn_setUnattendedFlip, self.altitudeBase)

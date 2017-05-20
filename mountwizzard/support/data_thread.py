@@ -18,9 +18,8 @@ import logging
 from PyQt5 import QtCore
 import time
 import urllib.request as urllib2
-import urllib.parse as urlparse
 # windows automation
-from pywinauto import Application, timings, findwindows
+from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
@@ -66,23 +65,28 @@ class Data(QtCore.QThread):
                 if command == 'SPACESTATIONS':
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
                     self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
+                    self.app.ui.checkSpacestations.setChecked(True)
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
                 elif command == 'SATBRIGHTEST':
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
                     self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
+                    self.app.ui.checkSatellites.setChecked(True)
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
                 elif command == 'ASTEROIDS':
                     self.app.ui.btn_downloadAsteroids.setStyleSheet(self.BLUE)
                     self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.checkAsteroids.setChecked(True)
                     self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
                 elif command == 'COMETS':
                     self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
                     self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
+                    self.app.ui.checkComets.setChecked(True)
                     self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
                 elif command == 'EARTHROTATION':
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
                     self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
                     self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
+                    self.app.ui.checkEarthrotation.setChecked(True)
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
                 elif command == 'ALL':
                     self.app.ui.btn_downloadAll.setStyleSheet(self.BLUE)
@@ -93,15 +97,20 @@ class Data(QtCore.QThread):
                     self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
                     self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
                     self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
+                    self.app.ui.checkEarthrotation.setChecked(True)
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
                     self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
+                    self.app.ui.checkSpacestations.setChecked(True)
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
                     self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
+                    self.app.ui.checkSatellites.setChecked(True)
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
                     self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + self.ASTEROIDS_FILE)
                     self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
+                    self.app.ui.checkAsteroids.setChecked(True)
                     self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
                     self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
+                    self.app.ui.checkComets.setChecked(True)
                     self.app.ui.btn_downloadAll.setStyleSheet(self.DEFAULT)
                 elif command == 'UPLOADMOUNT':
                     self.app.ui.btn_uploadMount.setStyleSheet(self.BLUE)
@@ -130,7 +139,6 @@ class Data(QtCore.QThread):
     def downloadFile(self, url, filename):
         try:
             u = urllib2.urlopen(url)
-            scheme, netloc, path, query, fragment = urlparse.urlsplit(url)
             with open(filename, 'wb') as f:
                 meta = u.info()
                 meta_func = meta.getheaders if hasattr(meta, 'getheaders') else meta.get_all
@@ -157,18 +165,25 @@ class Data(QtCore.QThread):
         if not os.path.isfile(self.app.ui.le_updaterFileName.text()):
             self.logger.error('uploadMount    -> no updater configured')
             self.app.messageQueue.put('No Path to Updater configured, please check!')
-        app = Application(backend='win32')                                                                                  # backend win32 ist faster than uai
-        app.start(self.app.ui.le_updaterFileName.text())                                                                    # start 10 micro updater
-        timings.Timings.Slow()
+        try:
+            actual_work_dir = os.getcwd()
+            os.chdir(os.path.dirname(self.app.ui.le_updaterFileName.text()))
+            app = Application(backend='win32')                                                                              # backend win32 ist faster than uai
+            app.start(self.app.ui.le_updaterFileName.text())                                                                # start 10 micro updater
+            timings.Timings.Slow()
+        except application.AppStartError:
+            self.logger.error('uploadMount    -> error starting application')
+            self.app.messageQueue.put('Failed to start updater, please check!')
+            os.chdir(actual_work_dir)
+            return
         try:
             dialog = timings.WaitUntilPasses(2, 0.5, lambda: findwindows.find_windows(title='GmQCIv2', class_name='#32770')[0])
             winOK = app.window_(handle=dialog)
             winOK['OK'].click()
         except TimeoutError as e:
-            self.logger.error('uploadMount    -> error{0}'.format(e))
-            self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+            self.logger.error('uploadMount    -> timeout error{0}'.format(e))
         except Exception as e:
-            pass
+            self.logger.error('uploadMount    -> error{0}'.format(e))
         finally:
             pass
         try:
@@ -179,6 +194,7 @@ class Data(QtCore.QThread):
         except Exception as e:
             self.logger.error('uploadMount    -> error{0}'.format(e))
             self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+            os.chdir(actual_work_dir)
             return
         ButtonWrapper(win['Orbital parameters of comets']).uncheck()
         ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
@@ -239,11 +255,11 @@ class Data(QtCore.QThread):
                 win['Edit...1'].click()
                 popup = app['UTC / Earth rotation data']
                 popup['Import files...'].click()
-                filedialog = app['Open finals data']      # TODO: english version ?
-                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.UTC_1_FILE)                               # filename box
+                filedialog = app['Open finals data']
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.UTC_1_FILE)                                # filename box
                 filedialog['Button16'].click()                                                                              # accept filename selection and proceed
-                filedialog = app['Open tai-utc.dat']      # TODO: english version ?
-                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.UTC_2_FILE)                               # filename box
+                filedialog = app['Open tai-utc.dat']
+                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.UTC_2_FILE)                                # filename box
                 filedialog['Button16'].click()                                                                              # accept filename selection and proceed
                 fileOK = app['UTC data']
                 fileOK['OK'].click()
@@ -253,6 +269,7 @@ class Data(QtCore.QThread):
         except Exception as e:
             self.logger.error('uploadMount    -> error{0}'.format(e))
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
+            os.chdir(actual_work_dir)
             return
         if uploadNecessary:
             try:
@@ -262,6 +279,7 @@ class Data(QtCore.QThread):
             except Exception as e:
                 self.logger.error('uploadMount    -> error{0}'.format(e))
                 self.app.messageQueue.put('Error in uploading files, please check 10micron updater!')
+                os.chdir(actual_work_dir)
                 return
             try:
                 dialog = timings.WaitUntilPasses(60, 0.5, lambda: findwindows.find_windows(title='Update completed', class_name='#32770')[0])
@@ -270,6 +288,7 @@ class Data(QtCore.QThread):
             except Exception as e:
                 self.logger.error('uploadMount    -> error{0}'.format(e))
                 self.app.messageQueue.put('Error in closing 10micron updater, please check!')
+                os.chdir(actual_work_dir)
                 return
         else:
             try:
@@ -279,6 +298,7 @@ class Data(QtCore.QThread):
             except Exception as e:
                 self.logger.error('uploadMount    -> error{0}'.format(e))
                 self.app.messageQueue.put('Error in closing Updater, please check!')
+                os.chdir(actual_work_dir)
                 return
 
 if __name__ == "__main__":

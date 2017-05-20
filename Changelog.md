@@ -1,4 +1,7 @@
 # Changelog
+2.3.2
+- changed working directory for updater to remove local files and to make it work with new updater again
+
 2.3.1
 - UTC Data expiration date added under setting / updates
 - added getain command to model management
