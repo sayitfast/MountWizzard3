@@ -1,4 +1,10 @@
 # Changelog
+2.3.4
+- bugfix retrofitting model
+
+2.3.3
+- bugfix alignment model
+
 2.3.2
 - changed working directory for updater to remove local files and to make it work with new updater again
 

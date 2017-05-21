@@ -348,6 +348,7 @@ class Mount(QtCore.QThread):
 
     def getAlignmentModelStatus(self):
         reply = self.mountHandler.sendCommand('getain')                                                                     # load the data from new command
+        print(reply)
         if reply:
             azimuth, altitude, polarError, posAngle, orthoError, azimuthKnobs, altitudeKnobs, terms, RMS = reply.split(',')
             # format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
@@ -393,7 +394,7 @@ class Mount(QtCore.QThread):
         points = []                                                                                                         # clear the alignment points downloaded
         baseOK, numberStars = self.testBaseModelAvailable()                                                                 # get number of stars
         if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
-            return points, 0
+            return points, 0, 0, 0, 0, 0, 0, 0, 0, 0
         RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModelStatus()
         for i in range(1, numberStars + 1):                                                                                 # otherwise download them step for step
             reply = self.mountHandler.sendCommand('getalp{0:d}'.format(i)).split(',')
@@ -411,8 +412,8 @@ class Mount(QtCore.QThread):
     def retrofitMountData(self, data):
         ok, num = self.testBaseModelAvailable()                                                                             # size mount model
         if num == len(data):
-            points, RMS = self.getAlignmentModel()                                                                          # get mount points
-            self.showAlignmentModel(points, RMS)                                                                            # get mount points
+            points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()     # get mount points
+            self.showAlignmentModel(points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle)       # get mount points
             for i in range(0, num):                                                                                         # run through all the points
                 data[i]['modelError'] = float(points[i][5])                                                                 # and for the total error
                 data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(points[i][6]))                           # set raError new from total error mount with polar error angle from mount

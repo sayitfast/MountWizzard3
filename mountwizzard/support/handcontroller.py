@@ -103,6 +103,7 @@ class Handcontroller:
                 if chunk == b'':
                     raise RuntimeError("Socket connection broken")
                 chunks.append(chunk)
+                print(chunk)
                 if chunk[len(chunk)-1] == 3:
                     break
         except Exception as e:                                                                                              # error handling
@@ -110,22 +111,21 @@ class Handcontroller:
             self.disconnect()                                                                                               # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             # noinspection PyUnboundLocalVariable
-            print(chunks)
-            print(type(chunks))
-            print(len(chunks))
             return chunks
 
 
 if __name__ == "__main__":
 
-    a = Handcontroller(None)
-    a.connect()
+    test = b'\x02\x00\x80\xc0\xa0\x91\x82\x85\xd8\xf4\x90\x8a\xe6\xc3\xc6\xfc\xe0\xb1\x93\xcc\x86\xf2\x91\x80\xc0\xf6\x03\x02\x00\x80\xc0\xa0\xa1\x82\xc1\xde\xec\xb0\xdc\xc4\x86\x8b\xb1\xd2\xe7\xb7\x88\x8c\xd7\x93\xc8\xdc\xf0\x03\x02\x00\x80\xc0\xa0\xb1\x81\xc0\xe0\xb0\xef\xcc\x86\x92\xb9\xc8\xf0\xa2\x90\x88\x84\x82\x81\x80\xc0\x89\x03\x02\x00\x80\xc0\xa0\xc1\x82\xc1\x82\xa0\x99\x8c\xe6\x9d\xf9\xd0\xe0\xa7\x90\x88\x84\x82\x81\x80\xc0\x9d\x03\x02\x00\x80\xc0\xa0\xd1\x82\xd1\xde\xa0\xb1\xd9\xad\xe7\xa3\xc9\xca\xa0\xb8\x9b\xed\xc2\x83\x85\xf0\xc6\x03\x02\x00\x83\x80\x0b\x03\x02\x00\x8b\x9b\x80\x92\x03\x02\x00\x83\xc0\x9f\xf0.\x03\x02\x00\x83\xff\xe7\xf0i\x03'
+    #a = Handcontroller(None)
+    #a.connect()
     matplotlib.interactive(True)
     while True:
-        test = np.array(a.commandString('GS'))
-        b = np.reshape(test, (256, 128))
-        # test = np.zeros((256, 128))
+        #test = np.array(a.commandString('GS'))
+        # b = np.reshape(test, (256, 128))
+        b = np.zeros((256, 128))
+
         plt.imshow(b)
         break
-    time.sleep(3)
-    a.disconnect()
+    # time.sleep(3)
+    # a.disconnect()
