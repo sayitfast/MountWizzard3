@@ -134,8 +134,8 @@ class Mount(QtCore.QThread):
                         else:
                             self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
                             self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
-                            points, RMS = self.getAlignmentModel()
-                            self.showAlignmentModel(points, RMS)
+                            points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()
+                            self.showAlignmentModel(points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle)
                             self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':
                         ok, num = self.testBaseModelAvailable()
@@ -349,8 +349,18 @@ class Mount(QtCore.QThread):
     def getAlignmentModelStatus(self):
         reply = self.mountHandler.sendCommand('getain')                                                                     # load the data from new command
         print(reply)
+        azimuth = 'E'
+        altitude = 'E'
+        posAngle = 'E'
+        orthoError = 'E'
+        polarError = 'E'
+        RMS = 'E'
+        azimuthKnobs = 'E'
+        altitudeKnobs = 'E'
+        terms = 'E'
         if reply:
-            azimuth, altitude, polarError, posAngle, orthoError, azimuthKnobs, altitudeKnobs, terms, RMS = reply.split(',')
+            if reply != 'E':
+                azimuth, altitude, polarError, posAngle, orthoError, azimuthKnobs, altitudeKnobs, terms, RMS = reply.split(',')
             # format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
             if azimuth != 'E':                                                                                              # E could be sent if not calculable
                 azimuth = float(azimuth)
