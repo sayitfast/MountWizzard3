@@ -128,32 +128,28 @@ class Mount(QtCore.QThread):
                 if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
                     command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
                     if command == 'ShowAlignmentModel':                                                                     # checking which command was sent
-                        ok, num = self.testBaseModelAvailable()
+                        num = self.numberModelStars()
                         if num == -1:
                             self.app.messageQueue.put('Show Model not available without real mount')
                         else:
                             self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
                             self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
-                            points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()
-                            self.showAlignmentModel(points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle)
+                            self.showAlignmentModel(self.getAlignmentModel())
                             self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
                     elif command == 'ClearAlign':
-                        ok, num = self.testBaseModelAvailable()
-                        if num == -1:
+                        if self.numberModelStars() == -1:
                             self.app.messageQueue.put('Clear Align not available without real mount')
                         else:
                             self.mountHandler.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
-                        ok, num = self.testBaseModelAvailable()
-                        if num == -1:
+                        if self.numberModelStars() == -1:
                             self.app.messageQueue.put('Run Optimize not available without real mount')
                         else:
                             self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
                             self.runTargetRMSAlignment()
                             self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
                     elif command == 'DeleteWorstPoint':
-                        ok, num = self.testBaseModelAvailable()
-                        if num == -1:
+                        if self.numberModelStars() == -1:
                             self.app.messageQueue.put('Delete worst point not available without real mount')
                         else:
                             self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
@@ -339,73 +335,70 @@ class Mount(QtCore.QThread):
         else:
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
-    def testBaseModelAvailable(self):
-        number = int(self.mountHandler.sendCommand('getalst'))                                                              # if there are some points, a model must be there
-        if number > 2:
-            return True, number
-        else:
-            return False, number
+    def numberModelStars(self):
+        return int(self.mountHandler.sendCommand('getalst'))                                                                # if there are some points, a model must be there
 
-    def getAlignmentModelStatus(self):
+    def getAlignmentModelStatus(self, alignModel):
         reply = self.mountHandler.sendCommand('getain')                                                                     # load the data from new command
-        print(reply)
-        azimuth = 'E'
-        altitude = 'E'
-        posAngle = 'E'
-        orthoError = 'E'
-        polarError = 'E'
-        RMS = 'E'
-        azimuthKnobs = 'E'
-        altitudeKnobs = 'E'
-        terms = 'E'
-        if reply:
-            if reply != 'E':
-                azimuth, altitude, polarError, posAngle, orthoError, azimuthKnobs, altitudeKnobs, terms, RMS = reply.split(',')
-            # format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
-            if azimuth != 'E':                                                                                              # E could be sent if not calculable
-                azimuth = float(azimuth)
+        if reply:                                                                                                           # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
+            if reply != 'E':                                                                                                # if a single 'E' returns, there is a problem, not further parameter will follow
+                a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
+            if a1 != 'E':                                                                                                   # 'E' could be sent if not calculable or no value available
+                alignModel['azimuth'] = float(a1)
             else:
-                azimuth = 0
-            if posAngle != 'E':                                                                                              # E could be sent if not calculable
-                posAngle = float(posAngle)
+                alignModel['azimuth'] = 0
+            if a2 != 'E':
+                alignModel['altitude'] = float(a2)
             else:
-                posAngle = 0
-            if altitude != 'E':
-                altitude = float(altitude)
+                alignModel['altitude'] = 0
+            if a3 != 'E':
+                alignModel['polarError'] = float(a3)
             else:
-                altitude = 0
-            if orthoError != 'E':
-                orthoError = float(orthoError)
+                alignModel['polarError'] = 0
+            if a4 != 'E':
+                alignModel['posAngle'] = float(a4)
             else:
-                orthoError = 0
-            if polarError != 'E':
-                polarError = float(polarError)
+                alignModel['posAngle'] = 0
+            if a5 != 'E':
+                alignModel['orthoError'] = float(a5)
             else:
-                polarError = 0
-            if azimuthKnobs != 'E':
-                azimuthKnobs = float(azimuthKnobs)
+                alignModel['orthoError'] = 0
+            if a6 != 'E':
+                alignModel['azimuthKnobs'] = float(a6)
             else:
-                azimuthKnobs = 0
-            if altitudeKnobs != 'E':
-                altitudeKnobs = float(altitudeKnobs)
+                alignModel['azimuthKnobs'] = 0
+            if a7 != 'E':
+                alignModel['altitudeKnobs'] = float(a7)
             else:
-                altitudeKnobs = 0
-            if terms != 'E':
-                terms = int(float(terms))
+                alignModel['altitudeKnobs'] = 0
+            if a8 != 'E':
+                alignModel['terms'] = int(float(a8))
             else:
-                terms = 0
-            if RMS != 'E':
-                RMS = float(RMS)
+                alignModel['terms'] = 0
+            if a9 != 'E':
+                alignModel['RMS'] = float(a9)
             else:
-                RMS = 0
-        return RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, azimuth, altitude, posAngle
+                alignModel['RMS'] = 0
+        return alignModel
 
     def getAlignmentModel(self):                                                                                            # download alignment model from mount
-        points = []                                                                                                         # clear the alignment points downloaded
-        baseOK, numberStars = self.testBaseModelAvailable()                                                                 # get number of stars
+        alignModel = {}                                                                                                     # clear alignmentdata
+        points = []                                                                                                         # clear points list
+        alignModel['azimuth'] = 0.0
+        alignModel['altitude'] = 0.0
+        alignModel['polarError'] = 0.0
+        alignModel['posAngle'] = 0.0
+        alignModel['orthoError'] = 0.0
+        alignModel['azimuthKnobs'] = 0.0
+        alignModel['altitudeKnobs'] = 0.0
+        alignModel['terms'] = 0
+        alignModel['RMS'] = 0.0                                                                                             # clear the alignment points downloaded
+        alignModel['points'] = points
+        numberStars = self.numberModelStars()                                                                               # get number of stars
+        alignModel['number'] = numberStars
         if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
-            return points, 0, 0, 0, 0, 0, 0, 0, 0, 0
-        RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModelStatus()
+            return alignModel
+        alignModel = self.getAlignmentModelStatus(alignModel)                                                               # add status information
         for i in range(1, numberStars + 1):                                                                                 # otherwise download them step for step
             reply = self.mountHandler.sendCommand('getalp{0:d}'.format(i)).split(',')
             ha = reply[0].strip().split('.')[0]
@@ -416,18 +409,18 @@ class Mount(QtCore.QThread):
             ra_J2000 = self.degStringToDecimal(ha)
             dec_J2000 = self.degStringToDecimal(dec)
             az, alt = self.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000, self.degStringToDecimal(self.site_lat))
-            points.append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                                 # index should start with 0, but numbering in mount starts with 1
-        return points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle
+            alignModel['points'].append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                   # index should start with 0, but numbering in mount starts with 1
+        return alignModel
 
     def retrofitMountData(self, data):
-        ok, num = self.testBaseModelAvailable()                                                                             # size mount model
+        num = self.numberModelStars()                                                                                       # size mount model
         if num == len(data):
-            points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()     # get mount points
-            self.showAlignmentModel(points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle)       # get mount points
-            for i in range(0, num):                                                                                         # run through all the points
-                data[i]['modelError'] = float(points[i][5])                                                                 # and for the total error
-                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(points[i][6]))                           # set raError new from total error mount with polar error angle from mount
-                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(points[i][6]))                          # same to dec
+            alignModel = self.getAlignmentModel()                                                                           # get mount points
+            self.showAlignmentModel(alignModel)
+            for i in range(0, alignModel['number']):                                                                        # run through all the points
+                data[i]['modelError'] = float(alignModel['points'][i][5])                                                   # and for the total error
+                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(alignModel['points'][i][6]))             # set raError new from total error mount with polar error angle from mount
+                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))            # same to dec
             self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
             self.logger.error('retrofitMountDa-> size mount model {0} and model data {1} do not fit !'.format(num, len(data)))
@@ -435,67 +428,67 @@ class Mount(QtCore.QThread):
             self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
         return data
 
-    def showAlignmentModel(self, points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle):
+    def showAlignmentModel(self, alignModel):
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading data\n'})
-        for i in range(0, len(points)):
+        for i in range(0, alignModel['number']):
             self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3.0f}\xb0\n'
-                                        .format(i, int(points[i][3]), int(points[i][4]), points[i][5], points[i][6])})
+                                        .format(i, int(alignModel['points'][i][3]), int(alignModel['points'][i][4]), alignModel['points'][i][5], alignModel['points'][i][6])})
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading finished\n'})
-        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': len(points)})                                 # write them to gui
-        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(RMS)})                             # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(RMS)})                             # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelErrorPosAngle', 'Value': '{0:3.1f}'.format(posAngle)})                   # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelPolarError', 'Value': '{0}'.format(self.decimalToDegree(polarError))})   # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelOrthoError', 'Value': '{0}'.format(self.decimalToDegree(orthoError))})   # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelErrorAz', 'Value': '{0}'.format(self.decimalToDegree(RaAXIS_az))})       # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelErrorAlt', 'Value': '{0}'.format(self.decimalToDegree(RaAXIS_alt))})     # set the error values in gui
-        self.app.mountDataQueue.put({'Name': 'ModelTerms', 'Value': '{0:2d}'.format(terms)})                                # set the error values in gui
-        if azimuthKnobs > 0:
-            value = '{0:2.2f} left'.format(abs(azimuthKnobs))
+        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': alignModel['number']})
+        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(alignModel['RMS'])})
+        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(alignModel['RMS'])})
+        self.app.mountDataQueue.put({'Name': 'ModelErrorPosAngle', 'Value': '{0:3.1f}'.format(alignModel['posAngle'])})
+        self.app.mountDataQueue.put({'Name': 'ModelPolarError', 'Value': '{0}'.format(self.decimalToDegree(alignModel['polarError']))})
+        self.app.mountDataQueue.put({'Name': 'ModelOrthoError', 'Value': '{0}'.format(self.decimalToDegree(alignModel['orthoError']))})
+        self.app.mountDataQueue.put({'Name': 'ModelErrorAz', 'Value': '{0}'.format(self.decimalToDegree(alignModel['azimuthKnobs']))})
+        self.app.mountDataQueue.put({'Name': 'ModelErrorAlt', 'Value': '{0}'.format(self.decimalToDegree(alignModel['altitudeKnobs']))})
+        self.app.mountDataQueue.put({'Name': 'ModelTerms', 'Value': '{0:2d}'.format(alignModel['terms'])})
+        if alignModel['azimuthKnobs'] > 0:
+            value = '{0:2.2f} left'.format(abs(alignModel['azimuthKnobs']))
         else:
-            value = '{0:2.2f} left'.format(abs(azimuthKnobs))
-        self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAz', 'Value': '{0}'.format(value)})                  # set the error values in gui
-        if altitudeKnobs > 0:
-            value = '{0:2.2f} down'.format(abs(altitudeKnobs))
+            value = '{0:2.2f} left'.format(abs(alignModel['azimuthKnobs']))
+        self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAz', 'Value': '{0}'.format(value)})
+        if alignModel['altitudeKnobs'] > 0:
+            value = '{0:2.2f} down'.format(abs(alignModel['altitudeKnobs']))
         else:
-            value = '{0:2.2f} up'.format(abs(altitudeKnobs))
-        self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAlt', 'Value': '{0}'.format(value)})                # set the error values in gui
+            value = '{0:2.2f} up'.format(abs(alignModel['altitudeKnobs']))
+        self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAlt', 'Value': '{0}'.format(value)})
         self.app.showModelErrorPolar()
         return
 
     def runTargetRMSAlignment(self):
         self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
-        points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()
-        if len(points) < 4:
+        alignModel = self.getAlignmentModel()
+        if alignModel['number'] < 4:
             return                                                                                                          # set maximum
-        while RMS > float(self.app.ui.targetRMS.value()) and len(points) > 3:
-            points, RMS = self.deleteWorstPointRaw(points, RMS)
+        while alignModel['RMS'] > float(self.app.ui.targetRMS.value()) and alignModel['number'] > 3:
+            alignModel = self.deleteWorstPointRaw(alignModel)
 
     def deleteWorstPoint(self):
-        points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()
-        self.deleteWorstPointRaw(points, RMS)
+        alignModel = self.getAlignmentModel()
+        self.deleteWorstPointRaw(alignModel)
 
-    def deleteWorstPointRaw(self, points, RMS):
-        if len(points) < 4:
+    def deleteWorstPointRaw(self, alignModel):
+        if alignModel['number'] < 4:
             return
-        if len(points) > 3:
-            a = sorted(points, key=itemgetter(5), reverse=True)                                                             # index 0 is the worst star, index starts with 0
+        if alignModel['number'] > 3:
+            a = sorted(alignModel['points'], key=itemgetter(5), reverse=True)                                               # index 0 is the worst star, index starts with 0
             index = a[0][0]
             reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))                                         # numbering in mount starts with 1
             if reply == '1':                                                                                                # worst point could be deleted
-                points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()
+                alignModel = self.getAlignmentModel()
                 self.app.model.modelData.pop(index)
-                for i in range(0, len(points)):
-                    self.app.model.modelData[i]['modelError'] = float(points[i][5])
-                    self.app.model.modelData[i]['raError'] = self.app.model.modelData[i]['modelError'] * math.sin(math.radians(float(points[i][6])))
-                    self.app.model.modelData[i]['decError'] = self.app.model.modelData[i]['modelError'] * math.cos(math.radians(float(points[i][6])))
-                self.showAlignmentModel(points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle)
+                for i in range(0, alignModel['number']):
+                    self.app.model.modelData[i]['modelError'] = float(alignModel['points'][i][5])
+                    self.app.model.modelData[i]['raError'] = self.app.model.modelData[i]['modelError'] * math.sin(math.radians(float(alignModel['points'][i][6])))
+                    self.app.model.modelData[i]['decError'] = self.app.model.modelData[i]['modelError'] * math.cos(math.radians(float(alignModel['points'][i][6])))
+                self.showAlignmentModel(alignModel)
             else:
                 self.logger.error('deleteWorstPoin-> Point {0} could not be deleted').format(index)
-        return points, RMS
+        return alignModel
 
     def saveModel(self, target):
-        ok, num = self.testBaseModelAvailable()
+        num = self.numberModelStars()
         if num == -1:
             self.app.messageQueue.put('Save Model not available without real mount')
             return False
@@ -509,7 +502,7 @@ class Mount(QtCore.QThread):
             return False
 
     def loadModel(self, target):
-        ok, num = self.testBaseModelAvailable()
+        num = self.numberModelStars()
         if num == -1:
             self.app.messageQueue.put('Load Model not available without real mount')
             return False
@@ -739,14 +732,14 @@ class Mount(QtCore.QThread):
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
         self.loadActualModel()                                                                                              # prepare data synchronisation, load model data
-        points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle = self.getAlignmentModel()   # get model data from mount
-        if not self.app.model.modelData and RMS > 0:
+        alignModel = self.getAlignmentModel()   # get model data from mount
+        if not self.app.model.modelData and alignModel['RMS'] > 0:
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
             self.app.model.modelData = []
-            for i in range(0, len(points)):                                                                                 # run through all the points
-                self.app.model.modelData.append({'modelError': float(points[i][5]),
-                                                 'raError': float(points[i][5]) * math.sin(math.radians(points[i][6])),
-                                                 'decError': float(points[i][5]) * math.cos(math.radians(points[i][6])),
-                                                 'azimuth': float(points[i][3]),
-                                                 'altitude': float(points[i][4])})
-        self.showAlignmentModel(points, RMS, polarError, orthoError, azimuthKnobs, altitudeKnobs, terms, RaAXIS_az, RaAXIS_alt, posAngle)     # show data
+            for i in range(0, alignModel['number']):
+                self.app.model.modelData.append({'modelError': float(alignModel['points'][i][5]),
+                                                 'raError': float(alignModel['points'][i][5]) * math.sin(math.radians(alignModel['points'][i][6])),
+                                                 'decError': float(alignModel['points'][i][5]) * math.cos(math.radians(alignModel['points'][i][6])),
+                                                 'azimuth': float(alignModel['points'][i][3]),
+                                                 'altitude': float(alignModel['points'][i][4])})
+        self.showAlignmentModel(alignModel)
