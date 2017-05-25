@@ -1,4 +1,8 @@
 # Changelog
+2.3.6
+- refactoring get alignment data
+- changed text for output startup
+
 2.3.5
 - try to avoid change font sizes
 

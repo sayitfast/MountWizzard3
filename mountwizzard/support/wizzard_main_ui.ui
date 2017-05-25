@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7320,7 +7320,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Sequence Genenrator Pro Application</string>
+         <string>Sequence Generator Pro Application</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_148">

@@ -4232,7 +4232,7 @@ class Ui_WizzardMainDialog(object):
         self.btn_setupAscomCameraDriver.setText(_translate("WizzardMainDialog", "Camera"))
         self.label_145.setText(_translate("WizzardMainDialog", "Setup Driver:"))
         self.label_146.setText(_translate("WizzardMainDialog", "Setup Driver:"))
-        self.label_147.setText(_translate("WizzardMainDialog", "Sequence Genenrator Pro Application"))
+        self.label_147.setText(_translate("WizzardMainDialog", "Sequence Generator Pro Application"))
         self.label_148.setText(_translate("WizzardMainDialog", "TheSkyX Application"))
         self.label_150.setText(_translate("WizzardMainDialog", "MaximDL Application"))
         self.rb_cameraMaximDL.setText(_translate("WizzardMainDialog", "MaximDL"))

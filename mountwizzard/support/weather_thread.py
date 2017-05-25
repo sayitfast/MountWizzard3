@@ -83,7 +83,7 @@ class Weather(QtCore.QThread):
                         self.connected = 0                                                                                  # run the driver setup dialog
                 finally:                                                                                                    # still continua and try it again
                     pass                                                                                                    # needed for continue
-                time.sleep(1)                                                                                               # wait for the next cycle
+                time.sleep(5)                                                                                               # wait for the next cycle
         self.ascom.Quit()
         pythoncom.CoUninitialize()                                                                                          # needed for doing COm objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
