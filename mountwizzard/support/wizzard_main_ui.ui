@@ -339,6 +339,7 @@
      </property>
      <property name="font">
       <font>
+       <family>MS Shell Dlg 2</family>
        <pointsize>10</pointsize>
       </font>
      </property>
@@ -1788,7 +1789,7 @@
        <x>430</x>
        <y>10</y>
        <width>21</width>
-       <height>471</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -2571,7 +2572,7 @@
        <x>460</x>
        <y>10</y>
        <width>21</width>
-       <height>471</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -3852,7 +3853,7 @@
        <x>370</x>
        <y>10</y>
        <width>21</width>
-       <height>471</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -4510,7 +4511,7 @@
        <x>430</x>
        <y>10</y>
        <width>21</width>
-       <height>471</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -7060,7 +7061,7 @@
        <x>320</x>
        <y>10</y>
        <width>21</width>
-       <height>471</height>
+       <height>461</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -7118,24 +7119,6 @@
       <attribute name="title">
        <string>Imaging Setup</string>
       </attribute>
-      <widget class="QLabel" name="label_41">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>190</y>
-         <width>101</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Directory Images</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_122">
        <property name="geometry">
         <rect>
@@ -7272,39 +7255,6 @@
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_imageDirectoryName">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>210</y>
-         <width>291</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Button text park menu 1</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="le_horizonPointsFileName">
        <property name="geometry">
         <rect>
@@ -7374,27 +7324,6 @@
         <string>Filenames for modeling</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_selectImageDirectoryName">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>210</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Sets dual tracking on / off</string>
-       </property>
-       <property name="text">
-        <string>Select</string>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="le_modelPointsFileName">
        <property name="geometry">
         <rect>
@@ -7431,8 +7360,8 @@
       <widget class="QCheckBox" name="checkKeepImages">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>240</y>
+         <x>400</x>
+         <y>310</y>
          <width>231</width>
          <height>20</height>
         </rect>
@@ -7515,8 +7444,8 @@
       <widget class="QLabel" name="label_173">
        <property name="geometry">
         <rect>
-         <x>580</x>
-         <y>260</y>
+         <x>530</x>
+         <y>280</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -7676,8 +7605,8 @@
       <widget class="QDoubleSpinBox" name="scaleSubframe">
        <property name="geometry">
         <rect>
-         <x>520</x>
-         <y>260</y>
+         <x>480</x>
+         <y>280</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -7840,8 +7769,8 @@
       <widget class="QCheckBox" name="checkDoSubframe">
        <property name="geometry">
         <rect>
-         <x>420</x>
-         <y>290</y>
+         <x>400</x>
+         <y>260</y>
          <width>131</width>
          <height>20</height>
         </rect>
@@ -7943,8 +7872,8 @@
       <widget class="QLabel" name="label_102">
        <property name="geometry">
         <rect>
-         <x>400</x>
-         <y>260</y>
+         <x>410</x>
+         <y>280</y>
          <width>61</width>
          <height>21</height>
         </rect>
@@ -7992,6 +7921,22 @@
        </property>
        <property name="text">
         <string>Camera bin</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_55">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>10</y>
+         <width>21</width>
+         <height>411</height>
+        </rect>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </widget>
@@ -8766,6 +8711,22 @@
        </property>
        <property name="text">
         <string>SQR</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_56">
+       <property name="geometry">
+        <rect>
+         <x>380</x>
+         <y>10</y>
+         <width>21</width>
+         <height>411</height>
+        </rect>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
        </property>
       </widget>
      </widget>
@@ -10810,6 +10771,78 @@
       <string>Relays</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_selectImageDirectoryName">
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>290</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Sets dual tracking on / off</string>
+     </property>
+     <property name="text">
+      <string>Select</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_41">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>270</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Directory Images</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_imageDirectoryName">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>290</y>
+       <width>291</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Button text park menu 1</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="btn_shutdownQuit">
@@ -11107,46 +11140,183 @@ p, li { white-space: pre-wrap; }
   </widget>
  </widget>
  <tabstops>
+  <tabstop>btn_shutdownQuit</tabstop>
+  <tabstop>btn_mountSave</tabstop>
+  <tabstop>btn_mountQuit</tabstop>
+  <tabstop>mainTabWidget</tabstop>
+  <tabstop>le_slewRate</tabstop>
+  <tabstop>btn_setSlewRate</tabstop>
+  <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>btn_setDualTracking</tabstop>
+  <tabstop>le_telescopeUnattendedFlip</tabstop>
   <tabstop>btn_setUnattendedFlip</tabstop>
+  <tabstop>le_meridianLimitTrack</tabstop>
+  <tabstop>le_meridianLimitSlew</tabstop>
+  <tabstop>btn_flipMount</tabstop>
+  <tabstop>le_horizonLimitLow</tabstop>
+  <tabstop>btn_setHorizonLimitLow</tabstop>
+  <tabstop>le_horizonLimitHigh</tabstop>
+  <tabstop>btn_setHorizonLimitHigh</tabstop>
+  <tabstop>btn_mountPos1</tabstop>
+  <tabstop>btn_mountPos2</tabstop>
+  <tabstop>btn_mountPos3</tabstop>
+  <tabstop>btn_mountPos4</tabstop>
+  <tabstop>btn_mountPos5</tabstop>
+  <tabstop>btn_mountPos6</tabstop>
+  <tabstop>btn_startTracking</tabstop>
+  <tabstop>btn_stopTracking</tabstop>
+  <tabstop>btn_setTrackingLunar</tabstop>
+  <tabstop>btn_setTrackingSolar</tabstop>
+  <tabstop>btn_setTrackingSideral</tabstop>
+  <tabstop>btn_mountPark</tabstop>
+  <tabstop>btn_mountUnpark</tabstop>
+  <tabstop>btn_stop</tabstop>
+  <tabstop>btn_loadBasePoints</tabstop>
+  <tabstop>btn_generateBasePoints</tabstop>
   <tabstop>altitudeBase</tabstop>
   <tabstop>azimuthBase</tabstop>
   <tabstop>checkUseBlindSolve</tabstop>
-  <tabstop>targetRMS</tabstop>
-  <tabstop>btn_setRefractionCorrection</tabstop>
-  <tabstop>btn_setRefractionParameters</tabstop>
-  <tabstop>checkAutoRefraction</tabstop>
-  <tabstop>alignErrorStars</tabstop>
+  <tabstop>checkClearModelFirst</tabstop>
+  <tabstop>btn_runBaseModel</tabstop>
+  <tabstop>btn_loadRefinementPoints</tabstop>
+  <tabstop>btn_generateGridPoints</tabstop>
+  <tabstop>numberGridPointsRow</tabstop>
+  <tabstop>numberGridPointsCol</tabstop>
+  <tabstop>btn_generateDensePoints</tabstop>
+  <tabstop>btn_generateNormalPoints</tabstop>
+  <tabstop>btn_generateDSOPoints</tabstop>
+  <tabstop>numberHoursDSO</tabstop>
+  <tabstop>numberHoursPreview</tabstop>
+  <tabstop>numberPointsDSO</tabstop>
+  <tabstop>checkKeepRefinement</tabstop>
+  <tabstop>btn_runRefinementModel</tabstop>
+  <tabstop>btn_runAllModel</tabstop>
+  <tabstop>btn_plateSolveSync</tabstop>
+  <tabstop>btn_openCoordinateWindow</tabstop>
+  <tabstop>checkRunTrackingWidget</tabstop>
+  <tabstop>btn_deletePoints</tabstop>
+  <tabstop>btn_deleteBelowHorizonLine</tabstop>
+  <tabstop>btn_sortRefinementPoints</tabstop>
+  <tabstop>btn_clearAlignmentModel</tabstop>
+  <tabstop>btn_runCheckModel</tabstop>
+  <tabstop>btn_cancelModel</tabstop>
+  <tabstop>altitudeTimeChange</tabstop>
+  <tabstop>azimuthTimeChange</tabstop>
+  <tabstop>numberRunsTimeChange</tabstop>
+  <tabstop>delayTimeTimeChange</tabstop>
+  <tabstop>btn_runTimeChangeModel</tabstop>
+  <tabstop>altitudeHysterese1</tabstop>
+  <tabstop>azimuthHysterese1</tabstop>
+  <tabstop>altitudeHysterese2</tabstop>
+  <tabstop>azimuthHysterese2</tabstop>
+  <tabstop>numberRunsHysterese</tabstop>
+  <tabstop>delayTimeHysterese</tabstop>
+  <tabstop>btn_runHystereseModel</tabstop>
+  <tabstop>btn_cancelAnalyseModel</tabstop>
+  <tabstop>le_analyseFileName</tabstop>
+  <tabstop>btn_selectAnalyseFileName</tabstop>
+  <tabstop>btn_openAnalyseWindow</tabstop>
+  <tabstop>btn_runBatchModel</tabstop>
   <tabstop>btn_showActualModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
+  <tabstop>btn_deleteWorstPoint</tabstop>
+  <tabstop>checkPolarPlot</tabstop>
+  <tabstop>targetRMS</tabstop>
+  <tabstop>alignErrorStars</tabstop>
   <tabstop>btn_saveBackupModel</tabstop>
   <tabstop>btn_loadBackupModel</tabstop>
-  <tabstop>btn_loadSimpleModel</tabstop>
+  <tabstop>btn_saveBaseModel</tabstop>
+  <tabstop>btn_loadBaseModel</tabstop>
+  <tabstop>btn_saveRefinementModel</tabstop>
+  <tabstop>btn_loadRefinementModel</tabstop>
   <tabstop>btn_saveSimpleModel</tabstop>
-  <tabstop>btn_clearAlignmentModel</tabstop>
-  <tabstop>btn_generateBasePoints</tabstop>
-  <tabstop>btn_mountQuit</tabstop>
-  <tabstop>btn_shutdownQuit</tabstop>
-  <tabstop>le_meridianLimitTrack</tabstop>
-  <tabstop>btn_loadBasePoints</tabstop>
-  <tabstop>btn_mountPark</tabstop>
-  <tabstop>btn_startTracking</tabstop>
-  <tabstop>mainTabWidget</tabstop>
+  <tabstop>btn_loadSimpleModel</tabstop>
+  <tabstop>btn_saveDSO1Model</tabstop>
+  <tabstop>btn_loadDSO1Model</tabstop>
+  <tabstop>btn_saveDSO2Model</tabstop>
+  <tabstop>btn_loadDSO2Model</tabstop>
+  <tabstop>btn_setRefractionCorrection</tabstop>
+  <tabstop>checkAutoRefraction</tabstop>
+  <tabstop>btn_setRefractionParameters</tabstop>
+  <tabstop>le_modelPointsFileName</tabstop>
+  <tabstop>btn_selectModelPointsFileName</tabstop>
+  <tabstop>le_horizonPointsFileName</tabstop>
+  <tabstop>btn_selectHorizonPointsFileName</tabstop>
+  <tabstop>checkUseMinimumHorizonLine</tabstop>
+  <tabstop>altitudeMinimumHorizon</tabstop>
+  <tabstop>cameraBin</tabstop>
+  <tabstop>cameraExposure</tabstop>
+  <tabstop>checkFastDownload</tabstop>
+  <tabstop>isoSetting</tabstop>
+  <tabstop>settlingTime</tabstop>
+  <tabstop>pixelSize</tabstop>
+  <tabstop>focalLength</tabstop>
+  <tabstop>checkDoSubframe</tabstop>
+  <tabstop>scaleSubframe</tabstop>
+  <tabstop>checkKeepImages</tabstop>
+  <tabstop>rb_cameraSGPro</tabstop>
+  <tabstop>rb_cameraTSX</tabstop>
+  <tabstop>rb_cameraMaximDL</tabstop>
+  <tabstop>rb_cameraASCOM</tabstop>
+  <tabstop>btn_setupAscomCameraDriver</tabstop>
+  <tabstop>btn_setupPlateSolver</tabstop>
+  <tabstop>rb_directMount</tabstop>
+  <tabstop>le_mountIP</tabstop>
+  <tabstop>rb_ascomMount</tabstop>
+  <tabstop>btn_setupMountDriver</tabstop>
+  <tabstop>btn_setupDomeDriver</tabstop>
+  <tabstop>btn_setupStickDriver</tabstop>
+  <tabstop>btn_setupWeatherDriver</tabstop>
+  <tabstop>btn_setupUnihedronDriver</tabstop>
+  <tabstop>le_relayIP</tabstop>
+  <tabstop>le_parkPos1Text</tabstop>
+  <tabstop>le_azParkPos1</tabstop>
+  <tabstop>le_altParkPos1</tabstop>
+  <tabstop>le_parkPos2Text</tabstop>
+  <tabstop>le_azParkPos2</tabstop>
+  <tabstop>le_altParkPos2</tabstop>
+  <tabstop>le_parkPos3Text</tabstop>
+  <tabstop>le_azParkPos3</tabstop>
+  <tabstop>le_altParkPos3</tabstop>
+  <tabstop>le_parkPos4Text</tabstop>
+  <tabstop>le_azParkPos4</tabstop>
+  <tabstop>le_altParkPos4</tabstop>
+  <tabstop>le_parkPos5Text</tabstop>
+  <tabstop>le_azParkPos5</tabstop>
+  <tabstop>le_altParkPos5</tabstop>
+  <tabstop>le_parkPos6Text</tabstop>
+  <tabstop>le_azParkPos6</tabstop>
+  <tabstop>le_altParkPos6</tabstop>
+  <tabstop>le_UTCDataValid</tabstop>
+  <tabstop>le_UTCDataExpirationDate</tabstop>
+  <tabstop>btn_downloadEarthrotation</tabstop>
+  <tabstop>btn_downloadSpacestations</tabstop>
+  <tabstop>btn_downloadSatbrighest</tabstop>
+  <tabstop>btn_downloadAsteroids</tabstop>
+  <tabstop>btn_downloadComets</tabstop>
+  <tabstop>btn_downloadAll</tabstop>
+  <tabstop>le_updaterFileName</tabstop>
+  <tabstop>checkEarthrotation</tabstop>
+  <tabstop>checkSpacestations</tabstop>
+  <tabstop>checkSatellites</tabstop>
+  <tabstop>checkAsteroids</tabstop>
+  <tabstop>checkComets</tabstop>
+  <tabstop>btn_uploadMount</tabstop>
+  <tabstop>btn_selectUpdaterFileName</tabstop>
+  <tabstop>le_imageDirectoryName</tabstop>
+  <tabstop>btn_selectImageDirectoryName</tabstop>
+  <tabstop>btn_driverMountConnected</tabstop>
+  <tabstop>btn_domeConnected</tabstop>
+  <tabstop>btn_driverStickConnected</tabstop>
+  <tabstop>btn_driverWeatherConnected</tabstop>
+  <tabstop>btn_camPlateConnected</tabstop>
+  <tabstop>btn_unihedronConnected</tabstop>
   <tabstop>errorStatus</tabstop>
-  <tabstop>le_telescopeDualTrack</tabstop>
-  <tabstop>le_telescopeUnattendedFlip</tabstop>
-  <tabstop>btn_mountPos4</tabstop>
-  <tabstop>btn_mountUnpark</tabstop>
-  <tabstop>btn_mountPos2</tabstop>
-  <tabstop>btn_stop</tabstop>
-  <tabstop>btn_stopTracking</tabstop>
-  <tabstop>btn_setTrackingSideral</tabstop>
-  <tabstop>btn_runBaseModel</tabstop>
-  <tabstop>btn_mountPos3</tabstop>
-  <tabstop>btn_setTrackingLunar</tabstop>
-  <tabstop>btn_mountPos1</tabstop>
-  <tabstop>btn_setTrackingSolar</tabstop>
-  <tabstop>btn_flipMount</tabstop>
+  <tabstop>settingsTabWidget</tabstop>
+  <tabstop>btn_switchHeater</tabstop>
+  <tabstop>btn_switchCCD</tabstop>
+  <tabstop>btn_selectClose</tabstop>
+  <tabstop>btn_bootMount</tabstop>
  </tabstops>
  <resources/>
  <connections/>

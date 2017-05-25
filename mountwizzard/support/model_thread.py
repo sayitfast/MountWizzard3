@@ -49,6 +49,7 @@ class Model(QtCore.QThread):
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     REF_PICTURE = '/model001.fit'
+    IMAGEDIR = os.getcwd() + '/images'
 
     def __init__(self, app):
         super().__init__()
@@ -490,7 +491,7 @@ class Model(QtCore.QThread):
         self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))                               # Start informing user
         modelData = {}
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/platesolvesync'                         # define subdirectory for storing the images
+        modelData['base_dir_images'] = self.IMAGEDIR + '/platesolvesync'                         # define subdirectory for storing the images
         suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                 # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
@@ -809,7 +810,7 @@ class Model(QtCore.QThread):
         modelData['usefitsheaders'] = True
         if modeltype == 'Base':
             modelData['blind'] = False
-        suc, mes, modelData = self.cpObject.solveImage(modelData)                                                       # abstraction of solver for image
+        suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
@@ -870,9 +871,9 @@ class Model(QtCore.QThread):
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
         self.app.modelLogQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
-        modelData['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory                           # define subdirectory for storing the images
+        modelData['base_dir_images'] = self.IMAGEDIR + '/' + directory                                                      # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                 # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                     # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data

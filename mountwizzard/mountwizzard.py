@@ -944,7 +944,13 @@ if __name__ == "__main__":
     logging.error('MountWizzard v' + BUILD_NO + ' started !')                                                                # start message logger
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
+
+    QApplication.setDesktopSettingsAware(False)
+    QApplication.setAttribute(Qt.AA_Use96Dpi, True)
     app = QApplication(sys.argv)                                                                                            # built application
+    font = app.font()
+    print(font.pixelSize(), font.pointSize(), font.family())
+
     sys.excepthook = except_hook                                                                                            # manage except hooks for logging
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
