@@ -3,7 +3,7 @@
 ### Python PyQt5 Widget for use in 10micron Mount environment in combination SGPro / Stickstation / OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017
 
-### Version for upcoming next release : 2.3.3
+### Version for upcoming next release : 2.3.5
 
 ### Version release : 2.2
 

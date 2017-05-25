@@ -393,7 +393,7 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="text">
-    <string>mag/arcsec^2</string>
+    <string>mag/arcsec²</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

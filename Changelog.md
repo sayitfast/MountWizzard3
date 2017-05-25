@@ -1,4 +1,7 @@
 # Changelog
+2.3.5
+- try to avoid change font sizes
+
 2.3.4
 - bugfix retrofitting model
 

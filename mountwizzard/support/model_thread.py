@@ -463,9 +463,11 @@ class Model(QtCore.QThread):
     def generateGridPoints(self):                                                                                           # model points along dso path
         row = int(float(self.app.ui.numberGridPointsRow.value()))
         col = int(float(self.app.ui.numberGridPointsCol.value()))
+        altMin = int(float(self.app.ui.altitudeMin.value()))
+        altMax = int(float(self.app.ui.altitudeMax.value()))
         value = []                                                                                                          # clear point list
         for az in range(5, 360, int(360 / col)):                                                                            # make point for all azimuth
-            for alt in range(10, 90, int(90 / row)):                                                                        # make point for all altitudes
+            for alt in range(altMin, altMax + 1, int((altMax - altMin) / (row - 1))):                                       # make point for all altitudes
                 value.append((az, alt))                                                                                     # add point to list
         return value
 

@@ -208,6 +208,8 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_generateGridPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
         self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
         self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.altitudeMin.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.altitudeMax.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
         self.ui.btn_generateBasePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateBasePoints'))
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunCheckModel'))
         self.ui.btn_runAllModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunAllModel'))
@@ -377,6 +379,10 @@ class MountWizzardApp(MwWidget):
                 self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
             if 'NumberGridPointsRow' in self.config:
                 self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
+            if 'AltitudeMin' in self.config:
+                self.ui.altitudeMin.setValue(self.config['AltitudeMin'])
+            if 'AltitudeMax' in self.config:
+                self.ui.altitudeMax.setValue(self.config['AltitudeMax'])
             if 'NumberPointsDSO' in self.config:
                 self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
             if 'NumberHoursDSO' in self.config:
@@ -466,6 +472,8 @@ class MountWizzardApp(MwWidget):
         self.config['AzimuthBase'] = self.ui.azimuthBase.value()
         self.config['NumberGridPointsRow'] = self.ui.numberGridPointsRow.value()
         self.config['NumberGridPointsCol'] = self.ui.numberGridPointsCol.value()
+        self.config['AltitudeMin'] = self.ui.altitudeMin.value()
+        self.config['AltitudeMax'] = self.ui.altitudeMax.value()
         self.config['NumberPointsDSO'] = self.ui.numberPointsDSO.value()
         self.config['NumberHoursDSO'] = self.ui.numberHoursDSO.value()
         self.config['WindowPositionX'] = self.pos().x()
@@ -924,7 +932,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.4'
+    BUILD_NO = '2.3.5'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -945,15 +953,13 @@ if __name__ == "__main__":
     logging.error('----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
 
-    QApplication.setDesktopSettingsAware(False)
-    QApplication.setAttribute(Qt.AA_Use96Dpi, True)
+    QApplication.setAttribute(Qt.AA_Use96Dpi)
     app = QApplication(sys.argv)                                                                                            # built application
-    font = app.font()
-    print(font.pixelSize(), font.pointSize(), font.family())
 
     sys.excepthook = except_hook                                                                                            # manage except hooks for logging
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
+
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
     mountApp.show()                                                                                                         # show it
     if mountApp.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly

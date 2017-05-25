@@ -181,5 +181,5 @@ class Ui_CoordinateDialog(object):
         self.label_142.setText(_translate("CoordinateDialog", "SQR:"))
         self.le_SQR.setToolTip(_translate("CoordinateDialog", "shows the refraction correction status on / off"))
         self.le_SQR.setText(_translate("CoordinateDialog", "19.00"))
-        self.label_87.setText(_translate("CoordinateDialog", "mag/arcsec^2"))
+        self.label_87.setText(_translate("CoordinateDialog", "mag/arcsec²"))
 
