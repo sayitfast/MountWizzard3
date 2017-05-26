@@ -46,6 +46,11 @@ class Data(QtCore.QThread):
     def __init__(self, app):
         super().__init__()
         self.app = app
+        self.appAvailable = False
+        self.appName = ''
+        self.appInstallPath = ''
+        self.appExe = 'GmQCIv2.exe'
+        self.checkApplication()
 
     def initConfig(self):
         try:
@@ -57,6 +62,14 @@ class Data(QtCore.QThread):
 
     def storeConfig(self):
         pass
+
+    def checkApplication(self):
+        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('10micron QCI')
+        if self.appAvailable:
+            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+        else:
+            self.logger.error('checkApplicatio-> Application 10micron Updater  not found on computer')
 
     def run(self):                                                                                                          # runnable for doing the work
         while True:                                                                                                         # main loop for stick thread
@@ -118,7 +131,7 @@ class Data(QtCore.QThread):
                     self.app.ui.btn_uploadMount.setStyleSheet(self.DEFAULT)
                 else:
                     pass
-            time.sleep(0.1)                                                                                                   # wait for the next cycle
+            time.sleep(0.3)                                                                                                 # wait for the next cycle
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread
@@ -167,7 +180,7 @@ class Data(QtCore.QThread):
             self.app.messageQueue.put('No Path to Updater configured, please check!')
         try:
             actual_work_dir = os.getcwd()
-            os.chdir(os.path.dirname(self.app.ui.le_updaterFileName.text()))
+            os.chdir(os.path.dirname(self.appInstallPath + '\\' + self.appExe))
             app = Application(backend='win32')                                                                              # backend win32 ist faster than uai
             app.start(self.app.ui.le_updaterFileName.text())                                                                # start 10 micro updater
             timings.Timings.Slow()

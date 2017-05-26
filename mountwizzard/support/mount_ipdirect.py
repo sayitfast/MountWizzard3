@@ -164,6 +164,8 @@ class MountIpDirect:
                 value = 'V'
             elif command == 'getalst':
                 value = '-1'
+            elif command == 'GDUTV':
+                value = '1,1'
             else:
                 value = '0'
         self.sendCommandLock.release()

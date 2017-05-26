@@ -22,7 +22,8 @@ import json
 class SGPro:
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
-    def __init__(self):
+    def __init__(self, app):
+        self.app = app
         self.ipSGProBase = 'http://localhost:59590'
         self.ipSGPro = 'http://localhost:59590/json/reply/'
         self.captureImagePath = 'SgCaptureImage'
@@ -34,34 +35,60 @@ class SGPro:
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
-        self.connected = False
+        self.appConnected = False
+        self.appCameraConnected = False
         self.cameraStatus = ''
+        self.appInstallPath = ''
+        self.appAvailable = False
+        self.appName = ''
+        self.appExe = 'Sequence Generator.exe'
+        self.checkAppInstall()
 
-    def connect(self):
-        pass
+    def checkAppInstall(self):
+        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('Sequence Generator')
+        if self.appAvailable:
+            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+        else:
+            self.logger.error('checkApplicatio-> Application SGPro not found on computer')
 
-    def disconnect(self):
-        pass
-
-    def checkConnection(self):
+    def checkAppStatus(self):
         try:
             reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
-            self.connected = True
+            self.appConnected = True
         except Exception as e:
             self.logger.error('checkConnection-> error: {0}'.format(e))
-            self.connected = False
+            self.appConnected = False
         finally:
-            if self.connected:
+            if self.appConnected:
+                # noinspection PyUnboundLocalVariable
                 if str(reply) == '200':
                     success, response = self.SgGetDeviceStatus('Camera')
                     if success and response != 'DISCONNECTED':
-                        if self.SgGetDeviceStatus('PlateSolver'):
-                            return True, 'Camera and Solver OK'
+                        suc, mes = self.SgGetDeviceStatus('PlateSolver')
+                        if suc:
+                            self.appCameraConnected = True
                         else:
-                            return False, 'PlateSolver not available !'
+                            self.appCameraConnected = False
                     else:
-                        return False, 'Camera not available !'
-            return False, 'SGPro Server not running'
+                        self.appCameraConnected = False
+            else:
+                self.appCameraConnected = False
+
+    def startApplication(self):
+        pass
+
+    def connectCamera(self):
+        pass
+
+    def disconnectCamera(self):
+        pass
+
+    def connectApplication(self):
+        pass
+
+    def disconnectApplication(self):
+        pass
 
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['binning'],
@@ -234,10 +261,3 @@ class SGPro:
         except Exception as e:
             self.logger.error('SgSolveImage   -> error: {0}'.format(e))
             return False, 'Request failed', ''
-
-if __name__ == "__main__":
-
-    import os
-    cam = SGPro()
-    suc, mes, x, y, can = cam.SgGetCameraProps()
-    print(x, y, can)

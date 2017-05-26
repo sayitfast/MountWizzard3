@@ -24,61 +24,68 @@ class MaximDLCamera:
 
     def __init__(self, app):
         self.app = app
-        self.connected = False
+        self.appConnected = False
+        self.appCameraConnected = False
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverNameCamera = 'MaxIm.CCDCamera'                                                                           # driver object name
         self.driverNameDocument = 'MaxIm.Document'                                                                          # driver object name
         self.maximCamera = None                                                                                             # placeholder for ascom driver object
         self.maximDocument = None                                                                                           # placeholder for ascom driver object
         self.cameraStatus = ''
+        self.appInstallPath = ''
+        self.appAvailable = False
+        self.appName = ''
+        self.appExe = 'MaxIm_DL.exe'
+        self.checkAppInstall()
 
-    def connect(self):
-        try:
-            self.maximCamera = Dispatch(self.driverNameCamera)
-            self.maximCamera.LinkEnabled = True
-            self.connected = True
-        except Exception as e:
-            self.connected = False
-            self.logger.error('connect        -> error: {0}'.format(e))
-        finally:
-            pass
-        try:
-            self.maximDocument = Dispatch(self.driverNameDocument)
-            self.connected = True
-        except Exception as e:
-            self.connected = False
-            self.logger.error('connect        -> error: {0}'.format(e))
-        finally:
-            pass
-
-    def disconnect(self):
-        try:
-            self.maximCamera.LinkEnabled = False
-            self.connected = False
-            self.maximCamera = None
-        except Exception as e:
-            self.connected = False
-            self.logger.error('disconnect     -> error: {0}'.format(e))
-        finally:
-            pass
-        try:
-            self.connected = False
-            self.maximDocument = None
-        except Exception as e:
-            self.connected = False
-            self.logger.error('disconnect     -> error: {0}'.format(e))
-        finally:
-            pass
-
-    def checkConnection(self):
-        if self.connected:
-            if self.maximCamera.LinkEnabled:
-                # if not self.cameraStatus == 'ERROR':
-                return True, 'Camera OK'
-            else:
-                return False, 'Camera not available !'
+    def checkAppInstall(self):
+        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
+        if self.appAvailable:
+            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
-            return False, 'Camera not available !'
+            self.logger.error('checkApplicatio-> Application MaxIm DL not found on computer')
+
+    def checkAppStatus(self):
+        if self.maximCamera:
+            self.appConnected = self.maximCamera.LinkEnabled
+        else:
+            self.appConnected = False
+            self.appCameraConnected = False
+
+    def startApplication(self):
+        pass
+
+    def connectCamera(self):
+        pass
+
+    def disconnectCamera(self):
+        pass
+
+    def connectApplication(self):
+        try:
+            if not self.maximCamera:
+                self.maximCamera = Dispatch(self.driverNameCamera)
+                self.maximCamera.LinkEnabled = True
+            if not self.maximDocument:
+                self.maximDocument = Dispatch(self.driverNameDocument)
+            self.appConnected = True
+        except Exception as e:
+            self.logger.error('startApplicatio-> error: {0}'.format(e))
+        finally:
+            pass
+
+    def disconnectApplication(self):
+        try:
+            self.maximCamera.Quit()
+            # self.maximCamera.LinkEnabled = False
+        except Exception as e:
+            self.logger.error('disconnectAppli-> error: {0}'.format(e))
+        finally:
+            self.appCameraConnected = False
+            self.appConnected = False
+            self.maximCamera = None
+            self.maximDocument = None
 
     def getImage(self, modelData):
         suc = False
@@ -128,7 +135,7 @@ class MaximDLCamera:
             return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def getCameraStatus(self):
-        if self.connected:
+        if self.appConnected:
             value = self.maximCamera.CameraStatus
             if value == 2:
                 self.cameraStatus = 'READY'
@@ -149,14 +156,14 @@ class MaximDLCamera:
         ra = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')                               # get ra
         dec = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')                             # get dec
         hint = self.maximDocument.GetFITSKey('CDELT1')                                                                      # get scale hint
-        print(ra,dec,hint)
+        print(ra, dec, hint)
         self.maximDocument.PinPointSolve(ra, dec, hint, hint)                                                               # start solving with FITS Header data
         while self.maximDocument.PinPointStatus == 3:                                                                       # means solving
             time.sleep(0.1)
         stat = self.maximDocument.PinPointStatus
         if stat == 1:
             self.logger.warning('MAX-solveImage -> no start {0}'.format(stat))                                               # debug output
-            self.maximDocument.Close
+            self.maximDocument.Close()
             return False, stat, modelData
         stop = time.time()
         timeTS = (stop - start) / 1000
@@ -167,24 +174,5 @@ class MaximDLCamera:
             modelData['angle'] = self.maximDocument.PositionAngle
             modelData['timeTS'] = timeTS
             self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
-            self.maximDocument.Close
+            self.maximDocument.Close()
             return True, 'OK', modelData
-
-
-if __name__ == "__main__":
-    modelData = dict()
-    modelData['exposure'] = 1
-    modelData['binning'] = 1
-    modelData['binning'] = 1
-    modelData['sizeX'] = 800
-    modelData['sizeY'] = 600
-    modelData['offX'] = 0
-    modelData['offY'] = 0
-    modelData['offX'] = 0
-    modelData['base_dir_images'] = 'c:/temp'
-    modelData['file'] = 'test1.fit'
-    cam = MaximDLCamera(1)
-    cam.connect()
-    print(cam.getCameraProps())
-    cam.getImage(modelData)
-    cam.disconnect()

@@ -36,12 +36,13 @@ from support.sgpro import SGPro
 from support.theskyx import TheSkyX
 from support.ascom_camera import AscomCamera
 from support.maximdl_camera import MaximDLCamera
+from support.none_camera import NoneCamera
 import pythoncom
 
 
 class Model(QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
-    signalModelConnected = QtCore.pyqtSignal(bool, name='ModelConnected')                                                   # message for errors
+    signalModelConnected = QtCore.pyqtSignal(int, name='ModelConnected')                                                   # message for errors
     signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                      # commands to sgpro thread
     signalModelRedraw = QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
@@ -55,16 +56,16 @@ class Model(QtCore.QThread):
         super().__init__()
         self.app = app                                                                                                      # class reference for dome control
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
-        self.SGPro = SGPro()                                                                                                # object abstraction class for SGPro
-        self.TheSkyX = TheSkyX()                                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = AscomCamera(app)
-        self.MaximDL = MaximDLCamera(app)
+        self.SGPro = SGPro(self.app)                                                                                        # object abstraction class for SGPro
+        self.TheSkyX = TheSkyX(self.app)                                                                                    # object abstraction class for TheSkyX
+        self.AscomCamera = AscomCamera(self.app)                                                                            # object abstraction calls for ASCOM Camera
+        self.MaximDL = MaximDLCamera(self.app)                                                                              # object abstraction class for MaximDL
+        self.NoneCam = NoneCamera(self.app)                                                                                 # object abstraction class for MaximDL
         self.cpObject = self.SGPro
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
         self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
         self.alignmentPoints = []                                                                                           # placeholder for all points, which were modeled
-        self.connected = False                                                                                              # connection to SGPro
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for model
@@ -102,10 +103,12 @@ class Model(QtCore.QThread):
 
     def cameraPlateChooser(self):
         self.chooserLock.acquire()
-        if self.cpObject.connected:
-            self.cpObject.connected = False                                                                                 # connection to False -> no commands emitted
-            time.sleep(0.5)                                                                                                 # wait some time to get commands finished
-            self.cpObject.disconnect()
+        if self.cpObject.appCameraConnected:
+            self.cpObject.appConnected = False
+            time.sleep(0.5)
+            if self.app.ui.checkAutoConnectCamera.isChecked():
+                self.cpObject.disconnectCamera()
+            self.cpObject.disconnectApplication()
         if self.app.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
             self.app.imagePopup.showStatus = False
@@ -126,13 +129,23 @@ class Model(QtCore.QThread):
             self.app.imagePopup.showStatus = False
             self.app.imagePopup.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is MaximDL')
+        elif self.app.ui.rb_cameraNone.isChecked():
+            self.cpObject = self.NoneCam
+            self.app.imagePopup.showStatus = False
+            self.app.imagePopup.setVisible(False)
+            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is None')
+        if self.app.ui.checkAutoStartApp.isChecked():
+            self.cpObject.startApplication()
+        self.cpObject.connectApplication()
+        if self.app.ui.checkAutoConnectCamera.isChecked():
+            self.cpObject.connectCamera()
         self.chooserLock.release()
 
     def run(self):                                                                                                          # runnable for doing the work
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
-            if self.connected:
+            if self.cpObject.appCameraConnected:
                 if self.app.mount.mountHandler.connected:
                     if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                         self.command = ''                                                                                       # only one command at a time, last wins
@@ -193,9 +206,11 @@ class Model(QtCore.QThread):
                         self.app.modelLogQueue.put('Model cleared!\n')
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
             else:
-                if not self.cpObject.connected:
-                    self.cpObject.connect()
-            if self.command == 'LoadBasePoints':
+                pass
+            if self.command == 'CameraPlateChooser':
+                self.command = ''
+                self.cameraPlateChooser()
+            elif self.command == 'LoadBasePoints':
                 self.command = ''
                 self.BasePoints = self.showBasePoints()
                 self.signalModelRedraw.emit(True)
@@ -209,29 +224,25 @@ class Model(QtCore.QThread):
                 self.signalModelRedraw.emit(True)
             elif self.command == 'GenerateDSOPoints':
                 self.command = ''
-                self.app.ui.btn_generateDSOPoints.setStyleSheet(
-                    self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)                                                                                              # take some time, therefore coloring button during execution
                 self.RefinementPoints = self.generateDSOPoints()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                               # color button back, routine finished
             elif self.command == 'GenerateDensePoints':
                 self.command = ''
-                self.app.ui.btn_generateDensePoints.setStyleSheet(
-                    self.BLUE)                                                                                              # tale some time, color button fro showing running
+                self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)                                                                                              # tale some time, color button fro showing running
                 self.RefinementPoints = self.generateDensePoints()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                             # routing finished, coloring default
             elif self.command == 'GenerateNormalPoints':
                 self.command = ''
-                self.app.ui.btn_generateNormalPoints.setStyleSheet(
-                    self.BLUE)                                                                                              # tale some time, color button fro showing running
+                self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)                                                                                              # tale some time, color button fro showing running
                 self.RefinementPoints = self.generateNormalPoints()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                            # routing finished, coloring default
             elif self.command == 'GenerateGridPoints':
                 self.command = ''
-                self.app.ui.btn_generateGridPoints.setStyleSheet(
-                    self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)                                                                                              # take some time, therefore coloring button during execution
                 self.RefinementPoints = self.generateGridPoints()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
@@ -247,7 +258,7 @@ class Model(QtCore.QThread):
                 self.command = ''
                 self.deletePoints()
                 self.signalModelRedraw.emit(True)
-            if self.counter % 10 == 0:                                                                                      # standard cycles in model thread fast
+            if self.counter % 5 == 0:                                                                                       # standard cycles in model thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow
                 self.getStatusSlow()                                                                                        # calling slow part of status
@@ -274,15 +285,21 @@ class Model(QtCore.QThread):
         else:
             self.command = command                                                                                          # passing the command to main loop of thread
 
-    def getStatusSlow(self):                                                                                                # check SGPro running
-        suc, mes = self.cpObject.checkConnection()                                                                          # check status of cpObject
-        self.connected = suc                                                                                                # set status for internal use
-        self.signalModelConnected.emit(suc)                                                                                 # send status to GUI
-        if not suc:                                                                                                         # otherwise
-            self.logger.debug('getStatusSlow  -> No Camera connection: {0}'.format(mes))                                    # debug message
-
-    def getStatusFast(self):                                                                                                # fast status
+    def getStatusFast(self):                                                                                                # check app is running
+        # print(self.cpObject.appAvailable, self.cpObject.appConnected, self.cpObject.appCameraConnected)
+        self.cpObject.checkAppStatus()
+        if self.cpObject.appAvailable:
+            self.signalModelConnected.emit(1)                                                                               # send status to GUI
+        else:
+            self.signalModelConnected.emit(0)                                                                               # send status to GUI
+        if self.cpObject.appConnected:
+            self.signalModelConnected.emit(2)                                                                               # send status to GUI
+        if self.cpObject.appCameraConnected:
+            self.signalModelConnected.emit(3)                                                                               # send status to GUI
         self.cpObject.getCameraStatus()
+
+    def getStatusSlow(self):                                                                                                # fast status
+        pass
 
     @staticmethod
     def timeStamp():

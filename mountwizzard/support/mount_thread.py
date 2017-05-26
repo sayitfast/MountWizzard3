@@ -702,7 +702,7 @@ class Mount(QtCore.QThread):
                 self.app.mountDataQueue.put({'Name': 'GetUTCDataValid', 'Value': valid})
                 self.app.mountDataQueue.put({'Name': 'GetUTCDataExpirationDate', 'Value': expirationDate})
         except Exception as e:
-            self.logger.error('getStatusFast  -> receive error: {0}'.format(e))
+            self.logger.error('getStatusSlow  -> receive error: {0}'.format(e))
         finally:
             pass
 

@@ -53,6 +53,12 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # numerics
 import numpy
 import math
+# application handling
+from winreg import *
+import platform
+# windows automation
+from pywinauto import Application, timings, findwindows, application
+from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
 class ShowModel(FigureCanvas):
@@ -83,6 +89,7 @@ class MountWizzardApp(MwWidget):
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.loadConfig()                                                                                                   # load configuration
         self.initConfig()
+        self.checkASCOM()
         self.relays = Relays(self)                                                                                          # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self)                                                                                              # dome control
         self.mount = Mount(self)                                                                                            # Mount -> everything with mount and alignment
@@ -99,7 +106,7 @@ class MountWizzardApp(MwWidget):
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)                                                                                  # add widget to view
-        self.model.cameraPlateChooser()
+        self.model.signalModelCommand.emit('CameraPlateChooser')
         self.mount.mountDriverChooser()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
@@ -169,7 +176,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_runRefinementModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunRefinementModel'))
         self.ui.btn_runBatchModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunBatchModel'))
         self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.model.signalModelCommand.emit('ClearAlignmentModel'))
-        self.ui.btn_selectImageDirectoryName.clicked.connect(self.selectImageDirectoryName)
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.selectHorizonPointsMode)
@@ -221,10 +227,11 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_bootMount.clicked.connect(lambda: self.relays.bootMount())
         self.ui.btn_switchCCD.clicked.connect(lambda: self.relays.switchCCD())
         self.ui.btn_switchHeater.clicked.connect(lambda: self.relays.switchHeater())
-        self.ui.rb_cameraSGPro.clicked.connect(self.model.cameraPlateChooser)
-        self.ui.rb_cameraTSX.clicked.connect(self.model.cameraPlateChooser)
-        self.ui.rb_cameraASCOM.clicked.connect(self.model.cameraPlateChooser)
-        self.ui.rb_cameraMaximDL.clicked.connect(self.model.cameraPlateChooser)
+        self.ui.rb_cameraSGPro.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraTSX.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraASCOM.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraMaximDL.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraNone.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
@@ -232,7 +239,6 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
-        self.ui.btn_selectUpdaterFileName.clicked.connect(self.selectUpdaterFileName)
         self.ui.rb_ascomMount.clicked.connect(self.mount.mountDriverChooser)
         self.ui.rb_directMount.clicked.connect(self.mount.mountDriverChooser)
 
@@ -276,6 +282,48 @@ class MountWizzardApp(MwWidget):
         self.modelWidget.axes.set_rmax(90)
         self.modelWidget.axes.set_rmin(0)
         self.modelWidget.draw()
+
+    def checkASCOM(self):
+        appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
+        if appAvailable:
+            self.messageQueue.put('Found: {0}'.format(appName))
+            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(appName, appInstallPath))
+        else:
+            self.logger.error('checkApplicatio-> Application ASCOM not found on computer')
+
+    @staticmethod
+    def checkRegistrationKeys(appSearchName):
+        if platform.machine().endswith('64'):
+            regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                # regpath for 64 bit windows
+        else:
+            regPath = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                             # regpath for 32 bit windows
+        try:
+            appInstallPath = ''
+            appInstalled = False
+            key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
+            for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
+                name = EnumKey(key, i)                                                                                      # get registry names of applications
+                subkey = OpenKey(key, name)                                                                                 # open subkeys of applications
+                for j in range(0, QueryInfoKey(subkey)[1]):                                                                 # run through all subkeys
+                    values = EnumValue(subkey, j)
+                    if values[0] == 'DisplayName':
+                        appName = values[1]
+                    if values[0] == 'InstallLocation':
+                        appInstallPath = values[1]
+                if appSearchName in appName:
+                    appInstalled = True
+                    CloseKey(subkey)
+                    break
+                else:
+                    CloseKey(subkey)                                                                                        # closing the subkey for later usage
+            CloseKey(key)                                                                                                   # closing main key for later usage
+            if not appInstalled:
+                appInstallPath = ''
+                appName = ''
+        except Exception as e:
+            print(e)
+        finally:
+            return appInstalled, appName, appInstallPath
 
     def initConfig(self):
         try:
@@ -329,8 +377,6 @@ class MountWizzardApp(MwWidget):
                 self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
             if 'AltitudeMinimumHorizon' in self.config:
                 self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
-            if 'ImageDirectoryName' in self.config:
-                self.ui.le_imageDirectoryName.setText(self.config['ImageDirectoryName'])
             if 'CameraTSX' in self.config:
                 self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
             if 'CameraSGPro' in self.config:
@@ -339,6 +385,8 @@ class MountWizzardApp(MwWidget):
                 self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
             if 'CameraMaximDL' in self.config:
                 self.ui.rb_cameraMaximDL.setChecked(self.config['CameraMaximDL'])
+            if 'CameraNone' in self.config:
+                self.ui.rb_cameraNone.setChecked(self.config['CameraNone'])
             if 'CameraBin' in self.config:
                 self.ui.cameraBin.setValue(self.config['CameraBin'])
             if 'CameraExposure' in self.config:
@@ -417,8 +465,6 @@ class MountWizzardApp(MwWidget):
                 self.ui.rb_directMount.setChecked(self.config['DirectMount'])
             if 'AscomMount' in self.config:
                 self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
-            if 'UpdaterFileName' in self.config:
-                self.ui.le_updaterFileName.setText(self.config['UpdaterFileName'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
         except Exception as e:
@@ -449,11 +495,11 @@ class MountWizzardApp(MwWidget):
         self.config['HorizonPointsFileName'] = self.ui.le_horizonPointsFileName.text()
         self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
         self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
-        self.config['ImageDirectoryName'] = self.ui.le_imageDirectoryName.text()
         self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
         self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
         self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
         self.config['CameraMaximDL'] = self.ui.rb_cameraMaximDL.isChecked()
+        self.config['CameraNone'] = self.ui.rb_cameraNone.isChecked()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
@@ -495,7 +541,6 @@ class MountWizzardApp(MwWidget):
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
         self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
-        self.config['UpdaterFileName'] = self.ui.le_updaterFileName.text()
 
     def loadConfig(self):
         try:
@@ -574,17 +619,6 @@ class MountWizzardApp(MwWidget):
         self.coordinatePopup.showStatus = True
         self.coordinatePopup.setVisible(True)
 
-    def selectImageDirectoryName(self):
-        dlg = QFileDialog()
-        dlg.setViewMode(QFileDialog.List)
-        dlg.setFileMode(QFileDialog.DirectoryOnly)
-        # noinspection PyArgumentList
-        a = dlg.getExistingDirectory(self, 'Select directory', os.getcwd())
-        if len(a) > 0:
-            self.ui.le_imageDirectoryName.setText(a)
-        else:
-            self.logger.warning('selectModelPointsFile -> no file selected')
-
     def selectHorizonPointsMode(self):
         self.model.loadHorizonPoints(self.ui.le_horizonPointsFileName.text())
         self.coordinatePopup.redrawCoordinateWindow()
@@ -601,16 +635,6 @@ class MountWizzardApp(MwWidget):
             self.model.loadHorizonPoints(os.path.basename(a[0]))
             self.ui.checkUseMinimumHorizonLine.setChecked(False)
             self.coordinatePopup.redrawCoordinateWindow()
-
-    def selectUpdaterFileName(self):
-        dlg = QFileDialog()
-        dlg.setViewMode(QFileDialog.List)
-        dlg.setNameFilter("Application (*.exe)")
-        dlg.setFileMode(QFileDialog.ExistingFile)
-        # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', 'c:\\', 'Application (*.exe)')
-        if a[0] != '':
-            self.ui.le_updaterFileName.setText(a[0])
 
     def shutdownQuit(self):
         self.saveConfig()
@@ -885,12 +909,16 @@ class MountWizzardApp(MwWidget):
         self.ui.le_windSpeedWeather.setText('{0:4.1f}'.format(data['WindSpeed']))
         self.ui.le_windDirectionWeather.setText('{0:4.1f}'.format(data['WindDirection']))
 
-    @QtCore.Slot(bool)
+    @QtCore.Slot(int)
     def setCameraPlateStatus(self, status):
-        if status:
+        if status == 3:
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: green;}')
-        else:
+        elif status == 2:
+            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+        elif status == 1:
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: red;}')
+        else:
+            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: gray;}')
 
     @QtCore.Slot(int)
     def setDomeStatus(self, status):
@@ -948,9 +976,9 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
 
-    logging.error('----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v' + BUILD_NO + ' started !')                                                                # start message logger
-    logging.error('----------------------------------------')                                                               # start message logger
+    logging.error('-----------------------------------------')                                                               # start message logger
+    logging.error('MountWizzard v ' + BUILD_NO + ' started !')                                                                # start message logger
+    logging.error('-----------------------------------------')                                                               # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
 
     QApplication.setAttribute(Qt.AA_Use96Dpi)

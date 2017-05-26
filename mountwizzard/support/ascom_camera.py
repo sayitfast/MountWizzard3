@@ -19,6 +19,8 @@ import numpy
 import pyfits
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
+# application handling
+from winreg import *
 
 
 class AscomCamera:
@@ -27,6 +29,8 @@ class AscomCamera:
     def __init__(self, app):
         self.app = app
         self.connected = False
+        self.appConnected = False
+        self.appCameraConnected = False
         self.connectedPlateSolver = False
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverNameCamera = ''                                                                                          # driver object name

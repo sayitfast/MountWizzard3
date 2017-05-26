@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7154,8 +7154,8 @@
         <rect>
          <x>20</x>
          <y>40</y>
-         <width>351</width>
-         <height>251</height>
+         <width>111</width>
+         <height>191</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -7188,14 +7188,14 @@
          <string>SGPro</string>
         </property>
         <property name="checked">
-         <bool>true</bool>
+         <bool>false</bool>
         </property>
        </widget>
        <widget class="QRadioButton" name="rb_cameraTSX">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>70</y>
+          <y>60</y>
           <width>101</width>
           <height>31</height>
          </rect>
@@ -7213,7 +7213,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>150</y>
+          <y>120</y>
           <width>101</width>
           <height>31</height>
          </rect>
@@ -7227,138 +7227,6 @@
          <string>ASCOM</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="btn_setupPlateSolver">
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>200</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup plate solver driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>PlateSolver</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btn_setupAscomCameraDriver">
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>160</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM camera driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Camera</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_145">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>160</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Setup Driver:</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_146">
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>200</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Setup Driver:</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_147">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>30</y>
-          <width>221</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Sequence Generator Pro Application</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_148">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>70</y>
-          <width>221</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>TheSkyX Application</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_150">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>110</y>
-          <width>221</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>MaximDL Application</string>
-        </property>
-       </widget>
        <widget class="QRadioButton" name="rb_cameraMaximDL">
         <property name="enabled">
          <bool>true</bool>
@@ -7366,7 +7234,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>110</y>
+          <y>90</y>
           <width>101</width>
           <height>31</height>
          </rect>
@@ -7378,6 +7246,30 @@
         </property>
         <property name="text">
          <string>MaximDL</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="rb_cameraNone">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>150</y>
+          <width>82</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>12</pointsize>
+         </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;SGPro for imaging and plate solving&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>None</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
         </property>
        </widget>
       </widget>
@@ -7407,7 +7299,7 @@
         <rect>
          <x>20</x>
          <y>20</y>
-         <width>171</width>
+         <width>201</width>
          <height>21</height>
         </rect>
        </property>
@@ -7476,7 +7368,7 @@
         <rect>
          <x>410</x>
          <y>170</y>
-         <width>171</width>
+         <width>191</width>
          <height>21</height>
         </rect>
        </property>
@@ -7486,15 +7378,15 @@
         </font>
        </property>
        <property name="text">
-        <string>Mount Settle Time Modeling</string>
+        <string>Mount Settle Time for Modeling</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_173">
        <property name="geometry">
         <rect>
-         <x>540</x>
+         <x>550</x>
          <y>280</y>
-         <width>16</width>
+         <width>91</width>
          <height>21</height>
         </rect>
        </property>
@@ -7504,7 +7396,7 @@
         </font>
        </property>
        <property name="text">
-        <string>%</string>
+        <string>% of total size</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_39">
@@ -7985,8 +7877,8 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>350</y>
-         <width>101</width>
+         <y>340</y>
+         <width>121</width>
          <height>21</height>
         </rect>
        </property>
@@ -8003,7 +7895,7 @@
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>400</y>
+         <y>390</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -8031,7 +7923,7 @@
        <property name="geometry">
         <rect>
          <x>300</x>
-         <y>400</y>
+         <y>390</y>
          <width>21</width>
          <height>20</height>
         </rect>
@@ -8055,7 +7947,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>370</y>
+         <y>360</y>
          <width>291</width>
          <height>21</height>
         </rect>
@@ -8088,8 +7980,8 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>300</y>
-         <width>101</width>
+         <y>290</y>
+         <width>121</width>
          <height>21</height>
         </rect>
        </property>
@@ -8106,7 +7998,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>320</y>
+         <y>310</y>
          <width>291</width>
          <height>21</height>
         </rect>
@@ -8139,7 +8031,7 @@
        <property name="geometry">
         <rect>
          <x>320</x>
-         <y>320</y>
+         <y>310</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -8160,7 +8052,7 @@
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>400</y>
+         <y>390</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -8184,7 +8076,7 @@
        <property name="geometry">
         <rect>
          <x>320</x>
-         <y>370</y>
+         <y>360</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -8201,10 +8093,97 @@
         <string>Select</string>
        </property>
       </widget>
+      <widget class="QLabel" name="label_147">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>260</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Selection of Modeling Files</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_57">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>270</y>
+         <width>351</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkAutoStartApp">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>70</y>
+         <width>201</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Start Application automaticially</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkAutoConnectCamera">
+       <property name="geometry">
+        <rect>
+         <x>160</x>
+         <y>100</y>
+         <width>201</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Connect Camera automaticially</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_12">
       <attribute name="title">
-       <string>Mount / Environment Driver Settings</string>
+       <string>ASCOM / Mount Driver Settings</string>
       </attribute>
       <widget class="QPushButton" name="btn_setupStickDriver">
        <property name="geometry">
@@ -8713,6 +8692,162 @@
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_setupAscomCameraDriver">
+       <property name="geometry">
+        <rect>
+         <x>640</x>
+         <y>210</y>
+         <width>81</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM camera driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Camera</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_145">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>210</y>
+         <width>81</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Setup Driver:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_146">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>290</y>
+         <width>81</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Setup Driver:</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_setupPlateSolver">
+       <property name="geometry">
+        <rect>
+         <x>640</x>
+         <y>290</y>
+         <width>81</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup plate solver driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>PlateSolver</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_11">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>190</y>
+         <width>321</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_63">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>180</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>ASCOM Camera</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_20">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>270</y>
+         <width>321</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_97">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>260</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Platesolver</string>
        </property>
       </widget>
      </widget>
@@ -9791,7 +9926,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>100</y>
+         <y>110</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9812,7 +9947,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>70</y>
+         <y>80</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -9830,7 +9965,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>80</y>
+         <y>90</y>
          <width>341</width>
          <height>21</height>
         </rect>
@@ -9851,7 +9986,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
+         <y>150</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9872,7 +10007,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>180</y>
+         <y>190</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9893,7 +10028,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>220</y>
+         <y>230</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9914,7 +10049,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>260</y>
+         <y>270</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -9935,7 +10070,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>100</y>
+         <y>110</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9959,7 +10094,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>140</y>
+         <y>150</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -9983,7 +10118,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>180</y>
+         <y>190</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10007,7 +10142,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>220</y>
+         <y>230</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10031,7 +10166,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>260</y>
+         <y>270</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10055,7 +10190,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>320</y>
+         <y>350</y>
          <width>311</width>
          <height>31</height>
         </rect>
@@ -10076,7 +10211,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>320</y>
+         <y>350</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10097,9 +10232,9 @@
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>60</y>
+         <y>70</y>
          <width>21</width>
-         <height>291</height>
+         <height>311</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -10113,7 +10248,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>70</y>
+         <y>80</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -10131,7 +10266,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>80</y>
+         <y>90</y>
          <width>311</width>
          <height>21</height>
         </rect>
@@ -10148,104 +10283,11 @@
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_updaterFileName">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>400</y>
-         <width>641</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Updater location from 10micron&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_97">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>370</y>
-         <width>161</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Path to 10micron Updater:</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_49">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>380</y>
-         <width>691</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_selectUpdaterFileName">
-       <property name="geometry">
-        <rect>
-         <x>670</x>
-         <y>400</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Sets dual tracking on / off</string>
-       </property>
-       <property name="text">
-        <string>Select</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_151">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>20</y>
+         <y>30</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -10263,7 +10305,7 @@
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>20</y>
+         <y>30</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -10305,7 +10347,7 @@
        <property name="geometry">
         <rect>
          <x>280</x>
-         <y>20</y>
+         <y>30</y>
          <width>101</width>
          <height>21</height>
         </rect>
@@ -10347,7 +10389,7 @@
        <property name="geometry">
         <rect>
          <x>190</x>
-         <y>20</y>
+         <y>30</y>
          <width>91</width>
          <height>21</height>
         </rect>
@@ -10757,78 +10799,6 @@
       <string>Relays</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_selectImageDirectoryName">
-     <property name="geometry">
-      <rect>
-       <x>690</x>
-       <y>290</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Sets dual tracking on / off</string>
-     </property>
-     <property name="text">
-      <string>Select</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_41">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>270</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Directory Images</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_imageDirectoryName">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>290</y>
-       <width>291</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>Button text park menu 1</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
    </widget>
   </widget>
   <widget class="QPushButton" name="btn_shutdownQuit">
@@ -11228,8 +11198,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>rb_cameraTSX</tabstop>
   <tabstop>rb_cameraMaximDL</tabstop>
   <tabstop>rb_cameraASCOM</tabstop>
-  <tabstop>btn_setupAscomCameraDriver</tabstop>
-  <tabstop>btn_setupPlateSolver</tabstop>
   <tabstop>rb_directMount</tabstop>
   <tabstop>le_mountIP</tabstop>
   <tabstop>rb_ascomMount</tabstop>
@@ -11265,16 +11233,12 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_downloadAsteroids</tabstop>
   <tabstop>btn_downloadComets</tabstop>
   <tabstop>btn_downloadAll</tabstop>
-  <tabstop>le_updaterFileName</tabstop>
   <tabstop>checkEarthrotation</tabstop>
   <tabstop>checkSpacestations</tabstop>
   <tabstop>checkSatellites</tabstop>
   <tabstop>checkAsteroids</tabstop>
   <tabstop>checkComets</tabstop>
   <tabstop>btn_uploadMount</tabstop>
-  <tabstop>btn_selectUpdaterFileName</tabstop>
-  <tabstop>le_imageDirectoryName</tabstop>
-  <tabstop>btn_selectImageDirectoryName</tabstop>
   <tabstop>btn_driverMountConnected</tabstop>
   <tabstop>btn_domeConnected</tabstop>
   <tabstop>btn_driverStickConnected</tabstop>

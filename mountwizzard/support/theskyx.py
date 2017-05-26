@@ -1,5 +1,4 @@
 import logging
-from urllib import request
 import json
 import socket
 import timeit
@@ -8,18 +7,85 @@ import timeit
 class TheSkyX:
     logger = logging.getLogger(__name__)
 
-    def __init__(self):
+    def __init__(self, app):
         self.host = '127.0.0.1'
         self.port = 3040
+        self.app = app
         self.responseSuccess = '|No error. Error = 0.'
-        self.connected = False
+        self.appConnected = False
+        self.appCameraConnected = False
         self.cameraStatus = ''
+        self.appInstallPath = ''
+        self.appAvailable = False
+        self.appName = ''
+        self.appExe = 'TheSkyX.exe'
+        self.checkAppInstall()
 
-    def connect(self):
+    def checkAppInstall(self):
+        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
+        if self.appAvailable:
+            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+        else:
+            self.logger.error('checkApplicatio-> Application TheSkyX not found on computer')
+
+    def checkAppStatus(self):
+        try:
+            tsxSocket = socket.socket()
+            tsxSocket.connect((self.host, self.port))
+            command = '/* Java Script */'
+            command += 'var Out = "";'
+            command += 'ccdsoftCamera.Asynchronous=0;'
+            command += 'Out=ccdsoftCamera.ExposureStatus;'
+            success, response = self.sendCommand(command)
+            if response == 'Not Connected':
+                self.appCameraConnected = False
+            else:
+                self.appCameraConnected = True
+            self.appConnected = True
+        except Exception as e:
+            self.appConnected = False
+            self.appCameraConnected = False
+            self.logger.error('checkAppStatus -> error: {0}'.format(e))
+        finally:
+            pass
+
+    def startApplication(self):
         pass
 
-    def disconnect(self):
+    def connectApplication(self):
         pass
+
+    def disconnectApplication(self):
+        pass
+
+    def connectCamera(self):
+        try:
+            tsxSocket = socket.socket()
+            tsxSocket.connect((self.host, self.port))
+            command = '/* Java Script */ '
+            command += 'ccdsoftCamera.Connect();'
+            self.appCameraConnected, response = self.sendCommand(command)
+        except Exception as e:
+            self.logger.error('connectCamera  -> error: {0}'.format(e))
+            self.appCameraConnected = False
+        finally:
+            # noinspection PyUnboundLocalVariable
+            tsxSocket.close()
+
+    def disconnectCamera(self):
+        try:
+            tsxSocket = socket.socket()
+            tsxSocket.connect((self.host, self.port))
+            command = '/* Java Script */ '
+            command += 'ccdsoftCamera.Disconnect();'
+            self.sendCommand(command)
+            self.appCameraConnected = False
+        except Exception as e:
+            self.logger.error('disconnectCamer-> error: {0}'.format(e))
+        finally:
+            # noinspection PyUnboundLocalVariable
+            tsxSocket.close()
 
     def sendCommand(self, command):
         try:
@@ -37,24 +103,8 @@ class TheSkyX:
             self.logger.error('sendCommand    -> error: {0}'.format(e))
             return False, format(e)
         finally:
+            # noinspection PyUnboundLocalVariable
             tsxSocket.close()
-
-    def checkConnection(self):
-        try:
-            tsxSocket = socket.socket()
-            tsxSocket.connect((self.host, self.port))
-            command = '/* Java Script */ '
-            command += 'ccdsoftCamera.Connect();'
-            self.connected, response = self.sendCommand(command)
-        except Exception as e:
-            self.logger.error('checkConnection-> error: {0}'.format(e))
-            self.connected = False
-        finally:
-            tsxSocket.close()
-            if self.connected:
-                return True, 'Camera and Solver OK';
-            else:
-                return self.connected, 'Unable to connect camera';
 
     def solveImage(self, modelData):
         if modelData['blind']:
@@ -161,19 +211,3 @@ class TheSkyX:
         except Exception as e:
             self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
             return False, 'Request failed', '', '', '', ''
-
-if __name__ == "__main__":
-
-    cam = TheSkyX()
-    suc, mes, x, y, can, gain = cam.SgGetCameraProps()
-    # print(suc, mes, x, y, can, gain)
-    suc, mes, guid = cam.SgCaptureImage(binningMode=1, exposureLength=1, gain=gain, iso=None, speed=None, frameType='cdLight', filename=None, path='c:/temp', useSubframe=False, posX=0, posY=0, width=1, height=1)
-    while True:
-        suc, path = cam.SgGetImagePath(guid)
-        if suc:
-            break
-    # print(suc, path)
-    suc, mes, guid = cam.SgSolveImage(path=path, raHint=None, decHint=None, scaleHint=3.7, blindSolve=False, useFitsHeaders=False)
-    # print(suc, mes, guid)
-    suc, mes, ra, dec, scale, angle, time = cam.SgGetSolvedImageData(guid)
-    # print(suc, mes, ra, dec, scale, angle, time)
