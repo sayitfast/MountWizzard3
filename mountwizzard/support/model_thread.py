@@ -297,7 +297,7 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusFast(self):                                                                                                # check app is running
-        print(self.cpObject.appAvailable, self.cpObject.appRunning, self.cpObject.appConnected, self.cpObject.appCameraConnected)
+        # print(self.cpObject.appAvailable, self.cpObject.appRunning, self.cpObject.appConnected, self.cpObject.appCameraConnected)
         self.cpObject.checkAppStatus()
         if self.cpObject.appAvailable:
             self.signalModelConnected.emit(1)                                                                               # send status to GUI

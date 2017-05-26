@@ -2,6 +2,12 @@
 2.3.6
 - refactoring get alignment data
 - changed text for output startup
+- refactoring imaging applications
+- added starting imaging apps
+- added seeking available imaging apps
+- added automatic camera connection
+- improved gui for camera (grey / red / yellow / green)
+- usage MW without camera app
 
 2.3.5
 - try to avoid change font sizes

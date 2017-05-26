@@ -108,10 +108,8 @@ class MaximDLCamera:
         if self.appRunning:
             try:
                 if not self.maximCamera:
-                    print('Camera dispatched')
                     self.maximCamera = Dispatch(self.driverNameCamera)
                 if not self.maximDocument:
-                    print('Document dispatched')
                     self.maximDocument = Dispatch(self.driverNameDocument)
                 self.maximCamera.LinkEnabled = True
                 self.appConnected = True

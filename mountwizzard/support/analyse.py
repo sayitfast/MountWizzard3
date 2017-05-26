@@ -334,7 +334,7 @@ class Analyse:
 
     def saveData(self, dataProcess, name):                                                                                  # saving data from list to file
         if name in ['base.dat', 'refine.dat', 'actual.dat', 'simple.dat', 'dso1.dat', 'dso2.dat']:
-            ok, number = self.app.mount.testBaseModelAvailable()
+            number = self.app.mount.numberModelStars()
             if number == -1:                                                                                                # if not real mount, than don't save model data
                 return
         filenameData = os.getcwd() + self.filepath + '/' + name                                                             # built the filename
