@@ -343,42 +343,42 @@ class Mount(QtCore.QThread):
         if reply:                                                                                                           # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
             if reply != 'E':                                                                                                # if a single 'E' returns, there is a problem, not further parameter will follow
                 a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
-            if a1 != 'E':                                                                                                   # 'E' could be sent if not calculable or no value available
-                alignModel['azimuth'] = float(a1)
-            else:
-                alignModel['azimuth'] = 0
-            if a2 != 'E':
-                alignModel['altitude'] = float(a2)
-            else:
-                alignModel['altitude'] = 0
-            if a3 != 'E':
-                alignModel['polarError'] = float(a3)
-            else:
-                alignModel['polarError'] = 0
-            if a4 != 'E':
-                alignModel['posAngle'] = float(a4)
-            else:
-                alignModel['posAngle'] = 0
-            if a5 != 'E':
-                alignModel['orthoError'] = float(a5)
-            else:
-                alignModel['orthoError'] = 0
-            if a6 != 'E':
-                alignModel['azimuthKnobs'] = float(a6)
-            else:
-                alignModel['azimuthKnobs'] = 0
-            if a7 != 'E':
-                alignModel['altitudeKnobs'] = float(a7)
-            else:
-                alignModel['altitudeKnobs'] = 0
-            if a8 != 'E':
-                alignModel['terms'] = int(float(a8))
-            else:
-                alignModel['terms'] = 0
-            if a9 != 'E':
-                alignModel['RMS'] = float(a9)
-            else:
-                alignModel['RMS'] = 0
+                if a1 != 'E':                                                                                                   # 'E' could be sent if not calculable or no value available
+                    alignModel['azimuth'] = float(a1)
+                else:
+                    alignModel['azimuth'] = 0
+                if a2 != 'E':
+                    alignModel['altitude'] = float(a2)
+                else:
+                    alignModel['altitude'] = 0
+                if a3 != 'E':
+                    alignModel['polarError'] = float(a3)
+                else:
+                    alignModel['polarError'] = 0
+                if a4 != 'E':
+                    alignModel['posAngle'] = float(a4)
+                else:
+                    alignModel['posAngle'] = 0
+                if a5 != 'E':
+                    alignModel['orthoError'] = float(a5)
+                else:
+                    alignModel['orthoError'] = 0
+                if a6 != 'E':
+                    alignModel['azimuthKnobs'] = float(a6)
+                else:
+                    alignModel['azimuthKnobs'] = 0
+                if a7 != 'E':
+                    alignModel['altitudeKnobs'] = float(a7)
+                else:
+                    alignModel['altitudeKnobs'] = 0
+                if a8 != 'E':
+                    alignModel['terms'] = int(float(a8))
+                else:
+                    alignModel['terms'] = 0
+                if a9 != 'E':
+                    alignModel['RMS'] = float(a9)
+                else:
+                    alignModel['RMS'] = 0
         return alignModel
 
     def getAlignmentModel(self):                                                                                            # download alignment model from mount

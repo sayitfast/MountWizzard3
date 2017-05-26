@@ -50,7 +50,7 @@ class Model(QtCore.QThread):
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     REF_PICTURE = '/model001.fit'
-    IMAGEDIR = os.getcwd() + '/images'
+    IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
 
     def __init__(self, app):
         super().__init__()
@@ -173,8 +173,8 @@ class Model(QtCore.QThread):
                     elif self.command == 'RunCheckModel':                                                                       #
                         self.command = ''                                                                                       #
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                  # button blue (running)
-                        ok, num = self.app.mount.testBaseModelAvailable()
-                        if ok:
+                        num = self.app.mount.numberModelStars()
+                        if num > 2:
                             self.runCheckModel()
                         else:
                             self.app.modelLogQueue.put('Run Analyse stopped, not BASE model available !\n')
@@ -601,8 +601,8 @@ class Model(QtCore.QThread):
             self.logger.warning('runBaseModel -> There are no Basepoints to model')
 
     def runRefinementModel(self):
-        ok, num = self.app.mount.testBaseModelAvailable()
-        if ok:
+        num = self.app.mount.numberModelStars()
+        if num > 2:
             settlingTime = int(float(self.app.ui.settlingTime.value()))
             directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
             if len(self.RefinementPoints) > 0:
@@ -838,8 +838,6 @@ class Model(QtCore.QThread):
 
     def solveImage(self, modeltype, modelData, simulation):                                                                 # solving image based on information inside the FITS files, no additional info
         modelData['usefitsheaders'] = True
-        if modeltype == 'Base':
-            modelData['blind'] = False
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
