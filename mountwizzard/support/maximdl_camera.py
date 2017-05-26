@@ -47,15 +47,19 @@ class MaximDLCamera:
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
             self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            self.app.ui.rb_cameraMaximDL.setCheckable(False)
+            self.app.ui.rb_cameraMaximDL.setVisible(False)
         else:
+            self.app.ui.rb_cameraMaximDL.setCheckable(False)
             self.logger.error('checkApplicatio-> Application MaxIm DL not found on computer')
 
     def startApplication(self):
-        self.appRunning = True
         try:
-            findwindows.find_window(title_re='^(.*?)(\\bMaxIm\\b)(.*)$')
-        except findwindows.WindowNotFoundError:
-            self.appRunning = False
+            a = findwindows.find_window(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
+            if len(a) == 0:
+                self.appRunning = False
+            else:
+                self.appRunning = True
         except Exception as e:
             self.logger.error('startApplicatio-> error{0}'.format(e))
         finally:
@@ -75,10 +79,11 @@ class MaximDLCamera:
 
     def checkAppStatus(self):
         try:
-            findwindows.find_windows(title_re='^(.*?)(\\bMaxIm\\b)(.*)$')
-            self.appRunning = True
-        except findwindows.WindowNotFoundError:
-            self.appRunning = False
+            a = findwindows.find_windows(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
+            if len(a) == 0:
+                self.appRunning = False
+            else:
+                self.appRunning = True
         except Exception as e:
             print('error')
             self.logger.error('checkAppStatus -> error{0}'.format(e))

@@ -217,6 +217,10 @@ class Model(QtCore.QThread):
             elif self.command == 'DisconnectCamera':
                 self.command = ''
                 self.cpObject.disconnectCamera()
+            elif self.command == 'StartApplication':
+                self.command = ''
+                self.cpObject.startApplication()
+                self.cpObject.connectApplication()
             elif self.command == 'LoadBasePoints':
                 self.command = ''
                 self.BasePoints = self.showBasePoints()

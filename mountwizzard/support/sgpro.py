@@ -54,6 +54,8 @@ class SGPro:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
             self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
+            self.app.ui.rb_cameraSGPro.setCheckable(False)
+            self.app.ui.rb_cameraSGPro.setVisible(False)
             self.logger.error('checkApplicatio-> Application SGPro not found on computer')
 
     def checkAppStatus(self):
@@ -83,11 +85,12 @@ class SGPro:
                 self.appCameraConnected = False
 
     def startApplication(self):
-        self.appRunning = True
         try:
-            findwindows.find_window(title_re='^(.*?)(\\bSequence\\b)(.*)$')
-        except findwindows.WindowNotFoundError:
-            self.appRunning = False
+            a = findwindows.find_windows(title_re='^(.*?)(\\bSequence\\b)(.*)$')
+            if len(a) == 0:
+                self.appRunning = False
+            else:
+                self.appRunning = True
         except Exception as e:
             self.logger.error('startApplicatio-> error{0}'.format(e))
         finally:

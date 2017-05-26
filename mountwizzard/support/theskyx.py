@@ -30,6 +30,8 @@ class TheSkyX:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
             self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
+            self.app.ui.rb_cameraTSX.setVisible(False)
+            self.app.ui.rb_cameraTSX.setCheckable(False)
             self.logger.error('checkApplicatio-> Application TheSkyX not found on computer')
 
     def checkAppStatus(self):
@@ -57,9 +59,12 @@ class TheSkyX:
     def startApplication(self):
         self.appRunning = True
         try:
-            findwindows.find_window(title_re='^(.*?)(\\bTheSkyX\\b)(.*)$')
-        except findwindows.WindowNotFoundError:
-            self.appRunning = False
+            a = findwindows.find_windows(title_re='^(.*?)(\\bTheSkyX\\b)(.*)$')
+            if len(a) == 0:
+                self.appRunning = False
+            else:
+                self.appRunning = True
+
         except Exception as e:
             self.logger.error('startApplicatio-> error{0}'.format(e))
         finally:
