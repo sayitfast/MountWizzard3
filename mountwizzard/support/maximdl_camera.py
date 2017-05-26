@@ -15,8 +15,11 @@
 # import basic stuff
 import logging
 import time
+import os
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
+# windows automation
+from pywinauto import Application, timings, findwindows, application
 
 
 class MaximDLCamera:
@@ -24,6 +27,7 @@ class MaximDLCamera:
 
     def __init__(self, app):
         self.app = app
+        self.appRunning = False
         self.appConnected = False
         self.appCameraConnected = False
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
@@ -46,39 +50,74 @@ class MaximDLCamera:
         else:
             self.logger.error('checkApplicatio-> Application MaxIm DL not found on computer')
 
+    def startApplication(self):
+        self.appRunning = True
+        try:
+            findwindows.find_window(title_re='^(.*?)(\\bMaxIm\\b)(.*)$')
+        except findwindows.WindowNotFoundError:
+            self.appRunning = False
+        except Exception as e:
+            self.logger.error('startApplicatio-> error{0}'.format(e))
+        finally:
+            pass
+        if not self.appRunning:
+            try:
+                app = Application(backend='win32')
+                app.start(self.appInstallPath + '\\' + self.appExe)
+                self.appRunning = True
+                self.logger.error('startApplicatio-> started MaxIm DL')
+            except application.AppStartError:
+                self.logger.error('startApplicatio-> error starting application')
+                self.app.messageQueue.put('Failed to start MaxIm DL!')
+                self.appRunning = False
+            finally:
+                pass
+
     def checkAppStatus(self):
+        try:
+            findwindows.find_windows(title_re='^(.*?)(\\bMaxIm\\b)(.*)$')
+            self.appRunning = True
+        except findwindows.WindowNotFoundError:
+            self.appRunning = False
+        except Exception as e:
+            print('error')
+            self.logger.error('checkAppStatus -> error{0}'.format(e))
+        finally:
+            pass
         if self.maximCamera:
-            self.appConnected = self.maximCamera.LinkEnabled
+            try:
+                self.appConnected = self.maximCamera.LinkEnabled
+            except Exception as e:
+                self.logger.error('checkAppStatus -> error{0}'.format(e))
+                self.appConnected = False
+                self.appCameraConnected = False
+                self.maximCamera = None
+                self.maximDocument = None
+            finally:
+                pass
         else:
             self.appConnected = False
             self.appCameraConnected = False
 
-    def startApplication(self):
-        pass
-
-    def connectCamera(self):
-        pass
-
-    def disconnectCamera(self):
-        pass
-
     def connectApplication(self):
-        try:
-            if not self.maximCamera:
-                self.maximCamera = Dispatch(self.driverNameCamera)
+        if self.appRunning:
+            try:
+                if not self.maximCamera:
+                    print('Camera dispatched')
+                    self.maximCamera = Dispatch(self.driverNameCamera)
+                if not self.maximDocument:
+                    print('Document dispatched')
+                    self.maximDocument = Dispatch(self.driverNameDocument)
                 self.maximCamera.LinkEnabled = True
-            if not self.maximDocument:
-                self.maximDocument = Dispatch(self.driverNameDocument)
-            self.appConnected = True
-        except Exception as e:
-            self.logger.error('startApplicatio-> error: {0}'.format(e))
-        finally:
-            pass
+                self.appConnected = True
+            except Exception as e:
+                self.logger.error('connectApplicat-> error: {0}'.format(e))
+            finally:
+                pass
 
     def disconnectApplication(self):
         try:
-            self.maximCamera.Quit()
-            # self.maximCamera.LinkEnabled = False
+            self.maximCamera.LinkEnabled = False
         except Exception as e:
             self.logger.error('disconnectAppli-> error: {0}'.format(e))
         finally:
@@ -86,6 +125,15 @@ class MaximDLCamera:
             self.appConnected = False
             self.maximCamera = None
             self.maximDocument = None
+
+    def connectCamera(self):
+        if self.appConnected:
+            self.maximCamera.LinkEnabled = True
+            self.appCameraConnected = True
+
+    def disconnectCamera(self):
+        if self.appConnected:
+            self.appCameraConnected = False
 
     def getImage(self, modelData):
         suc = False
@@ -136,7 +184,13 @@ class MaximDLCamera:
 
     def getCameraStatus(self):
         if self.appConnected:
-            value = self.maximCamera.CameraStatus
+            try:
+                value = 0
+                value = self.maximCamera.CameraStatus
+            except Exception as e:
+                self.logger.error('getCameraStatus-> error: {0}'.format(e))
+            finally:
+                pass
             if value == 2:
                 self.cameraStatus = 'READY'
             elif value == 3:

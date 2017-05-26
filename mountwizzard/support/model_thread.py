@@ -134,6 +134,7 @@ class Model(QtCore.QThread):
             self.app.imagePopup.showStatus = False
             self.app.imagePopup.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is None')
+        self.cpObject.checkAppStatus()
         if self.app.ui.checkAutoStartApp.isChecked():
             self.cpObject.startApplication()
         self.cpObject.connectApplication()
@@ -210,6 +211,12 @@ class Model(QtCore.QThread):
             if self.command == 'CameraPlateChooser':
                 self.command = ''
                 self.cameraPlateChooser()
+            elif self.command == 'ConnectCamera':
+                self.command = ''
+                self.cpObject.connectCamera()
+            elif self.command == 'DisconnectCamera':
+                self.command = ''
+                self.cpObject.disconnectCamera()
             elif self.command == 'LoadBasePoints':
                 self.command = ''
                 self.BasePoints = self.showBasePoints()
@@ -286,7 +293,7 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusFast(self):                                                                                                # check app is running
-        # print(self.cpObject.appAvailable, self.cpObject.appConnected, self.cpObject.appCameraConnected)
+        print(self.cpObject.appAvailable, self.cpObject.appRunning, self.cpObject.appConnected, self.cpObject.appCameraConnected)
         self.cpObject.checkAppStatus()
         if self.cpObject.appAvailable:
             self.signalModelConnected.emit(1)                                                                               # send status to GUI

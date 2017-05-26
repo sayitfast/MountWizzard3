@@ -232,6 +232,8 @@ class MountWizzardApp(MwWidget):
         self.ui.rb_cameraASCOM.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraMaximDL.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraNone.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.btn_appCameraConnect.clicked.connect(lambda: self.model.signalModelCommand.emit('ConnectCamera'))
+        self.ui.btn_appCameraDisconnect.clicked.connect(lambda: self.model.signalModelCommand.emit('DisconnectCamera'))
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))

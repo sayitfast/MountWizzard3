@@ -16,7 +16,10 @@ import logging
 import time
 # packages for handling web interface to SGPro
 from urllib import request
+import socket
 import json
+# windows automation
+from pywinauto import Application, timings, findwindows, application
 
 
 class SGPro:
@@ -35,6 +38,7 @@ class SGPro:
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
+        self.appRunning = False
         self.appConnected = False
         self.appCameraConnected = False
         self.cameraStatus = ''
@@ -54,11 +58,14 @@ class SGPro:
 
     def checkAppStatus(self):
         try:
-            reply = request.urlopen(self.ipSGProBase, None, .5).getcode()
+            reply = request.urlopen(self.ipSGProBase, None, 2).getcode()
+            self.appRunning = True
             self.appConnected = True
         except Exception as e:
-            self.logger.error('checkConnection-> error: {0}'.format(e))
+            self.logger.error('checkAppStatus -> error: {0}'.format(e))
+            self.appRunning = False
             self.appConnected = False
+            self.appCameraConnected = False
         finally:
             if self.appConnected:
                 # noinspection PyUnboundLocalVariable
@@ -76,7 +83,27 @@ class SGPro:
                 self.appCameraConnected = False
 
     def startApplication(self):
-        pass
+        self.appRunning = True
+        try:
+            findwindows.find_window(title_re='^(.*?)(\\bSequence\\b)(.*)$')
+        except findwindows.WindowNotFoundError:
+            self.appRunning = False
+        except Exception as e:
+            self.logger.error('startApplicatio-> error{0}'.format(e))
+        finally:
+            pass
+        if not self.appRunning:
+            try:
+                app = Application(backend='win32')
+                app.start(self.appInstallPath + '\\' + self.appExe)
+                self.logger.error('startApplicatio-> started Sequence Generator Pro')
+                self.appRunning = True
+            except application.AppStartError:
+                self.logger.error('startApplicatio-> error starting application')
+                self.app.messageQueue.put('Failed to start Sequence Generator Pro!')
+                self.appRunning = False
+            finally:
+                pass
 
     def connectCamera(self):
         pass
@@ -85,10 +112,12 @@ class SGPro:
         pass
 
     def connectApplication(self):
-        pass
+        if self.appRunning:
+            self.appConnected = True
 
     def disconnectApplication(self):
-        pass
+        if self.appRunning:
+            self.appConnected = False
 
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['binning'],

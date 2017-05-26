@@ -2,6 +2,8 @@ import logging
 import json
 import socket
 import timeit
+# windows automation
+from pywinauto import Application, timings, findwindows, application
 
 
 class TheSkyX:
@@ -12,6 +14,7 @@ class TheSkyX:
         self.port = 3040
         self.app = app
         self.responseSuccess = '|No error. Error = 0.'
+        self.appRunning = False
         self.appConnected = False
         self.appCameraConnected = False
         self.cameraStatus = ''
@@ -42,8 +45,9 @@ class TheSkyX:
                 self.appCameraConnected = False
             else:
                 self.appCameraConnected = True
-            self.appConnected = True
+            self.appRunning = True
         except Exception as e:
+            self.appRunning = False
             self.appConnected = False
             self.appCameraConnected = False
             self.logger.error('checkAppStatus -> error: {0}'.format(e))
@@ -51,13 +55,35 @@ class TheSkyX:
             pass
 
     def startApplication(self):
-        pass
+        self.appRunning = True
+        try:
+            findwindows.find_window(title_re='^(.*?)(\\bTheSkyX\\b)(.*)$')
+        except findwindows.WindowNotFoundError:
+            self.appRunning = False
+        except Exception as e:
+            self.logger.error('startApplicatio-> error{0}'.format(e))
+        finally:
+            pass
+        if not self.appRunning:
+            try:
+                app = Application(backend='win32')
+                app.start(self.appInstallPath + '\\' + self.appExe)
+                self.appRunning = True
+                self.logger.error('startApplicatio-> started TheSkyX')
+            except application.AppStartError:
+                self.logger.error('startApplicatio-> error starting application')
+                self.app.messageQueue.put('Failed to start TheSkyX!')
+                self.appRunning = False
+            finally:
+                pass
 
     def connectApplication(self):
-        pass
+        if self.appRunning:
+            self.appConnected = True
 
     def disconnectApplication(self):
-        pass
+        if self.appRunning:
+            self.appConnected = False
 
     def connectCamera(self):
         try:

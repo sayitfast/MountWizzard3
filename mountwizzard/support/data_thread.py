@@ -175,14 +175,11 @@ class Data(QtCore.QThread):
         return
 
     def uploadMount(self):
-        if not os.path.isfile(self.app.ui.le_updaterFileName.text()):
-            self.logger.error('uploadMount    -> no updater configured')
-            self.app.messageQueue.put('No Path to Updater configured, please check!')
         try:
             actual_work_dir = os.getcwd()
-            os.chdir(os.path.dirname(self.appInstallPath + '\\' + self.appExe))
+            os.chdir(os.path.dirname(self.appInstallPath))
             app = Application(backend='win32')                                                                              # backend win32 ist faster than uai
-            app.start(self.app.ui.le_updaterFileName.text())                                                                # start 10 micro updater
+            app.start(self.appInstallPath + '\\' + self.appExe)                                                                # start 10 micro updater
             timings.Timings.Slow()
         except application.AppStartError:
             self.logger.error('uploadMount    -> error starting application')

@@ -24,6 +24,7 @@ class NoneCamera:
 
     def __init__(self, app):
         self.app = app
+        self.appRunning = False
         self.appConnected = False
         self.appCameraConnected = False
         self.cameraStatus = ''
@@ -37,8 +38,12 @@ class NoneCamera:
         self.appAvailable = False
 
     def checkAppStatus(self):
+        self.appRunning = False
         self.appConnected = False
         self.appCameraConnected = False
+
+    def startApplication(self):
+        pass
 
     def connectApplication(self):
         pass
