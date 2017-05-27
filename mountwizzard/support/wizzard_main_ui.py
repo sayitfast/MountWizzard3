@@ -3720,7 +3720,7 @@ class Ui_WizzardMainDialog(object):
         self.btn_unihedronConnected.setObjectName("btn_unihedronConnected")
 
         self.retranslateUi(WizzardMainDialog)
-        self.mainTabWidget.setCurrentIndex(5)
+        self.mainTabWidget.setCurrentIndex(0)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(WizzardMainDialog)
         WizzardMainDialog.setTabOrder(self.btn_shutdownQuit, self.btn_mountSave)

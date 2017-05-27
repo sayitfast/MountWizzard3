@@ -47,9 +47,8 @@ class MaximDLCamera:
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
             self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
-            self.app.ui.rb_cameraMaximDL.setCheckable(False)
-            self.app.ui.rb_cameraMaximDL.setVisible(False)
         else:
+            self.app.ui.rb_cameraMaximDL.setVisible(False)
             self.app.ui.rb_cameraMaximDL.setCheckable(False)
             self.logger.error('checkApplicatio-> Application MaxIm DL not found on computer')
 

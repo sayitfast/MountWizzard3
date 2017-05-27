@@ -392,6 +392,10 @@ class MountWizzardApp(MwWidget):
                 self.ui.rb_cameraNone.setChecked(self.config['CameraNone'])
             if 'CameraBin' in self.config:
                 self.ui.cameraBin.setValue(self.config['CameraBin'])
+            if 'CheckAutoStartApp' in self.config:
+                self.ui.checkAutoStartApp.setChecked(self.config['CheckAutoStartApp'])
+            if 'CheckAutoConnectCamera' in self.config:
+                self.ui.checkAutoConnectCamera.setChecked(self.config['CheckAutoConnectCamera'])
             if 'CameraExposure' in self.config:
                 self.ui.cameraExposure.setValue(self.config['CameraExposure'])
             if 'ISOSetting' in self.config:
@@ -503,6 +507,8 @@ class MountWizzardApp(MwWidget):
         self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
         self.config['CameraMaximDL'] = self.ui.rb_cameraMaximDL.isChecked()
         self.config['CameraNone'] = self.ui.rb_cameraNone.isChecked()
+        self.config['CheckAutoStartApp'] = self.ui.checkAutoStartApp.isChecked()
+        self.config['CheckAutoConnectCamera'] = self.ui.checkAutoConnectCamera.isChecked()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
