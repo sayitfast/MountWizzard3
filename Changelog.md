@@ -1,4 +1,8 @@
 # Changelog
+2.3.7
+- robustness against older firmware variants
+- horizon mask and minimum setting could now be used additionally
+
 2.3.6
 - refactoring get alignment data
 - changed text for output startup

@@ -369,13 +369,10 @@ class Model(QtCore.QThread):
 
     def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
         self.horizonPoints = []                                                                                             # clear horizon variable
-        if self.app.ui.checkUseMinimumHorizonLine.isChecked():
-            minAlt = int(float(self.app.ui.altitudeMinimumHorizon.value()))
-            hp = ((0, minAlt), (359, minAlt))
-        else:
+        hp = []                                                                                                             # clear cache
+        if self.app.ui.checkUseFileHorizonLine.isChecked():
             if horizonPointsFileName == '':
                 return
-            hp = []                                                                                                         # clear cache
             if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName):
                 self.app.messageQueue.put('Horizon points file does not exist !')                                           # show on GUI
                 self.logger.error('loadHorizonPoints -> horizon points file does not exist !')                              # write to logger
@@ -392,6 +389,10 @@ class Model(QtCore.QThread):
                     self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                   # write to logger
                     return                                                                                                  # stop routine
             hp = sorted(hp, key=itemgetter(0))                                                                              # list should be sorted, but I do it for security anyway
+        if self.app.ui.checkUseMinimumHorizonLine.isChecked():
+            minAlt = int(float(self.app.ui.altitudeMinimumHorizon.value()))
+            if len(hp) == 0:                                                                                                # there is no file loaded
+                hp = ((0, minAlt), (359, minAlt))
         az_last = 0                                                                                                         # starting azimuth
         alt_last = 0                                                                                                        # starting altitude
         for i in range(0, len(hp)):                                                                                         # run through all points an link them via line
@@ -400,7 +401,10 @@ class Model(QtCore.QThread):
             if az_act > az_last:                                                                                            # if act az is greater than last on, we have to draw a line
                 incline = (alt_act - alt_last) / (az_act - az_last)                                                         # calculation the line incline
                 for j in range(az_last, az_act):                                                                            # run through the space, where no points are given in the file
-                    point = (j, int(alt_last + incline * (j - az_last)))                                                    # calculation value of next point
+                    if self.app.ui.checkUseMinimumHorizonLine.isChecked():
+                        point = (j, max(int(alt_last + incline * (j - az_last)), minAlt))                                    # calculation value of next point
+                    else:
+                        point = (j, int(alt_last + incline * (j - az_last)))
                     self.horizonPoints.append(point)                                                                        # add the interpolated point to list
             else:                                                                                                           # otherwise no interpolation
                 self.horizonPoints.append(hp[i])                                                                            # add the point to list, no interpolation needed

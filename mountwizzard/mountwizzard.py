@@ -56,9 +56,6 @@ import math
 # application handling
 from winreg import *
 import platform
-# windows automation
-from pywinauto import Application, timings, findwindows, application
-from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
 class ShowModel(FigureCanvas):
@@ -178,6 +175,7 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.model.signalModelCommand.emit('ClearAlignmentModel'))
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
+        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
@@ -378,6 +376,8 @@ class MountWizzardApp(MwWidget):
                 self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
             if 'CheckUseMinimumHorizonLine' in self.config:
                 self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
+            if 'CheckUseFileHorizonLine' in self.config:
+                self.ui.checkUseFileHorizonLine.setChecked(self.config['CheckUseFileHorizonLine'])
             if 'AltitudeMinimumHorizon' in self.config:
                 self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
             if 'CameraTSX' in self.config:
@@ -501,6 +501,7 @@ class MountWizzardApp(MwWidget):
         self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
         self.config['HorizonPointsFileName'] = self.ui.le_horizonPointsFileName.text()
         self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
+        self.config['CheckUseFileHorizonLine'] = self.ui.checkUseFileHorizonLine.isChecked()
         self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
         self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
         self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
@@ -969,7 +970,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.6'
+    BUILD_NO = '2.3.7'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

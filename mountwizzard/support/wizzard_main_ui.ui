@@ -7873,24 +7873,6 @@
         <double>1.000000000000000</double>
        </property>
       </widget>
-      <widget class="QLabel" name="label_36">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>340</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Horizon Points File</string>
-       </property>
-      </widget>
       <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
        <property name="geometry">
         <rect>
@@ -7980,7 +7962,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>290</y>
+         <y>280</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -7998,7 +7980,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>310</y>
+         <y>300</y>
          <width>291</width>
          <height>21</height>
         </rect>
@@ -8031,7 +8013,7 @@
        <property name="geometry">
         <rect>
          <x>320</x>
-         <y>310</y>
+         <y>300</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -8051,9 +8033,9 @@
       <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
        <property name="geometry">
         <rect>
-         <x>40</x>
+         <x>20</x>
          <y>390</y>
-         <width>171</width>
+         <width>211</width>
          <height>21</height>
         </rect>
        </property>
@@ -8066,7 +8048,7 @@
         <string>Use Highspeed download of CCD camera if availabe</string>
        </property>
        <property name="text">
-        <string>Altitude as Horizon Line</string>
+        <string>Use Minumum Altitude as Horizon Line</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -8097,7 +8079,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>260</y>
+         <y>250</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -8115,7 +8097,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>270</y>
+         <y>260</y>
          <width>351</width>
          <height>21</height>
         </rect>
@@ -8241,6 +8223,30 @@
        </property>
        <property name="text">
         <string>Start App</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkUseFileHorizonLine">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>340</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Use Highspeed download of CCD camera if availabe</string>
+       </property>
+       <property name="text">
+        <string>Use Horizon File</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>

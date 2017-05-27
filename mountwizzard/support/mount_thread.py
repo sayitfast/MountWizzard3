@@ -339,47 +339,51 @@ class Mount(QtCore.QThread):
         return int(self.mountHandler.sendCommand('getalst'))                                                                # if there are some points, a model must be there
 
     def getAlignmentModelStatus(self, alignModel):
-        reply = self.mountHandler.sendCommand('getain')                                                                     # load the data from new command
-        if reply:                                                                                                           # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
-            if reply != 'E':                                                                                                # if a single 'E' returns, there is a problem, not further parameter will follow
-                a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
-                if a1 != 'E':                                                                                                   # 'E' could be sent if not calculable or no value available
-                    alignModel['azimuth'] = float(a1)
-                else:
-                    alignModel['azimuth'] = 0
-                if a2 != 'E':
-                    alignModel['altitude'] = float(a2)
-                else:
-                    alignModel['altitude'] = 0
-                if a3 != 'E':
-                    alignModel['polarError'] = float(a3)
-                else:
-                    alignModel['polarError'] = 0
-                if a4 != 'E':
-                    alignModel['posAngle'] = float(a4)
-                else:
-                    alignModel['posAngle'] = 0
-                if a5 != 'E':
-                    alignModel['orthoError'] = float(a5)
-                else:
-                    alignModel['orthoError'] = 0
-                if a6 != 'E':
-                    alignModel['azimuthKnobs'] = float(a6)
-                else:
-                    alignModel['azimuthKnobs'] = 0
-                if a7 != 'E':
-                    alignModel['altitudeKnobs'] = float(a7)
-                else:
-                    alignModel['altitudeKnobs'] = 0
-                if a8 != 'E':
-                    alignModel['terms'] = int(float(a8))
-                else:
-                    alignModel['terms'] = 0
-                if a9 != 'E':
-                    alignModel['RMS'] = float(a9)
-                else:
-                    alignModel['RMS'] = 0
-        return alignModel
+        try:
+            reply = self.mountHandler.sendCommand('getain')                                                                     # load the data from new command
+            if reply:                                                                                                           # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
+                if reply != 'E':                                                                                                # if a single 'E' returns, there is a problem, not further parameter will follow
+                    a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
+                    if a1 != 'E':                                                                                                   # 'E' could be sent if not calculable or no value available
+                        alignModel['azimuth'] = float(a1)
+                    else:
+                        alignModel['azimuth'] = 0
+                    if a2 != 'E':
+                        alignModel['altitude'] = float(a2)
+                    else:
+                        alignModel['altitude'] = 0
+                    if a3 != 'E':
+                        alignModel['polarError'] = float(a3)
+                    else:
+                        alignModel['polarError'] = 0
+                    if a4 != 'E':
+                        alignModel['posAngle'] = float(a4)
+                    else:
+                        alignModel['posAngle'] = 0
+                    if a5 != 'E':
+                        alignModel['orthoError'] = float(a5)
+                    else:
+                        alignModel['orthoError'] = 0
+                    if a6 != 'E':
+                        alignModel['azimuthKnobs'] = float(a6)
+                    else:
+                        alignModel['azimuthKnobs'] = 0
+                    if a7 != 'E':
+                        alignModel['altitudeKnobs'] = float(a7)
+                    else:
+                        alignModel['altitudeKnobs'] = 0
+                    if a8 != 'E':
+                        alignModel['terms'] = int(float(a8))
+                    else:
+                        alignModel['terms'] = 0
+                    if a9 != 'E':
+                        alignModel['RMS'] = float(a9)
+                    else:
+                        alignModel['RMS'] = 0
+        except Exception as e:
+            self.logger.error('getAlignmentMod-> receive error getain command: {0}'.format(e))
+        finally:
+            return alignModel
 
     def getAlignmentModel(self):                                                                                            # download alignment model from mount
         alignModel = {}                                                                                                     # clear alignmentdata
@@ -657,7 +661,7 @@ class Mount(QtCore.QThread):
                     self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
                 self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
             except Exception as e:
-                self.logger.error('getStatusFast  -> receive error: {0}'.format(e))
+                self.logger.error('getStatusFast  -> receive error Ginfo command: {0}'.format(e))
             finally:
                 pass
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
@@ -702,7 +706,7 @@ class Mount(QtCore.QThread):
                 self.app.mountDataQueue.put({'Name': 'GetUTCDataValid', 'Value': valid})
                 self.app.mountDataQueue.put({'Name': 'GetUTCDataExpirationDate', 'Value': expirationDate})
         except Exception as e:
-            self.logger.error('getStatusSlow  -> receive error: {0}'.format(e))
+            self.logger.error('getStatusSlow  -> receive error GDUTV command: {0}'.format(e))
         finally:
             pass
 
