@@ -4434,7 +4434,7 @@ class Ui_WizzardMainDialog(object):
         self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.tab_9), _translate("WizzardMainDialog", "MW"))
         self.btn_shutdownQuit.setToolTip(_translate("WizzardMainDialog", "Send shutdown command to the mount and quit the tool"))
         self.btn_shutdownQuit.setText(_translate("WizzardMainDialog", "Shutdown / Quit"))
-        self.windowTitle.setText(_translate("WizzardMainDialog", "MountWizzard 2.3"))
+        self.windowTitle.setText(_translate("WizzardMainDialog", "MountWizzard 2.3 beta"))
         self.btn_mountQuit.setToolTip(_translate("WizzardMainDialog", "Quits the tool and saves the settings data in config.cfg"))
         self.btn_mountQuit.setText(_translate("WizzardMainDialog", "Save / Quit"))
         self.errorStatus.setToolTip(_translate("WizzardMainDialog", "Error Messages from Tool"))
