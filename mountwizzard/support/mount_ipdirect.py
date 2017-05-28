@@ -91,14 +91,16 @@ class MountIpDirect:
             while True:
                 chunk = self.socket.recv(1024)
                 if chunk == b'':
-                    raise RuntimeError("Socket connection broken")
+                    raise RuntimeError('Socket connection broken')
                 chunk = chunk.decode()
                 chunks.append(chunk)
                 if chunk[len(chunk)-1] == '#' or len(chunk) == 1:                                                           # for some reasons there are existing command return values not ended with '#'
                     break
+        except RuntimeError as e:  # error handling
+            self.logger.error('commandString  -> Socket connection broken')
+            self.disconnect()  # connection broken
         except Exception as e:                                                                                              # error handling
-            self.logger.error('commandBlind   -> Socket receive error: {0}'.format(e))                                      # to logger
-            self.disconnect()                                                                                               # connection broken
+            self.logger.error('commandString  -> Socket receive error: {0}'.format(e))                                      # to logger
         finally:                                                                                                            # we don't stop, but try it again
             # noinspection PyUnboundLocalVariable
             value = ''.join(chunks)
@@ -116,7 +118,6 @@ class MountIpDirect:
             except Exception as e:                                                                                          # error handling
                 self.app.messageQueue.put('TCP error in sendCommand')                                                       # gui
                 self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger
-                self.connected = False                                                                                      # in case of error, the connection might be broken
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
                     value = reply.rstrip('#').strip()                                                                       # return the value

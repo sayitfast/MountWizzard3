@@ -4,7 +4,7 @@
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017
 
-#### Version release: 2.2 --- beta release : 2.3.7
+#### Version release: 2.2 --- beta release : 2.3.8
 
 ## Features:
 - Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.
@@ -32,22 +32,23 @@ by calling the ASCOM chooser for dome an in the selection window upcoming just p
 driver.
 
 ### There were some videos for installation and first use out:
+The Application could be found under /dist on github.
 
-Installation of MountWizzard, directories:
+Installation of MountWizzard, directories: https://www.youtube.com/watch?v=GX0H6ddq0KM
 
-Update to new version:
+Update to new version: https://www.youtube.com/watch?v=KduOp2mn0N8
 
 Make a new mount model:
 
 Imaging with SGPro:
 
-Make model along DSO path:
+Make model along DSO path: https://www.youtube.com/watch?v=KhVvuXzNezE
 
 Direct Mount Connection via IP: https://youtu.be/JmdhXn4ZDlE
 
 Download Orbital Elements and UTC Data for mount update: https://youtu.be/U4dty-PMXLo
 
-First Use: https://youtu.be/JMAfZoq8rBI
+Another First Use Video: https://youtu.be/JMAfZoq8rBI
 
 If you have any hints / bugs / feature requests, please let me know. Right location is 10micron forum under
 the software section: http://www.10micron.eu/forum/viewforum.php?f=18&sid=ae4c89d5d18adb85c3e9d32c26fba2f4
@@ -62,19 +63,19 @@ to the forum. This would help me a lot.
 MW runs also with ASCOM 6.2 and 6.3 and is tested with both. If you would like to test in simulation,
 please choose the camera V2 simulator and the .NET versions fo telescope and dome simulator. Some older stuff won't work properly.
 
-### DSLR
-Actually the SGPro API had some problems with DSLR Cam's. As I don't own a DSLR for imaging, there is
-hardly any chance to test it in detail. With the current betas, there should be an improvement if not
-finally fixes all issues.
-
 ### ASCOM framework
 If you didn't already install the ASCOM Framework on you computer for astronomy use, please do so now.
 You will find the download at:
 <pre>http://ascom-standards.org</pre>
 The actual version is 6.3. Please download it and install the package on your computer.
 
+### DSLR
+Actually the SGPro API had some problems with DSLR Cam's. As I don't own a DSLR for imaging, there is
+hardly any chance to test it in detail. With the current betas, there should be an improvement if not
+finally fixes all issues.
+
 ### Finally
 The use this software is at your own risk! No responsibility for damages to your mount or other equipment or your
 environment. Please take care yourself !
 
-Hope this makes fun and helps you for your hobby, CS Michel
+Hope this makes fun and helps for your hobby, CS Michel

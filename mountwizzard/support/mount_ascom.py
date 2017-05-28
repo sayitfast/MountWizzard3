@@ -72,8 +72,7 @@ class MountAscom:
                     reply = self.ascom.CommandString(command)                                                               # with return value do regular command
             except pythoncom.com_error as e:                                                                                # error handling
                 self.app.messageQueue.put('Driver COM Error in sendCommand')                                                # gui
-                self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger
-                self.connected = False                                                                                      # in case of error, the connection might be broken
+                self.logger.error('sendCommand    -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger                                                                                 # in case of error, the connection might be broken
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
                     value = reply.rstrip('#').strip()                                                                       # return the value

@@ -1,4 +1,7 @@
 # Changelog
+2.3.8
+- added more robustness in mount connection due to timeouts of non known commands
+
 2.3.7
 - robustness against older firmware variants
 - horizon mask and minimum setting could now be used additionally
