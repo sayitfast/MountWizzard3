@@ -4,7 +4,7 @@
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017
 
-#### Version release: 2.2 --- beta release : 2.3.8
+#### Version release: 2.2 --- Version beta: 2.3.8
 
 ## Features:
 - Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.
@@ -38,9 +38,9 @@ New! Installation of MountWizzard, directories: https://www.youtube.com/watch?v=
 
 New! Update to new version: https://www.youtube.com/watch?v=KduOp2mn0N8
 
-Make a new mount model:
+New! Make a new mount model: https://www.youtube.com/watch?v=nCQLErKP-yo
 
-Imaging with SGPro:
+New! Imaging with SGPro: https://www.youtube.com/watch?v=9mA4qxPaE-8
 
 New !Make model along DSO path: https://www.youtube.com/watch?v=KhVvuXzNezE
 
