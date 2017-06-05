@@ -103,8 +103,10 @@ class Stick(QtCore.QThread):
             data['Humidity'] = self.ascom.Humidity                                                                              # target should be queue
             data['Pressure'] = self.ascom.Pressure
             self.signalStickData.emit(data)                                                                                     # sending the data via signal
+            if self.ascom.DewPoint == 0 and self.ascom.Humidity == 0:
+                self.logger.error('getStatusMedium-> error accessing stick, driver {0} status:{1}'.format(self.ascom, self.ascom.connected))
         except Exception as e:
-            self.logger.error('getStatusMedium-> error accessing stick ascom data: {}'.format(e))
+            self.logger.error('getStatusMedium-> error accessing stick ascom data: {0}'.format(e))
 
     def getStatusSlow(self):
         pass
@@ -123,7 +125,7 @@ class Stick(QtCore.QThread):
             else:
                 self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
-            self.app.messageQueue.put('Driver Exception in setupStick')                                                      # write to gui
+            self.app.messageQueue.put('Driver Exception in setupStick')                                                     # write to gui
             self.logger.error('setupDriverStick-> general exception:{0}'.format(e))                                         # write to log
             if self.driverName == '':
                 self.connected = 2

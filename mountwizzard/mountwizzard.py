@@ -78,7 +78,7 @@ class MountWizzardApp(MwWidget):
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
         self.initUI()                                                                                                       # adapt the window to our purpose
-        self.ui.build.setText(BUILD_NO)
+        self.ui.windowTitle.setText('MountWizzard ' + BUILD_NO)
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
@@ -970,7 +970,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.8'
+    BUILD_NO = '2.3.8 beta'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

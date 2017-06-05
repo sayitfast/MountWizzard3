@@ -7309,7 +7309,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Camera / Plate Solver Chooser</string>
+        <string>Camera / Plate Solver Application</string>
        </property>
       </widget>
       <widget class="QCheckBox" name="checkFastDownload">
@@ -10473,318 +10473,796 @@
        </property>
       </widget>
      </widget>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab">
-    <attribute name="title">
-     <string>Version</string>
-    </attribute>
-    <widget class="QLabel" name="firmwareProductName_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>170</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>HW Version:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_firmwareTime">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>140</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Firmware Time</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_hardwareVersion">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>170</y>
-       <width>201</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Hardware Version</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_firmwareProductName">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>50</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Product Number</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="firmwareProductName_5">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>140</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>FW Time:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="firmwareProductName_4">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>110</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>FW Date:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_firmwareNumber">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>80</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Firmware Number</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="firmwareProductName_2">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Product:</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_firmwareDate">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>110</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Firmware Date</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="firmwareProductName_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>101</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Firmware:</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_6">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>331</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_56">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Product Versions</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="firmwareProductName_7">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>250</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Working directory of MountWizzard is actually: </string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_mwWorkingDir">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>270</y>
-       <width>741</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Here the actually used working directory is shown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Diectory Name</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="le_firmwareProductName_2">
-     <property name="geometry">
-      <rect>
-       <x>410</x>
-       <y>450</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Mount Wizzard 2 (C) MWORION build</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="build">
-     <property name="geometry">
-      <rect>
-       <x>690</x>
-       <y>450</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>2.0.7</string>
-     </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string>Relay</string>
+      </attribute>
+      <widget class="QLineEdit" name="le_relay2Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>80</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 2</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_101">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>110</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 3    Text</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay5Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>170</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 3</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_103">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Relay Button Text Setup</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay3Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>110</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 3</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_36">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>50</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 1    Text</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay4Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>140</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 4</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_148">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>170</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 5    Text</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_22">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>371</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay6Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>200</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 4</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_150">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>140</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 4    Text</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay1Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>50</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 1</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_161">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>200</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 6    Text</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_162">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 2    Text</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay8Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>260</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 4</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relay7Text">
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>230</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 3</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>xxx</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_191">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>230</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 7    Text</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_192">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>260</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Button 8    Text</string>
+       </property>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tab_11">
+      <attribute name="title">
+       <string>Versions</string>
+      </attribute>
+      <widget class="QLabel" name="le_firmwareTime">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>140</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Firmware Time</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="firmwareProductName_7">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>250</y>
+         <width>271</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Working directory of MountWizzard is actually: </string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareProductName">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>50</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Product Number</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareDate">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>110</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Firmware Date</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="firmwareProductName_2">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>50</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Product:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareProductName_2">
+       <property name="geometry">
+        <rect>
+         <x>420</x>
+         <y>400</y>
+         <width>301</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>MountWizzard 2 (C) 2016, 2017 MWORION</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="firmwareProductName_6">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>170</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>HW Version:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_56">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Product Versions</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_hardwareVersion">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>170</y>
+         <width>201</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Hardware Version</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_firmwareNumber">
+       <property name="geometry">
+        <rect>
+         <x>130</x>
+         <y>80</y>
+         <width>191</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Firmware Number</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_6">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>331</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="le_mwWorkingDir">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>270</y>
+         <width>701</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Here the actually used working directory is shown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Diectory Name</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="firmwareProductName_4">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>110</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>FW Date:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="firmwareProductName_5">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>140</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>FW Time:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="firmwareProductName_3">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>101</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Firmware:</string>
+       </property>
+      </widget>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_9">
     <attribute name="title">
-     <string>MW</string>
+     <string>Relay Functions</string>
     </attribute>
     <widget class="Line" name="line_31">
      <property name="geometry">
@@ -10912,7 +11390,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>MountWizzard 2.3 beta</string>
+    <string>MountWizzard</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -10944,7 +11422,7 @@
     <rect>
      <x>370</x>
      <y>60</y>
-     <width>401</width>
+     <width>411</width>
      <height>81</height>
     </rect>
    </property>
@@ -10995,9 +11473,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_selectClose">
    <property name="geometry">
     <rect>
-     <x>750</x>
+     <x>760</x>
      <y>0</y>
-     <width>41</width>
+     <width>31</width>
      <height>31</height>
     </rect>
    </property>
