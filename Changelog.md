@@ -1,4 +1,8 @@
 # Changelog
+2.3.9
+- optimized GUI
+- improved error handling and logging for stickstation
+
 2.3.8
 - added more robustness in mount connection due to timeouts of non known commands
 
