@@ -970,14 +970,14 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.8 beta'
+    BUILD_NO = '2.3.9 beta'
 
-    warnings.filterwarnings("ignore")
-    name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
-    handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
+    warnings.filterwarnings("ignore")                                                                                       # get output from console
+    name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
+    handler = logging.handlers.RotatingFileHandler(name, backupCount=3)                                                     # define log handler
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s [%(threadName)15s] - %(message)s',
-                        handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
+                        handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')                                                    # define log format
 
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
@@ -986,12 +986,12 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
 
-    logging.error('-----------------------------------------')                                                               # start message logger
-    logging.error('MountWizzard v ' + BUILD_NO + ' started !')                                                                # start message logger
-    logging.error('-----------------------------------------')                                                               # start message logger
+    logging.error('-----------------------------------------')                                                              # start message logger
+    logging.error('MountWizzard v ' + BUILD_NO + ' started !')                                                              # start message logger
+    logging.error('-----------------------------------------')                                                              # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
 
-    QApplication.setAttribute(Qt.AA_Use96Dpi)
+    QApplication.setAttribute(Qt.AA_Use96Dpi)                                                                               # try to overcome windows, seems not to work
     app = QApplication(sys.argv)                                                                                            # built application
 
     sys.excepthook = except_hook                                                                                            # manage except hooks for logging
