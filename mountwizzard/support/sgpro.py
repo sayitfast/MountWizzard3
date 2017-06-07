@@ -185,7 +185,11 @@ class SGPro:
         return self.SgGetCameraProps()
 
     def getCameraStatus(self):
-        self.cameraStatus = self.SgGetDeviceStatus('Camera')
+        suc, mes = self.SgGetDeviceStatus('Camera')
+        if suc:
+            self.cameraStatus = mes
+        else:
+            self.cameraStatus = 'Error'
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

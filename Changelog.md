@@ -1,4 +1,7 @@
 # Changelog
+2.3.10
+- bugfix for camera status
+
 2.3.9
 - optimized GUI
 - improved error handling and logging for stickstation
