@@ -74,7 +74,10 @@ class Stick(QtCore.QThread):
                         self.ascom = Dispatch(self.driverName)                                                              # load driver
                         self.ascom.connected = True
                         self.connected = 1                                                                                  # set status to connected
-                        self.logger.debug('run            -> driver chosen:{0}'.format(self.driverName))
+                        self.logger.debug('run Stick      -> driver chosen:{0}'.format(self.driverName))
+                except AttributeError as e:
+                    if self.driverName != '':
+                        self.logger.error('run Stick      -> stick physically not connected {0}'.format(e))                 # write to logger
                 except Exception as e:                                                                                      # if general exception
                     if self.driverName != '':
                         self.logger.error('run Stick      -> general exception: {0}'.format(e))                             # write to logger
@@ -105,8 +108,13 @@ class Stick(QtCore.QThread):
             self.signalStickData.emit(data)                                                                                     # sending the data via signal
             if self.ascom.DewPoint == 0 and self.ascom.Humidity == 0:
                 self.logger.error('getStatusMedium-> error accessing stick, driver {0} status:{1}'.format(self.ascom, self.ascom.connected))
+                self.connected = 0
+            if self.ascom.TimeSinceLastUpdate('DewPoint') > 20:
+                self.logger.error('getStatusMedium-> stick hardware connection lost')
+                self.connected = 0
         except Exception as e:
             self.logger.error('getStatusMedium-> error accessing stick ascom data: {0}'.format(e))
+            self.connected = 0
 
     def getStatusSlow(self):
         pass
