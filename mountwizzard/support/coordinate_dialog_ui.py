@@ -163,7 +163,7 @@ class Ui_CoordinateDialog(object):
 
     def retranslateUi(self, CoordinateDialog):
         _translate = QtCore.QCoreApplication.translate
-        CoordinateDialog.setWindowTitle(_translate("CoordinateDialog", "Form"))
+        CoordinateDialog.setWindowTitle(_translate("CoordinateDialog", "Modeling Plot Window"))
         self.windowTitle.setText(_translate("CoordinateDialog", "Modeling Plot Window"))
         self.btn_selectClose.setToolTip(_translate("CoordinateDialog", "Sets dual tracking on / off"))
         self.btn_selectClose.setText(_translate("CoordinateDialog", "X"))

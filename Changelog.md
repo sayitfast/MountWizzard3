@@ -1,4 +1,7 @@
 # Changelog
+2.3.11
+- support for MaximDL
+
 2.3.10
 - bugfix for camera status
 

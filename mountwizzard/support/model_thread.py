@@ -572,7 +572,7 @@ class Model(QtCore.QThread):
         self.logger.debug('plateSolveSync -> suc:{0} mes:{1}'.format(suc, mes))
         if suc:
             self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
-            suc, mes, modelData = self.solveImage('Base', modelData, simulation)
+            suc, mes, modelData = self.solveImage(modelData, simulation)
             self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))
             if suc:
                 suc = self.syncMountModel(modelData['ra_sol_Jnow'], modelData['dec_sol_Jnow'])
@@ -840,7 +840,7 @@ class Model(QtCore.QThread):
         modelData['modelError'] = math.sqrt(modelData['raError'] * modelData['raError'] + modelData['decError'] * modelData['decError'])
         return modelData
 
-    def solveImage(self, modeltype, modelData, simulation):                                                                 # solving image based on information inside the FITS files, no additional info
+    def solveImage(self, modelData, simulation):                                                                            # solving image based on information inside the FITS files, no additional info
         modelData['usefitsheaders'] = True
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
@@ -983,7 +983,7 @@ class Model(QtCore.QThread):
                 self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
                 if suc:                                                                                                     # if a picture could be taken
                     self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
-                    suc, mes, modelData = self.solveImage(modeltype, modelData, simulation)                                 # solve the position and returning the values
+                    suc, mes, modelData = self.solveImage(modelData, simulation)                                            # solve the position and returning the values
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['imagepath']))     # Gui output
                     if suc:                                                                                                 # solved data is there, we can sync
                         if modeltype in ['Base', 'Refinement', 'All']:                                                      #

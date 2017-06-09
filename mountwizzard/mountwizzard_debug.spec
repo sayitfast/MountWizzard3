@@ -2,6 +2,8 @@
 
 block_cipher = None
 
+import sys
+sys.modules['FixTk'] = None
 
 a = Analysis(['mountwizzard.py'],
              pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\mountwizzard\\mountwizzard'],
@@ -10,7 +12,7 @@ a = Analysis(['mountwizzard.py'],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
-             excludes=[],
+             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)

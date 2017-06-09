@@ -110,6 +110,7 @@ class MaximDLCamera:
                     self.maximCamera = Dispatch(self.driverNameCamera)
                 if not self.maximDocument:
                     self.maximDocument = Dispatch(self.driverNameDocument)
+                    pass
                 self.maximCamera.LinkEnabled = True
                 self.appConnected = True
             except Exception as e:
@@ -207,28 +208,34 @@ class MaximDLCamera:
             self.cameraStatus = 'NOT CONNECTED'
 
     def solveImage(self, modelData):
-        start = time.time()                                                                                                 # start timer for plate solve
+        startTime = time.time()                                                                                                 # start timer for plate solve
         self.maximDocument.OpenFile(modelData['imagepath'].replace('/', '\\'))                                              # open the fits file
         ra = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')                               # get ra
         dec = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')                             # get dec
         hint = self.maximDocument.GetFITSKey('CDELT1')                                                                      # get scale hint
-        print(ra, dec, hint)
         self.maximDocument.PinPointSolve(ra, dec, hint, hint)                                                               # start solving with FITS Header data
-        while self.maximDocument.PinPointStatus == 3:                                                                       # means solving
-            time.sleep(0.1)
-        stat = self.maximDocument.PinPointStatus
-        if stat == 1:
-            self.logger.warning('MAX-solveImage -> no start {0}'.format(stat))                                               # debug output
+        while True:
+            try:
+                status = self.maximDocument.PinPointStatus
+                if status != 3:                                                                                             # 3 means solving
+                    break
+            except Exception as e:
+                print(e)
+            finally:
+                pass
+            time.sleep(0.25)
+        if status == 1:
+            self.logger.warning('MAX-solveImage -> no start {0}'.format(status))                                            # debug output
             self.maximDocument.Close()
-            return False, stat, modelData
-        stop = time.time()
-        timeTS = (stop - start) / 1000
-        if stat == 2:
+            return False, 'Solve Failed', modelData
+        stopTime = time.time()
+        timeTS = (stopTime - startTime) / 1000
+        if status == 2:
             modelData['dec_sol'] = self.maximDocument.CenterDec
             modelData['ra_sol'] = self.maximDocument.CenterRA
             modelData['scale'] = self.maximDocument.ImageScale
             modelData['angle'] = self.maximDocument.PositionAngle
             modelData['timeTS'] = timeTS
             self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
-            self.maximDocument.Close()
+            # self.maximDocument.Close()
             return True, 'OK', modelData

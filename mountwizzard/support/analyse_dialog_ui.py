@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'analyse_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.7.1
+# Created by: PyQt5 UI code generator 5.8.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -182,7 +182,7 @@ class Ui_AnalyseDialog(object):
 
     def retranslateUi(self, AnalyseDialog):
         _translate = QtCore.QCoreApplication.translate
-        AnalyseDialog.setWindowTitle(_translate("AnalyseDialog", "Form"))
+        AnalyseDialog.setWindowTitle(_translate("AnalyseDialog", "Analyse Window"))
         self.windowTitle.setText(_translate("AnalyseDialog", "Analyse"))
         self.btn_selectDecError.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Show Dec Error in arc sec from modeling file</p></body></html>"))
         self.btn_selectDecError.setText(_translate("AnalyseDialog", "Dec Error"))
