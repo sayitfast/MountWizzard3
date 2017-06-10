@@ -998,11 +998,11 @@ class Model(QtCore.QThread):
                                 self.app.modelLogQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
                                 numCheckPoints += 1                                                                         # increase index for synced stars
                                 results.append(copy.copy(modelData))                                                        # adding point for matrix
+                                p_item.setVisible(False)                                                                    # set the relating modeled point invisible
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
                                 self.logger.error('runModel       -> raE:{0} decE:{1} star could not be added'
                                                   .format(modelData['raError'], modelData['decError']))                     # generating debug output
-                                p_item.setVisible(False)                                                                    # set the relating modeled point invisible
                         self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
                                                    .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
