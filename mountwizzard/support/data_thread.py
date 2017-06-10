@@ -306,7 +306,7 @@ class Data(QtCore.QThread):
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
             os.chdir(actual_work_dir)
             return
-        uploadNecessary = False
+        # uploadNecessary = False
         if uploadNecessary:
             try:
                 win['next'].click()
