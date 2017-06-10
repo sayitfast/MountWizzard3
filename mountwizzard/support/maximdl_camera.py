@@ -208,7 +208,8 @@ class MaximDLCamera:
             self.cameraStatus = 'NOT CONNECTED'
 
     def solveImage(self, modelData):
-        startTime = time.time()                                                                                                 # start timer for plate solve
+        startTime = time.time()                                                                                             # start timer for plate solve
+        mes = 'OK'
         self.maximDocument.OpenFile(modelData['imagepath'].replace('/', '\\'))                                              # open the fits file
         ra = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')                               # get ra
         dec = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')                             # get dec
@@ -219,15 +220,16 @@ class MaximDLCamera:
                 status = self.maximDocument.PinPointStatus
                 if status != 3:                                                                                             # 3 means solving
                     break
-            except Exception as e:
-                print(e)
+            except Exception as e:                                                                                          # the request throws exception for reason of failing plate solve
+                mes = e
+                self.logger.error('solveImage     -> error: {0}'.format(e))
             finally:
                 pass
             time.sleep(0.25)
         if status == 1:
             self.logger.warning('MAX-solveImage -> no start {0}'.format(status))                                            # debug output
             self.maximDocument.Close()
-            return False, 'Solve Failed', modelData
+            return False, mes, modelData
         stopTime = time.time()
         timeTS = (stopTime - startTime) / 1000
         if status == 2:
@@ -236,6 +238,5 @@ class MaximDLCamera:
             modelData['scale'] = self.maximDocument.ImageScale
             modelData['angle'] = self.maximDocument.PositionAngle
             modelData['timeTS'] = timeTS
-            self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
-            # self.maximDocument.Close()
-            return True, 'OK', modelData
+            self.logger.debug('solveImage     -> modelData {0}'.format(modelData))
+            return True, mes, modelData
