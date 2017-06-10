@@ -1,4 +1,7 @@
 # Changelog
+2.3.13
+- bugfix for command :CMS#  sometimes star added, but return value is E# which show star could not be added ??? added logging to clearify this
+
 2.3.12
 - added english support for updater uploads
 - added comets / atseroids filter function
