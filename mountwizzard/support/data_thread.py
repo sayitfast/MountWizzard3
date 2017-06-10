@@ -21,7 +21,6 @@ import urllib.request as urllib2
 # windows automation
 from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
-import locale
 
 
 class Data(QtCore.QThread):
@@ -43,9 +42,7 @@ class Data(QtCore.QThread):
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
-    OPENDIALOG = 'Öffnen'
-    if locale.getdefaultlocale()[0].find('en') != -1:
-        OPENDIALOG = 'Open'
+    OPENDIALOG = 'Dialog'
 
     def __init__(self, app):
         super().__init__()
@@ -309,7 +306,7 @@ class Data(QtCore.QThread):
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
             os.chdir(actual_work_dir)
             return
-        # uploadNecessary = False
+        uploadNecessary = False
         if uploadNecessary:
             try:
                 win['next'].click()
