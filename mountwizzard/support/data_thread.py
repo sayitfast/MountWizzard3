@@ -195,7 +195,7 @@ class Data(QtCore.QThread):
             os.chdir(os.path.dirname(self.appInstallPath))
             app = Application(backend='win32')                                                                              # backend win32 ist faster than uai
             app.start(self.appInstallPath + '\\' + self.appExe)                                                                # start 10 micro updater
-            timings.Timings.Slow()
+            # timings.Timings.Slow()
         except application.AppStartError:
             self.logger.error('uploadMount    -> error starting application')
             self.app.messageQueue.put('Failed to start updater, please check!')
