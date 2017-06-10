@@ -14,25 +14,14 @@
 
 # import basic stuff
 import logging
-import time
-# import .NET / COM Handling
-from win32com.client.dynamic import Dispatch
+from support.mwcamera import MWCamera
 
 
-class NoneCamera:
+class NoneCamera(MWCamera):
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
-        self.app = app
-        self.appRunning = False
-        self.appConnected = False
-        self.appCameraConnected = False
-        self.cameraStatus = ''
-        self.appInstallPath = ''
-        self.appAvailable = False
-        self.appName = ''
-        self.appExe = ''
-        self.checkAppInstall()
+        super(NoneCamera, self).__init__(app)
 
     def checkAppInstall(self):
         self.appAvailable = False
@@ -41,21 +30,6 @@ class NoneCamera:
         self.appRunning = False
         self.appConnected = False
         self.appCameraConnected = False
-
-    def startApplication(self):
-        pass
-
-    def connectApplication(self):
-        pass
-
-    def disconnectApplication(self):
-        pass
-
-    def connectCamera(self):
-        pass
-
-    def disconnectCamera(self):
-        pass
 
     def getImage(self, modelData):
         return False, 'Camera not Connected', modelData

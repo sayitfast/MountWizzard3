@@ -14,19 +14,19 @@
 
 import logging
 import time
+from support.mwcamera import MWCamera
 # packages for handling web interface to SGPro
 from urllib import request
-import socket
 import json
 # windows automation
-from pywinauto import Application, timings, findwindows, application
+from pywinauto import Application, findwindows, application
 
 
-class SGPro:
+class SGPro(MWCamera):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
     def __init__(self, app):
-        self.app = app
+        super(SGPro, self).__init__(app)
         self.ipSGProBase = 'http://localhost:59590'
         self.ipSGPro = 'http://localhost:59590/json/reply/'
         self.captureImagePath = 'SgCaptureImage'
@@ -38,15 +38,7 @@ class SGPro:
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
-        self.appRunning = False
-        self.appConnected = False
-        self.appCameraConnected = False
-        self.cameraStatus = ''
-        self.appInstallPath = ''
-        self.appAvailable = False
-        self.appName = ''
         self.appExe = 'Sequence Generator.exe'
-        self.checkAppInstall()
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('Sequence Generator')

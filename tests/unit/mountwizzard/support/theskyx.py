@@ -1,7 +1,7 @@
 import unittest
 import time
 
-from mountwizzard.support.theskyx import TheSkyX
+from mountwizzard.support.camera_theskyx import TheSkyX
 
 class TheSkyXTestCase(unittest.TestCase):
 

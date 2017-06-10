@@ -38,11 +38,11 @@ from support.coordinate_widget import ShowCoordinatePopup
 from support.image_widget import ShowImagePopup
 from support.analyse import ShowAnalysePopup
 from support.dome_thread import Dome
-from support.weather_thread import Weather
-from support.stick_thread import Stick
+from support.environment_weather_thread import Weather
+from support.environment_stick_thread import Stick
 from support.relays import Relays
 from support.data_thread import Data
-from support.unihedron_thread import Unihedron
+from support.environment_unihedron_thread import Unihedron
 
 # matplotlib
 import matplotlib

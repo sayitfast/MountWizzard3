@@ -32,11 +32,11 @@ from operator import itemgetter
 # for data storing
 from support.analyse import Analyse
 # for handling camera and plate solving interface
-from support.sgpro import SGPro
-from support.theskyx import TheSkyX
-from support.ascom_camera import AscomCamera
-from support.maximdl_camera import MaximDLCamera
-from support.none_camera import NoneCamera
+from support.camera_sgpro import SGPro
+from support.camera_theskyx import TheSkyX
+from support.camera_ascom import AscomCamera
+from support.camera_maximdl import MaximDLCamera
+from support.camera_none import NoneCamera
 import pythoncom
 
 
@@ -875,10 +875,16 @@ class Model(QtCore.QThread):
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
         self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
         self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
+        starNumber = self.app.mount.numberModelStars()
         reply = self.app.mount.mountHandler.sendCommand('CMS')                                                              # send sync command (regardless what driver tells)
+        starAdded = self.app.mount.numberModelStars() - starNumber
         if reply == 'E':                                                                                                    # 'E' says star could not be added
-            self.logger.error('addRefinementSt-> error adding star')
-            return False
+            if starAdded == 1:
+                self.logger.error('addRefinementSt-> star added, but return value was E')
+                return True
+            else:
+                self.logger.error('addRefinementSt-> error adding star')
+                return False
         else:
             self.logger.debug('addRefinementSt-> refinement star added')
             return True                                                                                                     # simulation OK
@@ -994,9 +1000,9 @@ class Model(QtCore.QThread):
                                 results.append(copy.copy(modelData))                                                        # adding point for matrix
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
-                        self.logger.debug('runModel       -> raE:{0} decE:{1} ind:{2}'
-                                          .format(modelData['raError'], modelData['decError'], numCheckPoints))             # generating debug output
-                        p_item.setVisible(False)                                                                            # set the relating modeled point invisible
+                                self.logger.error('runModel       -> raE:{0} decE:{1} star could not be added'
+                                                  .format(modelData['raError'], modelData['decError']))                     # generating debug output
+                                p_item.setVisible(False)                                                                    # set the relating modeled point invisible
                         self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
                                                    .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output

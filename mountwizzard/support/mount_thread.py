@@ -340,11 +340,11 @@ class Mount(QtCore.QThread):
 
     def getAlignmentModelStatus(self, alignModel):
         try:
-            reply = self.mountHandler.sendCommand('getain')                                                                     # load the data from new command
-            if reply:                                                                                                           # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
-                if reply != 'E':                                                                                                # if a single 'E' returns, there is a problem, not further parameter will follow
+            reply = self.mountHandler.sendCommand('getain')                                                                 # load the data from new command
+            if reply:                                                                                                       # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
+                if reply != 'E':                                                                                            # if a single 'E' returns, there is a problem, not further parameter will follow
                     a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
-                    if a1 != 'E':                                                                                                   # 'E' could be sent if not calculable or no value available
+                    if a1 != 'E':                                                                                           # 'E' could be sent if not calculable or no value available
                         alignModel['azimuth'] = float(a1)
                     else:
                         alignModel['azimuth'] = 0

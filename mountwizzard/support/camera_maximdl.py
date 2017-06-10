@@ -15,32 +15,25 @@
 # import basic stuff
 import logging
 import time
-import os
+from support.mwcamera import MWCamera
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 # windows automation
-from pywinauto import Application, timings, findwindows, application
+from pywinauto import Application, findwindows, application
 
 
-class MaximDLCamera:
+class MaximDLCamera(MWCamera):
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
-        self.app = app
-        self.appRunning = False
-        self.appConnected = False
-        self.appCameraConnected = False
+        super(MaximDLCamera, self).__init__(app)
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverNameCamera = 'MaxIm.CCDCamera'                                                                           # driver object name
         self.driverNameDocument = 'MaxIm.Document'                                                                          # driver object name
         self.maximCamera = None                                                                                             # placeholder for ascom driver object
         self.maximDocument = None                                                                                           # placeholder for ascom driver object
         self.cameraStatus = ''
-        self.appInstallPath = ''
-        self.appAvailable = False
-        self.appName = ''
         self.appExe = 'MaxIm_DL.exe'
-        self.checkAppInstall()
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')

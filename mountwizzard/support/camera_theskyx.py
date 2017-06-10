@@ -2,27 +2,20 @@ import logging
 import json
 import socket
 import timeit
+from support.mwcamera import MWCamera
 # windows automation
 from pywinauto import Application, timings, findwindows, application
 
 
-class TheSkyX:
+class TheSkyX(MWCamera):
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
+        super(TheSkyX, self).__init__(app)
         self.host = '127.0.0.1'
         self.port = 3040
-        self.app = app
         self.responseSuccess = '|No error. Error = 0.'
-        self.appRunning = False
-        self.appConnected = False
-        self.appCameraConnected = False
-        self.cameraStatus = ''
-        self.appInstallPath = ''
-        self.appAvailable = False
-        self.appName = ''
         self.appExe = 'TheSkyX.exe'
-        self.checkAppInstall()
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
