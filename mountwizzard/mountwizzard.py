@@ -474,6 +474,10 @@ class MountWizzardApp(MwWidget):
                 self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+            if 'FilterExpressionMPC' in self.config:
+                self.ui.le_filterExpressionMPC.setText(self.config['FilterExpressionMPC'])
+            if 'CheckFilterMPC' in self.config:
+                self.ui.checkFilterMPC.setChecked(self.config['CheckFilterMPC'])
         except Exception as e:
             self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -551,6 +555,8 @@ class MountWizzardApp(MwWidget):
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
         self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
+        self.config['CheckFilterMPC'] = self.ui.checkFilterMPC.isChecked()
+        self.config['FilterExpressionMPC'] = self.ui.le_filterExpressionMPC.text()
 
     def loadConfig(self):
         try:
@@ -970,7 +976,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.11 beta'
+    BUILD_NO = '2.3.12 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

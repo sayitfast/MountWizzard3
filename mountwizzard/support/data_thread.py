@@ -21,6 +21,7 @@ import urllib.request as urllib2
 # windows automation
 from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
+import locale
 
 
 class Data(QtCore.QThread):
@@ -42,6 +43,9 @@ class Data(QtCore.QThread):
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
+    OPENDIALOG = 'Öffnen'
+    if locale.getdefaultlocale()[0].find('en') != -1:
+        OPENDIALOG = 'Open'
 
     def __init__(self, app):
         super().__init__()
@@ -149,6 +153,20 @@ class Data(QtCore.QThread):
     def getStatusOnce(self):
         pass
 
+    def filterFileMPC(self, directory, filename, expression):
+        numberEntry = 0
+        outFile = open(directory + 'filter.mpc', 'w')
+        with open(directory + filename) as inFile:
+            for line in inFile:
+                if line.find(expression) != -1:
+                    outFile.write(line)
+                    numberEntry += 1
+        outFile.close()
+        if numberEntry == 0:
+            return False
+        else:
+            return True
+
     def downloadFile(self, url, filename):
         try:
             u = urllib2.urlopen(url)
@@ -217,11 +235,16 @@ class Data(QtCore.QThread):
                 win['Edit...4'].click()
                 popup = app['Comet orbits']
                 popup['MPC file'].click()
-                filedialog = app['Öffnen']      # TODO: english version ?
-                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.COMETS_FILE)                               # filename box
+                filedialog = app[self.OPENDIALOG]
+                if self.app.ui.checkFilterMPC.isChecked():
+                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text()):
+                        uploadNecessary = True
+                    EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')                               # filename box
+                else:
+                    uploadNecessary = True
+                    EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.COMETS_FILE)                           # filename box
                 filedialog['Button16'].click()                                                                              # accept filename selection and proceed
                 popup['Close'].click()
-                uploadNecessary = True
             else:
                 ButtonWrapper(win['Orbital parameters of comets']).uncheck()
             if self.app.ui.checkAsteroids.isChecked():
@@ -229,11 +252,16 @@ class Data(QtCore.QThread):
                 win['Edit...3'].click()
                 popup = app['Asteroid orbits']
                 popup['MPC file'].click()
-                filedialog = app['Öffnen']      # TODO: english version ?
-                EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.ASTEROIDS_FILE)                            # filename box
+                filedialog = app[self.OPENDIALOG]
+                if self.app.ui.checkFilterMPC.isChecked():
+                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text()):
+                        uploadNecessary = True
+                    EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')
+                else:
+                    uploadNecessary = True
+                    EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.ASTEROIDS_FILE)                        # filename box
                 filedialog['Button16'].click()                                                                              # accept filename selection and proceed
                 popup['Close'].click()
-                uploadNecessary = True
             else:
                 ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
             if self.app.ui.checkSatellites.isChecked():
@@ -241,7 +269,7 @@ class Data(QtCore.QThread):
                 win['Edit...2'].click()
                 popup = app['Satellites orbits']
                 popup['Load from file'].click()
-                filedialog = app['Öffnen']      # TODO: english version ?
+                filedialog = app[self.OPENDIALOG]
                 EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.SATBRIGHTEST_FILE)                         # filename box
                 filedialog['Button16'].click()                                                                              # accept filename selection and proceed
                 popup['Close'].click()
@@ -253,7 +281,7 @@ class Data(QtCore.QThread):
                 win['Edit...2'].click()
                 popup = app['Satellites orbits']
                 popup['Load from file'].click()
-                filedialog = app['Öffnen']      # TODO: english version ?
+                filedialog = app[self.OPENDIALOG]
                 EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + self.SPACESTATIONS_FILE)                        # filename box
                 filedialog['Button16'].click()                                                                              # accept filename selection and proceed
                 popup['Close'].click()
@@ -281,6 +309,7 @@ class Data(QtCore.QThread):
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
             os.chdir(actual_work_dir)
             return
+        # uploadNecessary = False
         if uploadNecessary:
             try:
                 win['next'].click()

@@ -1,4 +1,8 @@
 # Changelog
+2.3.12
+- added english support for updater uploads
+- added comets / atseroids filter function
+
 2.3.11
 - support for MaximDL
 

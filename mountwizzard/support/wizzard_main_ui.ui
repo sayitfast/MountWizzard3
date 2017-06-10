@@ -10097,7 +10097,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>230</y>
+         <y>250</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10118,7 +10118,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>270</y>
+         <y>290</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10211,7 +10211,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>230</y>
+         <y>250</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10235,7 +10235,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>270</y>
+         <y>290</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10259,7 +10259,7 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>350</y>
+         <y>390</y>
          <width>311</width>
          <height>31</height>
         </rect>
@@ -10280,7 +10280,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>350</y>
+         <y>390</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10303,7 +10303,7 @@
          <x>370</x>
          <y>70</y>
          <width>21</width>
-         <height>311</height>
+         <height>351</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -10470,6 +10470,63 @@
        </property>
        <property name="text">
         <string>and expires on </string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkFilterMPC">
+       <property name="geometry">
+        <rect>
+         <x>430</x>
+         <y>320</y>
+         <width>271</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload asteroids data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Filter MPC Files with expression:</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_filterExpressionMPC">
+       <property name="geometry">
+        <rect>
+         <x>430</x>
+         <y>350</y>
+         <width>281</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>Button text park menu 1</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
