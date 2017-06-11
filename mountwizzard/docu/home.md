@@ -11,7 +11,7 @@ life for installation get much more easy, because the whole bundle (including th
 packages) comes now as a single EXE file. Many thanks for the development community of pyinstaller: http://www.pyinstaller.org.
 It still took some time, and there might still be some problems to solve, so far it works great.
 
-Please look to [installation](insdtallation.md) for detailed information, what and when to do.
+Please look to [installation](installation.md) for detailed information, what and when to do.
 
 ### Overview
 
