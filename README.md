@@ -57,22 +57,6 @@ the software section: http://www.10micron.eu/forum/viewforum.php?f=18&sid=ae4c89
 If you have found bugs (especially in the beta stage), please add the mount.YYYY-MM-DD.log file and post it
 to the forum. This would help me a lot.
 
-### Important:
-
-MW runs also with ASCOM 6.2 and 6.3 and is tested with both. If you would like to test in simulation,
-please choose the camera V2 simulator and the .NET versions fo telescope and dome simulator. Some older stuff won't work properly.
-
-### ASCOM framework
-If you didn't already install the ASCOM Framework on you computer for astronomy use, please do so now.
-You will find the download at:
-<pre>http://ascom-standards.org</pre>
-The actual version is 6.3. Please download it and install the package on your computer.
-
-### DSLR
-Actually the SGPro API had some problems with DSLR Cam's. As I don't own a DSLR for imaging, there is
-hardly any chance to test it in detail. With the current betas, there should be an improvement if not
-finally fixes all issues.
-
 ### Finally
 The use this software is at your own risk! No responsibility for damages to your mount or other equipment or your
 environment. Please take care yourself !
