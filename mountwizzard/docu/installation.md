@@ -10,11 +10,15 @@ The application as well as this documentation and the software code itself is ho
 You will find the readme in the main page, which also directs to the extended documentation. The interesting part for downloading the
 application is the subdirectory /dist in github. The page is looking like the following example and the /dist folder is marked red:
 
+<br><br><br>
 <img src="../pics/github_dist.png" width='989' height='824'/>
+<br><br><br>
 
 If you choose the /dist folder, you could see the application files for download:
 
+<br><br><br>
 <img src="../pics/github_dist_files.png" width='989' height='368'/>
+<br><br><br>
 
 You will normally see 4 application files: there are the released ones (in the example above version v2.2) and the latest beta version
 (in the example v2.3.4). Please remember that even version numbers (like 2.2.x) are release versions and uneven numbers (like 2.3.x)
@@ -38,9 +42,9 @@ supported. The bundle itself contains only 32bit runtime libraries. Older versio
 MountWizzard runs with ASCOM 6.2 and 6.3. You have to install ASCOM Framework in advance to be able to run MountWizzard. If you didn't
 already install the ASCOM Framework on you computer for astronomy use, please do so now. You will find the download at: http://ascom-standards.org
 If you would like to test MountWizzard in simulation mode, please choose the .NET versions for telescope and dome simulator:
-
+<br><br><br>
 <img src="../pics/ascom_telescope_simulator.png" width='349' height='220'/><img src="../pics/ascom_dome_simulator.png" width='349' height='220'/>
-
+<br><br><br>
 Some older stuff won't work properly. If you would like to use the ASCOM simulation for the camera as well, please use the camera V2 simulator
 and keep the resolution of the camera simulator with 800x600 pixel (default). With that size, MountWizzard will recognize simulation mode for
 the camera as well.
@@ -49,8 +53,9 @@ the camera as well.
 If you would like to use MountWizzard on you astro imaging computer, it makes a lot of sense to create a working directory of your choice and
 location on your computer. Please keep in mind, that you need write permissions in that directory, otherwise MounWizzard won't run and work.
 So for simple demo, I put it on the desktop:
-
+<br><br><br>
 <img src="../pics/workdir.png" width='379' height='244'/>
+<br><br><br>
 Please put the downloaded application and start it. MountWizzard will create in that directory some subdirs:
 
 <pre> /config </pre>
@@ -66,9 +71,9 @@ where all files are stored, which were created with every model building run. An
 where all the images were stored, if you would like to keep the images you made during model build.
 
 After some days the folder might look like that:
-
+<br><br><br>
 <img src="../pics/workdir_content.png" width='711' height='436'/>
-
+<br><br><br>
 In addition you find log files after the first and any following run of MountWizzard calling mount.YYYY-MM-DD.log. In these files MountWizzard
 stores all the debug and logging information, which might be used for trouble shooting. Please keep these files at least some days and post them
 if you would like to raise some questions. the log files could become large, so take care about the sizes.
