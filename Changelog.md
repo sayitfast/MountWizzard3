@@ -1,4 +1,7 @@
 # Changelog
+2.3.15
+- bugfix for ascom platform discovery
+
 2.3.14
 - refactoring device classes (mount, dome)
 - adding some data to modeling plot window

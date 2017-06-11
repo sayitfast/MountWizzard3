@@ -292,8 +292,7 @@ class MountWizzardApp(MwWidget):
         else:
             self.logger.error('checkApplicatio-> Application ASCOM not found on computer')
 
-    @staticmethod
-    def checkRegistrationKeys(appSearchName):
+    def checkRegistrationKeys(self, appSearchName):
         if platform.machine().endswith('64'):
             regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                # regpath for 64 bit windows
         else:
@@ -301,6 +300,7 @@ class MountWizzardApp(MwWidget):
         try:
             appInstallPath = ''
             appInstalled = False
+            appName = ''
             key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
             for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
                 name = EnumKey(key, i)                                                                                      # get registry names of applications
@@ -322,7 +322,7 @@ class MountWizzardApp(MwWidget):
                 appInstallPath = ''
                 appName = ''
         except Exception as e:
-            print(e)
+            self.logger.debug('checkRegistrati-> Name: {0}, Path: {1}, error: {2}'.format(appName, appInstallPath, e))
         finally:
             return appInstalled, appName, appInstallPath
 
@@ -978,7 +978,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.14 beta'
+    BUILD_NO = '2.3.15 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
