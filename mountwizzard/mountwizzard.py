@@ -27,7 +27,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 
 # import the UI part, which is done via QT Designer and exported
-from support.mw_widget import MwWidget
+from support.mwwidget import MwWidget
 from support.wizzard_main_ui import Ui_WizzardMainDialog
 # commands to threads
 from queue import Queue
@@ -961,6 +961,8 @@ class MountWizzardApp(MwWidget):
                 self.coordinatePopup.ui.modellingLog.setText('')                                                            # reset window text
             elif text == 'backspace':
                 self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText()[:-6])
+            elif text.startswith('status'):
+                self.coordinatePopup.ui.le_modelingStatus.setText(text[6:])
             else:
                 self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText() + text)     # otherwise add text at the end
             self.coordinatePopup.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
@@ -976,7 +978,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.13 beta'
+    BUILD_NO = '2.3.14 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

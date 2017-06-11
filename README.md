@@ -4,7 +4,7 @@
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017
 
-#### Version release: 2.2 --- beta: 2.3.12
+#### Version release: 2.2 --- beta: 2.3.14
 
 ## Features:
 - Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.

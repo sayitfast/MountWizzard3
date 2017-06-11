@@ -606,7 +606,12 @@ class Model(QtCore.QThread):
 
     def runRefinementModel(self):
         num = self.app.mount.numberModelStars()
-        if num > 2:
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()
+        if sizeX == 800 and sizeY == 600 and suc:
+            simulation = True
+        else:
+            simulation = False
+        if num > 2 or simulation:
             settlingTime = int(float(self.app.ui.settlingTime.value()))
             directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
             if len(self.RefinementPoints) > 0:
@@ -941,6 +946,7 @@ class Model(QtCore.QThread):
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     break                                                                                                   # finally stopping model run
+                self.app.modelLogQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))                                  # show status on screen
                 self.app.modelLogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
                                            .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))    # Debug output

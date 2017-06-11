@@ -17,7 +17,7 @@ import time
 import os
 # import for the PyQt5 Framework
 import PyQt5.QtWidgets
-from support.mw_widget import MwWidget
+from support.mwwidget import MwWidget
 from support.image_dialog_ui import Ui_ImageDialog
 # FIT file handling
 import pyfits

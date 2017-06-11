@@ -19,7 +19,7 @@ import numpy
 import math
 # import for the PyQt5 Framework
 import PyQt5.QtWidgets
-from support.mw_widget import MwWidget
+from support.mwwidget import MwWidget
 from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
 import matplotlib

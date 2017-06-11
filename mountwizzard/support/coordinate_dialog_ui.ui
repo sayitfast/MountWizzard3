@@ -308,9 +308,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_142">
    <property name="geometry">
     <rect>
-     <x>330</x>
+     <x>590</x>
      <y>40</y>
-     <width>61</width>
+     <width>41</width>
      <height>21</height>
     </rect>
    </property>
@@ -335,7 +335,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLineEdit" name="le_SQR">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>630</x>
      <y>40</y>
      <width>81</width>
      <height>21</height>
@@ -380,9 +380,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_87">
    <property name="geometry">
     <rect>
-     <x>450</x>
+     <x>710</x>
      <y>40</y>
-     <width>131</width>
+     <width>71</width>
      <height>20</height>
     </rect>
    </property>
@@ -393,13 +393,73 @@ p, li { white-space: pre-wrap; }
     </font>
    </property>
    <property name="text">
-    <string>mag/arcsec²</string>
+    <string>mpas</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
    <property name="wordWrap">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>40</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Courier</family>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Model Point:</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="le_modelingStatus">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>40</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Courier</family>
+     <pointsize>14</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="text">
+    <string>1 of 1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
