@@ -6,6 +6,8 @@ Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some
 
 #### Version release: 2.2 --- beta: 2.3.14
 
+[Link to extended docu](mountwizzard/docu/home.md)
+
 ## Features:
 - Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.
 - Blind solve for base points. All options of imaging Software is accepted.
@@ -54,9 +56,6 @@ If you have any hints / bugs / feature requests, please let me know. Right locat
 the software section: http://www.10micron.eu/forum/viewforum.php?f=18&sid=ae4c89d5d18adb85c3e9d32c26fba2f4
 If you have found bugs (especially in the beta stage), please add the mount.YYYY-MM-DD.log file and post it
 to the forum. This would help me a lot.
-
-## Modeling Workflow
-![Modeling Workflow](mountwizzard/pics/do_modeling.png)
 
 ### Important:
 

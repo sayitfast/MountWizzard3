@@ -609,6 +609,7 @@ class Model(QtCore.QThread):
         suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()
         if sizeX == 800 and sizeY == 600 and suc:
             simulation = True
+            self.modelData = []
         else:
             simulation = False
         if num > 2 or simulation:
