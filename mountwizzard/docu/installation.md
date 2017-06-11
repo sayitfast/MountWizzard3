@@ -22,7 +22,9 @@ If you choose the /dist folder, you could see the application files for download
 
 You will normally see 4 application files: there are the released ones (in the example above version v2.2) and the latest beta version
 (in the example v2.3.4). Please remember that even version numbers (like 2.2.x) are release versions and uneven numbers (like 2.3.x)
-are beta ones. For betas in general: please feedback your experience that all users could participate in improvements ans test you made.
+are beta ones. For betas in general: please provide detailed feedback including tests so that it enables others to participate in
+improving MountWizzard as well.
+
 
 There are basically two versions of each release: a version which is called mountwizzard_vx.y.z and a second version called
 mountwizzard-console_vx.y.z. Both of them share the same functionality. The only difference is that the console version show in addition
