@@ -11,12 +11,12 @@ life for installation get much more easy, because the whole bundle (including th
 packages) comes now as a single EXE file. Many thanks for the development community of pyinstaller: http://www.pyinstaller.org.
 It still took some time, and there might still be some problems to solve, so far it works great.
 
-Please look to [installation](mountwizzard/docu/home.md) for detailed informations, what and when to do.
+Please look to [installation](insdtallation.md) for detailed information, what and when to do.
 
 ### Overview
 
 To get a first impression after start, please have a look to the windows MountWizzard is using they are shown
-in a short [overview](mountwizzard/docu/overniew.md).
+in a short [overview](overview.md).
 
 ### Working with Mountwizzard for modeling:
  A first good view on how modeling could be done is on the [Modeling Workflow Chart](modeling_workflow.md)
