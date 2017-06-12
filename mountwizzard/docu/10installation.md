@@ -61,7 +61,7 @@ Please put the downloaded application and start it. MountWizzard will create in 
 where all the configuration like the config from MountWizzard, but also your horizon file and your model points file (if you have one from
 ModelMaker for example) and some downloaded mount computer updating data (comets, asteroids, UTC files etc.)
 
-<pre> /analyse </pre>
+<pre> /analysedata </pre>
 where all files are stored, which were created with every model building run. And finally
 
 <pre> /images </pre>
