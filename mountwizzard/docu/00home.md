@@ -21,7 +21,7 @@ MountWizzard supports tooltips. So hopefully if you don't get an idea, whats is 
 a field or button and you will see the tooltip!
 
 
-### Working with Mountwizzard for modeling:
+### Working with MountWizzard for modeling:
 
-A first good view on how modeling could be done is on the [Modeling Workflow Chart](02modeling_workflow.md)
+A first good view of the modeling workflow is shown in the [Modeling Workflow Chart](02modeling_workflow.md)
 
