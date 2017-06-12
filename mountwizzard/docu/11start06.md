@@ -12,6 +12,6 @@ Area 1 shows a second level ob TAB for doing all configuration settings. These a
 - [UTC Data / MPC / TLE TAB](11start064.md)
 - [Versions TAB](11start065.md)
 
-[Screens](11start00.md)
+[Back to first Steps](11start00.md)
 
-[Home](00home.md)
+[Back Home](00home.md)

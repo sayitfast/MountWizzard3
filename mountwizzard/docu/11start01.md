@@ -41,6 +41,6 @@ Area 4 offers a direct function to set tracking speeds (lunar, solar, sideral) a
 ### Area 5
 Area 5 offers park and unpark commands as well as an immediate stop of the mount movement.
 
-[Screens](11start00.md)
+[Back to first steps](11start00.md)
 
-[Home](00home.md)
+[Back to Home](00home.md)

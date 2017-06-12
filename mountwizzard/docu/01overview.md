@@ -14,4 +14,4 @@ After modeling you can do some analytics of your model runs. This is mainly loca
 
 <img src="../pics/analysewindow.png"/>
 
-[Home](00home.md)
+[Back to Home](00home.md)

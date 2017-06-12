@@ -10,6 +10,6 @@
 
 #### -
 
-[Screens](11start00.md)
+[Back to first steps](11start00.md)
 
-[Home](00home.md)
+[Back to Home](00home.md)
