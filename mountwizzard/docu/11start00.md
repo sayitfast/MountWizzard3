@@ -34,7 +34,7 @@ ordered in TABs:
 - [Make Mount Model TAB](11start03.md)
 - [Manage Mount Models TAB](11start04.md)
 - [Model Analyse TAB](11start05.md)
-- [Sittings TAB](11start06.md)
+- [Settings TAB](11start06.md)
 - [Relay Functions TAB](11start07.md)
 
 
