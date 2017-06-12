@@ -16,10 +16,12 @@ Please look to [installation procedures](10installation.md) for detailed informa
 ### Overview
 
 To get a first impression after start, please have a look to the windows MountWizzard is using they are shown
-in a short [overview](01overview.md).
+in a short [overview](01overview.md). To start over all functions are explained in [First Steps in MountWizzard](11start00.md)
+MountWizzard supports tooltips. So hopefully if you don't get an idea, whats is going to happen, just put you mouse above
+a field or button and you will see the tooltip!
+
 
 ### Working with Mountwizzard for modeling:
 
 A first good view on how modeling could be done is on the [Modeling Workflow Chart](02modeling_workflow.md)
 
-[First Steps in MountWizzard](11start00.md)
