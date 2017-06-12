@@ -1,4 +1,4 @@
-## <img src="../pics/mw.png" width='64' height='64'/>Installation of MountWizzard
+## Installation of MountWizzard
 
 Please read the following parts to be sure to make the right steps for the successful installation of MountWizzard. If you
 have problems, the right spot where to post messages is the 10micron software developer forum on: http://www.10micron.eu/forum/viewforum.php?f=18.

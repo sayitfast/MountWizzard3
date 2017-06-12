@@ -22,4 +22,4 @@ in a short [overview](01overview.md).
 
 A first good view on how modeling could be done is on the [Modeling Workflow Chart](02modeling_workflow.md)
 
-[Explanation of the Screens](11start00.md)
+[First Steps in MountWizzard](11start00.md)

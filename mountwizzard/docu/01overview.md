@@ -1,4 +1,4 @@
-## <img src="../pics/mw.png" width='64' height='64'/>First start - Overview
+## First start - Overview
 ### Main Screen
 Mountwizzard open of a set of windows depending on the use case you would like to follow. First, there is the main screen:
 
