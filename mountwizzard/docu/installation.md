@@ -45,7 +45,7 @@ MountWizzard runs with ASCOM 6.2 and 6.3. You have to install ASCOM Framework in
 already install the ASCOM Framework on you computer for astronomy use, please do so now. You will find the download at: http://ascom-standards.org
 If you would like to test MountWizzard in simulation mode, please choose the .NET versions for telescope and dome simulator:
 <br><br><br>
-<img src="../pics/ascom_telescope_simulator.png" width='349' height='220'/><img src="../pics/ascom_dome_simulator.png" width='349' height='220'/>
+<img src="../pics/ascom_telescope_simulator.png"/><img src="../pics/ascom_dome_simulator.png"/>
 <br><br><br>
 Some older stuff won't work properly. If you would like to use the ASCOM simulation for the camera as well, please use the camera V2 simulator
 and keep the resolution of the camera simulator with 800x600 pixel (default). With that size, MountWizzard will recognize simulation mode for
