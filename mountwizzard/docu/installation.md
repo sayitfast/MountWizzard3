@@ -11,13 +11,13 @@ You will find the readme in the main page, which also directs to the extended do
 application is the subdirectory /dist in github. The page is looking like the following example and the /dist folder is marked red:
 
 <br><br><br>
-<img src="../pics/github_dist.png" width='989' height='824'/>
+<img src="../pics/github_dist.png"/>
 <br><br><br>
 
 If you choose the /dist folder, you could see the application files for download:
 
 <br><br><br>
-<img src="../pics/github_dist_files.png" width='989' height='368'/>
+<img src="../pics/github_dist_files.png"/>
 <br><br><br>
 
 You will normally see 4 application files: there are the released ones (in the example above version v2.2) and the latest beta version
@@ -56,7 +56,7 @@ If you would like to use MountWizzard on you astro imaging computer, it makes a 
 location on your computer. Please keep in mind, that you need write permissions in that directory, otherwise MounWizzard won't run and work.
 So for simple demo, I put it on the desktop:
 <br><br><br>
-<img src="../pics/workdir.png" width='379' height='244'/>
+<img src="../pics/workdir.png"/>
 <br><br><br>
 Please put the downloaded application and start it. MountWizzard will create in that directory some subdirs:
 
@@ -74,7 +74,7 @@ where all the images were stored, if you would like to keep the images you made 
 
 After some days the folder might look like that:
 <br><br><br>
-<img src="../pics/workdir_content.png" width='711' height='436'/>
+<img src="../pics/workdir_content.png"/>
 <br><br><br>
 In addition you find log files after the first and any following run of MountWizzard calling mount.YYYY-MM-DD.log. In these files MountWizzard
 stores all the debug and logging information, which might be used for trouble shooting. Please keep these files at least some days and post them
