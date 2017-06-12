@@ -76,8 +76,4 @@ In addition you find log files after the first and any following run of MountWiz
 stores all the debug and logging information, which might be used for trouble shooting. Please keep these files at least some days and post them
 if you would like to raise some questions. the log files could become large, so take care about the sizes.
 
-### DSLR
-Actually the SGPro API had some problems with DSLR Cam's. As I don't own a DSLR for imaging, there is
-hardly any chance to test it in detail. With the current betas, there should be an improvement if not
-finally fixes all issues.
 [Home](00home.md)
