@@ -8,27 +8,27 @@ Just to know where you are.
 
 ### Area 2
 Area 2 is showing informations about the tracking status and the behaviour of the mount.
-#### Slew rate
+#### - Slew rate
 Could be set by entering a new valid value, followed by pressing 'set'. If the value is not in the valid range, no change is
 introduced. If your mount driver could set the slew rate, this value could be overwritten by the driver.
-#### Dual Tracking
+#### - Dual Tracking
 Could be toggled with the I/O button. Status is shown.
-#### Unattended Flip
+#### - Unattended Flip
 Could be toggled with the I/O button. Status is shown.
-#### Meridian Limit Track
+#### - Meridian Limit Track
 Status of the setting how for the mount tracks before doing a meridian flip. Positive numbers are after the meridian.
-#### Meridian Limit Slew
+#### - Meridian Limit Slew
 Status of the setting how for the mount slews before doing a meridian flip. Positive numbers are after the meridian.
-#### Pier
+#### - Pier
 Shows East or West side, depending of the orientation.
-#### Time to flip
+#### - Time to flip
 Shows the time in minutes how long the mount will track until the flip happens
-#### Time to meridian
+#### - Time to meridian
 Show the time in minutes how long the mount will track until the meridian is reached. Depending on the setting of Meridian Limits this
 might be different from above value
-#### Flip Button
+#### - Flip Button
 If the mount is in a status, where a manual meridian flip could be done, you could start it with pressing the button.
-#### Slewing Limits
+#### - Slewing Limits
 The Horizon Limits for lower and higher side are shown. They could be changed by entering a new value and pressing 'set'
 
 ### Area 3
