@@ -155,13 +155,16 @@ class Data(QtCore.QThread):
         outFile = open(directory + 'filter.mpc', 'w')
         with open(directory + filename) as inFile:
             for line in inFile:
-                if line.find(expression) != -1:
-                    outFile.write(line)
-                    numberEntry += 1
+                searchExp = expression.split(',')
+                for exp in searchExp:
+                    if line.find(exp) != -1:
+                        outFile.write(line)
+                        numberEntry += 1
         outFile.close()
         if numberEntry == 0:
             return False
         else:
+            self.app.messageQueue.put('Found {0} target(s) in MPC file !'.format(numberEntry))
             return True
 
     def downloadFile(self, url, filename):
@@ -194,7 +197,7 @@ class Data(QtCore.QThread):
             actual_work_dir = os.getcwd()
             os.chdir(os.path.dirname(self.appInstallPath))
             app = Application(backend='win32')                                                                              # backend win32 ist faster than uai
-            app.start(self.appInstallPath + '\\' + self.appExe)                                                                # start 10 micro updater
+            app.start(self.appInstallPath + '\\' + self.appExe)                                                             # start 10 micro updater
             # timings.Timings.Slow()
         except application.AppStartError:
             self.logger.error('uploadMount    -> error starting application')
@@ -306,7 +309,9 @@ class Data(QtCore.QThread):
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
             os.chdir(actual_work_dir)
             return
-        # uploadNecessary = False
+        if self.app.mount.mountHandler.sendCommand('GVD') == 'Simulation' or not self.app.mount.mountHandler.connected:     # Upload with real mount which is connected
+            self.app.messageQueue.put('Upload only possible with real mount !')
+            uploadNecessary = False
         if uploadNecessary:
             try:
                 win['next'].click()

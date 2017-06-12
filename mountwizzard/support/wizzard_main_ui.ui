@@ -10487,10 +10487,10 @@
         </font>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload asteroids data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check to filter Comets and Asteroids MPC File&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Filter MPC Files with expression:</string>
+        <string>Filter MPC Files with expression(s):</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -10520,7 +10520,7 @@
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 1</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;serach expression, separated with ','&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>

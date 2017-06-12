@@ -449,6 +449,9 @@ p, li { white-space: pre-wrap; }
    <property name="acceptDrops">
     <bool>false</bool>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
    </property>

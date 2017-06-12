@@ -207,5 +207,6 @@ class Ui_CoordinateDialog(object):
         self.le_SQR.setText(_translate("CoordinateDialog", "19.00"))
         self.label_87.setText(_translate("CoordinateDialog", "mpas"))
         self.label_11.setText(_translate("CoordinateDialog", "Model Point:"))
+        self.le_modelingStatus.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
         self.le_modelingStatus.setText(_translate("CoordinateDialog", "1 of 1"))
 

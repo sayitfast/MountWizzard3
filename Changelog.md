@@ -1,4 +1,8 @@
 # Changelog
+2.3.16
+- error handling for not connected mount in MPC upload
+- search string could be more than one comma separated
+
 2.3.15
 - bugfix for ascom platform discovery
 
