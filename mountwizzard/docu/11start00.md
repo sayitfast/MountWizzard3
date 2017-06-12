@@ -13,7 +13,7 @@ You have the status buttons of the devices showing different colors:
 - grey: device not configured or disabled
 - red: device configured, but not connected
 - yellow: device connected, but not fully functional
-- green: device connected and full function
+- green: device connected and fully functional
 
 The yellow color only exists in camera device. There you could distinguish between the application fpr imaging is running
 (showing yellow) and the camera itself is connected to the imaging application itself (green).
