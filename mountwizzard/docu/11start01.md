@@ -1,4 +1,4 @@
-## Pointing Tab
+## Pointing TAB
 
 <img src="../pics/tab_pointing.png"/>
 
