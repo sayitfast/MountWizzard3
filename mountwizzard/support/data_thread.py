@@ -164,7 +164,7 @@ class Data(QtCore.QThread):
         if numberEntry == 0:
             return False
         else:
-            self.app.messageQueue.put('Found {0} target(s) in MPC file !'.format(numberEntry))
+            self.app.messageQueue.put('Found {0} target(s) in MPC file: {1}!'.format(numberEntry, filename))
             return True
 
     def downloadFile(self, url, filename):
