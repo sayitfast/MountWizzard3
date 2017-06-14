@@ -29,3 +29,16 @@ exe = EXE(pyz,
           upx=True,
           console=False,
           icon='./mountwizzard/mw.ico')
+
+
+#######################################
+# Code-sign the generated executable
+#import subprocess
+#subprocess.call([
+#   "SIGNTOOL.EXE",
+#   "/F", "path-to-key.pfx",
+#   "/P", "your-password",
+#   "/T", "time-stamping url",
+#   'mountwizzard.exe',
+#])
+#######################################

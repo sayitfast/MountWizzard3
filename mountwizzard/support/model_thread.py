@@ -320,7 +320,7 @@ class Model(QtCore.QThread):
         p = []
         number = 0
         try:                                                                                                                # fault tolerance, if file io fails
-            with open('config/' + modelPointsFileName) as fileHandle:                                                       # run over complete file
+            with open('config/' + modelPointsFileName, 'r') as fileHandle:                                                       # run over complete file
                 for line in fileHandle:                                                                                     # run over lines
                     if line.startswith('GRID'):                                                                             # if grid, then its a TSX file
                         convertedLine = line.rstrip('\n').split()                                                           # format is TSX format
@@ -336,11 +336,10 @@ class Model(QtCore.QThread):
                         if len(convertedLine) == 2 and modeltype == 'refinement':                                           # in MM format base and refinement are included
                             p.append(point)                                                                                 # add data to the adequate list
                         elif len(convertedLine) != 2 and modeltype == 'base':
-                            p.append(point)
-            fileHandle.close()                                                                                              # close file
+                            p.append(point)                                                                                             # close file
         except Exception as e:                                                                                              # handle exception
-            self.app.messageQueue.put('Error loading model points from {0} error:{1}!'.format(modelPointsFileName, e))      # Gui message
-            self.logger.error('loadModelPoints -> {0} could not be loaded error{1}'.format(modelPointsFileName, e))         # log output
+            self.app.messageQueue.put('Error loading model points from file [{0}] error: {1}!'.format(modelPointsFileName, e))   # Gui message
+            self.logger.error('loadModelPoints -> Error loading model points from file [{0}] error: {1}!'.format(modelPointsFileName, e))
         finally:
             return p
 

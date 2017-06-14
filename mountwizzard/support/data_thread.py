@@ -30,6 +30,7 @@ class Data(QtCore.QThread):
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
     COMETS = 'http://www.minorplanetcenter.net/iau/MPCORB/CometEls.txt'
     ASTEROIDS = 'http://www.ap-i.net/pub/skychart/mpc/mpc5000.dat'
+    # ASTEROIDS = 'http://www.minorplanetcenter.net/iau/MPCORB/MPCORB.DAT'
     SPACESTATIONS = 'http://www.celestrak.com/NORAD/elements/stations.txt'
     SATBRIGHTEST = 'http://www.celestrak.com/NORAD/elements/visual.txt'
     TARGET_DIR = os.getcwd() + '\\config\\'
@@ -150,17 +151,15 @@ class Data(QtCore.QThread):
     def getStatusOnce(self):
         pass
 
-    def filterFileMPC(self, directory, filename, expression):
+    def filterFileMPC(self, directory, filename, expression, start, end):
         numberEntry = 0
-        outFile = open(directory + 'filter.mpc', 'w')
-        with open(directory + filename) as inFile:
+        with open(directory + filename, 'r') as inFile, open(directory + 'filter.mpc', 'w') as outFile:
             for line in inFile:
                 searchExp = expression.split(',')
                 for exp in searchExp:
-                    if line.find(exp) != -1:
+                    if line.find(exp, start, end) != -1:
                         outFile.write(line)
                         numberEntry += 1
-        outFile.close()
         if numberEntry == 0:
             return False
         else:
@@ -237,7 +236,7 @@ class Data(QtCore.QThread):
                 popup['MPC file'].click()
                 filedialog = app[self.OPENDIALOG]
                 if self.app.ui.checkFilterMPC.isChecked():
-                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text()):
+                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text(), 165, 196):
                         uploadNecessary = True
                     EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')                               # filename box
                 else:
@@ -254,7 +253,7 @@ class Data(QtCore.QThread):
                 popup['MPC file'].click()
                 filedialog = app[self.OPENDIALOG]
                 if self.app.ui.checkFilterMPC.isChecked():
-                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text()):
+                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text(), 102, 161):
                         uploadNecessary = True
                     EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')
                 else:

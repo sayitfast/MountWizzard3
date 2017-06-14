@@ -1,4 +1,8 @@
 # Changelog
+2.3.17
+- narrowed down search feature be recommendation of Ralf
+- added logging for existence and writability of workdir and subdir.
+
 2.3.16
 - error handling for not connected mount in MPC upload
 - search string could be more than one comma separated

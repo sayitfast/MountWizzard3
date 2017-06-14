@@ -978,7 +978,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.16 beta'
+    BUILD_NO = '2.3.17 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
@@ -998,6 +998,14 @@ if __name__ == "__main__":
     logging.error('MountWizzard v ' + BUILD_NO + ' started !')                                                              # start message logger
     logging.error('-----------------------------------------')                                                              # start message logger
     logging.error('main           -> working directory: {0}'.format(os.getcwd()))
+    if not os.access(os.getcwd(), os.W_OK):
+        logging.error('main           -> no write access to workdir')
+    if not os.access(os.getcwd() + '/images', os.W_OK):
+        logging.error('main           -> no write access to /images')
+    if not os.access(os.getcwd() + '/config', os.W_OK):
+        logging.error('main           -> no write access to /config')
+    if not os.access(os.getcwd() + '/analysedata', os.W_OK):
+        logging.error('main           -> no write access to /analysedata')
 
     QApplication.setAttribute(Qt.AA_Use96Dpi)                                                                               # try to overcome windows, seems not to work
     app = QApplication(sys.argv)                                                                                            # built application
