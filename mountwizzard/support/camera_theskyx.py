@@ -171,7 +171,6 @@ class TheSkyX(MWCamera):
 
     def getImage(self, modelData):
         # TODO: how is TSX dealing with ISO settings for DSLR?
-        # TODO: how is TSX dealing with download speeds for CCD, who support this feature ?
 
         try:
             command = '/* Java Script */'
@@ -184,6 +183,12 @@ class TheSkyX(MWCamera):
                 command += 'ccdsoftCamera.SubframeBottom=' + str(modelData['offY'] + modelData['sizeY']) + ';'
             else:
                 command += 'ccdsoftCamera.Subframe=0;'
+
+            if modelData['speed'] == 'HiSpeed':
+                command += 'ccdsoftCamera.setPropStr("m_csExCameraMode", "Fast Image Download");'
+            else:
+                command += 'ccdsoftCamera.setPropStr("m_csExCameraMode", "High Image Quality");'
+
             command += 'ccdsoftCamera.BinX='+str(modelData['binning'])+';'
             command += 'ccdsoftCamera.BinY='+str(modelData['binning'])+';'
             command += 'ccdsoftCamera.ExposureTime='+str(modelData['exposure'])+';'
