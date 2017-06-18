@@ -1,4 +1,8 @@
 # Changelog
+2.3.18
+- bugfix MPC filter -> RaKo
+- Merged HiSpeed implementation for TheSkyX from Julien
+
 2.3.17
 - narrowed down search feature be recommendation of Ralf
 - added logging for existence and writability of workdir and subdir.
