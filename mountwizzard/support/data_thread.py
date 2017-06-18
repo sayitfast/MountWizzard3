@@ -236,7 +236,7 @@ class Data(QtCore.QThread):
                 popup['MPC file'].click()
                 filedialog = app[self.OPENDIALOG]
                 if self.app.ui.checkFilterMPC.isChecked():
-                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text(), 165, 196):
+                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text(), 102, 161):
                         uploadNecessary = True
                     EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')                               # filename box
                 else:
@@ -253,7 +253,7 @@ class Data(QtCore.QThread):
                 popup['MPC file'].click()
                 filedialog = app[self.OPENDIALOG]
                 if self.app.ui.checkFilterMPC.isChecked():
-                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text(), 102, 161):
+                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text(), 165, 196):
                         uploadNecessary = True
                     EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')
                 else:
