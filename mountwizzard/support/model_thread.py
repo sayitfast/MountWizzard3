@@ -909,10 +909,13 @@ class Model(QtCore.QThread):
 
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
+        self.app.modelLogQueue.put('status-- of --')
+        self.app.modelLogQueue.put('percent0')
+        self.app.modelLogQueue.put('timeleft--:--')
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
-        self.app.modelLogQueue.put('{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
+        self.app.modelLogQueue.put('#BY{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.IMAGEDIR + '/' + directory                                                      # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
@@ -922,7 +925,7 @@ class Model(QtCore.QThread):
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
         else:
             self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
-            self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
+            self.app.modelLogQueue.put('#BY{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
             return {}                                                                                                       # if cancel or failure, that empty dict has to returned
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
         if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
@@ -936,18 +939,21 @@ class Model(QtCore.QThread):
         self.app.commandQueue.put('AP')                                                                                     # tracking on during the picture taking
         if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
             os.makedirs(modelData['base_dir_images'])                                                                       # if path doesn't exist, generate is
+        timeStart = time.time()
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
             modelData['azimuth'] = p_az
             modelData['altitude'] = p_alt
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
-                    self.app.modelLogQueue.put('{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
+                    self.app.modelLogQueue.put('#BY{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
+                    self.app.modelLogQueue.put('status-- of --')
+                    self.app.modelLogQueue.put('percent0')
+                    self.app.modelLogQueue.put('timeleft--:--')
                     break                                                                                                   # finally stopping model run
-                self.app.modelLogQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))                                  # show status on screen
-                self.app.modelLogQueue.put('{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
+                self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
                                            .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))    # Debug output
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
@@ -1014,6 +1020,16 @@ class Model(QtCore.QThread):
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
                         self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))            # Gui output
+
+                self.app.modelLogQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))                                  # show status on screen
+                modelBuildDone = (i + 1) / len(runPoints)
+                self.app.modelLogQueue.put('percent{0}'.format(modelBuildDone))                                             # show status on screen
+                actualTime = time.time() - timeStart
+                timeCalulated = actualTime / (i + 1) * (len(runPoints) - i - 1)
+                mm = int(timeCalulated / 60)
+                ss = int(timeCalulated - 60 * mm)
+                self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))                                              # show status on screen
+
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
         self.app.modelLogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'

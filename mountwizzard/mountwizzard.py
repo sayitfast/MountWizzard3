@@ -958,13 +958,28 @@ class MountWizzardApp(MwWidget):
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
             text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
             if text == 'delete':                                                                                            # delete logfile for modeling
-                self.coordinatePopup.ui.modellingLog.setText('')                                                            # reset window text
+                self.coordinatePopup.ui.modellingLog.clear()                                                                # reset window text
             elif text == 'backspace':
-                self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText()[:-6])
+                for i in range(0, 6):
+                    self.coordinatePopup.ui.modellingLog.textCursor().deletePreviousChar()
             elif text.startswith('status'):
                 self.coordinatePopup.ui.le_modelingStatus.setText(text[6:])
+            elif text.startswith('percent'):
+                self.coordinatePopup.ui.bar_modelingStatusPercent.setValue(int(1000*float(text[7:])))
+            elif text.startswith('timeleft'):
+                self.coordinatePopup.ui.le_modelingStatusTime.setText(text[8:])
+            elif text.startswith('#BG'):
+                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_GREEN)
+                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
+                self.coordinatePopup.ui.modellingLog.insertPlainText(text[3:])
+            elif text.startswith('#BY'):
+                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_YELLOW)
+                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
+                self.coordinatePopup.ui.modellingLog.insertPlainText(text[3:])
             else:
-                self.coordinatePopup.ui.modellingLog.setText(self.coordinatePopup.ui.modellingLog.toPlainText() + text)     # otherwise add text at the end
+                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_ASTRO)
+                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Normal)
+                self.coordinatePopup.ui.modellingLog.insertPlainText(text)                                                  # otherwise add text at the end
             self.coordinatePopup.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
             self.modelLogQueue.task_done()
         # noinspection PyCallByClass,PyTypeChecker
@@ -978,7 +993,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.18 beta'
+    BUILD_NO = '2.3.19 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

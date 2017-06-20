@@ -1,4 +1,9 @@
 # Changelog
+2.3.19
+- improving gui (colored in log window)
+- added progress bar in modeling plot window
+- added duration estimation for model build
+
 2.3.18
 - bugfix MPC filter -> RaKo
 - Merged HiSpeed implementation for TheSkyX from Julien
