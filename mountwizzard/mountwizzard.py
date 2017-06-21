@@ -43,7 +43,7 @@ from support.environment_stick_thread import Stick
 from support.relays import Relays
 from support.data_thread import Data
 from support.environment_unihedron_thread import Unihedron
-
+from support.network_remote_thread import Remote
 # matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -124,6 +124,9 @@ class MountWizzardApp(MwWidget):
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
+        self.remote = Remote(self)
+        self.remote.start()
+        self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
         # self.ui.mainTabWidget.tabBar().setCurrentIndex(2)
         # self.ui.mainTabWidget.currentWidget().setStyleSheet(self.RED)

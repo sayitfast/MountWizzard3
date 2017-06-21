@@ -2,7 +2,7 @@
 2.3.20
 - changes yellow color to white in model log
 - added FITS reading focal length / pixelsize for scale hint
-
+- test remote connection using netcat portable ncat.exe windows. command: echo shutdown | ncat --send-only localhost 3495
 
 2.3.19
 - improving gui (colored in log window)
