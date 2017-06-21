@@ -805,6 +805,8 @@ class Model(QtCore.QThread):
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
                 fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                         # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
+                if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                    modelData['scaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
                 fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
                 fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
                 fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
@@ -915,7 +917,7 @@ class Model(QtCore.QThread):
         modelData = dict()                                                                                                  # all model data
         results = list()                                                                                                    # results
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
-        self.app.modelLogQueue.put('#BY{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
+        self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.IMAGEDIR + '/' + directory                                                      # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
@@ -925,7 +927,7 @@ class Model(QtCore.QThread):
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
         else:
             self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
-            self.app.modelLogQueue.put('#BY{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
+            self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
             return {}                                                                                                       # if cancel or failure, that empty dict has to returned
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
         if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
@@ -946,7 +948,7 @@ class Model(QtCore.QThread):
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the model point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the model run
-                    self.app.modelLogQueue.put('#BY{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
+                    self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     self.app.modelLogQueue.put('status-- of --')
@@ -1032,7 +1034,7 @@ class Model(QtCore.QThread):
 
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the model images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
-        self.app.modelLogQueue.put('{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
+        self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
                                    .format(self.timeStamp(), modeltype, numCheckPoints))                                    # GUI output
         self.modelrun = False
         return results                                                                                                      # return results for analysing

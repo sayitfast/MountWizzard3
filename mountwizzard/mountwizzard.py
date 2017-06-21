@@ -968,6 +968,10 @@ class MountWizzardApp(MwWidget):
                 self.coordinatePopup.ui.bar_modelingStatusPercent.setValue(int(1000*float(text[7:])))
             elif text.startswith('timeleft'):
                 self.coordinatePopup.ui.le_modelingStatusTime.setText(text[8:])
+            elif text.startswith('#BW'):
+                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_WHITE)
+                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
+                self.coordinatePopup.ui.modellingLog.insertPlainText(text[3:])
             elif text.startswith('#BG'):
                 self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_GREEN)
                 self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
@@ -993,7 +997,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.19 beta'
+    BUILD_NO = '2.3.20 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
