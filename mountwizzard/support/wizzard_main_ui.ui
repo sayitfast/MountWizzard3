@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7143,7 +7143,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configuration of the imaging / plate solving program and the ASCOM drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_13">
       <attribute name="title">
@@ -10118,7 +10118,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>150</y>
+         <y>160</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10139,7 +10139,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
+         <y>200</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10156,12 +10156,12 @@
         <string>Download Brightest Satellite TLE Elements</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_downloadAsteroids">
+      <widget class="QPushButton" name="btn_downloadAsteroidsMPC5000">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>250</y>
-         <width>341</width>
+         <y>300</y>
+         <width>161</width>
          <height>31</height>
         </rect>
        </property>
@@ -10174,14 +10174,14 @@
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Download Asteroids MPC File</string>
+        <string>Downl. Asteroids MPC5000</string>
        </property>
       </widget>
       <widget class="QPushButton" name="btn_downloadComets">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>290</y>
+         <y>250</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -10222,11 +10222,11 @@
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkSpacestations">
+      <widget class="QCheckBox" name="checkTLE">
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>170</y>
+         <y>180</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10250,7 +10250,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>250</y>
+         <y>300</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10274,7 +10274,7 @@
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>290</y>
+         <y>250</y>
          <width>301</width>
          <height>31</height>
         </rect>
@@ -10515,7 +10515,7 @@
        <property name="geometry">
         <rect>
          <x>430</x>
-         <y>320</y>
+         <y>330</y>
          <width>271</width>
          <height>31</height>
         </rect>
@@ -10539,7 +10539,7 @@
        <property name="geometry">
         <rect>
          <x>430</x>
-         <y>350</y>
+         <y>360</y>
          <width>281</width>
          <height>21</height>
         </rect>
@@ -10566,6 +10566,69 @@
        </property>
        <property name="readOnly">
         <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsNEA">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>300</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids NEA</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsTNO">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>340</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids TNO</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsPHA">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>340</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids PHA</string>
        </property>
       </widget>
      </widget>
@@ -11873,11 +11936,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_downloadEarthrotation</tabstop>
   <tabstop>btn_downloadSpacestations</tabstop>
   <tabstop>btn_downloadSatbrighest</tabstop>
-  <tabstop>btn_downloadAsteroids</tabstop>
+  <tabstop>btn_downloadAsteroidsMPC5000</tabstop>
   <tabstop>btn_downloadComets</tabstop>
   <tabstop>btn_downloadAll</tabstop>
   <tabstop>checkEarthrotation</tabstop>
-  <tabstop>checkSpacestations</tabstop>
+  <tabstop>checkTLE</tabstop>
   <tabstop>checkAsteroids</tabstop>
   <tabstop>checkComets</tabstop>
   <tabstop>btn_uploadMount</tabstop>

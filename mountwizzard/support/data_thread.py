@@ -29,8 +29,16 @@ class Data(QtCore.QThread):
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
     COMETS = 'http://www.minorplanetcenter.net/iau/MPCORB/CometEls.txt'
-    ASTEROIDS = 'http://www.ap-i.net/pub/skychart/mpc/mpc5000.dat'
+    COMETS_START = 102
+    COMETS_END = 161
+    ASTEROIDS_START = 165
+    ASTEROIDS_END = 196
+    ASTEROIDS_MPC5000 = 'http://www.ap-i.net/pub/skychart/mpc/mpc5000.dat'
     # ASTEROIDS = 'http://www.minorplanetcenter.net/iau/MPCORB/MPCORB.DAT'
+    ASTEROIDS_NEA = 'http://www.minorplanetcenter.net/iau/MPCORB/NEA.txt'
+    ASTEROIDS_PHA = 'http://www.minorplanetcenter.net/iau/MPCORB/PHA.txt'
+    ASTEROIDS_TNO = 'http://www.minorplanetcenter.net/iau/MPCORB/Distant.txt'
+    ASTEROIDS_UNUSAL = 'http://www.minorplanetcenter.net/iau/MPCORB/Unusual.txt'
     SPACESTATIONS = 'http://www.celestrak.com/NORAD/elements/stations.txt'
     SATBRIGHTEST = 'http://www.celestrak.com/NORAD/elements/visual.txt'
     TARGET_DIR = os.getcwd() + '\\config\\'
@@ -87,11 +95,31 @@ class Data(QtCore.QThread):
                     self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
                     self.app.ui.checkSatellites.setChecked(True)
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
-                elif command == 'ASTEROIDS':
-                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                elif command == 'ASTEROIDS_MPC5000':
+                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE)
                     self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
+                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.DEFAULT)
+                elif command == 'ASTEROIDS_NEA':
+                    self.app.ui.btn_downloadAsteroidsNEA.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.ASTEROIDS_NEA, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.checkAsteroids.setChecked(True)
+                    self.app.ui.btn_downloadAsteroidsNEA.setStyleSheet(self.DEFAULT)
+                elif command == 'ASTEROIDS_PHA':
+                    self.app.ui.btn_downloadAsteroidsPHA.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.ASTEROIDS_PHA, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.checkAsteroids.setChecked(True)
+                    self.app.ui.btn_downloadAsteroidsPHA.setStyleSheet(self.DEFAULT)
+                elif command == 'ASTEROIDS_TNO':
+                    self.app.ui.btn_downloadAsteroidsTNO.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.ASTEROIDS_TNO, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.checkAsteroids.setChecked(True)
+                    self.app.ui.btn_downloadAsteroidsTNO.setStyleSheet(self.DEFAULT)
+                elif command == 'ASTEROIDS_UNUSAL':
+                    self.app.ui.btn_downloadAsteroidsUNUSAL.setStyleSheet(self.BLUE)
+                    self.downloadFile(self.ASTEROIDS_UNUSAL, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.checkAsteroids.setChecked(True)
+                    self.app.ui.btn_downloadAsteroidsUNUSAL.setStyleSheet(self.DEFAULT)
                 elif command == 'COMETS':
                     self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
                     self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
@@ -108,24 +136,24 @@ class Data(QtCore.QThread):
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
-                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.BLUE)
+                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.BLUE)
                     self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
                     self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
                     self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
                     self.app.ui.checkEarthrotation.setChecked(True)
                     self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
                     self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
-                    self.app.ui.checkSpacestations.setChecked(True)
+                    self.app.ui.checkTLE.setChecked(True)
                     self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
                     self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
-                    self.app.ui.checkSatellites.setChecked(True)
+                    self.app.ui.checkTLE.setChecked(True)
                     self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
-                    self.downloadFile(self.ASTEROIDS, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.btn_downloadAsteroids.setStyleSheet(self.DEFAULT)
-                    self.app.ui.checkAsteroids.setChecked(True)
                     self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
                     self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
                     self.app.ui.checkComets.setChecked(True)
+                    self.downloadFile(self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE)
+                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.DEFAULT)
+                    self.app.ui.checkAsteroids.setChecked(True)
                     self.app.ui.btn_downloadAll.setStyleSheet(self.DEFAULT)
                 elif command == 'UPLOADMOUNT':
                     self.app.ui.btn_uploadMount.setStyleSheet(self.BLUE)
@@ -236,7 +264,7 @@ class Data(QtCore.QThread):
                 popup['MPC file'].click()
                 filedialog = app[self.OPENDIALOG]
                 if self.app.ui.checkFilterMPC.isChecked():
-                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text(), 102, 161):
+                    if self.filterFileMPC(self.TARGET_DIR, self.COMETS_FILE, self.app.ui.le_filterExpressionMPC.text(), self.COMETS_START, self.COMETS_END):
                         uploadNecessary = True
                     EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')                               # filename box
                 else:
@@ -253,7 +281,7 @@ class Data(QtCore.QThread):
                 popup['MPC file'].click()
                 filedialog = app[self.OPENDIALOG]
                 if self.app.ui.checkFilterMPC.isChecked():
-                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text(), 165, 196):
+                    if self.filterFileMPC(self.TARGET_DIR, self.ASTEROIDS_FILE, self.app.ui.le_filterExpressionMPC.text(), self.ASTEROIDS_START, self.ASTEROIDS_END):
                         uploadNecessary = True
                     EditWrapper(filedialog['Edit13']).SetText(self.TARGET_DIR + 'filter.mpc')
                 else:
@@ -263,7 +291,7 @@ class Data(QtCore.QThread):
                 popup['Close'].click()
             else:
                 ButtonWrapper(win['Orbital parameters of asteroids']).uncheck()
-            if self.app.ui.checkSatellites.isChecked():
+            if self.app.ui.checkTLE.isChecked():
                 ButtonWrapper(win['Orbital parameters of satellites']).check()
                 win['Edit...2'].click()
                 popup = app['Satellites orbits']
@@ -275,7 +303,7 @@ class Data(QtCore.QThread):
                 uploadNecessary = True
             else:
                 ButtonWrapper(win['Orbital parameters of satellites']).uncheck()
-            if self.app.ui.checkSpacestations.isChecked():
+            if self.app.ui.checkTLE.isChecked():
                 ButtonWrapper(win['Orbital parameters of satellites']).check()
                 win['Edit...2'].click()
                 popup = app['Satellites orbits']

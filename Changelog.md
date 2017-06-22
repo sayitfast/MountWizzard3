@@ -2,6 +2,8 @@
 2.3.21
 - improved error handling for Remote API
 - added checkbox for enable / disable remote access
+- added other asteroids sources to menu
+- added documentation
 
 2.3.20
 - changes yellow color to white in model log
