@@ -1,4 +1,8 @@
 # Changelog
+2.3.21
+- improved error handling for Remote API
+- added checkbox for enable / disable remote access
+
 2.3.20
 - changes yellow color to white in model log
 - added FITS reading focal length / pixelsize for scale hint

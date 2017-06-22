@@ -51,6 +51,7 @@ class Remote(QtCore.QThread):
         s.listen(1)
         while True:
             conn, addr = s.accept()
+            self.logger.debug('run            -> connection from {0}'.format(addr))
             while True:
                 try:
                     data = conn.recv(self.BUFFER_SIZE)
@@ -58,13 +59,12 @@ class Remote(QtCore.QThread):
                         break
                     else:
                         if data.decode().strip() == 'shutdown':
-                            print('Mountwizzard will be stopped !')
+                            self.logger.debug('run            -> shutdown MW from {0}'.format(addr))
                             self.signalRemoteShutdown.emit(True)
                 except Exception as e:
-                    print(e)
+                    self.logger.error('run            -> error {0}'.format(e))
                     break
             conn.close()
-
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread

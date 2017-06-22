@@ -125,8 +125,8 @@ class MountWizzardApp(MwWidget):
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
         self.remote = Remote(self)
-        self.remote.start()
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
+        self.selectRemoteAccess()
         # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
         # self.ui.mainTabWidget.tabBar().setCurrentIndex(2)
         # self.ui.mainTabWidget.currentWidget().setStyleSheet(self.RED)
@@ -245,6 +245,14 @@ class MountWizzardApp(MwWidget):
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
         self.ui.rb_ascomMount.clicked.connect(self.mount.mountDriverChooser)
         self.ui.rb_directMount.clicked.connect(self.mount.mountDriverChooser)
+        self.ui.btn_runCheckModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunCheckModel'))
+        self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
+
+    def selectRemoteAccess(self):
+        if self.ui.checkRemoteAccess.isChecked():
+            self.remote.start()
+        else:
+            self.remote.terminate()
 
     def showModelErrorPolar(self):
         if not self.model.modelData:
@@ -481,6 +489,8 @@ class MountWizzardApp(MwWidget):
                 self.ui.le_filterExpressionMPC.setText(self.config['FilterExpressionMPC'])
             if 'CheckFilterMPC' in self.config:
                 self.ui.checkFilterMPC.setChecked(self.config['CheckFilterMPC'])
+            if 'CheckRemoteAccess' in self.config:
+                self.ui.checkRemoteAccess.setChecked(self.config['CheckRemoteAccess'])
         except Exception as e:
             self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -560,6 +570,7 @@ class MountWizzardApp(MwWidget):
         self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
         self.config['CheckFilterMPC'] = self.ui.checkFilterMPC.isChecked()
         self.config['FilterExpressionMPC'] = self.ui.le_filterExpressionMPC.text()
+        self.config['CheckRemoteAccess'] = self.ui.checkRemoteAccess.isChecked()
 
     def loadConfig(self):
         try:
@@ -1000,7 +1011,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.20 beta'
+    BUILD_NO = '2.3.21 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
