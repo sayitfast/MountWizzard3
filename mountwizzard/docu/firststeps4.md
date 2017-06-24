@@ -39,9 +39,25 @@ I would recommend to lower the target RMS step by step and see, how much stars w
 you get a good feeling how the numbers could be.
 
 
-### Area 2
+### Area 2 - actual model status
+
+This information is basically all the information the mount computer can give you how to setup you mount right. It's exactly
+the information you get via the handcontroller in the menu "align info". Available from mount firmware 2.15.1 onwards.
 
 ### Area 3
+
+As already mentioned, MountWizzard saves model data on your computer as well the pointing model under a certain name in the mount
+computer. The models in the mount computer and on your computer filesystem have the same name. Files are stored on your computer in
+the directory
+<pre>/analysedata</pre>
+You have the possibility to maintain several models e.g. for DSO tracks. There is no difference in the amount of data between the
+models, but take care that the first 3 ones are used from MountWizzard to optimise usability.
+
+The BACKUP model is used for automatic backup e.g. for optimisation runs.
+
+The BASE model is saved automatically after a base model run and reloaded - if existent - before a refinement run.
+
+The REFINE model is save automatically after a refinement run is finished.
 
 [Back to first steps](firststeps.md)
 
