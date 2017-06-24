@@ -15,7 +15,7 @@ Please look to [installation procedures](installation.md) for detailed informati
 ### Overview
 To get a first impression after start, please have a look to the [main screens and the gui](overview.md) MountWizzard is using.
 ### First Steps
-[First steps in MountWizzard](firststeps.md) are explained here.
+[First steps in MountWizzard](firststeps.md) are explained here. And the link to [How to model](firststeps3.md) for the quick ones.
 ### Setting up MountWizzard
 All necessary [configuration of MountWizzard](installation.md) are explained.
 ### Workflow of MountWizzard for modeling:
