@@ -1,4 +1,4 @@
-## Version TAB
+## Status for versions information
 
 <img src="../pics/tab_settings_versions.png"/>
 
@@ -10,8 +10,8 @@ Mountwizzard checks for all information once at startup. It will show product an
 
 Just as a reminder for knowing where you are currently working: Here is the actual used working directory shown.
 
-[Back to Settings TAB](11start06.md)
+[Back to settings](settings.md)
 
-[Back to first steps](11start00.md)
+[Back to first steps](firststeps.md)
 
-[Back to Home](00home.md)
+[Back to Home](home.md)

@@ -1,4 +1,4 @@
-## UTC Data / MPC / TLE TAB
+## Setting / config of UTC Data / MPC / TLE
 
 <img src="../pics/tab_settings_utcdata.png"/>
 
@@ -47,8 +47,8 @@ asteroids: If you check Filter MPC Files, MountWizzard takes the downloaded file
 filter expression is found. You can have multiple expressions, but you have to comma seperate them. It looks just for the string in the
 file, not the comet or asteroid name !
 
-[Back to Settings TAB](11start06.md)
+[Back to settings](settings.md)
 
-[Back to first steps](11start00.md)
+[Back to first steps](firststeps.md)
 
-[Back to Home](00home.md)
+[Back to Home](home.md)

@@ -1,4 +1,4 @@
-## Park Positions Config TAB
+## Settings for park positions
 
 <img src="../pics/tab_settings_parkpositionsconfig.png"/>
 
@@ -7,8 +7,8 @@ altitude (ALT) could be set in this menue. Please think about the ranges of that
 0 and 90. Still it might be critical to set the min / max values and please take the set altitude limits of you mount into account.
 Otherwise the mount won't slew to the given point.
 
-[Back to Settings TAB](11start06.md)
+[Back to settings](settings.md)
 
-[Back to first steps](11start00.md)
+[Back to first steps](firststeps.md)
 
-[Back to Home](00home.md)
+[Back to Home](home.md)

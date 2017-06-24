@@ -238,6 +238,7 @@ class Mount(QtCore.QThread):
     def transformNovas(self, ra, dec, transform=1):                                                                         # wrapper for the novas ascom implementation
         self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
         self.transform.SiteTemperature = float(self.refractionTemp)                                                         # needs refraction temp
+        # self.transform.JulianDateTT = self.jd
         if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
             if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
                 ra += 24                                                                                                    #

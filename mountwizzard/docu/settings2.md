@@ -1,4 +1,4 @@
-## ASCOM / Mount Driver Settings TAB
+## Settings for ASCOM / Mount Drivers environment drivers and remote access
 
 <img src="../pics/tab_settings_ascommountdriver.png"/>
 
@@ -63,8 +63,8 @@ image files. With that information you can later check the conditions of you nig
 
 <img src="../pics/observationconditionshub.png"/>
 
-[Back to Settings TAB](11start06.md)
+[Back to settings](settings.md)
 
-[Back to first steps](11start00.md)
+[Back to first steps](firststeps.md)
 
-[Back to Home](00home.md)
+[Back to Home](home.md)

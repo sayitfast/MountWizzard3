@@ -1,4 +1,4 @@
-## Imaging Setup TAB
+## Settings for imaging and imaging environment
 
 <img src="../pics/tab_settings_imagingsetup.png"/>
 
@@ -39,8 +39,8 @@ For setting a horizon line in the Modeling Plot Window you can choose a horizon 
 a fixed horizon mask with a dedicated altitude als horizon. You can check both options. In that case MountWizzard just overlays the
 information and take both constraints into account.
 
-[Back to Settings TAB](11start06.md)
+[Back to settings](settings.md)
 
-[Back to first steps](11start00.md)
+[Back to first steps](firststeps.md)
 
-[Back to Home](00home.md)
+[Back to Home](home.md)

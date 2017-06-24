@@ -76,4 +76,4 @@ In addition you find log files after the first and any following run of MountWiz
 stores all the debug and logging information, which might be used for trouble shooting. Please keep these files at least some days and post them
 if you would like to raise some questions. the log files could become large, so take care about the sizes.
 
-[Back to Home](00home.md)
+[Back to Home](home.md)

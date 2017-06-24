@@ -6,7 +6,7 @@ Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some
 
 #### Version release: 2.2 --- beta: 2.3.21
 
-[Link to the extended documentation and handbook of MountWizzard](mountwizzard/docu/00home.md)
+[Link to the extended documentation and handbook of MountWizzard](mountwizzard/docu/home.md)
 
 ## Features:
 - Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.

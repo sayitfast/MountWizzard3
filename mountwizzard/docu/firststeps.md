@@ -29,13 +29,13 @@ message board is scrolling. So if you missed a message please scroll up to view 
 Basically this is the functional area, where most of the user interaction of MountWizzard takes place. The functions are
 ordered in TABs:
 
-- [Pointing TAB](11start01.md)
-- [Site Conditions TAB](11start02.md)
-- [Make Mount Model TAB](11start03.md)
-- [Manage Mount Models TAB](11start04.md)
-- [Model Analyse TAB](11start05.md)
-- [Settings TAB](11start06.md)
-- [Relay Functions TAB](11start07.md)
+- [Pointing TAB](firststeps1.md)
+- [Site Conditions TAB](firststeps2.md)
+- [Make Mount Model TAB](firststeps3.md)
+- [Manage Mount Models TAB](firststeps4.md)
+- [Model Analyse TAB](firststeps5.md)
+- [Settings TAB](settings.md)
+- [Relay Functions TAB](firststeps7.md)
 
 
-[Back Home](00home.md)
+[Back Home](home.md)
