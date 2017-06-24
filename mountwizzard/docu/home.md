@@ -17,7 +17,7 @@ To get a first impression after start, please have a look to the [main screens a
 ### First Steps
 [First steps in MountWizzard](firststeps.md) are explained here. And the link to [How to model](firststeps3.md) for the quick ones.
 ### Setting up MountWizzard
-All necessary [configuration of MountWizzard](installation.md) are explained.
+All necessary [configuration of MountWizzard](settings.md) are explained.
 ### Workflow of MountWizzard for modeling:
 A first good view of the modeling workflow is shown in the [Modeling Workflow Chart](modeling_workflow.md)
 
