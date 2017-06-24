@@ -3062,7 +3062,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Environment Settings</string>
+      <string>Environment Conditions</string>
      </property>
     </widget>
     <widget class="Line" name="line_10">
@@ -3543,7 +3543,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Periodic Parameter Update from Mountwizzard</string>
+      <string>Periodic Parameter Update from MountWizzard</string>
      </property>
      <property name="checked">
       <bool>true</bool>
