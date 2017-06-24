@@ -5148,7 +5148,7 @@ color: rgb(255,255,255);</string>
       <string>Deletes worst point of actual model until error is below target RMS</string>
      </property>
      <property name="text">
-      <string>Run Optimize</string>
+      <string>Run Optimise</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="targetRMS">
@@ -5300,7 +5300,7 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Optimize Actual Model</string>
+      <string>Optimise Actual Model</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_125">
