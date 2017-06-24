@@ -19,7 +19,7 @@ class TheSkyX(MWCamera):
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
-        self.appAvailable = False
+        self.appName = 'TheSkyX - Test Entry'
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
             self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
