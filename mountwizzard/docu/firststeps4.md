@@ -38,6 +38,8 @@ But do not hesitate to use this function: before starting the optimisation, the 
 I would recommend to lower the target RMS step by step and see, how much stars will be removed to get to the next level. Over time
 you get a good feeling how the numbers could be.
 
+There is an alternatively way of presenting the list of modeling stars and the errors: [the polar plot](firststeps41.md). If you
+check the checkbox "polar plot" you will get instead of the list of star a polar plot.
 
 ### Area 2 - actual model status
 
