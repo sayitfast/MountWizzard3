@@ -146,8 +146,8 @@ class Model(QtCore.QThread):
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
-            if self.cpObject.appCameraConnected:
-                if self.app.mount.mountHandler.connected:
+            if self.app.mount.mountHandler.connected:
+                if self.cpObject.appCameraConnected:
                     if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
                         self.command = ''                                                                                       # only one command at a time, last wins
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
@@ -206,6 +206,24 @@ class Model(QtCore.QThread):
                         self.clearAlignmentModel()                                                                              #
                         self.app.modelLogQueue.put('Model cleared!\n')
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
+                if self.command == 'GenerateDSOPoints':
+                    self.command = ''
+                    self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)
+                    self.RefinementPoints = self.generateDSOPoints()
+                    self.signalModelRedraw.emit(True)
+                    self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)
+                elif self.command == 'GenerateDensePoints':
+                    self.command = ''
+                    self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)
+                    self.RefinementPoints = self.generateDensePoints()
+                    self.signalModelRedraw.emit(True)
+                    self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)
+                elif self.command == 'GenerateNormalPoints':
+                    self.command = ''
+                    self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)
+                    self.RefinementPoints = self.generateNormalPoints()
+                    self.signalModelRedraw.emit(True)
+                    self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
             else:
                 pass
             if self.command == 'CameraPlateChooser':
@@ -233,27 +251,9 @@ class Model(QtCore.QThread):
                 self.command = ''
                 self.sortPoints('refinement')
                 self.signalModelRedraw.emit(True)
-            elif self.command == 'GenerateDSOPoints':
-                self.command = ''
-                self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)                                                                                              # take some time, therefore coloring button during execution
-                self.RefinementPoints = self.generateDSOPoints()
-                self.signalModelRedraw.emit(True)
-                self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)                                               # color button back, routine finished
-            elif self.command == 'GenerateDensePoints':
-                self.command = ''
-                self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)                                                                                              # tale some time, color button fro showing running
-                self.RefinementPoints = self.generateDensePoints()
-                self.signalModelRedraw.emit(True)
-                self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)                                             # routing finished, coloring default
-            elif self.command == 'GenerateNormalPoints':
-                self.command = ''
-                self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)                                                                                              # tale some time, color button fro showing running
-                self.RefinementPoints = self.generateNormalPoints()
-                self.signalModelRedraw.emit(True)
-                self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)                                            # routing finished, coloring default
             elif self.command == 'GenerateGridPoints':
                 self.command = ''
-                self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)                                                                                              # take some time, therefore coloring button during execution
+                self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
                 self.RefinementPoints = self.generateGridPoints()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
@@ -319,6 +319,10 @@ class Model(QtCore.QThread):
     def loadModelPoints(self, modelPointsFileName, modeltype):                                                              # load model point file from MM als list from tuples
         p = []
         number = 0
+        if modelPointsFileName.strip() == '':
+            self.app.messageQueue.put('No Model Points Filename given!'.format(modelPointsFileName))
+            self.logger.error('loadModelPoints -> No Model Points Filename given!')
+            return p
         try:                                                                                                                # fault tolerance, if file io fails
             with open('config/' + modelPointsFileName, 'r') as fileHandle:                                                       # run over complete file
                 for line in fileHandle:                                                                                     # run over lines

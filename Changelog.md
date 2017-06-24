@@ -1,4 +1,11 @@
 # Changelog
+2.3.22
+- maintenance release
+- wording in tooltips
+- wording in GUI - small rearrangements for understandability
+- robustness loading model points file without given name
+- avoiding transformations without connected mount (no site data available)
+
 2.3.21
 - improved error handling for Remote API
 - added checkbox for enable / disable remote access
