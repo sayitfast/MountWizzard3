@@ -36,6 +36,11 @@ class AscomCamera(MWCamera):
         self.win32PlateSolver = None
         self.cameraStatus = ''
 
+    def checkAppInstall(self):
+        self.app.messageQueue.put('Found: ASCOM - actually disabled')
+        self.app.ui.rb_cameraASCOM.setVisible(False)
+        self.app.ui.rb_cameraASCOM.setCheckable(False)
+
     def connect(self):
         pass
 
