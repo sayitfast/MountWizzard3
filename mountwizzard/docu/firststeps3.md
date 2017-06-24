@@ -82,6 +82,8 @@ until the cancel is succeeded.
 <b>"run base and refinement model together"</b> will start the model building for first base and than refinement after another. The button will be blue during the model run. You cannot start multiple
 runs at the same time. If you would like to stop manually, please select "cancel any model run".
 
+If you only need modeling that's all you need to know.
+
 [Back to first steps](firststeps.md)
 
 [Back to Home](home.md)
