@@ -6,6 +6,7 @@ The polar plot diagram ist updated whenever "show actual model" is pressed or th
 you can watch MountWizzard removing points, downloading the data from the mount and updating the polar plot. The worst point
 is plotted red. The scale is change automatically.
 
+[Back to manage mount models](firststeps4.md)
 
 [Back to first steps](firststeps.md)
 
