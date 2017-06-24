@@ -57,7 +57,7 @@ runs at the same time. If you would like to stop manually, please select "cancel
 
 ### Area 3 - General Functions
 
-<b>"open modeling plot window"</b> will open the [modeling plot window](settings1.md), where all informations about modeling points,
+<b>"open modeling plot window"</b> will open the [modeling plot window](modelingplotwindow.md), where all informations about modeling points,
 the modeling process, progress in building, logs etc. are shown. MountWizzard stores the information, if you have opened this windows
 and with the next start of MountWizzard it will be opened automatically at the same location.
 
