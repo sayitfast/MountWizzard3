@@ -26,6 +26,7 @@ The title contains the filename for the data, which is shown in the diagram.
 ### Topics to experience with your setup:
 
 - How to discover [time flexure](analysedata1.md)
+- What data does the [analysedata subfolder](analysedata2.md) contain?
 
 [Back to first steps](firststeps.md)
 
