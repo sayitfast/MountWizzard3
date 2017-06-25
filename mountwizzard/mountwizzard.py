@@ -45,8 +45,8 @@ from support.data_thread import Data
 from support.environment_unihedron_thread import Unihedron
 from support.network_remote_thread import Remote
 # matplotlib
-import matplotlib
-matplotlib.use('Qt5Agg')
+from matplotlib import use
+use('Qt5Agg')
 from matplotlib import pyplot as plt
 from matplotlib import figure as figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas

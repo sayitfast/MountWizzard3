@@ -24,8 +24,8 @@ import pyfits
 # numpy
 import numpy
 # matplotlib
-import matplotlib
-matplotlib.use('Qt5Agg')
+from matplotlib import use
+use('Qt5Agg')
 # when using multiple embedded plots in different windows you should use figure instead of pyplot, because the state
 # machine from pyplot mixed multiple instances up.
 from matplotlib import figure as figure

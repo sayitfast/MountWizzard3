@@ -22,8 +22,8 @@ import PyQt5.QtWidgets
 from support.mwwidget import MwWidget
 from support.analyse_dialog_ui import Ui_AnalyseDialog
 # matplotlib
-import matplotlib
-matplotlib.use('Qt5Agg')
+from matplotlib import use
+use('Qt5Agg')
 from matplotlib import pyplot as plt
 from matplotlib import figure as figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas

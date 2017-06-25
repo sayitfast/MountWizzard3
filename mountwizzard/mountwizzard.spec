@@ -12,10 +12,11 @@ a = Analysis(['mountwizzard.py'],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
-             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter'],
+             excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'QtPrintSupport', 'TkAgg', '_tkagg'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher)
+
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 exe = EXE(pyz,
@@ -26,7 +27,7 @@ exe = EXE(pyz,
           name='mountwizzard',
           debug=False,
           strip=False,
-          upx=True,
+          upx=False,
           console=False,
           icon='./mountwizzard/mw.ico')
 
