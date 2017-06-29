@@ -73,13 +73,7 @@ class Model(QtCore.QThread):
         self.captureFile = 'model'                                                                                          # filename for capturing file
         self.counter = 0                                                                                                    # counter for main loop
         self.command = ''                                                                                                   # command buffer
-        self.errSum = 0.0                                                                                                   # resetting all the counting data for the model
-        self.numCheckPoints = 0                                                                                             # number og checkpoints done
         self.results = []                                                                                                   # error results
-        self.sizeX = 0                                                                                                      # sizeX of subframe
-        self.sizeY = 0                                                                                                      # sizeY of subframe
-        self.offX = 0                                                                                                       # offsetX for subframe
-        self.offY = 0                                                                                                       # offsetY for subframe
         self.signalModelCommand.connect(self.sendCommand)                                                                   # signal for receiving commands to modeling from GUI
         self.initConfig()
         self.chooserLock = threading.Lock()

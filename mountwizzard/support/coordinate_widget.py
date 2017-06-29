@@ -59,7 +59,7 @@ class ShowCoordinatePopup(MwWidget):
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.app.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
         self.app.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
-        self.app.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                 # if tracking widget is switched on / off, here is the signal for it
+        self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
         self.app.model.signalModelRedraw.connect(self.redrawCoordinateWindow)                                               # signal for redrawing the window content
         self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
         self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)                                                  # signal for closing (not destroying) the window
@@ -108,13 +108,13 @@ class ShowCoordinatePopup(MwWidget):
         QApplication.processEvents()
 
     def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
-        if self.app.ui.checkRunTrackingWidget.isChecked():
+        if self.ui.checkRunTrackingWidget.isChecked():
             self.drawTrackPreview()
         else:
             self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):                                                                                             # method for drawing the track
-        if not self.app.ui.checkRunTrackingWidget.isChecked():
+        if not self.ui.checkRunTrackingWidget.isChecked():
             return
         raCopy = copy.copy(self.app.mount.ra)                                                                               # start wit the actual coordinates of the mount
         decCopy = copy.copy(self.app.mount.dec)                                                                             # but copy it (otherwise it will be changes during the calculation -> python object model)

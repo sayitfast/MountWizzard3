@@ -4601,7 +4601,7 @@ color: rgb(255,255,255);</string>
       <number>0</number>
      </property>
      <property name="minimum">
-      <double>5.000000000000000</double>
+      <double>1.000000000000000</double>
      </property>
      <property name="maximum">
       <double>15.000000000000000</double>
@@ -4727,33 +4727,6 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="value">
       <double>0.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkRunTrackingWidget">
-     <property name="geometry">
-      <rect>
-       <x>500</x>
-       <y>90</y>
-       <width>241</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Checked if you would like to see the tracking line and flip time in the window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>Show Track in Modeling Plot Window</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_plateSolveSync">
@@ -11914,7 +11887,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_runAllModel</tabstop>
   <tabstop>btn_plateSolveSync</tabstop>
   <tabstop>btn_openCoordinateWindow</tabstop>
-  <tabstop>checkRunTrackingWidget</tabstop>
   <tabstop>btn_deletePoints</tabstop>
   <tabstop>btn_deleteBelowHorizonLine</tabstop>
   <tabstop>btn_sortRefinementPoints</tabstop>

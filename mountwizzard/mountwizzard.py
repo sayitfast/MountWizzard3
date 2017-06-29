@@ -84,9 +84,6 @@ class MountWizzardApp(MwWidget):
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
-        self.loadConfig()                                                                                                   # load configuration
-        self.initConfig()
-        self.checkASCOM()
         self.relays = Relays(self)                                                                                          # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = Dome(self)                                                                                              # dome control
         self.mount = Mount(self)                                                                                            # Mount -> everything with mount and alignment
@@ -98,6 +95,9 @@ class MountWizzardApp(MwWidget):
         self.analysePopup = ShowAnalysePopup(self)                                                                          # windows for analyse data
         self.coordinatePopup = ShowCoordinatePopup(self)                                                                    # window for modeling points
         self.imagePopup = ShowImagePopup(self)                                                                              # window for imaging
+        self.loadConfig()                                                                                                   # load configuration
+        self.initConfig()
+        self.checkASCOM()
         helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib
         helper.setContentsMargins(0, 0, 0, 0)                                                                               # set margins to 0 -> box in qt is frameless
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
@@ -435,7 +435,7 @@ class MountWizzardApp(MwWidget):
             if 'CheckKeepImages' in self.config:
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             if 'CheckRunTrackingWidget' in self.config:
-                self.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
+                self.coordinatePopup.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
             if 'CheckClearModelFirst' in self.config:
                 self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
             if 'CheckKeepRefinement' in self.config:
@@ -543,7 +543,7 @@ class MountWizzardApp(MwWidget):
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
         self.config['CheckAutoRefraction'] = self.ui.checkAutoRefraction.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
-        self.config['CheckRunTrackingWidget'] = self.ui.checkRunTrackingWidget.isChecked()
+        self.config['CheckRunTrackingWidget'] = self.coordinatePopup.ui.checkRunTrackingWidget.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()
         self.config['AzimuthBase'] = self.ui.azimuthBase.value()
         self.config['NumberGridPointsRow'] = self.ui.numberGridPointsRow.value()
@@ -1014,7 +1014,7 @@ if __name__ == "__main__":
         logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.22 beta'
+    BUILD_NO = '2.3.23 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
