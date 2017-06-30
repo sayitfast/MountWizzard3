@@ -1,4 +1,4 @@
-# MountWizzard <img src="pics/mw.png" width='64' height='64'/>
+# MountWizzard <img src="./pics/mw.png" width='64' height='64'/>
 
 #### Application for use in 10micron Mount environment
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
@@ -6,7 +6,7 @@ Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some
 
 #### Version release: 2.2 --- beta: 2.3.22
 
-[Link to the extended documentation and handbook of MountWizzard](docu/home.md)
+[Link to the extended documentation and handbook of MountWizzard](./docu/home.md)
 
 ## Features:
 - Imaging Software: Sequence Generator Pro and TheSkyX are supported. Please refer to their homepages for use.
