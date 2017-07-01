@@ -44,12 +44,12 @@ from baseclasses import widget
 from widgets import modelplot
 from widgets import images
 from gui import wizzard_main_ui
-# enviroment classes
+# environment classes
 from environment import stick_thread
 from environment import unihedron_thread
 from environment import weather_thread
 # modeling
-from modeling.model_thread import Model
+from modeling.modeling_thread import Modeling
 # import mount functions classes
 from mount import mount_thread
 from relays import relays
@@ -74,7 +74,7 @@ class MountWizzardApp(widget.MwWidget):
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
         self.modifiers = None                                                                                               # for the mouse handling
-        self.config = {}                                                                                                    # configuration data, which is stored
+        self.loadConfig()                                                                                                   # load configuration
         self.ui = wizzard_main_ui.Ui_WizzardMainDialog()                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
@@ -91,12 +91,11 @@ class MountWizzardApp(widget.MwWidget):
         self.weather = weather_thread.Weather(self)                                                                         # Stickstation Thread
         self.stick = stick_thread.Stick(self)                                                                               # Stickstation Thread
         self.unihedron = unihedron_thread.Unihedron(self)                                                                   # Unihedron Thread
-        self.model = Model(self)                                                                                            # transferring ui and mount object as well
+        self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
         self.data = data_upload_thread.DataUploadToMount(self)                                                              # data thread for downloading topics
-        self.analysePopup = analyse.ShowAnalysePopup(self)                                                                  # windows for analyse data
-        self.coordinatePopup = modelplot.ModelPlotWindow(self)                                                              # window for modeling points
-        self.imagePopup = images.ImagesWindow(self)                                                                         # window for imaging
-        self.loadConfig()                                                                                                   # load configuration
+        self.analyseWindow = analyse.AnalyseWindow(self)                                                                    # windows for analyse data
+        self.modelWindow = modelplot.ModelPlotWindow(self)                                                                  # window for modeling points
+        self.imageWindow = images.ImagesWindow(self)                                                                        # window for imaging
         self.initConfig()
         self.checkASCOM()
         helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib
@@ -104,7 +103,7 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)                                                                                  # add widget to view
-        self.model.signalModelCommand.emit('CameraPlateChooser')
+        self.modeling.signalModelCommand.emit('CameraPlateChooser')
         self.mount.mountDriverChooser()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
@@ -119,8 +118,8 @@ class MountWizzardApp(widget.MwWidget):
         self.unihedron.start()                                                                                              # starting polling thread
         self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
         self.dome.start()                                                                                                   # starting polling thread
-        self.model.signalModelConnected.connect(self.setCameraPlateStatus)                                                  # status from thread
-        self.model.start()                                                                                                  # starting polling thread
+        self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
+        self.modeling.start()                                                                                               # starting polling thread
         self.data.start()                                                                                                   # starting data thread
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
@@ -170,17 +169,17 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
         self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
         self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
-        self.ui.btn_setupAscomCameraDriver.clicked.connect(lambda: self.model.AscomCamera.setupDriverCamera())
+        self.ui.btn_setupAscomCameraDriver.clicked.connect(lambda: self.modeling.AscomCamera.setupDriverCamera())
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
-        self.ui.btn_runBaseModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunBaseModel'))
-        self.ui.btn_cancelModel.clicked.connect(lambda: self.model.signalModelCommand.emit('CancelModel'))
-        self.ui.btn_runRefinementModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunRefinementModel'))
-        self.ui.btn_runBatchModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunBatchModel'))
-        self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.model.signalModelCommand.emit('ClearAlignmentModel'))
-        self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.selectHorizonPointsFileName)
-        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
-        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.selectHorizonPointsMode)
-        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.selectHorizonPointsMode)
+        self.ui.btn_runBaseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBaseModel'))
+        self.ui.btn_cancelModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelModel'))
+        self.ui.btn_runRefinementModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunRefinementModel'))
+        self.ui.btn_runBatchModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBatchModel'))
+        self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('ClearAlignmentModel'))
+        self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.modelWindow.selectHorizonPointsFileName)
+        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
+        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
+        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_showActualModel.clicked.connect(lambda: self.commandQueue.put('ShowAlignmentModel'))
@@ -188,13 +187,13 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandQueue.put('RunTargetRMSAlignment'))
         self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandQueue.put('DeleteWorstPoint'))
-        self.ui.btn_sortRefinementPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('SortRefinementPoints'))
-        self.ui.btn_deleteBelowHorizonLine.clicked.connect(lambda: self.model.signalModelCommand.emit('DeleteBelowHorizonLine'))
-        self.ui.btn_plateSolveSync.clicked.connect(lambda: self.model.signalModelCommand.emit('PlateSolveSync'))
-        self.ui.btn_deletePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('DeletePoints'))
+        self.ui.btn_sortRefinementPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('SortRefinementPoints'))
+        self.ui.btn_deleteBelowHorizonLine.clicked.connect(lambda: self.modeling.signalModelCommand.emit('DeleteBelowHorizonLine'))
+        self.ui.btn_plateSolveSync.clicked.connect(lambda: self.modeling.signalModelCommand.emit('PlateSolveSync'))
+        self.ui.btn_deletePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('DeletePoints'))
         self.ui.btn_flipMount.clicked.connect(lambda: self.commandQueue.put('FLIP'))
-        self.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('LoadRefinementPoints'))
-        self.ui.btn_loadBasePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('LoadBasePoints'))
+        self.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('LoadRefinementPoints'))
+        self.ui.btn_loadBasePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('LoadBasePoints'))
         self.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandQueue.put('SaveBackupModel'))
         self.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandQueue.put('LoadBackupModel'))
         self.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandQueue.put('SaveSimpleModel'))
@@ -207,36 +206,36 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandQueue.put('LoadDSO1Model'))
         self.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandQueue.put('SaveDSO2Model'))
         self.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandQueue.put('LoadDSO2Model'))
-        self.ui.btn_generateDSOPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.numberHoursDSO.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.numberPointsDSO.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.numberHoursPreview.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.btn_generateDensePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateDensePoints'))
-        self.ui.btn_generateNormalPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateNormalPoints'))
-        self.ui.btn_generateGridPoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.altitudeMin.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.altitudeMax.valueChanged.connect(lambda: self.model.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.btn_generateBasePoints.clicked.connect(lambda: self.model.signalModelCommand.emit('GenerateBasePoints'))
-        self.ui.btn_runCheckModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunCheckModel'))
-        self.ui.btn_runAllModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunAllModel'))
-        self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunTimeChangeModel'))
-        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.model.signalModelCommand.emit('CancelAnalyseModel'))
-        self.ui.btn_runHystereseModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunHystereseModel'))
+        self.ui.btn_generateDSOPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.numberHoursDSO.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.numberPointsDSO.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.numberHoursPreview.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
+        self.ui.btn_generateDensePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDensePoints'))
+        self.ui.btn_generateNormalPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateNormalPoints'))
+        self.ui.btn_generateGridPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.altitudeMin.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.altitudeMax.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
+        self.ui.btn_generateBasePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateBasePoints'))
+        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
+        self.ui.btn_runAllModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunAllModel'))
+        self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunTimeChangeModel'))
+        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelAnalyseModel'))
+        self.ui.btn_runHystereseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunHystereseModel'))
         self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
         self.ui.btn_openCoordinateWindow.clicked.connect(self.showCoordinateWindow)
         self.ui.btn_bootMount.clicked.connect(lambda: self.relays.bootMount())
         self.ui.btn_switchCCD.clicked.connect(lambda: self.relays.switchCCD())
         self.ui.btn_switchHeater.clicked.connect(lambda: self.relays.switchHeater())
-        self.ui.rb_cameraSGPro.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraTSX.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraASCOM.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraMaximDL.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraNone.clicked.connect(lambda: self.model.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.btn_appCameraConnect.clicked.connect(lambda: self.model.signalModelCommand.emit('ConnectCamera'))
-        self.ui.btn_appCameraDisconnect.clicked.connect(lambda: self.model.signalModelCommand.emit('DisconnectCamera'))
-        self.ui.btn_appStart.clicked.connect(lambda: self.model.signalModelCommand.emit('StartApplication'))
+        self.ui.rb_cameraSGPro.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraTSX.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraASCOM.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraMaximDL.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.rb_cameraNone.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
+        self.ui.btn_appCameraConnect.clicked.connect(lambda: self.modeling.signalModelCommand.emit('ConnectCamera'))
+        self.ui.btn_appCameraDisconnect.clicked.connect(lambda: self.modeling.signalModelCommand.emit('DisconnectCamera'))
+        self.ui.btn_appStart.clicked.connect(lambda: self.modeling.signalModelCommand.emit('StartApplication'))
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
@@ -249,7 +248,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
         self.ui.rb_ascomMount.clicked.connect(self.mount.mountDriverChooser)
         self.ui.rb_directMount.clicked.connect(self.mount.mountDriverChooser)
-        self.ui.btn_runCheckModel.clicked.connect(lambda: self.model.signalModelCommand.emit('RunCheckModel'))
+        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
 
     def selectRemoteAccess(self):
@@ -259,11 +258,11 @@ class MountWizzardApp(widget.MwWidget):
             self.remote.terminate()
 
     def showModelErrorPolar(self):
-        if not self.model.modelData:
+        if not self.modeling.modelData:
             return
         data = dict()
-        for i in range(0, len(self.model.modelData)):
-            for (keyData, valueData) in self.model.modelData[i].items():
+        for i in range(0, len(self.modeling.modelData)):
+            for (keyData, valueData) in self.modeling.modelData[i].items():
                 if keyData in data:
                     data[keyData].append(valueData)
                 else:
@@ -387,14 +386,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
             if 'ModelPointsFileName' in self.config:
                 self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
-            if 'HorizonPointsFileName' in self.config:
-                self.ui.le_horizonPointsFileName.setText(self.config['HorizonPointsFileName'])
-            if 'CheckUseMinimumHorizonLine' in self.config:
-                self.ui.checkUseMinimumHorizonLine.setChecked(self.config['CheckUseMinimumHorizonLine'])
-            if 'CheckUseFileHorizonLine' in self.config:
-                self.ui.checkUseFileHorizonLine.setChecked(self.config['CheckUseFileHorizonLine'])
-            if 'AltitudeMinimumHorizon' in self.config:
-                self.ui.altitudeMinimumHorizon.setValue(self.config['AltitudeMinimumHorizon'])
             if 'CameraTSX' in self.config:
                 self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
             if 'CameraSGPro' in self.config:
@@ -436,7 +427,7 @@ class MountWizzardApp(widget.MwWidget):
             if 'CheckKeepImages' in self.config:
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             if 'CheckRunTrackingWidget' in self.config:
-                self.coordinatePopup.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
+                self.modelWindow.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
             if 'CheckClearModelFirst' in self.config:
                 self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
             if 'CheckKeepRefinement' in self.config:
@@ -497,6 +488,7 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkRemoteAccess.setChecked(self.config['CheckRemoteAccess'])
         except Exception as e:
             self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            print(e)
         finally:
             pass
 
@@ -520,10 +512,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ParkPosAlt6'] = self.ui.le_altParkPos6.text()
         self.config['ParkPosAz6'] = self.ui.le_azParkPos6.text()
         self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
-        self.config['HorizonPointsFileName'] = self.ui.le_horizonPointsFileName.text()
-        self.config['CheckUseMinimumHorizonLine'] = self.ui.checkUseMinimumHorizonLine.isChecked()
-        self.config['CheckUseFileHorizonLine'] = self.ui.checkUseFileHorizonLine.isChecked()
-        self.config['AltitudeMinimumHorizon'] = self.ui.altitudeMinimumHorizon.value()
         self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
         self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
         self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
@@ -544,7 +532,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
         self.config['CheckAutoRefraction'] = self.ui.checkAutoRefraction.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
-        self.config['CheckRunTrackingWidget'] = self.coordinatePopup.ui.checkRunTrackingWidget.isChecked()
+        self.config['CheckRunTrackingWidget'] = self.modelWindow.ui.checkRunTrackingWidget.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()
         self.config['AzimuthBase'] = self.ui.azimuthBase.value()
         self.config['NumberGridPointsRow'] = self.ui.numberGridPointsRow.value()
@@ -589,13 +577,13 @@ class MountWizzardApp(widget.MwWidget):
     def saveConfig(self):
         self.storeConfig()
         self.mount.storeConfig()
-        self.model.storeConfig()
+        self.modeling.storeConfig()
         self.stick.storeConfig()
         self.weather.storeConfig()
-        self.coordinatePopup.storeConfig()
+        self.modelWindow.storeConfig()
         self.dome.storeConfig()
-        self.imagePopup.storeConfig()
-        self.analysePopup.storeConfig()
+        self.imageWindow.storeConfig()
+        self.analyseWindow.storeConfig()
         self.unihedron.storeConfig()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
@@ -607,7 +595,7 @@ class MountWizzardApp(widget.MwWidget):
             self.messageQueue.put('Config.cfg could not be saved !')
             self.logger.error('loadConfig -> item in config.cfg not saved error {0}'.format(e))
             return
-        self.mount.saveActualModel()                                                                                        # save current loaded model from mount
+        self.mount.saveActualModel()                                                                                        # save current loaded modeling from mount
 
     def saveConfigQuit(self):
         self.saveConfig()
@@ -643,32 +631,15 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('selectAnalyseFile -> no file selected')
 
     def showAnalyseWindow(self):
-        self.analysePopup.getData()
-        self.analysePopup.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
-        self.analysePopup.showDecError()
-        self.analysePopup.showStatus = True
-        self.analysePopup.setVisible(True)
+        self.analyseWindow.getData()
+        self.analyseWindow.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
+        self.analyseWindow.showDecError()
+        self.analyseWindow.showStatus = True
+        self.analyseWindow.setVisible(True)
 
     def showCoordinateWindow(self):
-        self.coordinatePopup.showStatus = True
-        self.coordinatePopup.setVisible(True)
-
-    def selectHorizonPointsMode(self):
-        self.model.loadHorizonPoints(self.ui.le_horizonPointsFileName.text())
-        self.coordinatePopup.redrawCoordinateWindow()
-
-    def selectHorizonPointsFileName(self):
-        dlg = QFileDialog()
-        dlg.setViewMode(QFileDialog.List)
-        dlg.setNameFilter("Text files (*.txt)")
-        dlg.setFileMode(QFileDialog.ExistingFile)
-        # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
-        if a[0] != '':
-            self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
-            self.model.loadHorizonPoints(os.path.basename(a[0]))
-            self.ui.checkUseMinimumHorizonLine.setChecked(False)
-            self.coordinatePopup.redrawCoordinateWindow()
+        self.modelWindow.showStatus = True
+        self.modelWindow.setVisible(True)
 
     def shutdownQuit(self):
         self.saveConfig()
@@ -849,10 +820,10 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_telescopeRA.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopeAltitude':
             self.ui.le_telescopeAltitude.setText(str(data['Value']))
-            self.coordinatePopup.ui.le_telescopeAltitude.setText(str(data['Value']))
+            self.modelWindow.ui.le_telescopeAltitude.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopeAzimuth':
             self.ui.le_telescopeAzimut.setText(str(data['Value']))
-            self.coordinatePopup.ui.le_telescopeAzimut.setText(str(data['Value']))
+            self.modelWindow.ui.le_telescopeAzimut.setText(str(data['Value']))
         if data['Name'] == 'GetSlewRate':
             self.ui.le_slewRate.setText(str(data['Value']))
         if data['Name'] == 'GetMeridianLimitTrack':
@@ -911,7 +882,7 @@ class MountWizzardApp(widget.MwWidget):
     def fillUnihedronData(self, data):
         # data from Unihedron via signal connected
         self.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
-        self.coordinatePopup.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
+        self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
 
     @QtCore.Slot(int)
     def setUnihedronStatus(self, status):
@@ -976,33 +947,33 @@ class MountWizzardApp(widget.MwWidget):
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
             text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
             if text == 'delete':                                                                                            # delete logfile for modeling
-                self.coordinatePopup.ui.modellingLog.clear()                                                                # reset window text
+                self.modelWindow.ui.modellingLog.clear()                                                                # reset window text
             elif text == 'backspace':
                 for i in range(0, 6):
-                    self.coordinatePopup.ui.modellingLog.textCursor().deletePreviousChar()
+                    self.modelWindow.ui.modellingLog.textCursor().deletePreviousChar()
             elif text.startswith('status'):
-                self.coordinatePopup.ui.le_modelingStatus.setText(text[6:])
+                self.modelWindow.ui.le_modelingStatus.setText(text[6:])
             elif text.startswith('percent'):
-                self.coordinatePopup.ui.bar_modelingStatusPercent.setValue(int(1000*float(text[7:])))
+                self.modelWindow.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):
-                self.coordinatePopup.ui.le_modelingStatusTime.setText(text[8:])
+                self.modelWindow.ui.le_modelingStatusTime.setText(text[8:])
             elif text.startswith('#BW'):
-                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_WHITE)
-                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
-                self.coordinatePopup.ui.modellingLog.insertPlainText(text[3:])
+                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_WHITE)
+                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Bold)
+                self.modelWindow.ui.modellingLog.insertPlainText(text[3:])
             elif text.startswith('#BG'):
-                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_GREEN)
-                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
-                self.coordinatePopup.ui.modellingLog.insertPlainText(text[3:])
+                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_GREEN)
+                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Bold)
+                self.modelWindow.ui.modellingLog.insertPlainText(text[3:])
             elif text.startswith('#BY'):
-                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_YELLOW)
-                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Bold)
-                self.coordinatePopup.ui.modellingLog.insertPlainText(text[3:])
+                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_YELLOW)
+                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Bold)
+                self.modelWindow.ui.modellingLog.insertPlainText(text[3:])
             else:
-                self.coordinatePopup.ui.modellingLog.setTextColor(self.COLOR_ASTRO)
-                self.coordinatePopup.ui.modellingLog.setFontWeight(QFont.Normal)
-                self.coordinatePopup.ui.modellingLog.insertPlainText(text)                                                  # otherwise add text at the end
-            self.coordinatePopup.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
+                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_ASTRO)
+                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Normal)
+                self.modelWindow.ui.modellingLog.insertPlainText(text)                                                  # otherwise add text at the end
+            self.modelWindow.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
             self.modelLogQueue.task_done()
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
@@ -1053,7 +1024,7 @@ if __name__ == "__main__":
 
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
     mountApp.show()                                                                                                         # show it
-    if mountApp.coordinatePopup.showStatus:                                                                                 # if windows was shown last run, open it directly
-        mountApp.coordinatePopup.redrawCoordinateWindow()                                                                   # update content
+    if mountApp.modelWindow.showStatus:                                                                                 # if windows was shown last run, open it directly
+        mountApp.modelWindow.redrawModelingWindow()                                                                   # update content
         mountApp.showCoordinateWindow()                                                                                     # show it
     sys.exit(app.exec_())                                                                                                   # close application

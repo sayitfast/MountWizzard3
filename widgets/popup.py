@@ -20,7 +20,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from widgets.popup_dialog_ui import Ui_PopupDialog
+from widgets import popup_dialog_ui
 
 matplotlib.use('Qt5Agg')
 from matplotlib import pyplot as plt
@@ -67,7 +67,7 @@ class MyPopup(QWidget):
         QWidget.__init__(self)
         self.moving = False
         self.offset = None
-        self.ui = Ui_PopupDialog()
+        self.ui = popup_dialog_ui.Ui_PopupDialog()
         self.ui.setupUi(self)
         self.initUI()
         #self.setGeometry(QRect(100, 100, 600, 600))

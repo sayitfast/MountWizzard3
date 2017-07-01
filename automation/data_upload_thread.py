@@ -15,8 +15,10 @@
 # import basic stuff
 import os
 import logging
-from PyQt5 import QtCore
 import time
+# pyqt
+from PyQt5 import QtCore
+# webservices
 import urllib.request as urllib2
 # windows automation
 from pywinauto import Application, timings, findwindows, application

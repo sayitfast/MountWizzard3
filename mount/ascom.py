@@ -17,6 +17,8 @@ import logging
 import threading
 from win32com.client.dynamic import Dispatch
 import pythoncom
+# astrometry
+from astrometry import transform
 
 
 class MountAscom:
@@ -89,9 +91,9 @@ class MountAscom:
             elif command == 'Gmte':
                 value = '0125'
             elif command == 'Gt':
-                value = self.app.mount.decimalToDegree(self.ascom.SiteLatitude, True, False)
+                value = transform.Transform.decimalToDegree(self.ascom.SiteLatitude, True, False)
             elif command == 'Gg':
-                lon = self.app.mount.decimalToDegree(self.ascom.SiteLongitude, True, False)
+                lon = transform.Transform.decimalToDegree(self.ascom.SiteLongitude, True, False)
                 if lon[0] == '-':                                                                                           # due to compatibility to LX200 protocol east is negative
                     lon1 = lon.replace('-', '+')                                                                            # change that
                 else:
@@ -110,7 +112,7 @@ class MountAscom:
                 self.ascom.SlewToAltAzAsync(self.value_azimuth, self.value_altitude)
                 self.ascom.Tracking = False
             elif command == 'GS':
-                value = self.app.mount.decimalToDegree(self.ascom.SiderealTime, False, False)
+                value = transform.Transform.decimalToDegree(self.ascom.SiderealTime, False, False)
             elif command == 'GRTMP':
                 value = '10.0'
             elif command == 'Ginfo':

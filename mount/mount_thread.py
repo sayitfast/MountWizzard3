@@ -19,15 +19,16 @@ import threading
 import time
 # for the sorting
 from operator import itemgetter
-
-import pythoncom
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
+# win32com
 from win32com.client.dynamic import Dispatch
-
+import pythoncom
 #  mount driver classes
 from mount import ascom
 from mount import ipdirect
+# astrometry
+from astrometry import transform
 
 
 class Mount(QtCore.QThread):
@@ -46,6 +47,7 @@ class Mount(QtCore.QThread):
         self.MountAscom = ascom.MountAscom(app)                                                                             # set ascom driver class
         self.MountIpDirect = ipdirect.MountIpDirect(app)
         self.mountHandler = self.MountAscom
+        self.transform = transform.Transform()
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
                                 '2': 'Slewing to park position',
@@ -80,10 +82,7 @@ class Mount(QtCore.QThread):
         self.meridianLimitTrack = 5.0                                                                                       # degrees after meridian to flip
         self.refractionTemp = '20.0'                                                                                        # coordinate transformation need temp
         self.refractionPressure = '900.0'                                                                                   # and pressure
-        self.transform = None                                                                                               # ascom novas library entry point
         self.counter = 0                                                                                                    # counter im main loop
-        self.transformConnected = False
-        self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
         self.chooserLock = threading.Lock()
         self.initConfig()
 
@@ -115,14 +114,6 @@ class Mount(QtCore.QThread):
 
     def run(self):                                                                                                          # runnable of the thread
         pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
-        try:                                                                                                                # start accessing a com object
-            self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
-            self.transformConnected = True
-        except Exception as e:                                                                                              # exception handling
-            self.app.messageQueue.put('Error loading ASCOM transform Driver')                                               # write to gui
-            self.logger.error('run Mount      -> loading ASCOM transform error:{0}'.format(e))                              # write logfile
-        finally:                                                                                                            # we don't stop on error the wizzard
-            pass                                                                                                            # python specific
         self.counter = 0                                                                                                    # init count for managing different cycle times
         while True:                                                                                                         # main loop in thread
             self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status
@@ -229,7 +220,6 @@ class Mount(QtCore.QThread):
                 self.mountHandler.connect()
                 self.counter = 0
                 time.sleep(1)                                                                                               # try it every second, not more
-        self.transform.Quit()                                                                                               # close ascom novas transform object
         self.mountHandler.disconnect()
         pythoncom.CoUninitialize()                                                                                          # needed for doing COM objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
@@ -237,109 +227,14 @@ class Mount(QtCore.QThread):
     def __del__(self):                                                                                                      # remove thread
         self.wait()                                                                                                         # wait for stop of thread
 
-    def transformNovas(self, ra, dec, transform=1):                                                                         # wrapper for the novas ascom implementation
-        self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
-        self.transform.SiteTemperature = float(self.refractionTemp)                                                         # needs refraction temp
-        # self.transform.JulianDateTT = self.jd
-        if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24                                                                                                    #
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
-            self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
-            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
-            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
-        elif transform == 2:                                                                                                # 2 = Jnow -> J2000
-            self.transform.SetTopocentric(ra, dec)                                                                          # set Jnow data
-            val1 = self.transform.RAJ2000
-            val2 = self.transform.DECJ2000
-        elif transform == 3:                                                                                                # 3 = J2000 -> JNow
-            self.transform.SetJ2000(ra, dec)                                                                                # set J2000 data
-            val1 = self.transform.RATopocentric
-            val2 = self.transform.DECTopocentric
-        elif transform == 4:                                                                                                # 1 = JNow -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24                                                                                                    #
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
-            self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
-            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
-            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
-        elif transform == 5:                                                                                                # 5 = Apparent -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
-            self.transform.SetApparent(ra, dec)                                                                             # set apparent ra, dec
-            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
-            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
-        else:
-            val1 = ra
-            val2 = dec
-        self.transformationLock.release()                                                                                   # release locking for thread safety
-        return val1, val2
-
     def flipMount(self):                                                                                                    # doing the flip of the mount
         reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
             self.app.messageQueue.put('Flip Mount could not be executed !')                                                 # write to gui
             self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
 
-    @staticmethod
-    def ra_dec_lst_to_az_alt(ra, dec, LAT):                                                                                 # formula to make alt/az from hour angle and dec
-        ra = (ra * 15 + 360.0) % 360.0
-        dec = math.radians(dec)
-        ra = math.radians(ra)
-        lat = math.radians(LAT)
-        alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
-        A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat)))
-        A = math.degrees(A)
-        alt = math.degrees(alt)
-        if math.sin(ra) >= 0.0:
-            az = 360.0 - A
-        else:
-            az = A
-        return az, alt
-
-    def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
-        sign = 1
-        if '-' in value:
-            value = value.replace('-', '')
-            sign = -1
-        elif '+' in value:
-            value = value.replace('+', '')
-        try:
-            if len(value.split(splitter)) == 3:
-                hour, minute, second = value.split(splitter)
-                return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
-            elif len(value.split(splitter)) == 2:
-                hour, minute = value.split(splitter)
-                return (float(hour) + float(minute) / 60) * sign
-        except Exception as e:
-            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
-            return 0
-
-    @staticmethod
-    def decimalToDegree(value, with_sign=True, with_decimal=False, spl=':'):                                               # format decimal value to string in degree format
-        if value >= 0:
-            sign = '+'
-        else:
-            sign = '-'
-        value = abs(value)
-        hour = int(value)
-        minute = int((value - hour) * 60)
-        second = int(((value - hour) * 60 - minute) * 60)
-        if with_decimal:
-            second_dec = '.{0:1d}'.format(int((((value - hour) * 60 - minute) * 60 - second) * 10))
-        else:
-            second_dec = ''
-        if with_sign:
-            return '{0}{1:02d}{5}{2:02d}{5}{3:02d}{4}'.format(sign, hour, minute, second, second_dec, spl)
-        else:
-            return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
-
     def numberModelStars(self):
-        return int(self.mountHandler.sendCommand('getalst'))                                                                # if there are some points, a model must be there
+        return int(self.mountHandler.sendCommand('getalst'))                                                                # if there are some points, a modeling must be there
 
     def getAlignmentModelStatus(self, alignModel):
         try:
@@ -388,7 +283,7 @@ class Mount(QtCore.QThread):
         finally:
             return alignModel
 
-    def getAlignmentModel(self):                                                                                            # download alignment model from mount
+    def getAlignmentModel(self):                                                                                            # download alignment modeling from mount
         alignModel = {}                                                                                                     # clear alignmentdata
         points = []                                                                                                         # clear points list
         alignModel['azimuth'] = 0.0
@@ -413,14 +308,14 @@ class Mount(QtCore.QThread):
             errorRMS = float(reply[2].strip())
             errorAngle = reply[3].strip().rstrip('#')
             dec = dec.replace('*', ':')
-            ra_J2000 = self.degStringToDecimal(ha)
-            dec_J2000 = self.degStringToDecimal(dec)
-            az, alt = self.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000, self.degStringToDecimal(self.site_lat))
+            ra_J2000 = self.transform.degStringToDecimal(ha)
+            dec_J2000 = self.transform.degStringToDecimal(dec)
+            az, alt = self.transform.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000, self.transform.degStringToDecimal(self.site_lat))
             alignModel['points'].append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                   # index should start with 0, but numbering in mount starts with 1
         return alignModel
 
     def retrofitMountData(self, data):
-        num = self.numberModelStars()                                                                                       # size mount model
+        num = self.numberModelStars()                                                                                       # size mount modeling
         if num == len(data):
             alignModel = self.getAlignmentModel()                                                                           # get mount points
             self.showAlignmentModel(alignModel)
@@ -428,10 +323,10 @@ class Mount(QtCore.QThread):
                 data[i]['modelError'] = float(alignModel['points'][i][5])                                                   # and for the total error
                 data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(alignModel['points'][i][6]))             # set raError new from total error mount with polar error angle from mount
                 data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))            # same to dec
-            self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
+            self.app.modelingLogQueue.put('Mount Model and Model Data synced\n')
         else:
-            self.logger.error('retrofitMountDa-> size mount model {0} and model data {1} do not fit !'.format(num, len(data)))
-            self.app.modelLogQueue.put('Mount Model and Model Data could not be synced\n')
+            self.logger.error('retrofitMountDa-> size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
+            self.app.modelingLogQueue.put('Mount Model and Model Data could not be synced\n')
             self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
         return data
 
@@ -445,10 +340,10 @@ class Mount(QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(alignModel['RMS'])})
         self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(alignModel['RMS'])})
         self.app.mountDataQueue.put({'Name': 'ModelErrorPosAngle', 'Value': '{0:3.1f}'.format(alignModel['posAngle'])})
-        self.app.mountDataQueue.put({'Name': 'ModelPolarError', 'Value': '{0}'.format(self.decimalToDegree(alignModel['polarError']))})
-        self.app.mountDataQueue.put({'Name': 'ModelOrthoError', 'Value': '{0}'.format(self.decimalToDegree(alignModel['orthoError']))})
-        self.app.mountDataQueue.put({'Name': 'ModelErrorAz', 'Value': '{0}'.format(self.decimalToDegree(alignModel['azimuthKnobs']))})
-        self.app.mountDataQueue.put({'Name': 'ModelErrorAlt', 'Value': '{0}'.format(self.decimalToDegree(alignModel['altitudeKnobs']))})
+        self.app.mountDataQueue.put({'Name': 'ModelPolarError', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['polarError']))})
+        self.app.mountDataQueue.put({'Name': 'ModelOrthoError', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['orthoError']))})
+        self.app.mountDataQueue.put({'Name': 'ModelErrorAz', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['azimuthKnobs']))})
+        self.app.mountDataQueue.put({'Name': 'ModelErrorAlt', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['altitudeKnobs']))})
         self.app.mountDataQueue.put({'Name': 'ModelTerms', 'Value': '{0:2d}'.format(alignModel['terms'])})
         if alignModel['azimuthKnobs'] > 0:
             value = '{0:2.2f} left'.format(abs(alignModel['azimuthKnobs']))
@@ -484,11 +379,11 @@ class Mount(QtCore.QThread):
             reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))                                         # numbering in mount starts with 1
             if reply == '1':                                                                                                # worst point could be deleted
                 alignModel = self.getAlignmentModel()
-                self.app.model.modelData.pop(index)
+                self.app.modeling.modelData.pop(index)
                 for i in range(0, alignModel['number']):
-                    self.app.model.modelData[i]['modelError'] = float(alignModel['points'][i][5])
-                    self.app.model.modelData[i]['raError'] = self.app.model.modelData[i]['modelError'] * math.sin(math.radians(float(alignModel['points'][i][6])))
-                    self.app.model.modelData[i]['decError'] = self.app.model.modelData[i]['modelError'] * math.cos(math.radians(float(alignModel['points'][i][6])))
+                    self.app.modeling.modelData[i]['modelError'] = float(alignModel['points'][i][5])
+                    self.app.modeling.modelData[i]['raError'] = self.app.modeling.modelData[i]['modelError'] * math.sin(math.radians(float(alignModel['points'][i][6])))
+                    self.app.modeling.modelData[i]['decError'] = self.app.modeling.modelData[i]['modelError'] * math.cos(math.radians(float(alignModel['points'][i][6])))
                 self.showAlignmentModel(alignModel)
             else:
                 self.logger.error('deleteWorstPoin-> Point {0} could not be deleted').format(index)
@@ -518,98 +413,98 @@ class Mount(QtCore.QThread):
             self.app.messageQueue.put('Actual Mount Model loaded from {0}'.format(target))
             return True
         else:
-            self.app.messageQueue.put('There is no model named {0} or error while loading'.format(target))
+            self.app.messageQueue.put('There is no modeling named {0} or error while loading'.format(target))
             self.logger.debug('loadBackupModel-> Model {0} could not be loaded'.format(target))                             # log it
             return False
 
     def saveBackupModel(self):
         if self.saveModel('BACKUP'):
-            if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'backup.dat')                              # save the data
+            if self.app.modeling.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'backup.dat')                              # save the data
 
     def loadBackupModel(self):
         if self.loadModel('BACKUP'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('backup.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('backup.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for BACKUP')
 
     def saveBaseModel(self):
         if self.saveModel('BASE'):
-            if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'base.dat')                                # save the data
+            if self.app.modeling.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'base.dat')                                # save the data
             else:
                 self.app.messageQueue.put('No data for BASE')
 
     def loadBaseModel(self):
         if self.loadModel('BASE'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('base.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('base.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for BASE')
 
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
-            if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'refine.dat')                              # save the data
+            if self.app.modeling.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'refine.dat')                              # save the data
             else:
                 self.app.messageQueue.put('No data for REFINE')
 
     def loadRefinementModel(self):
         if self.loadModel('REFINE'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('refine.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('refine.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for REFINE')
 
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
-            if self.app.model.modelData:
-                if 'index' in self.app.model.modelData[0].keys():                                                           # if not available, reconstructed data
-                    self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'actual.dat')                          # save the data
+            if self.app.modeling.modelData:
+                if 'index' in self.app.modeling.modelData[0].keys():                                                           # if not available, reconstructed data
+                    self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'actual.dat')                          # save the data
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
 
     def loadActualModel(self):
         if self.loadModel('ACTUAL'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('actual.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('actual.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for ACTUAL')
 
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
-            if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'simple.dat')                              # save the data
+            if self.app.modeling.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'simple.dat')                              # save the data
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
     def loadSimpleModel(self):
         if self.loadModel('SIMPLE'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('simple.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('simple.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
-            if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO1.dat')                                # save the data
+            if self.app.modeling.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'DSO1.dat')                                # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO1')
 
     def loadDSO1Model(self):
         if self.loadModel('DSO1'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('DSO1.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('DSO1.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for DSO1')
 
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
-            if self.app.model.modelData:
-                self.app.analysePopup.analyse.saveData(self.app.model.modelData, 'DSO2.dat')                                # save the data
+            if self.app.modeling.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'DSO2.dat')                                # save the data
             else:
                 self.app.messageQueue.put('No data file for DSO2')
 
     def loadDSO2Model(self):
         if self.loadModel('DSO2'):
-            self.app.model.modelData = self.app.analysePopup.analyse.loadDataRaw('dso2.dat')
-            if not self.app.model.modelData:
+            self.app.modeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('dso2.dat')
+            if not self.app.modeling.modelData:
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
@@ -635,10 +530,10 @@ class Mount(QtCore.QThread):
             self.app.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                # Sidereal local time
         reply = self.mountHandler.sendCommand('GR')
         if reply:
-            self.raJnow = self.degStringToDecimal(reply)
+            self.raJnow = self.transform.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('GD')
         if reply:
-            self.decJnow = self.degStringToDecimal(reply)
+            self.decJnow = self.transform.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
         if reply:                                                                                                           # if reply is there
             try:
@@ -650,9 +545,9 @@ class Mount(QtCore.QThread):
                 self.alt = float(alt)                                                                                       # and altitude
                 self.stat = int(stat)                                                                                       # status should be int for referencing list
                 self.slewing = (slew == '1')                                                                                # set status slewing
-                self.ra, self.dec = self.transformNovas(self.raJnow, self.decJnow, 2)                                       # convert J2000
-                ra_show = self.decimalToDegree(self.ra, False, False)
-                dec_show = self.decimalToDegree(self.dec, True, False)
+                self.ra, self.dec = self.transform.transformNovas(self.raJnow, self.decJnow, 2)                             # convert J2000
+                ra_show = self.transform.decimalToDegree(self.ra, False, False)
+                dec_show = self.transform.decimalToDegree(self.dec, True, False)
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                     # put ra to gui
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})        # Altitude
@@ -680,12 +575,13 @@ class Mount(QtCore.QThread):
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
                 self.setRefractionParameter()                                                                               # transfer refraction from to mount
             else:                                                                                                           #
-                if self.app.model.cpObject.cameraStatus in ['IDLE', 'DOWNLOADING', 'READY']:                                # if tracking, when camera is idle or downloading
+                if self.app.modeling.cpObject.cameraStatus in ['IDLE', 'DOWNLOADING', 'READY']:                                # if tracking, when camera is idle or downloading
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
                     self.logger.debug('getStatusMedium-> no autorefraction')                                                # no autorefraction is possible
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()
+        self.transform.transformNovasRefractionParams(self.refractionTemp, self.refractionPressure)
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
         self.timeToFlip = self.mountHandler.sendCommand('Gmte')
@@ -722,10 +618,7 @@ class Mount(QtCore.QThread):
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
         self.site_lat = self.mountHandler.sendCommand('Gt')                                                                 # get site latitude
-        self.transform.Refraction = False                                                                                   # set parameter for ascom nova library
-        self.transform.SiteElevation = float(self.site_height)                                                              # height
-        self.transform.SiteLatitude = self.degStringToDecimal(self.site_lat)                                                # site lat
-        self.transform.SiteLongitude = self.degStringToDecimal(self.site_lon)                                               # site lon
+        self.transform.transformNovasSiteParams(self.site_lat, self.site_lon, self.site_height)
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                         # write data to GUI
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})
@@ -738,13 +631,13 @@ class Mount(QtCore.QThread):
         self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
         self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
         self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
-        self.loadActualModel()                                                                                              # prepare data synchronisation, load model data
-        alignModel = self.getAlignmentModel()   # get model data from mount
-        if not self.app.model.modelData and alignModel['RMS'] > 0:
+        self.loadActualModel()                                                                                              # prepare data synchronisation, load modeling data
+        alignModel = self.getAlignmentModel()                                                                               # get modeling data from mount
+        if not self.app.modeling.modelData and alignModel['RMS'] > 0:
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
-            self.app.model.modelData = []
+            self.app.modeling.modelData = []
             for i in range(0, alignModel['number']):
-                self.app.model.modelData.append({'modelError': float(alignModel['points'][i][5]),
+                self.app.modeling.modelData.append({'modelError': float(alignModel['points'][i][5]),
                                                  'raError': float(alignModel['points'][i][5]) * math.sin(math.radians(alignModel['points'][i][6])),
                                                  'decError': float(alignModel['points'][i][5]) * math.cos(math.radians(alignModel['points'][i][6])),
                                                  'azimuth': float(alignModel['points'][i][3]),

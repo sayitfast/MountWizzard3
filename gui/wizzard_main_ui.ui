@@ -3784,7 +3784,7 @@
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
-     <string>Make Mount Model</string>
+     <string>Make Mount Modeling</string>
     </attribute>
     <widget class="QPushButton" name="btn_runBaseModel">
      <property name="geometry">
@@ -3799,7 +3799,7 @@
       <string>Runs the base model, if ther are any points</string>
      </property>
      <property name="text">
-      <string>Run Base Model only</string>
+      <string>Run Base Modeling only</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkUseBlindSolve">
@@ -3836,7 +3836,7 @@
       <string>Clear the model in mount. Can't be revised.</string>
      </property>
      <property name="text">
-      <string>Clear Pointing Model in Mount</string>
+      <string>Clear Pointing Modeling in Mount</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadBasePoints">
@@ -4303,7 +4303,7 @@ color: rgb(255,255,255);</string>
       <string>Run refinment model</string>
      </property>
      <property name="text">
-      <string>Run Refinement Model only</string>
+      <string>Run Refinement Modeling only</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_deleteBelowHorizonLine">
@@ -4367,7 +4367,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Cancel any Model Run</string>
+      <string>Cancel any Modeling Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runCheckModel">
@@ -4383,7 +4383,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs a analyse cycle without updating the mount model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Run Model Check (Simulation)</string>
+      <string>Run Modeling Check (Simulation)</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_98">
@@ -4401,7 +4401,7 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Model Check Run - (Base &amp; Refine Points)</string>
+      <string>Modeling Check Run - (Base &amp; Refine Points)</string>
      </property>
     </widget>
     <widget class="Line" name="line_32">
@@ -4560,7 +4560,7 @@ color: rgb(255,255,255);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Modeling&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Clear Points in Modeling Plot Window</string>
@@ -4579,7 +4579,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run base and refinement model directly after another&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Run Base and Refinement Model together</string>
+      <string>Run Base and Refinement Modeling together</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="numberHoursDSO">
@@ -4742,7 +4742,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image, Platesolve and Sync the model of the mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Plate Solve and Sync Model</string>
+      <string>Plate Solve and Sync Modeling</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkClearModelFirst">
@@ -4763,7 +4763,7 @@ color: rgb(255,255,255);</string>
       <string>If checked, a blind solve would be made (needs internet connection)</string>
      </property>
      <property name="text">
-      <string>Clear Model first</string>
+      <string>Clear Modeling first</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -4787,7 +4787,7 @@ color: rgb(255,255,255);</string>
       <string>If checked, a blind solve would be made (needs internet connection)</string>
      </property>
      <property name="text">
-      <string>Keep Refinement Model</string>
+      <string>Keep Refinement Modeling</string>
      </property>
     </widget>
     <widget class="Line" name="line_30">
@@ -5099,7 +5099,7 @@ color: rgb(255,255,255);</string>
       <string>Download actual model from mount</string>
      </property>
      <property name="text">
-      <string>Show Actual Model</string>
+      <string>Show Actual Modeling</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_37">
@@ -5285,7 +5285,7 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Optimise Actual Model</string>
+      <string>Optimise Actual Modeling</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_125">
@@ -5303,7 +5303,7 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Load / Save Model in Mount Computer</string>
+      <string>Load / Save Modeling in Mount Computer</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadBaseModel">
@@ -5842,7 +5842,7 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Actual Model Status from Mount Computer</string>
+      <string>Actual Modeling Status from Mount Computer</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_156">
@@ -6201,7 +6201,7 @@ color: rgb(255,255,255);</string>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
-     <string>Model Analyse</string>
+     <string>Modeling Analyse</string>
     </attribute>
     <widget class="QLabel" name="label_107">
      <property name="geometry">
@@ -7099,7 +7099,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Make Mount Model from stored Analyse DataUploadToMount</string>
+      <string>Make Mount Modeling from stored Analyse DataUploadToMount</string>
      </property>
     </widget>
     <widget class="Line" name="line_52">
@@ -8083,7 +8083,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Model Points File (Base &amp; Refinement) </string>
+        <string>Modeling Points File (Base &amp; Refinement) </string>
        </property>
       </widget>
       <widget class="Line" name="line_57">
@@ -10084,7 +10084,7 @@ color: rgb(255,255,255);</string>
      </widget>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
-       <string>UTC DataUploadToMount / MPC / TLE </string>
+       <string>UTC Data / MPC / TLE </string>
       </attribute>
       <widget class="QPushButton" name="btn_downloadEarthrotation">
        <property name="geometry">

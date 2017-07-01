@@ -20,7 +20,7 @@ import time
 from pywinauto import Application, findwindows, application
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
-
+# base for cameras
 from baseclasses.camera import MWCamera
 
 

@@ -15,6 +15,7 @@
 import copy
 import datetime
 import logging
+import os
 
 # import for the PyQt5 Framework
 from PyQt5.QtCore import *
@@ -23,6 +24,8 @@ from PyQt5.QtWidgets import *
 
 from baseclasses import widget
 from gui import coordinate_dialog_ui
+# astrometry
+from astrometry import transform
 
 
 def getXYRectangle(az, width, border):
@@ -48,6 +51,7 @@ class ModelPlotWindow(widget.MwWidget):
     def __init__(self, app):
         super(ModelPlotWindow, self).__init__()
         self.app = app
+        self.transform = transform.Transform()
         self.pointerAzAlt = QGraphicsItemGroup()                                                                            # object placeholder for AzAlt Pointer
         self.pointerTrack = QGraphicsItemGroup()                                                                            # same for tracking widget
         self.pointerTrackLine = []                                                                                          # same for Track line
@@ -58,15 +62,16 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()                                                                # PyQt5 dialog ui
         self.ui.setupUi(self)                                                                                               # setup the ui
         self.initUI()                                                                                                       # adaptions to ui setup
+        self.initConfig()
+        self.selectHorizonPointsMode()
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.app.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
         self.app.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
-        self.app.model.signalModelRedraw.connect(self.redrawCoordinateWindow)                                               # signal for redrawing the window content
+        self.app.modeling.signalModelRedraw.connect(self.redrawModelingWindow)                                              # signal for redrawing the window content
         self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
         self.ui.btn_selectClose.clicked.connect(self.hideCoordinateWindow)                                                  # signal for closing (not destroying) the window
-        self.redrawCoordinateWindow()                                                                                       # at the beginning, initialize the content
-        self.initConfig()
+        self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
         self.show()                                                                                                         # construct the window
         self.setVisible(False)                                                                                              # but hide it first
 
@@ -76,15 +81,50 @@ class ModelPlotWindow(widget.MwWidget):
                 self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
             if 'CoordinatePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
+            if 'HorizonPointsFileName' in self.app.config:
+                self.app.ui.le_horizonPointsFileName.setText(self.app.config['HorizonPointsFileName'])
+            if 'CheckUseMinimumHorizonLine' in self.app.config:
+                self.app.ui.checkUseMinimumHorizonLine.setChecked(self.app.config['CheckUseMinimumHorizonLine'])
+            if 'CheckUseFileHorizonLine' in self.app.config:
+                self.app.ui.checkUseFileHorizonLine.setChecked(self.app.config['CheckUseFileHorizonLine'])
+            if 'AltitudeMinimumHorizon' in self.app.config:
+                self.app.ui.altitudeMinimumHorizon.setValue(self.app.config['AltitudeMinimumHorizon'])
+
         except Exception as e:
             self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
+    def selectHorizonPointsMode(self):
+        msg = self.app.modeling.modelpoints.loadHorizonPoints(self.app.ui.le_horizonPointsFileName.text(),
+                                                              self.app.ui.checkUseFileHorizonLine.isChecked(),
+                                                              self.app.ui.checkUseMinimumHorizonLine.isChecked(),
+                                                              self.app.ui.altitudeMinimumHorizon.value())
+        if msg:
+            self.app.messageQueue.put(msg)
+        self.redrawModelingWindow()
+
+    def selectHorizonPointsFileName(self):
+        dlg = QFileDialog()
+        dlg.setViewMode(QFileDialog.List)
+        dlg.setNameFilter("Text files (*.txt)")
+        dlg.setFileMode(QFileDialog.ExistingFile)
+        # noinspection PyArgumentList
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
+        if a[0] != '':
+            self.app.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
+            self.loadHorizonPoints(os.path.basename(a[0]))
+            self.app.ui.checkUseMinimumHorizonLine.setChecked(False)
+            self.redrawModelingWindow()
+
     def storeConfig(self):
         self.app.config['CoordinatePopupWindowPositionX'] = self.pos().x()
         self.app.config['CoordinatePopupWindowPositionY'] = self.pos().y()
         self.app.config['CoordinatePopupWindowShowStatus'] = self.showStatus
+        self.app.config['HorizonPointsFileName'] = self.app.ui.le_horizonPointsFileName.text()
+        self.app.config['CheckUseMinimumHorizonLine'] = self.app.ui.checkUseMinimumHorizonLine.isChecked()
+        self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
+        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
 
     def hideCoordinateWindow(self):                                                                                         # method for switching visibility
         self.showStatus = False                                                                                             # status = off
@@ -117,20 +157,21 @@ class ModelPlotWindow(widget.MwWidget):
         if not self.ui.checkRunTrackingWidget.isChecked():
             return
         raCopy = copy.copy(self.app.mount.ra)                                                                               # start wit the actual coordinates of the mount
-        decCopy = copy.copy(self.app.mount.dec)                                                                             # but copy it (otherwise it will be changes during the calculation -> python object model)
+        decCopy = copy.copy(self.app.mount.dec)                                                                             # but copy it (otherwise it will be changes during the calculation -> python object modeling)
         width = self.ui.modelPointsPlot.width()                                                                             # get data from ui
         height = self.ui.modelPointsPlot.height()
+        self.transform.transformNovasSiteParams(self.app.mount.site_lat, self.app.mount.site_lon, self.app.mount.site_height)
         self.pointerTrack.setVisible(True)
-        for i in range(0, 50):                                                                                              # round model point from actual az alt position 24 hours
+        for i in range(0, 50):                                                                                              # round modeling point from actual az alt position 24 hours
             ra = raCopy - float(i) * 10 / 50                                                                                # 12 hours line max
-            az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
+            az, alt = self.transform.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
             x, y = getXY(az, alt, height, width, BORDER_VIEW)
             self.pointerTrackLine[i].setPos(x, y)
             if alt > 0:
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.app.mount.transformNovas(self.app.mount.ra - float(self.app.mount.timeToFlip) / 60, decCopy, 1)       # transform to az alt
+        az, alt = self.transform.transformNovas(self.app.mount.ra - float(self.app.mount.timeToFlip) / 60, decCopy, 1)
         x, y = getXY(az, alt, height, width, BORDER_VIEW)
         self.itemFlipTime.setPos(x, y)
         delta = float(self.app.mount.timeToFlip)
@@ -243,7 +284,7 @@ class ModelPlotWindow(widget.MwWidget):
         group.addToGroup(item)
         return group
 
-    def redrawCoordinateWindow(self):
+    def redrawModelingWindow(self):
         height = self.ui.modelPointsPlot.height()
         width = self.ui.modelPointsPlot.width()
         scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
@@ -253,8 +294,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome.setVisible(False)
         self.pointerDome.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, BORDER_VIEW, TEXTHEIGHT_VIEW, scene)
-        scene = self.constructHorizon(scene, self.app.model.horizonPoints, height, width, BORDER_VIEW)
-        for i, p in enumerate(self.app.model.BasePoints):                                                                   # show the points
+        scene = self.constructHorizon(scene, self.app.modeling.modelpoints.horizonPoints, height, width, BORDER_VIEW)
+        for i, p in enumerate(self.app.modeling.modelpoints.BasePoints):                                                    # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -266,8 +307,8 @@ class ModelPlotWindow(widget.MwWidget):
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.app.model.BasePoints[i] = (p[0], p[1], item, True)                                                         # storing the objects in the list
-        for i, p in enumerate(self.app.model.RefinementPoints):                                                             # show the points
+            self.app.modeling.modelpoints.BasePoints[i] = (p[0], p[1], item, True)                                          # storing the objects in the list
+        for i, p in enumerate(self.app.modeling.modelpoints.RefinementPoints):                                              # show the points
             pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -279,7 +320,7 @@ class ModelPlotWindow(widget.MwWidget):
             text_item.setDefaultTextColor(self.COLOR_WHITE)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.app.model.RefinementPoints[i] = (p[0], p[1], item, True)                                                   # storing the objects in the list
+            self.app.modeling.modelpoints.RefinementPoints[i] = (p[0], p[1], item, True)                                    # storing the objects in the list
         self.pointerAzAlt = self.constructAzAltPointer(ELLIPSE_VIEW)
         self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(ELLIPSE_VIEW)
         scene.addItem(self.pointerAzAlt)

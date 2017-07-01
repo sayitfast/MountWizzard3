@@ -20,28 +20,31 @@ import os
 import random
 import shutil
 import sys
+import time
 # threading
 import threading
-import time
-# for the sorting
-from operator import itemgetter
-
 # library for fits file handling
 import pyfits
+# win32 usage
 import pythoncom
+# pyqt5
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
-
 # for data storing
 from analyse.analyse import Analyse
+# cameras
 from camera import ascom
 from camera import maximdl
 from camera import none
 from camera import sgpro
 from camera import theskyx
+# astrometry
+from astrometry import transform
+# modelpoint
+from modeling import modelpoints
 
 
-class Model(QtCore.QThread):
+class Modeling(QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
     signalModelConnected = QtCore.pyqtSignal(int, name='ModelConnected')                                                   # message for errors
     signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                      # commands to sgpro thread
@@ -62,16 +65,14 @@ class Model(QtCore.QThread):
         self.AscomCamera = ascom.AscomCamera(self.app)                                                                      # object abstraction calls for ASCOM Camera
         self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                      # object abstraction class for MaximDL
         self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
+        self.transform = transform.Transform()                                                                              # coordinate transformation
+        self.modelpoints = modelpoints.ModelPoints()
         self.cpObject = self.SGPro
-        self.horizonPoints = []                                                                                             # point out of file for showing the horizon
-        self.BasePoints = []                                                                                                # base point out of a file for modeling
-        self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
-        self.alignmentPoints = []                                                                                           # placeholder for all points, which were modeled
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
-        self.modelAnalyseData = []                                                                                          # analyse data for model
+        self.modelAnalyseData = []                                                                                          # analyse data for modeling
         self.modelData = None
-        self.captureFile = 'model'                                                                                          # filename for capturing file
+        self.captureFile = 'modeling'                                                                                          # filename for capturing file
         self.counter = 0                                                                                                    # counter for main loop
         self.command = ''                                                                                                   # command buffer
         self.results = []                                                                                                   # error results
@@ -106,28 +107,28 @@ class Model(QtCore.QThread):
             self.cpObject.disconnectApplication()
         if self.app.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
-            self.app.imagePopup.showStatus = False
-            self.app.imagePopup.setVisible(False)
+            self.app.imageWindow.showStatus = False
+            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
         elif self.app.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
-            self.app.imagePopup.showStatus = False
-            self.app.imagePopup.setVisible(False)
+            self.app.imageWindow.showStatus = False
+            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
         elif self.app.ui.rb_cameraASCOM.isChecked():
             self.cpObject = self.AscomCamera
-            self.app.imagePopup.showStatus = True
-            self.app.imagePopup.setVisible(True)
+            self.app.imageWindow.showStatus = True
+            self.app.imageWindow.setVisible(True)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
         elif self.app.ui.rb_cameraMaximDL.isChecked():
             self.cpObject = self.MaximDL
-            self.app.imagePopup.showStatus = False
-            self.app.imagePopup.setVisible(False)
+            self.app.imageWindow.showStatus = False
+            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is MaximDL')
         elif self.app.ui.rb_cameraNone.isChecked():
             self.cpObject = self.NoneCam
-            self.app.imagePopup.showStatus = False
-            self.app.imagePopup.setVisible(False)
+            self.app.imageWindow.showStatus = False
+            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is None')
         self.cpObject.checkAppStatus()
         if self.app.ui.checkAutoStartApp.isChecked():
@@ -172,8 +173,8 @@ class Model(QtCore.QThread):
                         if num > 2:
                             self.runCheckModel()
                         else:
-                            self.app.modelLogQueue.put('Run Analyse stopped, not BASE model available !\n')
-                            self.app.messageQueue.put('Run Analyse stopped, not BASE model available !\n')
+                            self.app.modelLogQueue.put('Run Analyse stopped, not BASE modeling available !\n')
+                            self.app.messageQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
                     elif self.command == 'RunAllModel':
@@ -197,7 +198,7 @@ class Model(QtCore.QThread):
                     elif self.command == 'ClearAlignmentModel':                                                                 #
                         self.command = ''                                                                                       #
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
-                        self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+                        self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
                         self.clearAlignmentModel()                                                                              #
                         self.app.modelLogQueue.put('Model cleared!\n')
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
@@ -236,11 +237,11 @@ class Model(QtCore.QThread):
                 self.cpObject.connectApplication()
             elif self.command == 'LoadBasePoints':
                 self.command = ''
-                self.BasePoints = self.showBasePoints()
+                self.modelpoints.showBasePoints()
                 self.signalModelRedraw.emit(True)
             elif self.command == 'LoadRefinementPoints':
                 self.command = ''
-                self.RefinementPoints = self.showRefinementPoints()
+                self.modelpoints.showRefinementPoints()
                 self.signalModelRedraw.emit(True)
             elif self.command == 'SortRefinementPoints':
                 self.command = ''
@@ -249,12 +250,12 @@ class Model(QtCore.QThread):
             elif self.command == 'GenerateGridPoints':
                 self.command = ''
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
-                self.RefinementPoints = self.generateGridPoints()
+                self.modelpoints.generateGridPoints()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
             elif self.command == 'GenerateBasePoints':
                 self.command = ''
-                self.BasePoints = self.generateBasePoints()
+                self.modelpoints.generateBasePoints()
                 self.signalModelRedraw.emit(True)
             elif self.command == 'DeleteBelowHorizonLine':
                 self.command = ''
@@ -264,9 +265,9 @@ class Model(QtCore.QThread):
                 self.command = ''
                 self.deletePoints()
                 self.signalModelRedraw.emit(True)
-            if self.counter % 5 == 0:                                                                                       # standard cycles in model thread fast
+            if self.counter % 5 == 0:                                                                                       # standard cycles in modeling thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
-            if self.counter % 20 == 0:                                                                                      # standard cycles in model thread slow
+            if self.counter % 20 == 0:                                                                                      # standard cycles in modeling thread slow
                 self.getStatusSlow()                                                                                        # calling slow part of status
             self.counter += 1                                                                                               # loop +1
             time.sleep(.1)                                                                                                  # wait for the next cycle
@@ -292,7 +293,6 @@ class Model(QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusFast(self):                                                                                                # check app is running
-        # print(self.cpObject.appAvailable, self.cpObject.appRunning, self.cpObject.appConnected, self.cpObject.appCameraConnected)
         self.cpObject.checkAppStatus()
         if self.cpObject.appAvailable:
             self.signalModelConnected.emit(1)                                                                               # send status to GUI
@@ -310,208 +310,6 @@ class Model(QtCore.QThread):
     @staticmethod
     def timeStamp():
         return time.strftime("%H:%M:%S", time.localtime())
-
-    def loadModelPoints(self, modelPointsFileName, modeltype):                                                              # load model point file from MM als list from tuples
-        p = []
-        number = 0
-        if modelPointsFileName.strip() == '':
-            self.app.messageQueue.put('No Model Points Filename given!'.format(modelPointsFileName))
-            self.logger.error('loadModelPoints -> No Model Points Filename given!')
-            return p
-        try:                                                                                                                # fault tolerance, if file io fails
-            with open('config/' + modelPointsFileName, 'r') as fileHandle:                                                       # run over complete file
-                for line in fileHandle:                                                                                     # run over lines
-                    if line.startswith('GRID'):                                                                             # if grid, then its a TSX file
-                        convertedLine = line.rstrip('\n').split()                                                           # format is TSX format
-                        point = (float(convertedLine[2]), float(convertedLine[3]))                                          # take data from line
-                        number += 1
-                        if modeltype == 'refinement' and number > 3:                                                        # in MM format base and refinement are included
-                            p.append(point)                                                                                 # add data to the adequate list
-                        elif modeltype == 'base' and number <= 3:
-                            p.append(point)                                                                                 # add data to the adequate list
-                    else:
-                        convertedLine = line.rstrip('\n').split(':')                                                        # format is same as Per's MM
-                        point = (int(convertedLine[0]), int(convertedLine[1]))                                              # take data from line
-                        if len(convertedLine) == 2 and modeltype == 'refinement':                                           # in MM format base and refinement are included
-                            p.append(point)                                                                                 # add data to the adequate list
-                        elif len(convertedLine) != 2 and modeltype == 'base':
-                            p.append(point)                                                                                             # close file
-        except Exception as e:                                                                                              # handle exception
-            self.app.messageQueue.put('Error loading model points from file [{0}] error: {1}!'.format(modelPointsFileName, e))   # Gui message
-            self.logger.error('loadModelPoints -> Error loading model points from file [{0}] error: {1}!'.format(modelPointsFileName, e))
-        finally:
-            return p
-
-    def sortPoints(self, modeltype):                                                                                        # sorting point for performance
-        if modeltype == 'base':                                                                                             # check type of sorting
-            points = self.BasePoints                                                                                        # starting with point equals base points
-        else:                                                                                                               # otherwise
-            points = self.RefinementPoints                                                                                  # take the refinement points
-        if len(points) == 0:                                                                                                # if no basepoints, than no sort
-            self.logger.warning('sortBasePoints -> There are no {0}points to sort'.format(modeltype))
-            return
-        westSide = []                                                                                                       # split west and east side of pier
-        eastSide = []                                                                                                       # and reset them
-        a = sorted(points, key=itemgetter(0))                                                                               # first sort for az
-        for i in range(0, len(a)):                                                                                          # split flip sides
-            if a[i][0] >= 180:                                                                                              # choose the right side
-                westSide.append((a[i][0], a[i][1]))                                                                         # add the point tto list
-            else:                                                                                                           #
-                eastSide.append((a[i][0], a[i][1]))                                                                         #
-        westSide = sorted(westSide, key=itemgetter(1))                                                                      # sort west flipside
-        eastSide = sorted(eastSide, key=itemgetter(1))                                                                      # sort east flipside
-        if modeltype == 'base':
-            self.BasePoints = eastSide + westSide                                                                           # put them together
-        else:
-            self.RefinementPoints = eastSide + westSide                                                                     # put them together
-
-    def loadHorizonPoints(self, horizonPointsFileName):                                                                     # load a ModelMaker model file, return base & refine points as lists of (az,alt) tuples
-        self.horizonPoints = []                                                                                             # clear horizon variable
-        hp = []                                                                                                             # clear cache
-        if self.app.ui.checkUseFileHorizonLine.isChecked():
-            if horizonPointsFileName == '':
-                return
-            if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName):
-                self.app.messageQueue.put('Horizon points file does not exist !')                                           # show on GUI
-                self.logger.error('loadHorizonPoints -> horizon points file does not exist !')                              # write to logger
-            else:
-                try:                                                                                                        # try opening the file
-                    with open(os.getcwd() + '/config/' + horizonPointsFileName) as f:                                       # run through file
-                        for line in f:                                                                                      # run through lines
-                            m = line.rstrip('\n').split(':')                                                                # split the values
-                            point = (int(m[0]), int(m[1]))                                                                  # get point data
-                            hp.append(point)                                                                                # add the point
-                    f.close()                                                                                               # close file again
-                except Exception as e:                                                                                      # handle exception
-                    self.app.messageQueue.put('Error loading horizon points: {0}'.format(e))                                # show on GUI
-                    self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                   # write to logger
-                    return                                                                                                  # stop routine
-            hp = sorted(hp, key=itemgetter(0))                                                                              # list should be sorted, but I do it for security anyway
-        if self.app.ui.checkUseMinimumHorizonLine.isChecked():
-            minAlt = int(float(self.app.ui.altitudeMinimumHorizon.value()))
-            if len(hp) == 0:                                                                                                # there is no file loaded
-                hp = ((0, minAlt), (359, minAlt))
-        az_last = 0                                                                                                         # starting azimuth
-        alt_last = 0                                                                                                        # starting altitude
-        for i in range(0, len(hp)):                                                                                         # run through all points an link them via line
-            az_act = hp[i][0]                                                                                               # get az from point of file
-            alt_act = hp[i][1]                                                                                              # get alt from point of file
-            if az_act > az_last:                                                                                            # if act az is greater than last on, we have to draw a line
-                incline = (alt_act - alt_last) / (az_act - az_last)                                                         # calculation the line incline
-                for j in range(az_last, az_act):                                                                            # run through the space, where no points are given in the file
-                    if self.app.ui.checkUseMinimumHorizonLine.isChecked():
-                        point = (j, max(int(alt_last + incline * (j - az_last)), minAlt))                                    # calculation value of next point
-                    else:
-                        point = (j, int(alt_last + incline * (j - az_last)))
-                    self.horizonPoints.append(point)                                                                        # add the interpolated point to list
-            else:                                                                                                           # otherwise no interpolation
-                self.horizonPoints.append(hp[i])                                                                            # add the point to list, no interpolation needed
-            az_last = az_act                                                                                                # set az value to next point
-            alt_last = alt_act                                                                                              # same to alt value
-
-    def isAboveHorizonLine(self, point):                                                                                    # check, if point is above horizon list (by horizon file)
-        if len(self.horizonPoints) > 0:                                                                                     # check if there are horizon points
-            if point[1] > self.horizonPoints[int(point[0])][1]:                                                             # simple comparison. important: each Int(az) has value set
-                return True                                                                                                 # point is above -> True
-            else:                                                                                                           #
-                return False                                                                                                # points are below the horizon line -> False
-        else:                                                                                                               #
-            return True                                                                                                     # if there is no horizon line, all are in
-
-    def deleteBelowHorizonLine(self):                                                                                       # remove points from modeling, if below horizon
-        i = 0                                                                                                               # list index
-        while i < len(self.RefinementPoints):                                                                               # loop for generating list index of point which is below horizon
-            if self.isAboveHorizonLine(self.RefinementPoints[i]):                                                           #
-                i += 1                                                                                                      # if ok , keep him
-            else:                                                                                                           #
-                del self.RefinementPoints[i]                                                                                # otherwise delete point from list
-
-    def deletePoints(self):
-        self.BasePoints = []
-        self.RefinementPoints = []
-
-    def showBasePoints(self):
-        value = self.loadModelPoints(self.app.ui.le_modelPointsFileName.text(), 'base')
-        return value
-
-    def showRefinementPoints(self):
-        value = self.loadModelPoints(self.app.ui.le_modelPointsFileName.text(), 'refinement')
-        return value
-
-    def generateDSOPoints(self):                                                                                            # model points along dso path
-        hours = int(float(self.app.ui.numberHoursDSO.value()))
-        number = int(float(self.app.ui.numberPointsDSO.value()))
-        preview = int(float(self.app.ui.numberHoursPreview.value()))
-        raCopy = copy.copy(self.app.mount.ra)
-        decCopy = copy.copy(self.app.mount.dec)
-        value = []                                                                                                          # clear point list
-        for i in range(0, number):                                                                                          # round model point from actual az alt position 24 hours
-            ra = raCopy - float(i) * hours / number - preview
-            az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
-            if alt > 0:                                                                                                     # we only take point alt > 0
-                value.append((az, alt))                                                                                     # add point to list
-        return value
-
-    def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
-        west = []                                                                                                           # no sorting, point will be for west and east prepared
-        east = []                                                                                                           #
-        for dec in range(-10, 90, 10):                                                                                      # range, actually referenced from european situation
-            if dec < 30:                                                                                                    # has to be generalized
-                step = -15                                                                                                  # lower dec, more point
-            elif dec < 70:
-                step = -10
-            else:
-                step = -30                                                                                                  # higher dec. less point (anyway denser)
-            for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.app.mount.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
-                if alt > 0:                                                                                                 # only point with alt > 0 are taken
-                    if az > 180:                                                                                            # put to the right list
-                        east.append((az, alt))                                                                              # add to east
-                    else:
-                        west.append((az, alt))                                                                              # add to west
-        value = west + east
-        return value                                                                                                        # combine pointlist
-
-    def generateNormalPoints(self):
-        west = []                                                                                                           # no sorting, point will be for west and east prepared
-        east = []                                                                                                           #
-        for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european situation
-            if dec < 60:                                                                                                    # has to be generalized
-                step = -10                                                                                                  # lower dec, more point
-            else:
-                step = -20                                                                                                  # higher dec. less point (anyway denser)
-            for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.app.mount.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
-                if alt > 0:                                                                                                 # only point with alt > 0 are taken
-                    if az > 180:                                                                                            # put to the right list
-                        east.append((az, alt))                                                                              # add to east
-                    else:
-                        west.append((az, alt))                                                                              # add to west
-        value = west + east
-        return value                                                                                                        # combine pointlist
-
-    def generateGridPoints(self):                                                                                           # model points along dso path
-        row = int(float(self.app.ui.numberGridPointsRow.value()))
-        col = int(float(self.app.ui.numberGridPointsCol.value()))
-        altMin = int(float(self.app.ui.altitudeMin.value()))
-        altMax = int(float(self.app.ui.altitudeMax.value()))
-        value = []                                                                                                          # clear point list
-        for az in range(5, 360, int(360 / col)):                                                                            # make point for all azimuth
-            for alt in range(altMin, altMax + 1, int((altMax - altMin) / (row - 1))):                                       # make point for all altitudes
-                value.append((az, alt))                                                                                     # add point to list
-        return value
-
-    def generateBasePoints(self):                                                                                           # do base point equally distributed
-        value = []
-        az = float(self.app.ui.azimuthBase.value())                                                                         # get az value from gui
-        alt = float(self.app.ui.altitudeBase.value())                                                                       # same to alt value
-        for i in range(0, 3):                                                                                               # we need 3 basepoints
-            azp = i * 120 + az                                                                                              # equal distance of 120 degree in az
-            if azp > 360:                                                                                                   # value range 0-360
-                azp -= 360                                                                                                  # shift it if necessary
-            point = (azp, alt)                                                                                              # generate the point value az,alt
-            value.append(point)                                                                                             # put it to list
-        return value
 
     def clearAlignmentModel(self):
         self.modelAnalyseData = []
@@ -586,7 +384,7 @@ class Model(QtCore.QThread):
 
     def runBaseModel(self):
         if self.app.ui.checkClearModelFirst.isChecked():
-            self.app.modelLogQueue.put('Clearing alignment model - taking 4 seconds.\n')
+            self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
             self.clearAlignmentModel()
             self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime = int(float(self.app.ui.settlingTime.value()))
@@ -598,9 +396,9 @@ class Model(QtCore.QThread):
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelData, name)                                                                 # save the data according to date
-                self.app.mount.saveBaseModel()                                                                              # and saving the model in the mount
+                self.app.mount.saveBaseModel()                                                                              # and saving the modeling in the mount
         else:
-            self.logger.warning('runBaseModel -> There are no Basepoints to model')
+            self.logger.warning('runBaseModel -> There are no Basepoints to modeling')
 
     def runRefinementModel(self):
         num = self.app.mount.numberModelStars()
@@ -627,12 +425,12 @@ class Model(QtCore.QThread):
                 if len(self.modelData) > 0:
                     self.app.ui.le_analyseFileName.setText(name)                                                            # set data name in GUI to start over quickly
                     self.analyse.saveData(self.modelData, name)                                                             # save the data
-                    self.app.mount.saveRefinementModel()                                                                    # and saving the model in the mount
+                    self.app.mount.saveRefinementModel()                                                                    # and saving the modeling in the mount
             else:
-                self.logger.warning('runRefinementModel -> There are no Refinement Points to model')
+                self.logger.warning('runRefinementModel -> There are no Refinement Points to modeling')
         else:
-            self.app.modelLogQueue.put('Refine stopped, not BASE model available !\n')
-            self.app.messageQueue.put('Refine stopped, not BASE model available !\n')
+            self.app.modelLogQueue.put('Refine stopped, not BASE modeling available !\n')
+            self.app.messageQueue.put('Refine stopped, not BASE modeling available !\n')
 
     def runCheckModel(self):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
@@ -645,7 +443,7 @@ class Model(QtCore.QThread):
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
-            self.logger.warning('runCheckModel  -> There are no Refinement or Base Points to model')                        # write error log
+            self.logger.warning('runCheckModel  -> There are no Refinement or Base Points to modeling')                        # write error log
 
     def runAllModel(self):
         self.runBaseModel()
@@ -685,7 +483,7 @@ class Model(QtCore.QThread):
 
     def runBatchModel(self):
         nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.debug('runBatchModel  -> model from {0}'.format(nameDataFile))                                          # debug output
+        self.logger.debug('runBatchModel  -> modeling from {0}'.format(nameDataFile))                                          # debug output
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
         if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
             self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
@@ -700,7 +498,7 @@ class Model(QtCore.QThread):
             self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         self.app.mount.saveBackupModel()
-        self.app.modelLogQueue.put('{0} - Start Batch model. Saving Actual model to BATCH\n'.format(self.timeStamp()))      # Gui Output
+        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))      # Gui Output
         self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output
         for i in range(0, len(data['index'])):
@@ -838,7 +636,7 @@ class Model(QtCore.QThread):
         modelData['scale'] = 1.3
         modelData['angle'] = 90
         modelData['timeTS'] = 2.5
-        ra, dec = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
+        ra, dec =self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
         modelData['ra_sol_Jnow'] = ra
         modelData['dec_sol_Jnow'] = dec
         modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600
@@ -851,7 +649,7 @@ class Model(QtCore.QThread):
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
+            ra_sol_Jnow, dec_sol_Jnow =self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)          # transform J2000 -> Jnow
             modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
             modelData['dec_sol_Jnow'] = dec_sol_Jnow                                                                        # dec in  Jnow
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra
@@ -877,7 +675,7 @@ class Model(QtCore.QThread):
         else:
             return False, mes, modelData
 
-    def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during model run
+    def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during modeling run
         self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
         self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
         self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
@@ -895,25 +693,25 @@ class Model(QtCore.QThread):
             self.logger.debug('addRefinementSt-> refinement star added')
             return True                                                                                                     # simulation OK
 
-    def syncMountModel(self, ra, dec):                                                                                      # add refinement star during model run
+    def syncMountModel(self, ra, dec):                                                                                      # add refinement star during modeling run
         self.logger.debug('syncMountModel -> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
         self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
         self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
         self.app.mount.mountHandler.sendCommand('CMCFG0')
         reply = self.app.mount.mountHandler.sendCommand('CM')                                                               # send sync command (regardless what driver tells)
         if reply[:5] == 'Coord':
-            self.logger.debug('syncMountModel -> mount model synced')
+            self.logger.debug('syncMountModel -> mount modeling synced')
             return True
         else:
-            self.logger.error('syncMountModel -> error in sync mount model')
+            self.logger.error('syncMountModel -> error in sync mount modeling')
             return False                                                                                                    # simulation OK
 
     # noinspection PyUnresolvedReferences
-    def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # model run routing
+    def runModel(self, modeltype, runPoints, directory, settlingTime):                                                      # modeling run routing
         self.app.modelLogQueue.put('status-- of --')
         self.app.modelLogQueue.put('percent0')
         self.app.modelLogQueue.put('timeleft--:--')
-        modelData = dict()                                                                                                  # all model data
+        modelData = dict()                                                                                                  # all modeling data
         results = list()                                                                                                    # results
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
         self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
@@ -941,19 +739,19 @@ class Model(QtCore.QThread):
         if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
             os.makedirs(modelData['base_dir_images'])                                                                       # if path doesn't exist, generate is
         timeStart = time.time()
-        for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all model points
+        for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all modeling points
             modelData['azimuth'] = p_az
             modelData['altitude'] = p_alt
             self.modelrun = True                                                                                            # sets the run flag true
-            if p_item.isVisible():                                                                                          # is the model point to be run = true ?
-                if self.cancel:                                                                                             # here is the entry point for canceling the model run
+            if p_item.isVisible():                                                                                          # is the modeling point to be run = true ?
+                if self.cancel:                                                                                             # here is the entry point for canceling the modeling run
                     self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     self.app.modelLogQueue.put('status-- of --')
                     self.app.modelLogQueue.put('percent0')
                     self.app.modelLogQueue.put('timeleft--:--')
-                    break                                                                                                   # finally stopping model run
+                    break                                                                                                   # finally stopping modeling run
                 self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
                                            .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
                 self.logger.debug('runModel       -> point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))    # Debug output
@@ -962,7 +760,7 @@ class Model(QtCore.QThread):
                         self.slewMountDome(p_az, p_alt)                                                                     # slewing mount and dome to az/alt for first slew only
                         self.app.commandQueue.put('RT9')                                                                    # stop tracking until next round
                 else:
-                    self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for model point and analyse
+                    self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for modeling point and analyse
                 self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
                                            .format(self.timeStamp(), settlingTime))                                         # Gui Output
                 timeCounter = settlingTime
@@ -972,7 +770,7 @@ class Model(QtCore.QThread):
                     self.app.modelLogQueue.put('backspace')
                     self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))                                           # write to gui
                 self.app.modelLogQueue.put('\n')                                                                            # clear gui for next line
-            if p_item.isVisible() and p_solve:                                                                              # is the model point to be run = visible and to be evaluated p_solve = True
+            if p_item.isVisible() and p_solve:                                                                              # is the modeling point to be run = visible and to be evaluated p_solve = True
                 if self.app.ui.checkFastDownload.isChecked():                                                               # if camera is supporting high speed download
                     modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
@@ -995,7 +793,7 @@ class Model(QtCore.QThread):
                 modelData['refractionPress'] = self.app.mount.refractionPressure                                            # set it if string available
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
-                self.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))   # gui output
+                self.app.modelLogQueue.put('{0} -\t Capturing image for modeling point {1:2d}\n'.format(self.timeStamp(), i + 1))   # gui output
                 suc, mes, imagepath = self.capturingImage(modelData, simulation)                                            # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('RT9')                                                                        # stop tracking until next round
@@ -1026,12 +824,12 @@ class Model(QtCore.QThread):
                 modelBuildDone = (i + 1) / len(runPoints)
                 self.app.modelLogQueue.put('percent{0}'.format(modelBuildDone))                                             # show status on screen
                 actualTime = time.time() - timeStart
-                timeCalulated = actualTime / (i + 1) * (len(runPoints) - i - 1)
-                mm = int(timeCalulated / 60)
-                ss = int(timeCalulated - 60 * mm)
+                timeCalculated = actualTime / (i + 1) * (len(runPoints) - i - 1)
+                mm = int(timeCalculated / 60)
+                ss = int(timeCalculated - 60 * mm)
                 self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))                                              # show status on screen
 
-        if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the model images should be kept
+        if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the modeling images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
         self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
                                    .format(self.timeStamp(), modeltype, numCheckPoints))                                    # GUI output

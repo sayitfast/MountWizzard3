@@ -17,15 +17,14 @@ import math
 import os
 from logging import getLogger
 
+# numerics
+import numpy
 # import for the PyQt5 Framework
 import PyQt5.QtWidgets
-import numpy
-# matplotlib
-from matplotlib import use
-
 from baseclasses.widget import MwWidget
 from gui import analyse_dialog_ui
-
+# matplotlib
+from matplotlib import use
 use('Qt5Agg')
 from matplotlib import pyplot as plt
 from matplotlib import figure as figure
@@ -58,11 +57,11 @@ def calculateTimeConstant(x_time, y_value):
 
 
 # noinspection PyUnresolvedReferences
-class ShowAnalysePopup(MwWidget):
+class AnalyseWindow(MwWidget):
     logger = getLogger(__name__)
 
     def __init__(self, app):
-        super(ShowAnalysePopup, self).__init__()
+        super(AnalyseWindow, self).__init__()
         self.app = app
         self.showStatus = False
         self.scaleRA = 10
@@ -338,7 +337,7 @@ class Analyse:
     def saveData(self, dataProcess, name):                                                                                  # saving data from list to file
         if name in ['base.dat', 'refine.dat', 'actual.dat', 'simple.dat', 'dso1.dat', 'dso2.dat']:
             number = self.app.mount.numberModelStars()
-            if number == -1:                                                                                                # if not real mount, than don't save model data
+            if number == -1:                                                                                                # if not real mount, than don't save modeling data
                 return
         filenameData = os.getcwd() + self.filepath + '/' + name                                                             # built the filename
         try:                                                                                                                # write data to disk
