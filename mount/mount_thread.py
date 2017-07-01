@@ -322,10 +322,10 @@ class Mount(QtCore.QThread):
                 data[i]['modelError'] = float(alignModel['points'][i][5])                                                   # and for the total error
                 data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(alignModel['points'][i][6]))             # set raError new from total error mount with polar error angle from mount
                 data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))            # same to dec
-            self.app.modelingLogQueue.put('Mount Model and Model Data synced\n')
+            self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
             self.logger.error('retrofitMountDa-> size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
-            self.app.modelingLogQueue.put('Mount Model and Model Data could not be synced\n')
+            self.app.modelLogQueue.put('Mount Model and Model Data could not be synced\n')
             self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
         return data
 

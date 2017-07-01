@@ -359,7 +359,7 @@ class Modeling(QtCore.QThread):
         modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
         modelData['scaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
         modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]
-        modelData['sidereal_time_float'] = self.app.mount.degStringToDecimal(self.app.mount.sidereal_time[0:9])
+        modelData['sidereal_time_float'] = self.transform.degStringToDecimal(self.app.mount.sidereal_time[0:9])
         modelData['ra_J2000'] = self.app.mount.ra
         modelData['dec_J2000'] = self.app.mount.dec
         modelData['ra_Jnow'] = self.app.mount.raJnow
@@ -395,8 +395,8 @@ class Modeling(QtCore.QThread):
             self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        if len(self.BasePoints) > 0:
-            self.modelData = self.runModel('Base', self.BasePoints, directory, settlingTime)
+        if len(self.modelpoints.BasePoints) > 0:
+            self.modelData = self.runModel('Base', self.modelpoints.BasePoints, directory, settlingTime)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_base.dat'                                                                                  # generate name of analyse file
             if len(self.modelData) > 0:
@@ -417,12 +417,12 @@ class Modeling(QtCore.QThread):
         if num > 2 or simulation:
             settlingTime = int(float(self.app.ui.settlingTime.value()))
             directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-            if len(self.RefinementPoints) > 0:
+            if len(self.modelpoints.RefinementPoints) > 0:
                 if self.app.ui.checkKeepRefinement.isChecked():
                     self.app.mount.loadRefinementModel()
                 else:
                     self.app.mount.loadBaseModel()
-                refinePoints = self.runModel('Refinement', self.RefinementPoints, directory, settlingTime)
+                refinePoints = self.runModel('Refinement', self.modelpoints.RefinementPoints, directory, settlingTime)
                 for i in range(0, len(refinePoints)):
                     refinePoints[i]['index'] += len(self.modelData)
                 self.modelData = self.modelData + refinePoints
@@ -441,7 +441,7 @@ class Modeling(QtCore.QThread):
     def runCheckModel(self):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        points = self.BasePoints + self.RefinementPoints
+        points = self.modelpoints.BasePoints + self.modelpoints.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)                                 # run the analyse
             name = directory + '_check.dat'                                                                                 # generate name of analyse file
@@ -508,12 +508,12 @@ class Modeling(QtCore.QThread):
         self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output
         for i in range(0, len(data['index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.mount.decimalToDegree(data['ra_Jnow'][i], False, True),
-                                                              self.app.mount.decimalToDegree(data['dec_Jnow'][i], True, False),
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['ra_Jnow'][i], False, True),
+                                                              self.transform.decimalToDegree(data['dec_Jnow'][i], True, False),
                                                               data['pierside'][i],
-                                                              self.app.mount.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
-                                                              self.app.mount.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
-                                                              self.app.mount.decimalToDegree(data['sidereal_time_float'][i], False, True))
+                                                              self.transform.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
+                                                              self.transform.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
+                                                              self.transform.decimalToDegree(data['sidereal_time_float'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
@@ -585,10 +585,10 @@ class Modeling(QtCore.QThread):
         if self.cancel:
             return False, 'Cancel modeling pressed', modelData
         st_fits_header = modelData['sidereal_time'][0:10]                                                                   # store local sideral time as well
-        ra_fits_header = self.app.mount.decimalToDegree(modelData['ra_J2000'], False, False, ' ')                           # set the point coordinates from mount in J2000 as hint precision 2
-        dec_fits_header = self.app.mount.decimalToDegree(modelData['dec_J2000'], True, False, ' ')                          # set dec as well
-        raJnow_fits_header = self.app.mount.decimalToDegree(modelData['ra_Jnow'], False, True, ' ')                         # set the point coordinates from mount in J2000 as hint precision 2
-        decJnow_fits_header = self.app.mount.decimalToDegree(modelData['dec_Jnow'], True, True, ' ')                        # set dec as well
+        ra_fits_header = self.transform.decimalToDegree(modelData['ra_J2000'], False, False, ' ')                           # set the point coordinates from mount in J2000 as hint precision 2
+        dec_fits_header = self.transform.decimalToDegree(modelData['dec_J2000'], True, False, ' ')                          # set dec as well
+        raJnow_fits_header = self.transform.decimalToDegree(modelData['ra_Jnow'], False, True, ' ')                         # set the point coordinates from mount in J2000 as hint precision 2
+        decJnow_fits_header = self.transform.decimalToDegree(modelData['dec_Jnow'], True, True, ' ')                        # set dec as well
         if modelData['pierside'] == '1':
             pierside_fits_header = 'E'
         else:
@@ -788,7 +788,7 @@ class Modeling(QtCore.QThread):
                 modelData['blind'] = self.app.ui.checkUseBlindSolve.isChecked()
                 modelData['scaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
                 modelData['sidereal_time'] = self.app.mount.sidereal_time[0:9]
-                modelData['sidereal_time_float'] = self.app.mount.degStringToDecimal(self.app.mount.sidereal_time[0:9])
+                modelData['sidereal_time_float'] = self.transform.degStringToDecimal(self.app.mount.sidereal_time[0:9])
                 modelData['ra_J2000'] = self.app.mount.ra
                 modelData['dec_J2000'] = self.app.mount.dec
                 modelData['ra_Jnow'] = self.app.mount.raJnow
