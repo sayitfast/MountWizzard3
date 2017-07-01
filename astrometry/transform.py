@@ -23,7 +23,6 @@ class Transform:
 
     def __init__(self):
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
-
         try:                                                                                                                # start accessing a com object
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
             self.transform.Refraction = False
