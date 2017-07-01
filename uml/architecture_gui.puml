@@ -1,0 +1,39 @@
+@startuml
+
+scale max 1536 width
+hide stereotype
+
+node "mountwizzard" {
+    [Mount Wizzard App]
+}
+
+package "widgets" {
+   [model plot window]
+   [image window]
+   [analyse window]
+}
+
+package "gui" {
+    [wizzard_main_dialog]
+    [model_plot_dialog]
+    [image_dialog]
+    [analyse_dialog]
+}
+
+package "base classes" {
+    [widget]
+    [camera]
+}
+
+[widget] --> [Mount Wizzard App] : use
+[widget] --> [model plot window] : use
+[widget] --> [image window] : use
+[widget] --> [analyse window] : use
+
+[Mount Wizzard App] -> [wizzard_main_dialog] : use
+[model plot window] ->  [model_plot_dialog] : use
+[image window] -> [image_dialog] : use
+[analyse window] -> [analyse_dialog] : use
+
+
+@enduml
