@@ -50,23 +50,23 @@ package "remote" {
     [remote_thread]
 }
 
-[Mount Wizzard App] -> [mount_thread] : use
-[Mount Wizzard App] -> [stick_thread] : use
-[Mount Wizzard App] -> [weather_thread] : use
-[Mount Wizzard App] -> [unihedron_thread] : use
-[Mount Wizzard App] -> [modeling_thread] : use
-[Mount Wizzard App] -> [remote_thread] : use
-[Mount Wizzard App] -> [dome_thread] : use
-[Mount Wizzard App] -> [relays_] : use
+[Mount Wizzard App] --> [mount_thread] : use
+[Mount Wizzard App] --> [stick_thread] : use
+[Mount Wizzard App] --> [weather_thread] : use
+[Mount Wizzard App] --> [unihedron_thread] : use
+[Mount Wizzard App] --> [modeling_thread] : use
+[Mount Wizzard App] --> [remote_thread] : use
+[Mount Wizzard App] --> [dome_thread] : use
+[Mount Wizzard App] --> [relays_] : use
 [Mount Wizzard App] --> [analysedata] : use
 
-[mount_thread] --> [transform]
+[mount_thread] -> [transform]
 
-[modeling_thread] --> [none] : use
-[modeling_thread] --> [ascomcam] : use
-[modeling_thread] --> [maximdl] : use
-[modeling_thread] --> [sgpro] : use
-[modeling_thread] --> [theskyx] : use
+[modeling_thread] -> [none] : use
+[modeling_thread] -> [ascomcam] : use
+[modeling_thread] -> [maximdl] : use
+[modeling_thread] -> [sgpro] : use
+[modeling_thread] -> [theskyx] : use
 
 
 
