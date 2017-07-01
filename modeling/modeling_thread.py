@@ -31,9 +31,9 @@ import pythoncom
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets
 # for data storing
-from analyse.analyse import Analyse
+from analyse.analysedata import Analyse
 # cameras
-from camera import ascom
+from camera import ascomcam
 from camera import maximdl
 from camera import none
 from camera import sgpro
@@ -60,7 +60,7 @@ class Modeling(QtCore.QThread):
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
         self.SGPro = sgpro.SGPro(self.app)                                                                                  # object abstraction class for SGPro
         self.TheSkyX = theskyx.TheSkyX(self.app)                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = ascom.AscomCamera(self.app)                                                                      # object abstraction calls for ASCOM Camera
+        self.AscomCamera = ascomcam.AscomCamera(self.app)                                                                      # object abstraction calls for ASCOM Camera
         self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                      # object abstraction class for MaximDL
         self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
         self.transform = self.app.mount.transform                                                                           # coordinate transformation

@@ -18,7 +18,7 @@ import numpy
 import PyQt5.QtWidgets
 from baseclasses.widget import MwWidget
 from gui import analyse_dialog_ui
-from analyse import analyse
+from analyse import analysedata
 # matplotlib
 from matplotlib import use
 use('Qt5Agg')
@@ -64,7 +64,7 @@ class AnalyseWindow(MwWidget):
         self.scaleDEC = 10
         self.scaleError = 10
         self.data = {}
-        self.analyse = analyse.Analyse(self.app)
+        self.analyse = analysedata.Analyse(self.app)
         self.ui = analyse_dialog_ui.Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()

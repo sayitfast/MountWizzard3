@@ -43,6 +43,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from baseclasses import widget
 from widgets import modelplotwindow
 from widgets import imagewindow
+from widgets import analysewindow
 from gui import wizzard_main_ui
 # environment classes
 from environment import stick_thread
@@ -55,7 +56,6 @@ from mount import mount_thread
 from relays import relays
 from remote import remote_thread
 from dome import dome_thread
-from analyse import analyse
 from automation import data_upload_thread
 
 
@@ -93,9 +93,9 @@ class MountWizzardApp(widget.MwWidget):
         self.unihedron = unihedron_thread.Unihedron(self)                                                                   # Unihedron Thread
         self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
         self.data = data_upload_thread.DataUploadToMount(self)                                                              # data thread for downloading topics
-        self.analyseWindow = analyse.AnalyseWindow(self)                                                                    # windows for analyse data
-        self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                                  # window for modeling points
-        self.imageWindow = imagewindow.ImagesWindow(self)                                                                        # window for imaging
+        self.analyseWindow = analysewindow.AnalyseWindow(self)                                                              # windows for analyse data
+        self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                            # window for modeling points
+        self.imageWindow = imagewindow.ImagesWindow(self)                                                                   # window for imaging
         self.initConfig()
         self.checkASCOM()
         helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib

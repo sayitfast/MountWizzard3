@@ -24,7 +24,7 @@ from PyQt5 import QtCore
 # win32com
 import pythoncom
 #  mount driver classes
-from mount import ascom
+from mount import ascommount
 from mount import ipdirect
 # astrometry
 from astrometry import transform
@@ -43,7 +43,7 @@ class Mount(QtCore.QThread):
     def __init__(self, app):
         super().__init__()                                                                                                  # init of the class parent with super
         self.app = app                                                                                                      # accessing ui object from mount class
-        self.MountAscom = ascom.MountAscom(app)                                                                             # set ascom driver class
+        self.MountAscom = ascommount.MountAscom(app)                                                                             # set ascom driver class
         self.MountIpDirect = ipdirect.MountIpDirect(app)
         self.mountHandler = self.MountAscom
         self.transform = transform.Transform()

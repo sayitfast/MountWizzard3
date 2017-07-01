@@ -1,0 +1,103 @@
+@startuml
+
+scale max 1536 width
+hide stereotype
+
+node "mountwizzard" {
+    [Mount Wizzard App]
+}
+
+package "widgets" {
+   [model plot window]
+   [image window]
+   [analyse window]
+}
+
+package "gui" {
+    [wizzard_main_dialog]
+    [model_plot_dialog]
+    [image_dialog]
+    [analyse_dialog]
+}
+
+package "base classes" {
+    [widget]
+    [camera]
+}
+
+package "mount" {
+    [mount_thread] --> [ipdirect] : use
+    [mount_thread] --> [ascommount] : use
+}
+
+package "astrometry" {
+    [transform]
+}
+
+package "modeling" {
+    [modeling_thread]
+}
+
+package "environment" {
+    [stick_thread]
+    [unihedron_thread]
+    [weather_thread]
+}
+
+package "camera" {
+    [none]
+    [ascomcam]
+    [maximdl]
+    [sgpro]
+    [theskyx]
+}
+
+package "analyse" {
+    [analysedata]
+}
+
+together {
+package "dome" {
+    [dome_thread]
+}
+
+package "relays" {
+    [relays_]
+}
+
+package "remote" {
+    [remote_thread]
+}
+}
+
+[widget] --> [Mount Wizzard App] : use
+[widget] --> [model plot window] : use
+[widget] --> [image window] : use
+[widget] --> [analyse window] : use
+
+[Mount Wizzard App] -> [wizzard_main_dialog] : use
+[model plot window] ->  [model_plot_dialog] : use
+[image window] -> [image_dialog] : use
+[analyse window] -> [analyse_dialog] : use
+
+[Mount Wizzard App] -> [mount_thread] : use
+[Mount Wizzard App] -> [stick_thread] : use
+[Mount Wizzard App] -> [weather_thread] : use
+[Mount Wizzard App] -> [unihedron_thread] : use
+[Mount Wizzard App] -> [modeling_thread] : use
+[Mount Wizzard App] -> [remote_thread] : use
+[Mount Wizzard App] -> [dome_thread] : use
+[Mount Wizzard App] -> [relays_] : use
+
+[mount_thread] --> [transform]
+
+[modeling_thread] --> [none] : use
+[modeling_thread] --> [ascomcam] : use
+[modeling_thread] --> [maximdl] : use
+[modeling_thread] --> [sgpro] : use
+[modeling_thread] --> [theskyx] : use
+
+[analyse window] --> [analysedata] : use
+
+
+@enduml
