@@ -22,7 +22,6 @@ from operator import itemgetter
 # import PyQT5 for threading purpose
 from PyQt5 import QtCore
 # win32com
-from win32com.client.dynamic import Dispatch
 import pythoncom
 #  mount driver classes
 from mount import ascom
@@ -420,7 +419,7 @@ class Mount(QtCore.QThread):
     def saveBackupModel(self):
         if self.saveModel('BACKUP'):
             if self.app.modeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'backup.dat')                              # save the data
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'backup.dat')
 
     def loadBackupModel(self):
         if self.loadModel('BACKUP'):
@@ -431,7 +430,7 @@ class Mount(QtCore.QThread):
     def saveBaseModel(self):
         if self.saveModel('BASE'):
             if self.app.modeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'base.dat')                                # save the data
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'base.dat')
             else:
                 self.app.messageQueue.put('No data for BASE')
 
@@ -444,7 +443,7 @@ class Mount(QtCore.QThread):
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
             if self.app.modeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'refine.dat')                              # save the data
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'refine.dat')
             else:
                 self.app.messageQueue.put('No data for REFINE')
 
@@ -457,8 +456,8 @@ class Mount(QtCore.QThread):
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
             if self.app.modeling.modelData:
-                if 'index' in self.app.modeling.modelData[0].keys():                                                           # if not available, reconstructed data
-                    self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'actual.dat')                          # save the data
+                if 'index' in self.app.modeling.modelData[0].keys():                                                        # if not available, reconstructed data
+                    self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'actual.dat')
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
 
@@ -471,7 +470,7 @@ class Mount(QtCore.QThread):
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
             if self.app.modeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'simple.dat')                              # save the data
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'simple.dat')
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
@@ -484,7 +483,7 @@ class Mount(QtCore.QThread):
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
             if self.app.modeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'DSO1.dat')                                # save the data
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'DSO1.dat')
             else:
                 self.app.messageQueue.put('No data file for DSO1')
 
@@ -497,7 +496,7 @@ class Mount(QtCore.QThread):
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
             if self.app.modeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'DSO2.dat')                                # save the data
+                self.app.analyseWindow.analyse.saveData(self.app.modeling.modelData, 'DSO2.dat')
             else:
                 self.app.messageQueue.put('No data file for DSO2')
 

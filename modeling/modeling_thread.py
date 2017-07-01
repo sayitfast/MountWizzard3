@@ -38,16 +38,14 @@ from camera import maximdl
 from camera import none
 from camera import sgpro
 from camera import theskyx
-# astrometry
-from astrometry import transform
-# modelpoint
+# modelpoints
 from modeling import modelpoints
 
 
 class Modeling(QtCore.QThread):
-    logger = logging.getLogger(__name__)                                                                                    # logging enabling
+    logger = logging.getLogger(__name__)                                                                                   # logging enabling
     signalModelConnected = QtCore.pyqtSignal(int, name='ModelConnected')                                                   # message for errors
-    signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                      # commands to sgpro thread
+    signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                     # commands to sgpro thread
     signalModelRedraw = QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -65,14 +63,14 @@ class Modeling(QtCore.QThread):
         self.AscomCamera = ascom.AscomCamera(self.app)                                                                      # object abstraction calls for ASCOM Camera
         self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                      # object abstraction class for MaximDL
         self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
-        self.transform = transform.Transform()                                                                              # coordinate transformation
-        self.modelpoints = modelpoints.ModelPoints()
+        self.transform = self.app.mount.transform                                                                           # coordinate transformation
+        self.modelpoints = modelpoints.ModelPoints(self.transform)
         self.cpObject = self.SGPro
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for modeling
         self.modelData = None
-        self.captureFile = 'modeling'                                                                                          # filename for capturing file
+        self.captureFile = 'modeling'                                                                                       # filename for capturing file
         self.counter = 0                                                                                                    # counter for main loop
         self.command = ''                                                                                                   # command buffer
         self.results = []                                                                                                   # error results
@@ -144,31 +142,31 @@ class Modeling(QtCore.QThread):
         while True:                                                                                                         # thread loop for doing jobs
             if self.app.mount.mountHandler.connected:
                 if self.cpObject.appCameraConnected:
-                    if self.command == 'RunBaseModel':                                                                          # actually doing by receiving signals which enables
-                        self.command = ''                                                                                       # only one command at a time, last wins
+                    if self.command == 'RunBaseModel':                                                                      # actually doing by receiving signals which enables
+                        self.command = ''                                                                                   # only one command at a time, last wins
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
-                        self.runBaseModel()                                                                                     # should be refactored to queue only without signal
+                        self.runBaseModel()                                                                                 # should be refactored to queue only without signal
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                    elif self.command == 'RunRefinementModel':                                                                  #
-                        self.command = ''                                                                                       #
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                    elif self.command == 'RunRefinementModel':
+                        self.command = ''
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                         self.runRefinementModel()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                    elif self.command == 'PlateSolveSync':                                                                      # actually doing by receiving signals which enables
-                        self.command = ''                                                                                       # only one command at a time, last wins
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                    elif self.command == 'PlateSolveSync':                                                                  # actually doing by receiving signals which enables
+                        self.command = ''                                                                                   # only one command at a time, last wins
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
-                        self.plateSolveSync()                                                                                   # should be refactored to queue only without signal
+                        self.plateSolveSync()                                                                               # should be refactored to queue only without signal
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
-                    elif self.command == 'RunBatchModel':                                                                       #
-                        self.command = ''                                                                                       #
+                    elif self.command == 'RunBatchModel':
+                        self.command = ''
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
-                        self.runBatchModel()                                                                                    #
+                        self.runBatchModel()
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
-                    elif self.command == 'RunCheckModel':                                                                       #
-                        self.command = ''                                                                                       #
-                        self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                                  # button blue (running)
+                    elif self.command == 'RunCheckModel':
+                        self.command = ''
+                        self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                              # button blue (running)
                         num = self.app.mount.numberModelStars()
                         if num > 2:
                             self.runCheckModel()
@@ -176,48 +174,52 @@ class Modeling(QtCore.QThread):
                             self.app.modelLogQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                             self.app.messageQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
                     elif self.command == 'RunAllModel':
                         self.command = ''
-                        self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                    # button blue (running)
+                        self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                # button blue (running)
                         self.runAllModel()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                                 # button back to default color
-                    elif self.command == 'RunTimeChangeModel':                                                                  #
-                        self.command = ''                                                                                       #
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                    elif self.command == 'RunTimeChangeModel':
+                        self.command = ''
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
-                        self.runTimeChangeModel()                                                                               #
+                        self.runTimeChangeModel()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                          # button back to default color
-                    elif self.command == 'RunHystereseModel':                                                                   #
-                        self.command = ''                                                                                       #
+                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
+                    elif self.command == 'RunHystereseModel':
+                        self.command = ''
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
-                        self.runHystereseModel()                                                                                #
+                        self.runHystereseModel()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                          # button back to default color
-                    elif self.command == 'ClearAlignmentModel':                                                                 #
-                        self.command = ''                                                                                       #
+                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
+                    elif self.command == 'ClearAlignmentModel':
+                        self.command = ''
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
                         self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
-                        self.clearAlignmentModel()                                                                              #
+                        self.clearAlignmentModel()
                         self.app.modelLogQueue.put('Model cleared!\n')
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 if self.command == 'GenerateDSOPoints':
                     self.command = ''
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)
-                    self.RefinementPoints = self.generateDSOPoints()
+                    self.modelpoints.generateDSOPoints(int(float(self.app.ui.numberHoursDSO.value())),
+                                                       int(float(self.app.ui.numberPointsDSO.value())),
+                                                       int(float(self.app.ui.numberHoursPreview.value())),
+                                                       copy.copy(self.app.mount.ra),
+                                                       copy.copy(self.app.mount.dec))
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)
                 elif self.command == 'GenerateDensePoints':
                     self.command = ''
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)
-                    self.RefinementPoints = self.generateDensePoints()
+                    self.modelpoints.generateDensePoints()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)
                 elif self.command == 'GenerateNormalPoints':
                     self.command = ''
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)
-                    self.RefinementPoints = self.generateNormalPoints()
+                    self.modelpoints.generateNormalPoints()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
             else:
@@ -237,25 +239,29 @@ class Modeling(QtCore.QThread):
                 self.cpObject.connectApplication()
             elif self.command == 'LoadBasePoints':
                 self.command = ''
-                self.modelpoints.showBasePoints()
+                self.modelpoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
                 self.signalModelRedraw.emit(True)
             elif self.command == 'LoadRefinementPoints':
                 self.command = ''
-                self.modelpoints.showRefinementPoints()
+                self.modelpoints.loadRefinementPoints(self.app.ui.le_modelPointsFileName.text())
                 self.signalModelRedraw.emit(True)
             elif self.command == 'SortRefinementPoints':
                 self.command = ''
-                self.sortPoints('refinement')
+                self.modelpoints.sortPoints('refinement')
                 self.signalModelRedraw.emit(True)
             elif self.command == 'GenerateGridPoints':
                 self.command = ''
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
-                self.modelpoints.generateGridPoints()
+                self.modelpoints.generateGridPoints(int(float(self.app.ui.numberGridPointsRow.value())),
+                                                    int(float(self.app.ui.numberGridPointsCol.value())),
+                                                    int(float(self.app.ui.altitudeMin.value())),
+                                                    int(float(self.app.ui.altitudeMax.value())))
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
             elif self.command == 'GenerateBasePoints':
                 self.command = ''
-                self.modelpoints.generateBasePoints()
+                self.modelpoints.generateBasePoints(float(self.app.ui.azimuthBase.value()),
+                                                    float(self.app.ui.altitudeBase.value()))
                 self.signalModelRedraw.emit(True)
             elif self.command == 'DeleteBelowHorizonLine':
                 self.command = ''
@@ -636,7 +642,7 @@ class Modeling(QtCore.QThread):
         modelData['scale'] = 1.3
         modelData['angle'] = 90
         modelData['timeTS'] = 2.5
-        ra, dec =self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
+        ra, dec = self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
         modelData['ra_sol_Jnow'] = ra
         modelData['dec_sol_Jnow'] = dec
         modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600
@@ -649,7 +655,7 @@ class Modeling(QtCore.QThread):
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow =self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)          # transform J2000 -> Jnow
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
             modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
             modelData['dec_sol_Jnow'] = dec_sol_Jnow                                                                        # dec in  Jnow
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra

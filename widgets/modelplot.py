@@ -24,8 +24,6 @@ from PyQt5.QtWidgets import *
 
 from baseclasses import widget
 from gui import coordinate_dialog_ui
-# astrometry
-from astrometry import transform
 
 
 def getXYRectangle(az, width, border):
@@ -51,7 +49,7 @@ class ModelPlotWindow(widget.MwWidget):
     def __init__(self, app):
         super(ModelPlotWindow, self).__init__()
         self.app = app
-        self.transform = transform.Transform()
+        self.transform = self.app.mount.transform
         self.pointerAzAlt = QGraphicsItemGroup()                                                                            # object placeholder for AzAlt Pointer
         self.pointerTrack = QGraphicsItemGroup()                                                                            # same for tracking widget
         self.pointerTrackLine = []                                                                                          # same for Track line

@@ -133,7 +133,7 @@ class AnalyseWindow(MwWidget):
 
     def getData(self):
         filename = self.app.ui.le_analyseFileName.text()
-        if filename == '' or not self.app.mount.transformConnected:
+        if filename == '':
             return False
         self.scaleRA = self.ui.scalePlotRA.value()
         self.scaleDEC = self.ui.scalePlotDEC.value()

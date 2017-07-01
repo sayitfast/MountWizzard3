@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-import copy
 import logging
 import os
 # for the sorting
@@ -21,7 +20,8 @@ from operator import itemgetter
 class ModelPoints:
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
-    def __init__(self):
+    def __init__(self, transform):
+        self.transform = transform
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
         self.RefinementPoints = []                                                                                          # refinement point out of file for modeling
@@ -149,22 +149,17 @@ class ModelPoints:
         self.BasePoints = []
         self.RefinementPoints = []
 
-    def showBasePoints(self):
-        self.BasePoints = self.loadModelPoints(self.app.ui.le_modelPointsFileName.text(), 'base')
+    def loadBasePoints(self, filename):
+        self.BasePoints, msg = self.loadModelPoints(filename, 'base')
 
-    def showRefinementPoints(self):
-        self.RefinementPoints = self.loadModelPoints(self.app.ui.le_modelPointsFileName.text(), 'refinement')
+    def loadRefinementPoints(self, filename):
+        self.RefinementPoints, msg = self.loadModelPoints(filename, 'refinement')
 
-    def generateDSOPoints(self):                                                                                            # modeling points along dso path
-        hours = int(float(self.app.ui.numberHoursDSO.value()))
-        number = int(float(self.app.ui.numberPointsDSO.value()))
-        preview = int(float(self.app.ui.numberHoursPreview.value()))
-        raCopy = copy.copy(self.app.mount.ra)
-        decCopy = copy.copy(self.app.mount.dec)
+    def generateDSOPoints(self, hours, numPoints, hoursPrev, ra, dec):                                                      # modeling points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
-        for i in range(0, number):                                                                                          # round modeling point from actual az alt position 24 hours
-            ra = raCopy - float(i) * hours / number - preview
-            az, alt = self.app.mount.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
+        for i in range(0, numPoints):                                                                                       # round modeling point from actual az alt position 24 hours
+            ra = ra - float(i) * hours / numPoints - hoursPrev
+            az, alt = self.transform.transformNovas(ra, dec, 1)                                                             # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
 
@@ -179,7 +174,7 @@ class ModelPoints:
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.app.mount.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
+                az, alt = self.transform.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((az, alt))                                                                              # add to east
@@ -196,7 +191,7 @@ class ModelPoints:
             else:
                 step = -20                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.app.mount.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
+                az, alt = self.transform.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((az, alt))                                                                              # add to east
@@ -204,20 +199,14 @@ class ModelPoints:
                         west.append((az, alt))                                                                              # add to west
         self.RefinementPoints = west + east
 
-    def generateGridPoints(self):                                                                                           # modeling points along dso path
-        row = int(float(self.app.ui.numberGridPointsRow.value()))
-        col = int(float(self.app.ui.numberGridPointsCol.value()))
-        altMin = int(float(self.app.ui.altitudeMin.value()))
-        altMax = int(float(self.app.ui.altitudeMax.value()))
+    def generateGridPoints(self, row, col, altMin, altMax):                                                                                           # modeling points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
         for az in range(5, 360, int(360 / col)):                                                                            # make point for all azimuth
             for alt in range(altMin, altMax + 1, int((altMax - altMin) / (row - 1))):                                       # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
 
-    def generateBasePoints(self):                                                                                           # do base point equally distributed
+    def generateBasePoints(self, az, alt):                                                                                           # do base point equally distributed
         self.BasePoints = []
-        az = float(self.app.ui.azimuthBase.value())                                                                         # get az value from gui
-        alt = float(self.app.ui.altitudeBase.value())                                                                       # same to alt value
         for i in range(0, 3):                                                                                               # we need 3 basepoints
             azp = i * 120 + az                                                                                              # equal distance of 120 degree in az
             if azp > 360:                                                                                                   # value range 0-360
