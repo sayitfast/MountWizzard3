@@ -41,8 +41,8 @@ from matplotlib import figure as figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # import the UI part, which is done via QT Designer and exported
 from baseclasses import widget
-from widgets import modelplot
-from widgets import images
+from widgets import modelplotwindow
+from widgets import imagewindow
 from gui import wizzard_main_ui
 # environment classes
 from environment import stick_thread
@@ -94,8 +94,8 @@ class MountWizzardApp(widget.MwWidget):
         self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
         self.data = data_upload_thread.DataUploadToMount(self)                                                              # data thread for downloading topics
         self.analyseWindow = analyse.AnalyseWindow(self)                                                                    # windows for analyse data
-        self.modelWindow = modelplot.ModelPlotWindow(self)                                                                  # window for modeling points
-        self.imageWindow = images.ImagesWindow(self)                                                                        # window for imaging
+        self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                                  # window for modeling points
+        self.imageWindow = imagewindow.ImagesWindow(self)                                                                        # window for imaging
         self.initConfig()
         self.checkASCOM()
         helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib
