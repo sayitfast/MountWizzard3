@@ -4,7 +4,7 @@
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
 (C) Michael Würtenberger 2016, 2017
 
-#### Version release: 2.2 --- beta: 2.3.22
+#### Version release: 2.2 --- beta: 2.3.23
 
 [Link to the extended documentation and handbook of MountWizzard](./docu/home.md)
 

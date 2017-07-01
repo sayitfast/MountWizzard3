@@ -1,4 +1,9 @@
 # Changelog
+2.3.23
+- refactoring building packages
+- cleaning up python style
+- clean architecture
+
 2.3.22
 - maintenance release
 - wording in tooltips
