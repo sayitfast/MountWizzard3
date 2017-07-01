@@ -35,10 +35,7 @@ class Transform:
         self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
         # self.transform.JulianDateTT = self.jd
         if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24                                                                                                    #
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
+            ra = ra % 24
             self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
@@ -51,18 +48,12 @@ class Transform:
             val1 = self.transform.RATopocentric
             val2 = self.transform.DECTopocentric
         elif transform == 4:                                                                                                # 1 = JNow -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24                                                                                                    #
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
+            ra = ra % 24
             self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
         elif transform == 5:                                                                                                # 5 = Apparent -> alt/az
-            if ra < 0:                                                                                                      # ra has to be between 0 and 23,99999
-                ra += 24
-            if ra >= 24:                                                                                                    # so set it right
-                ra -= 24
+            ra = ra % 24
             self.transform.SetApparent(ra, dec)                                                                             # set apparent ra, dec
             val1 = self.transform.AzimuthTopocentric                                                                        # convert az
             val2 = self.transform.ElevationTopocentric                                                                      # convert alt
