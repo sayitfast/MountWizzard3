@@ -252,10 +252,22 @@ class AscomCamera(MWCamera):
 
 
 if __name__ == "__main__":
-    cam = AscomCamera()
-    # cam.setupDriverCamera()
+    from baseclasses.camera import MWCamera
+    import time
+    max = 10
+    cam = AscomCamera(MWCamera)
     cam.driverNameCamera = 'ASCOM.Simulator.Camera'
+    cam.appRunning = True
     cam.connectCameraPlateSolver()
-    # print(cam.ascomCamera.ReadoutModes)
-    suc, mes, x, y, can, gains = cam.getCameraProps()
-    # print(x, y, gains)
+    print(cam.getCameraProps())
+    value = {'binning': 1, 'exposure': 1, 'iso': 100,
+             'gainValue': 'Not Set', 'speed': 'HiSpeed',
+             'file': 'test.fit', 'base_dir_images': 'c:/temp',
+             'canSubframe': True, 'offX': 0, 'offY': 0,
+             'sizeX': 3388, 'sizeY': 2712}
+    t_start = time.time()
+    for i in range(0, max):
+        print(i)
+        cam.getImageRaw(value)
+    t_stop = time.time()
+    print((t_stop - t_start - max) / max)

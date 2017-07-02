@@ -14,13 +14,10 @@
 
 import json
 import logging
-import time
 # packages for handling web interface to SGPro
 from urllib import request
-
 # windows automation
 from pywinauto import Application, findwindows, application
-
 from baseclasses.camera import MWCamera
 
 
@@ -291,3 +288,22 @@ class SGPro(MWCamera):
         except Exception as e:
             self.logger.error('SgSolveImage   -> error: {0}'.format(e))
             return False, 'Request failed', ''
+
+
+if __name__ == "__main__":
+    from baseclasses.camera import MWCamera
+    import time
+    max = 20
+    cam = SGPro(MWCamera)
+    print(cam.getCameraProps())
+    value = {'binning': 1, 'exposure': 1, 'iso': 100,
+             'gainValue': 'Not Set', 'speed': 'HiSpeed',
+             'file': 'test.fit', 'base_dir_images': 'c:/temp',
+             'canSubframe': True, 'offX': 0, 'offY': 0,
+             'sizeX': 3388, 'sizeY': 2712}
+    t_start = time.time()
+    for i in range(0, max):
+        print(i)
+        cam.getImage(value)
+    t_stop = time.time()
+    print((t_stop - t_start - max) / max)
