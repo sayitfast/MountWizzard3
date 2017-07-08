@@ -64,7 +64,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.setupUi(self)                                                                                               # setup the ui
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
-        self.ui.btn_colorGray.setChecked(True)
+        self.ui.btn_colorGrey.setChecked(True)
         self.initUI()                                                                                                       # adaptions to ui setup
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.initConfig()
@@ -76,7 +76,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
-        self.ui.btn_colorGray.clicked.connect(self.setColor)
+        self.ui.btn_colorGrey.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
         self.ui.btn_colorRainbow.clicked.connect(self.setColor)
         self.ui.btn_size25.clicked.connect(self.setZoom)
@@ -139,20 +139,20 @@ class ImagesWindow(widget.MwWidget):
             self.strechHigh()
 
     def strechLow(self):
-        self.imageVmin = numpy.min(self.image) * 1
-        self.imageVmax = max(numpy.max(self.image) / 2, self.imageVmin + 1)
-        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
-        self.imageWidget.draw()
-
-    def strechMid(self):
-        self.imageVmin = numpy.min(self.image) * 1.05
+        self.imageVmin = numpy.min(self.image) * 8 + 1
         self.imageVmax = max(numpy.max(self.image) / 4, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
-    def strechHigh(self):
-        self.imageVmin = numpy.min(self.image) * 1.1
+    def strechMid(self):
+        self.imageVmin = numpy.min(self.image) * 8 + 1
         self.imageVmax = max(numpy.max(self.image) / 8, self.imageVmin + 1)
+        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        self.imageWidget.draw()
+
+    def strechHigh(self):
+        self.imageVmin = numpy.min(self.image) * 8 + 1
+        self.imageVmax = max(numpy.max(self.image) / 16, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 

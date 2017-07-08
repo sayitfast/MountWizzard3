@@ -223,7 +223,7 @@ Shot</string>
    <property name="title">
     <string>Colors</string>
    </property>
-   <widget class="QRadioButton" name="btn_colorGray">
+   <widget class="QRadioButton" name="btn_colorGrey">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -236,7 +236,7 @@ Shot</string>
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Color scheme black /white&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
-     <string>Gray</string>
+     <string>Grey</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="btn_colorCool">
