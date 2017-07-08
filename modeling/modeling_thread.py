@@ -579,6 +579,9 @@ class Modeling(QtCore.QThread):
             modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
             self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message
+        if 'binning' in modelData:                                                                                          # if binning, we have to respects
+            modelData['sizeX'] = int(modelData['sizeX'] / modelData['binning'])
+            modelData['sizeY'] = int(modelData['sizeY'] / modelData['binning'])
         return modelData                                                                                                    # default without subframe
 
     def capturingImage(self, modelData, simulation):                                                                        # capturing image

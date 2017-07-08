@@ -73,10 +73,8 @@ class ImagesWindow(widget.MwWidget):
         helper.addWidget(self.imageWidget)
         self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
         self.imageWidget.axes.set_axis_off()
-        self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
-        self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
-        self.ui.btn_expose.clicked.connect(self.expose)
+        self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_colorGray.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
         self.ui.btn_colorRainbow.clicked.connect(self.setColor)
@@ -108,12 +106,6 @@ class ImagesWindow(widget.MwWidget):
     def hideWindow(self):
         self.showStatus = False
         self.setVisible(False)
-
-    def connectCamPS(self):
-        pass
-
-    def disconnectCamPS(self):
-        pass
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
@@ -204,12 +196,6 @@ class ImagesWindow(widget.MwWidget):
         self.setStrech()
         self.setZoom()
 
-    def showImage(self, imagedata):
-        self.image = imagedata
-        self.sizeY, self.sizeX = self.image.shape
-        self.setStrech()
-        self.setZoom()
-
     def disableExposures(self):
         self.ui.btn_expose.setEnabled(False)
         self.ui.btn_startContExposures.setEnabled(False)
@@ -222,21 +208,26 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_stopContExposures.setEnabled(True)
         self.ui.windowTitle.setText('Image Window')
 
-    def expose(self):
-        if False:
-            param = {}
-            suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.model.AscomCamera.getCameraProps()
-            param['binning'] = 1
-            param['exposure'] = 1
-            directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
-            param['base_dir_images'] = self.app.ui.le_imageDirectoryName.text() + '/' + directory
-            number = 0
-            while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
-                number += 1
-            param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
-            param = self.app.model.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
-            if not os.path.isdir(param['base_dir_images']):
-                os.makedirs(param['base_dir_images'])
-            suc, mes, image = self.app.model.AscomCamera.getImageRaw(param)
-            if suc:
-                self.showImage(image)
+    def exposeOnce(self):
+        param = {'speed': 'HiSpeed',
+                 'file': 'test.fit',
+                 }
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.cpObject.getCameraProps()
+        param['gainValue'] = gainValue
+        param['binning'] = self.app.ui.cameraBin.value()
+        param['exposure'] = self.app.ui.cameraExposure.value()
+        param['iso'] = self.app.ui.isoSetting.value()
+        directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
+        param['base_dir_images'] = self.app.modeling.IMAGEDIR + '/' + directory
+        if not os.path.isdir(param['base_dir_images']):
+            os.makedirs(param['base_dir_images'])
+        param = self.app.modeling.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
+        number = 0
+        while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
+            number += 1
+        param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
+        suc, mes, param = self.app.modeling.cpObject.getImage(param)
+        self.showFitsImage(param['imagepath'])
+
+    def exposeContinuous(self):
+        pass

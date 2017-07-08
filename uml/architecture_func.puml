@@ -28,7 +28,6 @@ package "environment" {
 
 package "camera" {
     [none]
-    [ascomcam]
     [maximdl]
     [sgpro]
     [theskyx]
@@ -63,7 +62,6 @@ package "remote" {
 [mount_thread] -> [transform]
 
 [modeling_thread] -> [none] : use
-[modeling_thread] -> [ascomcam] : use
 [modeling_thread] -> [maximdl] : use
 [modeling_thread] -> [sgpro] : use
 [modeling_thread] -> [theskyx] : use
