@@ -77,6 +77,7 @@ class ImagesWindow(widget.MwWidget):
 
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
+        self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
         self.ui.btn_expose.clicked.connect(self.expose)
         self.ui.btn_colorGray.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
@@ -104,11 +105,15 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
 
+    def hideWindow(self):
+        self.showStatus = False
+        self.setVisible(False)
+
     def connectCamPS(self):
-        self.app.model.AscomCamera.connectCameraPlateSolver()
+        pass
 
     def disconnectCamPS(self):
-        self.app.model.AscomCamera.disconnectCameraPlateSolver()
+        pass
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
@@ -206,7 +211,7 @@ class ImagesWindow(widget.MwWidget):
         self.setZoom()
 
     def expose(self):
-        if self.app.model.AscomCamera.connectedCamera:
+        if False:
             param = {}
             suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.model.AscomCamera.getCameraProps()
             param['binning'] = 1

@@ -33,7 +33,6 @@ from PyQt5 import QtWidgets
 # for data storing
 from analyse.analysedata import Analyse
 # cameras
-from camera import ascomcam
 from camera import maximdl
 from camera import none
 from camera import sgpro
@@ -60,7 +59,6 @@ class Modeling(QtCore.QThread):
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
         self.SGPro = sgpro.SGPro(self.app)                                                                                  # object abstraction class for SGPro
         self.TheSkyX = theskyx.TheSkyX(self.app)                                                                            # object abstraction class for TheSkyX
-        self.AscomCamera = ascomcam.AscomCamera(self.app)                                                                      # object abstraction calls for ASCOM Camera
         self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                      # object abstraction class for MaximDL
         self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
         self.transform = self.app.mount.transform                                                                           # coordinate transformation
@@ -80,10 +78,10 @@ class Modeling(QtCore.QThread):
 
     def initConfig(self):
         try:
-            if 'ASCOMCameraDriverName' in self.app.config:
-                self.AscomCamera.driverNameCamera = self.app.config['ASCOMCameraDriverName']
-            if 'ASCOMPlateSolverDriverName' in self.app.config:
-                self.AscomCamera.driverNamePlateSolver = self.app.config['ASCOMPlateSolverDriverName']
+         #   if 'ASCOMCameraDriverName' in self.app.config:
+         #       self.AscomCamera.driverNameCamera = self.app.config['ASCOMCameraDriverName']
+         #   if 'ASCOMPlateSolverDriverName' in self.app.config:
+         #       self.AscomCamera.driverNamePlateSolver = self.app.config['ASCOMPlateSolverDriverName']
             if 'HorizonPointsFileName' in self.app.config:
                 self.loadHorizonPoints(str(self.app.config['HorizonPointsFileName']))
         except Exception as e:
@@ -92,8 +90,9 @@ class Modeling(QtCore.QThread):
             pass
 
     def storeConfig(self):
-        self.app.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
-        self.app.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
+        pass
+        # self.app.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
+        # self.app.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
 
     def cameraPlateChooser(self):
         self.chooserLock.acquire()
@@ -105,28 +104,15 @@ class Modeling(QtCore.QThread):
             self.cpObject.disconnectApplication()
         if self.app.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
-            self.app.imageWindow.showStatus = False
-            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
         elif self.app.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
-            self.app.imageWindow.showStatus = False
-            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
-        elif self.app.ui.rb_cameraASCOM.isChecked():
-            self.cpObject = self.AscomCamera
-            self.app.imageWindow.showStatus = True
-            self.app.imageWindow.setVisible(True)
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is ASCOM')
         elif self.app.ui.rb_cameraMaximDL.isChecked():
             self.cpObject = self.MaximDL
-            self.app.imageWindow.showStatus = False
-            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is MaximDL')
         elif self.app.ui.rb_cameraNone.isChecked():
             self.cpObject = self.NoneCam
-            self.app.imageWindow.showStatus = False
-            self.app.imageWindow.setVisible(False)
             self.logger.debug('cameraPlateChoo-> actual camera / plate solver is None')
         self.cpObject.checkAppStatus()
         if self.app.ui.checkAutoStartApp.isChecked():

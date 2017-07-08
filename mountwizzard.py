@@ -224,7 +224,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelAnalyseModel'))
         self.ui.btn_runHystereseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunHystereseModel'))
         self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
-        self.ui.btn_openCoordinateWindow.clicked.connect(self.showCoordinateWindow)
+        self.ui.btn_openModelingPlotWindow.clicked.connect(self.showModelingPlotWindow)
+        self.ui.btn_openImageWindow.clicked.connect(self.showImageWindow)
         self.ui.btn_bootMount.clicked.connect(lambda: self.relays.bootMount())
         self.ui.btn_switchCCD.clicked.connect(lambda: self.relays.switchCCD())
         self.ui.btn_switchHeater.clicked.connect(lambda: self.relays.switchHeater())
@@ -637,9 +638,13 @@ class MountWizzardApp(widget.MwWidget):
         self.analyseWindow.showStatus = True
         self.analyseWindow.setVisible(True)
 
-    def showCoordinateWindow(self):
+    def showModelingPlotWindow(self):
         self.modelWindow.showStatus = True
         self.modelWindow.setVisible(True)
+
+    def showImageWindow(self):
+        self.imageWindow.showStatus = True
+        self.imageWindow.setVisible(True)
 
     def shutdownQuit(self):
         self.saveConfig()
@@ -1026,5 +1031,5 @@ if __name__ == "__main__":
     mountApp.show()                                                                                                         # show it
     if mountApp.modelWindow.showStatus:                                                                                 # if windows was shown last run, open it directly
         mountApp.modelWindow.redrawModelingWindow()                                                                   # update content
-        mountApp.showCoordinateWindow()                                                                                     # show it
+        mountApp.showModelingPlotWindow()                                                                                     # show it
     sys.exit(app.exec_())                                                                                                   # close application

@@ -118,6 +118,15 @@ class Ui_ImageDialog(object):
         self.line_14.setFrameShadow(QtWidgets.QFrame.Plain)
         self.line_14.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_14.setObjectName("line_14")
+        self.btn_selectClose = QtWidgets.QPushButton(ImageDialog)
+        self.btn_selectClose.setGeometry(QtCore.QRect(760, 0, 31, 31))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_selectClose.setFont(font)
+        self.btn_selectClose.setObjectName("btn_selectClose")
 
         self.retranslateUi(ImageDialog)
         QtCore.QMetaObject.connectSlotsByName(ImageDialog)
@@ -125,7 +134,7 @@ class Ui_ImageDialog(object):
     def retranslateUi(self, ImageDialog):
         _translate = QtCore.QCoreApplication.translate
         ImageDialog.setWindowTitle(_translate("ImageDialog", "Imaging Window"))
-        self.windowTitle.setText(_translate("ImageDialog", "Imaging with ASCOM Camera"))
+        self.windowTitle.setText(_translate("ImageDialog", "Image Window"))
         self.btn_expose.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Single exposure</p></body></html>"))
         self.btn_expose.setText(_translate("ImageDialog", "Expose\n"
 "single\n"
@@ -159,4 +168,6 @@ class Ui_ImageDialog(object):
         self.btn_disconnectCamPS.setText(_translate("ImageDialog", "Disconnect"))
         self.label_81.setText(_translate("ImageDialog", "Camera"))
         self.label_82.setText(_translate("ImageDialog", "Views"))
+        self.btn_selectClose.setToolTip(_translate("ImageDialog", "Sets dual tracking on / off"))
+        self.btn_selectClose.setText(_translate("ImageDialog", "X"))
 

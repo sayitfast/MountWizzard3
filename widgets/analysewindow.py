@@ -69,7 +69,7 @@ class AnalyseWindow(MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.ui.windowTitle.setPalette(self.palette)
-        self.ui.btn_selectClose.clicked.connect(self.hideAnalyseWindow)
+        self.ui.btn_selectClose.clicked.connect(self.hideWindow)
         self.ui.scalePlotDEC.valueChanged.connect(self.changedDECScale)
         self.ui.scalePlotRA.valueChanged.connect(self.changedRAScale)
         self.ui.scalePlotError.valueChanged.connect(self.changedPlotError)
@@ -145,7 +145,7 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.tick_params(axis='x', colors='white')
         self.plotWidget.axes.tick_params(axis='y', colors='white')
 
-    def hideAnalyseWindow(self):
+    def hideWindow(self):
         self.showStatus = False
         self.setVisible(False)
 
