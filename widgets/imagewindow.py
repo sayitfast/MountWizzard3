@@ -210,6 +210,16 @@ class ImagesWindow(widget.MwWidget):
         self.setStrech()
         self.setZoom()
 
+    def disableExposures(self):
+        self.ui.btn_expose.setEnabled(False)
+        self.ui.btn_startContExposures.setEnabled(False)
+        self.ui.btn_stopContExposures.setEnabled(False)
+
+    def enableExposures(self):
+        self.ui.btn_expose.setEnabled(True)
+        self.ui.btn_startContExposures.setEnabled(True)
+        self.ui.btn_stopContExposures.setEnabled(True)
+
     def expose(self):
         if False:
             param = {}

@@ -272,7 +272,7 @@ Shot</string>
     </property>
    </widget>
   </widget>
-  <widget class="QPushButton" name="btn_stasrContExposures">
+  <widget class="QPushButton" name="btn_startContExposures">
    <property name="geometry">
     <rect>
      <x>100</x>

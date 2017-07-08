@@ -130,21 +130,27 @@ class Modeling(QtCore.QThread):
                 if self.cpObject.appCameraConnected:
                     if self.command == 'RunBaseModel':                                                                      # actually doing by receiving signals which enables
                         self.command = ''                                                                                   # only one command at a time, last wins
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
                         self.runBaseModel()                                                                                 # should be refactored to queue only without signal
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'RunRefinementModel':
                         self.command = ''
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                         self.runRefinementModel()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'PlateSolveSync':                                                                  # actually doing by receiving signals which enables
                         self.command = ''                                                                                   # only one command at a time, last wins
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
                         self.plateSolveSync()                                                                               # should be refactored to queue only without signal
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'RunBatchModel':
                         self.command = ''
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
@@ -152,6 +158,7 @@ class Modeling(QtCore.QThread):
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
                     elif self.command == 'RunCheckModel':
                         self.command = ''
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                              # button blue (running)
                         num = self.app.mount.numberModelStars()
                         if num > 2:
@@ -161,24 +168,31 @@ class Modeling(QtCore.QThread):
                             self.app.messageQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'RunAllModel':
                         self.command = ''
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                # button blue (running)
                         self.runAllModel()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'RunTimeChangeModel':
                         self.command = ''
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
                         self.runTimeChangeModel()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'RunHystereseModel':
                         self.command = ''
+                        self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
                         self.runHystereseModel()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
+                        self.app.imageWindow.enableExposures()
                     elif self.command == 'ClearAlignmentModel':
                         self.command = ''
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)

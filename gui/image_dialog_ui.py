@@ -78,9 +78,9 @@ class Ui_ImageDialog(object):
         self.btn_colorRainbow = QtWidgets.QRadioButton(self.groupBox_4)
         self.btn_colorRainbow.setGeometry(QtCore.QRect(10, 60, 71, 21))
         self.btn_colorRainbow.setObjectName("btn_colorRainbow")
-        self.btn_stasrContExposures = QtWidgets.QPushButton(ImageDialog)
-        self.btn_stasrContExposures.setGeometry(QtCore.QRect(100, 50, 81, 81))
-        self.btn_stasrContExposures.setObjectName("btn_stasrContExposures")
+        self.btn_startContExposures = QtWidgets.QPushButton(ImageDialog)
+        self.btn_startContExposures.setGeometry(QtCore.QRect(100, 50, 81, 81))
+        self.btn_startContExposures.setObjectName("btn_startContExposures")
         self.btn_stopContExposures = QtWidgets.QPushButton(ImageDialog)
         self.btn_stopContExposures.setGeometry(QtCore.QRect(190, 50, 81, 81))
         self.btn_stopContExposures.setObjectName("btn_stopContExposures")
@@ -156,8 +156,8 @@ class Ui_ImageDialog(object):
         self.btn_colorCool.setText(_translate("ImageDialog", "Cool"))
         self.btn_colorRainbow.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Color scheme rainbow</p></body></html>"))
         self.btn_colorRainbow.setText(_translate("ImageDialog", "Rainbow"))
-        self.btn_stasrContExposures.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Starting taking continously exposures</p></body></html>"))
-        self.btn_stasrContExposures.setText(_translate("ImageDialog", "Start\n"
+        self.btn_startContExposures.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Starting taking continously exposures</p></body></html>"))
+        self.btn_startContExposures.setText(_translate("ImageDialog", "Start\n"
 "cont.\n"
 "Exposures"))
         self.btn_stopContExposures.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Stopping taking continously exposures</p></body></html>"))
