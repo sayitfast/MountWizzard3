@@ -632,6 +632,7 @@ class Modeling(QtCore.QThread):
                                           fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                       # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
+            self.app.imageQueue.put(modelData['imagepath'])
             return True, 'OK', modelData                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back

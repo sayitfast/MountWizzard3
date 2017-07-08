@@ -67,14 +67,12 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_colorGray.setChecked(True)
         self.initUI()                                                                                                       # adaptions to ui setup
         self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
-        self.show()                                                                                                         # construct the window
-        self.setVisible(False)                                                                                              # but hide it first
+        self.initConfig()
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.image)
         self.imageWidget = ShowImageData(self.ui.image)
         helper.addWidget(self.imageWidget)
         self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
-        self.initConfig()
-
+        self.imageWidget.axes.set_axis_off()
         self.ui.btn_connectCamPS.clicked.connect(self.connectCamPS)
         self.ui.btn_disconnectCamPS.clicked.connect(self.disconnectCamPS)
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
@@ -88,6 +86,8 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechLow.clicked.connect(self.setStrech)
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
+        self.show()                                                                                                         # construct the window
+        self.setVisible(False)
 
     def initConfig(self):
         try:
@@ -149,13 +149,13 @@ class ImagesWindow(widget.MwWidget):
 
     def strechMid(self):
         self.imageVmin = numpy.min(self.image) * 1.05
-        self.imageVmax = max(numpy.max(self.image) / 10, self.imageVmin + 1)
+        self.imageVmax = max(numpy.max(self.image) / 4, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
     def strechHigh(self):
         self.imageVmin = numpy.min(self.image) * 1.1
-        self.imageVmax = max(numpy.max(self.image) / 20, self.imageVmin + 1)
+        self.imageVmax = max(numpy.max(self.image) / 8, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
@@ -214,11 +214,13 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_expose.setEnabled(False)
         self.ui.btn_startContExposures.setEnabled(False)
         self.ui.btn_stopContExposures.setEnabled(False)
+        self.ui.windowTitle.setText('Image Window - Modeling running')
 
     def enableExposures(self):
         self.ui.btn_expose.setEnabled(True)
         self.ui.btn_startContExposures.setEnabled(True)
         self.ui.btn_stopContExposures.setEnabled(True)
+        self.ui.windowTitle.setText('Image Window')
 
     def expose(self):
         if False:

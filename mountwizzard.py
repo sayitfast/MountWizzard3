@@ -84,6 +84,7 @@ class MountWizzardApp(widget.MwWidget):
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
+        self.imageQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = dome_thread.Dome(self)                                                                                  # dome control
@@ -949,6 +950,10 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')                                    # write it to window
             self.messageQueue.task_done()
             self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                 # move cursor
+        while not self.imageQueue.empty():                                                                                  # do i have error messages ?
+            filename = self.imageQueue.get()                                                                              # get the message
+            if self.imageWindow.showStatus:
+                self.imageWindow.showFitsImage(filename)
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
             text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
             if text == 'delete':                                                                                            # delete logfile for modeling
@@ -1029,7 +1034,11 @@ if __name__ == "__main__":
 
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
     mountApp.show()                                                                                                         # show it
-    if mountApp.modelWindow.showStatus:                                                                                 # if windows was shown last run, open it directly
-        mountApp.modelWindow.redrawModelingWindow()                                                                   # update content
-        mountApp.showModelingPlotWindow()                                                                                     # show it
+    if mountApp.modelWindow.showStatus:                                                                                     # if windows was shown last run, open it directly
+        mountApp.modelWindow.redrawModelingWindow()                                                                         # update content
+        mountApp.showModelingPlotWindow()                                                                                   # show it
+    if mountApp.imageWindow.showStatus:                                                                                     # if windows was shown last run, open it directly
+        mountApp.showImageWindow()                                                                                          # show it
+    if mountApp.analyseWindow.showStatus:                                                                                   # if windows was shown last run, open it directly
+        mountApp.showAnalyseWindow()                                                                                        # show it
     sys.exit(app.exec_())                                                                                                   # close application
