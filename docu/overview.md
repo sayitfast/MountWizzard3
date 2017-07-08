@@ -25,4 +25,11 @@ After modeling you can do some analytics of your model runs. This is mainly loca
 
 <img src="../pics/analysewindow.png"/>
 
+### Image Window
+If you opened the image windows, all images taken through MountWizzard will be show. You can take as well a single shot of your
+own. Single shots are disabled during model building.
+
+<img src="../pics/imagewindow.png"/>
+
+
 [Back to Home](home.md)

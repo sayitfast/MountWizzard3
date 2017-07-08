@@ -1,4 +1,9 @@
 # Changelog
+2.3.24
+- added image window (or reactivated it)
+- remove ASCOM camera (no need for it, because SGPro is equal fast)
+- updated docu
+
 2.3.23
 - refactoring building packages
 - cleaning up python style
