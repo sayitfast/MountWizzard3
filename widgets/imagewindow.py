@@ -75,6 +75,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageWidget.axes.set_axis_off()
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
+        self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
         self.ui.btn_colorGray.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
         self.ui.btn_colorRainbow.clicked.connect(self.setColor)
@@ -86,6 +87,10 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
         self.show()                                                                                                         # construct the window
         self.setVisible(False)
+        self.ui.cross1.setVisible(False)
+        self.ui.cross2.setVisible(False)
+        self.ui.cross3.setVisible(False)
+        self.ui.cross4.setVisible(False)
 
     def initConfig(self):
         try:
@@ -207,6 +212,18 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_startContExposures.setEnabled(True)
         self.ui.btn_stopContExposures.setEnabled(True)
         self.ui.windowTitle.setText('Image Window')
+
+    def crosshairOnOff(self):
+        if self.ui.cross1.isVisible():
+            self.ui.cross1.setVisible(False)
+            self.ui.cross2.setVisible(False)
+            self.ui.cross3.setVisible(False)
+            self.ui.cross4.setVisible(False)
+        else:
+            self.ui.cross1.setVisible(True)
+            self.ui.cross2.setVisible(True)
+            self.ui.cross3.setVisible(True)
+            self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
         param = {'speed': 'HiSpeed',
