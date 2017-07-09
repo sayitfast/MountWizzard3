@@ -32,7 +32,7 @@ refinement session, this base model (if there is one) will be loaded and refinem
 based on one set.
 
 Area 2 shows the functions for refining the model. Like in the base model you have the possibility of using the an existing set of
-model points from Per's modelmaker (configured this file under [settings - area 3 - model points file](settings1.md)) just by pressing
+model points from Per's Modelmaker (configured this file under [settings - area 3 - model points file](settings1.md)) just by pressing
 "Show Refine Points". In Per's files base and refine points are stored in the same file.
 
 <b>"Grid points"</b> enables you to generate a grid of points equally distributed over the full azimuth and the given altitude (min/max) range.
@@ -52,7 +52,7 @@ reasons it might be a good idea to at least a little bit more than just a base m
 before starting refinement process. In the special case of DSO Track this might be not desired. Therefore you can keep an existing refinement model
 by setting the checkbox "keep refinement model.
 
-<b>"run refinment model only"</b> will start the model building. The button will be blue during the model run. You cannot start multiple
+<b>"run refinement model only"</b> will start the model building. The button will be blue during the model run. You cannot start multiple
 runs at the same time. If you would like to stop manually, please select "cancel any model run".
 
 ### Area 3 - General Functions
@@ -60,6 +60,8 @@ runs at the same time. If you would like to stop manually, please select "cancel
 <b>"open modeling plot window"</b> will open the [modeling plot window](modelingplotwindow.md), where all informations about modeling points,
 the modeling process, progress in building, logs etc. are shown. MountWizzard stores the information, if you have opened this windows
 and with the next start of MountWizzard it will be opened automatically at the same location.
+
+<b>"open image window"</b> will open the [image window](imagewindow.md), where you see the actual take image during model build.
 
 <b>"clear modeling plot window"</b> will clear all modeling point in this window.
 
