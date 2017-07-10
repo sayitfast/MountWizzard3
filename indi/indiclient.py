@@ -9,12 +9,12 @@ import xml.parsers.expat
 import string
 import base64
 import sys
-# import array
+import array
 import os
 import threading
 from queue import Queue
 import copy
-# import math
+import math
 import zlib
 import time
 import math
@@ -1037,12 +1037,12 @@ class indivector(indinamedobject):
         @type tag: L{indixmltag}
         """
         indinamedobject.__init__(self, attrs, tag)
-        self.device= _normalize_whitespace(attrs.get('device', ""))
-        self.timestamp=_normalize_whitespace(attrs.get('timestamp', ""))
-        self.timeout=_normalize_whitespace(attrs.get('timeout', ""))
-        self._light=indilight(attrs, tag)
-        self.group=_normalize_whitespace(attrs.get('group', ""))
-        self._perm= indipermissions(_normalize_whitespace(attrs.get('perm', "")))
+        self.device = _normalize_whitespace(attrs.get('device', ""))
+        self.timestamp = _normalize_whitespace(attrs.get('timestamp', ""))
+        self.timeout = _normalize_whitespace(attrs.get('timeout', ""))
+        self._light = indilight(attrs, tag)
+        self.group = _normalize_whitespace(attrs.get('group', ""))
+        self._perm = indipermissions(_normalize_whitespace(attrs.get('perm', "")))
         if 'message' in attrs:
                 self._message = indimessage(attrs)
         else:
@@ -1129,12 +1129,12 @@ class indivector(indinamedobject):
         @rtype: NoneType
         """
         t = time.time()
-        while not(self._light.is_ok()):
+        while not self._light.is_ok():
             time.sleep(checkinterval)
             if (time.time() - t) > timeout:
-                raise Exception ("timeout waiting for state to turn Ok " + "devicename=" + self.device + " vectorname= " + self.name + " " + str(timeout) + " " + str(time.time() - t))
+                raise Exception("timeout waiting for state to turn Ok devicename=" + self.device + " vectorname= " + self.name + " " + str(timeout) + " " + str(time.time() - t))
 
-    def wait_for_ok_timeout(self,timeout):
+    def wait_for_ok_timeout(self, timeout):
         """
         @param timeout: The time after which the L{_light} property of the object has to turn ok .
         @type timeout: FloatType
@@ -1142,8 +1142,8 @@ class indivector(indinamedobject):
         @rtype:  NoneType
         """
         checkinterval = 0.1
-        if (timeout / 1000.0) < checkinterval:
-            checkinterval = (timeout / 1000.0)
+        if (timeout / 10.0) < checkinterval:
+            checkinterval = (timeout / 10.0)
         self._wait_for_ok_general(checkinterval, timeout)
 
     def wait_for_ok(self):
@@ -1158,8 +1158,8 @@ class indivector(indinamedobject):
         else:
             timeout = float(self.timeout)
         checkinterval = 0.1
-        if (timeout / 1000.0) < checkinterval:
-            checkinterval = (timeout / 1000.0)
+        if (timeout / 10.0) < checkinterval:
+            checkinterval = (timeout / 10.0)
         self._wait_for_ok_general(checkinterval, timeout)
 
     def update(self, attrs, tag):
@@ -1842,9 +1842,9 @@ class bigindiclient:
         self.host = host
         self.port = port
         self.socket.send(b"<getProperties version='1.5'/>")
-        self.receive_event_queue = Queue.Queue()
-        self.running_queue = Queue.Queue()
-        self.receive_vector_queue = Queue.Queue()
+        self.receive_event_queue = Queue()
+        self.running_queue = Queue()
+        self.receive_vector_queue = Queue()
         self.timeout = 1
         self.blob_def_handler = self._default_def_handler
         self.number_def_handler = self._default_def_handler
@@ -1861,7 +1861,7 @@ class bigindiclient:
 
         # def set_verbose(self):
         # FIXME
-        # Does not work in the treaded version
+        # Does not work in the threaded version
         # solution: add queue from indiclient to thread
 
     def _element_received(self, vector, element):
@@ -2049,7 +2049,7 @@ class bigindiclient:
         @return: The L{indivector} found
         @rtype: L{indivector}
         """
-        t=time.time()
+        t = time.time()
         while True:
             v = self._get_vector(devicename, vectorname)
             if v is None:
@@ -2516,3 +2516,18 @@ class indiclient(bigindiclient):
         """
         vector=self.get_vector(devicename, vectorname)
         return vector.get_element(elementname).get_active()
+
+
+if __name__ == "__main__":
+    indi = indiclient('127.0.0.1', 7624)
+    vector = indi.get_vector("ASCOM Simulator Telescope", "CONNECTION")
+    vector.set_by_elementname("CONNECT")
+    indi.send_vector(vector)
+    vector.wait_for_ok()
+    vector.tell()
+    vector.set_by_elementname("DISCONNECT")
+    vector.wait_for_ok()
+    vector.tell()
+    element = vector.get_element("CONNECT")
+    print(element.get_active())
+    indi.quit()

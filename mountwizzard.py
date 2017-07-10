@@ -73,19 +73,19 @@ class MountWizzardApp(widget.MwWidget):
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
-        self.modifiers = None                                                                                               # for the mouse handling
-        self.loadConfig()                                                                                                   # load configuration
-        self.ui = wizzard_main_ui.Ui_WizzardMainDialog()                                                                    # load the dialog from "DESIGNER"
-        self.ui.setupUi(self)                                                                                               # initialising the GUI
-        self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
-        self.initUI()                                                                                                       # adapt the window to our purpose
-        self.ui.windowTitle.setText('MountWizzard ' + BUILD_NO)
         self.commandQueue = Queue()                                                                                         # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.imageQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
+        self.config = {}
+        self.loadConfig()                                                                                                   # load configuration
+        self.ui = wizzard_main_ui.Ui_WizzardMainDialog()                                                                    # load the dialog from "DESIGNER"
+        self.ui.setupUi(self)                                                                                               # initialising the GUI
+        self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
+        self.initUI()                                                                                                       # adapt the window to our purpose
+        self.ui.windowTitle.setText('MountWizzard ' + BUILD_NO)
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.dome = dome_thread.Dome(self)                                                                                  # dome control
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
@@ -951,7 +951,7 @@ class MountWizzardApp(widget.MwWidget):
             self.messageQueue.task_done()
             self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                 # move cursor
         while not self.imageQueue.empty():                                                                                  # do i have error messages ?
-            filename = self.imageQueue.get()                                                                              # get the message
+            filename = self.imageQueue.get()                                                                                # get the message
             if self.imageWindow.showStatus:
                 self.imageWindow.showFitsImage(filename)
         while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
@@ -991,12 +991,13 @@ class MountWizzardApp(widget.MwWidget):
 
 if __name__ == "__main__":
     import warnings
+    import traceback
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
-        logging.error('Exception: type:{0} value:{1} tback:{2}'.format(typeException, valueException, tbackException))      # write to logger
+        logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.24 beta'
+    BUILD_NO = '2.3.25 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

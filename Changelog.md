@@ -1,4 +1,7 @@
 # Changelog
+2.3.25
+- bugfix for error from Matthias
+
 2.3.24
 - added image window (or reactivated it)
 - remove ASCOM camera (no need for it, because SGPro is equal fast)
