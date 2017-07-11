@@ -111,7 +111,7 @@ class ModelPlotWindow(widget.MwWidget):
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
         if a[0] != '':
             self.app.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
-            self.loadHorizonPoints(os.path.basename(a[0]))
+            self.selectHorizonPointsMode()
             self.app.ui.checkUseMinimumHorizonLine.setChecked(False)
             self.redrawModelingWindow()
 

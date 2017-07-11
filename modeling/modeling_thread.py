@@ -78,12 +78,7 @@ class Modeling(QtCore.QThread):
 
     def initConfig(self):
         try:
-         #   if 'ASCOMCameraDriverName' in self.app.config:
-         #       self.AscomCamera.driverNameCamera = self.app.config['ASCOMCameraDriverName']
-         #   if 'ASCOMPlateSolverDriverName' in self.app.config:
-         #       self.AscomCamera.driverNamePlateSolver = self.app.config['ASCOMPlateSolverDriverName']
-            if 'HorizonPointsFileName' in self.app.config:
-                self.loadHorizonPoints(str(self.app.config['HorizonPointsFileName']))
+            pass
         except Exception as e:
             self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -91,8 +86,6 @@ class Modeling(QtCore.QThread):
 
     def storeConfig(self):
         pass
-        # self.app.config['ASCOMCameraDriverName'] = self.AscomCamera.driverNameCamera
-        # self.app.config['ASCOMPlateSolverDriverName'] = self.AscomCamera.driverNamePlateSolver
 
     def cameraPlateChooser(self):
         self.chooserLock.acquire()

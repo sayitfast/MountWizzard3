@@ -1,4 +1,7 @@
 # Changelog
+2.3.26
+- bugfix report from David
+
 2.3.25
 - bugfix for error from Matthias
 

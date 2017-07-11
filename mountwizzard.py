@@ -79,8 +79,7 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.imageQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
-        self.config = {}
-        self.loadConfig()                                                                                                   # load configuration
+        self.config = self.loadConfig()                                                                                     # load configuration
         self.ui = wizzard_main_ui.Ui_WizzardMainDialog()                                                                    # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
@@ -569,12 +568,11 @@ class MountWizzardApp(widget.MwWidget):
     def loadConfig(self):
         try:
             with open('config/config.cfg', 'r') as data_file:
-                self.config = json.load(data_file)
-            data_file.close()
+                return json.load(data_file)
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
             self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
-            return
+            return {}
 
     def saveConfig(self):
         self.storeConfig()
@@ -997,7 +995,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.25 beta'
+    BUILD_NO = '2.3.26 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

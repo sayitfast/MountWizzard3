@@ -283,7 +283,7 @@ class Mount(QtCore.QThread):
             return alignModel
 
     def getAlignmentModel(self):                                                                                            # download alignment modeling from mount
-        alignModel = {}                                                                                                     # clear alignmentdata
+        alignModel = {}                                                                                                     # clear alignment data
         points = []                                                                                                         # clear points list
         alignModel['azimuth'] = 0.0
         alignModel['altitude'] = 0.0
@@ -637,8 +637,8 @@ class Mount(QtCore.QThread):
             self.app.modeling.modelData = []
             for i in range(0, alignModel['number']):
                 self.app.modeling.modelData.append({'modelError': float(alignModel['points'][i][5]),
-                                                 'raError': float(alignModel['points'][i][5]) * math.sin(math.radians(alignModel['points'][i][6])),
-                                                 'decError': float(alignModel['points'][i][5]) * math.cos(math.radians(alignModel['points'][i][6])),
-                                                 'azimuth': float(alignModel['points'][i][3]),
-                                                 'altitude': float(alignModel['points'][i][4])})
+                                                    'raError': float(alignModel['points'][i][5]) * math.sin(math.radians(alignModel['points'][i][6])),
+                                                    'decError': float(alignModel['points'][i][5]) * math.cos(math.radians(alignModel['points'][i][6])),
+                                                    'azimuth': float(alignModel['points'][i][3]),
+                                                    'altitude': float(alignModel['points'][i][4])})
         self.showAlignmentModel(alignModel)
