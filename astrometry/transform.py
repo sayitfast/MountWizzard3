@@ -16,6 +16,7 @@ import math
 import threading
 # win32com
 from win32com.client.dynamic import Dispatch
+import pythoncom
 
 
 class Transform:
@@ -23,7 +24,9 @@ class Transform:
 
     def __init__(self):
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
+        self.transform = None
         try:                                                                                                                # start accessing a com object
+            pythoncom.CoInitialize()                                                                                        # needed for doing COM objects in threads
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
             self.transform.Refraction = False
         except Exception as e:
@@ -64,10 +67,11 @@ class Transform:
         return val1, val2
 
     def transformNovasSiteParams(self, site_lat, site_lon, site_height):
-        self.transform.Refraction = False                                                                                   # set parameter for ascom nova library
-        self.transform.SiteElevation = site_height                                                                          # height
-        self.transform.SiteLatitude = self.degStringToDecimal(site_lat)                                                     # site lat
-        self.transform.SiteLongitude = self.degStringToDecimal(site_lon)                                                    # site lon
+        if self.transform:
+            self.transform.Refraction = False                                                                               # set parameter for ascom nova library
+            self.transform.SiteElevation = site_height                                                                      # height
+            self.transform.SiteLatitude = self.degStringToDecimal(site_lat)                                                 # site lat
+            self.transform.SiteLongitude = self.degStringToDecimal(site_lon)                                                # site lon
 
     def transformNovasRefractionParams(self, site_temp, site_press):
         self.transform.SiteTemperature = site_temp                                                                          # height
