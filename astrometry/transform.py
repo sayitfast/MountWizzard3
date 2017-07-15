@@ -16,7 +16,6 @@ import math
 import threading
 # win32com
 from win32com.client.dynamic import Dispatch
-import pythoncom
 
 
 class Transform:
@@ -24,9 +23,7 @@ class Transform:
 
     def __init__(self):
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
-        self.transform = None
         try:                                                                                                                # start accessing a com object
-            pythoncom.CoInitialize()                                                                                        # needed for doing COM objects in threads
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
             self.transform.Refraction = False
         except Exception as e:
@@ -67,11 +64,16 @@ class Transform:
         return val1, val2
 
     def transformNovasSiteParams(self, site_lat, site_lon, site_height):
-        if self.transform:
-            self.transform.Refraction = False                                                                               # set parameter for ascom nova library
-            self.transform.SiteElevation = site_height                                                                      # height
+        self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
+        try:
+            self.transform.SiteElevation = float(site_height)                                                                      # height
             self.transform.SiteLatitude = self.degStringToDecimal(site_lat)                                                 # site lat
             self.transform.SiteLongitude = self.degStringToDecimal(site_lon)                                                # site lon
+        except Exception as e:
+            self.logger.error('transformNovas -> height:{0}, lat:{1}, lon:{2}, error:{0}'.format(site_height, site_lat, site_lon, e))
+            self.logger.error('transformNovas -> object:{0}'.format(self.transform))
+        finally:
+            self.transformationLock.release()                                                                               # release locking for thread safety
 
     def transformNovasRefractionParams(self, site_temp, site_press):
         self.transform.SiteTemperature = site_temp                                                                          # height

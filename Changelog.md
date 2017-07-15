@@ -1,4 +1,7 @@
 # Changelog
+2.3.38
+- put mor debug info in the code for problem of David
+
 2.3.27
 - try to fix 2. bug from David
 
