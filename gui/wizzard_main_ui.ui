@@ -11523,7 +11523,7 @@ color: rgb(255,255,255);</string>
       <string>Switches power supply of dew heater </string>
      </property>
      <property name="text">
-      <string>Switch Heater</string>
+      <string>Switch 12V Heater</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_switchCCD">
@@ -11539,7 +11539,7 @@ color: rgb(255,255,255);</string>
       <string>Switches Power supply of CCD Camera</string>
      </property>
      <property name="text">
-      <string>Switch CCD</string>
+      <string>Switch 12V CCD</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_96">
@@ -11558,6 +11558,38 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="text">
       <string>Relays</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_switchMount">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>170</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Switches power supply of dew heater </string>
+     </property>
+     <property name="text">
+      <string>Switch 24V Mount</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_switchPC">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>210</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Switches power supply of dew heater </string>
+     </property>
+     <property name="text">
+      <string>Switch 12V PC</string>
      </property>
     </widget>
    </widget>

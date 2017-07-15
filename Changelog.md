@@ -1,4 +1,8 @@
 # Changelog
+2.3.29
+- updated relay config - internally
+- next round of bugfix for david, coming closer
+
 2.3.38
 - put mor debug info in the code for problem of David
 

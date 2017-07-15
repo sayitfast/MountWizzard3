@@ -70,13 +70,20 @@ class Transform:
             self.transform.SiteLatitude = self.degStringToDecimal(site_lat)                                                 # site lat
             self.transform.SiteLongitude = self.degStringToDecimal(site_lon)                                                # site lon
         except Exception as e:
-            self.logger.error('transformNovas -> height:{0}, lat:{1}, lon:{2}, error:{0}'.format(site_height, site_lat, site_lon, e))
+            self.logger.error('transformNovas -> height:{0}, lat:{1}, lon:{2}, error:{3}'.format(site_height, site_lat, site_lon, e))
             self.logger.error('transformNovas -> object:{0}'.format(self.transform))
         finally:
             self.transformationLock.release()                                                                               # release locking for thread safety
 
     def transformNovasRefractionParams(self, site_temp, site_press):
-        self.transform.SiteTemperature = site_temp                                                                          # height
+        self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
+        try:
+            self.transform.SiteTemperature = float(site_temp)
+        except Exception as e:
+            self.logger.error('transformNovas -> height:{0}, error {1}'.format(site_temp,  e))
+            self.logger.error('transformNovas -> object:{0}'.format(self.transform))
+        finally:
+            self.transformationLock.release()                                                                               # release locking for thread safety
 
     @staticmethod
     def ra_dec_lst_to_az_alt(ra, dec, LAT):                                                                                 # formula to make alt/az from hour angle and dec

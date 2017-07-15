@@ -226,9 +226,11 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.showImageWindow)
-        self.ui.btn_bootMount.clicked.connect(lambda: self.relays.bootMount())
-        self.ui.btn_switchCCD.clicked.connect(lambda: self.relays.switchCCD())
-        self.ui.btn_switchHeater.clicked.connect(lambda: self.relays.switchHeater())
+        self.ui.btn_bootMount.clicked.connect(self.relays.bootMount)
+        self.ui.btn_switchCCD.clicked.connect(self.relays.switchCCD)
+        self.ui.btn_switchHeater.clicked.connect(self.relays.switchHeater)
+        self.ui.btn_switchMount.clicked.connect(self.relays.switchMount)
+        self.ui.btn_switchPC.clicked.connect(self.relays.switchPC)
         self.ui.rb_cameraSGPro.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraTSX.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraASCOM.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
@@ -995,7 +997,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.28 beta'
+    BUILD_NO = '2.3.29 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

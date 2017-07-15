@@ -1132,7 +1132,7 @@ class indivector(indinamedobject):
         while not self._light.is_ok():
             time.sleep(checkinterval)
             if (time.time() - t) > timeout:
-                raise Exception("timeout waiting for state to turn Ok devicename=" + self.device + " vectorname= " + self.name + " " + str(timeout) + " " + str(time.time() - t))
+                raise Exception('timeout waiting for state to turn Ok devicename={0} vectorname={1} timeout={2}'.format(self.device, self.name, time.time() - t))
 
     def wait_for_ok_timeout(self, timeout):
         """
@@ -2519,8 +2519,8 @@ class indiclient(bigindiclient):
 
 
 if __name__ == "__main__":
-    indi = indiclient('127.0.0.1', 7624)
-    vector = indi.get_vector("ASCOM Simulator Telescope", "CONNECTION")
+    indi = indiclient('192.168.2.163', 7624)
+    vector = indi.get_vector("CCD Simulator", "CONNECTION")
     vector.set_by_elementname("CONNECT")
     indi.send_vector(vector)
     vector.wait_for_ok()

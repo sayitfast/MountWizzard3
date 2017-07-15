@@ -73,14 +73,22 @@ class Relays:
             self.stat[6] = (lines[8][8] == '1')
             self.stat[7] = (lines[9][8] == '1')
             self.logger.debug('relay setStatus-> status: {0}'.format(self.stat))
-        if self.stat[0]:
-            self.app.ui.btn_switchCCD.setStyleSheet('background-color: rgb(42, 130, 218)')
-        else:
-            self.app.ui.btn_switchCCD.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
         if self.stat[1]:
             self.app.ui.btn_switchHeater.setStyleSheet('background-color: rgb(42, 130, 218)')
         else:
             self.app.ui.btn_switchHeater.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        if self.stat[3]:
+            self.app.ui.btn_switchMount.setStyleSheet('background-color: rgb(42, 130, 218)')
+        else:
+            self.app.ui.btn_switchMount.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        if self.stat[4]:
+            self.app.ui.btn_switchCCD.setStyleSheet('background-color: rgb(42, 130, 218)')
+        else:
+            self.app.ui.btn_switchCCD.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        if self.stat[5]:
+            self.app.ui.btn_switchPC.setStyleSheet('background-color: rgb(42, 130, 218)')
+        else:
+            self.app.ui.btn_switchPC.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
 
     def bootMount(self):
         try:
@@ -113,7 +121,25 @@ class Relays:
 
     def switchCCD(self):
         try:
-            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay=1', None, .5)
+            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay=5', None, .5)
+            self.requestStatus()
+        except Exception as e:
+            self.logger.error('switchCCD -> error {0}'.format(e))
+        finally:
+            pass
+
+    def switchMount(self):
+        try:
+            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay=4', None, .5)
+            self.requestStatus()
+        except Exception as e:
+            self.logger.error('switchCCD -> error {0}'.format(e))
+        finally:
+            pass
+
+    def switchPC(self):
+        try:
+            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay=6', None, .5)
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchCCD -> error {0}'.format(e))
