@@ -1,4 +1,4 @@
-## <img src="../pics/mw.png" width='64' height='64'/> Documentation and Handbook for Mountwizzard 2
+## <img src="../pics/mw.png" width='64' height='64'/> Documentation and Handbook for Mountwizzard 2.4
 
 MountWizzard is a open source software for adding features and functions for astronomers, who are using a 10micron mount.
 

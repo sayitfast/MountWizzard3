@@ -7494,7 +7494,7 @@ color: rgb(255,255,255);</string>
         </rect>
        </property>
        <property name="toolTip">
-        <string>Sets the iso setting</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;sets the percentage of frame size for subframe &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -7579,7 +7579,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, subframes were used if possible&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Use Subframe</string>
@@ -7898,6 +7898,9 @@ color: rgb(255,255,255);</string>
          <height>22</height>
         </rect>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Value for minimum altitude for horizon mask&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
@@ -7965,7 +7968,7 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 1</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Filename for horizon file mask&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -8016,7 +8019,7 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 1</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Filename for model points data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -8061,7 +8064,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use minimum altitude for horizon mask in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Use Minumum Altitude as Horizon Mask</string>
@@ -8145,7 +8148,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;id checked, mountwizzard tries to start the selected imaging application at startup&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Start Application automatically</string>
@@ -8169,7 +8172,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;id checked, mountwizzard tries to connect the camera at startup&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Connect Camera automatically</string>
@@ -8256,7 +8259,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use horizon mask file in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Use Horizon Mask File</string>
@@ -8498,7 +8501,7 @@ color: rgb(255,255,255);</string>
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;SGPro for imaging and plate solving&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check if you would like to use direct mount connection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Direct Connection</string>
@@ -8520,6 +8523,9 @@ color: rgb(255,255,255);</string>
          <font>
           <pointsize>10</pointsize>
          </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check if you would like to use ACOM mount drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>ASCOM Driver</string>
@@ -8576,7 +8582,7 @@ color: rgb(255,255,255);</string>
          <enum>Qt::RightToLeft</enum>
         </property>
         <property name="text">
-         <string>192.168.002.015</string>
+         <string>192.168.2.15</string>
         </property>
         <property name="maxLength">
          <number>15</number>
@@ -8679,7 +8685,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Configuration of Relay Box (KM Switch)</string>
+        <string>Configuration of Relay Box (KMTronics Switch)</string>
        </property>
       </widget>
       <widget class="Line" name="line_48">
@@ -8745,13 +8751,13 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>192.168.002.014</string>
+        <string>192.168.2.14</string>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -9028,7 +9034,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>Use Highspeed download of CCD camera if availabe</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check, if you would like to remote control MountWizzard for shutdown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Enable Remote Access</string>
@@ -10268,7 +10274,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload earth rotation data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload earth rotation and UTC data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload  Earth Rotation and UTC files</string>
@@ -10292,7 +10298,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload space station data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload TLE elements&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
         <string>Upload TLE Elements</string>
@@ -10451,7 +10457,7 @@ color: rgb(255,255,255);</string>
         <rect>
          <x>20</x>
          <y>30</y>
-         <width>81</width>
+         <width>161</width>
          <height>21</height>
         </rect>
        </property>
@@ -10467,7 +10473,7 @@ color: rgb(255,255,255);</string>
       <widget class="QLineEdit" name="le_UTCDataValid">
        <property name="geometry">
         <rect>
-         <x>100</x>
+         <x>180</x>
          <y>30</y>
          <width>81</width>
          <height>21</height>
@@ -10509,7 +10515,7 @@ color: rgb(255,255,255);</string>
       <widget class="QLineEdit" name="le_UTCDataExpirationDate">
        <property name="geometry">
         <rect>
-         <x>280</x>
+         <x>360</x>
          <y>30</y>
          <width>101</width>
          <height>21</height>
@@ -10551,7 +10557,7 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_152">
        <property name="geometry">
         <rect>
-         <x>190</x>
+         <x>270</x>
          <y>30</y>
          <width>91</width>
          <height>21</height>

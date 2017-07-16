@@ -1,4 +1,8 @@
 # Changelog
+2.4 RC
+- moved to release candidate state
+- updated tooltips
+
 2.3.30
 - bugfix to michel-d report
 
@@ -21,7 +25,7 @@
 2.3.24
 - added image window (or reactivated it)
 - remove ASCOM camera (no need for it, because SGPro is equal fast)
-- updated docu
+- updated documentation
 
 2.3.23
 - refactoring building packages
@@ -43,7 +47,7 @@
 
 2.3.20
 - changes yellow color to white in model log
-- added FITS reading focal length / pixelsize for scale hint
+- added FITS reading focal length / pixel size for scale hint
 - test remote connection using netcat portable ncat.exe windows. command: echo shutdown | ncat --send-only localhost 3495
 
 2.3.19
@@ -57,7 +61,7 @@
 
 2.3.17
 - narrowed down search feature be recommendation of Ralf
-- added logging for existence and writability of workdir and subdir.
+- added logging for existence and write access of workdir and subdir.
 
 2.3.16
 - error handling for not connected mount in MPC upload

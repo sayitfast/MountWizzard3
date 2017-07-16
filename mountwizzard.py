@@ -314,10 +314,10 @@ class MountWizzardApp(widget.MwWidget):
             regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                # regpath for 64 bit windows
         else:
             regPath = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                             # regpath for 32 bit windows
+        appInstallPath = ''
+        appInstalled = False
+        appName = ''
         try:
-            appInstallPath = ''
-            appInstalled = False
-            appName = ''
             key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
             for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
                 name = EnumKey(key, i)                                                                                      # get registry names of applications
@@ -982,8 +982,8 @@ class MountWizzardApp(widget.MwWidget):
             else:
                 self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_ASTRO)
                 self.modelWindow.ui.modellingLog.setFontWeight(QFont.Normal)
-                self.modelWindow.ui.modellingLog.insertPlainText(text)                                                  # otherwise add text at the end
-            self.modelWindow.ui.modellingLog.moveCursor(QTextCursor.End)                                                # and move cursor up
+                self.modelWindow.ui.modellingLog.insertPlainText(text)                                                      # otherwise add text at the end
+            self.modelWindow.ui.modellingLog.moveCursor(QTextCursor.End)                                                    # and move cursor up
             self.modelLogQueue.task_done()
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
@@ -997,7 +997,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.3.30 beta'
+    BUILD_NO = '2.4 RC'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
