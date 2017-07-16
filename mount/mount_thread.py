@@ -101,7 +101,7 @@ class Mount(QtCore.QThread):
         self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time
         if self.mountHandler.connected:
             self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
-            time.sleep(0.5)                                                                                                 # wait some time to get commands finished
+            time.sleep(1)                                                                                                   # wait some time to get commands finished
             self.mountHandler.disconnect()                                                                                  # do formal disconnection
         if self.app.ui.rb_directMount.isChecked():
             self.mountHandler = self.MountIpDirect

@@ -258,11 +258,11 @@ class Modeling(QtCore.QThread):
                 self.signalModelRedraw.emit(True)
             elif self.command == 'DeleteBelowHorizonLine':
                 self.command = ''
-                self.deleteBelowHorizonLine()
+                self.modelpoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
             elif self.command == 'DeletePoints':
                 self.command = ''
-                self.deletePoints()
+                self.modelpoints.deletePoints()
                 self.signalModelRedraw.emit(True)
             if self.counter % 5 == 0:                                                                                       # standard cycles in modeling thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status

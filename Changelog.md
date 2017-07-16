@@ -1,4 +1,7 @@
 # Changelog
+2.3.30
+- bugfix to michel-d report
+
 2.3.29
 - updated relay config - internally
 - next round of bugfix for david, coming closer

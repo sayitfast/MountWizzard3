@@ -8148,7 +8148,7 @@ color: rgb(255,255,255);</string>
         <string>Use Highspeed download of CCD camera if availabe</string>
        </property>
        <property name="text">
-        <string>Start Application automaticially</string>
+        <string>Start Application automatically</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -8172,7 +8172,7 @@ color: rgb(255,255,255);</string>
         <string>Use Highspeed download of CCD camera if availabe</string>
        </property>
        <property name="text">
-        <string>Connect Camera automaticially</string>
+        <string>Connect Camera automatically</string>
        </property>
        <property name="checked">
         <bool>false</bool>

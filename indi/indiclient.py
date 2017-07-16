@@ -2428,7 +2428,7 @@ class indiclient(bigindiclient):
         @return: The vector containing the element that was just sent.
         @rtype: L{indivector}
         """
-        vector=self.get_vector(devicename, vectorname)
+        vector = self.get_vector(devicename, vectorname)
         vector.get_element(elementname).set_active(state)
         self.send_vector(vector)
         return vector
@@ -2520,14 +2520,9 @@ class indiclient(bigindiclient):
 
 if __name__ == "__main__":
     indi = indiclient('192.168.2.163', 7624)
-    vector = indi.get_vector("CCD Simulator", "CONNECTION")
-    vector.set_by_elementname("CONNECT")
-    indi.send_vector(vector)
-    vector.wait_for_ok()
+    vector = indi.get_vector("Telescope Simulator", "CONNECTION")
     vector.tell()
+    print(indi.get_float("Telescope Simulator", "EQUATORIAL_COORD", "RA"))
     vector.set_by_elementname("DISCONNECT")
-    vector.wait_for_ok()
     vector.tell()
-    element = vector.get_element("CONNECT")
-    print(element.get_active())
     indi.quit()
