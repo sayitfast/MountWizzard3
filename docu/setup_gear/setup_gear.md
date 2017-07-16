@@ -2,14 +2,14 @@
 
 ### My basic working gear: 10micron GM1000HPS, TLAPO102, QSI690WSG8
 
-<img src="pics/img_0157.png"/><img src="pics/img_0158.png"/>
+<img src="pics/img_0157.png"><img src="pics/img_0158.png">
 
 Now lets do it step by step:
 
 First I have a fixed pier in my backyard. It's done some month ago and consists of a concrete base (below the grass)
 0,8 X 0,8 x 1,0 meters. I put a cover on top of that pier as long as I'm not using it.
 
-<img src="pics/img_0110.png"/>
+<img src="pics/img_0110.png">
 
 On top of the pier, which is a steel one, filled with quartz sand, I have the adaptor plate (1) fixed for the mount. I do not
 remove this adaptor plate.

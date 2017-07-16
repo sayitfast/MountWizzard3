@@ -1,6 +1,6 @@
 ## Setting up and configuring MountWizzard
 
-<img src="../pics/tab_settings.png"/>
+<img src="../pics/tab_settings.png">
 
 ### Area 1
 
