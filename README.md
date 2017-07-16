@@ -36,15 +36,15 @@ driver.
 ### There were some videos for installation and first use out:
 The Application could be found under /dist on github.
 
-New! Installation of MountWizzard, directories: https://www.youtube.com/watch?v=GX0H6ddq0KM
+Installation of MountWizzard: https://www.youtube.com/watch?v=GX0H6ddq0KM
 
-New! Update to new version: https://www.youtube.com/watch?v=KduOp2mn0N8
+Update to new version: https://www.youtube.com/watch?v=KduOp2mn0N8
 
-New! Make a new mount model: https://www.youtube.com/watch?v=nCQLErKP-yo
+Make a new mount model: https://www.youtube.com/watch?v=nCQLErKP-yo
 
-New! Imaging with SGPro: https://www.youtube.com/watch?v=9mA4qxPaE-8
+Imaging with SGPro: https://www.youtube.com/watch?v=9mA4qxPaE-8
 
-New !Make model along DSO path: https://www.youtube.com/watch?v=KhVvuXzNezE
+Make model along DSO path: https://www.youtube.com/watch?v=KhVvuXzNezE
 
 Direct Mount Connection via IP: https://youtu.be/JmdhXn4ZDlE
 
