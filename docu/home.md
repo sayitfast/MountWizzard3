@@ -18,6 +18,8 @@ To get a first impression after start, please have a look to the [main screens a
 [First steps in MountWizzard](firststeps.md) are explained here. And the link to [How to model](firststeps3.md) for the quick ones.
 ### Setting up MountWizzard
 All necessary [configuration of MountWizzard](settings.md) are explained.
+### Setting up my gear
+All necessary [steps during setup](./setup_gear/setup_gear.md) are explained.
 ### Workflow of MountWizzard for modeling:
 A first good view of the modeling workflow is shown in the [Modeling Workflow Chart](modeling_workflow.md)
 
