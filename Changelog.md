@@ -2,6 +2,7 @@
 2.4 RC
 - moved to release candidate state
 - updated tooltips
+- updated color table image widget
 
 2.3.30
 - bugfix to michel-d report

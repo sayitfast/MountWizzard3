@@ -139,20 +139,20 @@ class ImagesWindow(widget.MwWidget):
             self.strechHigh()
 
     def strechLow(self):
-        self.imageVmin = numpy.min(self.image) * 8 + 1
-        self.imageVmax = max(numpy.max(self.image) / 4, self.imageVmin + 1)
+        self.imageVmin = numpy.min(self.image) * 1 + 1
+        self.imageVmax = max(numpy.var(self.image) / 1.41, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
     def strechMid(self):
-        self.imageVmin = numpy.min(self.image) * 8 + 1
-        self.imageVmax = max(numpy.max(self.image) / 8, self.imageVmin + 1)
+        self.imageVmin = numpy.min(self.image) * 0.95 + 1
+        self.imageVmax = max(numpy.var(self.image) / 4, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
     def strechHigh(self):
-        self.imageVmin = numpy.min(self.image) * 8 + 1
-        self.imageVmax = max(numpy.max(self.image) / 16, self.imageVmin + 1)
+        self.imageVmin = numpy.min(self.image) * 0.9 + 1
+        self.imageVmax = max(numpy.var(self.image) / 8, self.imageVmin + 1)
         self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
         self.imageWidget.draw()
 
@@ -248,3 +248,4 @@ class ImagesWindow(widget.MwWidget):
 
     def exposeContinuous(self):
         pass
+
