@@ -8670,105 +8670,6 @@ color: rgb(255,255,255);</string>
         <string>Mount Connection Configuration</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_141">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>20</y>
-         <width>231</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Configuration of Relay Box (KMTronics Switch)</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_48">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>30</y>
-         <width>321</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_144">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>60</y>
-         <width>21</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>IP:</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_relayIP">
-       <property name="geometry">
-        <rect>
-         <x>590</x>
-         <y>60</y>
-         <width>131</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>192.168.2.14</string>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_149">
        <property name="geometry">
         <rect>
@@ -8828,7 +8729,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>640</x>
-         <y>210</y>
+         <y>50</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8849,7 +8750,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>210</y>
+         <y>50</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8867,7 +8768,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>290</y>
+         <y>130</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8885,7 +8786,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>640</x>
-         <y>290</y>
+         <y>130</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8906,7 +8807,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>190</y>
+         <y>30</y>
          <width>321</width>
          <height>21</height>
         </rect>
@@ -8927,7 +8828,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>180</y>
+         <y>20</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -8945,7 +8846,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>270</y>
+         <y>110</y>
          <width>321</width>
          <height>21</height>
         </rect>
@@ -8966,7 +8867,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>260</y>
+         <y>100</y>
          <width>211</width>
          <height>21</height>
         </rect>
@@ -8984,7 +8885,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>350</y>
+         <y>190</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -9002,7 +8903,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>360</y>
+         <y>200</y>
          <width>321</width>
          <height>21</height>
         </rect>
@@ -9023,7 +8924,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>380</y>
+         <y>220</y>
          <width>201</width>
          <height>20</height>
         </rect>
@@ -10697,11 +10598,11 @@ color: rgb(255,255,255);</string>
       <attribute name="title">
        <string>Relay</string>
       </attribute>
-      <widget class="QLineEdit" name="le_relay2Text">
+      <widget class="QLineEdit" name="relay2Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>80</y>
+         <x>80</x>
+         <y>110</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -10721,13 +10622,13 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 2</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>xxx</string>
+        <string>free</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -10740,8 +10641,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
-         <width>121</width>
+         <y>140</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -10751,14 +10652,14 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 3    Text</string>
+        <string>Relay 3</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_relay5Text">
+      <widget class="QLineEdit" name="relay5Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>170</y>
+         <x>80</x>
+         <y>200</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -10778,13 +10679,13 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 3</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>xxx</string>
+        <string>free</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -10811,67 +10712,10 @@ color: rgb(255,255,255);</string>
         <string>Relay Button Text Setup</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_relay3Text">
+      <widget class="QLineEdit" name="relay3Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>110</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Button text park menu 3</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>xxx</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_36">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>50</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Button 1    Text</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_relay4Text">
-       <property name="geometry">
-        <rect>
-         <x>120</x>
+         <x>80</x>
          <y>140</y>
          <width>121</width>
          <height>21</height>
@@ -10892,13 +10736,70 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 4</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>xxx</string>
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_36">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Relay 1</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay4Text">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>170</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -10911,8 +10812,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>170</y>
-         <width>121</width>
+         <y>200</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -10922,7 +10823,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 5    Text</string>
+        <string>Relay 5</string>
        </property>
       </widget>
       <widget class="Line" name="line_22">
@@ -10946,11 +10847,11 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_relay6Text">
+      <widget class="QLineEdit" name="relay6Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>200</y>
+         <x>80</x>
+         <y>230</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -10970,13 +10871,13 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 4</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>xxx</string>
+        <string>free</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -10989,8 +10890,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
-         <width>121</width>
+         <y>170</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -11000,14 +10901,14 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 4    Text</string>
+        <string>Relay 4</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_relay1Text">
+      <widget class="QLineEdit" name="relay1Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>50</y>
+         <x>80</x>
+         <y>80</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -11027,13 +10928,13 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 1</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>xxx</string>
+        <string>free</string>
        </property>
        <property name="readOnly">
         <bool>false</bool>
@@ -11043,8 +10944,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>200</y>
-         <width>121</width>
+         <y>230</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -11054,15 +10955,15 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 6    Text</string>
+        <string>Relay 6</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_162">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>80</y>
-         <width>121</width>
+         <y>110</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -11072,13 +10973,52 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 2    Text</string>
+        <string>Relay 2</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_relay8Text">
+      <widget class="QLineEdit" name="relay8Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
+         <x>80</x>
+         <y>290</y>
+         <width>121</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay7Text">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
          <y>260</y>
          <width>121</width>
          <height>21</height>
@@ -11099,52 +11039,13 @@ color: rgb(255,255,255);</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>Button text park menu 4</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>xxx</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_relay7Text">
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>230</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>Button text park menu 3</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>xxx</string>
+        <string>free</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -11157,8 +11058,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>230</y>
-         <width>121</width>
+         <y>260</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -11168,15 +11069,15 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 7    Text</string>
+        <string>Relay 7</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_192">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>260</y>
-         <width>121</width>
+         <y>290</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -11186,8 +11087,503 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 8    Text</string>
+        <string>Relay 8</string>
        </property>
+      </widget>
+      <widget class="QLabel" name="label_144">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>370</y>
+         <width>21</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>IP:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_relayIP">
+       <property name="geometry">
+        <rect>
+         <x>60</x>
+         <y>370</y>
+         <width>131</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>192.168.2.14</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="Line" name="line_48">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>340</y>
+         <width>371</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_141">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>330</y>
+         <width>291</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Configuration of Relay Box (KMTronics Switch)</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_41">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Text</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_195">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Function</string>
+       </property>
+      </widget>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>60</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay1Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay1Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>90</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay2Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay2Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_3">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>120</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay3Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay3Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_4">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>150</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay4Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay4Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_5">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>180</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay5Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay5Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_6">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>210</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay6Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay6Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_7">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>240</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay7Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay7Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_8">
+       <property name="geometry">
+        <rect>
+         <x>230</x>
+         <y>270</y>
+         <width>151</width>
+         <height>41</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string/>
+       </property>
+       <widget class="QRadioButton" name="relay8Switch">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Switch</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="relay8Pulse">
+        <property name="geometry">
+         <rect>
+          <x>90</x>
+          <y>20</y>
+          <width>61</width>
+          <height>17</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Pulse</string>
+        </property>
+       </widget>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_11">
@@ -11500,7 +11896,7 @@ color: rgb(255,255,255);</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_bootMount">
+    <widget class="QPushButton" name="btn_relay1">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -11510,13 +11906,13 @@ color: rgb(255,255,255);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Boots the mount via Relay switch</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Boot Mount</string>
+      <string>Relay1</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_switchHeater">
+    <widget class="QPushButton" name="btn_relay3">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -11526,13 +11922,13 @@ color: rgb(255,255,255);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Switches power supply of dew heater </string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Switch 12V Heater</string>
+      <string>Relay3</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_switchCCD">
+    <widget class="QPushButton" name="btn_relay2">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -11542,10 +11938,10 @@ color: rgb(255,255,255);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Switches Power supply of CCD Camera</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Switch 12V CCD</string>
+      <string>Relay2</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_96">
@@ -11566,7 +11962,7 @@ color: rgb(255,255,255);</string>
       <string>Relays</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_switchMount">
+    <widget class="QPushButton" name="btn_relay4">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -11576,13 +11972,13 @@ color: rgb(255,255,255);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Switches power supply of dew heater </string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Switch 24V Mount</string>
+      <string>Relay4</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_switchPC">
+    <widget class="QPushButton" name="btn_relay5">
      <property name="geometry">
       <rect>
        <x>20</x>
@@ -11592,10 +11988,58 @@ color: rgb(255,255,255);</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Switches power supply of dew heater </string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Switch 12V PC</string>
+      <string>Relay5</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay6">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>250</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay6</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay7">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>290</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay7</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>330</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay8</string>
      </property>
     </widget>
    </widget>
@@ -11896,13 +12340,13 @@ p, li { white-space: pre-wrap; }
  </widget>
  <tabstops>
   <tabstop>btn_shutdownQuit</tabstop>
-  <tabstop>btn_mountSave</tabstop>
-  <tabstop>btn_mountQuit</tabstop>
+  <tabstop>btn_openImageWindow</tabstop>
   <tabstop>mainTabWidget</tabstop>
   <tabstop>le_slewRate</tabstop>
   <tabstop>btn_setSlewRate</tabstop>
   <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>btn_setDualTracking</tabstop>
+  <tabstop>btn_mountQuit</tabstop>
   <tabstop>le_telescopeUnattendedFlip</tabstop>
   <tabstop>btn_setUnattendedFlip</tabstop>
   <tabstop>le_meridianLimitTrack</tabstop>
@@ -12004,7 +12448,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_setupStickDriver</tabstop>
   <tabstop>btn_setupWeatherDriver</tabstop>
   <tabstop>btn_setupUnihedronDriver</tabstop>
-  <tabstop>le_relayIP</tabstop>
   <tabstop>le_parkPos1Text</tabstop>
   <tabstop>le_azParkPos1</tabstop>
   <tabstop>le_altParkPos1</tabstop>
@@ -12044,10 +12487,74 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_unihedronConnected</tabstop>
   <tabstop>errorStatus</tabstop>
   <tabstop>settingsTabWidget</tabstop>
-  <tabstop>btn_switchHeater</tabstop>
-  <tabstop>btn_switchCCD</tabstop>
+  <tabstop>btn_relay3</tabstop>
+  <tabstop>btn_relay2</tabstop>
   <tabstop>btn_selectClose</tabstop>
-  <tabstop>btn_bootMount</tabstop>
+  <tabstop>btn_relay1</tabstop>
+  <tabstop>altitudeMax</tabstop>
+  <tabstop>altitudeMin</tabstop>
+  <tabstop>rb_cameraNone</tabstop>
+  <tabstop>checkFastDownload</tabstop>
+  <tabstop>checkKeepImages</tabstop>
+  <tabstop>cameraBin</tabstop>
+  <tabstop>scaleSubframe</tabstop>
+  <tabstop>isoSetting</tabstop>
+  <tabstop>checkDoSubframe</tabstop>
+  <tabstop>pixelSize</tabstop>
+  <tabstop>focalLength</tabstop>
+  <tabstop>cameraExposure</tabstop>
+  <tabstop>settlingTime</tabstop>
+  <tabstop>altitudeMinimumHorizon</tabstop>
+  <tabstop>le_horizonPointsFileName</tabstop>
+  <tabstop>le_modelPointsFileName</tabstop>
+  <tabstop>btn_selectModelPointsFileName</tabstop>
+  <tabstop>checkUseMinimumHorizonLine</tabstop>
+  <tabstop>btn_selectHorizonPointsFileName</tabstop>
+  <tabstop>checkAutoStartApp</tabstop>
+  <tabstop>checkAutoConnectCamera</tabstop>
+  <tabstop>btn_appCameraConnect</tabstop>
+  <tabstop>btn_appCameraDisconnect</tabstop>
+  <tabstop>btn_appStart</tabstop>
+  <tabstop>checkUseFileHorizonLine</tabstop>
+  <tabstop>btn_setupAscomCameraDriver</tabstop>
+  <tabstop>btn_setupPlateSolver</tabstop>
+  <tabstop>checkRemoteAccess</tabstop>
+  <tabstop>checkFilterMPC</tabstop>
+  <tabstop>le_filterExpressionMPC</tabstop>
+  <tabstop>btn_downloadAsteroidsNEA</tabstop>
+  <tabstop>btn_downloadAsteroidsTNO</tabstop>
+  <tabstop>btn_downloadAsteroidsPHA</tabstop>
+  <tabstop>btn_mountSave</tabstop>
+  <tabstop>relay1Text</tabstop>
+  <tabstop>relay1Switch</tabstop>
+  <tabstop>relay1Pulse</tabstop>
+  <tabstop>relay2Text</tabstop>
+  <tabstop>relay2Switch</tabstop>
+  <tabstop>relay2Pulse</tabstop>
+  <tabstop>relay3Text</tabstop>
+  <tabstop>relay3Switch</tabstop>
+  <tabstop>relay3Pulse</tabstop>
+  <tabstop>relay4Text</tabstop>
+  <tabstop>relay4Switch</tabstop>
+  <tabstop>relay4Pulse</tabstop>
+  <tabstop>relay5Text</tabstop>
+  <tabstop>relay5Switch</tabstop>
+  <tabstop>relay5Pulse</tabstop>
+  <tabstop>relay6Text</tabstop>
+  <tabstop>relay6Switch</tabstop>
+  <tabstop>relay6Pulse</tabstop>
+  <tabstop>relay7Text</tabstop>
+  <tabstop>relay7Switch</tabstop>
+  <tabstop>relay7Pulse</tabstop>
+  <tabstop>relay8Text</tabstop>
+  <tabstop>relay8Switch</tabstop>
+  <tabstop>relay8Pulse</tabstop>
+  <tabstop>btn_relay5</tabstop>
+  <tabstop>btn_relay4</tabstop>
+  <tabstop>le_relayIP</tabstop>
+  <tabstop>btn_relay6</tabstop>
+  <tabstop>btn_relay7</tabstop>
+  <tabstop>btn_relay8</tabstop>
  </tabstops>
  <resources/>
  <connections/>

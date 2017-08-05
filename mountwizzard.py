@@ -226,11 +226,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.showImageWindow)
-        self.ui.btn_bootMount.clicked.connect(self.relays.bootMount)
-        self.ui.btn_switchCCD.clicked.connect(self.relays.switchCCD)
-        self.ui.btn_switchHeater.clicked.connect(self.relays.switchHeater)
-        self.ui.btn_switchMount.clicked.connect(self.relays.switchMount)
-        self.ui.btn_switchPC.clicked.connect(self.relays.switchPC)
         self.ui.rb_cameraSGPro.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraTSX.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraASCOM.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
@@ -475,8 +470,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
             if 'MountIP' in self.config:
                 self.ui.le_mountIP.setText(self.config['MountIP'])
-            if 'RelayIP' in self.config:
-                self.ui.le_relayIP.setText(self.config['RelayIP'])
             if 'DirectMount' in self.config:
                 self.ui.rb_directMount.setChecked(self.config['DirectMount'])
             if 'AscomMount' in self.config:
@@ -558,7 +551,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['MountIP'] = self.ui.le_mountIP.text()
-        self.config['RelayIP'] = self.ui.le_relayIP.text()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
@@ -587,6 +579,7 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
         self.unihedron.storeConfig()
+        self.relays.storeConfig()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -997,7 +990,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.4 RC'
+    BUILD_NO = '2.4 RC1'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
