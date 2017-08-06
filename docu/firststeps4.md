@@ -1,6 +1,6 @@
 ## Managing Mount Models
 
-<img src="../pics/tab_managemountmodel.png"/>
+<img src="pics/tab_managemountmodel.png"/>
 
 Managing mount models is an advanced part of working with MountWizzard and you setup. If you don't have a need for that, it's fine.
 But let's explain what you could do.

@@ -1,6 +1,6 @@
 ## Settings for park positions
 
-<img src="../pics/tab_settings_parkpositionsconfig.png"/>
+<img src="pics/tab_settings_parkpositionsconfig.png"/>
 
 MountWizzard can slew to mount to 6 different positions in the Pointing TAB. The text of the buttons and the azimuth (AZ) and
 altitude (ALT) could be set in this menue. Please think about the ranges of that values: AZ between 0 and 360 and ALT between

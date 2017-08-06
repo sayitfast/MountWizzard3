@@ -1,6 +1,6 @@
 ## Pointing TAB
 
-<img src="../pics/tab_pointing.png"/>
+<img src="pics/tab_pointing.png"/>
 
 ### Area 1
 Area 1 is showing the pointing coordinates in Azimuth / Altitude in degrees as well as the Right Ascention / Declination in J2000 values.

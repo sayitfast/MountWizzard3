@@ -1,6 +1,6 @@
 ## Status for versions information
 
-<img src="../pics/tab_settings_versions.png"/>
+<img src="pics/tab_settings_versions.png"/>
 
 ### Area 1: Version
 

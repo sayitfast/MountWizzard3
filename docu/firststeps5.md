@@ -1,6 +1,6 @@
 ## Model Analyse TAB
 
-<img src="../pics/tab_modelanalyse.png"/>
+<img src="pics/tab_modelanalyse.png"/>
 
 As expert mode, MountWizzard allows special slewing and analyses use case to test your setup and give some hint about
 possible improvements to make. Some of them are experimental and it is open, to which extend you can use the data. There

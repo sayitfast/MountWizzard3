@@ -1,6 +1,6 @@
 ## Settings for imaging and imaging environment
 
-<img src="../pics/tab_settings_imagingsetup.png"/>
+<img src="pics/tab_settings_imagingsetup.png"/>
 
 ### Area 1: Camera / Plate Solver Application
 

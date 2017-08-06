@@ -1,6 +1,6 @@
 ## Make Mount Model TAB
 
-<img src="../pics/tab_makemountmodel.png"/>
+<img src="pics/tab_makemountmodel.png"/>
 
 
 

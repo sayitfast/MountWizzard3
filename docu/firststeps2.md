@@ -1,6 +1,6 @@
 ## Mount conditions and site conditions
 
-<img src="../pics/tab_siteconditions.png"/>
+<img src="pics/tab_siteconditions.png"/>
 
 MountWizzard fetches data from the mount computer an a regular base depending on the rate of changes the measurements have.
 Some information is pulled just on startup (e.g. the location of the mount), others are fetched more often (pointing). Still

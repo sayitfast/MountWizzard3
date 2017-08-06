@@ -1,6 +1,6 @@
 ## Analyse data window and data interpretation
 
-<img src="../pics/analysewindow1.png"/>
+<img src="pics/analysewindow1.png"/>
 
 ### Area 1 - diagrams
 

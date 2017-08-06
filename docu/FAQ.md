@@ -1,1 +1,1 @@
-## <img src="../pics/mw.png" width='64' height='64'/>What to do if ?
+## <img src="pics/mw.png" width='64' height='64'/>What to do if ?

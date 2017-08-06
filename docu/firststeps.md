@@ -4,16 +4,16 @@
 
 Basically you have 3 main areas, where the functions of MW are located:
 
-<img src="../pics/mainscreen_explain01.png"/>
+<img src="pics/mainscreen_explain01.png"/>
 
 ### Area 1
 
 You have the status buttons of the devices showing different colors:
 
-- <img src="../pics/grey.png"/> grey: device not configured or disabled
-- <img src="../pics/red.png"/> red: device configured, but not connected
-- <img src="../pics/yellow.png"/> yellow: device connected, but not fully functional
-- <img src="../pics/green.png"/> green: device connected and fully functional
+- <img src="pics/grey.png"/> grey: device not configured or disabled
+- <img src="pics/red.png"/> red: device configured, but not connected
+- <img src="pics/yellow.png"/> yellow: device connected, but not fully functional
+- <img src="pics/green.png"/> green: device connected and fully functional
 
 The yellow color only exists in camera device. There you could distinguish between the application fpr imaging is running
 (showing yellow) and the camera itself is connected to the imaging application itself (green).

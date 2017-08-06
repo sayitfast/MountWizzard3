@@ -1,6 +1,6 @@
 ## Status for versions information
 
-<img src="../pics/tab_settings_relay.png"/>
+<img src="pics/tab_settings_relay.png"/>
 
 ### Area 1: Configuring the relay functions and text buttons
 

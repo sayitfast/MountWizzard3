@@ -1,6 +1,6 @@
 ## The modeling plot window
 
-<img src="../pics/modelingplotwindow1.png"/>
+<img src="pics/modelingplotwindow1.png"/>
 
 ### Area 1 - Status information about pointing and sky quality
 

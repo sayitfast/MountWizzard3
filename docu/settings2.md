@@ -1,6 +1,6 @@
 ## Settings for ASCOM / Mount Drivers environment drivers and remote access
 
-<img src="../pics/tab_settings_ascommountdriver.png"/>
+<img src="pics/tab_settings_ascommountdriver.png"/>
 
 ### Area 1: Mount Connection
 The connection to the mount could be done either via an ASCOM driver (original 10micron or Per's driver) or via a direct IP connection.
@@ -56,12 +56,12 @@ Still experimental, you might run into troubles. I let you know, when it works!
 ### Hints for configuration:
 I'm using SGPro as my imaging setup. To make the best out of it, I choose the ASCOM Observation Conditions Hub as my environment device:
 
-<img src="../pics/observationconditions_sgpro.png"/>
+<img src="pics/observationconditions_sgpro.png"/>
 
 if you configure that hub with data from open waether, stickstation (or MBox) and unihedron driver, SGPro puts all this data in you FITS
 image files. With that information you can later check the conditions of you night ! Here my setup in the ASCOM hub:
 
-<img src="../pics/observationconditionshub.png"/>
+<img src="pics/observationconditionshub.png"/>
 
 [Back to settings](settings.md)
 

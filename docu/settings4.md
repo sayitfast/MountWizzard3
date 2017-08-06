@@ -1,6 +1,6 @@
 ## Setting / config of UTC Data / MPC / TLE
 
-<img src="../pics/tab_settings_utcdata.png"/>
+<img src="pics/tab_settings_utcdata.png"/>
 
 ### Area 1
 Shows the status of the UTC timing parameters especially of the UTC-1 values and their expiration date.

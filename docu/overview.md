@@ -13,23 +13,23 @@ to make this happen, and there is roughly any strong request for it.
 
 First, there is the main screen:
 
-<img src="../pics/mainscreen.png"/>
+<img src="pics/mainscreen.png"/>
 
 ### Modeling Plot Window
 Mountwizzard can show th so called "Modeling Plot Window" where you can follow and manage in detail the modeling process:
 
-<img src="../pics/modelingplotwindow.png"/>
+<img src="pics/modelingplotwindow.png"/>
 
 ### Analyse Window
 After modeling you can do some analytics of your model runs. This is mainly located in the "Analyse" window:
 
-<img src="../pics/analysewindow.png"/>
+<img src="pics/analysewindow.png"/>
 
 ### Image Window
 If you opened the image windows, all images taken through MountWizzard will be show. You can take as well a single shot of your
 own. Single shots are disabled during model building.
 
-<img src="../pics/imagewindow.png"/>
+<img src="pics/imagewindow.png"/>
 
 
 [Back to Home](home.md)

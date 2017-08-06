@@ -1,6 +1,6 @@
 ## The image window
 
-<img src="../pics/imagewindow1.png"/>
+<img src="pics/imagewindow1.png"/>
 
 ### Area 1 - Manual exposures for test and / or polar align
 

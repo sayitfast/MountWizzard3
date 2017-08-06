@@ -2,7 +2,7 @@
 
 Using dec error diagram from analyse window:
 
-<img src="../pics/analyse_timeflexure.png"/>
+<img src="pics/analyse_timeflexure.png"/>
 
 The points are green (so mount was located on east side of pier). I did 150 points each 20 seconds. What you see is that dec
 error increases over time from about 1,5 arcsec at the beginning to about 4 arcsec at the end (blue line) after about 90 x 20
