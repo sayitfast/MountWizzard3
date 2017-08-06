@@ -25,10 +25,10 @@ class Relays:
         self.stat = [False, False, False, False, False, False, False, False, False]
         self.username = ''
         self.password = ''
+        self.initConfig()
         self.connected = self.checkConnection()
         if self.connected:
             self.requestStatus()
-        self.initConfig()
         self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
         self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
         self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))
@@ -159,8 +159,7 @@ class Relays:
     def checkConnection(self):
         connected = False
         try:
-            result = self.geturl('http://' + self.relayIP())
-            result.getcode()
+            self.geturl('http://' + self.relayIP())
             connected = True
         except Exception as e:
             connected = False
@@ -282,7 +281,7 @@ class Relays:
     def requestStatus(self):
         try:
             result = self.geturl('http://' + self.relayIP() + '/status.xml')
-            self.setStatus(result.read().decode('utf-8'))
+            self.setStatus(result.content.decode())
         except Exception as e:
             self.logger.error('requestStatus -> error {0}'.format(e))
         finally:
