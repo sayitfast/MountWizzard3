@@ -14,14 +14,14 @@
 
 # import basic stuff
 import logging
-from PyQt5 import QtCore
+import PyQt5
 import socket
 
 
-class Remote(QtCore.QThread):
+class Remote(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
-    signalRemoteConnected = QtCore.pyqtSignal(bool, name='RemoteConnected')
-    signalRemoteShutdown = QtCore.pyqtSignal(bool, name='RemoteShutdown')
+    signalRemoteConnected = PyQt5.QtCore.pyqtSignal(bool, name='RemoteConnected')
+    signalRemoteShutdown = PyQt5.QtCore.pyqtSignal(bool, name='RemoteShutdown')
     TCP_IP = '127.0.0.1'
     TCP_PORT = 3495
     BUFFER_SIZE = 20                                                                                                        # Normally 1024, but we want fast response

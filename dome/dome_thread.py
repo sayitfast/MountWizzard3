@@ -14,17 +14,17 @@
 
 # import basic stuff
 import logging
-from PyQt5 import QtCore
+import PyQt5
 import time
 from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
-class Dome(QtCore.QThread):
+class Dome(PyQt5.QtCore.QThread):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger(__name__)
-    signalDomeConnected = QtCore.pyqtSignal([int], name='domeConnected')
-    signalDomPointer = QtCore.pyqtSignal([float], name='domePointer')
+    signalDomeConnected = PyQt5.QtCore.pyqtSignal([int], name='domeConnected')
+    signalDomPointer = PyQt5.QtCore.pyqtSignal([float], name='domePointer')
 
     def __init__(self, app):
         super().__init__()

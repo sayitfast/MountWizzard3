@@ -14,17 +14,17 @@
 
 # import basic stuff
 import logging
-from PyQt5 import QtCore
+import PyQt5
 import time
 from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
-class Unihedron(QtCore.QThread):
+class Unihedron(PyQt5.QtCore.QThread):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger(__name__)
-    signalUnihedronData = QtCore.pyqtSignal([dict], name='unihedronData')
-    signalUnihedronConnected = QtCore.pyqtSignal([int], name='unihedronConnected')
+    signalUnihedronData = PyQt5.QtCore.pyqtSignal([dict], name='unihedronData')
+    signalUnihedronConnected = PyQt5.QtCore.pyqtSignal([int], name='unihedronConnected')
 
     def __init__(self, app):
         super().__init__()

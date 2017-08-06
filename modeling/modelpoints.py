@@ -14,7 +14,7 @@
 import logging
 import os
 # for the sorting
-from operator import itemgetter
+import operator
 
 
 class ModelPoints:
@@ -68,14 +68,14 @@ class ModelPoints:
             return
         westSide = []                                                                                                       # split west and east side of pier
         eastSide = []                                                                                                       # and reset them
-        a = sorted(points, key=itemgetter(0))                                                                               # first sort for az
+        a = sorted(points, key=operator.itemgetter(0))                                                                      # first sort for az
         for i in range(0, len(a)):                                                                                          # split flip sides
             if a[i][0] >= 180:                                                                                              # choose the right side
                 westSide.append((a[i][0], a[i][1]))                                                                         # add the point tto list
             else:                                                                                                           #
                 eastSide.append((a[i][0], a[i][1]))                                                                         #
-        westSide = sorted(westSide, key=itemgetter(1))                                                                      # sort west flipside
-        eastSide = sorted(eastSide, key=itemgetter(1))                                                                      # sort east flipside
+        westSide = sorted(westSide, key=operator.itemgetter(1))                                                             # sort west flipside
+        eastSide = sorted(eastSide, key=operator.itemgetter(1))                                                             # sort east flipside
         if modeltype == 'base':
             self.BasePoints = eastSide + westSide                                                                           # put them together
         else:
@@ -85,6 +85,7 @@ class ModelPoints:
         self.horizonPoints = []                                                                                             # clear horizon variable
         hp = []                                                                                                             # clear cache
         msg = None
+        minAlt = 0
         if file_check:
             if horizonPointsFileName == '':
                 msg = 'No horizon points filename given !'
@@ -103,8 +104,8 @@ class ModelPoints:
                 except Exception as e:                                                                                      # handle exception
                     msg = 'Error loading horizon points: {0}'.format(e)
                     self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                   # write to logger
-                    return msg                                                                                                 # stop routine
-            hp = sorted(hp, key=itemgetter(0))                                                                              # list should be sorted, but I do it for security anyway
+                    return msg                                                                                              # stop routine
+            hp = sorted(hp, key=operator.itemgetter(0))                                                                     # list should be sorted, but I do it for security anyway
         if line_check:
             minAlt = int(line_value)
             if len(hp) == 0:                                                                                                # there is no file loaded

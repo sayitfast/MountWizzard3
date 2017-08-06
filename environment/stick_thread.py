@@ -14,17 +14,17 @@
 
 # import basic stuff
 import logging
-from PyQt5 import QtCore
+import PyQt5
 import time
 from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
-class Stick(QtCore.QThread):
+class Stick(PyQt5.QtCore.QThread):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger(__name__)
-    signalStickData = QtCore.pyqtSignal([dict], name='stickData')
-    signalStickConnected = QtCore.pyqtSignal([int], name='stickConnected')
+    signalStickData = PyQt5.QtCore.pyqtSignal([dict], name='stickData')
+    signalStickConnected = PyQt5.QtCore.pyqtSignal([int], name='stickConnected')
 
     def __init__(self, app):
         super().__init__()

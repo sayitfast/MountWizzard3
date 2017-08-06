@@ -14,16 +14,16 @@
 
 # import basic stuff
 import logging
-from PyQt5 import QtCore
+import PyQt5
 import time
 from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
-class Weather(QtCore.QThread):
+class Weather(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
-    signalWeatherData = QtCore.pyqtSignal([dict], name='weatherData')                                                       # single for data transfer to gui
-    signalWeatherConnected = QtCore.pyqtSignal([int], name='weatherConnected')                                              # signal for connection status
+    signalWeatherData = PyQt5.QtCore.pyqtSignal([dict], name='weatherData')                                                       # single for data transfer to gui
+    signalWeatherConnected = PyQt5.QtCore.pyqtSignal([int], name='weatherConnected')                                              # signal for connection status
 
     def __init__(self, app):
         super().__init__()

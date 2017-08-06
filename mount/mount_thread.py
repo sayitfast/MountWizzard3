@@ -20,7 +20,7 @@ import time
 # for the sorting
 from operator import itemgetter
 # import PyQT5 for threading purpose
-from PyQt5 import QtCore
+import PyQt5
 # win32com
 import pythoncom
 #  mount driver classes
@@ -30,11 +30,11 @@ from mount import ipdirect
 from astrometry import transform
 
 
-class Mount(QtCore.QThread):
+class Mount(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # enable logging
-    signalMountConnected = QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
-    signalMountAzAltPointer = QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
-    signalMountTrackPreview = QtCore.pyqtSignal(name='mountTrackPreview')
+    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
+    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
+    signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'

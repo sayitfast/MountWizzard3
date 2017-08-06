@@ -28,8 +28,7 @@ import pyfits
 # win32 usage
 import pythoncom
 # pyqt5
-from PyQt5 import QtCore
-from PyQt5 import QtWidgets
+import PyQt5
 # for data storing
 from analyse.analysedata import Analyse
 # cameras
@@ -41,11 +40,11 @@ from camera import theskyx
 from modeling import modelpoints
 
 
-class Modeling(QtCore.QThread):
+class Modeling(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                   # logging enabling
-    signalModelConnected = QtCore.pyqtSignal(int, name='ModelConnected')                                                   # message for errors
-    signalModelCommand = QtCore.pyqtSignal([str], name='ModelCommand')                                                     # commands to sgpro thread
-    signalModelRedraw = QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
+    signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')                                                   # message for errors
+    signalModelCommand = PyQt5.QtCore.pyqtSignal([str], name='ModelCommand')                                                     # commands to sgpro thread
+    signalModelRedraw = PyQt5.QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
@@ -277,7 +276,7 @@ class Modeling(QtCore.QThread):
     def __del__(self):                                                                                                      # remove thread
         self.wait()
 
-    @QtCore.Slot(str)
+    @PyQt5.QtCore.Slot(str)
     def sendCommand(self, command):                                                                                         # dispatcher of commands inside thread
         if self.modelrun:
             if command == 'CancelModel':                                                                                    # check the command
@@ -454,7 +453,7 @@ class Modeling(QtCore.QThread):
         points = []                                                                                                         # clear the points
         for i in range(0, int(float(self.app.ui.numberRunsTimeChange.value()))):                                            # generate the points
             points.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value()),
-                           QtWidgets.QGraphicsTextItem(''), True))
+                           PyQt5.QtWidgets.QGraphicsTextItem(''), True))
         self.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime)                                # run the analyse
         name = directory + '_timechange.dat'                                                                                # generate name of analyse file
         if len(self.modelAnalyseData) > 0:
@@ -471,8 +470,8 @@ class Modeling(QtCore.QThread):
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = []
         for i in range(0, numberRunsHysterese):
-            points.append((az1, alt1, QtWidgets.QGraphicsTextItem(''), True))
-            points.append((az2, alt2, QtWidgets.QGraphicsTextItem(''), False))
+            points.append((az1, alt1, PyQt5.QtWidgets.QGraphicsTextItem(''), True))
+            points.append((az2, alt2, PyQt5.QtWidgets.QGraphicsTextItem(''), False))
         self.modelAnalyseData = self.runModel('Hysterese', points, directory, waitingTime)                                  # run the analyse
         name = directory + '_hysterese.dat'                                                                                 # generate name of analyse file
         self.app.ui.le_analyseFileName.setText(name)                                                                        # set data name in GUI to start over quickly
