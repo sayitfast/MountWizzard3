@@ -10,7 +10,8 @@ Area 1 shows a second level ob TAB for doing all configuration settings. These a
 - [ASCOM 7 Mount Driver Settings TAB](settings2.md)
 - [Park Position Config TAB](settings3.md)
 - [UTC Data / MPC / TLE TAB](settings4.md)
-- [Versions TAB](settings5.md)
+- [Relay TAB](settings5.md)
+- [Versions TAB](settings6.md)
 
 [Back to first steps](firststeps.md)
 

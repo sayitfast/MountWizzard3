@@ -1,14 +1,18 @@
 ## Status for versions information
 
-<img src="../pics/tab_settings_versions.png"/>
+<img src="../pics/tab_settings_relay.png"/>
 
-### Area 1: Version
+### Area 1: Configuring the relay functions and text buttons
 
-Mountwizzard checks for all information once at startup. It will show product and version data.
+Mountwizzard allows you to configure the function for the relay board. First the text entries set the text on the buttons
+under the "Relay Functions" menu. Second you could choose if the relay function is switch, which basically toggles the
+state of the relay (on / off) or you choose Pulse, which switches the relay for 1 second to "on" and afterwards to "off".
+The Pulse config could be used for the boot function of the mount.
 
-### Area 2: Working directory
+### Area 2: Configuring the KM switch
 
-Just as a reminder for knowing where you are currently working: Here is the actual used working directory shown.
+The KM Relay board has to be configured with IP address, username and password for accessing it via ethernet.
+
 
 [Back to settings](settings.md)
 
