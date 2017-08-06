@@ -25,15 +25,15 @@ package "base classes" {
     [camera]
 }
 
-[widget] --> [Mount Wizzard App] : use
-[widget] --> [model plot window] : use
-[widget] --> [image window] : use
-[widget] --> [analyse window] : use
+[widget] ---> [Mount Wizzard App] : use
+[widget] ---> [model plot window] : use
+[widget] ---> [image window] : use
+[widget] ---> [analyse window] : use
 
-[Mount Wizzard App] -> [wizzard_main_dialog] : use
-[model plot window] ->  [model_plot_dialog] : use
-[image window] -> [image_dialog] : use
-[analyse window] -> [analyse_dialog] : use
+[Mount Wizzard App] ---> [wizzard_main_dialog] : use
+[model plot window] --->  [model_plot_dialog] : use
+[image window] ---> [image_dialog] : use
+[analyse window] ---> [analyse_dialog] : use
 
 
 @enduml
