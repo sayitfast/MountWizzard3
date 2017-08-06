@@ -10831,7 +10831,7 @@ color: rgb(255,255,255);</string>
         <rect>
          <x>20</x>
          <y>30</y>
-         <width>371</width>
+         <width>361</width>
          <height>21</height>
         </rect>
        </property>
@@ -11093,10 +11093,10 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_144">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>370</y>
-         <width>21</width>
-         <height>31</height>
+         <x>420</x>
+         <y>50</y>
+         <width>71</width>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -11105,16 +11105,16 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>IP:</string>
+        <string>IP Address:</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_relayIP">
        <property name="geometry">
         <rect>
-         <x>60</x>
-         <y>370</y>
+         <x>500</x>
+         <y>50</y>
          <width>131</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -11153,9 +11153,9 @@ color: rgb(255,255,255);</string>
       <widget class="Line" name="line_48">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>340</y>
-         <width>371</width>
+         <x>420</x>
+         <y>30</y>
+         <width>301</width>
          <height>21</height>
         </rect>
        </property>
@@ -11174,8 +11174,8 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_141">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>330</y>
+         <x>420</x>
+         <y>20</y>
          <width>291</width>
          <height>21</height>
         </rect>
@@ -11584,6 +11584,142 @@ color: rgb(255,255,255);</string>
          <string>Pulse</string>
         </property>
        </widget>
+      </widget>
+      <widget class="QLabel" name="label_196">
+       <property name="geometry">
+        <rect>
+         <x>420</x>
+         <y>80</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Username:</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_197">
+       <property name="geometry">
+        <rect>
+         <x>420</x>
+         <y>110</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Password:</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="KMUsername">
+       <property name="geometry">
+        <rect>
+         <x>500</x>
+         <y>80</y>
+         <width>131</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>empty</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="KMPassword">
+       <property name="geometry">
+        <rect>
+         <x>500</x>
+         <y>110</y>
+         <width>131</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>empty</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="Line" name="line_59">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>10</y>
+         <width>21</width>
+         <height>411</height>
+        </rect>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_11">

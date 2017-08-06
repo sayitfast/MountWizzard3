@@ -14,7 +14,7 @@
 
 import logging
 import time
-from urllib import request
+import requests
 
 
 class Relays:
@@ -23,6 +23,8 @@ class Relays:
     def __init__(self, app):
         self.app = app
         self.stat = [False, False, False, False, False, False, False, False, False]
+        self.username = ''
+        self.password = ''
         self.connected = self.checkConnection()
         if self.connected:
             self.requestStatus()
@@ -104,6 +106,10 @@ class Relays:
                 self.app.ui.relay7Pulse.setChecked(self.app.config['Relay7Pulse'])
             if 'Relay8Pulse' in self.app.config:
                 self.app.ui.relay8Pulse.setChecked(self.app.config['Relay8Pulse'])
+            if 'KMUsername' in self.app.config:
+                self.app.ui.KMUsername.setText(self.app.config['KMUsername'])
+            if 'KMPassword' in self.app.config:
+                self.app.ui.KMPassword.setText(self.app.config['KMPassword'])
         except Exception as e:
             self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -135,6 +141,8 @@ class Relays:
         self.app.config['Relay6Pulse'] = self.app.ui.relay6Pulse.isChecked()
         self.app.config['Relay7Pulse'] = self.app.ui.relay7Pulse.isChecked()
         self.app.config['Relay8Pulse'] = self.app.ui.relay8Pulse.isChecked()
+        self.app.config['KMUsername'] = self.app.ui.KMUsername.text()
+        self.app.config['KMPassword'] = self.app.ui.KMPassword.text()
 
     def relayIP(self):
         value = self.app.ui.le_relayIP.text().split('.')
@@ -151,7 +159,8 @@ class Relays:
     def checkConnection(self):
         connected = False
         try:
-            request.urlopen('http://' + self.relayIP(), None, .5).getcode()
+            result = self.geturl('http://' + self.relayIP())
+            result.getcode()
             connected = True
         except Exception as e:
             connected = False
@@ -246,11 +255,15 @@ class Relays:
             else:
                 self.pulse(relayNumber)
 
+    def geturl(self, url):
+        result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.KMUsername.text(), self.app.ui.KMPassword.text()))
+        return result
+
     def pulse(self, relayNumber):
         try:
-            request.urlopen('http://' + self.relayIP() + '/FF0{0:1d}01'.format(relayNumber))
+            self.geturl('http://' + self.relayIP() + '/FF0{0:1d}01'.format(relayNumber))
             time.sleep(1)
-            request.urlopen('http://' + self.relayIP() + '/FF0{0:1d}00'.format(relayNumber))
+            self.geturl('http://' + self.relayIP() + '/FF0{0:1d}00'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
             self.logger.error('pulse          -> relay:{0}, error:{1}'.format(relayNumber, e))
@@ -259,7 +272,7 @@ class Relays:
 
     def switch(self, relayNumber):
         try:
-            request.urlopen('http://' + self.relayIP() + '/relays.cgi?relay={0:1d}'.format(relayNumber), None, .5)
+            self.geturl('http://' + self.relayIP() + '/relays.cgi?relay={0:1d}'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
             self.logger.error('switch         -> relay:{0}, error:{1}'.format(relayNumber, e))
@@ -268,8 +281,8 @@ class Relays:
 
     def requestStatus(self):
         try:
-            f = request.urlopen('http://' + self.relayIP() + '/status.xml', None, .5)
-            self.setStatus(f.read().decode('utf-8'))
+            result = self.geturl('http://' + self.relayIP() + '/status.xml')
+            self.setStatus(result.read().decode('utf-8'))
         except Exception as e:
             self.logger.error('requestStatus -> error {0}'.format(e))
         finally:
@@ -277,7 +290,7 @@ class Relays:
 
     def switchAllOff(self):
         try:
-            request.urlopen('http://' + self.relayIP() + '/FFE000', None, .5)
+            self.geturl('http://' + self.relayIP() + '/FFE000')
             self.requestStatus()
         except Exception as e:
             self.logger.error('switchAllOff -> error {0}'.format(e))
