@@ -27,7 +27,7 @@ import threading
 import pyfits
 # win32 usage
 import pythoncom
-# pyqt5
+# PyQt5
 import PyQt5
 # for data storing
 from analyse.analysedata import Analyse
@@ -42,8 +42,8 @@ from modeling import modelpoints
 
 class Modeling(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                   # logging enabling
-    signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')                                                   # message for errors
-    signalModelCommand = PyQt5.QtCore.pyqtSignal([str], name='ModelCommand')                                                     # commands to sgpro thread
+    signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')                                             # message for errors
+    signalModelCommand = PyQt5.QtCore.pyqtSignal([str], name='ModelCommand')                                               # commands to sgpro thread
     signalModelRedraw = PyQt5.QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -319,8 +319,8 @@ class Modeling(PyQt5.QtCore.QThread):
         self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))                               # Start informing user
         modelData = {}
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        modelData['base_dir_images'] = self.IMAGEDIR + '/platesolvesync'                         # define subdirectory for storing the images
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                 # look for capabilities of cam
+        modelData['base_dir_images'] = self.IMAGEDIR + '/platesolvesync'                                                    # define subdirectory for storing the images
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                     # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
@@ -441,7 +441,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
-            self.logger.warning('runCheckModel  -> There are no Refinement or Base Points to modeling')                        # write error log
+            self.logger.warning('runCheckModel  -> There are no Refinement or Base Points to modeling')                     # write error log
 
     def runAllModel(self):
         self.runBaseModel()
@@ -481,7 +481,7 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def runBatchModel(self):
         nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.debug('runBatchModel  -> modeling from {0}'.format(nameDataFile))                                          # debug output
+        self.logger.debug('runBatchModel  -> modeling from {0}'.format(nameDataFile))                                       # debug output
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
         if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
             self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
@@ -496,7 +496,7 @@ class Modeling(PyQt5.QtCore.QThread):
             self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         self.app.mount.saveBackupModel()
-        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))      # Gui Output
+        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))    # Gui Output
         self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output
         for i in range(0, len(data['index'])):
@@ -555,7 +555,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 if self.cancel:
                     break
                 time.sleep(0.1)                                                                                             # loop time
-        # self.app.commandQueue.put('AP')                                                                                     # tracking on
+        # self.app.commandQueue.put('AP')                                                                                   # tracking on
 
     def prepareCaptureImageSubframes(self, scale, sizeX, sizeY, canSubframe, modelData):                                    # get camera data for doing subframes
         modelData['sizeX'] = 0                                                                                              # size inner window
@@ -593,11 +593,9 @@ class Modeling(PyQt5.QtCore.QThread):
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
-                    # we are running in a bundle
-                    bundle_dir = sys._MEIPASS
+                    bundle_dir = sys._MEIPASS                                                                               # we are running in a bundle
                 else:
-                    # we are running in a normal Python environment
-                    bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
+                    bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)                                          # we are running in a normal Python environment
                 shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['imagepath'])                                      # copy reference file as simulation target
             else:
                 self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
@@ -716,7 +714,7 @@ class Modeling(PyQt5.QtCore.QThread):
         modelData = dict()                                                                                                  # all modeling data
         results = list()                                                                                                    # results
         self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
-        self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                           # Start informing user
+        self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                        # Start informing user
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.IMAGEDIR + '/' + directory                                                      # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
@@ -747,7 +745,7 @@ class Modeling(PyQt5.QtCore.QThread):
             self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the modeling point to be run = true ?
                 if self.cancel:                                                                                             # here is the entry point for canceling the modeling run
-                    self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))        # we keep all the stars before
+                    self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))     # we keep all the stars before
                     self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
                     self.cancel = False                                                                                     # and make it back to default
                     self.app.modelLogQueue.put('status-- of --')
@@ -829,7 +827,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 timeCalculated = actualTime / (i + 1) * (len(runPoints) - i - 1)
                 mm = int(timeCalculated / 60)
                 ss = int(timeCalculated - 60 * mm)
-                self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))                                              # show status on screen
+                self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))                                        # show status on screen
 
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the modeling images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
