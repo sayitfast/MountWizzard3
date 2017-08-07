@@ -580,7 +580,6 @@ class Mount(PyQt5.QtCore.QThread):
                     self.logger.debug('getStatusMedium-> no autorefraction')                                                # no autorefraction is possible
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()
-        self.transform.transformNovasRefractionParams(self.refractionTemp, self.refractionPressure)
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
         self.timeToFlip = self.mountHandler.sendCommand('Gmte')

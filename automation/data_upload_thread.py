@@ -17,7 +17,7 @@ import os
 import logging
 import time
 # pyqt
-from PyQt5 import QtCore
+import PyQt5
 # webservices
 import urllib.request as urllib2
 # windows automation
@@ -25,7 +25,7 @@ from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
-class DataUploadToMount(QtCore.QThread):
+class DataUploadToMount(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
