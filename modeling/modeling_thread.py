@@ -380,13 +380,17 @@ class Modeling(PyQt5.QtCore.QThread):
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)
         self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
 
+    def setupRunningParameters(self):
+        settlingTime = int(float(self.app.ui.settlingTime.value()))
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        return settlingTime, directory
+
     def runBaseModel(self):
         if self.app.ui.checkClearModelFirst.isChecked():
             self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
             self.clearAlignmentModel()
             self.app.modelLogQueue.put('Model cleared!\n')
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        settlingTime, directory = self.setupRunningParameters()
         if len(self.modelpoints.BasePoints) > 0:
             self.modelData = self.runModel('Base', self.modelpoints.BasePoints, directory, settlingTime)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
@@ -396,7 +400,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.analyse.saveData(self.modelData, name)                                                                 # save the data according to date
                 self.app.mount.saveBaseModel()                                                                              # and saving the modeling in the mount
         else:
-            self.logger.warning('runBaseModel -> There are no Basepoints to modeling')
+            self.logger.warning('runBaseModel -> There are no Basepoints for modeling')
 
     def runRefinementModel(self):
         num = self.app.mount.numberModelStars()
@@ -407,8 +411,7 @@ class Modeling(PyQt5.QtCore.QThread):
         else:
             simulation = False
         if num > 2 or simulation:
-            settlingTime = int(float(self.app.ui.settlingTime.value()))
-            directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+            settlingTime, directory = self.setupRunningParameters()
             if len(self.modelpoints.RefinementPoints) > 0:
                 if self.app.ui.checkKeepRefinement.isChecked():
                     self.app.mount.loadRefinementModel()
@@ -427,12 +430,11 @@ class Modeling(PyQt5.QtCore.QThread):
             else:
                 self.logger.warning('runRefinementModel -> There are no Refinement Points to modeling')
         else:
-            self.app.modelLogQueue.put('Refine stopped, not BASE modeling available !\n')
-            self.app.messageQueue.put('Refine stopped, not BASE modeling available !\n')
+            self.app.modelLogQueue.put('Refine stopped, no BASE model available !\n')
+            self.app.messageQueue.put('Refine stopped, no BASE model available !\n')
 
     def runCheckModel(self):
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        settlingTime, directory = self.setupRunningParameters()
         points = self.modelpoints.BasePoints + self.modelpoints.RefinementPoints
         if len(points) > 0:                                                                                                 # there should be some points
             self.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)                                 # run the analyse
@@ -448,8 +450,7 @@ class Modeling(PyQt5.QtCore.QThread):
         self.runRefinementModel()
 
     def runTimeChangeModel(self):
-        settlingTime = int(float(self.app.ui.delayTimeTimeChange.value()))                                                  # using settling time also for waiting / delay
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        settlingTime, directory = self.setupRunningParameters()
         points = []                                                                                                         # clear the points
         for i in range(0, int(float(self.app.ui.numberRunsTimeChange.value()))):                                            # generate the points
             points.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value()),
@@ -461,13 +462,12 @@ class Modeling(PyQt5.QtCore.QThread):
             self.analyse.saveData(self.modelAnalyseData, name)                                                              # save the data
 
     def runHystereseModel(self):
-        waitingTime = int(float(self.app.ui.settlingTime.value()))                                                          # using settling time also for waiting / delay
+        waitingTime, directory = self.setupRunningParameters()
         alt1 = int(float(self.app.ui.altitudeHysterese1.value()))
         alt2 = int(float(self.app.ui.altitudeHysterese2.value()))
         az1 = int(float(self.app.ui.azimuthHysterese1.value()))
         az2 = int(float(self.app.ui.azimuthHysterese2.value()))
         numberRunsHysterese = int(float(self.app.ui.numberRunsHysterese.value()))
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         points = []
         for i in range(0, numberRunsHysterese):
             points.append((az1, alt1, PyQt5.QtWidgets.QGraphicsTextItem(''), True))
@@ -819,7 +819,6 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
                         self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))            # Gui output
-
                 self.app.modelLogQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))                                  # show status on screen
                 modelBuildDone = (i + 1) / len(runPoints)
                 self.app.modelLogQueue.put('percent{0}'.format(modelBuildDone))                                             # show status on screen
@@ -828,7 +827,6 @@ class Modeling(PyQt5.QtCore.QThread):
                 mm = int(timeCalculated / 60)
                 ss = int(timeCalculated - 60 * mm)
                 self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))                                        # show status on screen
-
         if not self.app.ui.checkKeepImages.isChecked():                                                                     # check if the modeling images should be kept
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
         self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'

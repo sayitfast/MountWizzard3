@@ -1477,6 +1477,7 @@ class Ui_WizzardMainDialog(object):
         self.btn_loadRefinementPoints.setObjectName("btn_loadRefinementPoints")
         self.btn_cancelModel = QtWidgets.QPushButton(self.tab_6)
         self.btn_cancelModel.setGeometry(QtCore.QRect(490, 440, 251, 31))
+        self.btn_cancelModel.setStyleSheet("")
         self.btn_cancelModel.setObjectName("btn_cancelModel")
         self.btn_runCheckModel = QtWidgets.QPushButton(self.tab_6)
         self.btn_runCheckModel.setGeometry(QtCore.QRect(490, 390, 251, 31))
@@ -4333,7 +4334,7 @@ class Ui_WizzardMainDialog(object):
 
     def retranslateUi(self, WizzardMainDialog):
         _translate = QtCore.QCoreApplication.translate
-        WizzardMainDialog.setWindowTitle(_translate("WizzardMainDialog", "Mount Command Window (C) MW 2016"))
+        WizzardMainDialog.setWindowTitle(_translate("WizzardMainDialog", "Mount Command Window (C) MW 2016,2017"))
         self.le_mountStatus.setToolTip(_translate("WizzardMainDialog", "Status feedback from mount "))
         self.le_mountStatus.setText(_translate("WizzardMainDialog", "Mount Status"))
         self.mainTabWidget.setToolTip(_translate("WizzardMainDialog", "Tab section"))

@@ -59,7 +59,7 @@
    <enum>Qt::PreventContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>Mount Command Window (C) MW 2016</string>
+   <string>Mount Command Window (C) MW 2016,2017</string>
   </property>
   <property name="toolTipDuration">
    <number>6</number>
@@ -4365,6 +4365,9 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Cancel any Model Run</string>

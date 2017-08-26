@@ -159,7 +159,7 @@ class Relays:
     def checkConnection(self):
         connected = False
         try:
-            self.geturl('http://' + self.relayIP())
+            self.geturl('http://' + self.relayIP(), 0.5)
             connected = True
         except Exception as e:
             connected = False

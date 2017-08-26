@@ -1,4 +1,14 @@
 # Changelog
+2.4 Release version
+- small start performance optimization
+
+2.4 RC3
+- relay usage fr KMTronic relay board
+- bugfixes
+
+2.4 RC1
+- bufixes
+
 2.4 RC
 - moved to release candidate state
 - updated tooltips
