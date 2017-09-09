@@ -46,26 +46,42 @@ class Relays:
         self.app.ui.relay7Text.textChanged.connect(lambda: self.app.ui.btn_relay7.setText(self.app.ui.relay7Text.text()))
         self.app.ui.relay8Text.textChanged.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
 
-    def initConfig(self):
+    def initConfig(self):                                                                                                   # index 0 is first entry etc.
+        self.app.ui.relay1Function.addItem('Switch - Toggle')
+        self.app.ui.relay1Function.addItem('Pulse 1 sec')
+        self.app.ui.relay2Function.addItem('Switch - Toggle')
+        self.app.ui.relay2Function.addItem('Pulse 1 sec')
+        self.app.ui.relay3Function.addItem('Switch - Toggle')
+        self.app.ui.relay3Function.addItem('Pulse 1 sec')
+        self.app.ui.relay4Function.addItem('Switch - Toggle')
+        self.app.ui.relay4Function.addItem('Pulse 1 sec')
+        self.app.ui.relay5Function.addItem('Switch - Toggle')
+        self.app.ui.relay5Function.addItem('Pulse 1 sec')
+        self.app.ui.relay6Function.addItem('Switch - Toggle')
+        self.app.ui.relay6Function.addItem('Pulse 1 sec')
+        self.app.ui.relay7Function.addItem('Switch - Toggle')
+        self.app.ui.relay7Function.addItem('Pulse 1 sec')
+        self.app.ui.relay8Function.addItem('Switch - Toggle')
+        self.app.ui.relay8Function.addItem('Pulse 1 sec')
         try:
             if 'RelayIP' in self.app.config:
                 self.app.ui.le_relayIP.setText(self.app.config['RelayIP'])
-            if 'Relay1Switch' in self.app.config:
-                self.app.ui.relay1Switch.setChecked(self.app.config['Relay1Switch'])
-            if 'Relay2Switch' in self.app.config:
-                self.app.ui.relay2Switch.setChecked(self.app.config['Relay2Switch'])
-            if 'Relay3Switch' in self.app.config:
-                self.app.ui.relay3Switch.setChecked(self.app.config['Relay3Switch'])
-            if 'Relay4Switch' in self.app.config:
-                self.app.ui.relay4Switch.setChecked(self.app.config['Relay4Switch'])
-            if 'Relay5Switch' in self.app.config:
-                self.app.ui.relay5Switch.setChecked(self.app.config['Relay5Switch'])
-            if 'Relay6Switch' in self.app.config:
-                self.app.ui.relay6Switch.setChecked(self.app.config['Relay6Switch'])
-            if 'Relay7Switch' in self.app.config:
-                self.app.ui.relay7Switch.setChecked(self.app.config['Relay7Switch'])
-            if 'Relay8Switch' in self.app.config:
-                self.app.ui.relay8Switch.setChecked(self.app.config['Relay8Switch'])
+            if 'Relay1Function' in self.app.config:
+                self.app.ui.relay1Function.setCurrentIndex(self.app.config['Relay1Function'])
+            if 'Relay2Function' in self.app.config:
+                self.app.ui.relay2Function.setCurrentIndex(self.app.config['Relay2Function'])
+            if 'Relay3Function' in self.app.config:
+                self.app.ui.relay3Function.setCurrentIndex(self.app.config['Relay3Function'])
+            if 'Relay4Function' in self.app.config:
+                self.app.ui.relay4Function.setCurrentIndex(self.app.config['Relay4Function'])
+            if 'Relay5Function' in self.app.config:
+                self.app.ui.relay5Function.setCurrentIndex(self.app.config['Relay5Function'])
+            if 'Relay6Function' in self.app.config:
+                self.app.ui.relay6Function.setCurrentIndex(self.app.config['Relay6Function'])
+            if 'Relay7Function' in self.app.config:
+                self.app.ui.relay7Function.setCurrentIndex(self.app.config['Relay7Function'])
+            if 'Relay8Function' in self.app.config:
+                self.app.ui.relay8Function.setCurrentIndex(self.app.config['Relay8Function'])
             if 'Relay1Text' in self.app.config:
                 self.app.ui.relay1Text.setText(self.app.config['Relay1Text'])
                 self.app.ui.btn_relay1.setText(self.app.config['Relay1Text'])
@@ -90,22 +106,6 @@ class Relays:
             if 'Relay8Text' in self.app.config:
                 self.app.ui.relay8Text.setText(self.app.config['Relay8Text'])
                 self.app.ui.btn_relay8.setText(self.app.config['Relay8Text'])
-            if 'Relay1Pulse' in self.app.config:
-                self.app.ui.relay1Pulse.setChecked(self.app.config['Relay1Pulse'])
-            if 'Relay2Pulse' in self.app.config:
-                self.app.ui.relay2Pulse.setChecked(self.app.config['Relay2Pulse'])
-            if 'Relay3Pulse' in self.app.config:
-                self.app.ui.relay3Pulse.setChecked(self.app.config['Relay3Pulse'])
-            if 'Relay4Pulse' in self.app.config:
-                self.app.ui.relay4Pulse.setChecked(self.app.config['Relay4Pulse'])
-            if 'Relay5Pulse' in self.app.config:
-                self.app.ui.relay5Pulse.setChecked(self.app.config['Relay5Pulse'])
-            if 'Relay6Pulse' in self.app.config:
-                self.app.ui.relay6Pulse.setChecked(self.app.config['Relay6Pulse'])
-            if 'Relay7Pulse' in self.app.config:
-                self.app.ui.relay7Pulse.setChecked(self.app.config['Relay7Pulse'])
-            if 'Relay8Pulse' in self.app.config:
-                self.app.ui.relay8Pulse.setChecked(self.app.config['Relay8Pulse'])
             if 'KMUsername' in self.app.config:
                 self.app.ui.KMUsername.setText(self.app.config['KMUsername'])
             if 'KMPassword' in self.app.config:
@@ -117,14 +117,14 @@ class Relays:
 
     def storeConfig(self):
         self.app.config['RelayIP'] = self.app.ui.le_relayIP.text()
-        self.app.config['Relay1Switch'] = self.app.ui.relay1Switch.isChecked()
-        self.app.config['Relay2Switch'] = self.app.ui.relay2Switch.isChecked()
-        self.app.config['Relay3Switch'] = self.app.ui.relay3Switch.isChecked()
-        self.app.config['Relay4Switch'] = self.app.ui.relay4Switch.isChecked()
-        self.app.config['Relay5Switch'] = self.app.ui.relay5Switch.isChecked()
-        self.app.config['Relay6Switch'] = self.app.ui.relay6Switch.isChecked()
-        self.app.config['Relay7Switch'] = self.app.ui.relay7Switch.isChecked()
-        self.app.config['Relay8Switch'] = self.app.ui.relay8Switch.isChecked()
+        self.app.config['Relay1Function'] = self.app.ui.relay1Function.currentIndex()
+        self.app.config['Relay2Function'] = self.app.ui.relay2Function.currentIndex()
+        self.app.config['Relay3Function'] = self.app.ui.relay3Function.currentIndex()
+        self.app.config['Relay4Function'] = self.app.ui.relay4Function.currentIndex()
+        self.app.config['Relay5Function'] = self.app.ui.relay5Function.currentIndex()
+        self.app.config['Relay6Function'] = self.app.ui.relay6Function.currentIndex()
+        self.app.config['Relay7Function'] = self.app.ui.relay7Function.currentIndex()
+        self.app.config['Relay8Function'] = self.app.ui.relay8Function.currentIndex()
         self.app.config['Relay1Text'] = self.app.ui.relay1Text.text()
         self.app.config['Relay2Text'] = self.app.ui.relay2Text.text()
         self.app.config['Relay3Text'] = self.app.ui.relay3Text.text()
@@ -133,14 +133,6 @@ class Relays:
         self.app.config['Relay6Text'] = self.app.ui.relay6Text.text()
         self.app.config['Relay7Text'] = self.app.ui.relay7Text.text()
         self.app.config['Relay8Text'] = self.app.ui.relay8Text.text()
-        self.app.config['Relay1Pulse'] = self.app.ui.relay1Pulse.isChecked()
-        self.app.config['Relay2Pulse'] = self.app.ui.relay2Pulse.isChecked()
-        self.app.config['Relay3Pulse'] = self.app.ui.relay3Pulse.isChecked()
-        self.app.config['Relay4Pulse'] = self.app.ui.relay4Pulse.isChecked()
-        self.app.config['Relay5Pulse'] = self.app.ui.relay5Pulse.isChecked()
-        self.app.config['Relay6Pulse'] = self.app.ui.relay6Pulse.isChecked()
-        self.app.config['Relay7Pulse'] = self.app.ui.relay7Pulse.isChecked()
-        self.app.config['Relay8Pulse'] = self.app.ui.relay8Pulse.isChecked()
         self.app.config['KMUsername'] = self.app.ui.KMUsername.text()
         self.app.config['KMPassword'] = self.app.ui.KMPassword.text()
 
@@ -214,42 +206,43 @@ class Relays:
 
     def runRelay(self, relayNumber):
         if relayNumber == 1:
-            if self.app.ui.relay1Switch.isChecked():
+            print(self.app.ui.relay1Function.currentIndex())
+            if self.app.ui.relay1Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 2:
-            if self.app.ui.relay2Switch.isChecked():
+            if self.app.ui.relay2Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 3:
-            if self.app.ui.relay3Switch.isChecked():
+            if self.app.ui.relay3Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 4:
-            if self.app.ui.relay4Switch.isChecked():
+            if self.app.ui.relay4Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 5:
-            if self.app.ui.relay5Switch.isChecked():
+            if self.app.ui.relay5Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 6:
-            if self.app.ui.relay6Switch.isChecked():
+            if self.app.ui.relay6Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 7:
-            if self.app.ui.relay7Switch.isChecked():
+            if self.app.ui.relay7Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 8:
-            if self.app.ui.relay8Switch.isChecked():
+            if self.app.ui.relay8Function.currentIndex() == 1:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)

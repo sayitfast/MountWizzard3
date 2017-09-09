@@ -138,7 +138,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
-        # self.ui.btn_camPlateConnected.clicked.connect(self.startCamPlateApp)
         self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
         self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
         self.ui.btn_startTracking.clicked.connect(lambda: self.commandQueue.put('AP'))
@@ -983,14 +982,15 @@ class MountWizzardApp(widget.MwWidget):
 
 
 if __name__ == "__main__":
-    import warnings
     import traceback
+    import warnings
+    import astropy
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.4'
+    BUILD_NO = '2.5.0 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

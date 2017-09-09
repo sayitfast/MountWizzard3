@@ -1,4 +1,10 @@
 # Changelog
+
+2.5.1
+- refactoring relay function selection to combo box for opening up multiple functions
+- optimizing log: removing unnecessary entry about refraction entries
+- added python indi client implementation from Hazen Babcock (MIT licence)
+
 2.4 Release version
 - small start performance optimization
 
@@ -7,7 +13,7 @@
 - bugfixes
 
 2.4 RC1
-- bufixes
+- bugfixes
 
 2.4 RC
 - moved to release candidate state

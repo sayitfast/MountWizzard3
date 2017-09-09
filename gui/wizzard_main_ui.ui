@@ -7142,6 +7142,173 @@ color: rgb(255,255,255);</string>
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab_9">
+    <attribute name="title">
+     <string>Relay</string>
+    </attribute>
+    <widget class="Line" name="line_31">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>271</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay1">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>50</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay1</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay3">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>130</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay3</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>90</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay2</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_96">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>20</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Relays</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay4">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>170</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay4</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay5">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>210</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay5</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay6">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>250</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay6</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay7">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>290</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay7</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_relay8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>330</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Relay8</string>
+     </property>
+    </widget>
+   </widget>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
      <string>Settings</string>
@@ -11228,366 +11395,6 @@ color: rgb(255,255,255);</string>
         <string>Function</string>
        </property>
       </widget>
-      <widget class="QGroupBox" name="groupBox">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>60</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay1Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay1Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_2">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>90</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay2Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay2Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_3">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>120</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay3Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay3Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_4">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>150</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay4Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay4Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_5">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>180</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay5Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay5Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_6">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>210</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay6Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay6Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_7">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>240</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay7Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay7Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QGroupBox" name="groupBox_8">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>270</y>
-         <width>151</width>
-         <height>41</height>
-        </rect>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <widget class="QRadioButton" name="relay8Switch">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;switch toggles the relay state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Switch</string>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="relay8Pulse">
-        <property name="geometry">
-         <rect>
-          <x>90</x>
-          <y>20</y>
-          <width>61</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;pulse sets the relay to on and after 1 second to off&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Pulse</string>
-        </property>
-       </widget>
-      </widget>
       <widget class="QLabel" name="label_196">
        <property name="geometry">
         <rect>
@@ -11722,6 +11529,86 @@ color: rgb(255,255,255);</string>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay1Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>80</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay2Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>110</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay3Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>140</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay4Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>170</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay5Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>200</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay6Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>230</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay7Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>260</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay8Function">
+       <property name="geometry">
+        <rect>
+         <x>220</x>
+         <y>290</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
        </property>
       </widget>
      </widget>
@@ -12015,173 +11902,6 @@ color: rgb(255,255,255);</string>
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_9">
-    <attribute name="title">
-     <string>Relay Functions</string>
-    </attribute>
-    <widget class="Line" name="line_31">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>30</y>
-       <width>271</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay1">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>50</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay1</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay3">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>130</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay3</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay2">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>90</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay2</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_96">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Relays</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay4">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>170</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay4</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay5">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>210</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay5</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay6">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>250</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay6</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay7">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>290</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay7</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_relay8">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>330</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets Relay to configured state&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Relay8</string>
-     </property>
-    </widget>
-   </widget>
   </widget>
   <widget class="QPushButton" name="btn_shutdownQuit">
    <property name="geometry">
@@ -12201,7 +11921,7 @@ color: rgb(255,255,255);</string>
     <string>Send shutdown command to the mount and quit the tool</string>
    </property>
    <property name="text">
-    <string>Shutdown / Quit</string>
+    <string>Shutdown</string>
    </property>
   </widget>
   <widget class="QLabel" name="windowTitle">
@@ -12665,29 +12385,13 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_downloadAsteroidsPHA</tabstop>
   <tabstop>btn_mountSave</tabstop>
   <tabstop>relay1Text</tabstop>
-  <tabstop>relay1Switch</tabstop>
-  <tabstop>relay1Pulse</tabstop>
   <tabstop>relay2Text</tabstop>
-  <tabstop>relay2Switch</tabstop>
-  <tabstop>relay2Pulse</tabstop>
   <tabstop>relay3Text</tabstop>
-  <tabstop>relay3Switch</tabstop>
-  <tabstop>relay3Pulse</tabstop>
   <tabstop>relay4Text</tabstop>
-  <tabstop>relay4Switch</tabstop>
-  <tabstop>relay4Pulse</tabstop>
   <tabstop>relay5Text</tabstop>
-  <tabstop>relay5Switch</tabstop>
-  <tabstop>relay5Pulse</tabstop>
   <tabstop>relay6Text</tabstop>
-  <tabstop>relay6Switch</tabstop>
-  <tabstop>relay6Pulse</tabstop>
   <tabstop>relay7Text</tabstop>
-  <tabstop>relay7Switch</tabstop>
-  <tabstop>relay7Pulse</tabstop>
   <tabstop>relay8Text</tabstop>
-  <tabstop>relay8Switch</tabstop>
-  <tabstop>relay8Pulse</tabstop>
   <tabstop>btn_relay5</tabstop>
   <tabstop>btn_relay4</tabstop>
   <tabstop>le_relayIP</tabstop>

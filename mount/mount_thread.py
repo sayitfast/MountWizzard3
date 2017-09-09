@@ -509,18 +509,18 @@ class Mount(PyQt5.QtCore.QThread):
     def setRefractionParameter(self):
         pressure = float(self.app.ui.le_pressureStick.text() + '0')
         temperature = float(self.app.ui.le_temperatureStick.text() + '0')
-        # noinspection PyTypeChecker
-        if (900 < pressure < 1100) and (-40.0 < temperature < 50.0) and self.app.stick.connected == 1:
-            self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
-            if temperature > 0:
-                self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
+        if self.app.stick.connected == 1:
+            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
+                self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
+                if temperature > 0:
+                    self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
+                else:
+                    self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperatureStick.text())))
+                self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
+                self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
             else:
-                self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperatureStick.text())))
-            self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
-            self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
-        else:
-            self.logger.error('setRefractionPa-> parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
-            self.logger.error('setRefractionPa-> parameters out of range ! driver:{0} object:{1}'.format(self.app.stick.driverName, self.app.stick.ascom))
+                self.logger.error('setRefractionPa-> parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
+                self.logger.error('setRefractionPa-> parameters out of range ! driver:{0} object:{1}'.format(self.app.stick.driverName, self.app.stick.ascom))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.mountHandler.sendCommand('GS')

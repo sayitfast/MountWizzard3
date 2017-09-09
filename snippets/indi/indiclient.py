@@ -9,12 +9,10 @@ import xml.parsers.expat
 import string
 import base64
 import sys
-import array
 import os
 import threading
 from queue import Queue
 import copy
-import math
 import zlib
 import time
 import math
@@ -180,7 +178,7 @@ class inditransfertype:
     This is object is used to denote whether the an object was sent from the client to the server or vice versa and
     whether the object is just being defined or if it  was defined earlier.
     """
-    None
+    var = None
 
 
 class inditransfertypes(inditransfertype):
@@ -189,7 +187,7 @@ class inditransfertypes(inditransfertype):
     """
     class inew(inditransfertype):
         """The object is send from the client to the server"""
-        None
+        var = None
 
     class idef(inditransfertype):
         """
@@ -197,7 +195,7 @@ class inditransfertypes(inditransfertype):
         Thus the server is just defining the object to the client. This corresponds to an C{def*} tag in the XML representation.
         Or  a client calling the C{IDDef*} function.
         """
-        None
+        var = None
 
     class iset(inditransfertype):
         """
@@ -205,7 +203,7 @@ class inditransfertypes(inditransfertype):
         Thus the server is just setting new value for an existing object to the client. This corresponds to an C{set*} tag
         in the XML representation. Or  a client calling the C{IDSet*}
         """
-        None
+        var = None
 
 
 class indixmltag(_indinameconventions):
@@ -437,6 +435,7 @@ class indiobject:
         @type attrs: DictType
         """
         self.tag = tag
+        self.attrs = attrs
 
     def is_valid(self):
         """
@@ -454,7 +453,7 @@ class indiobject:
         @return:  an XML representation of the object
         @rtype: StringType
         """
-        None
+        pass
 
     def _check_writeable(self):
         """
@@ -656,7 +655,7 @@ class indinumber(indielement):
 
     def _set_value(self, value):
         try:
-            a = float(value)
+            float(value)
         except:
             return
         indielement._set_value(self, value)
@@ -666,6 +665,7 @@ class indinumber(indielement):
         @return: a float representation of it value
         @rtype: FloatType
         """
+        x = 0
         success = False
         while not success:
             success = True
@@ -714,7 +714,7 @@ class indinumber(indielement):
         @return: C{True} if the format property requires sexagesimal display
         @rtype: BooleanType
         """
-        return not (-1 == string.find(self.format, "m"))
+        return not (-1 == self.format.find('m'))
 
     def get_text(self):
         """
@@ -734,10 +734,7 @@ class indinumber(indielement):
         @return: B{None}
         @rtype: NoneType
         """
-        sex = []
-        sex.append("")
-        sex.append("")
-        sex.append("")
+        sex = ['', '', '']
         nsex = 0
         for i in range(len(text)):
             if text[i] == ":":
@@ -857,16 +854,16 @@ class indiswitch(indielement):
         else:
             return False
 
-    def set_active(self, bool):
+    def set_active(self, isBool):
         """
-        @param bool: The boolean representation of the new state of the switch.
+        @param isBool: The boolean representation of the new state of the switch.
             - True (I{Python}) = C{"On"} (I{INDI})
             - False (I{Python}) = C{"Off"} (I{INDI})
-        @type bool: BooleanType:
+        @type isBool: BooleanType:
         @return: B{None}
         @rtype: NoneType
         """
-        if bool:
+        if isBool:
             self._set_value("On")
         else:
             self._set_value("Off")
@@ -891,11 +888,11 @@ class indiblob(indielement):
         """
         if len(self.format) >= 2:
             if self.format[len(self.format) - 2] + self.format[len(self.format) - 1] == ".z":
-                return zlib.decompress(base64.decodestring(self._value.encode()))
+                return zlib.decompress(base64.decodebytes(self._value.encode()))
             else:
-                return base64.decodestring(self._value.encode())
+                return base64.decodebytes(self._value.encode())
         else:
-            return base64.decodestring(self._value.encode())
+            return base64.decodebytes(self._value.encode())
 
     def _encode_and_set_value(self, value, format):
         """
@@ -912,11 +909,11 @@ class indiblob(indielement):
         self.format = format
         if len(self.format) >= 2:
             if self.format[len(self.format)-2]+self.format[len(self.format)-1] == ".z":
-                self._set_value(base64.encodestring(zlib.compress(value)))
+                self._set_value(base64.encodebytes(zlib.compress(value)))
             else:
-                self._set_value(base64.encodestring(value))
+                self._set_value(base64.encodebytes(value))
         else:
-            self._set_value(base64.encodestring(value))
+            self._set_value(base64.encodebytes(value))
 
     def get_plain_format(self):
         """
@@ -957,7 +954,7 @@ class indiblob(indielement):
         in_file = open(filename, "r")
         text = in_file.read()
         in_file.close()
-        (root, ext)=os.path.splitext(filename)
+        (root, ext) = os.path.splitext(filename)
         self._encode_and_set_value(text, ext)
 
     def set_text(self, text):
@@ -1327,9 +1324,9 @@ class indimessage(indiobject):
         @param attrs: The attributes of the XML version of the INDI message.
         @type attrs: DictType
         """
-        tag=indixmltag(False, False, True, None, inditransfertypes.inew)
+        tag = indixmltag(False, False, True, None, inditransfertypes.inew)
         indiobject.__init__(self, attrs, tag)
-        self.device =  _normalize_whitespace(attrs.get('device', ""))
+        self.device = _normalize_whitespace(attrs.get('device', ""))
         self.timestamp = _normalize_whitespace(attrs.get('timestamp', ""))
         self._value = _normalize_whitespace(attrs.get('message', ""))
 
@@ -1360,6 +1357,7 @@ class _indilist(list):
     """" A list with a more sophisticated append() function.
     It checks for the existence an object with the same name overwrites it, if there is one. Will become a dictionary  soon :-)"""
     def __init__(self):
+        super().__init__()
         self.list = []
 
     def append(self, element):
@@ -1387,7 +1385,7 @@ class _blocking_indi_object_handler:
     This very abstract class makes sure that something can be blocked while the handler for the
     indi object L{on_indiobject_changed} is executed. Its does not define what shall be blocked or what blocking actually means.
     So for itself it just does nothing with nothing.  Classes inheriting from this class use it to detect "GUI changed" signals that
-    are caused by indiclient derived classes changing the gui, (and could cause client server loopbacks, or data losses if not treated properly).
+    are caused by indiclient derived classes changing the gui, (and could cause client server loop backs, or data losses if not treated properly).
     @ivar _blocked: A counter incremented each time the L{_block} method is called and decremented by L{_unblock}, >0 means blocked, ==0 mean unblocked
     @type _blocked: IntType
     """
@@ -1416,7 +1414,7 @@ class _blocking_indi_object_handler:
         @return: C{True} if blocked , C{False} otherwise
         @rtype:  BooleanType
         """
-        return (self._blocked > 0)
+        return self._blocked > 0
 
     def indi_object_change_notify(self, *args):
         """
@@ -1440,7 +1438,7 @@ class _blocking_indi_object_handler:
         @return: B{None}
         @rtype:  NoneType
         """
-        None
+        pass
 
     def configure(self, *args):
         """
@@ -1451,16 +1449,16 @@ class _blocking_indi_object_handler:
         @return: B{None}
         @rtype:  NoneType
         """
-        None
+        pass
 
 
 class gui_indi_object_handler(_blocking_indi_object_handler):
     """
     This class provides two abstract handler functions. One to handle changes of (not
     necessary graphical) user interfaces L{on_gui_changed}. And another one
-    L{on_indiobject_changed} to handle changes of INDIobjects received from the INDI server.
+    L{on_indiobject_changed} to handle changes of INDI objects received from the INDI server.
     It allows to detect if the method L{on_gui_changed} is in asked to be called,  while the method
-    L{on_indiobject_changed} is running. This situation has to be take special care of, as loopbacks or data losses
+    L{on_indiobject_changed} is running. This situation has to be take special care of, as loop backs or data losses
     are likely to happen if one does not take care.
     In order to allow this mechanism to work
     every function must B{not} call on_gui_changed directly, but any function may call
@@ -1492,13 +1490,13 @@ class gui_indi_object_handler(_blocking_indi_object_handler):
         Well, we don't know! And this is bad.
         Because if L{on_indiobject_changed} did it and we send the new state to the server, the server will reply, which will in turn trigger
         L{on_indiobject_changed} which will cause the GUI to emit another L{_blocking_on_gui_changed} signal and finally call L{on_blocked}.
-        This way we have generated a nasty loopback. But if we don't send the new state to the server and the change was caused by the user, the user
+        This way we have generated a nasty loop back. But if we don't send the new state to the server and the change was caused by the user, the user
         will see the widget in the new state, but the server will not know about it, so the user has got another idea of the status of the system than the server
-        and this is also quite dangerous. For the moment we print a warning and send the signal to the server, so we use the solution that might cause a loopback,
+        and this is also quite dangerous. For the moment we print a warning and send the signal to the server, so we use the solution that might cause a loop back,
         but we make sure that the GUI and the server have got the same information about the status of the devices. One possible solution to this problem that
         causes neither of the problems is implemented in the L{gtkindiclient._comboboxentryhandler} class. We do no send the new state to the server. But we load the latest state
         we received from the server and set the gui to this state. So the user might have clicked at a GUI element, and it might not have changed in the proper
-        way. We tested this for the combobox and the togglebutton and it worked.
+        way. We tested this for the combobox and the toggle button and it worked.
         @param args: The arguments describing the change of the GUI object(s)
         @type args: list
         @return: B{None}
@@ -1508,7 +1506,8 @@ class gui_indi_object_handler(_blocking_indi_object_handler):
         print("Danger of loop back !!!!")
         self.on_gui_changed(*args)
 
-    def on_gui_changed(self, *args):
+    @staticmethod
+    def on_gui_changed(*args):
         """
         B{Important:} Implement your GUI callback here but link you GUI callback signal to {_blocking_on_gui_changed}
         (see L{on_blocked} if you want to know why)
@@ -1517,9 +1516,10 @@ class gui_indi_object_handler(_blocking_indi_object_handler):
         @return: B{None}
         @rtype:  NoneType
         """
-        None
+        pass
 
-    def set_bidirectional(self):
+    @staticmethod
+    def set_bidirectional():
         """
         installs callbacks of the GUI that will call the function L{_blocking_on_gui_changed} if the user changes the the GUI object associated
         with this L{gui_indi_object_handler} .
@@ -1530,7 +1530,8 @@ class gui_indi_object_handler(_blocking_indi_object_handler):
         """
         return None
 
-    def unset_bidirectional(self):
+    @staticmethod
+    def unset_bidirectional():
         """
         uninstalls the GUI callback installed with L{set_bidirectional} (see L{set_bidirectional} for details)
         @return: B{None}
@@ -1578,8 +1579,8 @@ class indi_element_identifier(indi_vector_identifier):
         indi_vector_identifier.__init__(self, devicename, vectorname)
         self.elementname = elementname
 
-    #def get_element(self):
-    #	return self.get_vector().get_element(self.elementname)
+    # def get_element(self):
+    # return self.get_vector().get_element(self.elementname)
 
 
 class indi_custom_element_handler(gui_indi_object_handler, indi_element_identifier):
@@ -1623,9 +1624,9 @@ class indi_custom_element_handler(gui_indi_object_handler, indi_element_identifi
         @return: B{None}
         @rtype: NoneType
         """
-        None
+        pass
 
-    def on_indiobject_changed(self,vector,element):
+    def on_indiobject_changed(self, vector, element):
         """
         This handler method will be called each time the specified INDI element/vector is received.
         You have to write a class inheriting from this class and overload this function.
@@ -1636,7 +1637,7 @@ class indi_custom_element_handler(gui_indi_object_handler, indi_element_identifi
         @return: B{None}
         @rtype: NoneType
         """
-        None
+        pass
 
     def get_vector(self):
         """
@@ -1722,7 +1723,7 @@ class indi_custom_vector_handler(gui_indi_object_handler, indi_vector_identifier
         @return: B{None}
         @rtype: NoneType
         """
-        None
+        pass
 
     def get_vector(self):
         """
@@ -1731,7 +1732,6 @@ class indi_custom_vector_handler(gui_indi_object_handler, indi_vector_identifier
         @rtype: L{indivector}
         """
         return self.indi.get_vector(self.devicename, self.vectorname)
-
 
     def on_indiobject_changed(self, vector):
         """
@@ -1742,7 +1742,7 @@ class indi_custom_vector_handler(gui_indi_object_handler, indi_vector_identifier
         @return: B{None}
         @rtype: NoneType
         """
-        None
+        pass
 
 
 def _sexagesimal(format, r):
@@ -1754,14 +1754,15 @@ def _sexagesimal(format, r):
     @return: A sexagesimal representation of the float given on input
     @rtype: StringType
     """
+    var = format
     std = int(math.floor(r))
     r -= float(math.floor(r))
     r *= 60.0
-    min = int(math.floor(r))
-    r -= float(min)
+    minimum = int(math.floor(r))
+    r -= float(minimum)
     r *= 60.0
     sec = r
-    output = '' + str(std) + ":" + str(min) + ":" + "%.2f" % sec
+    output = '' + str(std) + ":" + str(minimum) + ":" + "%.2f" % sec
     return output
 
 
@@ -1789,7 +1790,7 @@ class bigindiclient:
     @type port : IntType
     @ivar host  : The hostname of the INDI server, this instance of L{indiclient} is connected to
     @type host  : StringType
-    @ivar receive_event_queue : A background process (L{_receiver}) is continuesly receiving data and putting them into this queue.
+    @ivar receive_event_queue : A background process (L{_receiver}) is continue receiving data and putting them into this queue.
     This queue  will be read by the L{process_events} method, that the user has to call in order to process any custom handlers.
     @type receive_event_queue : Queue.Queue
     @ivar running_queue : During its destructor indiclient puts signal into this queue in order to stop the background process.
@@ -1858,6 +1859,7 @@ class bigindiclient:
         self.receivetimer = threading.Timer(0.01, self._receiver)
         self.receivetimer.start()
         self.first = True
+        self.output_block = False
 
         # def set_verbose(self):
         # FIXME
@@ -1919,7 +1921,7 @@ class bigindiclient:
                 time.sleep(1)
                 print("Reconnecting")
                 failed = True
-        print ("connection reset successfully")
+        print("connection reset successfully")
         self.receivetimer = threading.Timer(0.01, self._receiver)
         self.receivetimer.start()
 
@@ -1929,7 +1931,6 @@ class bigindiclient:
         @return: B{None}
         @rtype: NoneType
         """
-        None
         self.receivetimer.cancel()
         self.socket.close()
         self.running_queue.put(False)
@@ -2152,9 +2153,10 @@ class bigindiclient:
         @return: B{None}
         @rtype: NoneType
         """
-        None
+        pass
 
-    def _default_timeout_handler(self, devicename, vectorname, indi):
+    @staticmethod
+    def _default_timeout_handler(devicename, vectorname, indi):
         """
         Called whenever an indielement has been requested but was not received for a time longer than
         C{timeout} since the request was issued. May be replaced by a custom handler see L{set_timeout_handler}
@@ -2220,7 +2222,8 @@ class bigindiclient:
         """
         self.message_handler = handler
 
-    def _default_message_handler(self, message, indi):
+    @staticmethod
+    def _default_message_handler(message, indi):
         """
         Called whenever an INDI message has been received from the server.
         C{timeout} since the request was issued. May be replaced by a custom one see L{set_message_handler}
@@ -2251,7 +2254,7 @@ class bigindiclient:
                     vector = self.get_vector(vector.device, vector.name)
                 if vector.is_valid:
                     if vector.tag.is_message():
-                        self.message_handler(vector, self);     #vector is in fact an indimessage (historical reasons, marked for change)
+                        self.message_handler(vector, self)
                     if vector.tag.is_vector():
                         self._vector_received(vector)
                         for element in vector.elements:
@@ -2309,9 +2312,9 @@ class bigindiclient:
         @return: B{None}
         @rtype: NoneType
         """
-        if self.currentElement == None:
+        if not self.currentElement:
             return
-        if self.currentVector == None:
+        if not self.currentVector:
             return
         self.currentData += [data]
 
@@ -2324,7 +2327,7 @@ class bigindiclient:
         @rtype: NoneType
         """
         if True:
-            if self.currentVector == None:
+            if not self.currentVector:
                 return
             self.currentVector.host = self.host
             self.currentVector.port = self.port
@@ -2335,7 +2338,7 @@ class bigindiclient:
                     self.currentData = _normalize_whitespace(self.currentData)
                     self.currentElement._set_value(self.currentData)
                     self.currentVector.elements.append(self.currentElement)
-                    self.currentElement=None
+                    self.currentElement = None
             if self.currentVector.tag.get_initial_tag() == name:
                 # if self.currentVector.is_valid():
                 # if self.currentVector.tag.get_transfertype()==inditransfertypes.idef:
@@ -2453,18 +2456,6 @@ class indiclient(bigindiclient):
         return vector
 
     def set_and_send_switchvector_by_elementlabel(self, devicename, vectorname, elementlabel):
-        """
-        Sets all L{indiswitch} elements in this vector to C{Off}. And sets the one matching the given L{elementlabel}
-        to C{On}
-        @param devicename:  The name of the device
-        @type devicename: StringType
-        @param vectorname:  The name of the vector
-        @type vectorname: StringType
-        @param elementlabel: The INDI Label of the Switch to be set to C{On}
-        @type elementlabel: StringType
-        @return: The vector that that was just sent.
-        @rtype: L{indivector}
-        """
         vector = self.get_vector(devicename, vectorname)
         vector.set_by_elementlabel(elementlabel)
         self.send_vector(vector)
@@ -2514,15 +2505,16 @@ class indiclient(bigindiclient):
         @return: the value of the element
         @rtype: BooleanType
         """
-        vector=self.get_vector(devicename, vectorname)
+        vector = self.get_vector(devicename, vectorname)
         return vector.get_element(elementname).get_active()
 
 
 if __name__ == "__main__":
     indi = indiclient('192.168.2.163', 7624)
-    vector = indi.get_vector("Telescope Simulator", "CONNECTION")
-    vector.tell()
-    print(indi.get_float("Telescope Simulator", "EQUATORIAL_COORD", "RA"))
-    vector.set_by_elementname("DISCONNECT")
-    vector.tell()
+    time.sleep(1)
+    vector = indi.get_vector("CCD Simulator", "CONNECTION")
+    vector.set_by_elementname("CONNECT")
+    vector = indi.get_vector('CCD Simulator', 'CCD_EXPOSURE')
+    # vector.get_vector(3)
+    indi.tell()
     indi.quit()
