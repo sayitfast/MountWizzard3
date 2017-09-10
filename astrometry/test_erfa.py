@@ -140,7 +140,21 @@ class TestErfa(TestCase):
         self.assertEqual(psib, psib_ref)
         self.assertEqual(epsa, epsa_ref)
 
+    def test_eraNut00a(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        dp, de = self.ERFA.eraNut00a(date1, date2)
+        dp_ref, de_ref = erfa_astro.nut00a(date1, date2)
+        self.assertEqual(dp, dp_ref)
+        self.assertEqual(de, de_ref)
+
     '''
+    def test_eraNut06a(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        dp, de = self.ERFA.eraNut06a(date1, date2)
+        dp_ref, de_ref = erfa_astro.nut06a(date1, date2)
+        self.assertEqual(dp, dp_ref)
+        self.assertEqual(de, de_ref)
+
     def test_eraApci13(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
         value = erfa_astro.apci13(date1, date2)
