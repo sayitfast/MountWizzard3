@@ -124,6 +124,22 @@ class TestErfa(TestCase):
         self.assertEqual(pvb[1][0], pvb_ref[1][0])
         self.assertEqual(pvb[1][1], pvb_ref[1][1])
         self.assertEqual(pvb[1][2], pvb_ref[1][2])
+
+    def test_eraObl06(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        epsa = self.ERFA.eraObl06(date1, date2)
+        epsa_ref = erfa_astro.obl06(date1, date2)
+        self.assertEqual(epsa, epsa_ref)
+
+    def test_eraPfw06(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        gamb, phib, psib, epsa = self.ERFA.eraPfw06(date1, date2)
+        gamb_ref, phib_ref, psib_ref, epsa_ref = erfa_astro.pfw06(date1, date2)
+        self.assertEqual(gamb, gamb_ref)
+        self.assertEqual(phib, phib_ref)
+        self.assertEqual(psib, psib_ref)
+        self.assertEqual(epsa, epsa_ref)
+
     '''
     def test_eraApci13(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)

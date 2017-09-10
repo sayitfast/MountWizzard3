@@ -41,6 +41,10 @@ class ERFA:
     ERFA_DJ00 = 2451545.0
     # Days per Julian year
     ERFA_DJY = 365.25
+    # Days per Julian century
+    ERFA_DJC = 36525.0
+    # Arcseconds to radians
+    ERFA_DAS2R = 4.848136811095359935899141e-6
 
     # Macros as functions
     @staticmethod
@@ -339,6 +343,38 @@ class ERFA:
         eo = s if ((p != 0) or (q != 0)) else s - math.atan2(q, p)
 
         return eo
+
+    def eraObl06(self, date1, date2):
+        # Interval between fundamental date J2000.0 and given date (JC).
+        t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
+
+        # Mean obliquity.
+        eps0 = (84381.406 + (-46.836769 + (-0.0001831 + (0.00200340 + (-0.000000576 + (-0.0000000434) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        return eps0
+
+    def eraPfw06(self, date1, date2):
+        # Interval between fundamental date J2000.0 and given date (JC).
+        t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
+
+        # P03 bias+precession angles.
+        gamb = (-0.052928 + (10.556378 + (0.4932044 + (-0.00031238 + (-0.000002788 + 0.0000000260 * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        phib = (84381.412819 + (-46.811016 + (0.0511268 + (0.00053289 + (-0.000000440 + (-0.0000000176) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        psib = (-0.041775 + (5038.481484 + (1.5584175 + (-0.00018522 + (-0.000026452 + (-0.0000000148) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        epsa = self.eraObl06(date1, date2)
+
+        return gamb, phib, psib, epsa
+
+    def eraPnm06a(self, date1, date2):
+        # Fukushima-Williams angles for frame bias and precession.
+        gamb, phib, psib, epsa = self.eraPfw06(date1, date2)
+
+        # Nutation components.
+        dp, de = self.eraNut06a(date1, date2)
+
+        # Equinox based nutation x precession x bias matrix.
+        rnpb = self.eraFw2m(gamb, phib, psib + dp, epsa + de)
+
+        return rnpb
 
     def eraEpv00(self, date1, date2):
         am12 = 0.000000211284
@@ -2710,7 +2746,7 @@ class ERFA:
 
     def eraApci13(self, date1, date2):
         # Earth barycentric & heliocentric position/velocity (au, au/d).
-        ehpv, ebpv = self.eraEpv00(date1, date2)
+        ok, ehpv, ebpv = self.eraEpv00(date1, date2)
         # Form the equinox based BPN matrix, IAU 2006/2000A.
         rnpb = self.eraPnm06a(date1, date2)
         # Extract CIP X,Y.
