@@ -140,6 +140,24 @@ class TestErfa(TestCase):
         self.assertEqual(psib, psib_ref)
         self.assertEqual(epsa, epsa_ref)
 
+    def test_eraFal03(self):
+        for i in range(-10, 10):
+            el = self.ERFA.eraFal03(i)
+            el_ref = erfa_astro.fal03(i)
+            self.assertEqual(el, el_ref)
+
+    def test_eraFaf03(self):
+        for i in range(-10, 10):
+            el = self.ERFA.eraFaf03(i)
+            el_ref = erfa_astro.faf03(i)
+            self.assertEqual(el, el_ref)
+
+    def test_eraFaom03(self):
+        for i in range(-10, 10):
+            el = self.ERFA.eraFaom03(i)
+            el_ref = erfa_astro.faom03(i)
+            self.assertEqual(el, el_ref)
+
     def test_eraNut00a(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
         dp, de = self.ERFA.eraNut00a(date1, date2)
@@ -147,7 +165,6 @@ class TestErfa(TestCase):
         self.assertEqual(dp, dp_ref)
         self.assertEqual(de, de_ref)
 
-    '''
     def test_eraNut06a(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
         dp, de = self.ERFA.eraNut06a(date1, date2)
@@ -155,11 +172,18 @@ class TestErfa(TestCase):
         self.assertEqual(dp, dp_ref)
         self.assertEqual(de, de_ref)
 
+    def test_eraS06(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        val = self.ERFA.eraS06(date1, date2, x, y)
+        val_ref = erfa_astro.s06(date1, date2, x, y)
+        self.assertEqual(val, val_ref)
+
     def test_eraApci13(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
         value = erfa_astro.apci13(date1, date2)
         ok, astrom, eo = self.ERFA.eraApci13(date1, date2)
 
+    '''
 
     def test_eraAtci13(self):
         self.ERFA.eraAtci13(self.rc, self.dc, self.pr, self.pd, self.px, self.rv, self.date1, self.date2, self.ri, self.di, self.eo)

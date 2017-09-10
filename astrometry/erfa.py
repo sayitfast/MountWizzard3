@@ -313,12 +313,6 @@ class ERFA:
         # Return the Status date and time.
         return js, dj, time
 
-    def eraBpn2xy(self, r):
-        return x, y
-
-    def eraS06(self, date1, date2, x, y):
-        return s
-
     def eraC2ixys(x, y, s):
         return 0
 
@@ -366,6 +360,64 @@ class ERFA:
         epsa = self.eraObl06(date1, date2)
 
         return gamb, phib, psib, epsa
+
+    def eraFal03(self, t):
+        # Mean anomaly of the Moon (IERS Conventions 2003).
+        a = math.fmod(485868.249036 + t * (1717915923.2178 + t * (31.8792 + t * (0.051635 + t * (- 0.00024470)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        return a
+
+    def eraFaf03(self, t):
+        # Mean longitude of the Moon minus that of the ascending node
+        # (IERS Conventions 2003).
+        a = math.fmod(335779.526232 + t * (1739527262.8478 + t * (- 12.7512 + t * (- 0.001037 + t * (0.00000417)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        return a
+
+    def eraFaom03(self, t):
+        # Mean longitude of the Moon's ascending node
+        # (IERS Conventions 2003).
+        a = math.fmod(450160.398036 + t * (- 6962890.5431 + t * (7.4722 + t * (0.007702 + t * (- 0.00005939)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        return a
+
+    @staticmethod
+    def eraFapa03(t):
+        # General accumulated precession in longitude.
+        a = (0.024381750 + 0.00000538691 * t) * t
+        return a
+
+    def eraFame03(self, t):
+        # Mean longitude of Mercury (IERS Conventions 2003).
+        a = math.fmod(4.402608842 + 2608.7903141574 * t, self.ERFA_D2PI)
+        return a
+
+    def eraFave03(self, t):
+        # Mean longitude of Venus (IERS Conventions 2003).
+        a = math.fmod(3.176146697 + 1021.3285546211 * t, self.ERFA_D2PI)
+        return a
+
+    def eraFae03(self, t):
+        # Mean longitude of Earth (IERS Conventions 2003).
+        a = math.fmod(1.753470314 + 628.3075849991 * t, self.ERFA_D2PI)
+        return a
+
+    def eraFama03(self, t):
+        # Mean longitude of Mars (IERS Conventions 2003).
+        a = math.fmod(6.203480913 + 334.0612426700 * t, self.ERFA_D2PI)
+        return a
+
+    def eraFaju03(self, t):
+        # Mean longitude of Jupiter (IERS Conventions 2003).
+        a = math.fmod(0.599546497 + 52.9690962641 * t, self.ERFA_D2PI)
+        return a
+
+    def eraFasa03(self, t):
+        # Mean longitude of Saturn (IERS Conventions 2003).
+        a = math.fmod(0.874016757 + 21.3299104960 * t, self.ERFA_D2PI)
+        return a
+
+    def eraFaur03(self, t):
+        # Mean longitude of Uranus (IERS Conventions 2003).
+        a = math.fmod(5.481293872 + 7.4781598567 * t, self.ERFA_D2PI)
+        return a
 
     def eraNut00a(self, date1, date2):
 
@@ -2154,18 +2206,6 @@ class ERFA:
         deps = de + de * fj2
 
         return dpsi, deps
-
-    def eraPnm06a(self, date1, date2):
-        # Fukushima-Williams angles for frame bias and precession.
-        gamb, phib, psib, epsa = self.eraPfw06(date1, date2)
-
-        # Nutation components.
-        dp, de = self.eraNut06a(date1, date2)
-
-        # Equinox based nutation x precession x bias matrix.
-        rnpb = self.eraFw2m(gamb, phib, psib + dp, epsa + de)
-
-        return rnpb
 
     def eraEpv00(self, date1, date2):
         am12 = 0.000000211284
@@ -4534,6 +4574,306 @@ class ERFA:
 
         # Return the status.
         return jstat, pvh, pvb
+
+    @staticmethod
+    def eraIr():
+        r = [[1.0, 0.0, 0.0],
+             [0.0, 1.0, 0.0],
+             [0.0, 0.0, 1.0]]
+        return r
+
+    @staticmethod
+    def eraRz(psi, r):
+        s = math.sin(psi)
+        c = math.cos(psi)
+        a00 = c * r[0][0] + s * r[1][0]
+        a01 = c * r[0][1] + s * r[1][1]
+        a02 = c * r[0][2] + s * r[1][2]
+        a10 = - s * r[0][0] + c * r[1][0]
+        a11 = - s * r[0][1] + c * r[1][1]
+        a12 = - s * r[0][2] + c * r[1][2]
+        r[0][0] = a00
+        r[0][1] = a01
+        r[0][2] = a02
+        r[1][0] = a10
+        r[1][1] = a11
+        r[1][2] = a12
+        return r
+
+    @staticmethod
+    def eraRx(phi, r):
+        s = math.sin(phi)
+        c = math.cos(phi)
+        a10 = c * r[1][0] + s * r[2][0]
+        a11 = c * r[1][1] + s * r[2][1]
+        a12 = c * r[1][2] + s * r[2][2]
+        a20 = - s * r[1][0] + c * r[2][0]
+        a21 = - s * r[1][1] + c * r[2][1]
+        a22 = - s * r[1][2] + c * r[2][2]
+        r[1][0] = a10
+        r[1][1] = a11
+        r[1][2] = a12
+        r[2][0] = a20
+        r[2][1] = a21
+        r[2][2] = a22
+        return r
+
+    def eraFw2m(self, gamb, phib, psi, eps):
+        # Construct the matrix.
+        r = self.eraIr()
+        r = self.eraRz(gamb, r)
+        r = self.eraRx(phib, r)
+        r = self.eraRz(-psi, r)
+        r = self.eraRx(-eps, r)
+        return r
+
+    def eraPnm06a(self, date1, date2):
+        # Fukushima-Williams angles for frame bias and precession.
+        gamb, phib, psib, epsa = self.eraPfw06(date1, date2)
+
+        # Nutation components.
+        dp, de = self.eraNut06a(date1, date2)
+
+        # Equinox based nutation x precession x bias matrix.
+        rnpb = self.eraFw2m(gamb, phib, psib + dp, epsa + de)
+
+        return rnpb
+
+    @staticmethod
+    def eraBpn2xy(rbpn):
+        # Extract the X,Y coordinates.
+        x = rbpn[2][0]
+        y = rbpn[2][1]
+        return x, y
+
+    def eraS06(self, date1, date2, x, y):
+        typedef
+        struct
+        {  # coefficients of l,l',F,D,Om,LVe,LE,pA      # sine and cosine coefficients
+        }
+        TERM
+
+        # Polynomial coefficients
+        static
+        constsp = (
+
+            # 1-6
+            94.00e-6,
+            3808.65e-6,
+            -122.68e-6,
+            -72574.11e-6,
+            27.98e-6,
+            15.62e-6
+        )
+
+        # Terms of order t^0
+        static
+        const
+        TERM
+        s0[] = {
+
+            # 1-10
+            {{0, 0, 0, 0, 1, 0, 0, 0}, -2640.73e-6, 0.39e-6},
+            {{0, 0, 0, 0, 2, 0, 0, 0}, -63.53e-6, 0.02e-6},
+            {{0, 0, 2, -2, 3, 0, 0, 0}, -11.75e-6, -0.01e-6},
+            {{0, 0, 2, -2, 1, 0, 0, 0}, -11.21e-6, -0.01e-6},
+            {{0, 0, 2, -2, 2, 0, 0, 0}, 4.57e-6, 0.00e-6},
+            {{0, 0, 2, 0, 3, 0, 0, 0}, -2.02e-6, 0.00e-6},
+            {{0, 0, 2, 0, 1, 0, 0, 0}, -1.98e-6, 0.00e-6},
+            {{0, 0, 0, 0, 3, 0, 0, 0}, 1.72e-6, 0.00e-6},
+            {{0, 1, 0, 0, 1, 0, 0, 0}, 1.41e-6, 0.01e-6},
+            {{0, 1, 0, 0, -1, 0, 0, 0}, 1.26e-6, 0.01e-6},
+
+            # 11-20
+            {{1, 0, 0, 0, -1, 0, 0, 0}, 0.63e-6, 0.00e-6},
+            {{1, 0, 0, 0, 1, 0, 0, 0}, 0.63e-6, 0.00e-6},
+            {{0, 1, 2, -2, 3, 0, 0, 0}, -0.46e-6, 0.00e-6},
+            {{0, 1, 2, -2, 1, 0, 0, 0}, -0.45e-6, 0.00e-6},
+            {{0, 0, 4, -4, 4, 0, 0, 0}, -0.36e-6, 0.00e-6},
+            {{0, 0, 1, -1, 1, -8, 12, 0}, 0.24e-6, 0.12e-6},
+            {{0, 0, 2, 0, 0, 0, 0, 0}, -0.32e-6, 0.00e-6},
+            {{0, 0, 2, 0, 2, 0, 0, 0}, -0.28e-6, 0.00e-6},
+            {{1, 0, 2, 0, 3, 0, 0, 0}, -0.27e-6, 0.00e-6},
+            {{1, 0, 2, 0, 1, 0, 0, 0}, -0.26e-6, 0.00e-6},
+
+            # 21-30
+            {{0, 0, 2, -2, 0, 0, 0, 0}, 0.21e-6, 0.00e-6},
+            {{0, 1, -2, 2, -3, 0, 0, 0}, -0.19e-6, 0.00e-6},
+            {{0, 1, -2, 2, -1, 0, 0, 0}, -0.18e-6, 0.00e-6},
+            {{0, 0, 0, 0, 0, 8, -13, -1}, 0.10e-6, -0.05e-6},
+            {{0, 0, 0, 2, 0, 0, 0, 0}, -0.15e-6, 0.00e-6},
+            {{2, 0, -2, 0, -1, 0, 0, 0}, 0.14e-6, 0.00e-6},
+            {{0, 1, 2, -2, 2, 0, 0, 0}, 0.14e-6, 0.00e-6},
+            {{1, 0, 0, -2, 1, 0, 0, 0}, -0.14e-6, 0.00e-6},
+            {{1, 0, 0, -2, -1, 0, 0, 0}, -0.14e-6, 0.00e-6},
+            {{0, 0, 4, -2, 4, 0, 0, 0}, -0.13e-6, 0.00e-6},
+
+            # 31-33
+            {{0, 0, 2, -2, 4, 0, 0, 0}, 0.11e-6, 0.00e-6},
+            {{1, 0, -2, 0, -3, 0, 0, 0}, -0.11e-6, 0.00e-6},
+            {{1, 0, -2, 0, -1, 0, 0, 0}, -0.11e-6, 0.00e-6}
+
+            # Terms of order t^1
+            static const TERM s1[] = {
+
+            # 1 - 3
+            {{0, 0, 0, 0, 2, 0, 0, 0}, -0.07e-6, 3.57e-6},
+            {{0, 0, 0, 0, 1, 0, 0, 0}, 1.73e-6, -0.03e-6},
+            {{0, 0, 2, -2, 3, 0, 0, 0}, 0.00e-6, 0.48e-6}
+
+            # Terms of order t^2
+            static const TERM s2[] = {
+
+            # 1-10
+            {{0, 0, 0, 0, 1, 0, 0, 0}, 743.52e-6, -0.17e-6},
+            {{0, 0, 2, -2, 2, 0, 0, 0}, 56.91e-6, 0.06e-6},
+            {{0, 0, 2, 0, 2, 0, 0, 0}, 9.84e-6, -0.01e-6},
+            {{0, 0, 0, 0, 2, 0, 0, 0}, -8.85e-6, 0.01e-6},
+            {{0, 1, 0, 0, 0, 0, 0, 0}, -6.38e-6, -0.05e-6},
+            {{1, 0, 0, 0, 0, 0, 0, 0}, -3.07e-6, 0.00e-6},
+            {{0, 1, 2, -2, 2, 0, 0, 0}, 2.23e-6, 0.00e-6},
+            {{0, 0, 2, 0, 1, 0, 0, 0}, 1.67e-6, 0.00e-6},
+            {{1, 0, 2, 0, 2, 0, 0, 0}, 1.30e-6, 0.00e-6},
+            {{0, 1, -2, 2, -2, 0, 0, 0}, 0.93e-6, 0.00e-6},
+
+            # 11-20
+            {{1, 0, 0, -2, 0, 0, 0, 0}, 0.68e-6, 0.00e-6},
+            {{0, 0, 2, -2, 1, 0, 0, 0}, -0.55e-6, 0.00e-6},
+            {{1, 0, -2, 0, -2, 0, 0, 0}, 0.53e-6, 0.00e-6},
+            {{0, 0, 0, 2, 0, 0, 0, 0}, -0.27e-6, 0.00e-6},
+            {{1, 0, 0, 0, 1, 0, 0, 0}, -0.27e-6, 0.00e-6},
+            {{1, 0, -2, -2, -2, 0, 0, 0}, -0.26e-6, 0.00e-6},
+            {{1, 0, 0, 0, -1, 0, 0, 0}, -0.25e-6, 0.00e-6},
+            {{1, 0, 2, 0, 1, 0, 0, 0}, 0.22e-6, 0.00e-6},
+            {{2, 0, 0, -2, 0, 0, 0, 0}, -0.21e-6, 0.00e-6},
+            {{2, 0, -2, 0, -1, 0, 0, 0}, 0.20e-6, 0.00e-6},
+
+            # 21-25
+            {{0, 0, 2, 2, 2, 0, 0, 0}, 0.17e-6, 0.00e-6},
+            {{2, 0, 2, 0, 2, 0, 0, 0}, 0.13e-6, 0.00e-6},
+            {{2, 0, 0, 0, 0, 0, 0, 0}, -0.13e-6, 0.00e-6},
+            {{1, 0, 2, -2, 2, 0, 0, 0}, -0.12e-6, 0.00e-6},
+            {{0, 0, 2, 0, 0, 0, 0, 0}, -0.11e-6, 0.00e-6}
+
+            # Terms of order t^3
+            static const TERM s3[] = {
+
+            # 1-4
+            {{0, 0, 0, 0, 1, 0, 0, 0}, 0.30e-6, -23.42e-6},
+            {{0, 0, 2, -2, 2, 0, 0, 0}, -0.03e-6, -1.46e-6},
+            {{0, 0, 2, 0, 2, 0, 0, 0}, -0.01e-6, -0.25e-6},
+            {{0, 0, 0, 0, 2, 0, 0, 0}, 0.00e-6, 0.23e-6}
+
+            # Terms of order t^4
+            static const TERM s4[] = {
+
+            # 1-1
+            {{0, 0, 0, 0, 1, 0, 0, 0}, -0.26e-6, -0.01e-6}
+
+        # Number of terms in the series
+        static
+        const
+        NS0 = (int)(sizeof
+        s0 / sizeof(TERM))
+        static
+        const
+        NS1 = (int)(sizeof
+        s1 / sizeof(TERM))
+        static
+        const
+        NS2 = (int)(sizeof
+        s2 / sizeof(TERM))
+        static
+        const
+        NS3 = (int)(sizeof
+        s3 / sizeof(TERM))
+        static
+        const
+        NS4 = (int)(sizeof
+        s4 / sizeof(TERM))
+
+        # --------------------------------------------------------------------
+
+        # Interval between fundamental epoch J2000.0 and current date (JC).
+        t = ((date1 - ERFA_DJ00) + date2) / ERFA_DJC
+
+        # Fundamental Arguments (from IERS Conventions 2003)
+
+        # Mean anomaly of the Moon.
+        fa[0] = eraFal03(t)
+
+        # Mean anomaly of the Sun.
+        fa[1] = eraFalp03(t)
+
+        # Mean longitude of the Moon minus that of the ascending node.
+        fa[2] = eraFaf03(t)
+
+        # Mean elongation of the Moon from the Sun.
+        fa[3] = eraFad03(t)
+
+        # Mean longitude of the ascending node of the Moon.
+        fa[4] = eraFaom03(t)
+
+        # Mean longitude of Venus.
+        fa[5] = eraFave03(t)
+
+        # Mean longitude of Earth.
+        fa[6] = eraFae03(t)
+
+        # General precession in longitude.
+        fa[7] = eraFapa03(t)
+
+        # Evaluate s.
+        w0 = sp[0]
+        w1 = sp[1]
+        w2 = sp[2]
+        w3 = sp[3]
+        w4 = sp[4]
+        w5 = sp[5]
+
+        for (i = NS0-1; i >= 0; i--) {
+        a = 0.0
+        for j in range(8):
+            a += (double)
+        s0[i].nfa[j] * fa[j]
+        w0 += s0[i].s * math.sin(a) + s0[i].c * math.cos(a)
+
+        for (i = NS1-1; i >= 0; i--) {
+        a = 0.0
+        for j in range(8):
+            a += (double)
+        s1[i].nfa[j] * fa[j]
+        w1 += s1[i].s * math.sin(a) + s1[i].c * math.cos(a)
+
+        for (i = NS2-1; i >= 0; i--) {
+        a = 0.0
+        for j in range(8):
+            a += (double)
+        s2[i].nfa[j] * fa[j]
+        w2 += s2[i].s * math.sin(a) + s2[i].c * math.cos(a)
+
+        for (i = NS3-1; i >= 0; i--) {
+        a = 0.0
+        for j in range(8):
+            a += (double)
+        s3[i].nfa[j] * fa[j]
+        w3 += s3[i].s * math.sin(a) + s3[i].c * math.cos(a)
+
+        for (i = NS4-1; i >= 0; i--) {
+        a = 0.0
+        for j in range(8):
+            a += (double)
+        s4[i].nfa[j] * fa[j]
+        w4 += s4[i].s * math.sin(a) + s4[i].c * math.cos(a)
+
+        s = (w0 +
+             (w1 +
+              (w2 +
+               (w3 +
+                (w4 +
+                 w5 * t) * t) * t) * t) * t) * ERFA_DAS2R - x * y / 2.0
+
+        return s
 
     def eraApci13(self, date1, date2):
         # Earth barycentric & heliocentric position/velocity (au, au/d).
