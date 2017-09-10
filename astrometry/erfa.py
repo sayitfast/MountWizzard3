@@ -16,7 +16,6 @@
 # --------------------------------------------------------------------------------
 import math
 from decimal import *
-from astropy import _erfa as erfa_astro
 
 
 class ASTROM:
