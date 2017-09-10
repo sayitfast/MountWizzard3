@@ -15,9 +15,9 @@
 # python implementation of the ERFA library for the basic transformation functions
 # --------------------------------------------------------------------------------
 import math
-from array import array
 from decimal import *
 from astropy import _erfa as erfa_astro
+
 
 class ASTROM:
     pass
@@ -2032,9 +2032,7 @@ class ERFA:
         # -------------------
         # LUNI-SOLAR NUTATION
         # -------------------
-
         # Fundamental (Delaunay) arguments
-
         # Mean anomaly of the Moon (IERS 2003).
         el = self.eraFal03(t)
 
@@ -2112,7 +2110,6 @@ class ERFA:
         # Summation of planetary nutation series (in reverse order).
         for i in range(NPL-1, -1, -1):
             # nl[0], nf[1], nd[2], nom[3], nme[4], nve[5], nea[6], nma[7], nju[8], nsa[9], nur[10], nne[11], npa[12], sp[13], cp[14], se[15], ce[16]
-            # Argument and functions.
             arg = math.fmod(xpl[i][0] * al
                             + xpl[i][1] * af
                             + xpl[i][2] * ad
@@ -2140,6 +2137,7 @@ class ERFA:
         # Add luni-solar and planetary components.
         dpsi = dpsils + dpsipl
         deps = depsls + depspl
+
         return dpsi, deps
 
     def eraNut06a(self, date1, date2):
