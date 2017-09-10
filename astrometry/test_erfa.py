@@ -2,6 +2,7 @@ from unittest import TestCase
 from astrometry import erfa
 import time
 from astropy import _erfa as erfa_astro
+import numpy
 
 
 class TestErfa(TestCase):
@@ -96,7 +97,6 @@ class TestErfa(TestCase):
     def test_eraCal2jd(self):
         ok, djm0, djm = self.ERFA.eraCal2jd(self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday)
         value = erfa_astro.cal2jd(self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday)
-        print(value)
         self.assertEqual(ok, 0)
         self.assertEqual(value[0], djm0)
         self.assertEqual(value[1], djm)
@@ -107,9 +107,29 @@ class TestErfa(TestCase):
         self.assertEqual(0, ok)
         self.assertEqual(date1 + date2, value[0])
 
+    def test_eraEpv00(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        ok, pvh, pvb = self.ERFA.eraEpv00(date1, date2)
+        pvh_ref, pvb_ref = erfa_astro.epv00(date1, date2)
+        self.assertEqual(ok, 0)
+        self.assertEqual(pvh[0][0], pvh_ref[0][0])
+        self.assertEqual(pvh[0][1], pvh_ref[0][1])
+        self.assertEqual(pvh[0][2], pvh_ref[0][2])
+        self.assertEqual(pvh[1][0], pvh_ref[1][0])
+        self.assertEqual(pvh[1][1], pvh_ref[1][1])
+        self.assertEqual(pvh[1][2], pvh_ref[1][2])
+        self.assertEqual(pvb[0][0], pvb_ref[0][0])
+        self.assertEqual(pvb[0][1], pvb_ref[0][1])
+        self.assertEqual(pvb[0][2], pvb_ref[0][2])
+        self.assertEqual(pvb[1][0], pvb_ref[1][0])
+        self.assertEqual(pvb[1][1], pvb_ref[1][1])
+        self.assertEqual(pvb[1][2], pvb_ref[1][2])
     '''
     def test_eraApci13(self):
-        self.ERFA.eraApci13(self.date1, self.date2, self.astrom, self.eo)
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        value = erfa_astro.apci13(date1, date2)
+        ok, astrom, eo = self.ERFA.eraApci13(date1, date2)
+
 
     def test_eraAtci13(self):
         self.ERFA.eraAtci13(self.rc, self.dc, self.pr, self.pd, self.px, self.rv, self.date1, self.date2, self.ri, self.di, self.eo)
