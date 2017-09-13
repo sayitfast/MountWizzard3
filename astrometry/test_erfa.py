@@ -258,19 +258,38 @@ class TestErfa(TestCase):
         self.assertEqual(astrom_ref[()][6][2][0], self.ERFA.astrom.bpn[2][0])
         self.assertEqual(astrom_ref[()][6][2][1], self.ERFA.astrom.bpn[2][1])
         self.assertEqual(astrom_ref[()][6][2][2], self.ERFA.astrom.bpn[2][2])
-        self.assertEqual(astrom_ref[()][7], self.ERFA.astrom.along)
-        self.assertEqual(astrom_ref[()][8], self.ERFA.astrom.phi)
-        self.assertEqual(astrom_ref[()][9], self.ERFA.astrom.xpl)
-        self.assertEqual(astrom_ref[()][10], self.ERFA.astrom.ypl)
-        self.assertEqual(astrom_ref[()][11], self.ERFA.astrom.sphi)
-        self.assertEqual(astrom_ref[()][12], self.ERFA.astrom.cphi)
-        self.assertEqual(astrom_ref[()][13], self.ERFA.astrom.diurab)
-        self.assertEqual(astrom_ref[()][14], self.ERFA.astrom.eral)
-        self.assertEqual(astrom_ref[()][15], self.ERFA.astrom.refa)
-        self.assertEqual(astrom_ref[()][16], self.ERFA.astrom.refb)
-        self.assertEqual(eo_ref, eo)
+        self.assertAlmostEqual(astrom_ref[()][7], self.ERFA.astrom.along)
+        self.assertAlmostEqual(astrom_ref[()][8], self.ERFA.astrom.phi)
+        self.assertAlmostEqual(astrom_ref[()][9], self.ERFA.astrom.xpl)
+        self.assertAlmostEqual(astrom_ref[()][10], self.ERFA.astrom.ypl)
+        self.assertAlmostEqual(astrom_ref[()][11], self.ERFA.astrom.sphi)
+        self.assertAlmostEqual(astrom_ref[()][12], self.ERFA.astrom.cphi)
+        self.assertAlmostEqual(astrom_ref[()][13], self.ERFA.astrom.diurab)
+        self.assertAlmostEqual(astrom_ref[()][14], self.ERFA.astrom.eral)
+        self.assertAlmostEqual(astrom_ref[()][15], self.ERFA.astrom.refa)
+        self.assertAlmostEqual(astrom_ref[()][16], self.ERFA.astrom.refb)
+        self.assertAlmostEqual(eo_ref, eo)
+
+    def test_eraPmpx(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        eo = self.ERFA.eraApci13(date1, date2)
+        rc = 3.14
+        dc = 0.5
+        pr = 0
+        pd = 0
+        px = 0
+        rv = 0
+
+        pco = self.ERFA.eraPmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
+        pco_ref = erfa_astro.pmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
+        self.assertAlmostEqual(pco[0], pco_ref[0])
+        self.assertAlmostEqual(pco[1], pco_ref[1])
+        self.assertAlmostEqual(pco[2], pco_ref[2])
 
     '''
     def test_eraAtci13(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        astrom_ref, eo_ref = erfa_astro.apci13(date1, date2)
+        
         self.ERFA.eraAtci13(self.rc, self.dc, self.pr, self.pd, self.px, self.rv, self.date1, self.date2, self.ri, self.di, self.eo)
     '''

@@ -75,6 +75,8 @@ class ERFA:
     ERFA_CMPS = 299792458.0
     # Light time for 1 au (s)
     ERFA_AULT = ERFA_DAU / ERFA_CMPS
+    # Days per Julian millennium
+    ERFA_DJM = 365250.0
 
     # Macros as functions
     @staticmethod
@@ -4886,6 +4888,11 @@ class ERFA:
         sp[2] = s * p[2]
         return sp
 
+    @staticmethod
+    def eraPdp(a, b):
+        w = a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+        return w
+
     def eraPn(self, p):
         # Obtain the modulus and test for zero.
         w = self.eraPm(p)
@@ -4896,8 +4903,7 @@ class ERFA:
             # Unit vector.
             u = self.eraSxp(1.0 / w, p)
             # Return the modulus.
-        self.astrom.em = w
-        self.astrom.eh = u
+        return w, u
 
     def eraApcs(self, date1, date2, pv, ebpv, ehp):
         pb = [0, 0, 0]
@@ -4925,7 +4931,9 @@ class ERFA:
         self.astrom.eb = pb
 
         # Heliocentric direction and distance (unit vector and au).
-        self.eraPn(ph)
+        w, u = self.eraPn(ph)
+        self.astrom.em = w
+        self.astrom.eh = u
 
         # Barycentric vel. in units of c, and reciprocal of Lorenz factor.
         v2 = 0.0
@@ -4982,12 +4990,67 @@ class ERFA:
         eo = self.eraEors(rnpb, s)
         return eo
 
-    def eraAtciq(self, re, dc, pr, pd, px, py, astrom, ri, di):
-        pass
+    def eraPmpx(self, rc, dc, pr, pd, px, rv, pmt, pob):
+        p = [0, 0, 0]
+        pm = [0, 0, 0]
 
-    def eraAtci13(self, rc, dc, pr, pd, px, rv, date1, date2, ri, di, eo):
+        # Km/s to au/year
+        VF = self.ERFA_DAYSEC * self.ERFA_DJM / self.ERFA_DAU
+
+        # Light time for 1 au, Julian years
+        AULTY = self.ERFA_AULT / self.ERFA_DAYSEC / self.ERFA_DJY
+
+        # Spherical coordinates to unit vector (and useful functions).
+        sr = math.sin(rc)
+        cr = math.cos(rc)
+        sd = math.sin(dc)
+        cd = math.cos(dc)
+        p[0] = x = cr * cd
+        p[1] = y = sr * cd
+        p[2] = z = sd
+
+        # Proper motion time interval (y) including Roemer effect.
+        dt = pmt + self.eraPdp(p, pob) * AULTY
+
+        # Space motion (radians per year).
+        pxr = px * self.ERFA_DAS2R
+        w = VF * rv * pxr
+        pdz = pd * z
+        pm[0] = - pr * y - pdz * cr + w * x
+        pm[1] = pr * x - pdz * sr + w * y
+        pm[2] = pd * cd + w * z
+
+        # Coordinate direction of star (unit vector, BCRS).
+        for i in range(3):
+            p[i] += dt * pm[i] - pxr * pob[i]
+        w, pco = self.eraPn(p)
+
+        return pco
+
+    def eraAtciq(self, rc, dc, pr, pd, px, rv):
+        # Proper motion and parallax, giving BCRS coordinate direction.
+        pco = self.eraPmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
+
+        # Light deflection by the Sun, giving BCRS natural direction.
+        pnat = self.eraLdsun(pco, self.astrom.eh, self.astrom.em)
+
+        # Aberration, giving GCRS proper direction.
+        ppr = self.eraAb(pnat, self.astrom.v, self.astrom.em, self.astrom.bm1)
+
+        # Bias-precession-nutation, giving CIRS proper direction.
+        pi = self.eraRxp(self.astrom.bpn, ppr)
+
+        # CIRS RA,Dec.
+        w, di = self.eraC2s(pi)
+        ri = self.eraAnp(w)
+
+        return ri, di
+
+    def eraAtci13(self, rc, dc, pr, pd, px, rv, date1, date2):
         # star independent parameters
         # the transformation parameters.
         eo = self.eraApci13(date1, date2)
         # ICRS (epoch J2000.0) to CIRS.
-        self.eraAtciq(rc, dc, pr, pd, px, rv, astrom, ri, di)
+        ri, di = self.eraAtciq(rc, dc, pr, pd, px, rv)
+
+        return ri, di, eo
