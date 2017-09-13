@@ -22,12 +22,12 @@ class ASTROM:
     pmt = 0             # PM time interval(SSB, Julian years)
     eb = [0, 0, 0]      # SSB to observer(vector, au)
     eh = [0, 0, 0]      # Sun to observer(unit vector)
-    em =0               # distance from Sun to observer(au)
+    em = 0              # distance from Sun to observer(au)
     v = [0, 0, 0]       # barycentric observer velocity(vector, c)
     bm1 = 0             # sqrt(1 - | v | ^ 2): reciprocal of Lorenz factor
     bpn = [[0, 0, 0],
            [0, 0, 0],
-           [0 ,0 ,0]]   # bias - precession - nutation matrix
+           [0, 0, 0]]   # bias - precession - nutation matrix
     along = 0           # longitude + s' + dERA(DUT) (radians)
     phi = 0             # geodetic latitude(radians)
     xpl = 0             # polar motion xp wrt local meridian(radians)
@@ -347,7 +347,7 @@ class ERFA:
         zs = -x
         p = rnpb[0][0] * xs + rnpb[0][1] * ys + rnpb[0][2] * zs
         q = rnpb[1][0] * xs + rnpb[1][1] * ys + rnpb[1][2] * zs
-        eo = s if ((p != 0) or (q != 0)) else s - math.atan2(q, p)
+        eo = s - math.atan2(q, p) if ((p != 0) or (q != 0)) else s
 
         return eo
 
@@ -4896,7 +4896,8 @@ class ERFA:
             # Unit vector.
             u = self.eraSxp(1.0 / w, p)
             # Return the modulus.
-        return w, u
+        self.astrom.em = w
+        self.astrom.eh = u
 
     def eraApcs(self, date1, date2, pv, ebpv, ehp):
         pb = [0, 0, 0]
@@ -4955,7 +4956,7 @@ class ERFA:
         rc2i = self.eraIr()
         rc2i = self.eraRz(e, rc2i)
         rc2i = self.eraRy(d, rc2i)
-        self.eraRz(-(e + s), rc2i)
+        rc2i = self.eraRz(-(e + s), rc2i)
 
         return rc2i
 
