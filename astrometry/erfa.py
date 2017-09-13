@@ -19,7 +19,25 @@ from decimal import *
 
 
 class ASTROM:
-    pass
+    pmt = 0             # PM time interval(SSB, Julian years)
+    eb = [0, 0, 0]      # SSB to observer(vector, au)
+    eh = [0, 0, 0]      # Sun to observer(unit vector)
+    em =0               # distance from Sun to observer(au)
+    v = [0, 0, 0]       # barycentric observer velocity(vector, c)
+    bm1 = 0             # sqrt(1 - | v | ^ 2): reciprocal of Lorenz factor
+    bpn = [[0, 0, 0],
+           [0, 0, 0],
+           [0 ,0 ,0]]   # bias - precession - nutation matrix
+    along = 0           # longitude + s' + dERA(DUT) (radians)
+    phi = 0             # geodetic latitude(radians)
+    xpl = 0             # polar motion xp wrt local meridian(radians)
+    ypl = 0             # polar motion yp wrt local meridian(radians)
+    sphi = 0            # sine of geodetic latitude
+    cphi = 0            # cosine of geodetic latitude
+    diurab = 0          # magnitude of diurnal aberration vector
+    eral = 0            # "local" Earth rotation angle(radians)
+    refa = 0            # refraction constant A(radians)
+    refb = 0            # refraction constant B(radians)
 
 
 class ERFA:
@@ -51,6 +69,12 @@ class ERFA:
     ERFA_DPI = 3.141592653589793238462643
     # 2pi
     ERFA_D2PI = 6.283185307179586476925287
+    # Astronomical unit (m, IAU 2012)
+    ERFA_DAU = 149597870.7e3
+    # Speed of light (m/s)
+    ERFA_CMPS = 299792458.0
+    # Light time for 1 au (s)
+    ERFA_AULT = ERFA_DAU / ERFA_CMPS
 
     # Macros as functions
     @staticmethod
@@ -312,20 +336,6 @@ class ERFA:
 
         # Return the Status date and time.
         return js, dj, time
-
-    def eraC2ixys(x, y, s):
-        return 0
-
-    def eraApcg(date1, date2, ebpv, ehp):
-        return astrom
-
-    def eraApci(self, date1, date2, ebpv, ehp, x, y, s):
-        # Star-independent astrometry parameters for geocenter.
-        astrom = self.eraApcg(date1, date2, ebpv, ehp)
-
-        # CIO based BPN matrix.
-        astrom.bpn = self.eraC2ixys(x, y, s)
-        return astrom
 
     @staticmethod
     def eraEors(rnpb, s):
@@ -4593,24 +4603,6 @@ class ERFA:
         return r
 
     @staticmethod
-    def eraRz(psi, r):
-        s = math.sin(psi)
-        c = math.cos(psi)
-        a00 = c * r[0][0] + s * r[1][0]
-        a01 = c * r[0][1] + s * r[1][1]
-        a02 = c * r[0][2] + s * r[1][2]
-        a10 = - s * r[0][0] + c * r[1][0]
-        a11 = - s * r[0][1] + c * r[1][1]
-        a12 = - s * r[0][2] + c * r[1][2]
-        r[0][0] = a00
-        r[0][1] = a01
-        r[0][2] = a02
-        r[1][0] = a10
-        r[1][1] = a11
-        r[1][2] = a12
-        return r
-
-    @staticmethod
     def eraRx(phi, r):
         s = math.sin(phi)
         c = math.cos(phi)
@@ -4626,6 +4618,42 @@ class ERFA:
         r[2][0] = a20
         r[2][1] = a21
         r[2][2] = a22
+        return r
+
+    @staticmethod
+    def eraRy(theta, r):
+        s = math.sin(theta)
+        c = math.cos(theta)
+        a00 = c * r[0][0] - s * r[2][0]
+        a01 = c * r[0][1] - s * r[2][1]
+        a02 = c * r[0][2] - s * r[2][2]
+        a20 = s * r[0][0] + c * r[2][0]
+        a21 = s * r[0][1] + c * r[2][1]
+        a22 = s * r[0][2] + c * r[2][2]
+        r[0][0] = a00
+        r[0][1] = a01
+        r[0][2] = a02
+        r[2][0] = a20
+        r[2][1] = a21
+        r[2][2] = a22
+        return r
+
+    @staticmethod
+    def eraRz(psi, r):
+        s = math.sin(psi)
+        c = math.cos(psi)
+        a00 = c * r[0][0] + s * r[1][0]
+        a01 = c * r[0][1] + s * r[1][1]
+        a02 = c * r[0][2] + s * r[1][2]
+        a10 = - s * r[0][0] + c * r[1][0]
+        a11 = - s * r[0][1] + c * r[1][1]
+        a12 = - s * r[0][2] + c * r[1][2]
+        r[0][0] = a00
+        r[0][1] = a01
+        r[0][2] = a02
+        r[1][0] = a10
+        r[1][1] = a11
+        r[1][2] = a12
         return r
 
     def eraFw2m(self, gamb, phib, psi, eps):
@@ -4813,7 +4841,7 @@ class ERFA:
             a = 0.0
             for j in range(8):
                 a += s0[i][0][j] * fa[j]
-            w0 += s0[i].s * math.sin(a) + s0[i].c * math.cos(a)
+            w0 += s0[i][1] * math.sin(a) + s0[i][2] * math.cos(a)
 
         for i in range(NS1 - 1, -1, -1):
             a = 0.0
@@ -4842,6 +4870,102 @@ class ERFA:
         s = (w0 + (w1 + (w2 + (w3 + (w4 + w5 * t) * t) * t) * t) * t) * self.ERFA_DAS2R - x * y / 2.0
         return s
 
+    @staticmethod
+    def eraPm(p):
+        return math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
+
+    @staticmethod
+    def eraZp():
+        return [0, 0, 0]
+
+    @staticmethod
+    def eraSxp(s, p):
+        sp = [0, 0, 0]
+        sp[0] = s * p[0]
+        sp[1] = s * p[1]
+        sp[2] = s * p[2]
+        return sp
+
+    def eraPn(self, p):
+        # Obtain the modulus and test for zero.
+        w = self.eraPm(p)
+        if w == 0.0:
+            # Null vector.
+            u = self.eraZp()
+        else:
+            # Unit vector.
+            u = self.eraSxp(1.0 / w, p)
+            # Return the modulus.
+        return w, u
+
+    def eraApcs(self, date1, date2, pv, ebpv, ehp):
+        pb = [0, 0, 0]
+        vb = [0, 0, 0]
+        ph = [0, 0, 0]
+
+        # au/d to m/s
+        AUDMS = self.ERFA_DAU / self.ERFA_DAYSEC
+
+        # Light time for 1 au (day)
+        CR = self.ERFA_AULT / self.ERFA_DAYSEC
+
+        # Time since reference epoch, years (for proper motion calculation).
+        self.astrom.pmt = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJY
+
+        # Adjust Earth ephemeris to observer.
+        for i in range(3):
+            dp = pv[0][i] / self.ERFA_DAU
+            dv = pv[1][i] / AUDMS
+            pb[i] = ebpv[0][i] + dp
+            vb[i] = ebpv[1][i] + dv
+            ph[i] = ehp[i] + dp
+
+            # Barycentric position of observer (au).
+        self.astrom.eb = pb
+
+        # Heliocentric direction and distance (unit vector and au).
+        self.eraPn(ph)
+
+        # Barycentric vel. in units of c, and reciprocal of Lorenz factor.
+        v2 = 0.0
+        for i in range(3):
+            w = vb[i] * CR
+            self.astrom.v[i] = w
+            v2 += w * w
+        self.astrom.bm1 = math.sqrt(1.0 - v2)
+
+        # Reset the NPB matrix.
+        self.astrom.bpn = self.eraIr()
+
+    def eraApcg(self, date1, date2, ebpv, ehp):
+        # Geocentric observer
+        pv = [[0.0, 0.0, 0.0],
+              [0.0, 0.0, 0.0]]
+
+        # Compute the star-independent astrometry parameters.
+        self.eraApcs(date1, date2, pv, ebpv, ehp)
+
+    def eraC2ixys(self, x, y, s):
+        # Obtain the spherical angles E and d.
+        r2 = x * x + y * y
+        e = math.atan2(y, x) if r2 > 0.0 else 0.0
+        d = math.atan(math.sqrt(r2 / (1.0 - r2)))
+
+        # Form the matrix.
+        rc2i = self.eraIr()
+        rc2i = self.eraRz(e, rc2i)
+        rc2i = self.eraRy(d, rc2i)
+        self.eraRz(-(e + s), rc2i)
+
+        return rc2i
+
+    def eraApci(self, date1, date2, ebpv, ehp, x, y, s):
+        # Star-independent astrometry parameters for geocenter.
+        self.eraApcg(date1, date2, ebpv, ehp)
+
+        # CIO based BPN matrix.
+        self.astrom.bpn = self.eraC2ixys(x, y, s)
+
     def eraApci13(self, date1, date2):
         # Earth barycentric & heliocentric position/velocity (au, au/d).
         ok, ehpv, ebpv = self.eraEpv00(date1, date2)
@@ -4852,18 +4976,17 @@ class ERFA:
         # Obtain CIO locator s.
         s = self.eraS06(date1, date2, x, y)
         # Compute the star-independent astrometry parameters.
-        astrom = self.eraApci(date1, date2, ebpv, ehpv[0], x, y, s)
+        self.eraApci(date1, date2, ebpv, ehpv[0], x, y, s)
         # Equation of the origins.
         eo = self.eraEors(rnpb, s)
-        return astrom, eo
+        return eo
 
     def eraAtciq(self, re, dc, pr, pd, px, py, astrom, ri, di):
         pass
 
     def eraAtci13(self, rc, dc, pr, pd, px, rv, date1, date2, ri, di, eo):
         # star independent parameters
-        astrom = self.astrom
         # the transformation parameters.
-        self.eraApci13(date1, date2, astrom, eo)
+        eo = self.eraApci13(date1, date2)
         # ICRS (epoch J2000.0) to CIRS.
         self.eraAtciq(rc, dc, pr, pd, px, rv, astrom, ri, di)

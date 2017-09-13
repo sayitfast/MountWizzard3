@@ -2,6 +2,7 @@ from unittest import TestCase
 from astrometry import erfa
 import time
 from astropy import _erfa as erfa_astro
+import numpy
 
 
 class TestErfa(TestCase):
@@ -173,17 +174,18 @@ class TestErfa(TestCase):
 
     def test_eraS06(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        rnpb = self.ERFA.eraPnm06a(date1, date2)
+        x, y = self.ERFA.eraBpn2xy(rnpb)
         val = self.ERFA.eraS06(date1, date2, x, y)
         val_ref = erfa_astro.s06(date1, date2, x, y)
         self.assertEqual(val, val_ref)
 
     def test_eraApci13(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
-        value = erfa_astro.apci13(date1, date2)
-        ok, astrom, eo = self.ERFA.eraApci13(date1, date2)
-
+        astrom_ref, eo_ref = erfa_astro.apci13(date1, date2)
+        eo = self.ERFA.eraApci13(date1, date2)
+        self.assertEqual(astrom_ref[()][0], self.ERFA.astrom.pmt)
     '''
-
     def test_eraAtci13(self):
         self.ERFA.eraAtci13(self.rc, self.dc, self.pr, self.pd, self.px, self.rv, self.date1, self.date2, self.ri, self.di, self.eo)
     '''
