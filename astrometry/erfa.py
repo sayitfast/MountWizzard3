@@ -11,9 +11,7 @@
 # Licence APL2.0
 #
 ############################################################
-# --------------------------------------------------------------------------------
-# python implementation of the ERFA library for the basic transformation functions
-# --------------------------------------------------------------------------------
+
 import math
 from decimal import *
 
@@ -77,11 +75,17 @@ class ERFA:
     ERFA_AULT = ERFA_DAU / ERFA_CMPS
     # Days per Julian millennium
     ERFA_DJM = 365250.0
+    # Schwarzschild radius of the Sun (au) 2 * 1.32712440041e20 / (2.99792458e8)^2 / 1.49597870700e11
+    ERFA_SRS = 1.97412574336e-8
 
     # Macros as functions
     @staticmethod
     def ERFA_DNINT(value):
         return round(value, 0)
+
+    @staticmethod
+    def ERFA_GMAX(A, B):
+        return A if A > B else B
 
     def eraCal2jd(self, iy, im, id):
         # Earliest year allowed (4800BC)
@@ -215,6 +219,7 @@ class ERFA:
         m = 12 * iy + im
 
         # ...and use it to find the preceding table entry.
+        i = 0
         for i in range(NDAT-1, -1,  -1):
             if m >= (12 * changes[i][0] + changes[i][1]):
                 break
@@ -386,7 +391,7 @@ class ERFA:
     def eraFaf03(self, t):
         # Mean longitude of the Moon minus that of the ascending node
         # (IERS Conventions 2003).
-        a = math.fmod(335779.526232 + t * (1739527262.8478 + t * (- 12.7512 + t * (- 0.001037 + t * (0.00000417)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        a = math.fmod(335779.526232 + t * (1739527262.8478 + t * (- 12.7512 + t * (- 0.001037 + t * 0.00000417))), self.ERFA_TURNAS) * self.ERFA_DAS2R
         return a
 
     def eraFad03(self, t):
@@ -5027,6 +5032,104 @@ class ERFA:
 
         return pco
 
+    @staticmethod
+    def eraPxp(a, b):
+        axb = [0, 0, 0]
+
+        xa = a[0]
+        ya = a[1]
+        za = a[2]
+        xb = b[0]
+        yb = b[1]
+        zb = b[2]
+        axb[0] = ya * zb - za * yb
+        axb[1] = za * xb - xa * zb
+        axb[2] = xa * yb - ya * xb
+        return axb
+
+    def eraLd(self, bm, p, q, e, em, dlim):
+        pl = [0, 0, 0]
+        qpe = [0, 0, 0]
+
+        # q . (q + e).
+        for i in range(3):
+            qpe[i] = q[i] + e[i]
+        qdqpe = self.eraPdp(q, qpe)
+
+        # 2 x G x bm / ( em x c^2 x ( q . (q + e) ) ).
+        w = bm * self.ERFA_SRS / em / self.ERFA_GMAX(qdqpe, dlim)
+
+        # p x (e x q).
+        eq = self.eraPxp(e, q)
+        peq = self.eraPxp(p, eq)
+
+        # Apply the deflection.
+        for i in range(3):
+            pl[i] = p[i] + w * peq[i]
+
+        return pl
+
+    def eraLdsun(self, p, e, em):
+        # Deflection limiter (smaller for distant observers).
+        em2 = em * em
+        if em2 < 1.0:
+            em2 = 1.0
+        dlim = 1e-6 / (em2 if em2 > 1.0 else 1.0)
+
+        # Apply the deflection.
+        pl = self.eraLd(1.0, p, p, e, em, dlim)
+
+        return pl
+
+    def eraAb(self, pnat, v, s, bm1):
+        ppr = [0, 0, 0]
+        p = [0, 0, 0]
+
+        pdv = self.eraPdp(pnat, v)
+        w1 = 1.0 + pdv / (1.0 + bm1)
+        w2 = self.ERFA_SRS / s
+        r2 = 0.0
+        for i in range(3):
+            w = pnat[i] * bm1 + w1 * v[i] + w2 * (v[i] - pdv * pnat[i])
+            p[i] = w
+            r2 = r2 + w * w
+        r = math.sqrt(r2)
+        for i in range(3):
+            ppr[i] = p[i] / r
+        return ppr
+
+    @staticmethod
+    def eraRxp(r, p):
+        wrp = [0, 0, 0]
+
+        # Matrix r * vector p.
+        for j in range(3):
+            w = 0.0
+            for i in range(3):
+                w += r[j][i] * p[i]
+            wrp[j] = w
+
+        return wrp
+
+    @staticmethod
+    def eraC2s(p):
+        x = p[0]
+        y = p[1]
+        z = p[2]
+        d2 = x * x + y * y
+
+        theta = 0.0 if d2 == 0.0 else math.atan2(y, x)
+        phi = 0.0 if z == 0.0 else math.atan2(z, math.sqrt(d2))
+
+        return theta, phi
+
+    def eraAnp(self, a):
+        w = math.fmod(a, self.ERFA_D2PI)
+        if w < 0:
+            w += self.ERFA_D2PI
+
+        return w
+
     def eraAtciq(self, rc, dc, pr, pd, px, rv):
         # Proper motion and parallax, giving BCRS coordinate direction.
         pco = self.eraPmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
@@ -5054,3 +5157,66 @@ class ERFA:
         ri, di = self.eraAtciq(rc, dc, pr, pd, px, rv)
 
         return ri, di, eo
+
+    # ----------------------------------------------------------------------
+    # **
+    # **
+    # **  Copyright (C) 2013-2017, NumFOCUS Foundation.
+    # **  All rights reserved.
+    # **
+    # **  This library is derived, with permission, from the International
+    # **  Astronomical Union's "Standards of Fundamental Astronomy" library,
+    # **  available from http://www.iausofa.org.
+    # **
+    # **  The ERFA version is intended to retain identical functionality to
+    # **  the SOFA library, but made distinct through different function and
+    # **  file names, as set out in the SOFA license conditions.  The SOFA
+    # **  original has a role as a reference standard for the IAU and IERS,
+    # **  and consequently redistribution is permitted only in its unaltered
+    # **  state.  The ERFA version is not subject to this restriction and
+    # **  therefore can be included in distributions which do not support the
+    # **  concept of "read only" software.
+    # **
+    # **  Although the intent is to replicate the SOFA API (other than
+    # **  replacement of prefix names) and results (with the exception of
+    # **  bugs;  any that are discovered will be fixed), SOFA is not
+    # **  responsible for any errors found in this version of the library.
+    # **
+    # **  If you wish to acknowledge the SOFA heritage, please acknowledge
+    # **  that you are using a library derived from SOFA, rather than SOFA
+    # **  itself.
+    # **
+    # **
+    # **  TERMS AND CONDITIONS
+    # **
+    # **  Redistribution and use in source and binary forms, with or without
+    # **  modification, are permitted provided that the following conditions
+    # **  are met:
+    # **
+    # **  1 Redistributions of source code must retain the above copyright
+    # **    notice, this list of conditions and the following disclaimer.
+    # **
+    # **  2 Redistributions in binary form must reproduce the above copyright
+    # **    notice, this list of conditions and the following disclaimer in
+    # **    the documentation and/or other materials provided with the
+    # **    distribution.
+    # **
+    # **  3 Neither the name of the Standards Of Fundamental Astronomy Board,
+    # **    the International Astronomical Union nor the names of its
+    # **    contributors may be used to endorse or promote products derived
+    # **    from this software without specific prior written permission.
+    # **
+    # **  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+    # **  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+    # **  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+    # **  FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
+    # **  COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+    # **  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+    # **  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES
+    # **  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+    # **  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+    # **  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+    # **  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+    # **  POSSIBILITY OF SUCH DAMAGE.
+    # **
+    #
