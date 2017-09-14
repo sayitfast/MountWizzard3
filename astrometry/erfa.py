@@ -5158,6 +5158,76 @@ class ERFA:
 
         return ri, di, eo
 
+    def eraAticq(self, ri, di):
+        before = [0, 0, 0]
+        pnat = [0, 0, 0]
+        pco = [0, 0, 0]
+
+        # CIRS RA,Dec to Cartesian.
+        pi = self.eraS2c(ri, di)
+
+        # Bias-precession-nutation, giving GCRS proper direction.
+        ppr = self.eraTrxp(self.astrom.bpn, pi)
+
+        # Aberration, giving GCRS natural direction.
+        d = self.eraZp()
+        for j in range(2):
+            r2 = 0.0
+            for i in range(3):
+                w = ppr[i] - d[i]
+                before[i] = w
+                r2 += w * w
+            r = math.sqrt(r2)
+            for i in range(3):
+                before[i] /= r
+            after = self.eraAb(before, self.astrom.v, self.astrom.em, self.astrom.bm1)
+            r2 = 0.0
+            for i in range(3):
+                d[i] = after[i] - before[i]
+                w = ppr[i] - d[i]
+                pnat[i] = w
+                r2 += w * w
+            r = math.sqrt(r2)
+            for i in range(3):
+                pnat[i] /= r
+
+        # Light deflection, giving BCRS coordinate direction.
+        d = self.eraZp()
+        for j in range(5):
+            r2 = 0.0
+            for i in range(3):
+                w = pnat[i] - d[i]
+                before[i] = w
+                r2 += w * w
+            r = math.sqrt(r2)
+            for i in range(3):
+                before[i] /= r
+            after = self.eraLdn(self.astrom.eh, self.astrom.em, before)
+            r2 = 0.0
+            for i in range(3):
+                d[i] = after[i] - before[i]
+                w = pnat[i] - d[i]
+                pco[i] = w
+                r2 += w * w
+            r = math.sqrt(r2)
+            for i in range(3):
+                pco[i] /= r
+
+        # ICRS astrometric RA,Dec.
+        w, dc = self.eraC2s(pco)
+        rc = self.eraAnp(w)
+
+        return rc, dc
+
+    def eraAtic13(self, ri, di, date1, date2):
+        # Star-independent astrometry parameters.
+        eo = self.eraApci13(date1, date2)
+
+        # CIRS to ICRS astrometric.
+        rc, dc = self.eraAticq(ri, di)
+
+        return rc, dc, eo
+
     # ----------------------------------------------------------------------
     # **
     # **
