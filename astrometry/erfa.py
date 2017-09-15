@@ -16,7 +16,13 @@ import math
 from decimal import *
 
 
-class ASTROM:
+class LDBODY:           # Body parameters for light deflection
+   bm = 0               # mass of the body (solar masses)
+   dl = 0               # deflection limiter (radians^2/2)
+   pv = [[0, 0, 0],
+         [0, 0, 0]]     # barycentric PV of the body (au, au/day)
+
+class ASTROM:           # Star-independent astrometry parameters
     pmt = 0             # PM time interval(SSB, Julian years)
     eb = [0, 0, 0]      # SSB to observer(vector, au)
     eh = [0, 0, 0]      # Sun to observer(unit vector)
@@ -41,6 +47,7 @@ class ASTROM:
 class ERFA:
     # star independent astrometry parameters
     astrom = ASTROM()
+    ldbody = LDBODY()
     ehpv = 0
     ebpv = 0
     r = 0
@@ -5158,6 +5165,37 @@ class ERFA:
 
         return ri, di, eo
 
+    @staticmethod
+    def eraS2c(theta, phi):
+        c = [0, 0, 0]
+
+        cp = math.cos(phi)
+        c[0] = math.cos(theta) * cp
+        c[1] = math.sin(theta) * cp
+        c[2] = math.sin(phi)
+
+        return c
+
+    @staticmethod
+    def eraTr(r):
+        rt = [[0, 0, 0],
+              [0, 0, 0],
+              [0, 0, 0]]
+
+        for i in range(3):
+            for j in range(3):
+                rt[i][j] = r[j][i]
+        return rt
+
+    def eraTrxp(self, r, p):
+        # Transpose of matrix r.
+        tr = self.eraTr(r)
+
+        # Matrix tr * vector p -> vector trp.
+        trp = self.eraRxp(tr, p)
+
+        return trp
+
     def eraAticq(self, ri, di):
         before = [0, 0, 0]
         pnat = [0, 0, 0]
@@ -5202,7 +5240,7 @@ class ERFA:
             r = math.sqrt(r2)
             for i in range(3):
                 before[i] /= r
-            after = self.eraLdn(self.astrom.eh, self.astrom.em, before)
+            after = self.eraLdsun(before, self.astrom.eh, self.astrom.em)
             r2 = 0.0
             for i in range(3):
                 d[i] = after[i] - before[i]

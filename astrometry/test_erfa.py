@@ -336,3 +336,15 @@ class TestErfa(TestCase):
         self.assertEqual(ri, ri_ref)
         self.assertEqual(di, di_ref)
         self.assertEqual(eo, eo_ref)
+
+    def test_eraAtic13(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        ri = 3.14
+        di = 0.5
+
+        rc, dc, eo = self.ERFA.eraAtic13(ri, di, date1, date2)
+        rc_ref, dc_ref, eo_ref = erfa_astro.atic13(ri, di, date1, date2)
+        self.assertEqual(rc, rc_ref)
+        self.assertEqual(dc, dc_ref)
+        self.assertEqual(eo, eo_ref)
+        print(ri, rc, di, dc)
