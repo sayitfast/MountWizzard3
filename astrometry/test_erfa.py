@@ -2,7 +2,6 @@ from unittest import TestCase
 from astrometry import erfa
 import time
 from astropy import _erfa as erfa_astro
-import numpy
 
 
 class TestErfa(TestCase):
