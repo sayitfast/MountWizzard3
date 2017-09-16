@@ -1,4 +1,4 @@
-# MountWizzard <img src="pics/mw.png" width='64' height='64'/>
+# MountWizzard <img src="docu/pics/mw.png" width='64' height='64'/>
 
 #### Application for use in 10micron Mount environment
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
