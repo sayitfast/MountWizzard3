@@ -42,7 +42,7 @@ class ASTROM:           # Star-independent astrometry parameters
     eh = [0, 0, 0]      # Sun to observer(unit vector)
     em = 0              # distance from Sun to observer(au)
     v = [0, 0, 0]       # barycentric observer velocity(vector, c)
-    bm1 = 0             # sqrt(1 - | v | ^ 2): reciprocal of Lorenz factor
+    bml = 0             # sqrt(1 - | v | ^ 2): reciprocal of Lorenz factor
     bpn = [[0, 0, 0],
            [0, 0, 0],
            [0, 0, 0]]   # bias - precession - nutation matrix
@@ -55,7 +55,7 @@ class ASTROM:           # Star-independent astrometry parameters
     diurab = 0          # magnitude of diurnal aberration vector
     eral = 0            # "local" Earth rotation angle(radians)
     refa = 0            # refraction constant A(radians)
-    refb = 0            # refraction constant B(radians)
+    refb = 0            # refraction constant B(radians)   [pmt, eb, eh, em, v, bml, bnp, along, phi, xpl, ypl, sphi, cphi, diurab, eral, refa, refb]
 
 
 class ERFA:
@@ -5333,6 +5333,79 @@ class ERFA:
         rc, dc = self.eraAticq(ri, di)
 
         return rc, dc, eo
+
+    def eraAtioq(self, ri, di):
+        # Minimum cos(alt) and sin(alt) for refraction purposes
+        CELMIN = 1e-6
+        SELMIN = 0.05
+
+        # CIRS RA,Dec to Cartesian -HA,Dec.
+        v = self.eraS2c(ri - self.astrom.eral, di)
+        x = v[0]
+        y = v[1]
+        z = v[2]
+
+        # Polar motion.
+        xhd = x + self.astrom.xpl * z
+        yhd = y - self.astrom.ypl * z
+        zhd = z - self.astrom.xpl * x + self.astrom.ypl * y
+
+        # Diurnal aberration.
+        f = (1.0 - self.astrom.diurab * yhd)
+        xhdt = f * xhd
+        yhdt = f * (yhd + self.astrom.diurab)
+        zhdt = f * zhd
+
+        # Cartesian -HA,Dec to Cartesian Az,El (S=0,E=90).
+        xaet = self.astrom.sphi * xhdt - self.astrom.cphi * zhdt
+        yaet = yhdt
+        zaet = self.astrom.cphi * xhdt + self.astrom.sphi * zhdt
+
+        # Azimuth (N=0,E=90).
+        azobs = math.atan2(yaet, -xaet) if (xaet != 0.0 or yaet != 0.0) else 0.0
+
+        # ----------
+        # Refraction
+        # ----------
+
+        # Cosine and sine of altitude, with precautions.
+        r = math.sqrt(xaet * xaet + yaet * yaet)
+        r = r if r > CELMIN else CELMIN
+        z = zaet if zaet > SELMIN else SELMIN
+
+        # A*tan(z)+B*tan^3(z) model, with Newton-Raphson correction.
+        tz = r / z
+        w = self.astrom.refb * tz * tz
+        del_erfa = (self.astrom.refa + w) * tz / (1.0 + (self.astrom.refa + 3.0 * w) / (z * z))
+
+        # Apply the change, giving observed vector.
+        cosdel_erfa = 1.0 - del_erfa * del_erfa / 2.0
+        f = cosdel_erfa - del_erfa * z / r
+        xaeo = xaet * f
+        yaeo = yaet * f
+        zaeo = cosdel_erfa * zaet + del_erfa *r
+
+        # Observed ZD.
+        zdobs = math.atan2(math.sqrt(xaeo * xaeo + yaeo * yaeo), zaeo)
+
+        # Az/El vector to HA,Dec vector (both right-handed).
+        v[0] = self.astrom.sphi * xaeo + self.astrom.cphi * zaeo
+        v[1] = yaeo
+        v[2] = - self.astrom.cphi * xaeo + self.astrom.sphi * zaeo
+
+        # To spherical -HA,Dec.
+        hmobs, dcobs = self.eraC2s(v)
+
+        # Right ascension (with respect to CIO).
+        raobs = self. astrom.eral + hmobs
+
+        # Return the results.
+        aob = self.eraAnp(azobs)
+        zob = zdobs
+        hob = -hmobs
+        dob = dcobs
+        rob = self.eraAnp(raobs)
+        return aob, zob, hob, dob, rob
 
     # ----------------------------------------------------------------------
     # **

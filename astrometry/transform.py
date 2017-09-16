@@ -131,6 +131,15 @@ class Transform:
     # implementation ascom.transform to erfy.py
 
     '''
+    zeitberechnungen:
+
+    jdutcSofa = this.GetJDUTCSofa();
+ 
+    entspricht erfa Dtf2d()... wobei die beiden rückgabewerte addiert werden (keine separaten utc1 und utc2 werte)
+    delta t ut wird berechnet aus    (double) this.UtcTaiOffset + 4023.0 / 125.0 - DeltatCode.DeltaTCalc(JulianDate) ist bei erfa unter eraDat implementiert !
+
+    hier für die transformation J2000 -> Jnow = Transform 3
+    wichtig: site parameters setzen !
     
     CelestialToObserved(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo)
                  Atco13(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo))
@@ -163,6 +172,8 @@ class Transform:
 
       this.RATopoValue = this.SOFA.Anp(rob - eo) * (12.0 / Math.PI);
       this.DECTopoValue = dob * (180.0 / Math.PI);
+
+        umrechung dec/ra sollte durch ERFA function atioq ebenfalls darstellbar sein. 
 
       this.AzimuthTopoValue = aob * (180.0 / Math.PI);
       this.ElevationTopoValue = 90.0 - zob * (180.0 / Math.PI);
