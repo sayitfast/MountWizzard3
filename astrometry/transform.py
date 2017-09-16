@@ -127,3 +127,43 @@ class Transform:
             return '{0}{1:02d}{5}{2:02d}{5}{3:02d}{4}'.format(sign, hour, minute, second, second_dec, spl)
         else:
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
+
+    # implementation ascom.transform to erfy.py
+
+    '''
+    
+    CelestialToObserved(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo)
+                 Atco13(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo))
+
+      if (this.RefracValue)
+        this.SOFA.CelestialToObserved(this.RAJ2000Value * (Math.PI / 12.0), 
+                                      this.DECJ2000Value * (Math.PI / 180.0), 
+                                      0.0, 
+                                      0.0, 
+                                      0.0, 
+                                      0.0, 
+                                      jdutcSofa, 
+                                      0.0, 
+                                      dut1, 
+                                      this.SiteLongValue * (Math.PI / 180.0), 
+                                      this.SiteLatValue * (Math.PI / 180.0), 
+                                      this.SiteElevValue, 
+                                      0.0, 
+                                      0.0, 
+                                      1000.0, 
+                                      this.SiteTempValue, 
+                                      0.8, 
+                                      0.57, 
+                                      ref aob, 
+                                      ref zob, 
+                                      ref hob, 
+                                      ref dob, 
+                                      ref rob, 
+                                      ref eo);
+
+      this.RATopoValue = this.SOFA.Anp(rob - eo) * (12.0 / Math.PI);
+      this.DECTopoValue = dob * (180.0 / Math.PI);
+
+      this.AzimuthTopoValue = aob * (180.0 / Math.PI);
+      this.ElevationTopoValue = 90.0 - zob * (180.0 / Math.PI);
+    '''

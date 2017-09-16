@@ -49,11 +49,11 @@ class TestErfa(TestCase):
 
         start_time = time.clock()
         ok, iy, im, id, fd = self.ERFA.eraJd2cal(dj1, dj2)
-        # print(" ERFA Python  {0:15.15f} seconds ---".format((time.clock() - start_time)))
+        print(" ERFA Jd2cal     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
 
         start_time = time.clock()
         value = erfa_astro.jd2cal(dj1, dj2)
-        # print(" ERFA Astropy {0:15.15f} seconds ---".format((time.clock() - start_time)))
+        print(" ERFA Jd2cal     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
 
         self.assertEqual(ok, 0)
         self.assertEqual(value[0], iy)
@@ -102,22 +102,42 @@ class TestErfa(TestCase):
         self.assertEqual(value[3], fd)
 
     def test_eraCal2jd(self):
+        start_time = time.clock()
         ok, djm0, djm = self.ERFA.eraCal2jd(self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday)
         value = erfa_astro.cal2jd(self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday)
+        print(" ERFA Cal2jd     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        value = erfa_astro.cal2jd(self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday)
+        print(" ERFA Cal2jd     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(ok, 0)
         self.assertEqual(value[0], djm0)
         self.assertEqual(value[1], djm)
 
     def test_eraDtf2d(self):
+        start_time = time.clock()
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        print(" ERFA Dtf2d      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         value = erfa_astro.dtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        print(" ERFA Dtf2d      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(0, ok)
         self.assertEqual(date1 + date2, value[0])
 
     def test_eraEpv00(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+
+        start_time = time.clock()
         ok, pvh, pvb = self.ERFA.eraEpv00(date1, date2)
+        print(" ERFA Epv00      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         pvh_ref, pvb_ref = erfa_astro.epv00(date1, date2)
+        print(" ERFA Epv00      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(ok, 0)
         self.assertEqual(pvh[0][0], pvh_ref[0][0])
         self.assertEqual(pvh[0][1], pvh_ref[0][1])
@@ -134,55 +154,113 @@ class TestErfa(TestCase):
 
     def test_eraObl06(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+
+        start_time = time.clock()
         epsa = self.ERFA.eraObl06(date1, date2)
+        print(" ERFA Obl06      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         epsa_ref = erfa_astro.obl06(date1, date2)
+        print(" ERFA Obl06      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(epsa, epsa_ref)
 
     def test_eraPfw06(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+
+        start_time = time.clock()
         gamb, phib, psib, epsa = self.ERFA.eraPfw06(date1, date2)
+        print(" ERFA Pfw06      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         gamb_ref, phib_ref, psib_ref, epsa_ref = erfa_astro.pfw06(date1, date2)
+        print(" ERFA Pfw06      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(gamb, gamb_ref)
         self.assertEqual(phib, phib_ref)
         self.assertEqual(psib, psib_ref)
         self.assertEqual(epsa, epsa_ref)
 
     def test_eraFal03(self):
+        start_time = time.clock()
+        el = self.ERFA.eraFal03(1)
+        print(" ERFA Fal03      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        el_ref = erfa_astro.fal03(1)
+        print(" ERFA Fal03      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
         for i in range(-10, 10):
             el = self.ERFA.eraFal03(i)
             el_ref = erfa_astro.fal03(i)
             self.assertEqual(el, el_ref)
 
     def test_eraFaf03(self):
+        start_time = time.clock()
+        el = self.ERFA.eraFaf03(1)
+        print(" ERFA Faf03      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        el_ref = erfa_astro.faf03(1)
+        print(" ERFA Faf03      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         for i in range(-10, 10):
             el = self.ERFA.eraFaf03(i)
             el_ref = erfa_astro.faf03(i)
             self.assertEqual(el, el_ref)
 
     def test_eraFaom03(self):
+        start_time = time.clock()
+        el = self.ERFA.eraFaom03(1)
+        print(" ERFA Faom03     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        el_ref = erfa_astro.faom03(1)
+        print(" ERFA Faom03     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         for i in range(-10, 10):
-            el = self.ERFA.eraFaom03(i)
             el_ref = erfa_astro.faom03(i)
+            el = self.ERFA.eraFaom03(i)
             self.assertEqual(el, el_ref)
 
     def test_eraNut00a(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+
+        start_time = time.clock()
         dp, de = self.ERFA.eraNut00a(date1, date2)
+        print(" ERFA Nut00a     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         dp_ref, de_ref = erfa_astro.nut00a(date1, date2)
+        print(" ERFA Nut00a     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(dp, dp_ref)
         self.assertEqual(de, de_ref)
 
     def test_eraNut06a(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+
+        start_time = time.clock()
         dp, de = self.ERFA.eraNut06a(date1, date2)
+        print(" ERFA Nut06a     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         dp_ref, de_ref = erfa_astro.nut06a(date1, date2)
+        print(" ERFA Nut06a     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(dp, dp_ref)
         self.assertEqual(de, de_ref)
 
     def test_eraPnm06a(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+
+        start_time = time.clock()
         rnpb = self.ERFA.eraPnm06a(date1, date2)
+        print(" ERFA Pnm06a     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         rnpb_ref = erfa_astro.pnm06a(date1, date2)
+        print(" ERFA Pnm06a     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(rnpb[0][0], rnpb_ref[0][0])
         self.assertEqual(rnpb[0][1], rnpb_ref[0][1])
         self.assertEqual(rnpb[0][2], rnpb_ref[0][2])
@@ -196,8 +274,15 @@ class TestErfa(TestCase):
     def test_eraBpn2xy(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
         rnpb = self.ERFA.eraPnm06a(date1, date2)
+
+        start_time = time.clock()
         x, y = self.ERFA.eraBpn2xy(rnpb)
+        print(" ERFA Bpn2xy     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         x_ref, y_ref = erfa_astro.bpn2xy(rnpb)
+        print(" ERFA Bpn2xy     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(x, x_ref)
         self.assertEqual(y, y_ref)
 
@@ -205,8 +290,15 @@ class TestErfa(TestCase):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
         rnpb = self.ERFA.eraPnm06a(date1, date2)
         x, y = self.ERFA.eraBpn2xy(rnpb)
+
+        start_time = time.clock()
         val = self.ERFA.eraS06(date1, date2, x, y)
+        print(" ERFA S06        Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         val_ref = erfa_astro.s06(date1, date2, x, y)
+        print(" ERFA S06        Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(val, val_ref)
 
     def test_eraApci(self):
@@ -216,8 +308,14 @@ class TestErfa(TestCase):
         x, y = self.ERFA.eraBpn2xy(rnpb)
         s = self.ERFA.eraS06(date1, date2, x, y)
 
-        astrom_ref = erfa_astro.apci(date1, date2, ebpv,  ehpv[0], x, y, s)
+        start_time = time.clock()
         self.ERFA.eraApci(date1, date2, ebpv,  ehpv[0], x, y, s)
+        print(" ERFA Apci       Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        astrom_ref = erfa_astro.apci(date1, date2, ebpv,  ehpv[0], x, y, s)
+        print(" ERFA Apci       Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(astrom_ref[()][6][0][0], self.ERFA.astrom.bpn[0][0])
         self.assertEqual(astrom_ref[()][6][0][1], self.ERFA.astrom.bpn[0][1])
         self.assertEqual(astrom_ref[()][6][0][2], self.ERFA.astrom.bpn[0][2])
@@ -236,15 +334,27 @@ class TestErfa(TestCase):
         s = self.ERFA.eraS06(date1, date2, x, y)
         self.ERFA.eraApci(date1, date2, ebpv,  ehpv[0], x, y, s)
 
-        eo_ref = erfa_astro.eors(rnpb, s)
+        start_time = time.clock()
         eo = self.ERFA.eraEors(rnpb, s)
+        print(" ERFA Eors       Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        eo_ref = erfa_astro.eors(rnpb, s)
+        print(" ERFA Eors       Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(eo, eo_ref)
 
     def test_eraApci13(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
 
-        astrom_ref, eo_ref = erfa_astro.apci13(date1, date2)
+        start_time = time.clock()
         eo = self.ERFA.eraApci13(date1, date2)
+        print(" ERFA Apci13     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        astrom_ref, eo_ref = erfa_astro.apci13(date1, date2)
+        print(" ERFA Apci13     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(astrom_ref[()][0], self.ERFA.astrom.pmt)
         self.assertEqual(astrom_ref[()][1][0], self.ERFA.astrom.eb[0])
         self.assertEqual(astrom_ref[()][1][1], self.ERFA.astrom.eb[1])
@@ -288,8 +398,14 @@ class TestErfa(TestCase):
         px = 0
         rv = 0
 
+        start_time = time.clock()
         pco = self.ERFA.eraPmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
+        print(" ERFA Pmpx       Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         pco_ref = erfa_astro.pmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
+        print(" ERFA Pmpx       Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(pco[0], pco_ref[0])
         self.assertEqual(pco[1], pco_ref[1])
         self.assertEqual(pco[2], pco_ref[2])
@@ -305,8 +421,14 @@ class TestErfa(TestCase):
         rv = 0
         pco = self.ERFA.eraPmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
 
+        start_time = time.clock()
         pnat = self.ERFA.eraLdsun(pco, self.astrom.eh, self.astrom.em)
+        print(" ERFA Ldsun      Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         pnat_ref = erfa_astro.ldsun(pco, self.astrom.eh, self.astrom.em)
+        print(" ERFA Ldsun      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(pnat[0], pnat_ref[0])
         self.assertEqual(pnat[1], pnat_ref[1])
         self.assertEqual(pnat[2], pnat_ref[2])
@@ -323,8 +445,14 @@ class TestErfa(TestCase):
         pco = self.ERFA.eraPmpx(rc, dc, pr, pd, px, rv, self.astrom.pmt, self.astrom.eb)
         pnat = self.ERFA.eraLdsun(pco, self.astrom.eh, self.astrom.em)
 
+        start_time = time.clock()
         ppr = self.ERFA.eraAb(pnat, self.astrom.v, self.astrom.em, self.astrom.bm1)
+        print(" ERFA Ab         Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         ppr_ref = erfa_astro.ab(pnat, self.astrom.v, self.astrom.em, self.astrom.bm1)
+        print(" ERFA Ab         Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(ppr[0], ppr_ref[0])
         self.assertEqual(ppr[1], ppr_ref[1])
         self.assertEqual(ppr[2], ppr_ref[2])
@@ -338,8 +466,14 @@ class TestErfa(TestCase):
         px = 0
         rv = 0
 
+        start_time = time.clock()
         ri, di, eo = self.ERFA.eraAtci13(rc, dc, pr, pd, px, rv, date1, date2)
+        print(" ERFA Atci13     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         ri_ref, di_ref, eo_ref = erfa_astro.atci13(rc, dc, pr, pd, px, rv, date1, date2)
+        print(" ERFA Atci13     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+
         self.assertEqual(ri, ri_ref)
         self.assertEqual(di, di_ref)
         self.assertEqual(eo, eo_ref)
@@ -351,11 +485,11 @@ class TestErfa(TestCase):
 
         start_time = time.clock()
         rc, dc, eo = self.ERFA.eraAtic13(ri, di, date1, date2)
-        print(" ERFA Python  {0:15.15f} seconds ---".format((time.clock() - start_time)))
+        print(" ERFA Atic13     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
 
         start_time = time.clock()
         rc_ref, dc_ref, eo_ref = erfa_astro.atic13(ri, di, date1, date2)
-        print(" ERFA Astropy {0:15.15f} seconds ---".format((time.clock() - start_time)))
+        print(" ERFA Atic13     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
 
         self.assertEqual(rc, rc_ref)
         self.assertEqual(dc, dc_ref)

@@ -139,9 +139,7 @@ class ERFA:
     def ERFA_GMIN(A, B):
         return A if A < B else B
 
-    # --------------------------------------------------
     # implementation of ERFA functions
-    # --------------------------------------------------
 
     def eraCal2jd(self, iy, im, id):
         # Earliest year allowed (4800BC)
@@ -4946,12 +4944,6 @@ class ERFA:
         s = (w0 + (w1 + (w2 + (w3 + (w4 + w5 * t) * t) * t) * t) * t) * self.ERFA_DAS2R - x * y / 2.0
         return s
 
-    def eraAnp(self, a):
-        w = math.fmod(a, self.ERFA_D2PI)
-        if w < 0:
-            w += self.ERFA_D2PI
-        return w
-
     @staticmethod
     def eraPm(p):
         return math.sqrt(p[0] * p[0] + p[1] * p[1] + p[2] * p[2])
@@ -5333,6 +5325,7 @@ class ERFA:
         rc, dc = self.eraAticq(ri, di)
 
         return rc, dc, eo
+
 
     # ----------------------------------------------------------------------
     # **
