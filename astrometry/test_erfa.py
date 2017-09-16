@@ -661,7 +661,7 @@ class TestErfa(TestCase):
         wl = 0.57
         ob1 = 3.14
         ob2 = 0.5
-        type_ERA = 'R'
+        type_ERA = 'A'
 
         start_time = time.clock()
         j, rc, dc = self.ERFA.eraAtoc13(type_ERA, ob1, ob2, date1, date2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)

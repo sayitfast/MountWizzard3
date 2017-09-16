@@ -5858,6 +5858,8 @@ class ERFA:
         return j
 
     def eraAtoiq(self, type_ERA, ob1, ob2):
+        v = [0, 0, 0]
+
         # Coordinate type.
         c = type_ERA[0]
 
