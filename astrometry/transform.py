@@ -13,6 +13,8 @@
 ############################################################
 import logging
 import math
+import time
+from astrometry.erfa import ERFA
 import threading
 # win32com
 from win32com.client.dynamic import Dispatch
@@ -21,8 +23,11 @@ from win32com.client.dynamic import Dispatch
 class Transform:
     logger = logging.getLogger(__name__)
 
-    def __init__(self):
+    def __init__(self, app):
+        self.app = app
+        self.ERFA = ERFA()
         self.transformationLock = threading.Lock()                                                                          # locking object for single access to ascom transformation object
+        self.transformationLockERFA = threading.Lock()                                                                      # locking object for single access to ascom transformation object
         try:                                                                                                                # start accessing a com object
             self.transform = Dispatch('ASCOM.Astrometry.Transform.Transform')                                               # novas library for Jnow J2000 conversion through ASCOM
             self.transform.Refraction = False
@@ -130,52 +135,102 @@ class Transform:
 
     # implementation ascom.transform to erfy.py
 
-    '''
-    zeitberechnungen:
+    def transformERFA(self, ra, dec, transform=1):
+        self.transformationLockERFA.acquire()                                                                               # which is not threat safe, so we have to do this
+        SiteElevation = float(self.app.mount.site_height)
+        SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)
+        SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
+        # TODO: check if site parameters available
 
-    jdutcSofa = this.GetJDUTCSofa();
- 
-    entspricht erfa Dtf2d()... wobei die beiden rückgabewerte addiert werden (keine separaten utc1 und utc2 werte)
-    
-    delta t ut wird berechnet aus    (double) this.UtcTaiOffset + 4023.0 / 125.0 - DeltatCode.DeltaTCalc(JulianDate) ist bei erfa unter eraDat implementiert !
+        '''
+        elif transform == 2:                                                                                                # 2 = Jnow -> J2000
+            self.transform.SetTopocentric(ra, dec)                                                                          # set Jnow data
+            val1 = self.transform.RAJ2000
+            val2 = self.transform.DECJ2000
+        elif transform == 4:                                                                                                # 1 = JNow -> alt/az
+            ra = ra % 24
+            self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        elif transform == 5:                                                                                                # 5 = Apparent -> alt/az
+            ra = ra % 24
+            self.transform.SetApparent(ra, dec)                                                                             # set apparent ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        '''
 
-    hier für die transformation J2000 -> Jnow = Transform 3
-    wichtig: site parameters setzen !
-    
-    CelestialToObserved(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo)
-                 Atco13(rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl, ref aob, ref zob, ref hob, ref dob, ref rob, ref eo))
+        if transform == 1 or transform == 4 or transform == 5:
+            ra = (ra * 15 + 360.0) % 360.0
+            dec = math.radians(dec)
+            ra = math.radians(ra)
+            lat = math.radians(SiteLatitude)
+            alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
+            A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat)))
+            A = math.degrees(A)
+            alt = math.degrees(alt)
+            if math.sin(ra) >= 0.0:
+                az = 360.0 - A
+            else:
+                az = A
+            val1 = az
+            val2 = alt
+        elif transform == 2:
+            ts = time.gmtime(0)
+            date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
+            dut1 = self.ERFA.eraDat(ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour + 60 * (ts.tm_min + 60 * ts.tm_sec) * 24 / self.ERFA.ERFA_DAYSEC)
+            j, rc, dc = self.ERFA.eraAtoc13('A',
+                                            ra * self.ERFA.ERFA_D2PI / 24.0,
+                                            dec * self.ERFA.ERFA_DD2R,
+                                            date1,
+                                            date2,
+                                            dut1,
+                                            SiteLongitude * self.ERFA.ERFA_DD2R,
+                                            SiteLatitude * self.ERFA.ERFA_DD2R,
+                                            SiteElevation,
+                                            0.0,
+                                            0.0,
+                                            1000.0,
+                                            0.0,
+                                            0.8,
+                                            0.57)
+            RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
+            DECJ2000 = dc * self.ERFA.ERFA_DR2D
+            val1 = RAJ2000
+            val2 = DECJ2000
+        elif transform == 3:
+            ts = time.gmtime(0)
+            date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
+            dut1 = self.ERFA.eraDat(ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour + 60 * (ts.tm_min + 60 * ts.tm_sec) * 24 / self.ERFA.ERFA_DAYSEC)
+            suc, aob, zob, hob, dob, rob, eo = self.ERFA.Atco13(ra * self.ERFA.ERFA_D2PI / 24.0,
+                                                                dec * self.ERFA.ERFA_DD2R,
+                                                                0.0,
+                                                                0.0,
+                                                                0.0,
+                                                                0.0,
+                                                                date1,
+                                                                date2,
+                                                                dut1,
+                                                                SiteLongitude * self.ERFA.ERFA_DD2R,
+                                                                SiteLatitude * self.ERFA.ERFA_DD2R,
+                                                                SiteElevation,
+                                                                0.0,
+                                                                0.0,
+                                                                1000.0,
+                                                                0.0,
+                                                                0.8,
+                                                                0.57)
+            RATopo = self.ERFA.Anp(rob - eo) * (24 / self.ERFA.ERFA_D2PI)
+            DECTopo = dob * self.ERFA.ERFA_DR2D
+            val1 = RATopo
+            val2 = DECTopo
+        elif transform == 4:
+            pass
+        elif transform == 5:
+            pass
+        else:
+            val1 = ra
+            val2 = dec
+        self.transformationLockERFA.release()
+        return val1, val2
 
-      if (this.RefracValue)
-        this.SOFA.CelestialToObserved(this.RAJ2000Value * (Math.PI / 12.0), 
-                                      this.DECJ2000Value * (Math.PI / 180.0), 
-                                      0.0, 
-                                      0.0, 
-                                      0.0, 
-                                      0.0, 
-                                      jdutcSofa, 
-                                      0.0, 
-                                      dut1, 
-                                      this.SiteLongValue * (Math.PI / 180.0), 
-                                      this.SiteLatValue * (Math.PI / 180.0), 
-                                      this.SiteElevValue, 
-                                      0.0, 
-                                      0.0, 
-                                      1000.0, 
-                                      this.SiteTempValue, 
-                                      0.8, 
-                                      0.57, 
-                                      ref aob, 
-                                      ref zob, 
-                                      ref hob, 
-                                      ref dob, 
-                                      ref rob, 
-                                      ref eo);
 
-      this.RATopoValue = this.SOFA.Anp(rob - eo) * (12.0 / Math.PI);
-      this.DECTopoValue = dob * (180.0 / Math.PI);
-
-        umrechung dec/ra sollte durch ERFA function atioq ebenfalls darstellbar sein. 
-
-      this.AzimuthTopoValue = aob * (180.0 / Math.PI);
-      this.ElevationTopoValue = 90.0 - zob * (180.0 / Math.PI);
-    '''

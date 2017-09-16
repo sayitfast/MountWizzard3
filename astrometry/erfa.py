@@ -5795,7 +5795,7 @@ class ERFA:
 
         # Abort if bad UTC.
         if j < 0:
-            return j
+            return j, 0, 0, 0, 0, 0, 0
 
         # Transform ICRS to CIRS.
         ri, di = self.eraAtciq(rc, dc, pr, pd, px, rv)
@@ -5817,6 +5817,7 @@ class ERFA:
         self.astrom.ypl = xp * sl + yp * cl
 
         # Functions of latitude.
+        self.astrom.phi = phi
         self.astrom.sphi = math.sin(phi)
         self.astrom.cphi = math.cos(phi)
 

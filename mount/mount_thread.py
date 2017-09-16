@@ -46,7 +46,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.MountAscom = ascommount.MountAscom(app)                                                                             # set ascom driver class
         self.MountIpDirect = ipdirect.MountIpDirect(app)
         self.mountHandler = self.MountAscom
-        self.transform = transform.Transform()
+        self.transform = transform.Transform(app)
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
                                 '2': 'Slewing to park position',
