@@ -158,7 +158,6 @@ class ModelPlotWindow(widget.MwWidget):
         decCopy = copy.copy(self.app.mount.dec)                                                                             # but copy it (otherwise it will be changes during the calculation -> python object modeling)
         width = self.ui.modelPointsPlot.width()                                                                             # get data from ui
         height = self.ui.modelPointsPlot.height()
-        self.transform.transformNovasSiteParams(self.app.mount.site_lat, self.app.mount.site_lon, self.app.mount.site_height)
         self.pointerTrack.setVisible(True)
         for i in range(0, 50):                                                                                              # round modeling point from actual az alt position 24 hours
             ra = raCopy - float(i) * 10 / 50                                                                                # 12 hours line max

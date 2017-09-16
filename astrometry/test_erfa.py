@@ -677,3 +677,38 @@ class TestErfa(TestCase):
         self.assertEqual(dc, dc_ref)
         self.assertEqual(ok, 0)
 
+    def test_eraAtco13(self):
+        ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
+        elong = 11.0 * self.ERFA.ERFA_DD2R
+        phi = 49.0 * self.ERFA.ERFA_DD2R
+        hm = 583.0
+        xp = 0
+        yp = 0
+        j, dut1 = self.ERFA.eraDat(self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, 0)
+        phpa = 1000
+        tc = 20
+        rh = 0.8
+        wl = 0.57
+        rc = 3.14
+        dc = 0.5
+        pr = 0
+        pd = 0
+        px = 0
+        rv = 0
+
+        start_time = time.clock()
+        ok, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(rc, dc, pr, pd, px, rv, date1, date2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)
+        if self.show_perf:
+            print(" ERFA Apco13     Python  {0:15.15f} seconds".format((time.clock() - start_time)))
+
+        start_time = time.clock()
+        aob_ref, zob_ref, hob_ref, dob_ref, rob_ref, eo_ref = erfa_astro.atco13(rc, dc, pr, pd, px, rv, date1, date2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)
+        if self.show_perf:
+            print(" ERFA Apco13     Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
+        self.assertEqual(ok, 0)
+        self.assertEqual(aob, aob_ref)
+        self.assertEqual(zob, zob_ref)
+        self.assertEqual(hob, hob_ref)
+        self.assertEqual(dob, dob_ref)
+        self.assertEqual(rob, rob_ref)
+        self.assertEqual(eo, eo_ref)

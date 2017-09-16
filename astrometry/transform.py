@@ -36,6 +36,42 @@ class Transform:
         finally:
             pass
 
+    def transformNovas_old(self, ra, dec, transform=1):                                                                     # wrapper for the novas ascom implementation
+        self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
+        self.transform.SiteElevation = float(self.app.mount.site_height)  # height
+        self.transform.SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)  # site lat
+        self.transform.SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
+
+        # self.transform.JulianDateTT = self.jd
+        if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
+            ra = ra % 24
+            self.transform.SetJ2000(ra, dec)                                                                                # set J2000 ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        elif transform == 2:                                                                                                # 2 = Jnow -> J2000
+            self.transform.SetTopocentric(ra, dec)                                                                          # set Jnow data
+            val1 = self.transform.RAJ2000
+            val2 = self.transform.DECJ2000
+        elif transform == 3:                                                                                                # 3 = J2000 -> JNow
+            self.transform.SetJ2000(ra, dec)                                                                                # set J2000 data
+            val1 = self.transform.RATopocentric
+            val2 = self.transform.DECTopocentric
+        elif transform == 4:                                                                                                # 1 = JNow -> alt/az
+            ra = ra % 24
+            self.transform.SetTopocentric(ra, dec)                                                                          # set JNow ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        elif transform == 5:                                                                                                # 5 = Apparent -> alt/az
+            ra = ra % 24
+            self.transform.SetApparent(ra, dec)                                                                             # set apparent ra, dec
+            val1 = self.transform.AzimuthTopocentric                                                                        # convert az
+            val2 = self.transform.ElevationTopocentric                                                                      # convert alt
+        else:
+            val1 = ra
+            val2 = dec
+        self.transformationLock.release()                                                                                   # release locking for thread safety
+        return val1, val2
+
     @staticmethod
     def ra_dec_lst_to_az_alt(ra, dec, LAT):                                                                                 # formula to make alt/az from hour angle and dec
         ra = (ra * 15 + 360.0) % 360.0
@@ -89,16 +125,16 @@ class Transform:
         else:
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
-    # implementation ascom.transform to erfy.py
+    # implementation ascom.transform to erfa.py
 
     def transformNovas(self, ra, dec, transform=1):
-        # print(ra, dec, transform)
+        print(ra, dec, transform)
         self.transformationLockERFA.acquire()
         SiteElevation = float(self.app.mount.site_height)
         SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)
         SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
         # TODO: check if site parameters available
-        if transform == 1 or transform == 4 or transform == 5:
+        if transform == 1:
             ra = ra % 24
             ts = time.gmtime(0)
             suc, date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
@@ -125,6 +161,8 @@ class Transform:
             AltitudeTopo = 90.0 - zob * self.ERFA.ERFA_DR2D
             val1 = AzimuthTopo
             val2 = AltitudeTopo
+            a, b = self.transformNovas_old(ra, dec, 1)
+            print(val1, a, val2, b)
         elif transform == 2:
             ts = time.gmtime(0)
             suc, date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
