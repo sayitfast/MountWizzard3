@@ -616,7 +616,6 @@ class Mount(PyQt5.QtCore.QThread):
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
         self.site_lat = self.mountHandler.sendCommand('Gt')                                                                 # get site latitude
-        self.transform.transformNovasSiteParams(self.site_lat, self.site_lon, self.site_height)
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                         # write data to GUI
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})
         self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})

@@ -99,7 +99,7 @@ class Analyse:
                 else:
                     resultData['dec_sol_Jnow'] = [dec_sol_Jnow]
                 ha = ra - lst
-                az, alt = self.app.mount.transformNovas(ha, dec, 4)
+                az, alt = self.app.mount.transformNovas(ha, dec, 3)
                 if 'azimuth' in resultData:
                     resultData['azimuth'].append(az)
                 else:
