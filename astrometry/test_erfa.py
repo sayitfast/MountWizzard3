@@ -2,6 +2,7 @@ from unittest import TestCase
 from astrometry import erfa
 import time
 from astropy import _erfa as erfa_astro
+import time
 
 
 class TestErfa(TestCase):
@@ -45,8 +46,15 @@ class TestErfa(TestCase):
     def test_eraJd2cal(self):
         dj1 = 2450123.7
         dj2 = 0.0
+
+        start_time = time.clock()
         ok, iy, im, id, fd = self.ERFA.eraJd2cal(dj1, dj2)
+        # print(" ERFA Python  {0:15.15f} seconds ---".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         value = erfa_astro.jd2cal(dj1, dj2)
+        # print(" ERFA Astropy {0:15.15f} seconds ---".format((time.clock() - start_time)))
+
         self.assertEqual(ok, 0)
         self.assertEqual(value[0], iy)
         self.assertEqual(value[1], im)
@@ -341,9 +349,15 @@ class TestErfa(TestCase):
         ri = 3.14
         di = 0.5
 
+        start_time = time.clock()
         rc, dc, eo = self.ERFA.eraAtic13(ri, di, date1, date2)
+        print(" ERFA Python  {0:15.15f} seconds ---".format((time.clock() - start_time)))
+
+        start_time = time.clock()
         rc_ref, dc_ref, eo_ref = erfa_astro.atic13(ri, di, date1, date2)
+        print(" ERFA Astropy {0:15.15f} seconds ---".format((time.clock() - start_time)))
+
         self.assertEqual(rc, rc_ref)
         self.assertEqual(dc, dc_ref)
         self.assertEqual(eo, eo_ref)
-        print(ri, rc, di, dc)
+

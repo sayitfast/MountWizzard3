@@ -17,10 +17,11 @@ from decimal import *
 
 
 class LDBODY:           # Body parameters for light deflection
-   bm = 0               # mass of the body (solar masses)
-   dl = 0               # deflection limiter (radians^2/2)
-   pv = [[0, 0, 0],
-         [0, 0, 0]]     # barycentric PV of the body (au, au/day)
+    bm = 0              # mass of the body (solar masses)
+    dl = 0              # deflection limiter (radians^2/2)
+    pv = [[0, 0, 0],
+          [0, 0, 0]]    # barycentric PV of the body (au, au/day)
+
 
 class ASTROM:           # Star-independent astrometry parameters
     pmt = 0             # PM time interval(SSB, Julian years)
@@ -48,51 +49,84 @@ class ERFA:
     # star independent astrometry parameters
     astrom = ASTROM()
     ldbody = LDBODY()
-    ehpv = 0
-    ebpv = 0
-    r = 0
-    x = 0
-    y = 0
+
     # CONSTANTS
-    # Degrees to radians
-    ERFA_DD2R = 1.745329251994329576923691e-2
-    # Julian Date of Modified Julian Date zero
-    ERFA_DJM0 = 2400000.5
-    # Seconds per day.
-    ERFA_DAYSEC = 86400.0
-    # Reference epoch (J2000.0), Julian Date
-    ERFA_DJ00 = 2451545.0
-    # Days per Julian year
-    ERFA_DJY = 365.25
-    # Days per Julian century
-    ERFA_DJC = 36525.0
-    # arcseconds to radians
-    ERFA_DAS2R = 4.848136811095359935899141e-6
-    # arcseconds in a full circle
-    ERFA_TURNAS = 1296000.0
     # pi
     ERFA_DPI = 3.141592653589793238462643
     # 2pi
     ERFA_D2PI = 6.283185307179586476925287
+    #  Radians to degrees
+    ERFA_DR2D = 57.29577951308232087679815
+    # Degrees to radians
+    ERFA_DD2R = 1.745329251994329576923691e-2
+    #  Radians to arcseconds
+    ERFA_DR2AS = 206264.8062470963551564734
+    # arcseconds to radians
+    ERFA_DAS2R = 4.848136811095359935899141e-6
+    #  Seconds of time to radians
+    ERFA_DS2R = 7.272205216643039903848712e-5
+    # arcseconds in a full circle
+    ERFA_TURNAS = 1296000.0
+    # Milliarcseconds to radians
+    ERFA_DMAS2R = ERFA_DAS2R / 1e3
+    #  Length of tropical year B1900(days)
+    ERFA_DTY = 365.242198781
+    # Seconds per day.
+    ERFA_DAYSEC = 86400.0
+    # Days per Julian year
+    ERFA_DJY = 365.25
+    # Days per Julian century
+    ERFA_DJC = 36525.0
+    # Days per Julian millennium
+    ERFA_DJM = 365250.0
+    # Reference epoch (J2000.0), Julian Date
+    ERFA_DJ00 = 2451545.0
+    # Julian Date of Modified Julian Date zero
+    ERFA_DJM0 = 2400000.5
+    #  Reference epoch(J2000.0), Modified Julian Date
+    ERFA_DJM00 = 51544.5
+    #  1977 Jan 1.0 as MJD
+    ERFA_DJM77 = 43144.0
+    #  TT minus TAI(s)
+    ERFA_TTMTAI = 32.184
     # Astronomical unit (m, IAU 2012)
     ERFA_DAU = 149597870.7e3
     # Speed of light (m/s)
     ERFA_CMPS = 299792458.0
     # Light time for 1 au (s)
     ERFA_AULT = ERFA_DAU / ERFA_CMPS
-    # Days per Julian millennium
-    ERFA_DJM = 365250.0
+    #  Speed of light(au per day)
+    ERFA_DC = ERFA_DAYSEC / ERFA_AULT
+    #  L_G = 1 - d(TT) / d(TCG)
+    ERFA_ELG = 6.969290134e-10
+    # L_B = 1 - d(TDB) / d(TCB), and TDB(s) at TAI 1977 / 1 / 1.0
+    ERFA_ELB = 1.550519768e-8
+    ERFA_TDB0 = -6.55e-5
     # Schwarzschild radius of the Sun (au) 2 * 1.32712440041e20 / (2.99792458e8)^2 / 1.49597870700e11
     ERFA_SRS = 1.97412574336e-8
 
     # Macros as functions
     @staticmethod
+    def ERFA_DINT(value):
+        return int(value)
+
+    @staticmethod
     def ERFA_DNINT(value):
         return round(value, 0)
 
     @staticmethod
+    def ERFA_DSIGN(A, B):
+        return -abs(A) if B < 0.0 else abs(A)
+
+    @staticmethod
     def ERFA_GMAX(A, B):
         return A if A > B else B
+
+    @staticmethod
+    def ERFA_GMIN(A, B):
+        return A if A < B else B
+
+    # implementation of ERFA functions
 
     def eraCal2jd(self, iy, im, id):
         # Earliest year allowed (4800BC)
@@ -125,7 +159,9 @@ class ERFA:
         my = (im - 14) / 12
         iypmy = Decimal(iy + my)
         djm0 = self.ERFA_DJM0
-        djm = int((Decimal(1461) * (iypmy + Decimal(4800))) / Decimal(4)) + int((Decimal(367) * Decimal((im - 2 - 12 * my))) / Decimal(12)) - int((Decimal(3) * ((iypmy + Decimal(4900)) / Decimal(100))) / Decimal(4)) + Decimal(id) - Decimal(2432076)
+        djm = int((Decimal(1461) * (iypmy + Decimal(4800))) / Decimal(4)) + int(
+            (Decimal(367) * Decimal((im - 2 - 12 * my))) / Decimal(12)) - int(
+            (Decimal(3) * ((iypmy + Decimal(4900)) / Decimal(100))) / Decimal(4)) + Decimal(id) - Decimal(2432076)
 
         # Return status and values.
         return j, float(djm0), float(djm)
@@ -227,7 +263,7 @@ class ERFA:
 
         # ...and use it to find the preceding table entry.
         i = 0
-        for i in range(NDAT-1, -1,  -1):
+        for i in range(NDAT - 1, -1, -1):
             if m >= (12 * changes[i][0] + changes[i][1]):
                 break
 
@@ -370,7 +406,8 @@ class ERFA:
         t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
 
         # Mean obliquity.
-        eps0 = (84381.406 + (-46.836769 + (-0.0001831 + (0.00200340 + (-0.000000576 + (-0.0000000434) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        eps0 = (84381.406 + (-46.836769 + (
+        -0.0001831 + (0.00200340 + (-0.000000576 + (-0.0000000434) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
         return eps0
 
     def eraPfw06(self, date1, date2):
@@ -378,38 +415,46 @@ class ERFA:
         t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
 
         # P03 bias+precession angles.
-        gamb = (-0.052928 + (10.556378 + (0.4932044 + (-0.00031238 + (-0.000002788 + 0.0000000260 * t) * t) * t) * t) * t) * self.ERFA_DAS2R
-        phib = (84381.412819 + (-46.811016 + (0.0511268 + (0.00053289 + (-0.000000440 + (-0.0000000176) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
-        psib = (-0.041775 + (5038.481484 + (1.5584175 + (-0.00018522 + (-0.000026452 + (-0.0000000148) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        gamb = (-0.052928 + (
+        10.556378 + (0.4932044 + (-0.00031238 + (-0.000002788 + 0.0000000260 * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        phib = (84381.412819 + (-46.811016 + (
+        0.0511268 + (0.00053289 + (-0.000000440 + (-0.0000000176) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        psib = (-0.041775 + (5038.481484 + (
+        1.5584175 + (-0.00018522 + (-0.000026452 + (-0.0000000148) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
         epsa = self.eraObl06(date1, date2)
 
         return gamb, phib, psib, epsa
 
     def eraFal03(self, t):
         # Mean anomaly of the Moon (IERS Conventions 2003).
-        a = math.fmod(485868.249036 + t * (1717915923.2178 + t * (31.8792 + t * (0.051635 + t * (- 0.00024470)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        a = math.fmod(485868.249036 + t * (1717915923.2178 + t * (31.8792 + t * (0.051635 + t * (- 0.00024470)))),
+                      self.ERFA_TURNAS) * self.ERFA_DAS2R
         return a
 
     def eraFalp03(self, t):
         # Mean anomaly of the Sun (IERS Conventions 2003).
-        a = math.fmod(1287104.793048 + t * (129596581.0481 + t * (- 0.5532 + t * (0.000136 + t * (- 0.00001149)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        a = math.fmod(1287104.793048 + t * (129596581.0481 + t * (- 0.5532 + t * (0.000136 + t * (- 0.00001149)))),
+                      self.ERFA_TURNAS) * self.ERFA_DAS2R
         return a
 
     def eraFaf03(self, t):
         # Mean longitude of the Moon minus that of the ascending node
         # (IERS Conventions 2003).
-        a = math.fmod(335779.526232 + t * (1739527262.8478 + t * (- 12.7512 + t * (- 0.001037 + t * 0.00000417))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        a = math.fmod(335779.526232 + t * (1739527262.8478 + t * (- 12.7512 + t * (- 0.001037 + t * 0.00000417))),
+                      self.ERFA_TURNAS) * self.ERFA_DAS2R
         return a
 
     def eraFad03(self, t):
         # Mean elongation of the Moon from the Sun (IERS Conventions 2003).
-        a = math.fmod(1072260.703692 + t * (1602961601.2090 + t * (- 6.3706 + t * (0.006593 + t * (- 0.00003169)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        a = math.fmod(1072260.703692 + t * (1602961601.2090 + t * (- 6.3706 + t * (0.006593 + t * (- 0.00003169)))),
+                      self.ERFA_TURNAS) * self.ERFA_DAS2R
         return a
 
     def eraFaom03(self, t):
         # Mean longitude of the Moon's ascending node
         # (IERS Conventions 2003).
-        a = math.fmod(450160.398036 + t * (- 6962890.5431 + t * (7.4722 + t * (0.007702 + t * (- 0.00005939)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        a = math.fmod(450160.398036 + t * (- 6962890.5431 + t * (7.4722 + t * (0.007702 + t * (- 0.00005939)))),
+                      self.ERFA_TURNAS) * self.ERFA_DAS2R
         return a
 
     @staticmethod
@@ -2122,14 +2167,16 @@ class ERFA:
         el = self.eraFal03(t)
 
         # Mean anomaly of the Sun (MHB2000).
-        elp = math.fmod(1287104.79305 + t * (129596581.0481 + t * (-0.5532 + t * (0.000136 + t * (-0.00001149)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        elp = math.fmod(1287104.79305 + t * (129596581.0481 + t * (-0.5532 + t * (0.000136 + t * (-0.00001149)))),
+                        self.ERFA_TURNAS) * self.ERFA_DAS2R
 
         # Mean longitude of the Moon minus that of the ascending node
         # (IERS 2003.
         f = self.eraFaf03(t)
 
         # Mean elongation of the Moon from the Sun (MHB2000).
-        d = math.fmod(1072260.70369 + t * (1602961601.2090 + t * (-6.3706 + t * (0.006593 + t * (-0.00003169)))), self.ERFA_TURNAS) * self.ERFA_DAS2R
+        d = math.fmod(1072260.70369 + t * (1602961601.2090 + t * (-6.3706 + t * (0.006593 + t * (-0.00003169)))),
+                      self.ERFA_TURNAS) * self.ERFA_DAS2R
 
         # Mean longitude of the ascending node of the Moon (IERS 2003).
         om = self.eraFaom03(t)
@@ -2139,7 +2186,7 @@ class ERFA:
         de = 0.0
 
         # Summation of luni-solar nutation series (in reverse order).
-        for i in range(NLS-1, -1, -1):
+        for i in range(NLS - 1, -1, -1):
             # int nl[0], nlp[1], nf[2], nd[3], nom[4], sp[5], spt[6], cp[7], ce[8], cet[9], se[10];
             # Argument and functions.
             arg = math.fmod(xls[i][0] * el
@@ -2193,7 +2240,7 @@ class ERFA:
         de = 0.0
 
         # Summation of planetary nutation series (in reverse order).
-        for i in range(NPL-1, -1, -1):
+        for i in range(NPL - 1, -1, -1):
             # nl[0], nf[1], nd[2], nom[3], nme[4], nve[5], nea[6], nma[7], nju[8], nsa[9], nur[10], nne[11], npa[12], sp[13], cp[14], se[15], ce[16]
             arg = math.fmod(xpl[i][0] * al
                             + xpl[i][1] * af
@@ -4456,19 +4503,19 @@ class ERFA:
         # x sun to earth
         xb = 0.0
         xb_dot = 0.0
-        for i in range(int(len(e0x)/3)):
+        for i in range(int(len(e0x) / 3)):
             p = e0x[i * 3 + 1] + e0x[i * 3 + 2] * t
             xb += e0x[i * 3] * math.cos(p)
             xb_dot -= e0x[i * 3] * e0x[i * 3 + 2] * math.sin(p)
 
-        for i in range(int(len(e1x)/3)):
+        for i in range(int(len(e1x) / 3)):
             ct = e1x[i * 3 + 2] * t
             p = e1x[i * 3 + 1] + ct
             cp = math.cos(p)
             xb += e1x[i * 3] * t * cp
             xb_dot += e1x[i * 3] * (cp - ct * math.sin(p))
 
-        for i in range(int(len(e2x)/3)):
+        for i in range(int(len(e2x) / 3)):
             ct = e2x[i * 3 + 2] * t
             p = e2x[i * 3 + 1] + ct
             cp = math.cos(p)
@@ -4478,17 +4525,17 @@ class ERFA:
         # y sun to earth
         yb = 0.0
         yb_dot = 0.0
-        for i in range(int(len(e0y)/3)):
+        for i in range(int(len(e0y) / 3)):
             p = e0y[i * 3 + 1] + e0y[i * 3 + 2] * t
             yb += e0y[i * 3] * math.cos(p)
             yb_dot -= e0y[i * 3] * e0y[i * 3 + 2] * math.sin(p)
-        for i in range(int(len(e1y)/3)):
+        for i in range(int(len(e1y) / 3)):
             ct = e1y[i * 3 + 2] * t
             p = e1y[i * 3 + 1] + ct
             cp = math.cos(p)
             yb += e1y[i * 3] * t * cp
             yb_dot += e1y[i * 3] * (cp - ct * math.sin(p))
-        for i in range(int(len(e2y)/3)):
+        for i in range(int(len(e2y) / 3)):
             ct = e2y[i * 3 + 2] * t
             p = e2y[i * 3 + 1] + ct
             cp = math.cos(p)
@@ -4498,17 +4545,17 @@ class ERFA:
         # z sun to earth
         zb = 0.0
         zb_dot = 0.0
-        for i in range(int(len(e0z)/3)):
+        for i in range(int(len(e0z) / 3)):
             p = e0z[i * 3 + 1] + e0z[i * 3 + 2] * t
             zb += e0z[i * 3] * math.cos(p)
             zb_dot -= e0z[i * 3] * e0z[i * 3 + 2] * math.sin(p)
-        for i in range(int(len(e1z)/3)):
+        for i in range(int(len(e1z) / 3)):
             ct = e1z[i * 3 + 2] * t
             p = e1z[i * 3 + 1] + ct
             cp = math.cos(p)
             zb += e1z[i * 3] * t * cp
             zb_dot += e1z[i * 3] * (cp - ct * math.sin(p))
-        for i in range(int(len(e2z)/3)):
+        for i in range(int(len(e2z) / 3)):
             ct = e2z[i * 3 + 2] * t
             p = e2z[i * 3 + 1] + ct
             cp = math.cos(p)
@@ -4520,17 +4567,17 @@ class ERFA:
         vh = [xb_dot / self.ERFA_DJY, yb_dot / self.ERFA_DJY, zb_dot / self.ERFA_DJY]
 
         # x SSB to Sun
-        for i in range(int(len(s0x)/3)):
+        for i in range(int(len(s0x) / 3)):
             p = s0x[i * 3 + 1] + s0x[i * 3 + 2] * t
             xb += s0x[i * 3] * math.cos(p)
             xb_dot -= s0x[i * 3] * s0x[i * 3 + 2] * math.sin(p)
-        for i in range(int(len(s1x)/3)):
+        for i in range(int(len(s1x) / 3)):
             ct = s1x[i * 3 + 2] * t
             p = s1x[i * 3 + 1] + ct
             cp = math.cos(p)
             xb += s1x[i * 3] * t * cp
             xb_dot += s1x[i * 3] * (cp - ct * math.sin(p))
-        for i in range(int(len(s2x)/3)):
+        for i in range(int(len(s2x) / 3)):
             ct = s2x[i * 3 + 2] * t
             p = s2x[i * 3 + 1] + ct
             cp = math.cos(p)
@@ -4538,17 +4585,17 @@ class ERFA:
             xb_dot += s2x[i * 3] * t * (2.0 * cp - ct * math.sin(p))
 
         # y SSB to Sun
-        for i in range(int(len(s0y)/3)):
+        for i in range(int(len(s0y) / 3)):
             p = s0y[i * 3 + 1] + s0y[i * 3 + 2] * t
             yb += s0y[i * 3] * math.cos(p)
             yb_dot -= s0y[i * 3] * s0y[i * 3 + 2] * math.sin(p)
-        for i in range(int(len(s1y)/3)):
+        for i in range(int(len(s1y) / 3)):
             ct = s1y[i * 3 + 2] * t
             p = s1y[i * 3 + 1] + ct
             cp = math.cos(p)
             yb += s1y[i * 3] * t * cp
             yb_dot += s1y[i * 3] * (cp - ct * math.sin(p))
-        for i in range(int(len(s2y)/3)):
+        for i in range(int(len(s2y) / 3)):
             ct = s2y[i * 3 + 2] * t
             p = s2y[i * 3 + 1] + ct
             cp = math.cos(p)
@@ -4556,17 +4603,17 @@ class ERFA:
             yb_dot += s2y[i * 3] * t * (2.0 * cp - ct * math.sin(p))
 
         # z SSB to Sun
-        for i in range(int(len(s0z)/3)):
+        for i in range(int(len(s0z) / 3)):
             p = s0z[i * 3 + 1] + s0z[i * 3 + 2] * t
             zb += s0z[i * 3] * math.cos(p)
             zb_dot -= s0z[i * 3] * s0z[i * 3 + 2] * math.sin(p)
-        for i in range(int(len(s1z)/3)):
+        for i in range(int(len(s1z) / 3)):
             ct = s1z[i * 3 + 2] * t
             p = s1z[i * 3 + 1] + ct
             cp = math.cos(p)
             zb += s1z[i * 3] * t * cp
             zb_dot += s1z[i * 3] * (cp - ct * math.sin(p))
-        for i in range(int(len(s2z)/3)):
+        for i in range(int(len(s2z) / 3)):
             ct = s2z[i * 3 + 2] * t
             p = s2z[i * 3 + 1] + ct
             cp = math.cos(p)
@@ -4748,7 +4795,7 @@ class ERFA:
             [[0, 0, 2, -2, 4, 0, 0, 0], 0.11e-6, 0.00e-6],
             [[1, 0, -2, 0, -3, 0, 0, 0], -0.11e-6, 0.00e-6],
             [[1, 0, -2, 0, -1, 0, 0, 0], -0.11e-6, 0.00e-6]
-            ]
+        ]
 
         # Terms of order t^1
         s1 = [
@@ -4756,7 +4803,7 @@ class ERFA:
             [[0, 0, 0, 0, 2, 0, 0, 0], -0.07e-6, 3.57e-6],
             [[0, 0, 0, 0, 1, 0, 0, 0], 1.73e-6, -0.03e-6],
             [[0, 0, 2, -2, 3, 0, 0, 0], 0.00e-6, 0.48e-6]
-            ]
+        ]
 
         # Terms of order t^2
         s2 = [
@@ -4788,7 +4835,7 @@ class ERFA:
             [[2, 0, 0, 0, 0, 0, 0, 0], -0.13e-6, 0.00e-6],
             [[1, 0, 2, -2, 2, 0, 0, 0], -0.12e-6, 0.00e-6],
             [[0, 0, 2, 0, 0, 0, 0, 0], -0.11e-6, 0.00e-6]
-            ]
+        ]
 
         # Terms of order t^3
         s3 = [
@@ -4797,13 +4844,13 @@ class ERFA:
             [[0, 0, 2, -2, 2, 0, 0, 0], -0.03e-6, -1.46e-6],
             [[0, 0, 2, 0, 2, 0, 0, 0], -0.01e-6, -0.25e-6],
             [[0, 0, 0, 0, 2, 0, 0, 0], 0.00e-6, 0.23e-6]
-            ]
+        ]
 
         # Terms of order t^4
         s4 = [
             # 1-1
             [[0, 0, 0, 0, 1, 0, 0, 0], -0.26e-6, -0.01e-6]
-            ]
+        ]
 
         # Number of terms in the series
         NS0 = len(s0)
@@ -5266,65 +5313,65 @@ class ERFA:
 
         return rc, dc, eo
 
-    # ----------------------------------------------------------------------
-    # **
-    # **
-    # **  Copyright (C) 2013-2017, NumFOCUS Foundation.
-    # **  All rights reserved.
-    # **
-    # **  This library is derived, with permission, from the International
-    # **  Astronomical Union's "Standards of Fundamental Astronomy" library,
-    # **  available from http://www.iausofa.org.
-    # **
-    # **  The ERFA version is intended to retain identical functionality to
-    # **  the SOFA library, but made distinct through different function and
-    # **  file names, as set out in the SOFA license conditions.  The SOFA
-    # **  original has a role as a reference standard for the IAU and IERS,
-    # **  and consequently redistribution is permitted only in its unaltered
-    # **  state.  The ERFA version is not subject to this restriction and
-    # **  therefore can be included in distributions which do not support the
-    # **  concept of "read only" software.
-    # **
-    # **  Although the intent is to replicate the SOFA API (other than
-    # **  replacement of prefix names) and results (with the exception of
-    # **  bugs;  any that are discovered will be fixed), SOFA is not
-    # **  responsible for any errors found in this version of the library.
-    # **
-    # **  If you wish to acknowledge the SOFA heritage, please acknowledge
-    # **  that you are using a library derived from SOFA, rather than SOFA
-    # **  itself.
-    # **
-    # **
-    # **  TERMS AND CONDITIONS
-    # **
-    # **  Redistribution and use in source and binary forms, with or without
-    # **  modification, are permitted provided that the following conditions
-    # **  are met:
-    # **
-    # **  1 Redistributions of source code must retain the above copyright
-    # **    notice, this list of conditions and the following disclaimer.
-    # **
-    # **  2 Redistributions in binary form must reproduce the above copyright
-    # **    notice, this list of conditions and the following disclaimer in
-    # **    the documentation and/or other materials provided with the
-    # **    distribution.
-    # **
-    # **  3 Neither the name of the Standards Of Fundamental Astronomy Board,
-    # **    the International Astronomical Union nor the names of its
-    # **    contributors may be used to endorse or promote products derived
-    # **    from this software without specific prior written permission.
-    # **
-    # **  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-    # **  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-    # **  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-    # **  FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
-    # **  COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-    # **  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
-    # **  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES
-    # **  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-    # **  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-    # **  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-    # **  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-    # **  POSSIBILITY OF SUCH DAMAGE.
-    # **
-    #
+        # ----------------------------------------------------------------------
+        # **
+        # **
+        # **  Copyright (C) 2013-2017, NumFOCUS Foundation.
+        # **  All rights reserved.
+        # **
+        # **  This library is derived, with permission, from the International
+        # **  Astronomical Union's "Standards of Fundamental Astronomy" library,
+        # **  available from http://www.iausofa.org.
+        # **
+        # **  The ERFA version is intended to retain identical functionality to
+        # **  the SOFA library, but made distinct through different function and
+        # **  file names, as set out in the SOFA license conditions.  The SOFA
+        # **  original has a role as a reference standard for the IAU and IERS,
+        # **  and consequently redistribution is permitted only in its unaltered
+        # **  state.  The ERFA version is not subject to this restriction and
+        # **  therefore can be included in distributions which do not support the
+        # **  concept of "read only" software.
+        # **
+        # **  Although the intent is to replicate the SOFA API (other than
+        # **  replacement of prefix names) and results (with the exception of
+        # **  bugs;  any that are discovered will be fixed), SOFA is not
+        # **  responsible for any errors found in this version of the library.
+        # **
+        # **  If you wish to acknowledge the SOFA heritage, please acknowledge
+        # **  that you are using a library derived from SOFA, rather than SOFA
+        # **  itself.
+        # **
+        # **
+        # **  TERMS AND CONDITIONS
+        # **
+        # **  Redistribution and use in source and binary forms, with or without
+        # **  modification, are permitted provided that the following conditions
+        # **  are met:
+        # **
+        # **  1 Redistributions of source code must retain the above copyright
+        # **    notice, this list of conditions and the following disclaimer.
+        # **
+        # **  2 Redistributions in binary form must reproduce the above copyright
+        # **    notice, this list of conditions and the following disclaimer in
+        # **    the documentation and/or other materials provided with the
+        # **    distribution.
+        # **
+        # **  3 Neither the name of the Standards Of Fundamental Astronomy Board,
+        # **    the International Astronomical Union nor the names of its
+        # **    contributors may be used to endorse or promote products derived
+        # **    from this software without specific prior written permission.
+        # **
+        # **  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+        # **  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+        # **  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+        # **  FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE
+        # **  COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+        # **  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+        # **  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES
+        # **  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+        # **  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+        # **  LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+        # **  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+        # **  POSSIBILITY OF SUCH DAMAGE.
+        # **
+        #
