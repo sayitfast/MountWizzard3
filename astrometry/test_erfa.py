@@ -689,8 +689,8 @@ class TestErfa(TestCase):
         tc = 20
         rh = 0.8
         wl = 0.57
-        rc = 3.14
-        dc = 0.5
+        rc = 20 * self.ERFA.ERFA_DD2R * 24 / 360
+        dc = 0 * self.ERFA.ERFA_DD2R
         pr = 0
         pd = 0
         px = 0
@@ -712,3 +712,4 @@ class TestErfa(TestCase):
         self.assertEqual(dob, dob_ref)
         self.assertEqual(rob, rob_ref)
         self.assertEqual(eo, eo_ref)
+        print(aob, aob_ref)

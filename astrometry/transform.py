@@ -13,7 +13,7 @@
 ############################################################
 import logging
 import math
-import time
+import datetime
 from astrometry.erfa import ERFA
 import threading
 # win32com
@@ -127,26 +127,39 @@ class Transform:
 
     # implementation ascom.transform to erfa.py
 
+    def GetJDTT(self):
+        ts = datetime.datetime.utcnow()
+        suc, d1, d2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
+        if suc != 0:
+            print("Dtf2d", "Bad return code")
+        suc, tai1, tai2 = self.ERFA.eraUtctai(d1, d2)
+        if suc != 0:
+            print("GetJDTTSofa", "Utctai - Bad return code")
+        tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
+        m_JulianDate = tt1 + tt2
+
+        return m_JulianDate
+
     def transformNovas(self, ra, dec, transform=1):
-        print(ra, dec, transform)
         self.transformationLockERFA.acquire()
         SiteElevation = float(self.app.mount.site_height)
         SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)
         SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
         # TODO: check if site parameters available
-        if transform == 1:
+        if transform == 1:  # J2000 to Topo
             ra = ra % 24
-            ts = time.gmtime(0)
-            suc, date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
-            suc, dut1 = self.ERFA.eraDat(ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour + 60 * (ts.tm_min + 60 * ts.tm_sec) * 24 / self.ERFA.ERFA_DAYSEC)
-            suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24.0,
-                                                                   dec * self.ERFA.ERFA_DD2R,
+            ts = datetime.datetime.utcnow()
+            suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
+            suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)
+            dut1 = 37 + 4023.0 / 125.0 - dut1_prev
+            suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
+                                                                   dec * self.ERFA.ERFA_D2PI / 360,
                                                                    0.0,
                                                                    0.0,
                                                                    0.0,
                                                                    0.0,
-                                                                   date1,
-                                                                   date2,
+                                                                   date1 + date2,
+                                                                   0.0,
                                                                    dut1,
                                                                    SiteLongitude * self.ERFA.ERFA_DD2R,
                                                                    SiteLatitude * self.ERFA.ERFA_DD2R,
@@ -154,24 +167,24 @@ class Transform:
                                                                    0.0,
                                                                    0.0,
                                                                    1000.0,
-                                                                   0.0,
+                                                                   20.0,
                                                                    0.8,
                                                                    0.57)
-            AzimuthTopo = aob * self.ERFA.ERFA_DR2D
-            AltitudeTopo = 90.0 - zob * self.ERFA.ERFA_DR2D
+            AzimuthTopo = aob * 360 / self.ERFA.ERFA_D2PI
+            AltitudeTopo = 90.0 - zob * 360 / self.ERFA.ERFA_D2PI
             val1 = AzimuthTopo
             val2 = AltitudeTopo
-            a, b = self.transformNovas_old(ra, dec, 1)
-            print(val1, a, val2, b)
-        elif transform == 2:
-            ts = time.gmtime(0)
-            suc, date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
-            suc, dut1 = self.ERFA.eraDat(ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour + 60 * (ts.tm_min + 60 * ts.tm_sec) * 24 / self.ERFA.ERFA_DAYSEC)
-            j, rc, dc = self.ERFA.eraAtoc13('A',
-                                            ra * self.ERFA.ERFA_D2PI / 24.0,
-                                            dec * self.ERFA.ERFA_DD2R,
-                                            date1,
-                                            date2,
+        elif transform == 2:    # Topo to J2000
+            ts = datetime.datetime.utcnow()
+            suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
+            suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)
+            dut1 = 37 + 4023.0 / 125.0 - dut1_prev
+            jdtt = self.GetJDTT()
+            j, rc, dc = self.ERFA.eraAtoc13('R',
+                                            self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
+                                            dec * self.ERFA.ERFA_D2PI / 360,
+                                            date1 + date2,
+                                            0.0,
                                             dut1,
                                             SiteLongitude * self.ERFA.ERFA_DD2R,
                                             SiteLatitude * self.ERFA.ERFA_DD2R,
@@ -179,19 +192,19 @@ class Transform:
                                             0.0,
                                             0.0,
                                             1000.0,
-                                            0.0,
+                                            20.0,
                                             0.8,
                                             0.57)
             RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
             DECJ2000 = dc * self.ERFA.ERFA_DR2D
             val1 = RAJ2000
             val2 = DECJ2000
-        elif transform == 3:
-            ts = time.gmtime(0)
-            suc, date1, date2 = self.ERFA.eraDtf2d('UTC', ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour, ts.tm_min, ts.tm_sec)
-            suc, dut1 = self.ERFA.eraDat(ts.tm_year, ts.tm_mon, ts.tm_mday, ts.tm_hour + 60 * (ts.tm_min + 60 * ts.tm_sec) * 24 / self.ERFA.ERFA_DAYSEC)
-            suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24.0,
-                                                                   dec * self.ERFA.ERFA_DD2R,
+        elif transform == 3:    # J2000 to Topo
+            ts = datetime.datetime.utcnow()
+            suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
+            suc, dut1 = self.ERFA.eraDat(ts.year, ts.month, ts.day, ts.hour, 0)
+            suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
+                                                                   dec * self.ERFA.ERFA_D2PI / 360,
                                                                    0.0,
                                                                    0.0,
                                                                    0.0,
@@ -208,8 +221,8 @@ class Transform:
                                                                    0.0,
                                                                    0.8,
                                                                    0.57)
-            RATopo = self.ERFA.eraAnp(rob - eo) * (24 / self.ERFA.ERFA_D2PI)
-            DECTopo = dob * self.ERFA.ERFA_DR2D
+            RATopo = self.ERFA.eraAnp(rob - eo) * 24 / self.ERFA.ERFA_D2PI
+            DECTopo = dob * 360 / self.ERFA.ERFA_D2PI
             val1 = RATopo
             val2 = DECTopo
         else:

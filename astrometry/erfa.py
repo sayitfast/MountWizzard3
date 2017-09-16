@@ -419,6 +419,21 @@ class ERFA:
 
         return eo
 
+    def eraEo06a(self, date1, date2):
+        # Classical nutation x precession x bias matrix.
+        r = self.eraPnm06a(date1, date2)
+
+        # Extract CIP coordinates.
+        x, y = self.eraBpn2xy(r)
+
+        # The CIO locator, s.
+        s = self.eraS06(date1, date2, x, y)
+
+        # Solve for the EO.
+        eo = self.eraEors(r, s)
+
+        return eo
+
     def eraObl06(self, date1, date2):
         # Interval between fundamental date J2000.0 and given date (JC).
         t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC

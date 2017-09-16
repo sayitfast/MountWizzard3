@@ -558,7 +558,7 @@ class Mount(PyQt5.QtCore.QThread):
                     self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
                 self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
             except Exception as e:
-                self.logger.error('getStatusFast  -> receive error Ginfo command: {0}'.format(e))
+                self.logger.error('getStatusFast  -> receive error Ginfo command: {0} reply:{1}'.format(e, reply))
             finally:
                 pass
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
