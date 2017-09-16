@@ -5857,18 +5857,100 @@ class ERFA:
 
         return j
 
-    def eraAtoiq(self, type_ERA, ob1, ob2, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
-        # Star-independent astrometry parameters for CIRS->observed.
-        j = self.eraApio13(utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)
+    def eraAtoiq(self, type_ERA, ob1, ob2):
+        # Coordinate type.
+        c = type_ERA[0]
 
-        # Abort if bad UTC.
-        if j < 0:
-            return j
+        # Coordinates.
+        c1 = ob1
+        c2 = ob2
 
-        # Transform observed to CIRS.
-        ri, di = self.eraAtoiq(type_ERA, ob1, ob2)
+        # Sin, cos of latitude.
+        sphi = self.astrom.sphi
+        cphi = self.astrom.cphi
 
-        return j, ri, di
+        # Standardize coordinate type.
+        if c == 'r' or c == 'R':
+            c = 'R'
+        elif c == 'h' or c == 'H':
+            c = 'H'
+        else:
+            c = 'A'
+
+        # If Az,ZD, convert to Cartesian (S=0,E=90).
+        if c == 'A':
+            ce = math.sin(c2)
+            xaeo = - math.cos(c1) * ce
+            yaeo = math.sin(c1) * ce
+            zaeo = math.cos(c2)
+
+        else:
+            # If RA,Dec, convert to HA,Dec.
+            if c == 'R':
+                c1 = self.astrom.eral - c1
+
+            # To Cartesian -HA,Dec.
+            v = self.eraS2c(-c1, c2)
+            xmhdo = v[0]
+            ymhdo = v[1]
+            zmhdo = v[2]
+
+            # To Cartesian Az,El (S=0,E=90).
+            xaeo = sphi * xmhdo - cphi * zmhdo
+            yaeo = ymhdo
+            zaeo = cphi * xmhdo + sphi * zmhdo
+
+        # Azimuth (S=0,E=90).
+        az = math.atan2(yaeo, xaeo) if (xaeo != 0.0 or yaeo != 0.0) else 0.0
+
+        # Sine of observed ZD, and observed ZD.
+        sz = math.sqrt(xaeo * xaeo + yaeo * yaeo)
+        zdo = math.atan2(sz, zaeo)
+
+        #
+        # * Refraction
+        # * ----------
+        #
+
+        # Fast algorithm using two constant model.
+        refa = self.astrom.refa
+        refb = self.astrom.refb
+        tz = sz / zaeo
+        dref = (refa + refb * tz * tz) * tz
+        zdt = zdo + dref
+
+        # To Cartesian Az,ZD.
+        ce = math.sin(zdt)
+        xaet = math.cos(az) * ce
+        yaet = math.sin(az) * ce
+        zaet = math.cos(zdt)
+
+        # Cartesian Az,ZD to Cartesian -HA,Dec.
+        xmhda = sphi * xaet + cphi * zaet
+        ymhda = yaet
+        zmhda = - cphi * xaet + sphi * zaet
+
+        # Diurnal aberration.
+        f = (1.0 + self.astrom.diurab * ymhda)
+        xhd = f * xmhda
+        yhd = f * (ymhda - self.astrom.diurab)
+        zhd = f * zmhda
+
+        # Polar motion.
+        xpl = self.astrom.xpl
+        ypl = self.astrom.ypl
+        w = xpl * xhd - ypl * yhd + zhd
+        v[0] = xhd - xpl * w
+        v[1] = yhd + ypl * w
+        v[2] = w - (xpl * xpl + ypl * ypl) * zhd
+
+        # To spherical -HA,Dec.
+        hma, di = self.eraC2s(v)
+
+        # Right ascension.
+        ri = self.eraAnp(self.astrom.eral + hma)
+
+        return ri, di
 
     def eraAtoc13(self, type_ERA, ob1, ob2, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
         # Star-independent astrometry parameters.
