@@ -117,6 +117,10 @@ class ERFA:
     ERFA_TDB0 = -6.55e-5
     # Schwarzschild radius of the Sun (au) 2 * 1.32712440041e20 / (2.99792458e8)^2 / 1.49597870700e11
     ERFA_SRS = 1.97412574336e-8
+    # Reference ellipsoids
+    ERFA_WGS84 = 1
+    ERFA_GRS80 = 2
+    ERFA_WGS72 = 3
 
     # Macros as functions
     @staticmethod
@@ -267,7 +271,7 @@ class ERFA:
 
         # If pre-UTC year set warning status and give up.
         if iy < changes[0][0]:
-            return 1
+            return 1, deltat
 
         # If suspiciously late year set warning status but proceed.
         if iy > IYV + 5:
@@ -293,7 +297,6 @@ class ERFA:
         if i < NERA1:
             deltat += (djm + fd - drift[i][0]) * drift[i][1]
 
-        # Return the status.
         return j, deltat
 
     def eraJd2cal(self, dj1, dj2):
@@ -421,8 +424,8 @@ class ERFA:
         t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
 
         # Mean obliquity.
-        eps0 = (84381.406 + (-46.836769 + (
-        -0.0001831 + (0.00200340 + (-0.000000576 + (-0.0000000434) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        eps0 = (84381.406 + (-46.836769 + (-0.0001831 + (0.00200340 + (-0.000000576 + (-0.0000000434) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+
         return eps0
 
     def eraPfw06(self, date1, date2):
@@ -430,12 +433,9 @@ class ERFA:
         t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
 
         # P03 bias+precession angles.
-        gamb = (-0.052928 + (
-        10.556378 + (0.4932044 + (-0.00031238 + (-0.000002788 + 0.0000000260 * t) * t) * t) * t) * t) * self.ERFA_DAS2R
-        phib = (84381.412819 + (-46.811016 + (
-        0.0511268 + (0.00053289 + (-0.000000440 + (-0.0000000176) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
-        psib = (-0.041775 + (5038.481484 + (
-        1.5584175 + (-0.00018522 + (-0.000026452 + (-0.0000000148) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        gamb = (-0.052928 + (10.556378 + (0.4932044 + (-0.00031238 + (-0.000002788 + 0.0000000260 * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        phib = (84381.412819 + (-46.811016 + (0.0511268 + (0.00053289 + (-0.000000440 + (-0.0000000176) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
+        psib = (-0.041775 + (5038.481484 + (1.5584175 + (-0.00018522 + (-0.000026452 + (-0.0000000148) * t) * t) * t) * t) * t) * self.ERFA_DAS2R
         epsa = self.eraObl06(date1, date2)
 
         return gamb, phib, psib, epsa
@@ -5021,7 +5021,7 @@ class ERFA:
             w = vb[i] * CR
             self.astrom.v[i] = w
             v2 += w * w
-        self.astrom.bm1 = math.sqrt(1.0 - v2)
+        self.astrom.bml = math.sqrt(1.0 - v2)
 
         # Reset the NPB matrix.
         self.astrom.bpn = self.eraIr()
@@ -5156,16 +5156,16 @@ class ERFA:
 
         return pl
 
-    def eraAb(self, pnat, v, s, bm1):
+    def eraAb(self, pnat, v, s, bml):
         ppr = [0, 0, 0]
         p = [0, 0, 0]
 
         pdv = self.eraPdp(pnat, v)
-        w1 = 1.0 + pdv / (1.0 + bm1)
+        w1 = 1.0 + pdv / (1.0 + bml)
         w2 = self.ERFA_SRS / s
         r2 = 0.0
         for i in range(3):
-            w = pnat[i] * bm1 + w1 * v[i] + w2 * (v[i] - pdv * pnat[i])
+            w = pnat[i] * bml + w1 * v[i] + w2 * (v[i] - pdv * pnat[i])
             p[i] = w
             r2 = r2 + w * w
         r = math.sqrt(r2)
@@ -5198,12 +5198,13 @@ class ERFA:
 
         return theta, phi
 
-    def eraAnp(self, a):
-        w = math.fmod(a, self.ERFA_D2PI)
-        if w < 0:
-            w += self.ERFA_D2PI
+    @staticmethod
+    def eraCr(r):
+        return r
 
-        return w
+    @staticmethod
+    def eraCp(r):
+        return r
 
     def eraAtciq(self, rc, dc, pr, pd, px, rv):
         # Proper motion and parallax, giving BCRS coordinate direction.
@@ -5213,7 +5214,7 @@ class ERFA:
         pnat = self.eraLdsun(pco, self.astrom.eh, self.astrom.em)
 
         # Aberration, giving GCRS proper direction.
-        ppr = self.eraAb(pnat, self.astrom.v, self.astrom.em, self.astrom.bm1)
+        ppr = self.eraAb(pnat, self.astrom.v, self.astrom.em, self.astrom.bml)
 
         # Bias-precession-nutation, giving CIRS proper direction.
         pi = self.eraRxp(self.astrom.bpn, ppr)
@@ -5286,7 +5287,7 @@ class ERFA:
             r = math.sqrt(r2)
             for i in range(3):
                 before[i] /= r
-            after = self.eraAb(before, self.astrom.v, self.astrom.em, self.astrom.bm1)
+            after = self.eraAb(before, self.astrom.v, self.astrom.em, self.astrom.bml)
             r2 = 0.0
             for i in range(3):
                 d[i] = after[i] - before[i]
@@ -5333,6 +5334,387 @@ class ERFA:
         rc, dc = self.eraAticq(ri, di)
 
         return rc, dc, eo
+
+    def eraUtctai(self, utc1, utc2):
+        tai1 = 0
+        tai2 = 0
+        # Put the two parts of the UTC into big-first order.
+        big1 = (utc1 >= utc2)
+        if big1:
+            u1 = utc1
+            u2 = utc2
+        else:
+            u1 = utc2
+            u2 = utc1
+
+            # Get TAI-UTC at 0h today.
+        j,  iy, im, id, fd = self.eraJd2cal(u1, u2)
+        if j:
+            return j, tai1, tai2
+        j, dat0 = self.eraDat(iy, im, id, 0.0)
+        if j < 0:
+            return j, tai1, tai2
+
+        # Get TAI-UTC at 12h today (to detect drift).
+        j, dat12 = self.eraDat(iy, im, id, 0.5)
+        if j < 0:
+            return j, tai1, tai2
+
+        # Get TAI-UTC at 0h tomorrow (to detect jumps).
+        j,  iyt, imt, idt, w = self.eraJd2cal(u1 + 1.5, u2 - fd,)
+        if j:
+            return j, tai1, tai2
+        j, dat24 = self.eraDat(iyt, imt, idt, 0.0)
+        if j < 0:
+            return j, tai1, tai2
+
+        # Separate TAI-UTC change into per-day (DLOD) and any jump (DLEAP).
+        dlod = 2.0 * (dat12 - dat0)
+        dleap = dat24 - (dat0 + dlod)
+
+        # Remove any scaling applied to spread leap into preceding day.
+        fd *= (self.ERFA_DAYSEC + dleap) / self.ERFA_DAYSEC
+
+        # Scale from (pre-1972) UTC seconds to SI seconds.
+        fd *= (self.ERFA_DAYSEC + dlod) / self.ERFA_DAYSEC
+
+        # Today's calendar date to 2-part JD.
+        j,  z1, z2 = self.eraCal2jd(iy, im, id)
+        if j:
+            return -1, tai1, tai2
+
+        # Assemble the TAI result, preserving the UTC split and order.
+        a2 = z1 - u1
+        a2 += z2
+        a2 += fd + dat0 / self.ERFA_DAYSEC
+        if big1:
+            tai1 = u1
+            tai2 = a2
+        else:
+            tai1 = a2
+            tai2 = u1
+            # Status.
+        return j, tai1, tai2
+
+    def eraTaitt(self, tai1, tai2):
+        # TT minus TAI (days).
+        dtat = self.ERFA_TTMTAI / self.ERFA_DAYSEC
+
+        # Result, safeguarding precision.
+        if tai1 > tai2:
+            tt1 = tai1
+            tt2 = tai2 + dtat
+        else:
+            tt1 = tai1 + dtat
+            tt2 = tai2
+
+        return tt1, tt2
+
+    def eraTaiut1(self, tai1, tai2, dta):
+        # Result, safeguarding precision.
+        dtad = dta / self.ERFA_DAYSEC
+        if tai1 > tai2:
+            ut11 = tai1
+            ut12 = tai2 + dtad
+        else:
+            ut11 = tai1 + dtad
+            ut12 = tai2
+
+            # Status (always OK).
+        return 0, ut11, ut12
+
+    def eraUtcut1(self, utc1, utc2, dut1):
+        ut11 = 0
+        ut12 = 0
+        # Look up TAI-UTC.
+        j, iy, im, id, w = self.eraJd2cal(utc1, utc2)
+        if j:
+            return -1, ut11, ut12
+        j, dat = self.eraDat(iy, im, id, 0.0)
+        if j < 0:
+            return -1, ut11, ut12
+
+        # Form UT1-TAI.
+        dta = dut1 - dat
+
+        # UTC to TAI to UT1.
+        j, tai1, tai2 = self.eraUtctai(utc1, utc2)
+        if j < 0:
+            return -1, ut11, ut12
+        j, ut11, ut12 = self.eraTaiut1(tai1, tai2, dta)
+        if j:
+            return -1, ut11, ut12
+
+        return j, ut11, ut12
+
+    def eraEra00(self, dj1, dj2):
+        # Days since fundamental epoch.
+        if dj1 < dj2:
+            d1 = dj1
+            d2 = dj2
+        else:
+            d1 = dj2
+            d2 = dj1
+        t = d1 + (d2 - self.ERFA_DJ00)
+
+        # Fractional part of T (days).
+        f = math.fmod(d1, 1.0) + math.fmod(d2, 1.0)
+
+        # Earth rotation angle at this UT1.
+        theta = self.eraAnp(self.ERFA_D2PI * (f + 0.7790572732640 + 0.00273781191135448 * t))
+
+        return theta
+
+    def eraRefco(self, phpa, tc, rh, wl):
+        # Decide whether optical/IR or radio case:  switch at 100 microns.
+        optic = (wl <= 100.0)
+
+        # Restrict parameters to safe values.
+        t = self.ERFA_GMAX(tc, -150.0)
+        t = self.ERFA_GMIN(t, 200.0)
+        p = self.ERFA_GMAX(phpa, 0.0)
+        p = self.ERFA_GMIN(p, 10000.0)
+        r = self.ERFA_GMAX(rh, 0.0)
+        r = self.ERFA_GMIN(r, 1.0)
+        w = self.ERFA_GMAX(wl, 0.1)
+        w = self.ERFA_GMIN(w, 1e6)
+
+        # Water vapour pressure at the observer.
+        if p > 0.0:
+            ps = pow(10.0, (0.7859 + 0.03477 * t) / (1.0 + 0.00412 * t)) * (1.0 + p * (4.5e-6 + 6e-10 * t * t))
+            pw = r * ps / (1.0 - (1.0 - r) * ps / p)
+        else:
+            pw = 0.0
+
+        # Refractive index minus 1 at the observer.
+        tk = t + 273.15
+        if optic:
+            wlsq = w * w
+            gamma = ((77.53484e-6 + (4.39108e-7 + 3.666e-9 / wlsq) / wlsq) * p - 11.2684e-6 * pw) / tk
+        else:
+            gamma = (77.6890e-6 * p - (6.3938e-6 - 0.375463 / tk) * pw) / tk
+
+        # Formula for beta from Stone, with empirical adjustments.
+        beta = 4.4474e-6 * tk
+        if not optic:
+            beta -= 0.0074 * pw * beta
+
+        # Refraction constants from Green.
+        refa = gamma * (1.0 - beta)
+        refb = - gamma * (beta - gamma / 2.0)
+
+        return refa, refb
+
+    def eraSp00(self, date1, date2):
+        # Interval between fundamental epoch J2000.0 and current date (JC).
+        t = ((date1 - self.ERFA_DJ00) + date2) / self.ERFA_DJC
+
+        # Approximate s'.
+        sp = -47e-6 * t * self.ERFA_DAS2R
+
+        return sp
+
+    def eraAper(self, theta):
+        self.astrom.eral = theta + self.astrom.along
+
+    def eraEform(self, n):
+        # Look up a and f for the specified reference ellipsoid.
+        if n == self.ERFA_WGS84:
+            a = 6378137.0
+            f = 1.0 / 298.257223563
+        elif n == self.ERFA_GRS80:
+            a = 6378137.0
+            f = 1.0 / 298.257222101
+        elif n == self.ERFA_WGS72:
+            a = 6378135.0
+            f = 1.0 / 298.26
+        else:
+            # Invalid identifier.
+            a = 0.0
+            f = 0.0
+            return -1, a, f
+
+        return 0, a, f
+
+    @staticmethod
+    def eraGd2gce(a, f, elong, phi, height):
+        xyz = [0, 0, 0]
+
+        # Functions of geodetic latitude.
+        sp = math.sin(phi)
+        cp = math.cos(phi)
+        w = 1.0 - f
+        w = w * w
+        d = cp * cp + w * sp * sp
+        if d <= 0.0:
+            return -1, xyz
+        ac = a / math.sqrt(d)
+        as_ERA = w * ac
+
+        # Geocentric vector.
+        r = (ac + height) * cp
+        xyz[0] = r * math.cos(elong)
+        xyz[1] = r * math.sin(elong)
+        xyz[2] = (as_ERA + height) * sp
+
+        return 0, xyz
+
+    def eraGd2gc(self, n, elong, phi, height):
+        xyz = [0, 0, 0]
+
+        # Obtain reference ellipsoid parameters.
+        j, a, f = self.eraEform(n)
+
+        # If OK, transform longitude, geodetic latitude, height to x,y,z.
+        if j == 0:
+            j, xyz = self.eraGd2gce(a, f, elong, phi, height)
+            if j != 0:
+                j = -2
+
+        # Deal with any errors.
+        if j != 0:
+            xyz = self.eraZp()
+
+        return j, xyz
+
+    def eraPom00(self, xp, yp, sp):
+        # Construct the matrix.
+        rpom = self.eraIr()
+        rpom = self.eraRz(sp, rpom)
+        rpom = self.eraRy(-xp, rpom)
+        rpom = self.eraRx(-yp, rpom)
+
+        return rpom
+
+    def eraPvtob(self, elong, phi, hm, xp, yp, sp, theta):
+        pv = [[0, 0, 0],
+              [0, 0, 0]]
+
+        # Earth rotation rate in radians per UT1 second
+        OM = 1.00273781191135448 * self.ERFA_D2PI / self.ERFA_DAYSEC
+        # Geodetic to geocentric transformation (ERFA_WGS84).
+        j, xyzm = self.eraGd2gc(1, elong, phi, hm)
+
+        # Polar motion and TIO position.
+        rpm = self.eraPom00(xp, yp, sp)
+        xyz = self.eraTrxp(rpm, xyzm)
+        x = xyz[0]
+        y = xyz[1]
+        z = xyz[2]
+
+        # Functions of ERA.
+        s = math.sin(theta)
+        c = math.cos(theta)
+
+        # Position.
+        pv[0][0] = c * x - s * y
+        pv[0][1] = s * x + c * y
+        pv[0][2] = z
+
+        # Velocity.
+        pv[1][0] = OM * (-s * x - c * y)
+        pv[1][1] = OM * (c * x - s * y)
+        pv[1][2] = 0.0
+
+        return pv
+
+    def eraRxpv(self, r, pv):
+        rpv = [[0, 0, 0],
+               [0, 0, 0]]
+
+        rpv[0] = self.eraRxp(r, pv[0])
+        rpv[1] = self.eraRxp(r, pv[1])
+
+        return rpv
+
+    def eraTrxpv(self, r, pv):
+        # Transpose of matrix r.
+        tr = self.eraTr(r)
+
+        # Matrix tr * vector pv -> vector trpv.
+        trpv = self.eraRxpv(tr, pv)
+
+        return trpv
+
+    def eraApco(self, date1, date2, ebpv, ehp, x, y, s, theta, elong, phi, hm, xp, yp, sp, refa, refb):
+        # Longitude with adjustment for TIO locator s'.
+        self.astrom.along = elong + sp
+
+        # Polar motion, rotated onto the local meridian.
+        sl = math.sin(self.astrom.along)
+        cl = math.cos(self.astrom.along)
+        self.astrom.xpl = xp * cl - yp * sl
+        self.astrom.ypl = xp * sl + yp * cl
+
+        # Functions of latitude.
+        self.astrom.sphi = math.sin(phi)
+        self.astrom.cphi = math.cos(phi)
+
+        # Refraction constants.
+        self.astrom.refa = refa
+        self.astrom.refb = refb
+
+        # Local Earth rotation angle.
+        self.eraAper(theta)
+
+        # Disable the (redundant) diurnal aberration step.
+        self.astrom.diurab = 0.0
+
+        # CIO based BPN matrix.
+        r = self.eraC2ixys(x, y, s)
+
+        # Observer's geocentric position and velocity (m, m/s, CIRS).
+        pvc = self.eraPvtob(elong, phi, hm, xp, yp, sp, theta)
+
+        # Rotate into GCRS.
+        pv = self.eraTrxpv(r, pvc)
+
+        # ICRS <-> GCRS parameters.
+        self.eraApcs(date1, date2, pv, ebpv, ehp)
+
+        # Store the CIO based BPN matrix.
+        self.astrom.bpn = r
+        return
+
+    def eraApco13(self, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
+        # UTC to other time scales.
+        j, tai1, tai2 = self.eraUtctai(utc1, utc2)
+        if j < 0:
+            return -1
+        tt1, tt2 = self.eraTaitt(tai1, tai2)
+        j, ut11, ut12 = self.eraUtcut1(utc1, utc2, dut1)
+        if j < 0:
+            return -1
+
+        # Earth barycentric & heliocentric position/velocity (au, au/d).
+        j, ehpv, ebpv = self.eraEpv00(tt1, tt2)
+
+        # Form the equinox based BPN matrix, IAU 2006/2000A.
+        r = self.eraPnm06a(tt1, tt2)
+
+        # Extract CIP X,Y.
+        x, y = self.eraBpn2xy(r)
+
+        # Obtain CIO locator s.
+        s = self.eraS06(tt1, tt2, x, y)
+
+        # Earth rotation angle.
+        theta = self.eraEra00(ut11, ut12)
+
+        # TIO locator s'.
+        sp = self.eraSp00(tt1, tt2)
+
+        # Refraction constants A and B.
+        refa, refb = self.eraRefco(phpa, tc, rh, wl)
+
+        # Compute the star-independent astrometry parameters.
+        self.eraApco(tt1, tt2, ebpv, ehpv[0], x, y, s, theta, elong, phi, hm, xp, yp, sp, refa, refb)
+
+        # Equation of the origins.
+        eo = self.eraEors(r, s)
+
+        # Return any warning status.
+        return j, eo
 
     def eraAtioq(self, ri, di):
         # Minimum cos(alt) and sin(alt) for refraction purposes
@@ -5383,7 +5765,7 @@ class ERFA:
         f = cosdel_erfa - del_erfa * z / r
         xaeo = xaet * f
         yaeo = yaet * f
-        zaeo = cosdel_erfa * zaet + del_erfa *r
+        zaeo = cosdel_erfa * zaet + del_erfa * r
 
         # Observed ZD.
         zdobs = math.atan2(math.sqrt(xaeo * xaeo + yaeo * yaeo), zaeo)
@@ -5406,6 +5788,104 @@ class ERFA:
         dob = dcobs
         rob = self.eraAnp(raobs)
         return aob, zob, hob, dob, rob
+
+    def eraAtco13(self, rc, dc, pr, pd, px, rv, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
+        # Star-independent astrometry parameters.
+        j, eo = self.eraApco13(utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)
+
+        # Abort if bad UTC.
+        if j < 0:
+            return j
+
+        # Transform ICRS to CIRS.
+        ri, di = self.eraAtciq(rc, dc, pr, pd, px, rv)
+
+        # Transform CIRS to observed.
+        aob, zob, hob, dob, rob = self.eraAtioq(ri, di)
+
+        # Return OK/warning status.
+        return j, aob, zob, hob, dob, rob, eo
+
+    def eraApio(self, sp, theta, elong, phi, hm, xp, yp, refa, refb):
+        # Longitude with adjustment for TIO locator s'.
+        self.astrom.along = elong + sp
+
+        # Polar motion, rotated onto the local meridian.
+        sl = math.sin(self.astrom.along)
+        cl = math.cos(self.astrom.along)
+        self.astrom.xpl = xp * cl - yp * sl
+        self.astrom.ypl = xp * sl + yp * cl
+
+        # Functions of latitude.
+        self.astrom.sphi = math.sin(phi)
+        self.astrom.cphi = math.cos(phi)
+
+        # Observer's geocentric position and velocity (m, m/s, CIRS).
+        pv = self.eraPvtob(elong, phi, hm, xp, yp, sp, theta)
+
+        # Magnitude of diurnal aberration vector.
+        self.astrom.diurab = math.sqrt(pv[1][0] * pv[1][0] + pv[1][1] * pv[1][1]) / self.ERFA_CMPS
+
+        # Refraction constants.
+        self.astrom.refa = refa
+        self.astrom.refb = refb
+
+        # Local Earth rotation angle.
+        self.eraAper(theta)
+
+    def eraApio13(self, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
+        # UTC to other time scales.
+        j, tai1, tai2 = self.eraUtctai(utc1, utc2)
+        if j < 0:
+            return -1
+        tt1, tt2 = self.eraTaitt(tai1, tai2)
+        j, ut11, ut12 = self.eraUtcut1(utc1, utc2, dut1)
+        if j < 0:
+            return -1
+
+        # TIO locator s'.
+        sp = self.eraSp00(tt1, tt2)
+
+        # Earth rotation angle.
+        theta = self.eraEra00(ut11, ut12)
+
+        # Refraction constants A and B.
+        refa, refb = self.eraRefco(phpa, tc, rh, wl)
+
+        # CIRS <-> observed astrometry parameters.
+        self.eraApio(sp, theta, elong, phi, hm, xp, yp, refa, refb)
+
+        return j
+
+    def eraAtoiq(self, type_ERA, ob1, ob2, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
+        # Star-independent astrometry parameters for CIRS->observed.
+        j = self.eraApio13(utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)
+
+        # Abort if bad UTC.
+        if j < 0:
+            return j
+
+        # Transform observed to CIRS.
+        ri, di = self.eraAtoiq(type_ERA, ob1, ob2)
+
+        return j, ri, di
+
+    def eraAtoc13(self, type_ERA, ob1, ob2, utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl):
+        # Star-independent astrometry parameters.
+        j, eo = self.eraApco13(utc1, utc2, dut1, elong, phi, hm, xp, yp, phpa, tc, rh, wl)
+
+        # Abort if bad UTC.
+        if j < 0:
+            return j
+
+        # Transform observed to CIRS.
+        ri, di = self.eraAtoiq(type_ERA, ob1, ob2)
+
+        # Transform CIRS to ICRS.
+        rc, dc = self.eraAticq(ri, di)
+
+        # Return OK/warning status.
+        return j, rc, dc
 
     # ----------------------------------------------------------------------
     # **

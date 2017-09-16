@@ -136,6 +136,7 @@ class Transform:
     jdutcSofa = this.GetJDUTCSofa();
  
     entspricht erfa Dtf2d()... wobei die beiden rückgabewerte addiert werden (keine separaten utc1 und utc2 werte)
+    
     delta t ut wird berechnet aus    (double) this.UtcTaiOffset + 4023.0 / 125.0 - DeltatCode.DeltaTCalc(JulianDate) ist bei erfa unter eraDat implementiert !
 
     hier für die transformation J2000 -> Jnow = Transform 3
