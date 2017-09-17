@@ -4,6 +4,7 @@
 - refactoring relay function selection to combo box for opening up multiple functions
 - optimizing log: removing unnecessary entry about refraction entries
 - added python indi client implementation from Hazen Babcock (MIT licence)
+- bugfix relay
 
 2.4 Release version
 - small start performance optimization

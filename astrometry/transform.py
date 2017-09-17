@@ -129,11 +129,15 @@ class Transform:
     # implementation ascom.transform to erfa.py
     # ---------------------------------------------------------------------------
 
-    def GetJDTT(self):
-        ts = datetime.datetime.utcnow()
-        suc, d1, d2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
-        if suc != 0:
-            print("Dtf2d", "Bad return code")
+    def GetJDTT(self, jd=0):
+        if jd == 0:
+            ts = datetime.datetime.utcnow()
+            suc, d1, d2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
+            if suc != 0:
+                print("Dtf2d", "Bad return code")
+        else:
+            d1 = jd
+            d2 = 0
         suc, tai1, tai2 = self.ERFA.eraUtctai(d1, d2)
         if suc != 0:
             print("GetJDTTSofa", "Utctai - Bad return code")
@@ -181,6 +185,7 @@ class Transform:
             suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
             suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)
             dut1 = 37 + 4023.0 / 125.0 - dut1_prev
+            dut1 = dut1_prev
             jdtt = self.GetJDTT()
             j, rc, dc = self.ERFA.eraAtoc13('R',
                                             self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
