@@ -38,9 +38,9 @@ class Transform:
 
     def transformNovas_old(self, ra, dec, transform=1):                                                                     # wrapper for the novas ascom implementation
         self.transformationLock.acquire()                                                                                   # which is not threat safe, so we have to do this
-        self.transform.SiteElevation = float(self.app.mount.site_height)  # height
-        self.transform.SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)  # site lat
-        self.transform.SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
+        self.transform.SiteElevation = float(self.app.mount.site_height)                                                    # height
+        self.transform.SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)                                      # site lat
+        self.transform.SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)                                     # site lon
 
         # self.transform.JulianDateTT = self.jd
         if transform == 1:                                                                                                  # 1 = J2000 -> alt/az
@@ -125,7 +125,9 @@ class Transform:
         else:
             return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
 
+    # ---------------------------------------------------------------------------
     # implementation ascom.transform to erfa.py
+    # ---------------------------------------------------------------------------
 
     def GetJDTT(self):
         ts = datetime.datetime.utcnow()
@@ -147,7 +149,7 @@ class Transform:
         SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
         # TODO: check if site parameters available
         if transform == 1:  # J2000 to Topo
-            ra = ra % 24
+            ra = ra % 24                                                                                                    # mount has hours
             ts = datetime.datetime.utcnow()
             suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
             suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)
@@ -191,14 +193,16 @@ class Transform:
                                             SiteElevation,
                                             0.0,
                                             0.0,
-                                            1000.0,
-                                            20.0,
-                                            0.8,
-                                            0.57)
+                                            0.0,
+                                            0.0,
+                                            0.0,
+                                            0.0)
             RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
             DECJ2000 = dc * self.ERFA.ERFA_DR2D
             val1 = RAJ2000
             val2 = DECJ2000
+            r, d = self.transformNovas_old(ra, dec, 2)
+            # print(val1 - r, val2 - d)
         elif transform == 3:    # J2000 to Topo
             ts = datetime.datetime.utcnow()
             suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
@@ -217,10 +221,10 @@ class Transform:
                                                                    SiteElevation,
                                                                    0.0,
                                                                    0.0,
-                                                                   1000.0,
                                                                    0.0,
-                                                                   0.8,
-                                                                   0.57)
+                                                                   0.0,
+                                                                   0.0,
+                                                                   0.0)
             RATopo = self.ERFA.eraAnp(rob - eo) * 24 / self.ERFA.ERFA_D2PI
             DECTopo = dob * 360 / self.ERFA.ERFA_D2PI
             val1 = RATopo

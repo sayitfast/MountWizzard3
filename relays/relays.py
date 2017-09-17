@@ -206,43 +206,44 @@ class Relays:
 
     def runRelay(self, relayNumber):
         if relayNumber == 1:
-            print(self.app.ui.relay1Function.currentIndex())
-            if self.app.ui.relay1Function.currentIndex() == 1:
+            if self.app.ui.relay1Function.currentIndex() == 0:
+                print('switch')
                 self.switch(relayNumber)
             else:
+                print('pulse')
                 self.pulse(relayNumber)
         if relayNumber == 2:
-            if self.app.ui.relay2Function.currentIndex() == 1:
+            if self.app.ui.relay2Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 3:
-            if self.app.ui.relay3Function.currentIndex() == 1:
+            if self.app.ui.relay3Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 4:
-            if self.app.ui.relay4Function.currentIndex() == 1:
+            if self.app.ui.relay4Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 5:
-            if self.app.ui.relay5Function.currentIndex() == 1:
+            if self.app.ui.relay5Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 6:
-            if self.app.ui.relay6Function.currentIndex() == 1:
+            if self.app.ui.relay6Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 7:
-            if self.app.ui.relay7Function.currentIndex() == 1:
+            if self.app.ui.relay7Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
         if relayNumber == 8:
-            if self.app.ui.relay8Function.currentIndex() == 1:
+            if self.app.ui.relay8Function.currentIndex() == 0:
                 self.switch(relayNumber)
             else:
                 self.pulse(relayNumber)
