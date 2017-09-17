@@ -544,7 +544,7 @@ class Mount(PyQt5.QtCore.QThread):
                 self.alt = float(alt)                                                                                       # and altitude
                 self.stat = int(stat)                                                                                       # status should be int for referencing list
                 self.slewing = (slew == '1')                                                                                # set status slewing
-                self.ra, self.dec = self.transform.transformNovas(self.raJnow, self.decJnow, 2)                             # convert J2000
+                self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                             # convert J2000
                 ra_show = self.transform.decimalToDegree(self.ra, False, False)
                 dec_show = self.transform.decimalToDegree(self.dec, True, False)
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui

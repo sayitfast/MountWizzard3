@@ -636,7 +636,7 @@ class Modeling(PyQt5.QtCore.QThread):
         modelData['scale'] = 1.3
         modelData['angle'] = 90
         modelData['timeTS'] = 2.5
-        ra, dec = self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)
+        ra, dec = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)
         modelData['ra_sol_Jnow'] = ra
         modelData['dec_sol_Jnow'] = dec
         modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600
@@ -649,7 +649,7 @@ class Modeling(PyQt5.QtCore.QThread):
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformNovas(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
             modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
             modelData['dec_sol_Jnow'] = dec_sol_Jnow                                                                        # dec in  Jnow
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra

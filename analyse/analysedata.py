@@ -64,7 +64,7 @@ class Analyse:
                     resultData['dec_J2000'].append(dec)
                 else:
                     resultData['dec_J2000'] = [dec]
-                ra_Jnow, dec_Jnow = self.app.mount.transformNovas(ra, dec, 3)
+                ra_Jnow, dec_Jnow = self.app.mount.transformERFA(ra, dec, 3)
                 if 'ra_Jnow' in resultData:
                     resultData['ra_Jnow'].append(ra_Jnow)
                 else:
@@ -89,7 +89,7 @@ class Analyse:
                     resultData['dec_sol'].append(dec_sol)
                 else:
                     resultData['dec_sol'] = [dec_sol]
-                ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformNovas(ra_sol, dec_sol, 3)
+                ra_sol_Jnow, dec_sol_Jnow = self.app.mount.transformERFA(ra_sol, dec_sol, 3)
                 if 'ra_sol_Jnow' in resultData:
                     resultData['ra_sol_Jnow'].append(ra_sol_Jnow)
                 else:
@@ -99,7 +99,7 @@ class Analyse:
                 else:
                     resultData['dec_sol_Jnow'] = [dec_sol_Jnow]
                 ha = ra - lst
-                az, alt = self.app.mount.transformNovas(ha, dec, 3)
+                az, alt = self.app.mount.transformERFA(ha, dec, 3)
                 if 'azimuth' in resultData:
                     resultData['azimuth'].append(az)
                 else:

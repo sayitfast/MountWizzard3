@@ -160,7 +160,7 @@ class ModelPoints:
         self.RefinementPoints = []                                                                                          # clear point list
         for i in range(0, numPoints):                                                                                       # round modeling point from actual az alt position 24 hours
             ra = ra - float(i) * hours / numPoints - hoursPrev
-            az, alt = self.transform.transformNovas(ra, dec, 1)                                                             # transform to az alt
+            az, alt = self.transform.transformERFA(ra, dec, 1)                                                             # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
 
@@ -175,7 +175,7 @@ class ModelPoints:
             else:
                 step = -30                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.transform.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
+                az, alt = self.transform.transformERFA(ha / 10, dec, 1)                                                    # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((az, alt))                                                                              # add to east
@@ -192,7 +192,7 @@ class ModelPoints:
             else:
                 step = -20                                                                                                  # higher dec. less point (anyway denser)
             for ha in range(120, -120, step):                                                                               # for complete 24 hourangle
-                az, alt = self.transform.transformNovas(ha / 10, dec, 1)                                                    # do the transformation to alt az
+                az, alt = self.transform.transformERFA(ha / 10, dec, 1)                                                    # do the transformation to alt az
                 if alt > 0:                                                                                                 # only point with alt > 0 are taken
                     if az > 180:                                                                                            # put to the right list
                         east.append((az, alt))                                                                              # add to east

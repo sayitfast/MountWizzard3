@@ -161,14 +161,14 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerTrack.setVisible(True)
         for i in range(0, 50):                                                                                              # round modeling point from actual az alt position 24 hours
             ra = raCopy - float(i) * 10 / 50                                                                                # 12 hours line max
-            az, alt = self.transform.transformNovas(ra, decCopy, 1)                                                         # transform to az alt
+            az, alt = self.transform.transformERFA(ra, decCopy, 1)                                                         # transform to az alt
             x, y = getXY(az, alt, height, width, BORDER_VIEW)
             self.pointerTrackLine[i].setPos(x, y)
             if alt > 0:
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.transform.transformNovas(self.app.mount.ra - float(self.app.mount.timeToFlip) / 60, decCopy, 1)
+        az, alt = self.transform.transformERFA(self.app.mount.ra - float(self.app.mount.timeToFlip) / 60, decCopy, 1)
         x, y = getXY(az, alt, height, width, BORDER_VIEW)
         self.itemFlipTime.setPos(x, y)
         delta = float(self.app.mount.timeToFlip)
