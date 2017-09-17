@@ -16,8 +16,6 @@ import math
 import datetime
 from astrometry.erfa import ERFA
 import threading
-# win32com
-from win32com.client.dynamic import Dispatch
 
 
 class Transform:
@@ -176,5 +174,3 @@ class Transform:
             val2 = dec
         self.transformationLockERFA.release()
         return val1, val2
-
-

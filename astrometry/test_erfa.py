@@ -712,4 +712,4 @@ class TestErfa(TestCase):
         self.assertEqual(dob, dob_ref)
         self.assertEqual(rob, rob_ref)
         self.assertEqual(eo, eo_ref)
-        print(aob, aob_ref)
+
