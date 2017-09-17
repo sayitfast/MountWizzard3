@@ -85,18 +85,17 @@ class Transform:
 
     def transformERFA(self, ra, dec, transform=1):
         self.transformationLockERFA.acquire()
+        # TODO: check if site parameters available
         SiteElevation = float(self.app.mount.site_height)
         SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)
         SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
-        # TODO: check if site parameters available
-
         ts = datetime.datetime.utcnow()
         suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)
+        # TODO: Logger info with errors
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
         jd = float(self.app.mount.jd)
         suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
-        if suc != 0:
-            print("GetJDTTSofa", "Utctai - Bad return code")
+        # TODO: Logger info with errors
         tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
         jdtt = tt1 + tt2
         date1 = jd
@@ -124,29 +123,49 @@ class Transform:
                                                                    0.0)
             AzimuthTopo = aob * 360 / self.ERFA.ERFA_D2PI
             AltitudeTopo = 90.0 - zob * 360 / self.ERFA.ERFA_D2PI
+            '''
+            ri, di, eo = self.ERFA.eraAtci13(ra * self.ERFA.ERFA_D2PI / 24,
+                                             dec * self.ERFA.ERFA_D2PI / 360,
+                                             0,
+                                             0,
+                                             0,
+                                             0,
+                                             date1 + date2,
+                                             0)
+            RATopo = self.ERFA.eraAnp(ri - eo) * 24 / self.ERFA.ERFA_D2PI
+            DECTopo = di * 360 / self.ERFA.ERFA_D2PI
+            AzimuthTopo, AltitudeTopo = self.ra_dec_lst_to_az_alt(RATopo, DECTopo, SiteLatitude)
+            '''
             val1 = AzimuthTopo
             val2 = AltitudeTopo
         elif transform == 2:    # Topo to J2000
-            j, rc, dc = self.ERFA.eraAtoc13('R',
-                                            self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
-                                            dec * self.ERFA.ERFA_D2PI / 360,
-                                            date1 + date2,
-                                            0.0,
-                                            dut1,
-                                            SiteLongitude * self.ERFA.ERFA_DD2R,
-                                            SiteLatitude * self.ERFA.ERFA_DD2R,
-                                            SiteElevation,
-                                            0.0,
-                                            0.0,
-                                            0.0,
-                                            0.0,
-                                            0.0,
-                                            0.0)
+            '''
+            suc, rc, dc = self.ERFA.eraAtoc13('R',
+                                              self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
+                                              dec * self.ERFA.ERFA_D2PI / 360,
+                                              date1 + date2,
+                                              0.0,
+                                              dut1,
+                                              SiteLongitude * self.ERFA.ERFA_DD2R,
+                                              SiteLatitude * self.ERFA.ERFA_DD2R,
+                                              SiteElevation,
+                                              0.0,
+                                              0.0,
+                                              0.0,
+                                              0.0,
+                                              0.0,
+                                              0.0)
+            '''
+            rc, dc, eo = self.ERFA.eraAtic13(self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
+                                             dec * self.ERFA.ERFA_D2PI / 360,
+                                             date1 + date2,
+                                             0.0)
             RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
             DECJ2000 = dc * self.ERFA.ERFA_DR2D
             val1 = RAJ2000
             val2 = DECJ2000
         elif transform == 3:    # J2000 to Topo
+            '''
             suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
                                                                    dec * self.ERFA.ERFA_D2PI / 360,
                                                                    0.0,
@@ -165,8 +184,17 @@ class Transform:
                                                                    0.0,
                                                                    0.0,
                                                                    0.0)
-            RATopo = self.ERFA.eraAnp(rob - eo) * 24 / self.ERFA.ERFA_D2PI
-            DECTopo = dob * 360 / self.ERFA.ERFA_D2PI
+            '''
+            ri, di, eo = self.ERFA.eraAtci13(ra * self.ERFA.ERFA_D2PI / 24,
+                                             dec * self.ERFA.ERFA_D2PI / 360,
+                                             0,
+                                             0,
+                                             0,
+                                             0,
+                                             date1 + date2,
+                                             0)
+            RATopo = self.ERFA.eraAnp(ri - eo) * 24 / self.ERFA.ERFA_D2PI
+            DECTopo = di * 360 / self.ERFA.ERFA_D2PI
             val1 = RATopo
             val2 = DECTopo
         else:

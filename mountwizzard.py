@@ -168,7 +168,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
         self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
         self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
-        self.ui.btn_setupAscomCameraDriver.clicked.connect(lambda: self.modeling.AscomCamera.setupDriverCamera())
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
         self.ui.btn_runBaseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBaseModel'))
         self.ui.btn_cancelModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelModel'))

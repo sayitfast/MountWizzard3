@@ -8895,34 +8895,13 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Vertical</enum>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_setupAscomCameraDriver">
-       <property name="geometry">
-        <rect>
-         <x>640</x>
-         <y>50</y>
-         <width>81</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup ASCOM camera driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Camera</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_145">
+      <widget class="QLabel" name="label_193">
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>50</y>
-         <width>81</width>
-         <height>31</height>
+         <y>20</y>
+         <width>171</width>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -8931,49 +8910,10 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Setup Driver:</string>
+        <string>Remote Access</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_146">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>130</y>
-         <width>81</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Setup Driver:</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_setupPlateSolver">
-       <property name="geometry">
-        <rect>
-         <x>640</x>
-         <y>130</y>
-         <width>81</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;setup plate solver driver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>PlateSolver</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_11">
+      <widget class="Line" name="line_49">
        <property name="geometry">
         <rect>
          <x>400</x>
@@ -8994,107 +8934,11 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLabel" name="label_63">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>20</y>
-         <width>221</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Configuration of ASCOM Camera</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_20">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>110</y>
-         <width>321</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_97">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>100</y>
-         <width>211</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Configuration of Platesolver</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_193">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>190</y>
-         <width>171</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Remote Access</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_49">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>200</y>
-         <width>321</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
       <widget class="QCheckBox" name="checkRemoteAccess">
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>220</y>
+         <y>50</y>
          <width>201</width>
          <height>20</height>
         </rect>
@@ -12375,8 +12219,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_appCameraDisconnect</tabstop>
   <tabstop>btn_appStart</tabstop>
   <tabstop>checkUseFileHorizonLine</tabstop>
-  <tabstop>btn_setupAscomCameraDriver</tabstop>
-  <tabstop>btn_setupPlateSolver</tabstop>
   <tabstop>checkRemoteAccess</tabstop>
   <tabstop>checkFilterMPC</tabstop>
   <tabstop>le_filterExpressionMPC</tabstop>
