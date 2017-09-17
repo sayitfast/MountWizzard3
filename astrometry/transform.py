@@ -28,7 +28,7 @@ class Transform:
 
     @staticmethod
     def ra_dec_lst_to_az_alt(ra, dec, LAT):                                                                                 # formula to make alt/az from hour angle and dec
-        ra = (ra * 15 + 360.0) % 360.0
+        ra = (ra * 360 / 24 + 360.0) % 360.0                                                                                # using hours.
         dec = math.radians(dec)
         ra = math.radians(ra)
         lat = math.radians(LAT)
