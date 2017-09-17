@@ -984,7 +984,6 @@ class MountWizzardApp(widget.MwWidget):
 if __name__ == "__main__":
     import traceback
     import warnings
-    import astropy
 
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error(traceback.format_exception(typeException, valueException, tbackException))

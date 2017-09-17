@@ -5,6 +5,7 @@
 - optimizing log: removing unnecessary entry about refraction entries
 - added python indi client implementation from Hazen Babcock (MIT licence)
 - bugfix relay
+- remove ascom.transform class and replace it with erfa - python implementation
 
 2.4 Release version
 - small start performance optimization
