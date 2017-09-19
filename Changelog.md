@@ -1,4 +1,6 @@
 # Changelog
+2.5.2
+-  boot mount via wake on lan
 
 2.5.1
 - refactoring relay function selection to combo box for opening up multiple functions

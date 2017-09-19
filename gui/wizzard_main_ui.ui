@@ -8644,7 +8644,7 @@ color: rgb(255,255,255);</string>
          <x>20</x>
          <y>40</y>
          <width>351</width>
-         <height>111</height>
+         <height>121</height>
         </rect>
        </property>
        <property name="toolTip">
@@ -8662,7 +8662,7 @@ color: rgb(255,255,255);</string>
           <x>10</x>
           <y>30</y>
           <width>151</width>
-          <height>31</height>
+          <height>21</height>
          </rect>
         </property>
         <property name="font">
@@ -8684,7 +8684,7 @@ color: rgb(255,255,255);</string>
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>70</y>
+          <y>80</y>
           <width>171</width>
           <height>31</height>
          </rect>
@@ -8705,7 +8705,7 @@ color: rgb(255,255,255);</string>
         <property name="geometry">
          <rect>
           <x>260</x>
-          <y>70</y>
+          <y>80</y>
           <width>81</width>
           <height>31</height>
          </rect>
@@ -8725,10 +8725,10 @@ color: rgb(255,255,255);</string>
        <widget class="QLineEdit" name="le_mountIP">
         <property name="geometry">
          <rect>
-          <x>210</x>
+          <x>190</x>
           <y>30</y>
-          <width>131</width>
-          <height>31</height>
+          <width>151</width>
+          <height>21</height>
          </rect>
         </property>
         <property name="font">
@@ -8767,10 +8767,10 @@ color: rgb(255,255,255);</string>
        <widget class="QLabel" name="label_139">
         <property name="geometry">
          <rect>
-          <x>180</x>
+          <x>150</x>
           <y>30</y>
           <width>21</width>
-          <height>31</height>
+          <height>21</height>
          </rect>
         </property>
         <property name="font">
@@ -8779,14 +8779,14 @@ color: rgb(255,255,255);</string>
          </font>
         </property>
         <property name="text">
-         <string>IP:</string>
+         <string>IP</string>
         </property>
        </widget>
        <widget class="QLabel" name="label_140">
         <property name="geometry">
          <rect>
           <x>180</x>
-          <y>70</y>
+          <y>80</y>
           <width>81</width>
           <height>31</height>
          </rect>
@@ -8798,6 +8798,66 @@ color: rgb(255,255,255);</string>
         </property>
         <property name="text">
          <string>Setup Driver:</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_145">
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>50</y>
+          <width>31</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>MAC</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="le_mountMAC">
+        <property name="geometry">
+         <rect>
+          <x>190</x>
+          <y>50</y>
+          <width>151</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Courier</family>
+          <pointsize>10</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="mouseTracking">
+         <bool>false</bool>
+        </property>
+        <property name="acceptDrops">
+         <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="layoutDirection">
+         <enum>Qt::RightToLeft</enum>
+        </property>
+        <property name="text">
+         <string>00.c0.08.87.35.db</string>
+        </property>
+        <property name="maxLength">
+         <number>18</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly">
+         <bool>false</bool>
         </property>
        </widget>
       </widget>
@@ -11752,7 +11812,7 @@ color: rgb(255,255,255);</string>
     <rect>
      <x>10</x>
      <y>110</y>
-     <width>111</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -11798,9 +11858,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_mountQuit">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>260</x>
      <y>110</y>
-     <width>121</width>
+     <width>101</width>
      <height>31</height>
     </rect>
    </property>
@@ -11896,9 +11956,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_mountSave">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>180</x>
      <y>110</y>
-     <width>101</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -12038,6 +12098,27 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Sky</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_mountBoot">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>110</y>
+     <width>71</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Boot</string>
    </property>
   </widget>
  </widget>

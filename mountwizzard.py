@@ -57,6 +57,7 @@ from relays import relays
 from remote import remote_thread
 from dome import dome_thread
 from automation import data_upload_thread
+from wakeonlan import wol
 
 
 class ShowModel(FigureCanvas):
@@ -136,6 +137,7 @@ class MountWizzardApp(widget.MwWidget):
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
+        self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
         self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
         self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
@@ -252,6 +254,9 @@ class MountWizzardApp(widget.MwWidget):
             self.remote.start()
         else:
             self.remote.terminate()
+
+    def mountBoot(self):
+        wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
 
     def showModelErrorPolar(self):
         if not self.modeling.modelData:
@@ -468,6 +473,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
             if 'MountIP' in self.config:
                 self.ui.le_mountIP.setText(self.config['MountIP'])
+            if 'MountMAC' in self.config:
+                self.ui.le_mountMAC.setText(self.config['MountMAC'])
             if 'DirectMount' in self.config:
                 self.ui.rb_directMount.setChecked(self.config['DirectMount'])
             if 'AscomMount' in self.config:
@@ -549,6 +556,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['MountIP'] = self.ui.le_mountIP.text()
+        self.config['MountMAC'] = self.ui.le_mountMAC.text()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
@@ -988,7 +996,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.1 beta'
+    BUILD_NO = '2.5.2 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
