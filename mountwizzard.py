@@ -19,7 +19,6 @@ import logging
 import logging.handlers
 import os
 import sys
-import time
 # numerics
 import numpy
 import math
@@ -56,7 +55,7 @@ from mount import mount_thread
 from relays import relays
 from remote import remote_thread
 from dome import dome_thread
-from automation import data_upload_thread
+from automation import upload_thread
 from wakeonlan import wol
 
 
@@ -70,7 +69,7 @@ class ShowModel(FigureCanvas):
 
 
 class MountWizzardApp(widget.MwWidget):
-    logger = logging.getLogger(__name__)                                                                                    # logging enabling
+    logger = logging.getLogger(__name__)
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
@@ -93,7 +92,7 @@ class MountWizzardApp(widget.MwWidget):
         self.stick = stick_thread.Stick(self)                                                                               # Stickstation Thread
         self.unihedron = unihedron_thread.Unihedron(self)                                                                   # Unihedron Thread
         self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
-        self.data = data_upload_thread.DataUploadToMount(self)                                                              # data thread for downloading topics
+        self.data = upload_thread.DataUploadToMount(self)                                                              # data thread for downloading topics
         self.analyseWindow = analysewindow.AnalyseWindow(self)                                                              # windows for analyse data
         self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                            # window for modeling points
         self.imageWindow = imagewindow.ImagesWindow(self)                                                                   # window for imaging
@@ -139,7 +138,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
-        self.ui.btn_shutdownQuit.clicked.connect(self.shutdownQuit)
+        self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
         self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
         self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
         self.ui.btn_startTracking.clicked.connect(lambda: self.commandQueue.put('AP'))
@@ -257,6 +256,11 @@ class MountWizzardApp(widget.MwWidget):
 
     def mountBoot(self):
         wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
+        self.messageQueue.put('Send WOL and boot mount !')
+        self.logger.debug('Send WOL packet and boot Mount')
+
+    def mountShutdown(self):
+        self.commandQueue.put('Shutdown')
 
     def showModelErrorPolar(self):
         if not self.modeling.modelData:
@@ -303,9 +307,9 @@ class MountWizzardApp(widget.MwWidget):
         appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
         if appAvailable:
             self.messageQueue.put('Found: {0}'.format(appName))
-            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(appName, appInstallPath))
+            self.logger.debug('Name: {0}, Path: {1}'.format(appName, appInstallPath))
         else:
-            self.logger.error('checkApplicatio-> Application ASCOM not found on computer')
+            self.logger.error('Application ASCOM not found on computer')
 
     def checkRegistrationKeys(self, appSearchName):
         if platform.machine().endswith('64'):
@@ -337,7 +341,7 @@ class MountWizzardApp(widget.MwWidget):
                 appInstallPath = ''
                 appName = ''
         except Exception as e:
-            self.logger.debug('checkRegistrati-> Name: {0}, Path: {1}, error: {2}'.format(appName, appInstallPath, e))
+            self.logger.debug('Name: {0}, Path: {1}, error: {2}'.format(appName, appInstallPath, e))
         finally:
             return appInstalled, appName, appInstallPath
 
@@ -488,7 +492,7 @@ class MountWizzardApp(widget.MwWidget):
             if 'CheckRemoteAccess' in self.config:
                 self.ui.checkRemoteAccess.setChecked(self.config['CheckRemoteAccess'])
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
             print(e)
         finally:
             pass
@@ -571,7 +575,7 @@ class MountWizzardApp(widget.MwWidget):
                 return json.load(data_file)
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be loaded !')
-            self.logger.error('loadConfig -> item in config.cfg not loaded error:{0}'.format(e))
+            self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
             return {}
 
     def saveConfig(self):
@@ -594,7 +598,7 @@ class MountWizzardApp(widget.MwWidget):
             outfile.close()
         except Exception as e:
             self.messageQueue.put('Config.cfg could not be saved !')
-            self.logger.error('loadConfig -> item in config.cfg not saved error {0}'.format(e))
+            self.logger.error('Item in config.cfg not saved error {0}'.format(e))
             return
         self.mount.saveActualModel()                                                                                        # save current loaded modeling from mount
 
@@ -617,7 +621,7 @@ class MountWizzardApp(widget.MwWidget):
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
         else:
-            self.logger.warning('selectModelPointsFile -> no file selected')
+            self.logger.warning('no file selected')
 
     def selectAnalyseFileName(self):
         dlg = QFileDialog()
@@ -629,7 +633,7 @@ class MountWizzardApp(widget.MwWidget):
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
         else:
-            self.logger.warning('selectAnalyseFile -> no file selected')
+            self.logger.warning('no file selected')
 
     def showAnalyseWindow(self):
         self.analyseWindow.getData()
@@ -645,13 +649,6 @@ class MountWizzardApp(widget.MwWidget):
     def showImageWindow(self):
         self.imageWindow.showStatus = True
         self.imageWindow.setVisible(True)
-
-    def shutdownQuit(self):
-        self.saveConfig()
-        self.commandQueue.put('shutdown')
-        time.sleep(1)
-        # noinspection PyArgumentList
-        QCoreApplication.instance().quit()
 
     def setHorizonLimitHigh(self):
         _value = int(self.ui.le_horizonLimitHigh.text())
@@ -804,8 +801,10 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_siteLatitude.setText(str(data['Value']))
         if data['Name'] == 'GetCurrentSiteElevation':
             self.ui.le_siteElevation.setText(str(data['Value']))
-        if data['Name'] == 'GetLocalTime':
-            self.ui.le_localTime.setText(str(data['Value']))
+        if data['Name'] == 'GetJulianDate':
+            self.ui.le_JulianDate.setText(str(data['Value']))
+        if data['Name'] == 'GetLocalSiderealTime':
+            self.ui.le_localSiderealTime.setText(str(data['Value']))
         if data['Name'] == 'GetTelescopeTempDEC':
             self.ui.le_telescopeTempDECMotor.setText(str(data['Value']))
         if data['Name'] == 'GetRefractionTemperature':
@@ -996,13 +995,16 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.2 beta'
+    BUILD_NO = '2.5.3 beta'
+
+    # from snippets.parallel.model import NEWMODEL
+    # test = NEWMODEL()
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)                                                     # define log handler
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s [%(threadName)15s] - %(message)s',
+                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(funcName)20s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')                                                    # define log format
 
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
@@ -1012,18 +1014,18 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
 
-    logging.error('-----------------------------------------')                                                              # start message logger
-    logging.error('MountWizzard v ' + BUILD_NO + ' started !')                                                              # start message logger
-    logging.error('-----------------------------------------')                                                              # start message logger
-    logging.error('main           -> working directory: {0}'.format(os.getcwd()))
+    logging.info('-----------------------------------------')                                                              # start message logger
+    logging.info('MountWizzard v ' + BUILD_NO + ' started !')                                                              # start message logger
+    logging.info('-----------------------------------------')                                                              # start message logger
+    logging.info('working directory: {0}'.format(os.getcwd()))
     if not os.access(os.getcwd(), os.W_OK):
-        logging.error('main           -> no write access to workdir')
+        logging.error('no write access to workdir')
     if not os.access(os.getcwd() + '/images', os.W_OK):
-        logging.error('main           -> no write access to /images')
+        logging.error('no write access to /images')
     if not os.access(os.getcwd() + '/config', os.W_OK):
-        logging.error('main           -> no write access to /config')
+        logging.error('no write access to /config')
     if not os.access(os.getcwd() + '/analysedata', os.W_OK):
-        logging.error('main           -> no write access to /analysedata')
+        logging.error('no write access to /analysedata')
 
     QApplication.setAttribute(Qt.AA_Use96Dpi)                                                                               # try to overcome windows, seems not to work
     app = QApplication(sys.argv)                                                                                            # built application

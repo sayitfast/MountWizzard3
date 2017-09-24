@@ -37,7 +37,7 @@ class Remote(PyQt5.QtCore.QThread):
         try:
             pass
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -51,7 +51,7 @@ class Remote(PyQt5.QtCore.QThread):
         s.listen(1)
         while True:
             conn, addr = s.accept()
-            self.logger.debug('run            -> connection from {0}'.format(addr))
+            self.logger.debug('connection from {0}'.format(addr))
             while True:
                 try:
                     data = conn.recv(self.BUFFER_SIZE)
@@ -59,10 +59,10 @@ class Remote(PyQt5.QtCore.QThread):
                         break
                     else:
                         if data.decode().strip() == 'shutdown':
-                            self.logger.debug('run            -> shutdown MW from {0}'.format(addr))
+                            self.logger.debug('shutdown MW from {0}'.format(addr))
                             self.signalRemoteShutdown.emit(True)
                 except Exception as e:
-                    self.logger.error('run            -> error {0}'.format(e))
+                    self.logger.error('error {0}'.format(e))
                     break
             conn.close()
         self.terminate()                                                                                                    # closing the thread at the end

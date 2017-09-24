@@ -201,6 +201,8 @@ class Mount(PyQt5.QtCore.QThread):
                         self.flipMount()
                     elif command == 'SetupAscomDriver':
                         self.MountAscom.setupDriver()
+                    elif command == 'Shutdown':
+                        self.mountShutdown()
                     else:
                         self.mountHandler.sendCommand(command)                                                              # doing the command directly to mount (no method necessary)
                     self.app.commandQueue.task_done()
@@ -225,6 +227,18 @@ class Mount(PyQt5.QtCore.QThread):
 
     def __del__(self):                                                                                                      # remove thread
         self.wait()                                                                                                         # wait for stop of thread
+
+    def mountShutdown(self):
+        reply = self.mountHandler.sendCommand('shutdown')
+        if reply != '1':
+            self.logger.debug('mountShutdown  -> error: {0}'.format(reply))
+            self.app.messageQueue.put('Error in mount shutdown !')
+        else:
+            self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
+            time.sleep(1)
+            self.mountHandler.disconnect()
+            self.logger.debug('mountShutdown  -> Shutdown Mont manually')
+            self.app.messageQueue.put('Shutting mount down !')
 
     def flipMount(self):                                                                                                    # doing the flip of the mount
         reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
@@ -396,7 +410,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.mountHandler.sendCommand('modeldel0' + target)
         reply = self.mountHandler.sendCommand('modelsv0' + target)
         if reply == '1':
-            self.app.messageQueue.put('Actual Mount Model saved to {0}'.format(target))
+            self.app.messageQueue.put('Actual Mount Model saved to file {0}'.format(target))
             return True
         else:
             self.logger.debug('saveBackupModel-> Model {0} could not be saved'.format(target))                              # log it
@@ -409,7 +423,7 @@ class Mount(PyQt5.QtCore.QThread):
             return False
         reply = self.mountHandler.sendCommand('modelld0' + target)
         if reply == '1':
-            self.app.messageQueue.put('Actual Mount Model loaded from {0}'.format(target))
+            self.app.messageQueue.put('Mount Model loaded from file {0}'.format(target))
             return True
         else:
             self.app.messageQueue.put('There is no modeling named {0} or error while loading'.format(target))
@@ -526,7 +540,7 @@ class Mount(PyQt5.QtCore.QThread):
         reply = self.mountHandler.sendCommand('GS')
         if reply:
             self.sidereal_time = reply.strip('#')
-            self.app.mountDataQueue.put({'Name': 'GetLocalTime', 'Value': '{0}'.format(self.sidereal_time)})                # Sidereal local time
+            self.app.mountDataQueue.put({'Name': 'GetLocalSiderealTime', 'Value': '{0}'.format(self.sidereal_time)})        # Sidereal local time
         reply = self.mountHandler.sendCommand('GR')
         if reply:
             self.raJnow = self.transform.degStringToDecimal(reply)
@@ -544,7 +558,7 @@ class Mount(PyQt5.QtCore.QThread):
                 self.alt = float(alt)                                                                                       # and altitude
                 self.stat = int(stat)                                                                                       # status should be int for referencing list
                 self.slewing = (slew == '1')                                                                                # set status slewing
-                self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                             # convert J2000
+                self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                              # convert J2000
                 ra_show = self.transform.decimalToDegree(self.ra, False, False)
                 dec_show = self.transform.decimalToDegree(self.dec, True, False)
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui
@@ -552,6 +566,7 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})        # Altitude
                 self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})          # Azimuth
                 self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                   # Mount status -> slew to stop
+                self.app.mountDataQueue.put({'Name': 'GetJulianDate', 'Value': '{0}'.format(self.jd[:12])})                 # Sidereal local time
                 if str(self.pierside) == str('W'):                                                                          # pier side
                     self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                          # Transfer to test in GUI
                 else:                                                                                                       #

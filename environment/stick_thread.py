@@ -124,17 +124,19 @@ class Stick(PyQt5.QtCore.QThread):
 
     def setupDriver(self):                                                                                                  #
         try:
+            if self.ascom:
+                self.ascom.connected = False
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverStick-> driver chosen:{0}'.format(self.driverName))
+            self.logger.debug('setupDriverStic-> driver chosen:{0}'.format(self.driverName))
             if self.driverName == '':
                 self.connected = 2
             else:
                 self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.app.messageQueue.put('Driver Exception in setupStick')                                                     # write to gui
-            self.logger.error('setupDriverStick-> general exception:{0}'.format(e))                                         # write to log
+            self.logger.error('setupDriverStic-> general exception:{0}'.format(e))                                         # write to log
             if self.driverName == '':
                 self.connected = 2
             else:

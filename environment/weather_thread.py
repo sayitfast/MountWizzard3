@@ -117,6 +117,8 @@ class Weather(PyQt5.QtCore.QThread):
 
     def setupDriver(self):  #
         try:
+            if self.ascom:
+                self.ascom.connected = False
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)

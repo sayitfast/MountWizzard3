@@ -103,7 +103,7 @@ class AnalyseWindow(MwWidget):
             if 'AnalysePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 

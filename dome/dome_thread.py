@@ -107,6 +107,8 @@ class Dome(PyQt5.QtCore.QThread):
 
     def setupDriver(self):                                                                                                  #
         try:
+            self.connected = 0
+            self.ascom.connected = False
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Dome'
             self.driverName = self.chooser.Choose(self.driverName)

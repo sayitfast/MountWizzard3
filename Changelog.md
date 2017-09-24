@@ -1,4 +1,13 @@
 # Changelog
+2.5.3
+- changed shutdown / boot config
+- fix error from Dave regarding shutdown -> MW will show error message in cas of failure
+- bugfix relay status
+- relay function could be switched off by empty ip
+- optimized error handling for direct connection during boot and shutdown
+- fixing error from Dave that Properties could not be changed while executing MW
+- starting refactoring logging features
+
 2.5.2
 -  boot mount via wake on lan
 

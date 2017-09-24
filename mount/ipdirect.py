@@ -49,6 +49,10 @@ class MountIpDirect:
                 self.socket.settimeout(60)
             self.socket.connect((self.mountIP(), self.PORT))
             self.connected = True                                                                                           # setting connection status from driver
+        except ConnectionRefusedError:
+            pass                                                                                                            # mount probably booting
+        # except IOError:
+        #     pass
         except Exception as e:                                                                                              # error handling
             self.logger.error('connect TCP    -> Socket connect error: {0}'.format(e))                                      # to logger
             self.socket = None
@@ -63,6 +67,10 @@ class MountIpDirect:
                 self.socket.shutdown(1)
                 self.socket.close()
                 self.socket = None
+        except ConnectionRefusedError:
+            pass                                                                                                            # mount probably booting
+        # except IOError:
+        #    pass
         except Exception as e:                                                                                              # error handling
             self.logger.error('disconnect TCP -> Socket disconnect error: {0}'.format(e))                                   # to logger
             self.connected = False                                                                                          # connection broken

@@ -176,6 +176,8 @@ class MountAscom:
 
     def setupDriver(self):
         try:
+            if self.ascom:
+                self.ascom.connected = False
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Telescope'
             self.driverName = self.chooser.Choose(self.driverName)

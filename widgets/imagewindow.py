@@ -99,7 +99,7 @@ class ImagesWindow(widget.MwWidget):
             if 'ImagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['ImagePopupWindowShowStatus']
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 

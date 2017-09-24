@@ -25,7 +25,9 @@ class Relays:
         self.stat = [False, False, False, False, False, False, False, False, False]
         self.username = ''
         self.password = ''
+        self.ip = None
         self.initConfig()
+        self.relayIP()
         self.connected = self.checkConnection()
         if self.connected:
             self.requestStatus()
@@ -45,6 +47,7 @@ class Relays:
         self.app.ui.relay6Text.textChanged.connect(lambda: self.app.ui.btn_relay6.setText(self.app.ui.relay6Text.text()))
         self.app.ui.relay7Text.textChanged.connect(lambda: self.app.ui.btn_relay7.setText(self.app.ui.relay7Text.text()))
         self.app.ui.relay8Text.textChanged.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
+        self.app.ui.le_relayIP.textChanged.connect(self.relayIP)
 
     def initConfig(self):                                                                                                   # index 0 is first entry etc.
         self.app.ui.relay1Function.addItem('Switch - Toggle')
@@ -111,7 +114,7 @@ class Relays:
             if 'KMPassword' in self.app.config:
                 self.app.ui.KMPassword.setText(self.app.config['KMPassword'])
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -137,27 +140,32 @@ class Relays:
         self.app.config['KMPassword'] = self.app.ui.KMPassword.text()
 
     def relayIP(self):
-        value = self.app.ui.le_relayIP.text().split('.')
-        if len(value) != 4:
-            self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
-            self.app.messageQueue.put('Wrong IP configuration for relay, please check!')
-            return
-        v = []
-        for i in range(0, 4):
-            v.append(int(value[i]))
-        ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
-        return ip
+        if self.app.ui.le_relayIP.text().strip() != '':
+            value = self.app.ui.le_relayIP.text().strip().split('.')
+            if len(value) != 4:
+                self.logger.warning('wrong input value:{0}'.format(value))
+                self.app.messageQueue.put('Wrong IP configuration for relay, please check!')
+                return
+            v = []
+            for i in range(0, 4):
+                v.append(int(value[i]))
+            ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
+            self.ip = ip
+        else:
+            self.logger.warning('empty input value for relay')
+            self.app.messageQueue.put('No relay IP configured')
 
     def checkConnection(self):
         connected = False
-        try:
-            self.geturl('http://' + self.relayIP(), 0.5)
-            connected = True
-        except Exception as e:
-            connected = False
-            self.logger.error('checkConnection-> connection error:{0}'.format(e))
-        finally:
-            return connected
+        if self.ip:
+            try:
+                self.geturl('http://' + self.ip)
+                connected = True
+            except Exception as e:
+                connected = False
+                self.logger.error('connection error:{0}'.format(e))
+            finally:
+                return connected
 
     def setStatus(self, response):
         lines = response.splitlines()                                                                                       # read over all the lines
@@ -170,7 +178,7 @@ class Relays:
             self.stat[6] = (lines[7][8] == '1')
             self.stat[7] = (lines[8][8] == '1')
             self.stat[8] = (lines[9][8] == '1')
-            self.logger.debug('relay setStatus-> status: {0}'.format(self.stat))
+            self.logger.debug('status: {0}'.format(self.stat))
         if self.stat[1]:
             self.app.ui.btn_relay1.setStyleSheet('background-color: rgb(42, 130, 218)')
         else:
@@ -254,38 +262,38 @@ class Relays:
 
     def pulse(self, relayNumber):
         try:
-            self.geturl('http://' + self.relayIP() + '/FF0{0:1d}01'.format(relayNumber))
+            self.geturl('http://' + self.ip + '/FF0{0:1d}01'.format(relayNumber))
             time.sleep(1)
-            self.geturl('http://' + self.relayIP() + '/FF0{0:1d}00'.format(relayNumber))
+            self.geturl('http://' + self.ip + '/FF0{0:1d}00'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
-            self.logger.error('pulse          -> relay:{0}, error:{1}'.format(relayNumber, e))
+            self.logger.error('relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
             pass
 
     def switch(self, relayNumber):
         try:
-            self.geturl('http://' + self.relayIP() + '/relays.cgi?relay={0:1d}'.format(relayNumber))
+            self.geturl('http://' + self.ip + '/relays.cgi?relay={0:1d}'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
-            self.logger.error('switch         -> relay:{0}, error:{1}'.format(relayNumber, e))
+            self.logger.error('relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
             pass
 
     def requestStatus(self):
         try:
-            result = self.geturl('http://' + self.relayIP() + '/status.xml')
+            result = self.geturl('http://' + self.ip + '/status.xml')
             self.setStatus(result.content.decode())
         except Exception as e:
-            self.logger.error('requestStatus -> error {0}'.format(e))
+            self.logger.error('error {0}'.format(e))
         finally:
             pass
 
     def switchAllOff(self):
         try:
-            self.geturl('http://' + self.relayIP() + '/FFE000')
+            self.geturl('http://' + self.ip + '/FFE000')
             self.requestStatus()
         except Exception as e:
-            self.logger.error('switchAllOff -> error {0}'.format(e))
+            self.logger.error('error {0}'.format(e))
         finally:
             pass
