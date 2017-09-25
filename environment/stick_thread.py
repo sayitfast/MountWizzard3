@@ -42,7 +42,7 @@ class Stick(PyQt5.QtCore.QThread):
             if 'ASCOMStickDriverName' in self.app.config:
                 self.driverName = self.app.config['ASCOMStickDriverName']
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -74,13 +74,13 @@ class Stick(PyQt5.QtCore.QThread):
                         self.ascom = Dispatch(self.driverName)                                                              # load driver
                         self.ascom.connected = True
                         self.connected = 1                                                                                  # set status to connected
-                        self.logger.debug('run Stick      -> driver chosen:{0}'.format(self.driverName))
+                        self.logger.info('driver chosen:{0}'.format(self.driverName))
                 except AttributeError as e:
                     if self.driverName != '':
-                        self.logger.error('run Stick      -> stick physically not connected {0}'.format(e))                 # write to logger
+                        self.logger.warning('stick physically not connected {0}'.format(e))
                 except Exception as e:                                                                                      # if general exception
                     if self.driverName != '':
-                        self.logger.error('run Stick      -> general exception: {0}'.format(e))                             # write to logger
+                        self.logger.error('general exception: {0}'.format(e))
                     if self.driverName == '':
                         self.connected = 2
                     else:
@@ -107,13 +107,13 @@ class Stick(PyQt5.QtCore.QThread):
             data['Pressure'] = self.ascom.Pressure
             self.signalStickData.emit(data)                                                                                     # sending the data via signal
             if self.ascom.DewPoint == 0 and self.ascom.Humidity == 0:
-                self.logger.error('getStatusMedium-> error accessing stick, driver {0} status:{1}'.format(self.ascom, self.ascom.connected))
+                self.logger.error('error accessing stick, driver {0} status:{1}'.format(self.ascom, self.ascom.connected))
                 self.connected = 0
             if self.ascom.TimeSinceLastUpdate('DewPoint') > 20:
-                self.logger.error('getStatusMedium-> stick hardware connection lost')
+                self.logger.error('stick hardware connection lost')
                 self.connected = 0
         except Exception as e:
-            self.logger.error('getStatusMedium-> error accessing stick ascom data: {0}'.format(e))
+            self.logger.error('error accessing stick ascom data: {0}'.format(e))
             self.connected = 0
 
     def getStatusSlow(self):
@@ -129,14 +129,14 @@ class Stick(PyQt5.QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverStic-> driver chosen:{0}'.format(self.driverName))
+            self.logger.info('driver chosen:{0}'.format(self.driverName))
             if self.driverName == '':
                 self.connected = 2
             else:
                 self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.app.messageQueue.put('Driver Exception in setupStick')                                                     # write to gui
-            self.logger.error('setupDriverStic-> general exception:{0}'.format(e))                                         # write to log
+            self.logger.error('general exception:{0}'.format(e))                                         # write to log
             if self.driverName == '':
                 self.connected = 2
             else:

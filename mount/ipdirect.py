@@ -28,12 +28,13 @@ class MountIpDirect:
         self.socket = None
         self.value_azimuth = 0
         self.value_altitude = 0
+        self.tryConnectionCounter = 0
         self.sendCommandLock = threading.Lock()
 
     def mountIP(self):
         value = self.app.ui.le_mountIP.text().split('.')
         if len(value) != 4:
-            self.logger.error('formatIP       -> wrong input value:{0}'.format(value))
+            self.logger.warning('wrong input value:{0}'.format(value))
             self.app.messageQueue.put('Wrong IP configuration for mount, please check!')
             return
         v = []
@@ -49,12 +50,20 @@ class MountIpDirect:
                 self.socket.settimeout(60)
             self.socket.connect((self.mountIP(), self.PORT))
             self.connected = True                                                                                           # setting connection status from driver
+            self.logger.info('Connection successful, cleared tryConnectionCounter')
+            self.tryConnectionCounter = 0
         except ConnectionRefusedError:
             pass                                                                                                            # mount probably booting
         # except IOError:
         #     pass
         except Exception as e:                                                                                              # error handling
-            self.logger.error('connect TCP    -> Socket connect error: {0}'.format(e))                                      # to logger
+            self.tryConnectionCounter += 1
+            if self.tryConnectionCounter < 10:
+                self.logger.error('Socket connect error: {0}'.format(e))
+            elif self.tryConnectionCounter == 10:
+                self.logger.error('No connection possible - stop logging this connection error')
+            else:
+                pass
             self.socket = None
             self.connected = False                                                                                          # connection broken
         finally:                                                                                                            # we don't stop, but try it again
@@ -72,7 +81,7 @@ class MountIpDirect:
         # except IOError:
         #    pass
         except Exception as e:                                                                                              # error handling
-            self.logger.error('disconnect TCP -> Socket disconnect error: {0}'.format(e))                                   # to logger
+            self.logger.error('Socket disconnect error: {0}'.format(e))
             self.connected = False                                                                                          # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             pass
@@ -87,7 +96,7 @@ class MountIpDirect:
                     raise RuntimeError("Socket connection broken")
                 totalSent = totalSent + sent
         except Exception as e:                                                                                              # error handling
-            self.logger.error('commandBlind   -> Socket send error: {0}'.format(e))                                         # to logger
+            self.logger.error('Socket send error: {0}'.format(e))
             self.disconnect()                                                                                               # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             pass
@@ -104,11 +113,11 @@ class MountIpDirect:
                 chunks.append(chunk)
                 if chunk[len(chunk)-1] == '#' or len(chunk) == 1:                                                           # for some reasons there are existing command return values not ended with '#'
                     break
-        except RuntimeError as e:  # error handling
-            self.logger.error('commandString  -> Socket connection broken')
-            self.disconnect()  # connection broken
+        except RuntimeError as e:
+            self.logger.error('Socket connection broken')
+            self.disconnect()
         except Exception as e:                                                                                              # error handling
-            self.logger.error('commandString  -> Socket receive error: {0}'.format(e))                                      # to logger
+            self.logger.error('Socket receive error: {0}'.format(e))
         finally:                                                                                                            # we don't stop, but try it again
             # noinspection PyUnboundLocalVariable
             value = ''.join(chunks)
@@ -125,12 +134,12 @@ class MountIpDirect:
                     reply = self.commandString(command)                                                                     # with return value do regular command
             except Exception as e:                                                                                          # error handling
                 self.app.messageQueue.put('TCP error in sendCommand')                                                       # gui
-                self.logger.error('sendCommand Mount -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger
+                self.logger.error('error: {0} command:{1}  reply:{2} '.format(e, command, reply))
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
                     value = reply.rstrip('#').strip()                                                                       # return the value
                     if command == 'CMS':
-                        self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
+                        self.logger.info('Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
                     if command in self.app.mount.BLIND_COMMANDS:                                                            # these are the commands, which do not expect a return value
                         value = ''                                                                                          # nothing

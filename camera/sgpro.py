@@ -14,7 +14,6 @@
 
 import json
 import logging
-import time
 # packages for handling web interface to SGPro
 from urllib import request
 # windows automation
@@ -44,11 +43,11 @@ class SGPro(MWCamera):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('Sequence Generator')
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
             self.app.ui.rb_cameraSGPro.setCheckable(False)
             self.app.ui.rb_cameraSGPro.setVisible(False)
-            self.logger.error('checkApplicatio-> Application SGPro not found on computer')
+            self.logger.info('Application SGPro not found on computer')
 
     def checkAppStatus(self):
         try:
@@ -56,7 +55,7 @@ class SGPro(MWCamera):
             self.appRunning = True
             self.appConnected = True
         except Exception as e:
-            self.logger.error('checkAppStatus -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             self.appRunning = False
             self.appConnected = False
             self.appCameraConnected = False
@@ -84,17 +83,17 @@ class SGPro(MWCamera):
             else:
                 self.appRunning = True
         except Exception as e:
-            self.logger.error('startApplicatio-> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
         finally:
             pass
         if not self.appRunning:
             try:
                 app = Application(backend='win32')
                 app.start(self.appInstallPath + '\\' + self.appExe)
-                self.logger.error('startApplicatio-> started Sequence Generator Pro')
+                self.logger.info('started Sequence Generator Pro')
                 self.appRunning = True
             except application.AppStartError:
-                self.logger.error('startApplicatio-> error starting application')
+                self.logger.error('error starting application')
                 self.app.messageQueue.put('Failed to start Sequence Generator Pro!')
                 self.appRunning = False
             finally:
@@ -129,7 +128,7 @@ class SGPro(MWCamera):
                                              width=modelData['sizeX'],
                                              height=modelData['sizeY'])
         modelData['imagepath'] = ''
-        self.logger.debug('SGP-getImage   -> message: {0}'.format(mes))
+        self.logger.info('message: {0}'.format(mes))
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
             while True:                                                                                                     # waiting for the image download before proceeding
                 suc, modelData['imagepath'] = self.SgGetImagePath(guid)                                                     # there is the image path, once the image is downloaded
@@ -145,13 +144,13 @@ class SGPro(MWCamera):
                                            blindSolve=modelData['blind'],
                                            useFitsHeaders=modelData['usefitsheaders'])
         if not suc:
-            self.logger.warning('SGP-solveImage -> no start {0}'.format(mes))                                               # debug output
+            self.logger.warning('no start {0}'.format(mes))
             return False, mes, modelData
         while True:                                                                                                         # retrieving solving data in loop
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)                               # retrieving the data from solver
             mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:                                                     # if there is success, we can move on
-                self.logger.debug('solveImage solv-> modelData {0}'.format(modelData))
+                self.logger.info('modelData {0}'.format(modelData))
                 solved = True
                 modelData['dec_sol'] = float(dec_sol)                                                                       # convert values to float, should be stored in float not string
                 modelData['ra_sol'] = float(ra_sol)
@@ -209,7 +208,7 @@ class SGPro(MWCamera):
             # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
         except Exception as e:
-            self.logger.error('SgCaptureImage -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''
 
     def SgGetCameraProps(self):
@@ -225,7 +224,7 @@ class SGPro(MWCamera):
                 captureResponse['GainValues'] = ['High']
             return captureResponse['Success'], captureResponse['Message'], int(captureResponse['NumPixelsX']), int(captureResponse['NumPixelsY']), captureResponse['SupportsSubframe'], captureResponse['GainValues'][0]
         except Exception as e:
-            self.logger.error('SgGetCameraProp-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
 
     def SgGetDeviceStatus(self, device):
@@ -240,7 +239,7 @@ class SGPro(MWCamera):
             # {"State":"IDLE","Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['State']
         except Exception as e:
-            self.logger.error('SgGetDeviceStat-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetImagePath(self, _guid):
@@ -254,7 +253,7 @@ class SGPro(MWCamera):
             # {"Success":false,"Message":"String"}
             return captureResponse['Success'], captureResponse['Message']
         except Exception as e:
-            self.logger.error('SgGetImagePath -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed'
 
     def SgGetSolvedImageData(self, _guid):
@@ -268,7 +267,7 @@ class SGPro(MWCamera):
             # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec'], captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
         except Exception as e:
-            self.logger.error('SgGetSolvedImag-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
     def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
@@ -287,7 +286,7 @@ class SGPro(MWCamera):
                 captureResponse = json.loads(f.read().decode('utf-8'))                                                      # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
             return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
         except Exception as e:
-            self.logger.error('SgSolveImage   -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''
 
 

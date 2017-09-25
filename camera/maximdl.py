@@ -39,11 +39,11 @@ class MaximDLCamera(MWCamera):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
             self.app.ui.rb_cameraMaximDL.setVisible(False)
             self.app.ui.rb_cameraMaximDL.setCheckable(False)
-            self.logger.error('checkApplicatio-> Application MaxIm DL not found on computer')
+            self.logger.info('Application MaxIm DL not found on computer')
 
     def startApplication(self):
         try:
@@ -53,7 +53,7 @@ class MaximDLCamera(MWCamera):
             else:
                 self.appRunning = True
         except Exception as e:
-            self.logger.error('startApplicatio-> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
         finally:
             pass
         if not self.appRunning:
@@ -61,9 +61,9 @@ class MaximDLCamera(MWCamera):
                 app = Application(backend='win32')
                 app.start(self.appInstallPath + '\\' + self.appExe)
                 self.appRunning = True
-                self.logger.error('startApplicatio-> started MaxIm DL')
+                self.logger.info('started MaxIm DL')
             except application.AppStartError:
-                self.logger.error('startApplicatio-> error starting application')
+                self.logger.error('error starting application')
                 self.app.messageQueue.put('Failed to start MaxIm DL!')
                 self.appRunning = False
             finally:
@@ -77,15 +77,14 @@ class MaximDLCamera(MWCamera):
             else:
                 self.appRunning = True
         except Exception as e:
-            print('error')
-            self.logger.error('checkAppStatus -> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
         finally:
             pass
         if self.maximCamera:
             try:
                 self.appConnected = self.maximCamera.LinkEnabled
             except Exception as e:
-                self.logger.error('checkAppStatus -> error{0}'.format(e))
+                self.logger.error('error{0}'.format(e))
                 self.appConnected = False
                 self.appCameraConnected = False
                 self.maximCamera = None
@@ -107,7 +106,7 @@ class MaximDLCamera(MWCamera):
                 self.maximCamera.LinkEnabled = True
                 self.appConnected = True
             except Exception as e:
-                self.logger.error('connectApplicat-> error: {0}'.format(e))
+                self.logger.error('error: {0}'.format(e))
             finally:
                 pass
 
@@ -115,7 +114,7 @@ class MaximDLCamera(MWCamera):
         try:
             self.maximCamera.LinkEnabled = False
         except Exception as e:
-            self.logger.error('disconnectAppli-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
         finally:
             self.appCameraConnected = False
             self.appConnected = False
@@ -150,10 +149,10 @@ class MaximDLCamera(MWCamera):
                 suc = True
                 mes = 'Image integrated'
             except Exception as e:
-                self.logger.error('maximdl-getImag-> error: {0}'.format(e))
+                self.logger.error('error: {0}'.format(e))
                 suc = False
                 mes = '{0}'.format(e)
-                self.logger.debug('maximdl-getImag-> message: {0}'.format(mes))
+                self.logger.debug('message: {0}'.format(mes))
             finally:
                 return suc, mes, modelData
         else:
@@ -172,7 +171,7 @@ class MaximDLCamera(MWCamera):
             canSubframe = True
             gains = ['Not Set']
         except Exception as e:
-            self.logger.error('ASC-getCamProp -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             suc = False
             mes = '{0}'.format(e)
         finally:
@@ -184,7 +183,7 @@ class MaximDLCamera(MWCamera):
                 value = 0
                 value = self.maximCamera.CameraStatus
             except Exception as e:
-                self.logger.error('getCameraStatus-> error: {0}'.format(e))
+                self.logger.error('error: {0}'.format(e))
             finally:
                 pass
             if value == 2:
@@ -202,7 +201,6 @@ class MaximDLCamera(MWCamera):
 
     def solveImage(self, modelData):
         startTime = time.time()                                                                                             # start timer for plate solve
-        mes = 'OK'
         self.maximDocument.OpenFile(modelData['imagepath'].replace('/', '\\'))                                              # open the fits file
         ra = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')                               # get ra
         dec = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')                             # get dec
@@ -214,13 +212,12 @@ class MaximDLCamera(MWCamera):
                 if status != 3:                                                                                             # 3 means solving
                     break
             except Exception as e:                                                                                          # the request throws exception for reason of failing plate solve
-                mes = e
-                self.logger.error('solveImage     -> error: {0}'.format(e))
+                self.logger.error('error: {0}'.format(e))
             finally:
                 pass
             time.sleep(0.25)
         if status == 1:
-            self.logger.warning('MAX-solveImage -> no start {0}'.format(status))                                            # debug output
+            self.logger.warning('no start {0}'.format(status))
             self.maximDocument.Close()
             return False, mes, modelData
         stopTime = time.time()
@@ -231,7 +228,7 @@ class MaximDLCamera(MWCamera):
             modelData['scale'] = self.maximDocument.ImageScale
             modelData['angle'] = self.maximDocument.PositionAngle
             modelData['timeTS'] = timeTS
-            self.logger.debug('solveImage     -> modelData {0}'.format(modelData))
+            self.logger.info('modelData {0}'.format(modelData))
             return True, mes, modelData
 
 

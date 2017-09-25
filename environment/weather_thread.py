@@ -41,7 +41,7 @@ class Weather(PyQt5.QtCore.QThread):
             if 'ASCOMWeatherDriverName' in self.app.config:
                 self.driverName = self.app.config['ASCOMWeatherDriverName']
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -73,10 +73,10 @@ class Weather(PyQt5.QtCore.QThread):
                         self.ascom = Dispatch(self.driverName)                                                              # load driver
                         self.ascom.connected = True
                         self.connected = 1                                                                                  # set status to connected
-                        self.logger.debug('run            -> driver chosen:{0}'.format(self.driverName))
+                        self.logger.info('driver chosen:{0}'.format(self.driverName))
                 except Exception as e:                                                                                      # if general exception
                     if self.driverName != '':
-                        self.logger.error('run Weather    -> general exception: {0}'.format(e))                             # write to logger
+                        self.logger.error('general exception: {0}'.format(e))                             # write to logger
                     if self.driverName == '':
                         self.connected = 2
                     else:
@@ -107,7 +107,7 @@ class Weather(PyQt5.QtCore.QThread):
             data['WindDirection'] = self.ascom.WindDirection
             self.signalWeatherData.emit(data)                                                                               # send data
         except Exception as e:
-            self.logger.error('getStatusMedium-> error accessing weather ascom data: {}'.format(e))
+            self.logger.error('error accessing weather ascom data: {}'.format(e))
 
     def getStatusSlow(self):
         pass
@@ -122,14 +122,14 @@ class Weather(PyQt5.QtCore.QThread):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverWeat-> driver chosen:{0}'.format(self.driverName))
+            self.logger.info('driver chosen:{0}'.format(self.driverName))
             if self.driverName == '':
                 self.connected = 2
             else:
                 self.connected = 0                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.app.messageQueue.put('Driver Exception in setupWeather')                                                   # write to gui
-            self.logger.error('setupWeather    -> general exception:{0}'.format(e))                                         # write to log
+            self.logger.error('general exception:{0}'.format(e))
             if self.driverName == '':
                 self.connected = 2
             else:

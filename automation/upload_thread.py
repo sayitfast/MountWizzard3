@@ -16,7 +16,7 @@
 import os
 import logging
 import time
-# pyqt
+# PyQt5
 import PyQt5
 # webservices
 import urllib.request as urllib2
@@ -68,7 +68,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
         try:
             pass
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -79,9 +79,9 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('10micron QCI')
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
-            self.logger.error('checkApplicatio-> Application 10micron Updater  not found on computer')
+            self.logger.info('Application 10micron Updater  not found on computer')
 
     def run(self):                                                                                                          # runnable for doing the work
         while True:                                                                                                         # main loop for stick thread
@@ -169,18 +169,6 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
     def __del__(self):                                                                                                      # remove thread
         self.wait()
 
-    def getStatusFast(self):
-        pass
-
-    def getStatusMedium(self):
-        self.logger.error('getStatusMedium-> error accessing weather ascom data: {}')
-
-    def getStatusSlow(self):
-        pass
-
-    def getStatusOnce(self):
-        pass
-
     def filterFileMPC(self, directory, filename, expression, start, end):
         numberEntry = 0
         with open(directory + filename, 'r') as inFile, open(directory + 'filter.mpc', 'w') as outFile:
@@ -194,6 +182,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
             return False
         else:
             self.app.messageQueue.put('Found {0} target(s) in MPC file: {1}!'.format(numberEntry, filename))
+            self.logger.info('Found {0} target(s) in MPC file: {1}!'.format(numberEntry, filename))
             return True
 
     def downloadFile(self, url, filename):
@@ -217,11 +206,12 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
                     f.write(buffer)
             self.app.messageQueue.put('Downloaded {0} Bytes'.format(file_size))
         except Exception as e:
-            self.logger.error('downloadFile   -> Download of {0} failed, error{1}'.format(url, e))
+            self.logger.error('Download of {0} failed, error{1}'.format(url, e))
             self.app.messageQueue.put('Download Error {0}'.format(e))
         return
 
     def uploadMount(self):
+        actual_work_dir = ''
         try:
             actual_work_dir = os.getcwd()
             os.chdir(os.path.dirname(self.appInstallPath))
@@ -229,7 +219,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
             app.start(self.appInstallPath + '\\' + self.appExe)                                                             # start 10 micro updater
             # timings.Timings.Slow()
         except application.AppStartError:
-            self.logger.error('uploadMount    -> error starting application')
+            self.logger.error('error starting application')
             self.app.messageQueue.put('Failed to start updater, please check!')
             os.chdir(actual_work_dir)
             return
@@ -238,9 +228,9 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
             winOK = app.window_(handle=dialog)
             winOK['OK'].click()
         except TimeoutError as e:
-            self.logger.error('uploadMount    -> timeout error{0}'.format(e))
+            self.logger.warning('timeout error{0}'.format(e))
         except Exception as e:
-            self.logger.error('uploadMount    -> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
         finally:
             pass
         try:
@@ -249,7 +239,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
             win['next'].click()                                                                                             # go upload select page
             ButtonWrapper(win['Control box firmware']).uncheck()                                                            # no firmware updates
         except Exception as e:
-            self.logger.error('uploadMount    -> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
             self.app.messageQueue.put('Error in starting 10micron updater, please check!')
             os.chdir(actual_work_dir)
             return
@@ -334,7 +324,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
             else:
                 ButtonWrapper(win['UTC / Earth rotation data']).uncheck()
         except Exception as e:
-            self.logger.error('uploadMount    -> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
             self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
             os.chdir(actual_work_dir)
             return
@@ -347,7 +337,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
                 win['next'].click()
                 win['Update Now'].click()
             except Exception as e:
-                self.logger.error('uploadMount    -> error{0}'.format(e))
+                self.logger.error('error{0}'.format(e))
                 self.app.messageQueue.put('Error in uploading files, please check 10micron updater!')
                 os.chdir(actual_work_dir)
                 return
@@ -356,7 +346,7 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
                 winOK = app.window_(handle=dialog)
                 winOK['OK'].click()
             except Exception as e:
-                self.logger.error('uploadMount    -> error{0}'.format(e))
+                self.logger.error('error{0}'.format(e))
                 self.app.messageQueue.put('Error in closing 10micron updater, please check!')
                 os.chdir(actual_work_dir)
                 return
@@ -366,10 +356,11 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
                 winOK = app['Exit updater']
                 winOK['Yes'].click()
             except Exception as e:
-                self.logger.error('uploadMount    -> error{0}'.format(e))
+                self.logger.error('error{0}'.format(e))
                 self.app.messageQueue.put('Error in closing Updater, please check!')
                 os.chdir(actual_work_dir)
                 return
+
 
 if __name__ == "__main__":
     pass

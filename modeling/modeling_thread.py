@@ -79,7 +79,7 @@ class Modeling(PyQt5.QtCore.QThread):
         try:
             pass
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('iitem in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -96,16 +96,16 @@ class Modeling(PyQt5.QtCore.QThread):
             self.cpObject.disconnectApplication()
         if self.app.ui.rb_cameraSGPro.isChecked():
             self.cpObject = self.SGPro
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is SGPro')
+            self.logger.info('actual camera / plate solver is SGPro')
         elif self.app.ui.rb_cameraTSX.isChecked():
             self.cpObject = self.TheSkyX
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is TheSkyX')
+            self.logger.info('actual camera / plate solver is TheSkyX')
         elif self.app.ui.rb_cameraMaximDL.isChecked():
             self.cpObject = self.MaximDL
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is MaximDL')
+            self.logger.info('actual camera / plate solver is MaximDL')
         elif self.app.ui.rb_cameraNone.isChecked():
             self.cpObject = self.NoneCam
-            self.logger.debug('cameraPlateChoo-> actual camera / plate solver is None')
+            self.logger.info('actual camera / plate solver is None')
         self.cpObject.checkAppStatus()
         if self.app.ui.checkAutoStartApp.isChecked():
             self.cpObject.startApplication()
@@ -323,7 +323,7 @@ class Modeling(PyQt5.QtCore.QThread):
         suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                     # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
-            self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
+            self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
         else:
             self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
             self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), 'Base', mes))
@@ -335,7 +335,7 @@ class Modeling(PyQt5.QtCore.QThread):
             simulation = False
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
-        self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
+        self.logger.info('modelData: {0}'.format(modelData))                                             # log data
         self.app.commandQueue.put('PO')                                                                                     # unpark to start slewing
         self.app.commandQueue.put('AP')                                                                                     # tracking on during the picture taking
         if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
@@ -363,7 +363,7 @@ class Modeling(PyQt5.QtCore.QThread):
         modelData['altitude'] = 0
         self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
         suc, mes, imagepath = self.capturingImage(modelData, simulation)
-        self.logger.debug('plateSolveSync -> suc:{0} mes:{1}'.format(suc, mes))
+        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
             self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
             suc, mes, modelData = self.solveImage(modelData, simulation)
@@ -400,7 +400,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.analyse.saveData(self.modelData, name)                                                                 # save the data according to date
                 self.app.mount.saveBaseModel()                                                                              # and saving the modeling in the mount
         else:
-            self.logger.warning('runBaseModel -> There are no Basepoints for modeling')
+            self.logger.warning('There are no Basepoints for modeling')
 
     def runRefinementModel(self):
         num = self.app.mount.numberModelStars()
@@ -428,7 +428,7 @@ class Modeling(PyQt5.QtCore.QThread):
                     self.analyse.saveData(self.modelData, name)                                                             # save the data
                     self.app.mount.saveRefinementModel()                                                                    # and saving the modeling in the mount
             else:
-                self.logger.warning('runRefinementModel -> There are no Refinement Points to modeling')
+                self.logger.warning('There are no Refinement Points to modeling')
         else:
             self.app.modelLogQueue.put('Refine stopped, no BASE model available !\n')
             self.app.messageQueue.put('Refine stopped, no BASE model available !\n')
@@ -443,7 +443,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
-            self.logger.warning('runCheckModel  -> There are no Refinement or Base Points to modeling')                     # write error log
+            self.logger.warning('There are no Refinement or Base Points to modeling')                     # write error log
 
     def runAllModel(self):
         self.runBaseModel()
@@ -481,18 +481,18 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def runBatchModel(self):
         nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.debug('runBatchModel  -> modeling from {0}'.format(nameDataFile))                                       # debug output
+        self.logger.info('modeling from {0}'.format(nameDataFile))                                       # debug output
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
         if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
-            self.logger.error('runBatchModel  -> ra_Jnow or dec_Jnow not in data file')                                     # debug output
+            self.logger.warning('ra_Jnow or dec_Jnow not in data file')                                     # debug output
             self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         if not('ra_sol_Jnow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
-            self.logger.error('runBatchModel  -> ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
+            self.logger.warning('ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
             self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                              # Gui Output
             return
         if not('pierside' in data and 'sidereal_time' in data):                                                             # you need sidereal time and pierside
-            self.logger.error('runBatchModel  -> pierside and sidereal time not in data file')                              # debug output
+            self.logger.warning('pierside and sidereal time not in data file')                              # debug output
             self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         self.app.mount.saveBackupModel()
@@ -508,7 +508,7 @@ class Modeling(PyQt5.QtCore.QThread):
                                                               self.transform.decimalToDegree(data['sidereal_time_float'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
-                self.logger.error('runBatchModel  -> point {0} could not be added'.format(reply))                           # debug output
+                self.logger.warning('point {0} could not be added'.format(reply))                           # debug output
                 self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                   # Gui Output
             else:
                 self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
@@ -516,16 +516,16 @@ class Modeling(PyQt5.QtCore.QThread):
         reply = self.app.mount.mountHandler.sendCommand('endalig')
         if reply == 'V':
             self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                      # Gui Output
-            self.logger.error('runBatchModel  -> Model successful finished!')                                               # debug output
+            self.logger.info('Model successful finished!')                                               # debug output
         else:
             self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))    # Gui Output
-            self.logger.error('runBatchModel  -> Model could not be calculated with current data!')                         # debug output
+            self.logger.warning('Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
         self.app.commandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))                      # Azimuth setting
         self.app.commandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))                  # Altitude Setting
         self.app.commandQueue.put('MS')                                                                                     # initiate slewing with stop tracking
-        self.logger.debug('slewMountDome  -> Connected:{0}'.format(self.app.dome.connected))
+        self.logger.info('Connected:{0}'.format(self.app.dome.connected))
         break_counter = 0
         while not self.app.mount.slewing:                                                                                   # wait for mount starting slewing
             time.sleep(0.1)                                                                                                 # loop time
@@ -540,8 +540,8 @@ class Modeling(PyQt5.QtCore.QThread):
             try:
                 self.app.dome.ascom.SlewToAzimuth(float(az))                                                                # set azimuth coordinate
             except Exception as e:
-                self.logger.error('slewMountDome  -> value: {0}, error: {1}'.format(az, e))
-            self.logger.debug('slewMountDome  -> Azimuth:{0}'.format(az))
+                self.logger.error('value: {0}, error: {1}'.format(az, e))
+            self.logger.info('Azimuth:{0}'.format(az))
             while not self.app.mount.slewing:                                                                               # wait for mount starting slewing
                 if self.cancel:
                     break
@@ -570,7 +570,7 @@ class Modeling(PyQt5.QtCore.QThread):
             modelData['offY'] = int((sizeY - modelData['sizeY']) / 2)                                                       # same in y
             modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
-            self.logger.warning('prepareCaptureSubframe-> Camera does not support subframe.')                               # log message
+            self.logger.warning('Camera does not support subframe.')                               # log message
         if 'binning' in modelData:                                                                                          # if binning, we have to respects
             modelData['sizeX'] = int(modelData['sizeX'] / modelData['binning'])
             modelData['sizeY'] = int(modelData['sizeY'] / modelData['binning'])
@@ -588,7 +588,7 @@ class Modeling(PyQt5.QtCore.QThread):
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
-        self.logger.debug('capturingImage -> modelData: {0}'.format(modelData))                                             # write logfile
+        self.logger.info('modelData: {0}'.format(modelData))
         suc, mes, modelData = self.cpObject.getImage(modelData)                                                             # imaging app specific abstraction
         if suc:
             if simulation:
@@ -598,7 +598,7 @@ class Modeling(PyQt5.QtCore.QThread):
                     bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)                                          # we are running in a normal Python environment
                 shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['imagepath'])                                      # copy reference file as simulation target
             else:
-                self.logger.debug('capturingImage -> getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))         # debug output
+                self.logger.info('getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))
                 fitsFileHandle = pyfits.open(modelData['imagepath'], mode='update')                                         # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
@@ -617,7 +617,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 fitsHeader['MW_EXP'] = modelData['exposure']                                                                # store the exposure time as well
                 fitsHeader['MW_AZ'] = modelData['azimuth']                                                                  # x is the same as y
                 fitsHeader['MW_ALT'] = modelData['altitude']                                                                # and vice versa
-                self.logger.debug('capturingImage -> DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
+                self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
                                   'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
                                   .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
                                           fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
@@ -647,7 +647,7 @@ class Modeling(PyQt5.QtCore.QThread):
     def solveImage(self, modelData, simulation):                                                                            # solving image based on information inside the FITS files, no additional info
         modelData['usefitsheaders'] = True
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
-        self.logger.debug('solveImage     -> suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
+        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
         if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
             modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
@@ -664,7 +664,7 @@ class Modeling(PyQt5.QtCore.QThread):
             fitsHeader['MW_PSCAL'] = modelData['scale']
             fitsHeader['MW_PANGL'] = modelData['angle']
             fitsHeader['MW_PTS'] = modelData['timeTS']
-            self.logger.debug('solvingImage   -> MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
+            self.logger.info('MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
                               format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
                                      fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                         # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
@@ -676,7 +676,7 @@ class Modeling(PyQt5.QtCore.QThread):
             return False, mes, modelData
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during modeling run
-        self.logger.debug('addRefinementSt-> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
+        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
         self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
         self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
         starNumber = self.app.mount.numberModelStars()
@@ -684,26 +684,26 @@ class Modeling(PyQt5.QtCore.QThread):
         starAdded = self.app.mount.numberModelStars() - starNumber
         if reply == 'E':                                                                                                    # 'E' says star could not be added
             if starAdded == 1:
-                self.logger.error('addRefinementSt-> star added, but return value was E')
+                self.logger.error('star added, but return value was E')
                 return True
             else:
-                self.logger.error('addRefinementSt-> error adding star')
+                self.logger.error('error adding star')
                 return False
         else:
-            self.logger.debug('addRefinementSt-> refinement star added')
+            self.logger.info('refinement star added')
             return True                                                                                                     # simulation OK
 
     def syncMountModel(self, ra, dec):                                                                                      # add refinement star during modeling run
-        self.logger.debug('syncMountModel -> ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
+        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
         self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
         self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
         self.app.mount.mountHandler.sendCommand('CMCFG0')
         reply = self.app.mount.mountHandler.sendCommand('CM')                                                               # send sync command (regardless what driver tells)
         if reply[:5] == 'Coord':
-            self.logger.debug('syncMountModel -> mount modeling synced')
+            self.logger.info('mount modeling synced')
             return True
         else:
-            self.logger.error('syncMountModel -> error in sync mount modeling')
+            self.logger.warning('error in sync mount modeling')
             return False                                                                                                    # simulation OK
 
     # noinspection PyUnresolvedReferences
@@ -721,9 +721,9 @@ class Modeling(PyQt5.QtCore.QThread):
         suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                     # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
-            self.logger.debug('runModel       -> camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
+            self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
         else:
-            self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))                           # log message
+            self.logger.warning('SgGetCameraProps with error: {0}'.format(mes))
             self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
             return {}                                                                                                       # if cancel or failure, that empty dict has to returned
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)                  # calculate the necessary data
@@ -733,7 +733,7 @@ class Modeling(PyQt5.QtCore.QThread):
             simulation = False
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
-        self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                                             # log data
+        self.logger.info('modelData: {0}'.format(modelData))
         self.app.commandQueue.put('PO')                                                                                     # unpark to start slewing
         self.app.commandQueue.put('AP')                                                                                     # tracking on during the picture taking
         if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
@@ -754,7 +754,7 @@ class Modeling(PyQt5.QtCore.QThread):
                     break                                                                                                   # finally stopping modeling run
                 self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
                                            .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
-                self.logger.debug('runModel       -> point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))    # Debug output
+                self.logger.info('point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
                         self.slewMountDome(p_az, p_alt)                                                                     # slewing mount and dome to az/alt for first slew only
@@ -797,7 +797,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 suc, mes, imagepath = self.capturingImage(modelData, simulation)                                            # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
                     self.app.commandQueue.put('RT9')                                                                        # stop tracking until next round
-                self.logger.debug('runModel-capImg-> suc:{0} mes:{1}'.format(suc, mes))                                     # Debug
+                self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
                 if suc:                                                                                                     # if a picture could be taken
                     self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
                     suc, mes, modelData = self.solveImage(modelData, simulation)                                            # solve the position and returning the values
@@ -812,11 +812,11 @@ class Modeling(PyQt5.QtCore.QThread):
                                 p_item.setVisible(False)                                                                    # set the relating modeled point invisible
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
-                                self.logger.error('runModel       -> raE:{0} decE:{1} star could not be added'
+                                self.logger.info('raE:{0} decE:{1} star could not be added'
                                                   .format(modelData['raError'], modelData['decError']))                     # generating debug output
                         self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
                                                    .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
-                        self.logger.debug('runModel       -> modelData: {0}'.format(modelData))                             # log output
+                        self.logger.info('modelData: {0}'.format(modelData))                             # log output
                     else:                                                                                                   # no success in solving
                         self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))            # Gui output
                 self.app.modelLogQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))                                  # show status on screen

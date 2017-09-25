@@ -32,7 +32,7 @@ class ModelPoints:
         msg = None
         if modelPointsFileName.strip() == '':
             msg = 'No Model Points Filename given!'
-            self.logger.error('loadModelPoints -> No Model Points Filename given!')
+            self.logger.warning('No Model Points Filename given!')
             return p, msg
         try:                                                                                                                # fault tolerance, if file io fails
             with open('config/' + modelPointsFileName, 'r') as fileHandle:                                                  # run over complete file
@@ -54,7 +54,7 @@ class ModelPoints:
                             p.append(point)                                                                                 # close file
         except Exception as e:                                                                                              # handle exception
             msg = 'Error loading modeling points from file [{0}] error: {1}!'.format(modelPointsFileName, e)
-            self.logger.error('loadModelPoints -> Error loading modeling points from file [{0}] error: {1}!'.format(modelPointsFileName, e))
+            self.logger.warning('Error loading modeling points from file [{0}] error: {1}!'.format(modelPointsFileName, e))
         finally:
             return p, msg
 
@@ -64,7 +64,7 @@ class ModelPoints:
         else:                                                                                                               # otherwise
             points = self.RefinementPoints                                                                                  # take the refinement points
         if len(points) == 0:                                                                                                # if no basepoints, than no sort
-            self.logger.warning('sortBasePoints -> There are no {0}points to sort'.format(modeltype))
+            self.logger.warning('There are no {0}points to sort'.format(modeltype))
             return
         westSide = []                                                                                                       # split west and east side of pier
         eastSide = []                                                                                                       # and reset them
@@ -92,7 +92,7 @@ class ModelPoints:
                 return msg
             if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName):
                 msg = 'Horizon points file does not exist !'
-                self.logger.error('loadHorizonPoints -> horizon points file does not exist !')                              # write to logger
+                self.logger.warning('horizon points file does not exist')
             else:
                 try:                                                                                                        # try opening the file
                     with open(os.getcwd() + '/config/' + horizonPointsFileName) as f:                                       # run through file
@@ -103,7 +103,7 @@ class ModelPoints:
                     f.close()                                                                                               # close file again
                 except Exception as e:                                                                                      # handle exception
                     msg = 'Error loading horizon points: {0}'.format(e)
-                    self.logger.error('loadHorizonPoints -> Error loading horizon points: {0}'.format(e))                   # write to logger
+                    self.logger.error('Error loading horizon points: {0}'.format(e))
                     return msg                                                                                              # stop routine
             hp = sorted(hp, key=operator.itemgetter(0))                                                                     # list should be sorted, but I do it for security anyway
         if line_check:

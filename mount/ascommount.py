@@ -45,7 +45,7 @@ class MountAscom:
             self.ascom.connected = True                                                                                     # connect to mount
             self.connected = True                                                                                           # setting connection status from driver
         except Exception as e:                                                                                              # error handling
-            self.logger.error('connect Driver -> Driver COM Error in dispatchMount: {0}'.format(e))                         # to logger
+            self.logger.error('Driver COM Error in dispatchMount: {0}'.format(e))
             self.connected = False                                                                                          # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             pass
@@ -57,7 +57,7 @@ class MountAscom:
             self.ascom.Quit()
             self.ascom = None
         except Exception as e:                                                                                              # error handling
-            self.logger.error('disconnect Driv-> Driver COM Error in dispatchMount: {0}'.format(e))                         # to logger
+            self.logger.error('Driver COM Error in dispatchMount: {0}'.format(e))
             self.connected = False                                                                                          # connection broken
         finally:                                                                                                            # we don't stop, but try it again
             pass
@@ -74,12 +74,12 @@ class MountAscom:
                     reply = self.ascom.CommandString(command)                                                               # with return value do regular command
             except pythoncom.com_error as e:                                                                                # error handling
                 self.app.messageQueue.put('Driver COM Error in sendCommand')                                                # gui
-                self.logger.error('sendCommand    -> error: {0} command:{1}  reply:{2} '.format(e, command, reply))      # logger                                                                                 # in case of error, the connection might be broken
+                self.logger.error('error: {0} command:{1}  reply:{2} '.format(e, command, reply))
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
                     value = reply.rstrip('#').strip()                                                                       # return the value
                     if command == 'CMS':
-                        self.logger.debug('sendCommand    -> Return Value Add Model Point: {0}'.format(reply))
+                        self.logger.info('Return Value Add Model Point: {0}'.format(reply))
                 else:                                                                                                       #
                     if command in self.app.mount.BLIND_COMMANDS:                                                            # these are the commands, which do not expect a return value
                         value = ''                                                                                          # nothing
@@ -181,7 +181,7 @@ class MountAscom:
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'Telescope'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.logger.debug('setupDriverMoun-> driver chosen:{0}'.format(self.driverName))
+            self.logger.info('driver chosen:{0}'.format(self.driverName))
             if self.driverName == 'ASCOM.FrejvallGM.Telescope' or self.driverName == 'ASCOM.tenmicron_mount.Telescope':
                 self.driver_real = True
             else:
@@ -189,7 +189,7 @@ class MountAscom:
             self.connected = False                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
             self.app.messageQueue.put('Driver Exception in setupMount')                                                     # write to gui
-            self.logger.error('setupDriver Mount -> general exception:{0}'.format(e))                                       # write to log
+            self.logger.error('general exception:{0}'.format(e))
             self.connected = False                                                                                          # set to disconnected
         finally:                                                                                                            # won't stop the program, continue
             return

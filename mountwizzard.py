@@ -307,9 +307,9 @@ class MountWizzardApp(widget.MwWidget):
         appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
         if appAvailable:
             self.messageQueue.put('Found: {0}'.format(appName))
-            self.logger.debug('Name: {0}, Path: {1}'.format(appName, appInstallPath))
+            self.logger.info('Name: {0}, Path: {1}'.format(appName, appInstallPath))
         else:
-            self.logger.error('Application ASCOM not found on computer')
+            self.logger.warning('Application ASCOM not found on computer')
 
     def checkRegistrationKeys(self, appSearchName):
         if platform.machine().endswith('64'):
@@ -995,7 +995,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.3 beta'
+    BUILD_NO = '2.5.4 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()

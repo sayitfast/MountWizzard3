@@ -1,4 +1,9 @@
 # Changelog
+2.5.4
+- bugfix relay input
+- bugfix timeout relay
+- refactored logging events
+
 2.5.3
 - changed shutdown / boot config
 - fix error from Dave regarding shutdown -> MW will show error message in cas of failure

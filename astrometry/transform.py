@@ -57,7 +57,7 @@ class Transform:
                 hour, minute = value.split(splitter)
                 return (float(hour) + float(minute) / 60) * sign
         except Exception as e:
-            self.logger.error('degStringToDeci-> error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
+            self.logger.error('error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
             return 0
 
     @staticmethod

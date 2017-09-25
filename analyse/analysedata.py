@@ -36,7 +36,7 @@ class Analyse:
             json.dump(dataProcess, outfile)
             outfile.close()                                                                                                 # close the save file
         except Exception as e:                                                                                              # Exception handling
-            self.logger.error('saveData       -> analyse data file {0}, Error : {1}'.format(filenameData, e))
+            self.logger.error('analyse data file {0}, Error : {1}'.format(filenameData, e))
             return
 
     def processTheSkyXLine(self, line):
@@ -133,7 +133,7 @@ class Analyse:
                 else:
                     resultData['modelError'] = [math.sqrt((ra - ra_sol) * 3600 * (ra - ra_sol) * 3600 + (dec - dec_sol) * 3600 * (dec - dec_sol) * 3600)]
         except Exception as e:
-            self.logger.error('loadTheSkyXData-> error processing file {0}, Error : {1}'.format(filename, e))
+            self.logger.error('error processing file {0}, Error : {1}'.format(filename, e))
             return {}
         return resultData
 
@@ -143,7 +143,7 @@ class Analyse:
             dataJson = json.load(infile)
             infile.close()                                                                                                  # close
         except Exception as e:                                                                                              # exception handling
-            self.logger.error('loadMountWizzar->  analyse data file {0}, Error : {1}'.format(filename, e))
+            self.logger.error('analyse data file {0}, Error : {1}'.format(filename, e))
             return {}                                                                                                       # loading doesn't work
         resultData = dict()
         for timestepdict in dataJson:

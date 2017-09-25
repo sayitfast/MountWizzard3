@@ -24,11 +24,11 @@ class TheSkyX(MWCamera):
         self.appName = 'TheSkyX - Test Entry'
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.debug('checkApplicatio-> Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
             self.app.ui.rb_cameraTSX.setVisible(False)
             self.app.ui.rb_cameraTSX.setCheckable(False)
-            self.logger.error('checkApplicatio-> Application TheSkyX not found on computer')
+            self.logger.info('Application TheSkyX not found on computer')
 
     def checkAppStatus(self):
         try:
@@ -48,7 +48,7 @@ class TheSkyX(MWCamera):
             self.appRunning = False
             self.appConnected = False
             self.appCameraConnected = False
-            self.logger.error('checkAppStatus -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
         finally:
             pass
 
@@ -62,7 +62,7 @@ class TheSkyX(MWCamera):
                 self.appRunning = True
 
         except Exception as e:
-            self.logger.error('startApplicatio-> error{0}'.format(e))
+            self.logger.error('error{0}'.format(e))
         finally:
             pass
         if not self.appRunning:
@@ -70,9 +70,9 @@ class TheSkyX(MWCamera):
                 app = Application(backend='win32')
                 app.start(self.appInstallPath + '\\' + self.appExe)
                 self.appRunning = True
-                self.logger.error('startApplicatio-> started TheSkyX')
+                self.logger.info('started TheSkyX')
             except application.AppStartError:
-                self.logger.error('startApplicatio-> error starting application')
+                self.logger.error('error starting application')
                 self.app.messageQueue.put('Failed to start TheSkyX!')
                 self.appRunning = False
             finally:
@@ -94,7 +94,7 @@ class TheSkyX(MWCamera):
             command += 'ccdsoftCamera.Connect();'
             self.appCameraConnected, response = self.sendCommand(command)
         except Exception as e:
-            self.logger.error('connectCamera  -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             self.appCameraConnected = False
         finally:
             # noinspection PyUnboundLocalVariable
@@ -109,7 +109,7 @@ class TheSkyX(MWCamera):
             self.sendCommand(command)
             self.appCameraConnected = False
         except Exception as e:
-            self.logger.error('disconnectCamer-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
         finally:
             # noinspection PyUnboundLocalVariable
             tsxSocket.close()
@@ -127,7 +127,7 @@ class TheSkyX(MWCamera):
             else:
                 return False, response
         except Exception as e:
-            self.logger.error('sendCommand    -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, format(e)
         finally:
             # noinspection PyUnboundLocalVariable
@@ -169,7 +169,7 @@ class TheSkyX(MWCamera):
             else:
                 return False, 'Request failed', modelData
         except Exception as e:
-            self.logger.error('TXGetSolvedImag-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', modelData
 
     def getImage(self, modelData):
@@ -207,7 +207,7 @@ class TheSkyX(MWCamera):
 
             return success, response, modelData
         except Exception as e:
-            self.logger.error('TXCaptureImage -> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''
 
     def getCameraStatus(self):
@@ -225,7 +225,7 @@ class TheSkyX(MWCamera):
                 response = 'CAPTURING'
             self.cameraStatus = response
         except Exception as e:
-            self.logger.error('TXGetDeviceStat-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
         finally:
             pass
 
@@ -241,5 +241,5 @@ class TheSkyX(MWCamera):
             captureResponse = json.loads(response)
             return success, '', int(captureResponse['WidthInPixels']), int(captureResponse['HeightInPixels']), True, 'Not Set'
         except Exception as e:
-            self.logger.error('TXGetCameraProp-> error: {0}'.format(e))
+            self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', '', ''

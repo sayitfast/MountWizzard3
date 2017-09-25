@@ -15,6 +15,7 @@
 import logging
 import time
 import requests
+import urllib
 
 
 class Relays:
@@ -148,9 +149,12 @@ class Relays:
                 return
             v = []
             for i in range(0, 4):
-                v.append(int(value[i]))
-            ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
-            self.ip = ip
+                try:
+                    v.append(int(value[i]))
+                    ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
+                    self.ip = ip
+                except Exception as e:
+                    pass
         else:
             self.logger.warning('empty input value for relay')
             self.app.messageQueue.put('No relay IP configured')
@@ -159,13 +163,22 @@ class Relays:
         connected = False
         if self.ip:
             try:
+                urllib.request.urlopen('http://' + self.ip, None, 2)
                 self.geturl('http://' + self.ip)
                 connected = True
+            except urllib.error.HTTPError as e:
+                if e.code == 401:
+                    self.logger.info('relaybox present under ip: {0}'.format(self.ip))
+                else:
+                    self.logger.error('connection error: {0}'.format(e))
+            except urllib.request.URLError as e:
+                self.logger.info('there is no relaybox present under ip: {0}'.format(self.ip))
             except Exception as e:
-                connected = False
-                self.logger.error('connection error:{0}'.format(e))
+                self.logger.error('connection error: {0}'.format(e))
             finally:
                 return connected
+        else:
+            self.logger.info('there is no ip given for relaybox')
 
     def setStatus(self, response):
         lines = response.splitlines()                                                                                       # read over all the lines

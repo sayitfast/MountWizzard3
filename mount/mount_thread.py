@@ -90,7 +90,7 @@ class Mount(PyQt5.QtCore.QThread):
             if 'ASCOMTelescopeDriverName' in self.app.config:
                 self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
         except Exception as e:
-            self.logger.error('initConfig -> item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -105,10 +105,10 @@ class Mount(PyQt5.QtCore.QThread):
             self.mountHandler.disconnect()                                                                                  # do formal disconnection
         if self.app.ui.rb_directMount.isChecked():
             self.mountHandler = self.MountIpDirect
-            self.logger.debug('mountDriverChoo-> actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
+            self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
         elif self.app.ui.rb_ascomMount.isChecked():
             self.mountHandler = self.MountAscom
-            self.logger.debug('mountDriverChoo-> actual driver is ASCOM')
+            self.logger.info('actual driver is ASCOM')
         self.chooserLock.release()                                                                                          # free the lock to move again
 
     def run(self):                                                                                                          # runnable of the thread
@@ -231,20 +231,20 @@ class Mount(PyQt5.QtCore.QThread):
     def mountShutdown(self):
         reply = self.mountHandler.sendCommand('shutdown')
         if reply != '1':
-            self.logger.debug('mountShutdown  -> error: {0}'.format(reply))
+            self.logger.error('error: {0}'.format(reply))
             self.app.messageQueue.put('Error in mount shutdown !')
         else:
             self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
             time.sleep(1)
             self.mountHandler.disconnect()
-            self.logger.debug('mountShutdown  -> Shutdown Mont manually')
+            self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !')
 
     def flipMount(self):                                                                                                    # doing the flip of the mount
         reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':                                                                                                    # error handling if not successful
             self.app.messageQueue.put('Flip Mount could not be executed !')                                                 # write to gui
-            self.logger.debug('flipMount      -> error: {0}'.format(reply))                                                 # write to logger
+            self.logger.error('error: {0}'.format(reply))
 
     def numberModelStars(self):
         return int(self.mountHandler.sendCommand('getalst'))                                                                # if there are some points, a modeling must be there
@@ -292,7 +292,7 @@ class Mount(PyQt5.QtCore.QThread):
                     else:
                         alignModel['RMS'] = 0
         except Exception as e:
-            self.logger.error('getAlignmentMod-> receive error getain command: {0}'.format(e))
+            self.logger.error('receive error getain command: {0}'.format(e))
         finally:
             return alignModel
 
@@ -338,7 +338,7 @@ class Mount(PyQt5.QtCore.QThread):
                 data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))            # same to dec
             self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
-            self.logger.error('retrofitMountDa-> size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
+            self.logger.warning('size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
             self.app.modelLogQueue.put('Mount Model and Model Data could not be synced\n')
             self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
         return data
@@ -399,7 +399,7 @@ class Mount(PyQt5.QtCore.QThread):
                     self.app.modeling.modelData[i]['decError'] = self.app.modeling.modelData[i]['modelError'] * math.cos(math.radians(float(alignModel['points'][i][6])))
                 self.showAlignmentModel(alignModel)
             else:
-                self.logger.error('deleteWorstPoin-> Point {0} could not be deleted').format(index)
+                self.logger.warning('Point {0} could not be deleted').format(index)
         return alignModel
 
     def saveModel(self, target):
@@ -413,7 +413,7 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.messageQueue.put('Actual Mount Model saved to file {0}'.format(target))
             return True
         else:
-            self.logger.debug('saveBackupModel-> Model {0} could not be saved'.format(target))                              # log it
+            self.logger.warning('Model {0} could not be saved'.format(target))
             return False
 
     def loadModel(self, target):
@@ -427,7 +427,7 @@ class Mount(PyQt5.QtCore.QThread):
             return True
         else:
             self.app.messageQueue.put('There is no modeling named {0} or error while loading'.format(target))
-            self.logger.debug('loadBackupModel-> Model {0} could not be loaded'.format(target))                             # log it
+            self.logger.warning('Model {0} could not be loaded'.format(target))
             return False
 
     def saveBackupModel(self):
@@ -533,8 +533,8 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
                 self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
             else:
-                self.logger.error('setRefractionPa-> parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
-                self.logger.error('setRefractionPa-> parameters out of range ! driver:{0} object:{1}'.format(self.app.stick.driverName, self.app.stick.ascom))
+                # todo : better check before writing warning
+                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}  driver:{2} object:{3}'.format(temperature, pressure, self.app.stick.driverName, self.app.stick.ascom))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.mountHandler.sendCommand('GS')
@@ -573,7 +573,7 @@ class Mount(PyQt5.QtCore.QThread):
                     self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
                 self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
             except Exception as e:
-                self.logger.error('getStatusFast  -> receive error Ginfo command: {0} reply:{1}'.format(e, reply))
+                self.logger.error('receive error Ginfo command: {0} reply:{1}'.format(e, reply))
             finally:
                 pass
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
@@ -592,7 +592,8 @@ class Mount(PyQt5.QtCore.QThread):
                 if self.app.modeling.cpObject.cameraStatus in ['IDLE', 'DOWNLOADING', 'READY']:                                # if tracking, when camera is idle or downloading
                     self.setRefractionParameter()                                                                           # transfer refraction to mount
                 else:                                                                                                       # otherwise
-                    self.logger.debug('getStatusMedium-> no autorefraction')                                                # no autorefraction is possible
+                    # todo a better decition if logging a warning
+                    self.logger.warning('no autorefraction')
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()
 
@@ -618,7 +619,7 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.mountDataQueue.put({'Name': 'GetUTCDataValid', 'Value': valid})
                 self.app.mountDataQueue.put({'Name': 'GetUTCDataExpirationDate', 'Value': expirationDate})
         except Exception as e:
-            self.logger.error('getStatusSlow  -> receive error GDUTV command: {0}'.format(e))
+            self.logger.error('receive error GDUTV command: {0}'.format(e))
         finally:
             pass
 
@@ -639,10 +640,10 @@ class Mount(PyQt5.QtCore.QThread):
         self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.mountHandler.sendCommand('GVP')})
         self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.mountHandler.sendCommand('GVT')})
         self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.mountHandler.sendCommand('GVZ')})
-        self.logger.debug('getStatusOnce  -> FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                          # firmware version for checking
-        self.logger.debug('getStatusOnce  -> Site Lon:{0}'.format(self.site_lon))                                           # site lon
-        self.logger.debug('getStatusOnce  -> Site Lat:{0}'.format(self.site_lat))                                           # site lat
-        self.logger.debug('getStatusOnce  -> Site Height:{0}'.format(self.site_height))                                     # site height
+        self.logger.info('FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                                             # firmware version for checking
+        self.logger.info('Site Lon:{0}'.format(self.site_lon))                                                              # site lon
+        self.logger.info('Site Lat:{0}'.format(self.site_lat))                                                              # site lat
+        self.logger.info('Site Height:{0}'.format(self.site_height))                                                        # site height
         self.loadActualModel()                                                                                              # prepare data synchronisation, load modeling data
         alignModel = self.getAlignmentModel()                                                                               # get modeling data from mount
         if not self.app.modeling.modelData and alignModel['RMS'] > 0:
