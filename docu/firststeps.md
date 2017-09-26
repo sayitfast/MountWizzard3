@@ -18,6 +18,8 @@ You have the status buttons of the devices showing different colors:
 The yellow color only exists in camera device. There you could distinguish between the application fpr imaging is running
 (showing yellow) and the camera itself is connected to the imaging application itself (green).
 
+- [Booting and Shutdown of Mount via Ethernet](firststeps0.md)
+
 ### Area 2
 
 It's called the message board. So all necessary information, status hints or error messages are displayed there. It's like
