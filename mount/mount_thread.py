@@ -86,9 +86,14 @@ class Mount(PyQt5.QtCore.QThread):
         self.initConfig()
 
     def initConfig(self):
+        self.app.ui.pd_chooseMountConnection.addItem('IP Direct Connection')
+        self.app.ui.pd_chooseMountConnection.addItem('ASCOM Driver Connection')
         try:
             if 'ASCOMTelescopeDriverName' in self.app.config:
                 self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
+            if 'MountConnection' in self.app.config:
+                self.app.ui.pd_chooseMountConnection.setCurrentIndex(int(self.app.config['MountConnection']))
+                self.showConfigEntries(int(self.app.config['MountConnection']))
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -96,6 +101,29 @@ class Mount(PyQt5.QtCore.QThread):
 
     def storeConfig(self):
         self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
+        self.app.config['MountConnection'] = self.app.ui.pd_chooseMountConnection.currentIndex()
+
+    def showConfigEntries(self, index):
+        if index == 0:
+            self.app.ui.le_mountIP.setVisible(True)
+            self.app.ui.le_mountIP.setEnabled(True)
+            self.app.ui.le_mountMAC.setVisible(True)
+            self.app.ui.le_mountMAC.setEnabled(True)
+            self.app.ui.label_mountIP.setVisible(True)
+            self.app.ui.label_mountMAC.setVisible(True)
+
+            self.app.ui.btn_setupMountDriver.setVisible(False)
+            self.app.ui.btn_setupMountDriver.setEnabled(False)
+        elif index == 1:
+            self.app.ui.le_mountIP.setVisible(False)
+            self.app.ui.le_mountIP.setEnabled(False)
+            self.app.ui.le_mountMAC.setVisible(False)
+            self.app.ui.le_mountMAC.setEnabled(False)
+            self.app.ui.label_mountIP.setVisible(False)
+            self.app.ui.label_mountMAC.setVisible(False)
+
+            self.app.ui.btn_setupMountDriver.setVisible(True)
+            self.app.ui.btn_setupMountDriver.setEnabled(True)
 
     def mountDriverChooser(self):
         self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time
@@ -103,12 +131,13 @@ class Mount(PyQt5.QtCore.QThread):
             self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
             time.sleep(1)                                                                                                   # wait some time to get commands finished
             self.mountHandler.disconnect()                                                                                  # do formal disconnection
-        if self.app.ui.rb_directMount.isChecked():
+        if self.app.ui.pd_chooseMountConnection.currentIndex() == 0:
             self.mountHandler = self.MountIpDirect
             self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
-        elif self.app.ui.rb_ascomMount.isChecked():
+        if self.app.ui.pd_chooseMountConnection.currentIndex() == 1:
             self.mountHandler = self.MountAscom
             self.logger.info('actual driver is ASCOM')
+        self.showConfigEntries(self.app.ui.pd_chooseMountConnection.currentIndex())
         self.chooserLock.release()                                                                                          # free the lock to move again
 
     def run(self):                                                                                                          # runnable of the thread

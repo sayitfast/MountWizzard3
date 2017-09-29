@@ -1,4 +1,7 @@
 # Changelog
+2.5.5
+-
+
 2.5.4
 - bugfix relay input
 - bugfix timeout relay

@@ -127,6 +127,7 @@ class MountWizzardApp(widget.MwWidget):
         self.remote = remote_thread.Remote(self)
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.selectRemoteAccess()
+        # self.ui.mountChooser.setVisible(False)
 
         # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
         # self.ui.mainTabWidget.tabBar().setCurrentIndex(2)
@@ -245,8 +246,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
-        self.ui.rb_ascomMount.clicked.connect(self.mount.mountDriverChooser)
-        self.ui.rb_directMount.clicked.connect(self.mount.mountDriverChooser)
+        self.ui.pd_chooseMountConnection.currentIndexChanged.connect(self.mount.mountDriverChooser)
+
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
 
@@ -481,10 +482,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_mountIP.setText(self.config['MountIP'])
             if 'MountMAC' in self.config:
                 self.ui.le_mountMAC.setText(self.config['MountMAC'])
-            if 'DirectMount' in self.config:
-                self.ui.rb_directMount.setChecked(self.config['DirectMount'])
-            if 'AscomMount' in self.config:
-                self.ui.rb_ascomMount.setChecked(self.config['AscomMount'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             if 'FilterExpressionMPC' in self.config:
@@ -565,8 +562,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['MountMAC'] = self.ui.le_mountMAC.text()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
-        self.config['DirectMount'] = self.ui.rb_directMount.isChecked()
-        self.config['AscomMount'] = self.ui.rb_ascomMount.isChecked()
         self.config['CheckFilterMPC'] = self.ui.checkFilterMPC.isChecked()
         self.config['FilterExpressionMPC'] = self.ui.le_filterExpressionMPC.text()
         self.config['CheckRemoteAccess'] = self.ui.checkRemoteAccess.isChecked()
@@ -997,7 +992,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.4 beta'
+    BUILD_NO = '2.5.5 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()

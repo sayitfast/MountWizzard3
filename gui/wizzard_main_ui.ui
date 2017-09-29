@@ -7374,13 +7374,16 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
+       <y>20</y>
        <width>741</width>
        <height>461</height>
       </rect>
      </property>
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Configuration of the imaging / plate solving program and the ASCOM drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -7389,7 +7392,7 @@ color: rgb(255,255,255);</string>
       <attribute name="title">
        <string>Imaging Setup</string>
       </attribute>
-      <widget class="QGroupBox" name="cameraPlateChooser">
+      <widget class="QGroupBox" name="imagingChooser">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -8543,7 +8546,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>260</y>
+         <y>280</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8564,7 +8567,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>300</y>
+         <y>320</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8585,7 +8588,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>200</y>
+         <y>220</y>
          <width>351</width>
          <height>21</height>
         </rect>
@@ -8606,7 +8609,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>220</y>
+         <y>240</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -8627,7 +8630,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
+         <y>210</y>
          <width>201</width>
          <height>21</height>
         </rect>
@@ -8645,7 +8648,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>220</y>
+         <y>240</y>
          <width>251</width>
          <height>31</height>
         </rect>
@@ -8663,7 +8666,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>260</y>
+         <y>280</y>
          <width>241</width>
          <height>31</height>
         </rect>
@@ -8681,7 +8684,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>300</y>
+         <y>320</y>
          <width>241</width>
          <height>31</height>
         </rect>
@@ -8694,229 +8697,6 @@ color: rgb(255,255,255);</string>
        <property name="text">
         <string>ASCOM Open Weather Driver Setup</string>
        </property>
-      </widget>
-      <widget class="QGroupBox" name="cameraPlateChooser_2">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>351</width>
-         <height>131</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selects the program, which is used for imaging and plat solving&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="title">
-        <string/>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-       <widget class="QRadioButton" name="rb_directMount">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>30</y>
-          <width>151</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check if you would like to use direct mount connection&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Direct Connection</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QRadioButton" name="rb_ascomMount">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>90</y>
-          <width>171</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check if you would like to use ACOM mount drivers&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>ASCOM Driver</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="btn_setupMountDriver">
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>90</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select ASCOM driver for mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>Mount</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="le_mountIP">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>30</y>
-          <width>151</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="mouseTracking">
-         <bool>false</bool>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
-        </property>
-        <property name="text">
-         <string>192.168.2.15</string>
-        </property>
-        <property name="maxLength">
-         <number>15</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_139">
-        <property name="geometry">
-         <rect>
-          <x>150</x>
-          <y>30</y>
-          <width>21</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>IP</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_140">
-        <property name="geometry">
-         <rect>
-          <x>180</x>
-          <y>90</y>
-          <width>81</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Setup Driver:</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label_145">
-        <property name="geometry">
-         <rect>
-          <x>150</x>
-          <y>60</y>
-          <width>31</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>MAC</string>
-        </property>
-       </widget>
-       <widget class="QLineEdit" name="le_mountMAC">
-        <property name="geometry">
-         <rect>
-          <x>190</x>
-          <y>60</y>
-          <width>151</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Courier</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="mouseTracking">
-         <bool>false</bool>
-        </property>
-        <property name="acceptDrops">
-         <bool>false</bool>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="layoutDirection">
-         <enum>Qt::RightToLeft</enum>
-        </property>
-        <property name="text">
-         <string>00.c0.08.87.35.db</string>
-        </property>
-        <property name="maxLength">
-         <number>18</number>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-        <property name="readOnly">
-         <bool>false</bool>
-        </property>
-       </widget>
       </widget>
       <widget class="Line" name="line_21">
        <property name="geometry">
@@ -8961,7 +8741,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>340</y>
+         <y>360</y>
          <width>241</width>
          <height>31</height>
         </rect>
@@ -8979,7 +8759,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>340</y>
+         <y>360</y>
          <width>81</width>
          <height>31</height>
         </rect>
@@ -9072,6 +8852,160 @@ color: rgb(255,255,255);</string>
         <string>Enable Remote Access</string>
        </property>
        <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="pd_chooseMountConnection">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>50</y>
+         <width>351</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_setupMountDriver">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>100</y>
+         <width>191</width>
+         <height>51</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select ASCOM driver for mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="text">
+        <string>Setup Driver Mount</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_mountIP">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>100</y>
+         <width>151</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>192.168.2.15</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_mountIP">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>100</y>
+         <width>21</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>IP</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_mountMAC">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>130</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>MAC</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_mountMAC">
+       <property name="geometry">
+        <rect>
+         <x>70</x>
+         <y>130</y>
+         <width>151</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>00.c0.08.87.35.db</string>
+       </property>
+       <property name="maxLength">
+        <number>18</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
         <bool>false</bool>
        </property>
       </widget>
@@ -12305,9 +12239,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>rb_cameraTSX</tabstop>
   <tabstop>rb_cameraMaximDL</tabstop>
   <tabstop>rb_cameraASCOM</tabstop>
-  <tabstop>rb_directMount</tabstop>
-  <tabstop>le_mountIP</tabstop>
-  <tabstop>rb_ascomMount</tabstop>
   <tabstop>btn_setupMountDriver</tabstop>
   <tabstop>btn_setupDomeDriver</tabstop>
   <tabstop>btn_setupStickDriver</tabstop>
