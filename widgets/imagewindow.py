@@ -18,6 +18,7 @@ import time
 
 # import for the PyQt5 Framework
 import PyQt5.QtWidgets
+from PyQt5.QtCore import *
 # numpy
 import numpy
 # FIT file handling
@@ -74,6 +75,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
         self.imageWidget.axes.set_axis_off()
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
+        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(Qt.WindowMinimized))
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)

@@ -68,6 +68,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
         self.app.modeling.signalModelRedraw.connect(self.redrawModelingWindow)                                              # signal for redrawing the window content
         self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
+        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(Qt.WindowMinimized))
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
         self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
         self.show()                                                                                                         # construct the window

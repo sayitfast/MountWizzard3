@@ -228,6 +228,15 @@ class Ui_CoordinateDialog(object):
         self.checkRunTrackingWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.checkRunTrackingWidget.setChecked(True)
         self.checkRunTrackingWidget.setObjectName("checkRunTrackingWidget")
+        self.btn_selectMinimize = QtWidgets.QPushButton(CoordinateDialog)
+        self.btn_selectMinimize.setGeometry(QtCore.QRect(720, 0, 31, 31))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_selectMinimize.setFont(font)
+        self.btn_selectMinimize.setObjectName("btn_selectMinimize")
 
         self.retranslateUi(CoordinateDialog)
         QtCore.QMetaObject.connectSlotsByName(CoordinateDialog)
@@ -262,4 +271,6 @@ class Ui_CoordinateDialog(object):
         self.label_13.setText(_translate("CoordinateDialog", "min"))
         self.checkRunTrackingWidget.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p>Checked if you would like to see the tracking line and flip time in the window</p></body></html>"))
         self.checkRunTrackingWidget.setText(_translate("CoordinateDialog", "Show Track"))
+        self.btn_selectMinimize.setToolTip(_translate("CoordinateDialog", "Sets dual tracking on / off"))
+        self.btn_selectMinimize.setText(_translate("CoordinateDialog", "-"))
 

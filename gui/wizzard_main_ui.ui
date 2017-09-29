@@ -12178,6 +12178,30 @@ p, li { white-space: pre-wrap; }
     <string>Boot</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_selectMinimize">
+   <property name="geometry">
+    <rect>
+     <x>730</x>
+     <y>0</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>MS Shell Dlg 2</family>
+     <pointsize>12</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Sets dual tracking on / off</string>
+   </property>
+   <property name="text">
+    <string>-</string>
+   </property>
+  </widget>
  </widget>
  <tabstops>
   <tabstop>btn_mountShutdown</tabstop>

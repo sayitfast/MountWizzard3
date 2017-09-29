@@ -4051,6 +4051,15 @@ class Ui_WizzardMainDialog(object):
         font.setPointSize(10)
         self.btn_mountBoot.setFont(font)
         self.btn_mountBoot.setObjectName("btn_mountBoot")
+        self.btn_selectMinimize = QtWidgets.QPushButton(WizzardMainDialog)
+        self.btn_selectMinimize.setGeometry(QtCore.QRect(730, 0, 31, 31))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_selectMinimize.setFont(font)
+        self.btn_selectMinimize.setObjectName("btn_selectMinimize")
 
         self.retranslateUi(WizzardMainDialog)
         self.mainTabWidget.setCurrentIndex(0)
@@ -4894,4 +4903,6 @@ class Ui_WizzardMainDialog(object):
         self.btn_unihedronConnected.setText(_translate("WizzardMainDialog", "Sky"))
         self.btn_mountBoot.setToolTip(_translate("WizzardMainDialog", "<html><head/><body><p>Saves the settings data in config.cfg</p></body></html>"))
         self.btn_mountBoot.setText(_translate("WizzardMainDialog", "Boot"))
+        self.btn_selectMinimize.setToolTip(_translate("WizzardMainDialog", "Sets dual tracking on / off"))
+        self.btn_selectMinimize.setText(_translate("WizzardMainDialog", "-"))
 

@@ -127,6 +127,7 @@ class MountWizzardApp(widget.MwWidget):
         self.remote = remote_thread.Remote(self)
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.selectRemoteAccess()
+
         # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
         # self.ui.mainTabWidget.tabBar().setCurrentIndex(2)
         # self.ui.mainTabWidget.currentWidget().setStyleSheet(self.RED)
@@ -138,6 +139,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
+        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(QtCore.Qt.WindowMinimized))
         self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
         self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
         self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
@@ -1033,6 +1035,7 @@ if __name__ == "__main__":
     sys.excepthook = except_hook                                                                                            # manage except hooks for logging
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
+    app.setWindowIcon(QIcon('mw.ico'))
 
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
     mountApp.show()                                                                                                         # show it

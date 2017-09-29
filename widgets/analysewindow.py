@@ -16,6 +16,7 @@ from logging import getLogger
 import numpy
 # import for the PyQt5 Framework
 import PyQt5.QtWidgets
+from PyQt5.QtCore import *
 from baseclasses.widget import MwWidget
 from gui import analyse_dialog_ui
 from analyse import analysedata
@@ -70,6 +71,7 @@ class AnalyseWindow(MwWidget):
         self.initUI()
         self.ui.windowTitle.setPalette(self.palette)
         self.ui.btn_selectClose.clicked.connect(self.hideWindow)
+        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(Qt.WindowMinimized))
         self.ui.scalePlotDEC.valueChanged.connect(self.changedDECScale)
         self.ui.scalePlotRA.valueChanged.connect(self.changedRAScale)
         self.ui.scalePlotError.valueChanged.connect(self.changedPlotError)

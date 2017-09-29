@@ -3,6 +3,7 @@
 - bugfix relay input
 - bugfix timeout relay
 - refactored logging events
+- added minimize button to windows
 
 2.5.3
 - changed shutdown / boot config

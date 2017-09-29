@@ -130,6 +130,15 @@ class Ui_ImageDialog(object):
         self.cross3.setFrameShadow(QtWidgets.QFrame.Plain)
         self.cross3.setFrameShape(QtWidgets.QFrame.HLine)
         self.cross3.setObjectName("cross3")
+        self.btn_selectMinimize = QtWidgets.QPushButton(ImageDialog)
+        self.btn_selectMinimize.setGeometry(QtCore.QRect(730, 0, 31, 31))
+        font = QtGui.QFont()
+        font.setFamily("MS Shell Dlg 2")
+        font.setPointSize(12)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btn_selectMinimize.setFont(font)
+        self.btn_selectMinimize.setObjectName("btn_selectMinimize")
 
         self.retranslateUi(ImageDialog)
         QtCore.QMetaObject.connectSlotsByName(ImageDialog)
@@ -170,4 +179,6 @@ class Ui_ImageDialog(object):
         self.label_82.setText(_translate("ImageDialog", "Views"))
         self.btn_selectClose.setToolTip(_translate("ImageDialog", "Sets dual tracking on / off"))
         self.btn_selectClose.setText(_translate("ImageDialog", "X"))
+        self.btn_selectMinimize.setToolTip(_translate("ImageDialog", "Sets dual tracking on / off"))
+        self.btn_selectMinimize.setText(_translate("ImageDialog", "-"))
 
