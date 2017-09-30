@@ -11,7 +11,7 @@
 # Licence APL2.0
 #
 ############################################################
-
+import platform
 import copy
 import datetime
 import logging
@@ -25,8 +25,6 @@ import time
 import threading
 # library for fits file handling
 import pyfits
-# win32 usage
-import pythoncom
 # PyQt5
 import PyQt5
 # for data storing
@@ -56,13 +54,14 @@ class Modeling(PyQt5.QtCore.QThread):
         super().__init__()
         self.app = app                                                                                                      # class reference for dome control
         self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
-        self.SGPro = sgpro.SGPro(self.app)                                                                                  # object abstraction class for SGPro
-        self.TheSkyX = theskyx.TheSkyX(self.app)                                                                            # object abstraction class for TheSkyX
-        self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                      # object abstraction class for MaximDL
+        if platform.system() == 'Windows':
+            self.SGPro = sgpro.SGPro(self.app)                                                                              # object abstraction class for SGPro
+            self.TheSkyX = theskyx.TheSkyX(self.app)                                                                        # object abstraction class for TheSkyX
+            self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                  # object abstraction class for MaximDL
         self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
         self.transform = self.app.mount.transform                                                                           # coordinate transformation
         self.modelpoints = modelpoints.ModelPoints(self.transform)
-        self.cpObject = self.SGPro
+        self.cpObject = self.NoneCam
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for modeling
@@ -79,7 +78,7 @@ class Modeling(PyQt5.QtCore.QThread):
         try:
             pass
         except Exception as e:
-            self.logger.error('iitem in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
@@ -94,15 +93,16 @@ class Modeling(PyQt5.QtCore.QThread):
             if self.app.ui.checkAutoConnectCamera.isChecked():
                 self.cpObject.disconnectCamera()
             self.cpObject.disconnectApplication()
-        if self.app.ui.rb_cameraSGPro.isChecked():
-            self.cpObject = self.SGPro
-            self.logger.info('actual camera / plate solver is SGPro')
-        elif self.app.ui.rb_cameraTSX.isChecked():
-            self.cpObject = self.TheSkyX
-            self.logger.info('actual camera / plate solver is TheSkyX')
-        elif self.app.ui.rb_cameraMaximDL.isChecked():
-            self.cpObject = self.MaximDL
-            self.logger.info('actual camera / plate solver is MaximDL')
+        if platform.system() == 'Windows':
+            if self.app.ui.rb_cameraSGPro.isChecked():
+                self.cpObject = self.SGPro
+                self.logger.info('actual camera / plate solver is SGPro')
+            elif self.app.ui.rb_cameraTSX.isChecked():
+                self.cpObject = self.TheSkyX
+                self.logger.info('actual camera / plate solver is TheSkyX')
+            elif self.app.ui.rb_cameraMaximDL.isChecked():
+                self.cpObject = self.MaximDL
+                self.logger.info('actual camera / plate solver is MaximDL')
         elif self.app.ui.rb_cameraNone.isChecked():
             self.cpObject = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
@@ -115,7 +115,6 @@ class Modeling(PyQt5.QtCore.QThread):
         self.chooserLock.release()
 
     def run(self):                                                                                                          # runnable for doing the work
-        pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
             if self.app.mount.mountHandler.connected:
@@ -269,8 +268,6 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.getStatusSlow()                                                                                        # calling slow part of status
             self.counter += 1                                                                                               # loop +1
             time.sleep(.1)                                                                                                  # wait for the next cycle
-        self.ascom.Quit()
-        pythoncom.CoUninitialize()
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread

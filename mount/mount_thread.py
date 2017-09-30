@@ -13,6 +13,7 @@
 ############################################################
 
 # import basic stuff
+import platform
 import logging
 import math
 import threading
@@ -21,10 +22,12 @@ import time
 from operator import itemgetter
 # import PyQT5 for threading purpose
 import PyQt5
-# win32com
-import pythoncom
+if platform.system() == 'Windows':
+    # win32com
+    import pythoncom
 #  mount driver classes
-from mount import ascommount
+if platform.system() == 'Windows':
+    from mount import ascommount
 from mount import ipdirect
 # astrometry
 from astrometry import transform
@@ -32,7 +35,7 @@ from astrometry import transform
 
 class Mount(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                    # enable logging
-    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')                                                 # signal for connection status
+    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')                                           # signal for connection status
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
@@ -43,9 +46,10 @@ class Mount(PyQt5.QtCore.QThread):
     def __init__(self, app):
         super().__init__()                                                                                                  # init of the class parent with super
         self.app = app                                                                                                      # accessing ui object from mount class
-        self.MountAscom = ascommount.MountAscom(app)                                                                             # set ascom driver class
+        if platform.system() == 'Windows':
+            self.MountAscom = ascommount.MountAscom(app)                                                                    # set ascom driver class
         self.MountIpDirect = ipdirect.MountIpDirect(app)
-        self.mountHandler = self.MountAscom
+        self.mountHandler = self.MountIpDirect
         self.transform = transform.Transform(app)
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
@@ -71,8 +75,8 @@ class Mount(PyQt5.QtCore.QThread):
         self.stat = 0                                                                                                       # mount status (from Gstat command)
         self.slewing = False                                                                                                # from *D' command
         self.site_lat = '49'                                                                                                # site lat
-        self.site_lon = 0                                                                                                   # site lon
-        self.site_height = 0                                                                                                # site height
+        self.site_lon = '0'                                                                                                 # site lon
+        self.site_height = '0'                                                                                              # site height
         self.jd = 2451544.5                                                                                                 # julian date
         self.sidereal_time = ''                                                                                             # local sidereal time
         self.pierside = 0                                                                                                   # side of pier (E/W)
@@ -89,8 +93,9 @@ class Mount(PyQt5.QtCore.QThread):
         self.app.ui.pd_chooseMountConnection.addItem('IP Direct Connection')
         self.app.ui.pd_chooseMountConnection.addItem('ASCOM Driver Connection')
         try:
-            if 'ASCOMTelescopeDriverName' in self.app.config:
-                self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
+            if platform.system() == 'Windows':
+                if 'ASCOMTelescopeDriverName' in self.app.config:
+                    self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
             if 'MountConnection' in self.app.config:
                 self.app.ui.pd_chooseMountConnection.setCurrentIndex(int(self.app.config['MountConnection']))
                 self.showConfigEntries(int(self.app.config['MountConnection']))
@@ -100,7 +105,8 @@ class Mount(PyQt5.QtCore.QThread):
             pass
 
     def storeConfig(self):
-        self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
+        if platform.system() == 'Windows':
+            self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
         self.app.config['MountConnection'] = self.app.ui.pd_chooseMountConnection.currentIndex()
 
     def showConfigEntries(self, index):
@@ -134,18 +140,20 @@ class Mount(PyQt5.QtCore.QThread):
         if self.app.ui.pd_chooseMountConnection.currentIndex() == 0:
             self.mountHandler = self.MountIpDirect
             self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
-        if self.app.ui.pd_chooseMountConnection.currentIndex() == 1:
-            self.mountHandler = self.MountAscom
+        if platform.system() == 'Windows':
+            if self.app.ui.pd_chooseMountConnection.currentIndex() == 1:
+                self.mountHandler = self.MountAscom
             self.logger.info('actual driver is ASCOM')
         self.showConfigEntries(self.app.ui.pd_chooseMountConnection.currentIndex())
         self.chooserLock.release()                                                                                          # free the lock to move again
 
     def run(self):                                                                                                          # runnable of the thread
-        pythoncom.CoInitialize()                                                                                            # needed for doing COM objects in threads
+        if platform.system() == 'Windows':
+            pythoncom.CoInitialize()                                                                                        # needed for doing COM objects in threads
         self.counter = 0                                                                                                    # init count for managing different cycle times
         while True:                                                                                                         # main loop in thread
             self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status
-            if self.mountHandler.connected:                                                                                              # when connected, starting the work
+            if self.mountHandler.connected:                                                                                 # when connected, starting the work
                 if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
                     command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
                     if command == 'ShowAlignmentModel':                                                                     # checking which command was sent
@@ -251,7 +259,8 @@ class Mount(PyQt5.QtCore.QThread):
                 self.counter = 0
                 time.sleep(1)                                                                                               # try it every second, not more
         self.mountHandler.disconnect()
-        pythoncom.CoUninitialize()                                                                                          # needed for doing COM objects in threads
+        if platform.system() == 'Windows':
+            pythoncom.CoUninitialize()                                                                                      # needed for doing COM objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread

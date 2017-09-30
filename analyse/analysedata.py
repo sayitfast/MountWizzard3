@@ -186,6 +186,7 @@ class Analyse:
         dataProcess['decError'] = [-scaleDEC if x < -scaleDEC else x for x in dataProcess['decError']]
         return dataProcess
 
+
 if __name__ == "__main__":
     logger = getLogger(__name__)
     from mount.mount_thread import Mount

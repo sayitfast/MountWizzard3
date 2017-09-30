@@ -11,7 +11,7 @@
 # Licence APL2.0
 #
 ############################################################
-
+import platform
 import datetime
 import json
 # import basic stuff
@@ -22,9 +22,9 @@ import sys
 # numerics
 import numpy
 import math
-# application handling
-from winreg import *
-import platform
+if platform.system() == 'Windows':
+    # application handling
+    from winreg import *
 # commands to threads
 from queue import Queue
 # import for the PyQt5 Framework
@@ -44,18 +44,20 @@ from widgets import modelplotwindow
 from widgets import imagewindow
 from widgets import analysewindow
 from gui import wizzard_main_ui
-# environment classes
-from environment import stick_thread
-from environment import unihedron_thread
-from environment import weather_thread
+if platform.system() == 'Windows':
+    # environment classes
+    from environment import stick_thread
+    from environment import unihedron_thread
+    from environment import weather_thread
 # modeling
 from modeling.modeling_thread import Modeling
 # import mount functions classes
 from mount import mount_thread
 from relays import relays
 from remote import remote_thread
-from dome import dome_thread
-from automation import upload_thread
+if platform.system() == 'Windows':
+    from dome import dome_thread
+    from automation import upload_thread
 from wakeonlan import wol
 
 
@@ -86,18 +88,18 @@ class MountWizzardApp(widget.MwWidget):
         self.initUI()                                                                                                       # adapt the window to our purpose
         self.ui.windowTitle.setText('MountWizzard ' + BUILD_NO)
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
-        self.dome = dome_thread.Dome(self)                                                                                  # dome control
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
-        self.weather = weather_thread.Weather(self)                                                                         # Stickstation Thread
-        self.stick = stick_thread.Stick(self)                                                                               # Stickstation Thread
-        self.unihedron = unihedron_thread.Unihedron(self)                                                                   # Unihedron Thread
+        if platform.system() == 'Windows':
+            self.dome = dome_thread.Dome(self)                                                                              # dome control
+            self.weather = weather_thread.Weather(self)                                                                     # Stickstation Thread
+            self.stick = stick_thread.Stick(self)                                                                           # Stickstation Thread
+            self.unihedron = unihedron_thread.Unihedron(self)                                                               # Unihedron Thread
         self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
-        self.data = upload_thread.DataUploadToMount(self)                                                              # data thread for downloading topics
+        self.data = upload_thread.DataUploadToMount(self)                                                                   # data thread for downloading topics
         self.analyseWindow = analysewindow.AnalyseWindow(self)                                                              # windows for analyse data
         self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                            # window for modeling points
         self.imageWindow = imagewindow.ImagesWindow(self)                                                                   # window for imaging
         self.initConfig()
-        self.checkASCOM()
         helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib
         helper.setContentsMargins(0, 0, 0, 0)                                                                               # set margins to 0 -> box in qt is frameless
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
@@ -107,17 +109,19 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.mountDriverChooser()
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
-        self.weather.signalWeatherData.connect(self.fillWeatherData)                                                        # connecting the signal
-        self.weather.signalWeatherConnected.connect(self.setWeatherStatus)                                                  # status from thread
-        self.weather.start()                                                                                                # starting polling thread
-        self.stick.signalStickData.connect(self.fillStickData)                                                              # connecting the signal for data
-        self.stick.signalStickConnected.connect(self.setStickStatus)                                                        # status from thread
-        self.stick.start()                                                                                                  # starting polling thread
-        self.unihedron.signalUnihedronData.connect(self.fillUnihedronData)                                                  # connecting the signal for data
-        self.unihedron.signalUnihedronConnected.connect(self.setUnihedronStatus)                                            # status from thread
-        self.unihedron.start()                                                                                              # starting polling thread
-        self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                           # status from thread
-        self.dome.start()                                                                                                   # starting polling thread
+        if platform.system() == 'Windows':
+            self.checkASCOM()
+            self.weather.signalWeatherData.connect(self.fillWeatherData)                                                    # connecting the signal
+            self.weather.signalWeatherConnected.connect(self.setWeatherStatus)                                              # status from thread
+            self.weather.start()                                                                                            # starting polling thread
+            self.stick.signalStickData.connect(self.fillStickData)                                                          # connecting the signal for data
+            self.stick.signalStickConnected.connect(self.setStickStatus)                                                    # status from thread
+            self.stick.start()                                                                                              # starting polling thread
+            self.unihedron.signalUnihedronData.connect(self.fillUnihedronData)                                              # connecting the signal for data
+            self.unihedron.signalUnihedronConnected.connect(self.setUnihedronStatus)                                        # status from thread
+            self.unihedron.start()                                                                                          # starting polling thread
+            self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                       # status from thread
+            self.dome.start()                                                                                               # starting polling thread
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
         self.modeling.start()                                                                                               # starting polling thread
         self.data.start()                                                                                                   # starting data thread
@@ -127,6 +131,7 @@ class MountWizzardApp(widget.MwWidget):
         self.remote = remote_thread.Remote(self)
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.selectRemoteAccess()
+        self.checkAvailableMenus()
         # self.ui.mountChooser.setVisible(False)
 
         # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
@@ -347,6 +352,11 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.debug('Name: {0}, Path: {1}, error: {2}'.format(appName, appInstallPath, e))
         finally:
             return appInstalled, appName, appInstallPath
+
+    def checkAvailableMenus(self):
+        if platform.system() != 'Windows':
+            self.ui.settingsTabWidget.removeTab(5)
+            self.ui.settingsTabWidget.removeTab(2)
 
     def initConfig(self):
         try:
@@ -1014,6 +1024,11 @@ if __name__ == "__main__":
     logging.info('-----------------------------------------')                                                              # start message logger
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')                                                              # start message logger
     logging.info('-----------------------------------------')                                                              # start message logger
+    logging.info('Platform: ' + platform.system())
+    logging.info('Release: ' + platform.release())
+    logging.info('Version: ' + platform.version())
+    logging.info('Machine: ' + platform.machine())
+
     logging.info('working directory: {0}'.format(os.getcwd()))
     if not os.access(os.getcwd(), os.W_OK):
         logging.error('no write access to workdir')
