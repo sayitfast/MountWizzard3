@@ -46,17 +46,18 @@ from widgets import analysewindow
 from gui import wizzard_main_ui
 if platform.system() == 'Windows':
     # environment classes
-    from environment import stick_thread
     from environment import unihedron_thread
     from environment import weather_thread
+from environment import stick_thread
 # modeling
 from modeling.modeling_thread import Modeling
 # import mount functions classes
 from mount import mount_thread
 from relays import relays
 from remote import remote_thread
+from dome import dome_thread
+
 if platform.system() == 'Windows':
-    from dome import dome_thread
     from automation import upload_thread
 from wakeonlan import wol
 
@@ -89,13 +90,13 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.windowTitle.setText('MountWizzard ' + BUILD_NO)
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
+        self.dome = dome_thread.Dome(self)                                                                                  # dome control
+        self.stick = stick_thread.Stick(self)                                                                               # Stickstation Thread
         if platform.system() == 'Windows':
-            self.dome = dome_thread.Dome(self)                                                                              # dome control
-            self.weather = weather_thread.Weather(self)                                                                     # Stickstation Thread
-            self.stick = stick_thread.Stick(self)                                                                           # Stickstation Thread
-            self.unihedron = unihedron_thread.Unihedron(self)                                                               # Unihedron Thread
+            self.weather = weather_thread.Weather(self)                                                                         # Stickstation Thread
+            self.unihedron = unihedron_thread.Unihedron(self)                                                                   # Unihedron Thread
+            self.data = upload_thread.DataUploadToMount(self)                                                                   # data thread for downloading topics
         self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
-        self.data = upload_thread.DataUploadToMount(self)                                                                   # data thread for downloading topics
         self.analyseWindow = analysewindow.AnalyseWindow(self)                                                              # windows for analyse data
         self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                            # window for modeling points
         self.imageWindow = imagewindow.ImagesWindow(self)                                                                   # window for imaging
@@ -122,9 +123,9 @@ class MountWizzardApp(widget.MwWidget):
             self.unihedron.start()                                                                                          # starting polling thread
             self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                       # status from thread
             self.dome.start()                                                                                               # starting polling thread
+            self.data.start()                                                                                                   # starting data thread
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
         self.modeling.start()                                                                                               # starting polling thread
-        self.data.start()                                                                                                   # starting data thread
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
@@ -172,11 +173,12 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setSlewRate.clicked.connect(self.setSlewRate)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupMountDriver.clicked.connect(self.mount.MountAscom.setupDriver)
-        self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
-        self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
-        self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
-        self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
+        if platform.system() == 'Windows':
+            self.ui.btn_setupMountDriver.clicked.connect(self.mount.MountAscom.setupDriver)
+            self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
+            self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
+            self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
+            self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
         self.ui.btn_runBaseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBaseModel'))
         self.ui.btn_cancelModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelModel'))
@@ -590,12 +592,13 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.storeConfig()
         self.modeling.storeConfig()
         self.stick.storeConfig()
-        self.weather.storeConfig()
+        if platform.system() == 'Windows':
+            self.weather.storeConfig()
+            self.dome.storeConfig()
+            self.unihedron.storeConfig()
         self.modelWindow.storeConfig()
-        self.dome.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
-        self.unihedron.storeConfig()
         self.relays.storeConfig()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it

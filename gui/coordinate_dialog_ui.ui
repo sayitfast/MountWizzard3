@@ -43,9 +43,9 @@
   <widget class="QPushButton" name="btn_selectClose">
    <property name="geometry">
     <rect>
-     <x>750</x>
+     <x>760</x>
      <y>0</y>
-     <width>41</width>
+     <width>31</width>
      <height>31</height>
     </rect>
    </property>
@@ -598,7 +598,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_selectMinimize">
    <property name="geometry">
     <rect>
-     <x>720</x>
+     <x>730</x>
      <y>0</y>
      <width>31</width>
      <height>31</height>

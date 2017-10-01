@@ -361,7 +361,7 @@ class Mount(PyQt5.QtCore.QThread):
             dec = dec.replace('*', ':')
             ra_J2000 = self.transform.degStringToDecimal(ha)
             dec_J2000 = self.transform.degStringToDecimal(dec)
-            az, alt = self.transform.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000, self.transform.degStringToDecimal(self.site_lat))
+            az, alt = self.transform.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000)
             alignModel['points'].append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                   # index should start with 0, but numbering in mount starts with 1
         return alignModel
 
@@ -589,31 +589,31 @@ class Mount(PyQt5.QtCore.QThread):
         if reply:                                                                                                           # if reply is there
             try:
                 ra, dec, self.pierside, az, alt, jd, stat, slew = reply.rstrip('#').strip().split(',')                      # split the response to its parts
-                self.raJnow = float(ra)
-                self.decJnow = float(dec)
-                self.jd = jd.rstrip('#')                                                                                    # needed for 2.14.8 beta firmware
-                self.az = float(az)                                                                                         # same to azimuth
-                self.alt = float(alt)                                                                                       # and altitude
-                self.stat = int(stat)                                                                                       # status should be int for referencing list
-                self.slewing = (slew == '1')                                                                                # set status slewing
-                self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                              # convert J2000
-                ra_show = self.transform.decimalToDegree(self.ra, False, False)
-                dec_show = self.transform.decimalToDegree(self.dec, True, False)
-                self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui
-                self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                     # put ra to gui
-                self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})        # Altitude
-                self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})          # Azimuth
-                self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                   # Mount status -> slew to stop
-                self.app.mountDataQueue.put({'Name': 'GetJulianDate', 'Value': '{0}'.format(self.jd[:12])})                 # Sidereal local time
-                if str(self.pierside) == str('W'):                                                                          # pier side
-                    self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                          # Transfer to test in GUI
-                else:                                                                                                       #
-                    self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
-                self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
             except Exception as e:
                 self.logger.error('receive error Ginfo command: {0} reply:{1}'.format(e, reply))
             finally:
                 pass
+            self.raJnow = float(ra)
+            self.decJnow = float(dec)
+            self.jd = jd.rstrip('#')                                                                                    # needed for 2.14.8 beta firmware
+            self.az = float(az)                                                                                         # same to azimuth
+            self.alt = float(alt)                                                                                       # and altitude
+            self.stat = int(stat)                                                                                       # status should be int for referencing list
+            self.slewing = (slew == '1')                                                                                # set status slewing
+            self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                              # convert J2000
+            ra_show = self.transform.decimalToDegree(self.ra, False, False)
+            dec_show = self.transform.decimalToDegree(self.dec, True, False)
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                     # put ra to gui
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})        # Altitude
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})          # Azimuth
+            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                   # Mount status -> slew to stop
+            self.app.mountDataQueue.put({'Name': 'GetJulianDate', 'Value': '{0}'.format(self.jd[:12])})                 # Sidereal local time
+            if str(self.pierside) == str('W'):                                                                          # pier side
+                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                          # Transfer to test in GUI
+            else:                                                                                                       #
+                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
+            self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
             self.meridianLimitTrack = int(float(self.mountHandler.sendCommand('Glmt')))
             self.timeToMeridian = int(self.timeToFlip - self.meridianLimitTrack / 360 * 24 * 60)

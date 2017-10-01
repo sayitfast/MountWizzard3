@@ -11,13 +11,13 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
+import platform
 import logging
-# windows automation
-from pywinauto import Application, findwindows, application
-# import .NET / COM Handling
-from win32com.client.dynamic import Dispatch
+if platform.system() == 'Windows':
+    # windows automation
+    from pywinauto import Application, findwindows, application
+    # import .NET / COM Handling
+    from win32com.client.dynamic import Dispatch
 # base for cameras
 from baseclasses.camera import MWCamera
 
@@ -36,50 +36,53 @@ class MaximDLCamera(MWCamera):
         self.appExe = 'MaxIm_DL.exe'
 
     def checkAppInstall(self):
-        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
-        if self.appAvailable:
-            self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
-        else:
-            self.app.ui.rb_cameraMaximDL.setVisible(False)
-            self.app.ui.rb_cameraMaximDL.setCheckable(False)
-            self.logger.info('Application MaxIm DL not found on computer')
+        if platform.system() == 'Windows':
+            self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
+            if self.appAvailable:
+                self.app.messageQueue.put('Found: {0}'.format(self.appName))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            else:
+                self.app.ui.rb_cameraMaximDL.setVisible(False)
+                self.app.ui.rb_cameraMaximDL.setCheckable(False)
+                self.logger.info('Application MaxIm DL not found on computer')
 
     def startApplication(self):
-        try:
-            a = findwindows.find_window(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
-            if len(a) == 0:
-                self.appRunning = False
-            else:
-                self.appRunning = True
-        except Exception as e:
-            self.logger.error('error{0}'.format(e))
-        finally:
-            pass
-        if not self.appRunning:
+        if platform.system() == 'Windows':
             try:
-                app = Application(backend='win32')
-                app.start(self.appInstallPath + '\\' + self.appExe)
-                self.appRunning = True
-                self.logger.info('started MaxIm DL')
-            except application.AppStartError:
-                self.logger.error('error starting application')
-                self.app.messageQueue.put('Failed to start MaxIm DL!')
-                self.appRunning = False
+                a = findwindows.find_window(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
+                if len(a) == 0:
+                    self.appRunning = False
+                else:
+                    self.appRunning = True
+            except Exception as e:
+                self.logger.error('error{0}'.format(e))
             finally:
                 pass
+            if not self.appRunning:
+                try:
+                    app = Application(backend='win32')
+                    app.start(self.appInstallPath + '\\' + self.appExe)
+                    self.appRunning = True
+                    self.logger.info('started MaxIm DL')
+                except application.AppStartError:
+                    self.logger.error('error starting application')
+                    self.app.messageQueue.put('Failed to start MaxIm DL!')
+                    self.appRunning = False
+                finally:
+                    pass
 
     def checkAppStatus(self):
-        try:
-            a = findwindows.find_windows(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
-            if len(a) == 0:
-                self.appRunning = False
-            else:
-                self.appRunning = True
-        except Exception as e:
-            self.logger.error('error{0}'.format(e))
-        finally:
-            pass
+        if platform.system() == 'Windows':
+            try:
+                a = findwindows.find_windows(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
+                if len(a) == 0:
+                    self.appRunning = False
+                else:
+                    self.appRunning = True
+            except Exception as e:
+                self.logger.error('error{0}'.format(e))
+            finally:
+                pass
         if self.maximCamera:
             try:
                 self.appConnected = self.maximCamera.LinkEnabled

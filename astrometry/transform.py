@@ -26,8 +26,8 @@ class Transform:
         self.ERFA = ERFA()
         self.transformationLockERFA = threading.Lock()                                                                      # locking object for single access to ascom transformation object
 
-    @staticmethod
-    def ra_dec_lst_to_az_alt(ra, dec, LAT):                                                                                 # formula to make alt/az from hour angle and dec
+    def ra_dec_lst_to_az_alt(self, ra, dec):                                                                                # formula to make alt/az from hour angle and dec
+        LAT = self.degStringToDecimal(self.app.mount.site_lat)
         ra = (ra * 360 / 24 + 360.0) % 360.0                                                                                # using hours.
         dec = math.radians(dec)
         ra = math.radians(ra)
@@ -94,6 +94,8 @@ class Transform:
         # TODO: Logger info with errors
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
         jd = float(self.app.mount.jd)
+        suc, date1, date2 = self.ERFA.eraDtf2d('', ts.year, ts.month, ts.day, ts.hour, ts.minute, ts.second + ts.microsecond / 1000000)
+        # jd = date1 + date2
         suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
         # TODO: Logger info with errors
         tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
@@ -101,7 +103,7 @@ class Transform:
         date1 = jd
         date2 = 0
 
-        if transform == 1:  # J2000 to Topo
+        if transform == 1:  # J2000 to Topo Az /Alt
             ra = ra % 24                                                                                                    # mount has hours
             suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
                                                                    dec * self.ERFA.ERFA_D2PI / 360,
@@ -138,8 +140,8 @@ class Transform:
             '''
             val1 = AzimuthTopo
             val2 = AltitudeTopo
+
         elif transform == 2:    # Topo to J2000
-            '''
             suc, rc, dc = self.ERFA.eraAtoc13('R',
                                               self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
                                               dec * self.ERFA.ERFA_D2PI / 360,
@@ -160,6 +162,8 @@ class Transform:
                                              dec * self.ERFA.ERFA_D2PI / 360,
                                              date1 + date2,
                                              0.0)
+            '''
+
             RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
             DECJ2000 = dc * self.ERFA.ERFA_DR2D
             val1 = RAJ2000

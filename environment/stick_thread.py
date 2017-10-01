@@ -11,13 +11,13 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
+import platform
 import logging
 import PyQt5
 import time
-from win32com.client.dynamic import Dispatch
-import pythoncom
+if platform.system() == 'Windows':
+    from win32com.client.dynamic import Dispatch
+    import pythoncom
 
 
 class Stick(PyQt5.QtCore.QThread):
@@ -50,7 +50,8 @@ class Stick(PyQt5.QtCore.QThread):
         self.app.config['ASCOMStickDriverName'] = self.driverName
 
     def run(self):                                                                                                          # runnable for doing the work
-        pythoncom.CoInitialize()                                                                                            # needed for doing CO objects in threads
+        if platform.system() == 'Windows':
+            pythoncom.CoInitialize()                                                                                            # needed for doing CO objects in threads
         self.connected = 0                                                                                                  # set connection flag for stick itself
         self.counter = 0
         while True:                                                                                                         # main loop for stick thread
@@ -67,29 +68,31 @@ class Stick(PyQt5.QtCore.QThread):
                 self.counter += 1                                                                                           # increasing counter for selection
                 time.sleep(.1)
             else:
-                try:
-                    if self.driverName == '':
-                        self.connected = 2
-                    else:
-                        self.ascom = Dispatch(self.driverName)                                                              # load driver
-                        self.ascom.connected = True
-                        self.connected = 1                                                                                  # set status to connected
-                        self.logger.info('driver chosen:{0}'.format(self.driverName))
-                except AttributeError as e:
-                    if self.driverName != '':
-                        self.logger.warning('stick physically not connected {0}'.format(e))
-                except Exception as e:                                                                                      # if general exception
-                    if self.driverName != '':
-                        self.logger.error('general exception: {0}'.format(e))
-                    if self.driverName == '':
-                        self.connected = 2
-                    else:
-                        self.connected = 0                                                                                  # run the driver setup dialog
-                finally:                                                                                                    # still continua and try it again
-                    pass                                                                                                    # needed for continue
+                if platform.system() == 'Windows':
+                    try:
+                        if self.driverName == '':
+                            self.connected = 2
+                        else:
+                            self.ascom = Dispatch(self.driverName)                                                              # load driver
+                            self.ascom.connected = True
+                            self.connected = 1                                                                                  # set status to connected
+                            self.logger.info('driver chosen:{0}'.format(self.driverName))
+                    except AttributeError as e:
+                        if self.driverName != '':
+                            self.logger.warning('stick physically not connected {0}'.format(e))
+                    except Exception as e:                                                                                      # if general exception
+                        if self.driverName != '':
+                            self.logger.error('general exception: {0}'.format(e))
+                        if self.driverName == '':
+                            self.connected = 2
+                        else:
+                            self.connected = 0                                                                                  # run the driver setup dialog
+                    finally:                                                                                                    # still continua and try it again
+                        pass                                                                                                    # needed for continue
                 time.sleep(5)                                                                                               # wait for the next cycle
-        self.ascom.Quit()
-        pythoncom.CoUninitialize()                                                                                          # needed for doing COm objects in threads
+        if platform.system() == 'Windows':
+            self.ascom.Quit()
+            pythoncom.CoUninitialize()                                                                                          # needed for doing COm objects in threads
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread

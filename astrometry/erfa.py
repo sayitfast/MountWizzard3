@@ -327,6 +327,7 @@ class ERFA:
         f = Decimal(f1 + f2) % Decimal(1)
         if f < Decimal(0.0):
             f += Decimal(1.0)
+
         d = self.ERFA_DNINT(d1 - f1) + self.ERFA_DNINT(d2 - f2) + self.ERFA_DNINT(f1 + f2 - f)
         jd = self.ERFA_DNINT(d) + Decimal(1)
 
@@ -338,9 +339,9 @@ class ERFA:
         t = r - int(Decimal(1461) * s / Decimal(4)) + Decimal(31)
         u = int(Decimal(80) * t / Decimal(2447))
         v = int(u / Decimal(11))
-        day = round(t - Decimal(2447) * u / Decimal(80), 0)
-        month = round(u + Decimal(2) - Decimal(12) * v, 0)
-        year = round(Decimal(100) * (q - Decimal(49)) + s + v, 0)
+        day = t - int(Decimal(2447) * u / Decimal(80))
+        month = u + Decimal(2) - Decimal(12) * v
+        year = Decimal(100) * (q - Decimal(49)) + s + v
         fraction = f
         return 0, int(year), int(month), int(day), float(fraction)
 
@@ -5695,11 +5696,11 @@ class ERFA:
         # UTC to other time scales.
         j, tai1, tai2 = self.eraUtctai(utc1, utc2)
         if j < 0:
-            return -1
+            return -1, 0
         tt1, tt2 = self.eraTaitt(tai1, tai2)
         j, ut11, ut12 = self.eraUtcut1(utc1, utc2, dut1)
         if j < 0:
-            return -1
+            return -1, 0
 
         # Earth barycentric & heliocentric position/velocity (au, au/d).
         j, ehpv, ebpv = self.eraEpv00(tt1, tt2)
@@ -5976,7 +5977,7 @@ class ERFA:
 
         # Abort if bad UTC.
         if j < 0:
-            return j
+            return j, 0, 0
 
         # Transform observed to CIRS.
         ri, di = self.eraAtoiq(type_ERA, ob1, ob2)

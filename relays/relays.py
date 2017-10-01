@@ -30,8 +30,6 @@ class Relays:
         self.initConfig()
         self.relayIP()
         self.connected = self.checkConnection()
-        if self.connected:
-            self.requestStatus()
         self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
         self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
         self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))
@@ -169,13 +167,16 @@ class Relays:
             except urllib.error.HTTPError as e:
                 if e.code == 401:
                     self.logger.info('relaybox present under ip: {0}'.format(self.ip))
+                    connected = True
                 else:
                     self.logger.error('connection error: {0}'.format(e))
-            except urllib.request.URLError as e:
+            except urllib.request.URLError:
                 self.logger.info('there is no relaybox present under ip: {0}'.format(self.ip))
             except Exception as e:
                 self.logger.error('connection error: {0}'.format(e))
             finally:
+                if connected:
+                    self.requestStatus()
                 return connected
         else:
             self.logger.info('there is no ip given for relaybox')

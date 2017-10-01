@@ -11,13 +11,15 @@
 # Licence APL2.0
 #
 ############################################################
-
+import platform
 import json
 import logging
 # packages for handling web interface to SGPro
 from urllib import request
-# windows automation
-from pywinauto import Application, findwindows, application
+if platform.system() == 'Windows':
+    # windows automation
+    from pywinauto import Application, findwindows, application
+
 from baseclasses.camera import MWCamera
 
 
@@ -40,14 +42,15 @@ class SGPro(MWCamera):
         self.appExe = 'Sequence Generator.exe'
 
     def checkAppInstall(self):
-        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('Sequence Generator')
-        if self.appAvailable:
-            self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
-        else:
-            self.app.ui.rb_cameraSGPro.setCheckable(False)
-            self.app.ui.rb_cameraSGPro.setVisible(False)
-            self.logger.info('Application SGPro not found on computer')
+        if platform.system() == 'Windows':
+            self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('Sequence Generator')
+            if self.appAvailable:
+                self.app.messageQueue.put('Found: {0}'.format(self.appName))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            else:
+                self.app.ui.rb_cameraSGPro.setCheckable(False)
+                self.app.ui.rb_cameraSGPro.setVisible(False)
+                self.logger.info('Application SGPro not found on computer')
 
     def checkAppStatus(self):
         try:
@@ -76,28 +79,29 @@ class SGPro(MWCamera):
                 self.appCameraConnected = False
 
     def startApplication(self):
-        try:
-            a = findwindows.find_windows(title_re='^(.*?)(\\bSequence\\b)(.*)$')
-            if len(a) == 0:
-                self.appRunning = False
-            else:
-                self.appRunning = True
-        except Exception as e:
-            self.logger.error('error{0}'.format(e))
-        finally:
-            pass
-        if not self.appRunning:
+        if platform.system() == 'Windows':
             try:
-                app = Application(backend='win32')
-                app.start(self.appInstallPath + '\\' + self.appExe)
-                self.logger.info('started Sequence Generator Pro')
-                self.appRunning = True
-            except application.AppStartError:
-                self.logger.error('error starting application')
-                self.app.messageQueue.put('Failed to start Sequence Generator Pro!')
-                self.appRunning = False
+                a = findwindows.find_windows(title_re='^(.*?)(\\bSequence\\b)(.*)$')
+                if len(a) == 0:
+                    self.appRunning = False
+                else:
+                    self.appRunning = True
+            except Exception as e:
+                self.logger.error('error{0}'.format(e))
             finally:
                 pass
+            if not self.appRunning:
+                try:
+                    app = Application(backend='win32')
+                    app.start(self.appInstallPath + '\\' + self.appExe)
+                    self.logger.info('started Sequence Generator Pro')
+                    self.appRunning = True
+                except application.AppStartError:
+                    self.logger.error('error starting application')
+                    self.app.messageQueue.put('Failed to start Sequence Generator Pro!')
+                    self.appRunning = False
+                finally:
+                    pass
 
     def connectCamera(self):
         pass

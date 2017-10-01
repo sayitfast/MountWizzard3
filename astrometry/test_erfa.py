@@ -17,8 +17,8 @@ class TestErfa(TestCase):
         self.ts = time.gmtime(0)
 
     def test_eraJd2cal(self):
-        dj1 = 2450123.7
-        dj2 = 0.0
+        dj1 = 2458027.31896727 + 1.5
+        dj2 = 0.0 - 0.81896727019
 
         start_time = time.clock()
         ok, iy, im, id, fd = self.ERFA.eraJd2cal(dj1, dj2)
@@ -34,7 +34,20 @@ class TestErfa(TestCase):
         self.assertEqual(value[0], iy)
         self.assertEqual(value[1], im)
         self.assertEqual(value[2], id)
-        self.assertEqual(value[3], fd)
+        self.assertAlmostEqual(value[3], fd)
+
+        dj2 = 0.0
+        for j in range(2450000, 2460000):
+            dj1 = j / 10
+
+            ok, iy, im, id, fd = self.ERFA.eraJd2cal(dj1, dj2)
+            value = erfa_astro.jd2cal(dj1, dj2)
+
+            self.assertEqual(ok, 0)
+            self.assertEqual(value[0], iy)
+            self.assertEqual(value[1], im)
+            self.assertEqual(value[2], id)
+            self.assertAlmostEqual(value[3], fd)
 
         dj1 = 2400000.5
         dj2 = 50123.2
@@ -44,7 +57,7 @@ class TestErfa(TestCase):
         self.assertEqual(value[0], iy)
         self.assertEqual(value[1], im)
         self.assertEqual(value[2], id)
-        self.assertEqual(value[3], fd)
+        self.assertAlmostEqual(value[3], fd)
 
         dj1 = 2451545.0
         dj2 = -1421.3
@@ -54,7 +67,7 @@ class TestErfa(TestCase):
         self.assertEqual(value[0], iy)
         self.assertEqual(value[1], im)
         self.assertEqual(value[2], id)
-        self.assertEqual(value[3], fd)
+        self.assertAlmostEqual(value[3], fd)
 
         dj1 = 2450123.5
         dj2 = 0.2
@@ -64,7 +77,7 @@ class TestErfa(TestCase):
         self.assertEqual(value[0], iy)
         self.assertEqual(value[1], im)
         self.assertEqual(value[2], id)
-        self.assertEqual(value[3], fd)
+        self.assertAlmostEqual(value[3], fd)
 
         dj1 = 2451967
         dj2 = 0
@@ -74,7 +87,7 @@ class TestErfa(TestCase):
         self.assertEqual(value[0], iy)
         self.assertEqual(value[1], im)
         self.assertEqual(value[2], id)
-        self.assertEqual(value[3], fd)
+        self.assertAlmostEqual(value[3], fd)
 
     def test_eraCal2jd(self):
         start_time = time.clock()
@@ -382,7 +395,6 @@ class TestErfa(TestCase):
         self.assertEqual(astrom_ref[()][6][2][0], self.ERFA.astrom.bpn[2][0])
         self.assertEqual(astrom_ref[()][6][2][1], self.ERFA.astrom.bpn[2][1])
         self.assertEqual(astrom_ref[()][6][2][2], self.ERFA.astrom.bpn[2][2])
-        '''
         self.assertAlmostEqual(astrom_ref[()][7], self.ERFA.astrom.along)
         self.assertAlmostEqual(astrom_ref[()][8], self.ERFA.astrom.phi)
         self.assertAlmostEqual(astrom_ref[()][9], self.ERFA.astrom.xpl)
@@ -393,7 +405,6 @@ class TestErfa(TestCase):
         self.assertAlmostEqual(astrom_ref[()][14], self.ERFA.astrom.eral)
         self.assertAlmostEqual(astrom_ref[()][15], self.ERFA.astrom.refa)
         self.assertAlmostEqual(astrom_ref[()][16], self.ERFA.astrom.refb)
-        '''
         self.assertAlmostEqual(eo_ref, eo)
 
     def test_eraPmpx(self):
@@ -496,8 +507,8 @@ class TestErfa(TestCase):
 
     def test_eraAtic13(self):
         ok, date1, date2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
-        ri = 3.14
-        di = 0.5
+        ri = 03.84027 * self.ERFA.ERFA_D2PI / 24
+        di = 61.3768 * self.ERFA.ERFA_D2PI / 360
 
         start_time = time.clock()
         rc, dc, eo = self.ERFA.eraAtic13(ri, di, date1, date2)
@@ -529,13 +540,11 @@ class TestErfa(TestCase):
         aob_ref, zob_ref, hob_ref, dob_ref, rob_ref = erfa_astro.atioq(r, d, astrom_ref)
         if self.show_perf:
             print(" ERFA Atioq      Astropy {0:15.15f} seconds".format((time.clock() - start_time)))
-        '''
         self.assertEqual(aob, aob_ref)
         self.assertEqual(zob, zob_ref)
         self.assertEqual(hob, hob_ref)
         self.assertEqual(dob, dob_ref)
         self.assertEqual(rob, rob_ref)
-        '''
 
     def test_eraUtctai(self):
         ok, utc1, utc2 = self.ERFA.eraDtf2d('UTC', self.ts.tm_year, self.ts.tm_mon, self.ts.tm_mday, self.ts.tm_hour, self.ts.tm_min, self.ts.tm_sec)
