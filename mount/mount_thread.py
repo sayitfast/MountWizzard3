@@ -559,20 +559,20 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
-        pressure = float(self.app.ui.le_pressureStick.text() + '0')
-        temperature = float(self.app.ui.le_temperatureStick.text() + '0')
-        if self.app.stick.connected == 1:
+        pressure = float(self.app.ui.le_pressure.text() + '0')
+        temperature = float(self.app.ui.le_temperature.text() + '0')
+        if self.app.environment.connected == 1:
             if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
-                self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressureStick.text())))
+                self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressure.text())))
                 if temperature > 0:
-                    self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperatureStick.text())))
+                    self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperature.text())))
                 else:
-                    self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperatureStick.text())))
+                    self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperature.text())))
                 self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
                 self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
             else:
                 # todo : better check before writing warning
-                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}  driver:{2} object:{3}'.format(temperature, pressure, self.app.stick.driverName, self.app.stick.ascom))
+                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.mountHandler.sendCommand('GS')
@@ -602,25 +602,25 @@ class Mount(PyQt5.QtCore.QThread):
                 pass
             self.raJnow = float(ra)
             self.decJnow = float(dec)
-            self.jd = jd.rstrip('#')                                                                                    # needed for 2.14.8 beta firmware
-            self.az = float(az)                                                                                         # same to azimuth
-            self.alt = float(alt)                                                                                       # and altitude
-            self.stat = int(stat)                                                                                       # status should be int for referencing list
-            self.slewing = (slew == '1')                                                                                # set status slewing
-            self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                              # convert J2000
+            self.jd = jd.rstrip('#')                                                                                        # needed for 2.14.8 beta firmware
+            self.az = float(az)                                                                                             # same to azimuth
+            self.alt = float(alt)                                                                                           # and altitude
+            self.stat = int(stat)                                                                                           # status should be int for referencing list
+            self.slewing = (slew == '1')                                                                                    # set status slewing
+            self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                                  # convert J2000
             ra_show = self.transform.decimalToDegree(self.ra, False, False)
             dec_show = self.transform.decimalToDegree(self.dec, True, False)
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                   # put dec to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                     # put ra to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})        # Altitude
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})          # Azimuth
-            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                   # Mount status -> slew to stop
-            self.app.mountDataQueue.put({'Name': 'GetJulianDate', 'Value': '{0}'.format(self.jd[:12])})                 # Sidereal local time
-            if str(self.pierside) == str('W'):                                                                          # pier side
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                          # Transfer to test in GUI
-            else:                                                                                                       #
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                          # Transfer to Text for GUI
-            self.signalMountAzAltPointer.emit(self.az, self.alt)                                                        # set azalt Pointer in diagrams to actual pos
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                       # put dec to gui
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                         # put ra to gui
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})            # Altitude
+            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})              # Azimuth
+            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                       # Mount status -> slew to stop
+            self.app.mountDataQueue.put({'Name': 'GetJulianDate', 'Value': '{0}'.format(self.jd[:13])})                     # Sidereal local time
+            if str(self.pierside) == str('W'):                                                                              # pier side
+                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                              # Transfer to test in GUI
+            else:                                                                                                           #
+                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                              # Transfer to Text for GUI
+            self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
             self.meridianLimitTrack = int(float(self.mountHandler.sendCommand('Glmt')))
             self.timeToMeridian = int(self.timeToFlip - self.meridianLimitTrack / 360 * 24 * 60)
@@ -630,15 +630,15 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.mountDataQueue.put({'Name': 'GetTimeToMeridian', 'Value': self.timeToMeridian})                        # Time to meridian
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
-        if self.app.ui.checkAutoRefraction.isChecked():                                                                     # check if autorefraction is set
+        if self.app.ui.checkAutoRefractionNotTracking.isChecked():
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
-                self.setRefractionParameter()                                                                               # transfer refraction from to mount
-            else:                                                                                                           #
-                if self.app.modeling.cpObject.cameraStatus in ['IDLE', 'DOWNLOADING', 'READY']:                                # if tracking, when camera is idle or downloading
-                    self.setRefractionParameter()                                                                           # transfer refraction to mount
-                else:                                                                                                       # otherwise
-                    # todo a better decition if logging a warning
-                    self.logger.warning('no autorefraction')
+                self.setRefractionParameter()
+        if self.app.ui.checkAutoRefractionCamera.isChecked():                                                                     # check if autorefraction is set
+            if self.app.modeling.cpObject.cameraStatus in ['IDLE', 'DOWNLOADING', 'READY']:                             # if tracking, when camera is idle or downloading
+                self.setRefractionParameter()                                                                           # transfer refraction to mount
+            else:                                                                                                       # otherwise
+                # todo a better decision if logging a warning
+                self.logger.warning('no autorefraction')
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()
 

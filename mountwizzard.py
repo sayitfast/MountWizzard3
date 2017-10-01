@@ -44,11 +44,7 @@ from widgets import modelplotwindow
 from widgets import imagewindow
 from widgets import analysewindow
 from gui import wizzard_main_ui
-if platform.system() == 'Windows':
-    # environment classes
-    from environment import unihedron_thread
-    from environment import weather_thread
-from environment import stick_thread
+from environment import environ_thread
 # modeling
 from modeling.modeling_thread import Modeling
 # import mount functions classes
@@ -81,6 +77,7 @@ class MountWizzardApp(widget.MwWidget):
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.imageQueue = Queue()
+        self.environmentQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.config = self.loadConfig()                                                                                     # load configuration
         self.ui = wizzard_main_ui.Ui_MainWindow()                                                                           # load the dialog from "DESIGNER"
@@ -90,10 +87,8 @@ class MountWizzardApp(widget.MwWidget):
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
         self.dome = dome_thread.Dome(self)                                                                                  # dome control
-        self.stick = stick_thread.Stick(self)                                                                               # Stickstation Thread
+        self.environment = environ_thread.Environment(self)
         if platform.system() == 'Windows':
-            self.weather = weather_thread.Weather(self)                                                                         # Stickstation Thread
-            self.unihedron = unihedron_thread.Unihedron(self)                                                                   # Unihedron Thread
             self.data = upload_thread.DataUploadToMount(self)                                                                   # data thread for downloading topics
         self.modeling = Modeling(self)                                                                                      # transferring ui and mount object as well
         self.analyseWindow = analysewindow.AnalyseWindow(self)                                                              # windows for analyse data
@@ -111,18 +106,12 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.start()                                                                                                  # starting polling thread
         if platform.system() == 'Windows':
             self.checkASCOM()
-            self.weather.signalWeatherData.connect(self.fillWeatherData)                                                    # connecting the signal
-            self.weather.signalWeatherConnected.connect(self.setWeatherStatus)                                              # status from thread
-            self.weather.start()                                                                                            # starting polling thread
-            self.stick.signalStickData.connect(self.fillStickData)                                                          # connecting the signal for data
-            self.stick.signalStickConnected.connect(self.setStickStatus)                                                    # status from thread
-            self.stick.start()                                                                                              # starting polling thread
-            self.unihedron.signalUnihedronData.connect(self.fillUnihedronData)                                              # connecting the signal for data
-            self.unihedron.signalUnihedronConnected.connect(self.setUnihedronStatus)                                        # status from thread
-            self.unihedron.start()                                                                                          # starting polling thread
             self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                       # status from thread
             self.dome.start()                                                                                               # starting polling thread
-            self.data.start()                                                                                                   # starting data thread
+            self.data.start()                                                                                               # starting data thread
+        self.environment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)                                      # status from thread
+        self.environment.start()                                                                                            # starting polling thread
+
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
         self.modeling.start()                                                                                               # starting polling thread
         self.mappingFunctions()                                                                                             # mapping the functions to ui
@@ -167,9 +156,7 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() == 'Windows':
             self.ui.btn_setupMountDriver.clicked.connect(self.mount.MountAscom.setupDriver)
             self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
-            self.ui.btn_setupStickDriver.clicked.connect(lambda: self.stick.setupDriver())
-            self.ui.btn_setupUnihedronDriver.clicked.connect(lambda: self.unihedron.setupDriver())
-            self.ui.btn_setupWeatherDriver.clicked.connect(lambda: self.weather.setupDriver())
+            self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(lambda: self.environment.setupDriver())
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
         self.ui.btn_runBaseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBaseModel'))
         self.ui.btn_cancelModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelModel'))
@@ -433,8 +420,12 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
             if 'CheckDoSubframe' in self.config:
                 self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
-            if 'CheckAutoRefraction' in self.config:
-                self.ui.checkAutoRefraction.setChecked(self.config['CheckAutoRefraction'])
+            if 'CheckAutoRefractionCamera' in self.config:
+                self.ui.checkAutoRefractionCamera.setChecked(self.config['CheckAutoRefractionCamera'])
+            if 'CheckAutoRefractionPulseGuiding' in self.config:
+                self.ui.checkAutoRefractionPulseGuiding.setChecked(self.config['CheckAutoRefractionPulseGuiding'])
+            if 'CheckAutoRefractionNotTracking' in self.config:
+                self.ui.checkAutoRefractionNotTracking.setChecked(self.config['CheckAutoRefractionNotTracking'])
             if 'CheckKeepImages' in self.config:
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             if 'CheckRunTrackingWidget' in self.config:
@@ -537,7 +528,9 @@ class MountWizzardApp(widget.MwWidget):
         self.config['FocalLength'] = self.ui.focalLength.value()
         self.config['ScaleSubframe'] = self.ui.scaleSubframe.value()
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
-        self.config['CheckAutoRefraction'] = self.ui.checkAutoRefraction.isChecked()
+        self.config['CheckAutoRefractionCamera'] = self.ui.checkAutoRefractionCamera.isChecked()
+        self.config['CheckAutoRefractionPulseGuiding'] = self.ui.checkAutoRefractionPulseGuiding.isChecked()
+        self.config['CheckAutoRefractionNotTracking'] = self.ui.checkAutoRefractionNotTracking.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
         self.config['CheckRunTrackingWidget'] = self.modelWindow.ui.checkRunTrackingWidget.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()
@@ -582,11 +575,9 @@ class MountWizzardApp(widget.MwWidget):
         self.storeConfig()
         self.mount.storeConfig()
         self.modeling.storeConfig()
-        self.stick.storeConfig()
+        self.environment.storeConfig()
         if platform.system() == 'Windows':
-            self.weather.storeConfig()
             self.dome.storeConfig()
-            self.unihedron.storeConfig()
         self.modelWindow.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
@@ -852,57 +843,25 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_UTCDataExpirationDate.setText(str(data['Value']))
 
     @QtCore.Slot(int)
-    def setStickStatus(self, status):
+    def setEnvironmentStatus(self, status):
         if status == 1:
-            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: green;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;}')
         else:
-            self.ui.btn_driverStickConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    @QtCore.Slot(dict)
-    def fillStickData(self, data):
-        # data from Stickstation via signal connected
-        self.ui.le_dewPointStick.setText('{0:4.1f}'.format(data['DewPoint']))
-        self.ui.le_temperatureStick.setText('{0:4.1f}'.format(data['Temperature']))
-        self.ui.le_humidityStick.setText('{0:4.1f}'.format(data['Humidity']))
-        self.ui.le_pressureStick.setText('{0:4.1f}'.format(data['Pressure']))
-
-    @QtCore.Slot(dict)
-    def fillUnihedronData(self, data):
-        # data from Unihedron via signal connected
+    def fillEnvironmentData(self, data):
+        self.ui.le_dewPoint.setText('{0:4.1f}'.format(data['DewPoint']))
+        self.ui.le_temperature.setText('{0:4.1f}'.format(data['Temperature']))
+        self.ui.le_humidity.setText('{0:4.1f}'.format(data['Humidity']))
+        self.ui.le_pressure.setText('{0:4.1f}'.format(data['Pressure']))
+        self.ui.le_cloudCover.setText('{0:4.1f}'.format(data['CloudCover']))
+        self.ui.le_rainRate.setText('{0:4.1f}'.format(data['RainRate']))
+        self.ui.le_windSpeed.setText('{0:4.1f}'.format(data['WindSpeed']))
+        self.ui.le_windDirection.setText('{0:4.1f}'.format(data['WindDirection']))
         self.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
         self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
-
-    @QtCore.Slot(int)
-    def setUnihedronStatus(self, status):
-        if status == 1:
-            self.ui.btn_unihedronConnected.setStyleSheet('QPushButton {background-color: green;}')
-        elif status == 2:
-            self.ui.btn_unihedronConnected.setStyleSheet('QPushButton {background-color: grey;}')
-        else:
-            self.ui.btn_unihedronConnected.setStyleSheet('QPushButton {background-color: red;}')
-
-    @QtCore.Slot(int)
-    def setWeatherStatus(self, status):
-        if status == 1:
-            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: green;}')
-        elif status == 2:
-            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: grey;}')
-        else:
-            self.ui.btn_driverWeatherConnected.setStyleSheet('QPushButton {background-color: red;}')
-
-    @QtCore.Slot(dict)
-    def fillWeatherData(self, data):
-        # data from Stickstation via signal connected
-        self.ui.le_dewPointWeather.setText('{0:4.1f}'.format(data['DewPoint']))
-        self.ui.le_temperatureWeather.setText('{0:4.1f}'.format(data['Temperature']))
-        self.ui.le_humidityWeather.setText('{0:4.1f}'.format(data['Humidity']))
-        self.ui.le_pressureWeather.setText('{0:4.1f}'.format(data['Pressure']))
-        self.ui.le_cloudCoverWeather.setText('{0:4.1f}'.format(data['CloudCover']))
-        self.ui.le_rainRateWeather.setText('{0:4.1f}'.format(data['RainRate']))
-        self.ui.le_windSpeedWeather.setText('{0:4.1f}'.format(data['WindSpeed']))
-        self.ui.le_windDirectionWeather.setText('{0:4.1f}'.format(data['WindDirection']))
 
     @QtCore.Slot(int)
     def setCameraPlateStatus(self, status):
@@ -925,23 +884,26 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def mainLoop(self):
-        while not self.mountDataQueue.empty():                                                                              # checking data transfer from mount to GUI
-            data = self.mountDataQueue.get()                                                                                # get the data from the queue
-            self.fillMountData(data)                                                                                        # write dta in gui
+        while not self.mountDataQueue.empty():
+            data = self.mountDataQueue.get()
+            self.fillMountData(data)
             self.mountDataQueue.task_done()
-        while not self.messageQueue.empty():                                                                                # do i have error messages ?
-            text = self.messageQueue.get()                                                                                  # get the message
-            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')                                    # write it to window
+        while not self.environmentQueue.empty():
+            data = self.environmentQueue.get()
+            self.fillEnvironmentData(data)
+        while not self.messageQueue.empty():
+            text = self.messageQueue.get()
+            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')
             self.messageQueue.task_done()
-            self.ui.errorStatus.moveCursor(QTextCursor.End)                                                                 # move cursor
-        while not self.imageQueue.empty():                                                                                  # do i have error messages ?
-            filename = self.imageQueue.get()                                                                                # get the message
+            self.ui.errorStatus.moveCursor(QTextCursor.End)
+        while not self.imageQueue.empty():
+            filename = self.imageQueue.get()
             if self.imageWindow.showStatus:
                 self.imageWindow.showFitsImage(filename)
-        while not self.modelLogQueue.empty():                                                                               # checking if in queue is something to do
-            text = self.modelLogQueue.get()                                                                                 # if yes, getting the work command
-            if text == 'delete':                                                                                            # delete logfile for modeling
-                self.modelWindow.ui.modellingLog.clear()                                                                # reset window text
+        while not self.modelLogQueue.empty():
+            text = self.modelLogQueue.get()
+            if text == 'delete':
+                self.modelWindow.ui.modellingLog.clear()                                                                    # reset window text
             elif text == 'backspace':
                 for i in range(0, 6):
                     self.modelWindow.ui.modellingLog.textCursor().deletePreviousChar()
