@@ -586,7 +586,14 @@ class Mount(PyQt5.QtCore.QThread):
         if reply:
             self.decJnow = self.transform.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
-        if reply:                                                                                                           # if reply is there
+        if reply:
+            ra = ''
+            dec = ''
+            jd = ''
+            az = ''
+            alt = ''
+            stat = ''
+            slew = ''
             try:
                 ra, dec, self.pierside, az, alt, jd, stat, slew = reply.rstrip('#').strip().split(',')                      # split the response to its parts
             except Exception as e:
