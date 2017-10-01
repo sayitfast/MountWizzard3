@@ -67,15 +67,12 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
         self.initUI()                                                                                                       # adaptions to ui setup
-        self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.initConfig()
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.image)
         self.imageWidget = ShowImageData(self.ui.image)
         helper.addWidget(self.imageWidget)
         self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
         self.imageWidget.axes.set_axis_off()
-        self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
-        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(Qt.WindowMinimized))
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)
@@ -87,7 +84,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechLow.clicked.connect(self.setStrech)
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
-        self.show()                                                                                                         # construct the window
+        # self.show()                                                                                                         # construct the window
         self.setVisible(False)
         self.ui.cross1.setVisible(False)
         self.ui.cross2.setVisible(False)
@@ -110,9 +107,10 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
 
-    def hideWindow(self):
-        self.showStatus = False
-        self.setVisible(False)
+    def showImageWindow(self):
+        self.showStatus = True
+        self.setVisible(True)
+        self.show()
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():

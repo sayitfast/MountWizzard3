@@ -83,11 +83,10 @@ class MountWizzardApp(widget.MwWidget):
         self.imageQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.config = self.loadConfig()                                                                                     # load configuration
-        self.ui = wizzard_main_ui.Ui_WizzardMainDialog()                                                                    # load the dialog from "DESIGNER"
+        self.ui = wizzard_main_ui.Ui_MainWindow()                                                                           # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
-        self.ui.windowTitle.setPalette(self.palette)                                                                        # title color
         self.initUI()                                                                                                       # adapt the window to our purpose
-        self.ui.windowTitle.setText('MountWizzard ' + BUILD_NO)
+        self.setWindowTitle('MountWizzard ' + BUILD_NO)
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
         self.dome = dome_thread.Dome(self)                                                                                  # dome control
@@ -133,20 +132,12 @@ class MountWizzardApp(widget.MwWidget):
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.selectRemoteAccess()
         self.checkAvailableMenus()
-        # self.ui.mountChooser.setVisible(False)
-
-        # self.ui.mainTabWidget.tabBar().setTabTextColor(0, self.COLOR_ASTRO)
-        # self.ui.mainTabWidget.tabBar().setCurrentIndex(2)
-        # self.ui.mainTabWidget.currentWidget().setStyleSheet(self.RED)
-        # self.ui.mainTabWidget.tabBar().setStyleSheet(self.BLUE)
 
     # noinspection PyArgumentList
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
-        self.ui.btn_selectClose.clicked.connect(lambda: QCoreApplication.instance().quit())
-        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(QtCore.Qt.WindowMinimized))
         self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
         self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
         self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
@@ -232,9 +223,9 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunTimeChangeModel'))
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelAnalyseModel'))
         self.ui.btn_runHystereseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunHystereseModel'))
-        self.ui.btn_openAnalyseWindow.clicked.connect(self.showAnalyseWindow)
-        self.ui.btn_openModelingPlotWindow.clicked.connect(self.showModelingPlotWindow)
-        self.ui.btn_openImageWindow.clicked.connect(self.showImageWindow)
+        self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
+        self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
+        self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
         self.ui.rb_cameraSGPro.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraTSX.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
         self.ui.rb_cameraASCOM.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
@@ -645,21 +636,6 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.logger.warning('no file selected')
 
-    def showAnalyseWindow(self):
-        self.analyseWindow.getData()
-        self.analyseWindow.ui.windowTitle.setText('Analyse:    ' + self.ui.le_analyseFileName.text())
-        self.analyseWindow.showDecError()
-        self.analyseWindow.showStatus = True
-        self.analyseWindow.setVisible(True)
-
-    def showModelingPlotWindow(self):
-        self.modelWindow.showStatus = True
-        self.modelWindow.setVisible(True)
-
-    def showImageWindow(self):
-        self.imageWindow.showStatus = True
-        self.imageWindow.setVisible(True)
-
     def setHorizonLimitHigh(self):
         _value = int(self.ui.le_horizonLimitHigh.text())
         if _value < 0:
@@ -1005,7 +981,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.5 beta'
+    BUILD_NO = '2.5.6 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()
@@ -1024,9 +1000,9 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
         os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
 
-    logging.info('-----------------------------------------')                                                              # start message logger
-    logging.info('MountWizzard v ' + BUILD_NO + ' started !')                                                              # start message logger
-    logging.info('-----------------------------------------')                                                              # start message logger
+    logging.info('-----------------------------------------')
+    logging.info('MountWizzard v ' + BUILD_NO + ' started !')
+    logging.info('-----------------------------------------')
     logging.info('Platform: ' + platform.system())
     logging.info('Release: ' + platform.release())
     logging.info('Version: ' + platform.version())
@@ -1051,12 +1027,12 @@ if __name__ == "__main__":
     app.setWindowIcon(QIcon('mw.ico'))
 
     mountApp = MountWizzardApp()                                                                                            # instantiate Application
-    mountApp.show()                                                                                                         # show it
     if mountApp.modelWindow.showStatus:                                                                                     # if windows was shown last run, open it directly
         mountApp.modelWindow.redrawModelingWindow()                                                                         # update content
-        mountApp.showModelingPlotWindow()                                                                                   # show it
+        mountApp.modelWindow.showModelingPlotWindow()                                                                       # show it
     if mountApp.imageWindow.showStatus:                                                                                     # if windows was shown last run, open it directly
-        mountApp.showImageWindow()                                                                                          # show it
+        mountApp.imageWindow.showImageWindow()                                                                              # show it
     if mountApp.analyseWindow.showStatus:                                                                                   # if windows was shown last run, open it directly
-        mountApp.showAnalyseWindow()                                                                                        # show it
+        mountApp.analyseWindow.showAnalyseWindow()                                                                          # show it
+    mountApp.show()                                                                                                         # show it
     sys.exit(app.exec_())                                                                                                   # close application

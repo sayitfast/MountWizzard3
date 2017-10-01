@@ -74,9 +74,18 @@ class MwWidget(QWidget):
             self.move(cursor.pos() - self.offset)
         self.moving = False
 
+    def closeEvent(self, closeEvent):
+        if False:
+            super(MwWidget, self).closeEvent(closeEvent)
+        else:
+            closeEvent.ignore()
+            # self.setWindowState(Qt.WindowMinimized)
+            self.showStatus = False
+            self.setVisible(False)
+
     def initUI(self):
-        self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
-        # self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
+        # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
+        self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
         self.setMouseTracking(True)
         darkPalette = QPalette()
         darkPalette.setColor(QPalette.Window, self.COLOR_WINDOW)
@@ -94,3 +103,6 @@ class MwWidget(QWidget):
         self.setPalette(darkPalette)
         self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
         self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
+
+        # sizing
+        self.setFixedSize(790, 640)

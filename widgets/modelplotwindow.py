@@ -62,16 +62,13 @@ class ModelPlotWindow(widget.MwWidget):
         self.initUI()                                                                                                       # adaptions to ui setup
         self.initConfig()
         self.selectHorizonPointsMode()
-        self.ui.windowTitle.setPalette(self.palette)                                                                        # set windows palette
         self.app.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
         self.app.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
         self.app.modeling.signalModelRedraw.connect(self.redrawModelingWindow)                                              # signal for redrawing the window content
         self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
-        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(Qt.WindowMinimized))
-        self.ui.btn_selectClose.clicked.connect(self.hideWindow)                                                            # signal for closing (not destroying) the window
         self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
-        self.show()                                                                                                         # construct the window
+        # self.show()                                                                                                         # construct the window
         self.setVisible(False)                                                                                              # but hide it first
 
     def initConfig(self):
@@ -93,6 +90,11 @@ class ModelPlotWindow(widget.MwWidget):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+
+    def showModelingPlotWindow(self):
+        self.showStatus = True
+        self.setVisible(True)
+        self.show()
 
     def selectHorizonPointsMode(self):
         msg = self.app.modeling.modelpoints.loadHorizonPoints(self.app.ui.le_horizonPointsFileName.text(),
@@ -123,11 +125,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.config['HorizonPointsFileName'] = self.app.ui.le_horizonPointsFileName.text()
         self.app.config['CheckUseMinimumHorizonLine'] = self.app.ui.checkUseMinimumHorizonLine.isChecked()
         self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
-        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
-
-    def hideWindow(self):                                                                                                   # method for switching visibility
-        self.showStatus = False                                                                                             # status = off
-        self.setVisible(False)                                                                                              # hide it
+        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()                                                                                          # hide it
 
     def setAzAltPointer(self, az, alt):                                                                                     # method for pointer drawing
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)               # get the right coordinates

@@ -69,9 +69,6 @@ class AnalyseWindow(MwWidget):
         self.ui = analyse_dialog_ui.Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
-        self.ui.windowTitle.setPalette(self.palette)
-        self.ui.btn_selectClose.clicked.connect(self.hideWindow)
-        self.ui.btn_selectMinimize.clicked.connect(lambda: self.setWindowState(Qt.WindowMinimized))
         self.ui.scalePlotDEC.valueChanged.connect(self.changedDECScale)
         self.ui.scalePlotRA.valueChanged.connect(self.changedRAScale)
         self.ui.scalePlotError.valueChanged.connect(self.changedPlotError)
@@ -89,7 +86,7 @@ class AnalyseWindow(MwWidget):
         self.plotWidget = ShowAnalyseData(self.ui.plot)
         helper.addWidget(self.plotWidget)
         self.initConfig()
-        self.show()
+        # self.show()
         self.setVisible(False)
 
     def initConfig(self):
@@ -116,6 +113,14 @@ class AnalyseWindow(MwWidget):
         self.app.config['ScalePlotRA'] = self.ui.scalePlotRA.value()
         self.app.config['ScalePlotDEC'] = self.ui.scalePlotDEC.value()
         self.app.config['ScalePlotError'] = self.ui.scalePlotError.value()
+
+    def showAnalyseWindow(self):
+        self.getData()
+        self.setWindowTitle('Analyse:    ' + self.app.ui.le_analyseFileName.text())
+        self.showDecError()
+        self.showStatus = True
+        self.setVisible(True)
+        self.show()
 
     def changedDECScale(self):
         if self.getData():
@@ -146,10 +151,6 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_facecolor((32/256, 32/256, 32/256))
         self.plotWidget.axes.tick_params(axis='x', colors='white')
         self.plotWidget.axes.tick_params(axis='y', colors='white')
-
-    def hideWindow(self):
-        self.showStatus = False
-        self.setVisible(False)
 
     def showDecError(self):
         if len(self.data) > 0:
