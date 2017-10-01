@@ -1,3 +1,16 @@
 include README.md
 include Changelog.md
 include model001.fit
+include mountwizzard.py
+include analyse/*.py
+include baseclasses/*.py
+include camera/*.py
+include dome/*.py
+include environment/*.py
+include indi/*.py
+include modeling/*.py
+include mount/*.py
+include relays/*.py
+include remote/*.py
+include widgets/*.py
+

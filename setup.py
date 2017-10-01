@@ -3,9 +3,9 @@ from setuptools import setup
 
 setup(
     name='mountwizzard',
-    version='2.5.6.1',
+    version='2.5.6',
     packages=[
-        '.',
+        # '',
     ],
     python_requires='~=3.5',
     install_requires=[
