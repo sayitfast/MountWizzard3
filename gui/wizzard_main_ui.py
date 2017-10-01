@@ -23,7 +23,7 @@ class Ui_MainWindow(object):
         MainWindow.setMaximumSize(QtCore.QSize(16777179, 16777215))
         MainWindow.setSizeIncrement(QtCore.QSize(9, 0))
         font = QtGui.QFont()
-        font.setFamily("MS Shell Dlg 2")
+        font.setFamily("Arial")
         font.setPointSize(8)
         font.setBold(False)
         font.setWeight(50)
@@ -3919,7 +3919,7 @@ class Ui_MainWindow(object):
         self.btn_environmentConnected.setObjectName("btn_environmentConnected")
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(1)
+        self.mainTabWidget.setCurrentIndex(0)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_mountShutdown, self.btn_openImageWindow)

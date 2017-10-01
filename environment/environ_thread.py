@@ -109,10 +109,9 @@ class Environment(PyQt5.QtCore.QThread):
             data['RainRate'] = self.ascom.RainRate
             data['WindSpeed'] = self.ascom.WindSpeed
             data['WindDirection'] = self.ascom.WindDirection
-
             self.app.environmentQueue.put(data)                                                                             # sending the data via signal
         except Exception as e:
-            self.logger.error('error accessing environment ascom data: {}'.format(e))
+            self.logger.error('error accessing environment data: {}'.format(e))
 
     def getStatusSlow(self):
         pass

@@ -43,7 +43,7 @@
   </property>
   <property name="font">
    <font>
-    <family>MS Shell Dlg 2</family>
+    <family>Arial</family>
     <pointsize>8</pointsize>
     <weight>50</weight>
     <bold>false</bold>
@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">

@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='mountwizzard',
-    version='2.5.4.6',
+    version='2.5.6.1',
     packages=[
         '.',
     ],

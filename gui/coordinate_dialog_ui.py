@@ -12,6 +12,9 @@ class Ui_CoordinateDialog(object):
     def setupUi(self, CoordinateDialog):
         CoordinateDialog.setObjectName("CoordinateDialog")
         CoordinateDialog.resize(791, 639)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        CoordinateDialog.setFont(font)
         self.modelPointsPlot = QtWidgets.QGraphicsView(CoordinateDialog)
         self.modelPointsPlot.setGeometry(QtCore.QRect(10, 40, 771, 371))
         self.modelPointsPlot.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.ArrowCursor))

@@ -12,6 +12,9 @@ class Ui_ImageDialog(object):
     def setupUi(self, ImageDialog):
         ImageDialog.setObjectName("ImageDialog")
         ImageDialog.resize(791, 639)
+        font = QtGui.QFont()
+        font.setFamily("Arial")
+        ImageDialog.setFont(font)
         self.image = QtWidgets.QWidget(ImageDialog)
         self.image.setGeometry(QtCore.QRect(0, 105, 791, 531))
         self.image.setAutoFillBackground(True)
