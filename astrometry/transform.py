@@ -105,6 +105,7 @@ class Transform:
 
         if transform == 1:  # J2000 to Topo Az /Alt
             ra = ra % 24                                                                                                    # mount has hours
+            '''
             suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
                                                                    dec * self.ERFA.ERFA_D2PI / 360,
                                                                    0.0,
@@ -136,12 +137,13 @@ class Transform:
                                              0)
             RATopo = self.ERFA.eraAnp(ri - eo) * 24 / self.ERFA.ERFA_D2PI
             DECTopo = di * 360 / self.ERFA.ERFA_D2PI
-            AzimuthTopo, AltitudeTopo = self.ra_dec_lst_to_az_alt(RATopo, DECTopo, SiteLatitude)
-            '''
+            AzimuthTopo, AltitudeTopo = self.ra_dec_lst_to_az_alt(RATopo, DECTopo)
+
             val1 = AzimuthTopo
             val2 = AltitudeTopo
 
         elif transform == 2:    # Topo to J2000
+            '''
             suc, rc, dc = self.ERFA.eraAtoc13('R',
                                               self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
                                               dec * self.ERFA.ERFA_D2PI / 360,
@@ -162,7 +164,6 @@ class Transform:
                                              dec * self.ERFA.ERFA_D2PI / 360,
                                              date1 + date2,
                                              0.0)
-            '''
 
             RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
             DECJ2000 = dc * self.ERFA.ERFA_DR2D
