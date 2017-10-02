@@ -105,7 +105,6 @@ class Transform:
 
         if transform == 1:  # J2000 to Topo Az /Alt
             ra = ra % 24                                                                                                    # mount has hours
-            '''
             suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
                                                                    dec * self.ERFA.ERFA_D2PI / 360,
                                                                    0.0,
@@ -124,26 +123,10 @@ class Transform:
                                                                    0.0,
                                                                    0.0,
                                                                    0.0)
-            AzimuthTopo = aob * 360 / self.ERFA.ERFA_D2PI
-            AltitudeTopo = 90.0 - zob * 360 / self.ERFA.ERFA_D2PI
-            '''
-            ri, di, eo = self.ERFA.eraAtci13(ra * self.ERFA.ERFA_D2PI / 24,
-                                             dec * self.ERFA.ERFA_D2PI / 360,
-                                             0,
-                                             0,
-                                             0,
-                                             0,
-                                             date1 + date2,
-                                             0)
-            RATopo = self.ERFA.eraAnp(ri - eo) * 24 / self.ERFA.ERFA_D2PI
-            DECTopo = di * 360 / self.ERFA.ERFA_D2PI
-            AzimuthTopo, AltitudeTopo = self.ra_dec_lst_to_az_alt(RATopo, DECTopo)
+            val1 = aob * 360 / self.ERFA.ERFA_D2PI
+            val2 = 90.0 - zob * 360 / self.ERFA.ERFA_D2PI
 
-            val1 = AzimuthTopo
-            val2 = AltitudeTopo
-
-        elif transform == 2:    # Topo to J2000
-            '''
+        elif transform == 2:                                                                                                # Topo to J2000
             suc, rc, dc = self.ERFA.eraAtoc13('R',
                                               self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
                                               dec * self.ERFA.ERFA_D2PI / 360,
@@ -159,18 +142,9 @@ class Transform:
                                               0.0,
                                               0.0,
                                               0.0)
-            '''
-            rc, dc, eo = self.ERFA.eraAtic13(self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
-                                             dec * self.ERFA.ERFA_D2PI / 360,
-                                             date1 + date2,
-                                             0.0)
-
-            RAJ2000 = rc * 24.0 / self.ERFA.ERFA_D2PI
-            DECJ2000 = dc * self.ERFA.ERFA_DR2D
-            val1 = RAJ2000
-            val2 = DECJ2000
-        elif transform == 3:    # J2000 to Topo
-            '''
+            val1 = rc * 24.0 / self.ERFA.ERFA_D2PI
+            val2 = dc * self.ERFA.ERFA_DR2D
+        elif transform == 3:                                                                                                # J2000 to Topo
             suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
                                                                    dec * self.ERFA.ERFA_D2PI / 360,
                                                                    0.0,
@@ -189,19 +163,8 @@ class Transform:
                                                                    0.0,
                                                                    0.0,
                                                                    0.0)
-            '''
-            ri, di, eo = self.ERFA.eraAtci13(ra * self.ERFA.ERFA_D2PI / 24,
-                                             dec * self.ERFA.ERFA_D2PI / 360,
-                                             0,
-                                             0,
-                                             0,
-                                             0,
-                                             date1 + date2,
-                                             0)
-            RATopo = self.ERFA.eraAnp(ri - eo) * 24 / self.ERFA.ERFA_D2PI
-            DECTopo = di * 360 / self.ERFA.ERFA_D2PI
-            val1 = RATopo
-            val2 = DECTopo
+            val1 = self.ERFA.eraAnp(hob - eo) * 24 / self.ERFA.ERFA_D2PI
+            val2 = dob * 360 / self.ERFA.ERFA_D2PI
         else:
             val1 = ra
             val2 = dec
