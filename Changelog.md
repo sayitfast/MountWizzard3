@@ -4,6 +4,7 @@
 - update transformation classes
 - bugfix in camera classes
 - extended logging for transformation classes
+- update logging behaviour of SGPro class
 
 2.5.6
 - bugfix analyse window data
