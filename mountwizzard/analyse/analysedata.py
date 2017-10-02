@@ -175,6 +175,8 @@ class Analyse:
             else:
                 data = self.loadMountWizzardData(filenameData)
             return data
+        else:
+            return {}
 
     @staticmethod
     def prepareData(dataProcess, scaleRA, scaleDEC):

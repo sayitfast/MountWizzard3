@@ -130,7 +130,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show model points in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Modeling Points Polar</string>
+    <string>Model Points Polar</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectDecErrorAzimuth">
@@ -172,7 +172,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show total error in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Modeling Error Polar</string>
+    <string>Model Error Polar</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_selectRaErrorDeviation">
