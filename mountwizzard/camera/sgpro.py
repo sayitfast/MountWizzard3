@@ -14,6 +14,7 @@
 import platform
 import json
 import logging
+import time
 # packages for handling web interface to SGPro
 from urllib import request
 if platform.system() == 'Windows':
