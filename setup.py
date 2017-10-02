@@ -3,9 +3,23 @@ from setuptools import setup
 
 setup(
     name='mountwizzard',
-    version='2.5.6',
+    version='2.5.7.1',
     packages=[
-        # '',
+        'mountwizzard',
+        'mountwizzard.analyse',
+        'mountwizzard.astrometry',
+        'mountwizzard.automation',
+        'mountwizzard.baseclasses',
+        'mountwizzard.camera',
+        'mountwizzard.dome',
+        'mountwizzard.environment',
+        'mountwizzard.gui',
+        'mountwizzard.indi',
+        'mountwizzard.modeling',
+        'mountwizzard.mount',
+        'mountwizzard.relays',
+        'mountwizzard.remote',
+        'mountwizzard.widgets'
     ],
     python_requires='~=3.5',
     install_requires=[

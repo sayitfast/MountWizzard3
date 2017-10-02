@@ -4,11 +4,13 @@ block_cipher = None
 
 import sys
 sys.modules['FixTk'] = None
+DISTPATH = '../dist'
+WORKPATH = '../build'
 
-a = Analysis(['mountwizzard.py'],
-             pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\mountwizzard'],
+a = Analysis(['mountwizzard\\mountwizzard.py'],
+             pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\mountwizzard\\mountwizzard'],
              binaries=[],
-             datas=[('model001.fit','.')],
+             datas=[('mountwizzard\\model001.fit','.')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -28,4 +30,4 @@ exe = EXE(pyz,
           strip=False,
           upx=False,
           console=True,
-          icon='./mw.ico')
+          icon='mountwizzard\\mw.ico')
