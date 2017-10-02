@@ -16,7 +16,9 @@ import json
 import logging
 import time
 # packages for handling web interface to SGPro
+import urllib
 from urllib import request
+
 if platform.system() == 'Windows':
     # windows automation
     from pywinauto import Application, findwindows, application
@@ -41,6 +43,7 @@ class SGPro(MWCamera):
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
         self.appExe = 'Sequence Generator.exe'
+        self.tryConnectionCounter = 0
 
     def checkAppInstall(self):
         if platform.system() == 'Windows':
@@ -58,6 +61,15 @@ class SGPro(MWCamera):
             reply = request.urlopen(self.ipSGProBase, None, 2).getcode()
             self.appRunning = True
             self.appConnected = True
+            self.tryConnectionCounter = 0
+        except urllib.request.URLError:
+            self.tryConnectionCounter += 1
+            if self.tryConnectionCounter < 5:
+                self.logger.info('SGPro is not running')
+            elif self.tryConnectionCounter == 10:
+                self.logger.info('No connection possible - stop logging this connection error')
+            else:
+                pass
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             self.appRunning = False
@@ -181,11 +193,12 @@ class SGPro(MWCamera):
         return self.SgGetCameraProps()
 
     def getCameraStatus(self):
-        suc, mes = self.SgGetDeviceStatus('Camera')
-        if suc:
-            self.cameraStatus = mes
-        else:
-            self.cameraStatus = 'Error'
+        if self.appConnected:
+            suc, mes = self.SgGetDeviceStatus('Camera')
+            if suc:
+                self.cameraStatus = mes
+            else:
+                self.cameraStatus = 'Error'
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

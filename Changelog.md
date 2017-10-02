@@ -1,4 +1,10 @@
 # Changelog
+2.5.7
+- bugfix for maxim
+- update transformation classes
+- bugfix in camera classes
+- extended logging for transformation classes
+
 2.5.6
 - bugfix analyse window data
 
