@@ -218,7 +218,6 @@ class MaximDLCamera(MWCamera):
             hint = float(hint)
         self.logger.info('solving pinpoint with ra:{0}, dec:{1}, hint:{2}'.format(ra, dec, hint))
         self.maximDocument.PinPointSolve(ra, dec, hint, hint)                                                               # start solving with FITS Header data
-        time.sleep(0.25)
         while True:
             try:
                 status = self.maximDocument.PinPointStatus
@@ -234,7 +233,6 @@ class MaximDLCamera(MWCamera):
             finally:
                 pass
             time.sleep(0.25)
-            # todo catch solve time limit exceeded
         if status == 1:
             self.logger.info('no start {0}'.format(status))
             suc = self.maximDocument.Close
