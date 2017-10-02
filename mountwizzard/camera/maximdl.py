@@ -13,6 +13,7 @@
 ############################################################
 import platform
 import logging
+import time
 if platform.system() == 'Windows':
     # windows automation
     from pywinauto import Application, findwindows, application
@@ -144,9 +145,11 @@ class MaximDLCamera(MWCamera):
                 self.maximCamera.NumY = int(modelData['sizeY'])
                 self.maximCamera.StartX = int(modelData['offX'])
                 self.maximCamera.StartY = int(modelData['offY'])
-                self.maximCamera.Expose(modelData['exposure'], 1)
+                suc = self.maximCamera.Expose(modelData['exposure'], 1)
+                if not suc:
+                    self.logger.error('could not start exposure')
                 while not self.maximCamera.ImageReady:
-                    time.sleep(0.2)
+                    time.sleep(0.5)
                 modelData['imagepath'] = modelData['base_dir_images'] + '/' + modelData['file']
                 self.maximCamera.SaveImage(modelData['imagepath'])
                 suc = True
@@ -154,8 +157,6 @@ class MaximDLCamera(MWCamera):
             except Exception as e:
                 self.logger.error('error: {0}'.format(e))
                 suc = False
-                mes = '{0}'.format(e)
-                self.logger.debug('message: {0}'.format(mes))
             finally:
                 return suc, mes, modelData
         else:
@@ -204,25 +205,45 @@ class MaximDLCamera(MWCamera):
 
     def solveImage(self, modelData):
         startTime = time.time()                                                                                             # start timer for plate solve
+        mes = ''
         self.maximDocument.OpenFile(modelData['imagepath'].replace('/', '\\'))                                              # open the fits file
-        ra = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')                               # get ra
-        dec = self.app.mount.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')                             # get dec
-        hint = self.maximDocument.GetFITSKey('CDELT1')                                                                      # get scale hint
+        ra = self.app.mount.transform.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')                     # get ra
+        dec = self.app.mount.transform.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')                   # get dec
+        hint = self.maximDocument.GetFITSKey('CDELT1')
+        if not hint:
+            xpixsz = self.maximDocument.GetFITSKey('XPIXSZ')
+            focallen = self.maximDocument.GetFITSKey('FOCALLEN')
+            hint = float(xpixsz) * 206.6 / float(focallen)
+        else:
+            hint = float(hint)
+        self.logger.info('solving pinpoint with ra:{0}, dec:{1}, hint:{2}'.format(ra, dec, hint))
         self.maximDocument.PinPointSolve(ra, dec, hint, hint)                                                               # start solving with FITS Header data
+        time.sleep(0.25)
         while True:
             try:
                 status = self.maximDocument.PinPointStatus
                 if status != 3:                                                                                             # 3 means solving
                     break
             except Exception as e:                                                                                          # the request throws exception for reason of failing plate solve
-                self.logger.error('error: {0}'.format(e))
+                if e.excepinfo[2] == 'The time limit for plate solving has expired':
+                    self.logger.warning('time limit from pinpoint has expired')
+                    mes = 'The time limit for plate solving has expired'
+                    self.logger.warning('solving message: {0}'.format(e))
+                else:
+                    self.logger.error('error: {0}'.format(e))
             finally:
                 pass
             time.sleep(0.25)
+            # todo catch solve time limit exceeded
         if status == 1:
-            self.logger.warning('no start {0}'.format(status))
-            self.maximDocument.Close()
-            return False, mes, modelData
+            self.logger.info('no start {0}'.format(status))
+            suc = self.maximDocument.Close
+            if not suc:
+                self.logger.error('document {0} could not be closed'.format(modelData['imagepath']))
+                return False, 'Problem closing document in MaximDL', modelData
+            else:
+                return False, mes, modelData
+
         stopTime = time.time()
         timeTS = (stopTime - startTime) / 1000
         if status == 2:
@@ -232,7 +253,7 @@ class MaximDLCamera(MWCamera):
             modelData['angle'] = self.maximDocument.PositionAngle
             modelData['timeTS'] = timeTS
             self.logger.info('modelData {0}'.format(modelData))
-            return True, mes, modelData
+            return True, 'Solved', modelData
 
 
 if __name__ == "__main__":

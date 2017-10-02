@@ -480,18 +480,18 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def runBatchModel(self):
         nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.info('modeling from {0}'.format(nameDataFile))                                       # debug output
+        self.logger.info('modeling from {0}'.format(nameDataFile))
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
         if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
-            self.logger.warning('ra_Jnow or dec_Jnow not in data file')                                     # debug output
+            self.logger.warning('ra_Jnow or dec_Jnow not in data file')
             self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         if not('ra_sol_Jnow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
-            self.logger.warning('ra_sol_Jnow or dec_sol_Jnow not in data file')                             # debug output
+            self.logger.warning('ra_sol_Jnow or dec_sol_Jnow not in data file')
             self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                              # Gui Output
             return
         if not('pierside' in data and 'sidereal_time' in data):                                                             # you need sidereal time and pierside
-            self.logger.warning('pierside and sidereal time not in data file')                              # debug output
+            self.logger.warning('pierside and sidereal time not in data file')
             self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         self.app.mount.saveBackupModel()
@@ -616,12 +616,12 @@ class Modeling(PyQt5.QtCore.QThread):
                 fitsHeader['MW_EXP'] = modelData['exposure']                                                                # store the exposure time as well
                 fitsHeader['MW_AZ'] = modelData['azimuth']                                                                  # x is the same as y
                 fitsHeader['MW_ALT'] = modelData['altitude']                                                                # and vice versa
-                self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT:{3} MW_MRA:{4} '
-                                  'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
-                                  .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
-                                          fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
-                                          fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
-                                          fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                       # write all header data to debug
+                self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT1:{3} MW_MRA:{4} '
+                                 'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
+                                 .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
+                                         fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
+                                         fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
+                                         fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                       # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
             self.app.imageQueue.put(modelData['imagepath'])
@@ -646,9 +646,9 @@ class Modeling(PyQt5.QtCore.QThread):
     def solveImage(self, modelData, simulation):                                                                            # solving image based on information inside the FITS files, no additional info
         modelData['usefitsheaders'] = True
         suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
-        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))                                             # debug output
+        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))                                                                # debug output
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)         # transform J2000 -> Jnow
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)          # transform J2000 -> Jnow
             modelData['ra_sol_Jnow'] = ra_sol_Jnow                                                                          # ra in Jnow
             modelData['dec_sol_Jnow'] = dec_sol_Jnow                                                                        # dec in  Jnow
             modelData['raError'] = (modelData['ra_sol'] - modelData['ra_J2000']) * 3600                                     # calculate the alignment error ra
@@ -664,8 +664,8 @@ class Modeling(PyQt5.QtCore.QThread):
             fitsHeader['MW_PANGL'] = modelData['angle']
             fitsHeader['MW_PTS'] = modelData['timeTS']
             self.logger.info('MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
-                              format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
-                                     fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                         # write all header data to debug
+                             format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
+                                    fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))                                          # write all header data to debug
             fitsFileHandle.flush()                                                                                          # write all to disk
             fitsFileHandle.close()                                                                                          # close FIT file
             if simulation:

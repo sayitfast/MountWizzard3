@@ -1,4 +1,7 @@
 # Changelog
+2.5.6
+- bugfix analyse window data
+
 2.5.5
 - bugfix in ERFA transformation routines (might have some problems when you have a date change over a mount - 09/30 -> 10/01)
 - bugfix for relay status.
