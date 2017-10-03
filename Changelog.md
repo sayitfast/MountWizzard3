@@ -1,4 +1,15 @@
 # Changelog
+2.5.10
+-
+
+2.5.9
+- rework imaging applications
+- removed some unnecessary states
+- moved basic functions to base class camera
+- reworked logging. switching between imaging applications don't throw any failures
+- removed message 'not autorefraction' from log file
+- moved port 3495 and using free port configuration for remote shutdown
+
 2.5.8
 - rework Imaging selection part
 - rework imaging status
