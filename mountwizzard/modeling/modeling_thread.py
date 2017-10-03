@@ -94,17 +94,15 @@ class Modeling(PyQt5.QtCore.QThread):
         finally:
             pass
         self.app.ui.pd_chooseImagingApp.currentIndexChanged.connect(self.chooseImagingApp)
-        self.chooseImagingApp()
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApp.currentIndex()
 
     def chooseImagingApp(self):
         self.chooserLock.acquire()
-        if self.imagingHandler.appCameraConnected:
-            self.imagingHandler.appConnected = False
+        if self.imagingHandler.cameraConnected:
+            self.imagingHandler.disconnectCamera()
             time.sleep(0.25)
-            self.imagingHandler.disconnectApplication()
         if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
             self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
@@ -118,14 +116,15 @@ class Modeling(PyQt5.QtCore.QThread):
             self.imagingHandler = self.MaximDL
             self.logger.info('actual camera / plate solver is MaximDL')
         self.imagingHandler.checkAppStatus()
-        self.imagingHandler.connectApplication()
+        self.imagingHandler.connectCamera()
         self.chooserLock.release()
 
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
+        self.chooseImagingApp()
         while True:                                                                                                         # thread loop for doing jobs
             if self.app.mount.mountHandler.connected:
-                if self.imagingHandler.appCameraConnected:
+                if self.imagingHandler.cameraConnected:
                     if self.command == 'RunBaseModel':                                                                      # actually doing by receiving signals which enables
                         self.command = ''                                                                                   # only one command at a time, last wins
                         self.app.imageWindow.disableExposures()
@@ -283,15 +282,12 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def getStatusFast(self):                                                                                                # check app is running
         self.imagingHandler.checkAppStatus()
-        if self.imagingHandler.appAvailable:
-            self.signalModelConnected.emit(1)                                                                               # send status to GUI
-        else:
-            self.signalModelConnected.emit(0)                                                                               # send status to GUI
-        if self.imagingHandler.appConnected:
-            self.signalModelConnected.emit(2)                                                                               # send status to GUI
-        if self.imagingHandler.appCameraConnected:
-            self.signalModelConnected.emit(3)                                                                               # send status to GUI
         self.imagingHandler.getCameraStatus()
+        self.signalModelConnected.emit(1)                                                                                   # send status to GUI
+        if self.imagingHandler.appRunning:
+            self.signalModelConnected.emit(2)                                                                               # send status to GUI
+        if self.imagingHandler.cameraConnected:
+            self.signalModelConnected.emit(3)                                                                               # send status to GUI
 
     def getStatusSlow(self):                                                                                                # fast status
         pass
@@ -804,7 +800,7 @@ class Modeling(PyQt5.QtCore.QThread):
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
                                 self.logger.info('raE:{0} decE:{1} star could not be added'
-                                                  .format(modelData['raError'], modelData['decError']))                     # generating debug output
+                                                 .format(modelData['raError'], modelData['decError']))                      # generating debug output
                         self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
                                                    .format(self.timeStamp(), modelData['raError'], modelData['decError']))  # data for User
                         self.logger.info('modelData: {0}'.format(modelData))                             # log output

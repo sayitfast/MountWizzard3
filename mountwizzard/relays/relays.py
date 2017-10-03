@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-
 import logging
 import time
 import requests
@@ -29,7 +28,7 @@ class Relays:
         self.ip = None
         self.initConfig()
         self.relayIP()
-        self.connected = self.checkConnection()
+        self.connected = self.checkAppStatus()
         self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
         self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
         self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))
@@ -157,7 +156,7 @@ class Relays:
             self.logger.warning('empty input value for relay')
             self.app.messageQueue.put('No relay IP configured')
 
-    def checkConnection(self):
+    def checkAppStatus(self):
         connected = False
         if self.ip:
             try:

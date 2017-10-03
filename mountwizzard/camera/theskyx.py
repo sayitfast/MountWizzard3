@@ -15,7 +15,6 @@ import json
 import logging
 import socket
 import timeit
-import errno
 from baseclasses.camera import MWCamera
 
 
@@ -28,7 +27,6 @@ class TheSkyX(MWCamera):
         self.port = 3040
         self.responseSuccess = '|No error. Error = 0.'
         self.appExe = 'TheSkyX.exe'
-        self.tryConnectionCounter = 0
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
@@ -38,68 +36,35 @@ class TheSkyX(MWCamera):
         else:
             self.logger.info('Application TheSkyX not found on computer')
 
-    def checkAppStatus(self):
-        try:
-            tsxSocket = socket.socket()
-            tsxSocket.connect((self.host, self.port))
-            tsxSocket.close()
-            self.tryConnectionCounter = 0
-            self.appRunning = True
-            self.appConnected = True
-        except socket.error as e:
-            if e.errno == errno.ECONNREFUSED:
-                self.tryConnectionCounter += 1
-                self.appRunning = False
-                self.appConnected = False
-                self.appCameraConnected = False
-                if self.tryConnectionCounter < 3:
-                    self.logger.warning('TheSkyX is not running')
-                elif self.tryConnectionCounter == 3:
-                    self.logger.error('No connection to TheSkyX possible - stop logging this connection error')
-        except Exception as e:
-            self.appCameraConnected = False
-            self.appConnected = False
-            self.appRunning = False
-            self.logger.error('error: {0}'.format(e))
-        finally:
-            pass
-
-    def connectApplication(self):
-        if self.appRunning:
-            self.appConnected = True
-
-    def disconnectApplication(self):
-        if self.appRunning:
-            self.appConnected = False
-            self.appCameraConnected = False
-
     def connectCamera(self):
-        try:
-            tsxSocket = socket.socket()
-            tsxSocket.connect((self.host, self.port))
-            command = '/* Java Script */ '
-            command += 'ccdsoftCamera.Connect();'
-            self.appCameraConnected, response = self.sendCommand(command)
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-            self.appCameraConnected = False
-        finally:
-            # noinspection PyUnboundLocalVariable
-            tsxSocket.close()
+        if self.appRunning:
+            try:
+                tsxSocket = socket.socket()
+                tsxSocket.connect((self.host, self.port))
+                command = '/* Java Script */ '
+                command += 'ccdsoftCamera.Connect();'
+                self.cameraConnected, response = self.sendCommand(command)
+            except Exception as e:
+                self.logger.error('error: {0}'.format(e))
+                self.cameraConnected = False
+            finally:
+                # noinspection PyUnboundLocalVariable
+                tsxSocket.close()
 
     def disconnectCamera(self):
-        try:
-            tsxSocket = socket.socket()
-            tsxSocket.connect((self.host, self.port))
-            command = '/* Java Script */ '
-            command += 'ccdsoftCamera.Disconnect();'
-            self.sendCommand(command)
-            self.appCameraConnected = False
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-        finally:
-            # noinspection PyUnboundLocalVariable
-            tsxSocket.close()
+        if self.appRunning:
+            try:
+                tsxSocket = socket.socket()
+                tsxSocket.connect((self.host, self.port))
+                command = '/* Java Script */ '
+                command += 'ccdsoftCamera.Disconnect();'
+                self.sendCommand(command)
+                self.cameraConnected = False
+            except Exception as e:
+                self.logger.error('error: {0}'.format(e))
+            finally:
+                # noinspection PyUnboundLocalVariable
+                tsxSocket.close()
 
     def sendCommand(self, command):
         try:
@@ -198,21 +163,21 @@ class TheSkyX(MWCamera):
             return False, 'Request failed', ''
 
     def getCameraStatus(self):
-        if self.appConnected:
+        if self.appRunning:
             try:
                 command = '/* Java Script */'
                 command += 'var Out = "";'
                 command += 'ccdsoftCamera.Asynchronous=0;'
                 command += 'Out=ccdsoftCamera.ExposureStatus;'
                 success, response = self.sendCommand(command)
-                self.appCameraConnected = True
+                self.cameraConnected = True
                 if response == 'Not Connected':
                     response = 'DISCONNECTED'
-                    self.appCameraConnected = False
+                    self.cameraConnected = False
                 elif response == 'Ready':
-                    response = 'IDLE'
+                    response = 'READY - IDLE'
                 elif 'Exposing' in response:
-                    response = 'CAPTURING'
+                    response = 'INTEGRATING'
                 self.cameraStatus = response
             except Exception as e:
                 self.logger.error('error: {0}'.format(e))

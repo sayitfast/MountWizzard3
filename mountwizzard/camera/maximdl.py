@@ -26,7 +26,6 @@ class MaximDLCamera(MWCamera):
 
     def __init__(self, app):
         super(MaximDLCamera, self).__init__(app)
-        self.chooser = None                                                                                                 # placeholder for ascom chooser object
         self.driverNameCamera = 'MaxIm.CCDCamera'                                                                           # driver object name
         self.driverNameDocument = 'MaxIm.Document'                                                                          # driver object name
         self.maximCamera = None                                                                                             # placeholder for ascom driver object
@@ -49,62 +48,38 @@ class MaximDLCamera(MWCamera):
                 self.appRunning = False
             else:
                 self.appRunning = True
+                self.connectCamera()
         except Exception as e:
             self.logger.error('error{0}'.format(e))
         finally:
             pass
-        if self.maximCamera:
-            try:
-                self.appConnected = self.maximCamera.LinkEnabled
-                if self.maximCamera.CameraStatus == 1 or self.maximCamera.CameraStatus == 0:
-                    self.appCameraConnected = False
-                else:
-                    self.appCameraConnected = True
-            except Exception as e:
-                self.logger.error('error{0}'.format(e))
-                self.appConnected = False
-                self.appCameraConnected = False
-                self.maximCamera = None
-                self.maximDocument = None
-            finally:
-                pass
-        else:
-            self.connectApplication()
 
-    def connectApplication(self):
+    def connectCamera(self):
         if self.appRunning:
             try:
                 if not self.maximCamera:
                     self.maximCamera = Dispatch(self.driverNameCamera)
                 if not self.maximDocument:
                     self.maximDocument = Dispatch(self.driverNameDocument)
-                self.maximCamera.LinkEnabled = True
-                self.appCameraConnected = True
-                self.appConnected = True
+                if not self.maximCamera.LinkEnabled:
+                    self.maximCamera.LinkEnabled = True
+                self.cameraConnected = True
             except Exception as e:
+                self.cameraConnected = False
                 self.logger.error('error: {0}'.format(e))
             finally:
                 pass
 
-    def disconnectApplication(self):
-        try:
-            self.maximCamera.LinkEnabled = False
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-        finally:
-            self.appCameraConnected = False
-            self.appConnected = False
-            self.maximCamera = None
-            self.maximDocument = None
-
-    def connectCamera(self):
-        if self.appConnected:
-            self.maximCamera.LinkEnabled = True
-            self.appCameraConnected = True
-
     def disconnectCamera(self):
-        if self.appConnected:
-            self.appCameraConnected = False
+        if self.appRunning:
+            try:
+                self.maximCamera.LinkEnabled = False
+            except Exception as e:
+                self.logger.error('error: {0}'.format(e))
+            finally:
+                self.cameraConnected = False
+                self.maximCamera = None
+                self.maximDocument = None
 
     def getImage(self, modelData):
         suc = False
@@ -158,26 +133,31 @@ class MaximDLCamera(MWCamera):
             return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def getCameraStatus(self):
-        if self.appConnected:
+        if self.appRunning:
             try:
-                value = 0
-                value = self.maximCamera.CameraStatus
+                if self.maximCamera:
+                    if self.maximCamera.LinkEnabled:
+                        value = self.maximCamera.CameraStatus
+                        self.cameraConnected = True
+                    else:
+                        value = 0
+                    if value == 0:
+                        self.cameraStatus = 'DISCONNECTED'
+                    elif value == 2:
+                        self.cameraStatus = 'READY - IDLE'
+                    elif value == 3:
+                        self.cameraStatus = 'INTEGRATING'
+                    elif value == 4 or value == 5:
+                        self.cameraStatus = 'DOWNLOADING'
+                    else:
+                        self.cameraStatus = 'ERROR'
+                        self.cameraConnected = False
             except Exception as e:
+                self.cameraStatus = 'ERROR'
+                self.cameraConnected = False
                 self.logger.error('error: {0}'.format(e))
             finally:
                 pass
-            if value == 2:
-                self.cameraStatus = 'READY'
-            elif value == 3:
-                self.cameraStatus = 'INTEGRATING'
-            elif value == 4:
-                self.cameraStatus = 'READOUT'
-            elif value == 5:
-                self.cameraStatus = 'DOWNLOADING'
-            else:
-                self.cameraStatus = 'ERROR'
-        else:
-            self.cameraStatus = 'NOT CONNECTED'
 
     def solveImage(self, modelData):
         startTime = time.time()                                                                                             # start timer for plate solve
@@ -231,8 +211,6 @@ class MaximDLCamera(MWCamera):
 
 
 if __name__ == "__main__":
-    from baseclasses.camera import MWCamera
-    import time
     max = 10
     cam = MaximDLCamera(MWCamera)
     cam.appRunning = True

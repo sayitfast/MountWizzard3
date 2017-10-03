@@ -16,7 +16,6 @@ import json
 import logging
 import time
 # packages for handling web interface to SGPro
-import urllib
 from urllib import request
 from baseclasses.camera import MWCamera
 
@@ -26,6 +25,8 @@ class SGPro(MWCamera):
 
     def __init__(self, app):
         super(SGPro, self).__init__(app)
+        self.host = '127.0.0.1'
+        self.port = 59590
         self.ipSGProBase = 'http://localhost:59590'
         self.ipSGPro = 'http://localhost:59590/json/reply/'
         self.captureImagePath = 'SgCaptureImage'
@@ -38,7 +39,6 @@ class SGPro(MWCamera):
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
         self.appExe = 'Sequence Generator.exe'
-        self.tryConnectionCounter = 0
 
     def checkAppInstall(self):
         if platform.system() == 'Windows':
@@ -49,57 +49,13 @@ class SGPro(MWCamera):
             else:
                 self.logger.info('Application SGPro not found on computer')
 
-    def checkAppStatus(self):
-        reply = ''
-        try:
-            reply = request.urlopen(self.ipSGProBase, None, 2).getcode()
-            self.appRunning = True
-            self.appConnected = True
-            self.tryConnectionCounter = 0
-        except urllib.request.URLError:
-            self.tryConnectionCounter += 1
-            self.appRunning = False
-            self.appConnected = False
-            self.appCameraConnected = False
-            if self.tryConnectionCounter < 3:
-                self.logger.warning('SGPro is not running')
-            elif self.tryConnectionCounter == 3:
-                self.logger.error('No connection to SGPro possible - stop logging this connection error')
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-            self.appRunning = False
-            self.appConnected = False
-            self.appCameraConnected = False
-        finally:
-            if self.appConnected:
-                # noinspection PyUnboundLocalVariable
-                if str(reply) == '200':
-                    success, response = self.SgGetDeviceStatus('Camera')
-                    if success and response != 'DISCONNECTED':
-                        suc, mes = self.SgGetDeviceStatus('PlateSolver')
-                        if suc:
-                            self.appCameraConnected = True
-                        else:
-                            self.appCameraConnected = False
-                    else:
-                        self.appCameraConnected = False
-            else:
-                self.appCameraConnected = False
-
     def connectCamera(self):
-        pass
+        if self.appRunning:
+            pass
 
     def disconnectCamera(self):
-        pass
-
-    def connectApplication(self):
         if self.appRunning:
-            self.appConnected = True
-
-    def disconnectApplication(self):
-        if self.appRunning:
-            self.appConnected = False
-            self.appCameraConnected = False
+            self.cameraConnected = False
 
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['binning'],
@@ -164,12 +120,22 @@ class SGPro(MWCamera):
         return self.SgGetCameraProps()
 
     def getCameraStatus(self):
-        if self.appConnected:
+        if self.appRunning:
             suc, mes = self.SgGetDeviceStatus('Camera')
             if suc:
-                self.cameraStatus = mes
+                self.cameraConnected = True
+                if mes == 'IDLE':
+                    self.cameraStatus = 'READY - IDLE'
+                elif mes == 'CAPTURING':
+                    self.cameraStatus = 'INTEGRATING'
+                elif mes == 'BUSY':
+                    self.cameraStatus = 'DOWNLOADING'
+                elif mes == 'DISCONNECTED':
+                    self.cameraStatus = 'DISCONNECTED'
+                    self.cameraConnected = False
             else:
-                self.cameraStatus = 'Error'
+                self.cameraStatus = 'ERROR'
+                self.cameraConnected = False
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,
@@ -280,8 +246,6 @@ class SGPro(MWCamera):
 
 
 if __name__ == "__main__":
-    from baseclasses.camera import MWCamera
-    import time
     max = 20
     cam = SGPro(MWCamera)
     print(cam.getCameraProps())

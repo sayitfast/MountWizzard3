@@ -107,7 +107,6 @@ class Mount(PyQt5.QtCore.QThread):
         finally:
             pass
         self.app.ui.pd_chooseMountConnection.currentIndexChanged.connect(self.chooseMountConn)
-        self.chooseMountConn()
 
     def storeConfig(self):
         if platform.system() == 'Windows':
@@ -154,6 +153,7 @@ class Mount(PyQt5.QtCore.QThread):
     def run(self):                                                                                                          # runnable of the thread
         if platform.system() == 'Windows':
             pythoncom.CoInitialize()                                                                                        # needed for doing COM objects in threads
+        self.chooseMountConn()
         self.counter = 0                                                                                                    # init count for managing different cycle times
         while True:                                                                                                         # main loop in thread
             self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status

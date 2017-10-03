@@ -29,11 +29,10 @@ class NoneCamera(MWCamera):
 
     def checkAppStatus(self):
         self.appRunning = False
-        self.appConnected = False
-        self.appCameraConnected = False
+        self.cameraConnected = False
 
     def getImage(self, modelData):
-        return False, 'Camera not Connected', modelData
+        return False, 'DISCONNECTED', modelData
 
     def getCameraProps(self):
         suc = True
@@ -45,7 +44,7 @@ class NoneCamera(MWCamera):
         return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def getCameraStatus(self):
-        self.cameraStatus = 'NOT CONNECTED'
+        self.cameraStatus = 'DISCONNECTED'
 
     def solveImage(self, modelData):
-        return False, 'Error', modelData
+        return False, 'ERROR', modelData

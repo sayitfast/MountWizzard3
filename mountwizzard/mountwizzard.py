@@ -912,7 +912,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.8 beta'
+    BUILD_NO = '2.5.9 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()
