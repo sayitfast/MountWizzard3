@@ -15,6 +15,7 @@ import json
 import logging
 import socket
 import timeit
+import errno
 from baseclasses.camera import MWCamera
 
 
@@ -27,6 +28,7 @@ class TheSkyX(MWCamera):
         self.port = 3040
         self.responseSuccess = '|No error. Error = 0.'
         self.appExe = 'TheSkyX.exe'
+        self.tryConnectionCounter = 0
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
@@ -40,20 +42,24 @@ class TheSkyX(MWCamera):
         try:
             tsxSocket = socket.socket()
             tsxSocket.connect((self.host, self.port))
-            command = '/* Java Script */'
-            command += 'var Out = "";'
-            command += 'ccdsoftCamera.Asynchronous=0;'
-            command += 'Out=ccdsoftCamera.ExposureStatus;'
-            success, response = self.sendCommand(command)
-            if response == 'Not Connected':
-                self.appCameraConnected = False
-            else:
-                self.appCameraConnected = True
+            tsxSocket.close()
+            self.tryConnectionCounter = 0
             self.appRunning = True
+            self.appConnected = True
+        except socket.error as e:
+            if e.errno == errno.ECONNREFUSED:
+                self.tryConnectionCounter += 1
+                self.appRunning = False
+                self.appConnected = False
+                self.appCameraConnected = False
+                if self.tryConnectionCounter < 3:
+                    self.logger.warning('TheSkyX is not running')
+                elif self.tryConnectionCounter == 3:
+                    self.logger.error('No connection to TheSkyX possible - stop logging this connection error')
         except Exception as e:
-            self.appRunning = False
-            self.appConnected = False
             self.appCameraConnected = False
+            self.appConnected = False
+            self.appRunning = False
             self.logger.error('error: {0}'.format(e))
         finally:
             pass
@@ -192,23 +198,26 @@ class TheSkyX(MWCamera):
             return False, 'Request failed', ''
 
     def getCameraStatus(self):
-        try:
-            command = '/* Java Script */'
-            command += 'var Out = "";'
-            command += 'ccdsoftCamera.Asynchronous=0;'
-            command += 'Out=ccdsoftCamera.ExposureStatus;'
-            success, response = self.sendCommand(command)
-            if response == 'Not Connected':
-                response = 'DISCONNECTED'
-            elif response == 'Ready':
-                response = 'IDLE'
-            elif 'Exposing' in response:
-                response = 'CAPTURING'
-            self.cameraStatus = response
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-        finally:
-            pass
+        if self.appConnected:
+            try:
+                command = '/* Java Script */'
+                command += 'var Out = "";'
+                command += 'ccdsoftCamera.Asynchronous=0;'
+                command += 'Out=ccdsoftCamera.ExposureStatus;'
+                success, response = self.sendCommand(command)
+                self.appCameraConnected = True
+                if response == 'Not Connected':
+                    response = 'DISCONNECTED'
+                    self.appCameraConnected = False
+                elif response == 'Ready':
+                    response = 'IDLE'
+                elif 'Exposing' in response:
+                    response = 'CAPTURING'
+                self.cameraStatus = response
+            except Exception as e:
+                self.logger.error('error: {0}'.format(e))
+            finally:
+                pass
 
     def getCameraProps(self):
         # TODO: Get the chance to implement subframe on / off if a camera doesn't support this

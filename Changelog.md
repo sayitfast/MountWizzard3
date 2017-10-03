@@ -1,4 +1,12 @@
 # Changelog
+2.5.8
+- rework Imaging selection part
+- rework imaging status
+- implemented fast download for maxim
+- improved and simplified GUI
+- bugfix status for TheSkyX
+- improved logging
+
 2.5.7
 - bugfix for maxim
 - update transformation classes
