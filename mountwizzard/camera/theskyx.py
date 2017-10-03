@@ -37,13 +37,10 @@ class TheSkyX(MWCamera):
     def checkAppInstall(self):
         if platform.system() == 'Windows':
             self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
-            self.appName = 'TheSkyX - Test Entry'
             if self.appAvailable:
                 self.app.messageQueue.put('Found: {0}'.format(self.appName))
                 self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
             else:
-                self.app.ui.rb_cameraTSX.setVisible(False)
-                self.app.ui.rb_cameraTSX.setCheckable(False)
                 self.logger.info('Application TheSkyX not found on computer')
 
     def checkAppStatus(self):
@@ -67,33 +64,6 @@ class TheSkyX(MWCamera):
             self.logger.error('error: {0}'.format(e))
         finally:
             pass
-
-    def startApplication(self):
-        self.appRunning = True
-        if platform.system() == 'Windows':
-            try:
-                a = findwindows.find_windows(title_re='^(.*?)(\\bTheSkyX\\b)(.*)$')
-                if len(a) == 0:
-                    self.appRunning = False
-                else:
-                    self.appRunning = True
-
-            except Exception as e:
-                self.logger.error('error{0}'.format(e))
-            finally:
-                pass
-            if not self.appRunning:
-                try:
-                    app = Application(backend='win32')
-                    app.start(self.appInstallPath + '\\' + self.appExe)
-                    self.appRunning = True
-                    self.logger.info('started TheSkyX')
-                except application.AppStartError:
-                    self.logger.error('error starting application')
-                    self.app.messageQueue.put('Failed to start TheSkyX!')
-                    self.appRunning = False
-                finally:
-                    pass
 
     def connectApplication(self):
         if self.appRunning:

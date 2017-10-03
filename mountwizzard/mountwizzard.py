@@ -102,8 +102,8 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)                                                                                  # add widget to view
-        self.modeling.signalModelCommand.emit('CameraPlateChooser')
-        self.mount.mountDriverChooser()
+        self.modeling.signalModelCommand.emit('ChooseImagingApplication')
+        self.commandQueue.put('ChooseMountConnection')
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         if platform.system() == 'Windows':
@@ -215,14 +215,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
-        self.ui.rb_cameraSGPro.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraTSX.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraASCOM.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraMaximDL.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.rb_cameraNone.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CameraPlateChooser'))
-        self.ui.btn_appCameraConnect.clicked.connect(lambda: self.modeling.signalModelCommand.emit('ConnectCamera'))
-        self.ui.btn_appCameraDisconnect.clicked.connect(lambda: self.modeling.signalModelCommand.emit('DisconnectCamera'))
-        self.ui.btn_appStart.clicked.connect(lambda: self.modeling.signalModelCommand.emit('StartApplication'))
+
+
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
@@ -233,7 +227,10 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
-        self.ui.pd_chooseMountConnection.currentIndexChanged.connect(self.mount.mountDriverChooser)
+
+        self.ui.pd_chooseImagingApplication.currentIndexChanged.connect(self.modeling.chooseImagingApplication)
+
+        self.ui.pd_chooseMountConnection.currentIndexChanged.connect(self.mount.chooseMountConnection)
 
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
@@ -386,22 +383,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
             if 'ModelPointsFileName' in self.config:
                 self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
-            if 'CameraTSX' in self.config:
-                self.ui.rb_cameraTSX.setChecked(self.config['CameraTSX'])
-            if 'CameraSGPro' in self.config:
-                self.ui.rb_cameraSGPro.setChecked(self.config['CameraSGPro'])
-            if 'CameraASCOM' in self.config:
-                self.ui.rb_cameraASCOM.setChecked(self.config['CameraASCOM'])
-            if 'CameraMaximDL' in self.config:
-                self.ui.rb_cameraMaximDL.setChecked(self.config['CameraMaximDL'])
-            if 'CameraNone' in self.config:
-                self.ui.rb_cameraNone.setChecked(self.config['CameraNone'])
             if 'CameraBin' in self.config:
                 self.ui.cameraBin.setValue(self.config['CameraBin'])
-            if 'CheckAutoStartApp' in self.config:
-                self.ui.checkAutoStartApp.setChecked(self.config['CheckAutoStartApp'])
-            if 'CheckAutoConnectCamera' in self.config:
-                self.ui.checkAutoConnectCamera.setChecked(self.config['CheckAutoConnectCamera'])
             if 'CameraExposure' in self.config:
                 self.ui.cameraExposure.setValue(self.config['CameraExposure'])
             if 'ISOSetting' in self.config:
@@ -512,13 +495,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ParkPosAlt6'] = self.ui.le_altParkPos6.text()
         self.config['ParkPosAz6'] = self.ui.le_azParkPos6.text()
         self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
-        self.config['CameraTSX'] = self.ui.rb_cameraTSX.isChecked()
-        self.config['CameraSGPro'] = self.ui.rb_cameraSGPro.isChecked()
-        self.config['CameraASCOM'] = self.ui.rb_cameraASCOM.isChecked()
-        self.config['CameraMaximDL'] = self.ui.rb_cameraMaximDL.isChecked()
-        self.config['CameraNone'] = self.ui.rb_cameraNone.isChecked()
-        self.config['CheckAutoStartApp'] = self.ui.checkAutoStartApp.isChecked()
-        self.config['CheckAutoConnectCamera'] = self.ui.checkAutoConnectCamera.isChecked()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
@@ -945,7 +921,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.7 beta'
+    BUILD_NO = '2.5.8 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()

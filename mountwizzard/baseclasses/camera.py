@@ -36,9 +36,6 @@ class MWCamera:
     def checkAppStatus(self):
         pass
 
-    def startApplication(self):
-        pass
-
     def connectCamera(self):
         pass
 

@@ -63,7 +63,7 @@ class Modeling(PyQt5.QtCore.QThread):
         self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
         self.transform = self.app.mount.transform                                                                           # coordinate transformation
         self.modelpoints = modelpoints.ModelPoints(self.transform)
-        self.cpObject = self.NoneCam
+        self.imagingHandler = self.NoneCam
         self.cancel = False                                                                                                 # cancelling the modeling
         self.modelrun = False
         self.modelAnalyseData = []                                                                                          # analyse data for modeling
@@ -77,50 +77,55 @@ class Modeling(PyQt5.QtCore.QThread):
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
+        if self.NoneCam.appAvailable:
+            self.app.ui.pd_chooseImagingApplication.addItem('No Application')
+        if platform.system() == 'Windows':
+            if self.SGPro.appAvailable:
+                self.app.ui.pd_chooseImagingApplication.addItem('SGPro - ' + self.SGPro.appName)
+            if self.TheSkyX.appAvailable:
+                self.app.ui.pd_chooseImagingApplication.addItem('TheSkyX - ' + self.TheSkyX.appName)
+            if self.MaximDL.appAvailable:
+                self.app.ui.pd_chooseImagingApplication.addItem('MaximDL - ' + self.MaximDL.appName)
         try:
-            pass
+            if 'ImagingApplication' in self.app.config:
+                self.app.ui.pd_chooseImagingApplication.setCurrentIndex(int(self.app.config['ImagingApplication']))
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
     def storeConfig(self):
-        pass
+        self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApplication.currentIndex()
 
-    def cameraPlateChooser(self):
+    def chooseImagingApplication(self):
         self.chooserLock.acquire()
-        if self.cpObject.appCameraConnected:
-            self.cpObject.appConnected = False
-            time.sleep(0.5)
+        if self.imagingHandler.appCameraConnected:
+            self.imagingHandler.appConnected = False
+            time.sleep(0.25)
             if self.app.ui.checkAutoConnectCamera.isChecked():
-                self.cpObject.disconnectCamera()
-            self.cpObject.disconnectApplication()
-        if platform.system() == 'Windows':
-            if self.app.ui.rb_cameraSGPro.isChecked():
-                self.cpObject = self.SGPro
-                self.logger.info('actual camera / plate solver is SGPro')
-            elif self.app.ui.rb_cameraTSX.isChecked():
-                self.cpObject = self.TheSkyX
-                self.logger.info('actual camera / plate solver is TheSkyX')
-            elif self.app.ui.rb_cameraMaximDL.isChecked():
-                self.cpObject = self.MaximDL
-                self.logger.info('actual camera / plate solver is MaximDL')
-        elif self.app.ui.rb_cameraNone.isChecked():
-            self.cpObject = self.NoneCam
+                self.imagingHandler.disconnectCamera()
+            self.imagingHandler.disconnectApplication()
+        if self.app.ui.pd_chooseImagingApplication.currentText().startswith('No Application'):
+            self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
-        self.cpObject.checkAppStatus()
-        if self.app.ui.checkAutoStartApp.isChecked():
-            self.cpObject.startApplication()
-        self.cpObject.connectApplication()
-        if self.app.ui.checkAutoConnectCamera.isChecked():
-            self.cpObject.connectCamera()
+        elif self.app.ui.pd_chooseImagingApplication.currentText().startswith('SGPro'):
+            self.imagingHandler = self.SGPro
+            self.logger.info('actual camera / plate solver is SGPro')
+        elif self.app.ui.pd_chooseImagingApplication.currentText().startswith('TheSkyX'):
+            self.imagingHandler = self.TheSkyX
+            self.logger.info('actual camera / plate solver is TheSkyX')
+        elif self.app.ui.pd_chooseImagingApplication.currentText().startswith('MaximDL'):
+            self.imagingHandler = self.MaximDL
+            self.logger.info('actual camera / plate solver is MaximDL')
+        self.imagingHandler.checkAppStatus()
+        self.imagingHandler.connectApplication()
         self.chooserLock.release()
 
     def run(self):                                                                                                          # runnable for doing the work
         self.counter = 0                                                                                                    # cyclic counter
         while True:                                                                                                         # thread loop for doing jobs
             if self.app.mount.mountHandler.connected:
-                if self.cpObject.appCameraConnected:
+                if self.imagingHandler.appCameraConnected:
                     if self.command == 'RunBaseModel':                                                                      # actually doing by receiving signals which enables
                         self.command = ''                                                                                   # only one command at a time, last wins
                         self.app.imageWindow.disableExposures()
@@ -217,19 +222,9 @@ class Modeling(PyQt5.QtCore.QThread):
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
             else:
                 pass
-            if self.command == 'CameraPlateChooser':
+            if self.command == 'ChooseImagingApplication':
                 self.command = ''
-                self.cameraPlateChooser()
-            elif self.command == 'ConnectCamera':
-                self.command = ''
-                self.cpObject.connectCamera()
-            elif self.command == 'DisconnectCamera':
-                self.command = ''
-                self.cpObject.disconnectCamera()
-            elif self.command == 'StartApplication':
-                self.command = ''
-                self.cpObject.startApplication()
-                self.cpObject.connectApplication()
+                self.chooseImagingApplication()
             elif self.command == 'LoadBasePoints':
                 self.command = ''
                 self.modelpoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
@@ -290,16 +285,16 @@ class Modeling(PyQt5.QtCore.QThread):
             self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusFast(self):                                                                                                # check app is running
-        self.cpObject.checkAppStatus()
-        if self.cpObject.appAvailable:
+        self.imagingHandler.checkAppStatus()
+        if self.imagingHandler.appAvailable:
             self.signalModelConnected.emit(1)                                                                               # send status to GUI
         else:
             self.signalModelConnected.emit(0)                                                                               # send status to GUI
-        if self.cpObject.appConnected:
+        if self.imagingHandler.appConnected:
             self.signalModelConnected.emit(2)                                                                               # send status to GUI
-        if self.cpObject.appCameraConnected:
+        if self.imagingHandler.appCameraConnected:
             self.signalModelConnected.emit(3)                                                                               # send status to GUI
-        self.cpObject.getCameraStatus()
+        self.imagingHandler.getCameraStatus()
 
     def getStatusSlow(self):                                                                                                # fast status
         pass
@@ -319,7 +314,7 @@ class Modeling(PyQt5.QtCore.QThread):
         modelData = {}
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
         modelData['base_dir_images'] = self.IMAGEDIR + '/platesolvesync'                                                    # define subdirectory for storing the images
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                     # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingHandler.getCameraProps()                                     # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))            # debug data
@@ -403,7 +398,7 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def runRefinementModel(self):
         num = self.app.mount.numberModelStars()
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingHandler.getCameraProps()
         if sizeX == 800 and sizeY == 600 and suc:
             simulation = True
             self.modelData = []
@@ -588,7 +583,7 @@ class Modeling(PyQt5.QtCore.QThread):
         else:
             pierside_fits_header = 'W'
         self.logger.info('modelData: {0}'.format(modelData))
-        suc, mes, modelData = self.cpObject.getImage(modelData)                                                             # imaging app specific abstraction
+        suc, mes, modelData = self.imagingHandler.getImage(modelData)                                                             # imaging app specific abstraction
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -645,7 +640,7 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def solveImage(self, modelData, simulation):                                                                            # solving image based on information inside the FITS files, no additional info
         modelData['usefitsheaders'] = True
-        suc, mes, modelData = self.cpObject.solveImage(modelData)                                                           # abstraction of solver for image
+        suc, mes, modelData = self.imagingHandler.solveImage(modelData)                                                           # abstraction of solver for image
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))                                                                # debug output
         if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)          # transform J2000 -> Jnow
@@ -717,7 +712,7 @@ class Modeling(PyQt5.QtCore.QThread):
         numCheckPoints = 0                                                                                                  # number og checkpoints done
         modelData['base_dir_images'] = self.IMAGEDIR + '/' + directory                                                      # define subdirectory for storing the images
         scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.cpObject.getCameraProps()                                     # look for capabilities of cam
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingHandler.getCameraProps()                                     # look for capabilities of cam
         modelData['gainValue'] = gainValue
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))

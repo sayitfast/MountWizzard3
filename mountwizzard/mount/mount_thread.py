@@ -93,7 +93,8 @@ class Mount(PyQt5.QtCore.QThread):
 
     def initConfig(self):
         self.app.ui.pd_chooseMountConnection.addItem('IP Direct Connection')
-        self.app.ui.pd_chooseMountConnection.addItem('ASCOM Driver Connection')
+        if platform.system() == 'Windows':
+            self.app.ui.pd_chooseMountConnection.addItem('ASCOM Driver Connection')
         try:
             if platform.system() == 'Windows':
                 if 'ASCOMTelescopeDriverName' in self.app.config:
@@ -133,18 +134,17 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.ui.btn_setupMountDriver.setVisible(True)
             self.app.ui.btn_setupMountDriver.setEnabled(True)
 
-    def mountDriverChooser(self):
+    def chooseMountConnection(self):
         self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time
         if self.mountHandler.connected:
             self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
-            time.sleep(1)                                                                                                   # wait some time to get commands finished
+            time.sleep(0.25)                                                                                                   # wait some time to get commands finished
             self.mountHandler.disconnect()                                                                                  # do formal disconnection
-        if self.app.ui.pd_chooseMountConnection.currentIndex() == 0:
+        if self.app.ui.pd_chooseMountConnection.currentText.startswith('IP Direct Connection'):
             self.mountHandler = self.MountIpDirect
             self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
-        if platform.system() == 'Windows':
-            if self.app.ui.pd_chooseMountConnection.currentIndex() == 1:
-                self.mountHandler = self.MountAscom
+        if self.app.ui.pd_chooseMountConnection.currentText.startswith('ASCOM Driver Connection'):
+            self.mountHandler = self.MountAscom
             self.logger.info('actual driver is ASCOM')
         self.showConfigEntries(self.app.ui.pd_chooseMountConnection.currentIndex())
         self.chooserLock.release()                                                                                          # free the lock to move again
@@ -240,6 +240,8 @@ class Mount(PyQt5.QtCore.QThread):
                         self.flipMount()
                     elif command == 'SetupAscomDriver':
                         self.MountAscom.setupDriver()
+                    elif command == 'ChooseMountConnection':
+                        self.chooseMountConnection()
                     elif command == 'Shutdown':
                         self.mountShutdown()
                     else:

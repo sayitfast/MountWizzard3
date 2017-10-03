@@ -43,34 +43,7 @@ class MaximDLCamera(MWCamera):
                 self.app.messageQueue.put('Found: {0}'.format(self.appName))
                 self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
             else:
-                self.app.ui.rb_cameraMaximDL.setVisible(False)
-                self.app.ui.rb_cameraMaximDL.setCheckable(False)
                 self.logger.info('Application MaxIm DL not found on computer')
-
-    def startApplication(self):
-        if platform.system() == 'Windows':
-            try:
-                a = findwindows.find_window(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
-                if len(a) == 0:
-                    self.appRunning = False
-                else:
-                    self.appRunning = True
-            except Exception as e:
-                self.logger.error('error{0}'.format(e))
-            finally:
-                pass
-            if not self.appRunning:
-                try:
-                    app = Application(backend='win32')
-                    app.start(self.appInstallPath + '\\' + self.appExe)
-                    self.appRunning = True
-                    self.logger.info('started MaxIm DL')
-                except application.AppStartError:
-                    self.logger.error('error starting application')
-                    self.app.messageQueue.put('Failed to start MaxIm DL!')
-                    self.appRunning = False
-                finally:
-                    pass
 
     def checkAppStatus(self):
         if platform.system() == 'Windows':
@@ -145,6 +118,10 @@ class MaximDLCamera(MWCamera):
                 self.maximCamera.NumY = int(modelData['sizeY'])
                 self.maximCamera.StartX = int(modelData['offX'])
                 self.maximCamera.StartY = int(modelData['offY'])
+                if modelData['speed'] == 'HiSpeed':
+                    self.maximCamera.FastReadout = True
+                else:
+                    self.maximCamera.FastReadout = False
                 suc = self.maximCamera.Expose(modelData['exposure'], 1)
                 if not suc:
                     self.logger.error('could not start exposure')
