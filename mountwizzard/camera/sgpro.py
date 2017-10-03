@@ -18,11 +18,6 @@ import time
 # packages for handling web interface to SGPro
 import urllib
 from urllib import request
-
-if platform.system() == 'Windows':
-    # windows automation
-    from pywinauto import Application, findwindows, application
-
 from baseclasses.camera import MWCamera
 
 
@@ -63,12 +58,13 @@ class SGPro(MWCamera):
             self.tryConnectionCounter = 0
         except urllib.request.URLError:
             self.tryConnectionCounter += 1
-            if self.tryConnectionCounter < 5:
-                self.logger.info('SGPro is not running')
-            elif self.tryConnectionCounter == 10:
-                self.logger.info('No connection possible - stop logging this connection error')
-            else:
-                pass
+            self.appRunning = False
+            self.appConnected = False
+            self.appCameraConnected = False
+            if self.tryConnectionCounter < 3:
+                self.logger.warning('SGPro is not running')
+            elif self.tryConnectionCounter == 3:
+                self.logger.error('No connection to SGPro possible - stop logging this connection error')
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             self.appRunning = False
@@ -103,6 +99,7 @@ class SGPro(MWCamera):
     def disconnectApplication(self):
         if self.appRunning:
             self.appConnected = False
+            self.appCameraConnected = False
 
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['binning'],

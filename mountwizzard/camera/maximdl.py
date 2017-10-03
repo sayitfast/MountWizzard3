@@ -11,14 +11,12 @@
 # Licence APL2.0
 #
 ############################################################
-import platform
 import logging
 import time
-if platform.system() == 'Windows':
-    # windows automation
-    from pywinauto import Application, findwindows, application
-    # import .NET / COM Handling
-    from win32com.client.dynamic import Dispatch
+# windows automation
+from pywinauto import findwindows
+# import .NET / COM Handling
+from win32com.client.dynamic import Dispatch
 # base for cameras
 from baseclasses.camera import MWCamera
 
@@ -37,29 +35,31 @@ class MaximDLCamera(MWCamera):
         self.appExe = 'MaxIm_DL.exe'
 
     def checkAppInstall(self):
-        if platform.system() == 'Windows':
-            self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
-            if self.appAvailable:
-                self.app.messageQueue.put('Found: {0}'.format(self.appName))
-                self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
-            else:
-                self.logger.info('Application MaxIm DL not found on computer')
+        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
+        if self.appAvailable:
+            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+        else:
+            self.logger.info('Application MaxIm DL not found on computer')
 
     def checkAppStatus(self):
-        if platform.system() == 'Windows':
-            try:
-                a = findwindows.find_windows(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
-                if len(a) == 0:
-                    self.appRunning = False
-                else:
-                    self.appRunning = True
-            except Exception as e:
-                self.logger.error('error{0}'.format(e))
-            finally:
-                pass
+        try:
+            a = findwindows.find_windows(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
+            if len(a) == 0:
+                self.appRunning = False
+            else:
+                self.appRunning = True
+        except Exception as e:
+            self.logger.error('error{0}'.format(e))
+        finally:
+            pass
         if self.maximCamera:
             try:
                 self.appConnected = self.maximCamera.LinkEnabled
+                if self.maximCamera.CameraStatus == 1 or self.maximCamera.CameraStatus == 0:
+                    self.appCameraConnected = False
+                else:
+                    self.appCameraConnected = True
             except Exception as e:
                 self.logger.error('error{0}'.format(e))
                 self.appConnected = False
@@ -69,8 +69,7 @@ class MaximDLCamera(MWCamera):
             finally:
                 pass
         else:
-            self.appConnected = False
-            self.appCameraConnected = False
+            self.connectApplication()
 
     def connectApplication(self):
         if self.appRunning:
@@ -79,8 +78,8 @@ class MaximDLCamera(MWCamera):
                     self.maximCamera = Dispatch(self.driverNameCamera)
                 if not self.maximDocument:
                     self.maximDocument = Dispatch(self.driverNameDocument)
-                    pass
                 self.maximCamera.LinkEnabled = True
+                self.appCameraConnected = True
                 self.appConnected = True
             except Exception as e:
                 self.logger.error('error: {0}'.format(e))

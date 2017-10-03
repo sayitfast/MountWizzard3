@@ -102,8 +102,6 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)                                                                                  # add widget to view
-        self.modeling.signalModelCommand.emit('ChooseImagingApplication')
-        self.commandQueue.put('ChooseMountConnection')
         self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
         self.mount.start()                                                                                                  # starting polling thread
         if platform.system() == 'Windows':
@@ -215,8 +213,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
-
-
         self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
         self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
         self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
@@ -227,11 +223,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
-
-        self.ui.pd_chooseImagingApplication.currentIndexChanged.connect(self.modeling.chooseImagingApplication)
-
-        self.ui.pd_chooseMountConnection.currentIndexChanged.connect(self.mount.chooseMountConnection)
-
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
 

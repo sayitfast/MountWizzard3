@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>6</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -8237,7 +8237,7 @@ color: rgb(255,255,255);</string>
         <string>Horizon Mask</string>
        </property>
       </widget>
-      <widget class="QComboBox" name="pd_chooseImagingApplication">
+      <widget class="QComboBox" name="pd_chooseImagingApp">
        <property name="geometry">
         <rect>
          <x>20</x>

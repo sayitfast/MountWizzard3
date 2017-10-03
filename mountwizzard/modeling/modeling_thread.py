@@ -72,49 +72,49 @@ class Modeling(PyQt5.QtCore.QThread):
         self.counter = 0                                                                                                    # counter for main loop
         self.command = ''                                                                                                   # command buffer
         self.results = []                                                                                                   # error results
+        self.chooserLock = threading.Lock()
         self.signalModelCommand.connect(self.sendCommand)                                                                   # signal for receiving commands to modeling from GUI
         self.initConfig()
-        self.chooserLock = threading.Lock()
 
     def initConfig(self):
         if self.NoneCam.appAvailable:
-            self.app.ui.pd_chooseImagingApplication.addItem('No Application')
+            self.app.ui.pd_chooseImagingApp.addItem('No Application')
         if platform.system() == 'Windows':
             if self.SGPro.appAvailable:
-                self.app.ui.pd_chooseImagingApplication.addItem('SGPro - ' + self.SGPro.appName)
+                self.app.ui.pd_chooseImagingApp.addItem('SGPro - ' + self.SGPro.appName)
             if self.TheSkyX.appAvailable:
-                self.app.ui.pd_chooseImagingApplication.addItem('TheSkyX - ' + self.TheSkyX.appName)
+                self.app.ui.pd_chooseImagingApp.addItem('TheSkyX - ' + self.TheSkyX.appName)
             if self.MaximDL.appAvailable:
-                self.app.ui.pd_chooseImagingApplication.addItem('MaximDL - ' + self.MaximDL.appName)
+                self.app.ui.pd_chooseImagingApp.addItem('MaximDL - ' + self.MaximDL.appName)
         try:
             if 'ImagingApplication' in self.app.config:
-                self.app.ui.pd_chooseImagingApplication.setCurrentIndex(int(self.app.config['ImagingApplication']))
+                self.app.ui.pd_chooseImagingApp.setCurrentIndex(int(self.app.config['ImagingApplication']))
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+        self.app.ui.pd_chooseImagingApp.currentIndexChanged.connect(self.chooseImagingApp)
+        self.chooseImagingApp()
 
     def storeConfig(self):
-        self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApplication.currentIndex()
+        self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApp.currentIndex()
 
-    def chooseImagingApplication(self):
+    def chooseImagingApp(self):
         self.chooserLock.acquire()
         if self.imagingHandler.appCameraConnected:
             self.imagingHandler.appConnected = False
             time.sleep(0.25)
-            if self.app.ui.checkAutoConnectCamera.isChecked():
-                self.imagingHandler.disconnectCamera()
             self.imagingHandler.disconnectApplication()
-        if self.app.ui.pd_chooseImagingApplication.currentText().startswith('No Application'):
+        if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
             self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
-        elif self.app.ui.pd_chooseImagingApplication.currentText().startswith('SGPro'):
+        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
             self.imagingHandler = self.SGPro
             self.logger.info('actual camera / plate solver is SGPro')
-        elif self.app.ui.pd_chooseImagingApplication.currentText().startswith('TheSkyX'):
+        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('TheSkyX'):
             self.imagingHandler = self.TheSkyX
             self.logger.info('actual camera / plate solver is TheSkyX')
-        elif self.app.ui.pd_chooseImagingApplication.currentText().startswith('MaximDL'):
+        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('MaximDL'):
             self.imagingHandler = self.MaximDL
             self.logger.info('actual camera / plate solver is MaximDL')
         self.imagingHandler.checkAppStatus()
@@ -220,12 +220,9 @@ class Modeling(PyQt5.QtCore.QThread):
                     self.modelpoints.generateNormalPoints()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
-            else:
-                pass
-            if self.command == 'ChooseImagingApplication':
-                self.command = ''
-                self.chooseImagingApplication()
-            elif self.command == 'LoadBasePoints':
+                else:
+                    pass
+            if self.command == 'LoadBasePoints':
                 self.command = ''
                 self.modelpoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
                 self.signalModelRedraw.emit(True)

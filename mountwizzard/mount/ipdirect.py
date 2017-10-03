@@ -50,7 +50,6 @@ class MountIpDirect:
                 self.socket.settimeout(60)
             self.socket.connect((self.mountIP(), self.PORT))
             self.connected = True                                                                                           # setting connection status from driver
-            self.logger.info('Connection successful, cleared tryConnectionCounter')
             self.tryConnectionCounter = 0
         except ConnectionRefusedError:
             pass                                                                                                            # mount probably booting
@@ -58,10 +57,10 @@ class MountIpDirect:
         #     pass
         except Exception as e:                                                                                              # error handling
             self.tryConnectionCounter += 1
-            if self.tryConnectionCounter < 10:
-                self.logger.error('Socket connect error: {0}'.format(e))
-            elif self.tryConnectionCounter == 10:
-                self.logger.error('No connection possible - stop logging this connection error')
+            if self.tryConnectionCounter < 3:
+                self.logger.warning('Direct mount connection is broken')
+            elif self.tryConnectionCounter == 3:
+                self.logger.error('No connection to Mount possible - stop logging this connection error')
             else:
                 pass
             self.socket = None

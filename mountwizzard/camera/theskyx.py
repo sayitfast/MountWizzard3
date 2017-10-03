@@ -11,16 +11,10 @@
 # Licence APL2.0
 #
 ############################################################
-import platform
 import json
 import logging
 import socket
 import timeit
-
-if platform.system() == 'Windows':
-    # windows automation
-    from pywinauto import Application, findwindows, application
-
 from baseclasses.camera import MWCamera
 
 
@@ -35,13 +29,12 @@ class TheSkyX(MWCamera):
         self.appExe = 'TheSkyX.exe'
 
     def checkAppInstall(self):
-        if platform.system() == 'Windows':
-            self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
-            if self.appAvailable:
-                self.app.messageQueue.put('Found: {0}'.format(self.appName))
-                self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
-            else:
-                self.logger.info('Application TheSkyX not found on computer')
+        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
+        if self.appAvailable:
+            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+        else:
+            self.logger.info('Application TheSkyX not found on computer')
 
     def checkAppStatus(self):
         try:
@@ -72,6 +65,7 @@ class TheSkyX(MWCamera):
     def disconnectApplication(self):
         if self.appRunning:
             self.appConnected = False
+            self.appCameraConnected = False
 
     def connectCamera(self):
         try:
