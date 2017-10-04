@@ -105,7 +105,6 @@ class Modeling(PyQt5.QtCore.QThread):
         self.chooserLock.acquire()
         if self.imagingHandler.cameraConnected:
             self.imagingHandler.disconnectCamera()
-            time.sleep(0.25)
         if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
             self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')

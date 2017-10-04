@@ -139,7 +139,6 @@ class Mount(PyQt5.QtCore.QThread):
         self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time
         if self.mountHandler.connected:
             self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
-            time.sleep(0.25)                                                                                                   # wait some time to get commands finished
             self.mountHandler.disconnect()                                                                                  # do formal disconnection
         if self.app.ui.pd_chooseMountConnection.currentText().startswith('IP Direct Connection'):
             self.mountHandler = self.MountIpDirect
