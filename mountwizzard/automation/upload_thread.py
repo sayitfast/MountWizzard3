@@ -62,18 +62,33 @@ class DataUploadToMount(PyQt5.QtCore.QThread):
         self.appName = ''
         self.appInstallPath = ''
         self.appExe = 'GmQCIv2.exe'
+        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.app.commandDataQueue.put('EARTHROTATION'))
+        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.app.commandDataQueue.put('SPACESTATIONS'))
+        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.app.commandDataQueue.put('SATBRIGHTEST'))
+        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_MPC5000'))
+        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_NEA'))
+        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_PHA'))
+        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_TNO'))
+        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.app.commandDataQueue.put('COMETS'))
+        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.app.commandDataQueue.put('ALL'))
+        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.app.commandDataQueue.put('UPLOADMOUNT'))
         self.checkApplication()
+        self.initConfig()
 
     def initConfig(self):
         try:
-            pass
+            if 'FilterExpressionMPC' in self.app.config:
+                self.app.ui.le_filterExpressionMPC.setText(self.app.config['FilterExpressionMPC'])
+            if 'CheckFilterMPC' in self.app.config:
+                self.app.ui.checkFilterMPC.setChecked(self.app.config['CheckFilterMPC'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
 
     def storeConfig(self):
-        pass
+        self.app.config['CheckFilterMPC'] = self.app.ui.checkFilterMPC.isChecked()
+        self.app.config['FilterExpressionMPC'] = self.app.ui.le_filterExpressionMPC.text()
 
     def checkApplication(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('10micron QCI')

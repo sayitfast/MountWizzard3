@@ -214,16 +214,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
-        self.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDataQueue.put('EARTHROTATION'))
-        self.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDataQueue.put('SPACESTATIONS'))
-        self.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDataQueue.put('SATBRIGHTEST'))
-        self.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.commandDataQueue.put('ASTEROIDS_MPC5000'))
-        self.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.commandDataQueue.put('ASTEROIDS_NEA'))
-        self.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.commandDataQueue.put('ASTEROIDS_PHA'))
-        self.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.commandDataQueue.put('ASTEROIDS_TNO'))
-        self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
-        self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
-        self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
 
@@ -455,10 +445,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_mountMAC.setText(self.config['MountMAC'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
-            if 'FilterExpressionMPC' in self.config:
-                self.ui.le_filterExpressionMPC.setText(self.config['FilterExpressionMPC'])
-            if 'CheckFilterMPC' in self.config:
-                self.ui.checkFilterMPC.setChecked(self.config['CheckFilterMPC'])
             if 'CheckRemoteAccess' in self.config:
                 self.ui.checkRemoteAccess.setChecked(self.config['CheckRemoteAccess'])
         except Exception as e:
@@ -528,8 +514,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['MountMAC'] = self.ui.le_mountMAC.text()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
-        self.config['CheckFilterMPC'] = self.ui.checkFilterMPC.isChecked()
-        self.config['FilterExpressionMPC'] = self.ui.le_filterExpressionMPC.text()
         self.config['CheckRemoteAccess'] = self.ui.checkRemoteAccess.isChecked()
 
     def loadConfig(self):
@@ -548,6 +532,7 @@ class MountWizzardApp(widget.MwWidget):
         self.environment.storeConfig()
         if platform.system() == 'Windows':
             self.dome.storeConfig()
+            self.data.storeConfig()
         self.modelWindow.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
