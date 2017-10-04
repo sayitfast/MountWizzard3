@@ -158,8 +158,8 @@ class Mount(PyQt5.QtCore.QThread):
         while True:                                                                                                         # main loop in thread
             self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status
             if self.mountHandler.connected:                                                                                 # when connected, starting the work
-                if not self.app.commandQueue.empty():                                                                       # checking if in queue is something to do
-                    command = self.app.commandQueue.get()                                                                   # if yes, getting the work command
+                if not self.app.mountCommandQueue.empty():                                                                       # checking if in queue is something to do
+                    command = self.app.mountCommandQueue.get()                                                                   # if yes, getting the work command
                     if command == 'ShowAlignmentModel':                                                                     # checking which command was sent
                         num = self.numberModelStars()
                         if num == -1:
@@ -246,7 +246,7 @@ class Mount(PyQt5.QtCore.QThread):
                         self.mountShutdown()
                     else:
                         self.mountHandler.sendCommand(command)                                                              # doing the command directly to mount (no method necessary)
-                    self.app.commandQueue.task_done()
+                    self.app.mountCommandQueue.task_done()
                 else:                                                                                                       # if not connected, the we should do this
                     if self.counter == 0:                                                                                   # jobs once done at the beginning
                         self.getStatusOnce()                                                                                # task once

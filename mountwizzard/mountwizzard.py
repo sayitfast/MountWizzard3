@@ -74,9 +74,10 @@ class MountWizzardApp(widget.MwWidget):
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
-        self.commandQueue = Queue()                                                                                         # queue for sending command to mount
+        self.mountCommandQueue = Queue()                                                                                    # queue for sending command to mount
         self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
+        self.modelCommandQueue = Queue()
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.imageQueue = Queue()
         self.environmentQueue = Queue()
@@ -128,14 +129,14 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
-        self.ui.btn_mountPark.clicked.connect(lambda: self.commandQueue.put('hP'))
-        self.ui.btn_mountUnpark.clicked.connect(lambda: self.commandQueue.put('PO'))
-        self.ui.btn_startTracking.clicked.connect(lambda: self.commandQueue.put('AP'))
-        self.ui.btn_stopTracking.clicked.connect(lambda: self.commandQueue.put('RT9'))
-        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.commandQueue.put('RT0'))
-        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.commandQueue.put('RT1'))
-        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.commandQueue.put('RT2'))
-        self.ui.btn_stop.clicked.connect(lambda: self.commandQueue.put('STOP'))
+        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put('hP'))
+        self.ui.btn_mountUnpark.clicked.connect(lambda: self.mountCommandQueue.put('PO'))
+        self.ui.btn_startTracking.clicked.connect(lambda: self.mountCommandQueue.put('AP'))
+        self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put('RT9'))
+        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.mountCommandQueue.put('RT0'))
+        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.mountCommandQueue.put('RT1'))
+        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.mountCommandQueue.put('RT2'))
+        self.ui.btn_stop.clicked.connect(lambda: self.mountCommandQueue.put('STOP'))
         self.ui.btn_mountPos1.clicked.connect(self.mountPosition1)
         self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
         self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
@@ -157,59 +158,59 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_setupMountDriver.clicked.connect(self.mount.MountAscom.setupDriver)
             self.ui.btn_setupDomeDriver.clicked.connect(lambda: self.dome.setupDriver())
             self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(lambda: self.environment.setupDriver())
-        self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandQueue.put('SetRefractionParameter'))
-        self.ui.btn_runBaseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBaseModel'))
-        self.ui.btn_cancelModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelModel'))
-        self.ui.btn_runRefinementModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunRefinementModel'))
-        self.ui.btn_runBatchModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunBatchModel'))
-        self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('ClearAlignmentModel'))
+        self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.mountCommandQueue.put('SetRefractionParameter'))
+        self.ui.btn_runBaseModel.clicked.connect(lambda: self.modelCommandQueue.put('RunBaseModel'))
+        self.ui.btn_cancelModel.clicked.connect(lambda: self.modelCommandQueue.put('CancelModel'))
+        self.ui.btn_runRefinementModel.clicked.connect(lambda: self.modelCommandQueue.put('RunRefinementModel'))
+        self.ui.btn_runBatchModel.clicked.connect(lambda: self.modelCommandQueue.put('RunBatchModel'))
+        self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.modelCommandQueue.put('ClearAlignmentModel'))
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
-        self.ui.btn_showActualModel.clicked.connect(lambda: self.commandQueue.put('ShowAlignmentModel'))
+        self.ui.btn_showActualModel.clicked.connect(lambda: self.mountCommandQueue.put('ShowAlignmentModel'))
         self.ui.checkPolarPlot.clicked.connect(self.setShowAlignmentModelMode)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
-        self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandQueue.put('RunTargetRMSAlignment'))
-        self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandQueue.put('DeleteWorstPoint'))
-        self.ui.btn_sortRefinementPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('SortRefinementPoints'))
-        self.ui.btn_deleteBelowHorizonLine.clicked.connect(lambda: self.modeling.signalModelCommand.emit('DeleteBelowHorizonLine'))
-        self.ui.btn_plateSolveSync.clicked.connect(lambda: self.modeling.signalModelCommand.emit('PlateSolveSync'))
-        self.ui.btn_deletePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('DeletePoints'))
-        self.ui.btn_flipMount.clicked.connect(lambda: self.commandQueue.put('FLIP'))
-        self.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('LoadRefinementPoints'))
-        self.ui.btn_loadBasePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('LoadBasePoints'))
-        self.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandQueue.put('SaveBackupModel'))
-        self.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandQueue.put('LoadBackupModel'))
-        self.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandQueue.put('SaveSimpleModel'))
-        self.ui.btn_loadSimpleModel.clicked.connect(lambda: self.commandQueue.put('LoadSimpleModel'))
-        self.ui.btn_saveRefinementModel.clicked.connect(lambda: self.commandQueue.put('SaveRefinementModel'))
-        self.ui.btn_loadRefinementModel.clicked.connect(lambda: self.commandQueue.put('LoadRefinementModel'))
-        self.ui.btn_saveBaseModel.clicked.connect(lambda: self.commandQueue.put('SaveBaseModel'))
-        self.ui.btn_loadBaseModel.clicked.connect(lambda: self.commandQueue.put('LoadBaseModel'))
-        self.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandQueue.put('SaveDSO1Model'))
-        self.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandQueue.put('LoadDSO1Model'))
-        self.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandQueue.put('SaveDSO2Model'))
-        self.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandQueue.put('LoadDSO2Model'))
-        self.ui.btn_generateDSOPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.numberHoursDSO.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.numberPointsDSO.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.numberHoursPreview.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDSOPoints'))
-        self.ui.btn_generateDensePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateDensePoints'))
-        self.ui.btn_generateNormalPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateNormalPoints'))
-        self.ui.btn_generateGridPoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.altitudeMin.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.altitudeMax.valueChanged.connect(lambda: self.modeling.signalModelCommand.emit('GenerateGridPoints'))
-        self.ui.btn_generateBasePoints.clicked.connect(lambda: self.modeling.signalModelCommand.emit('GenerateBasePoints'))
-        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
-        self.ui.btn_runAllModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunAllModel'))
-        self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunTimeChangeModel'))
-        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('CancelAnalyseModel'))
-        self.ui.btn_runHystereseModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunHystereseModel'))
+        self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.mountCommandQueue.put('RunTargetRMSAlignment'))
+        self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.mountCommandQueue.put('DeleteWorstPoint'))
+        self.ui.btn_sortRefinementPoints.clicked.connect(lambda: self.modelCommandQueue.put('SortRefinementPoints'))
+        self.ui.btn_deleteBelowHorizonLine.clicked.connect(lambda: self.modelCommandQueue.put('DeleteBelowHorizonLine'))
+        self.ui.btn_plateSolveSync.clicked.connect(lambda: self.modelCommandQueue.put('PlateSolveSync'))
+        self.ui.btn_deletePoints.clicked.connect(lambda: self.modelCommandQueue.put('DeletePoints'))
+        self.ui.btn_flipMount.clicked.connect(lambda: self.mountCommandQueue.put('FLIP'))
+        self.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.modelCommandQueue.put('LoadRefinementPoints'))
+        self.ui.btn_loadBasePoints.clicked.connect(lambda: self.modelCommandQueue.put('LoadBasePoints'))
+        self.ui.btn_saveBackupModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveBackupModel'))
+        self.ui.btn_loadBackupModel.clicked.connect(lambda: self.mountCommandQueue.put('LoadBackupModel'))
+        self.ui.btn_saveSimpleModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveSimpleModel'))
+        self.ui.btn_loadSimpleModel.clicked.connect(lambda: self.mountCommandQueue.put('LoadSimpleModel'))
+        self.ui.btn_saveRefinementModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveRefinementModel'))
+        self.ui.btn_loadRefinementModel.clicked.connect(lambda: self.mountCommandQueue.put('LoadRefinementModel'))
+        self.ui.btn_saveBaseModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveBaseModel'))
+        self.ui.btn_loadBaseModel.clicked.connect(lambda: self.mountCommandQueue.put('LoadBaseModel'))
+        self.ui.btn_saveDSO1Model.clicked.connect(lambda: self.mountCommandQueue.put('SaveDSO1Model'))
+        self.ui.btn_loadDSO1Model.clicked.connect(lambda: self.mountCommandQueue.put('LoadDSO1Model'))
+        self.ui.btn_saveDSO2Model.clicked.connect(lambda: self.mountCommandQueue.put('SaveDSO2Model'))
+        self.ui.btn_loadDSO2Model.clicked.connect(lambda: self.mountCommandQueue.put('LoadDSO2Model'))
+        self.ui.btn_generateDSOPoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
+        self.ui.numberHoursDSO.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
+        self.ui.numberPointsDSO.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
+        self.ui.numberHoursPreview.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
+        self.ui.btn_generateDensePoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateDensePoints'))
+        self.ui.btn_generateNormalPoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateNormalPoints'))
+        self.ui.btn_generateGridPoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
+        self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
+        self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
+        self.ui.altitudeMin.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
+        self.ui.altitudeMax.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
+        self.ui.btn_generateBasePoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateBasePoints'))
+        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
+        self.ui.btn_runAllModel.clicked.connect(lambda: self.modelCommandQueue.put('RunAllModel'))
+        self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.modelCommandQueue.put('RunTimeChangeModel'))
+        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.modelCommandQueue.put('CancelAnalyseModel'))
+        self.ui.btn_runHystereseModel.clicked.connect(lambda: self.modelCommandQueue.put('RunHystereseModel'))
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
@@ -223,7 +224,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_downloadComets.clicked.connect(lambda: self.commandDataQueue.put('COMETS'))
         self.ui.btn_downloadAll.clicked.connect(lambda: self.commandDataQueue.put('ALL'))
         self.ui.btn_uploadMount.clicked.connect(lambda: self.commandDataQueue.put('UPLOADMOUNT'))
-        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modeling.signalModelCommand.emit('RunCheckModel'))
+        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
 
     def selectRemoteAccess(self):
@@ -238,7 +239,7 @@ class MountWizzardApp(widget.MwWidget):
         self.logger.debug('Send WOL packet and boot Mount')
 
     def mountShutdown(self):
-        self.commandQueue.put('Shutdown')
+        self.mountCommandQueue.put('Shutdown')
 
     def showModelErrorPolar(self):
         if not self.modeling.modelData:
@@ -602,7 +603,7 @@ class MountWizzardApp(widget.MwWidget):
             _value = 0
         elif _value > 90:
             _value = 90
-        self.commandQueue.put('Sh+{0:02d}'.format(_value))
+        self.mountCommandQueue.put('Sh+{0:02d}'.format(_value))
 
     def setHorizonLimitLow(self):
         _value = int(self.ui.le_horizonLimitLow.text())
@@ -610,7 +611,7 @@ class MountWizzardApp(widget.MwWidget):
             _value = 0
         elif _value > 90:
             _value = 90
-        self.commandQueue.put('So+{0:02d}'.format(_value))
+        self.mountCommandQueue.put('So+{0:02d}'.format(_value))
 
     def setDualTracking(self):
         _value = self.ui.le_telescopeDualTrack.text()
@@ -620,7 +621,7 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_telescopeDualTrack.setText('ON')
-        self.commandQueue.put('Sdat{0:01d}'.format(_value))
+        self.mountCommandQueue.put('Sdat{0:01d}'.format(_value))
 
     def setUnattendedFlip(self):
         _value = self.ui.le_telescopeUnattendedFlip.text()
@@ -630,7 +631,7 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_telescopeUnattendedFlip.setText('ON')
-        self.commandQueue.put('Suaf{0: 01d}'.format(_value))
+        self.mountCommandQueue.put('Suaf{0: 01d}'.format(_value))
 
     def setSlewRate(self):
         _value = int(self.ui.le_slewRate.text())
@@ -638,7 +639,7 @@ class MountWizzardApp(widget.MwWidget):
             _value = 1
         elif _value > 15:
             _value = 15
-        self.commandQueue.put('Sw{0:02d}'.format(_value))
+        self.mountCommandQueue.put('Sw{0:02d}'.format(_value))
 
     def setRefractionCorrection(self):
         _value = self.ui.le_refractionStatus.text()
@@ -648,43 +649,43 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_refractionStatus.setText('ON')
-        self.commandQueue.put('SREF{0: 01d}'.format(_value))
+        self.mountCommandQueue.put('SREF{0: 01d}'.format(_value))
 
     def mountPosition1(self):
-        self.commandQueue.put('PO')                                                                                         # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
-        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos1.text())))                                   # set alt
-        self.commandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put('PO')                                                                                         # unpark first
+        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
+        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos1.text())))                                   # set alt
+        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition2(self):
-        self.commandQueue.put('PO')                                                                                         # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos2.text())))                                     # set az
-        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos2.text())))                                   # set alt
-        self.commandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put('PO')                                                                                         # unpark first
+        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos2.text())))                                     # set az
+        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos2.text())))                                   # set alt
+        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition3(self):
-        self.commandQueue.put('PO')                                                                                         # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos3.text())))                                     # set az
-        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos3.text())))                                   # set alt
-        self.commandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put('PO')                                                                                         # unpark first
+        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos3.text())))                                     # set az
+        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos3.text())))                                   # set alt
+        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition4(self):
-        self.commandQueue.put('PO')                                                                                         # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
-        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
-        self.commandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put('PO')                                                                                         # unpark first
+        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
+        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
+        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition5(self):
-        self.commandQueue.put('PO')                                                                                         # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
-        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
-        self.commandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put('PO')                                                                                         # unpark first
+        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
+        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
+        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
 
     def mountPosition6(self):
-        self.commandQueue.put('PO')                                                                                         # unpark first
-        self.commandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
-        self.commandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
-        self.commandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put('PO')                                                                                         # unpark first
+        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
+        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
+        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
     #
     # mount handling
     #
@@ -912,7 +913,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.9 beta'
+    BUILD_NO = '2.5.10 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()

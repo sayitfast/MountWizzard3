@@ -43,7 +43,6 @@ from modeling import modelpoints
 class Modeling(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)                                                                                   # logging enabling
     signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')                                             # message for errors
-    signalModelCommand = PyQt5.QtCore.pyqtSignal([str], name='ModelCommand')                                               # commands to sgpro thread
     signalModelRedraw = PyQt5.QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -51,29 +50,33 @@ class Modeling(PyQt5.QtCore.QThread):
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     REF_PICTURE = '/model001.fit'
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
+    CAPTUREFILE = 'modeling'
 
     def __init__(self, app):
         super().__init__()
-        self.app = app                                                                                                      # class reference for dome control
-        self.analyse = Analyse(self.app)                                                                                    # use Class for saving analyse data
+        # make main sources available
+        self.app = app
+        # make windows imaging applications available
         if platform.system() == 'Windows':
-            self.SGPro = sgpro.SGPro(self.app)                                                                              # object abstraction class for SGPro
-            self.TheSkyX = theskyx.TheSkyX(self.app)                                                                        # object abstraction class for TheSkyX
-            self.MaximDL = maximdl.MaximDLCamera(self.app)                                                                  # object abstraction class for MaximDL
-        self.NoneCam = none.NoneCamera(self.app)                                                                            # object abstraction class for MaximDL
-        self.transform = self.app.mount.transform                                                                           # coordinate transformation
-        self.modelpoints = modelpoints.ModelPoints(self.transform)
+            self.SGPro = sgpro.SGPro(self.app)
+            self.TheSkyX = theskyx.TheSkyX(self.app)
+            self.MaximDL = maximdl.MaximDLCamera(self.app)
+        # make non windows applications available
+        self.NoneCam = none.NoneCamera(self.app)
+        # select default application
         self.imagingHandler = self.NoneCam
-        self.cancel = False                                                                                                 # cancelling the modeling
-        self.modelrun = False
-        self.modelAnalyseData = []                                                                                          # analyse data for modeling
+        # assign support classes
+        self.analyse = Analyse(self.app)
+        self.transform = self.app.mount.transform
+        self.modelpoints = modelpoints.ModelPoints(self.transform)
+        # class variables
+        self.modelAnalyseData = []
         self.modelData = None
-        self.captureFile = 'modeling'                                                                                       # filename for capturing file
-        self.counter = 0                                                                                                    # counter for main loop
-        self.command = ''                                                                                                   # command buffer
-        self.results = []                                                                                                   # error results
+        self.results = []
+        # counter for thread timing
+        self.counter = 0
         self.chooserLock = threading.Lock()
-        self.signalModelCommand.connect(self.sendCommand)                                                                   # signal for receiving commands to modeling from GUI
+        # finally initialize the class configuration
         self.initConfig()
 
     def initConfig(self):
@@ -123,38 +126,36 @@ class Modeling(PyQt5.QtCore.QThread):
         self.counter = 0                                                                                                    # cyclic counter
         self.chooseImagingApp()
         while True:                                                                                                         # thread loop for doing jobs
+            command = ''
+            if not self.app.modelCommandQueue.empty():
+                command = self.app.modelCommandQueue.get()
             if self.app.mount.mountHandler.connected:
                 if self.imagingHandler.cameraConnected:
-                    if self.command == 'RunBaseModel':                                                                      # actually doing by receiving signals which enables
-                        self.command = ''                                                                                   # only one command at a time, last wins
+                    if command == 'RunBaseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
                         self.runBaseModel()                                                                                 # should be refactored to queue only without signal
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'RunRefinementModel':
-                        self.command = ''
+                    elif command == 'RunRefinementModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                         self.runRefinementModel()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'PlateSolveSync':                                                                  # actually doing by receiving signals which enables
-                        self.command = ''                                                                                   # only one command at a time, last wins
+                    elif command == 'PlateSolveSync':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
                         self.plateSolveSync()                                                                               # should be refactored to queue only without signal
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'RunBatchModel':
-                        self.command = ''
+                    elif command == 'RunBatchModel':
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
                         self.runBatchModel()
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
-                    elif self.command == 'RunCheckModel':
-                        self.command = ''
+                    elif command == 'RunCheckModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                              # button blue (running)
                         num = self.app.mount.numberModelStars()
@@ -166,39 +167,34 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'RunAllModel':
-                        self.command = ''
+                    elif command == 'RunAllModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                # button blue (running)
                         self.runAllModel()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'RunTimeChangeModel':
-                        self.command = ''
+                    elif command == 'RunTimeChangeModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
                         self.runTimeChangeModel()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'RunHystereseModel':
-                        self.command = ''
+                    elif command == 'RunHystereseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
                         self.runHystereseModel()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
                         self.app.imageWindow.enableExposures()
-                    elif self.command == 'ClearAlignmentModel':
-                        self.command = ''
+                    elif command == 'ClearAlignmentModel':
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
                         self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
                         self.clearAlignmentModel()
                         self.app.modelLogQueue.put('Model cleared!\n')
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
-                if self.command == 'GenerateDSOPoints':
-                    self.command = ''
+                if command == 'GenerateDSOPoints':
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)
                     self.modelpoints.generateDSOPoints(int(float(self.app.ui.numberHoursDSO.value())),
                                                        int(float(self.app.ui.numberPointsDSO.value())),
@@ -207,34 +203,28 @@ class Modeling(PyQt5.QtCore.QThread):
                                                        copy.copy(self.app.mount.dec))
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)
-                elif self.command == 'GenerateDensePoints':
-                    self.command = ''
+                elif command == 'GenerateDensePoints':
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)
                     self.modelpoints.generateDensePoints()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)
-                elif self.command == 'GenerateNormalPoints':
-                    self.command = ''
+                elif command == 'GenerateNormalPoints':
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)
                     self.modelpoints.generateNormalPoints()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
                 else:
                     pass
-            if self.command == 'LoadBasePoints':
-                self.command = ''
+            if command == 'LoadBasePoints':
                 self.modelpoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
                 self.signalModelRedraw.emit(True)
-            elif self.command == 'LoadRefinementPoints':
-                self.command = ''
+            elif command == 'LoadRefinementPoints':
                 self.modelpoints.loadRefinementPoints(self.app.ui.le_modelPointsFileName.text())
                 self.signalModelRedraw.emit(True)
-            elif self.command == 'SortRefinementPoints':
-                self.command = ''
+            elif command == 'SortRefinementPoints':
                 self.modelpoints.sortPoints('refinement')
                 self.signalModelRedraw.emit(True)
-            elif self.command == 'GenerateGridPoints':
-                self.command = ''
+            elif command == 'GenerateGridPoints':
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
                 self.modelpoints.generateGridPoints(int(float(self.app.ui.numberGridPointsRow.value())),
                                                     int(float(self.app.ui.numberGridPointsCol.value())),
@@ -242,43 +232,33 @@ class Modeling(PyQt5.QtCore.QThread):
                                                     int(float(self.app.ui.altitudeMax.value())))
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
-            elif self.command == 'GenerateBasePoints':
-                self.command = ''
+            elif command == 'GenerateBasePoints':
                 self.modelpoints.generateBasePoints(float(self.app.ui.azimuthBase.value()),
                                                     float(self.app.ui.altitudeBase.value()))
                 self.signalModelRedraw.emit(True)
-            elif self.command == 'DeleteBelowHorizonLine':
-                self.command = ''
+            elif command == 'DeleteBelowHorizonLine':
                 self.modelpoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
-            elif self.command == 'DeletePoints':
-                self.command = ''
+            elif command == 'DeletePoints':
                 self.modelpoints.deletePoints()
                 self.signalModelRedraw.emit(True)
+            elif command == 'CancelModel':
+                # todo: send cancel to model run
+                self.app.ui.btn_cancelModel.setStyleSheet(self.RED)                                                         # reset color of button
+            elif command == 'CancelAnalyseModel':
+                # todo: send cancel to model run
+                self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)
             if self.counter % 5 == 0:                                                                                       # standard cycles in modeling thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in modeling thread slow
                 self.getStatusSlow()                                                                                        # calling slow part of status
             self.counter += 1                                                                                               # loop +1
             time.sleep(.1)                                                                                                  # wait for the next cycle
+        self.app.modelCommandQueue.task_done()
         self.terminate()                                                                                                    # closing the thread at the end
 
     def __del__(self):                                                                                                      # remove thread
         self.wait()
-
-    @PyQt5.QtCore.Slot(str)
-    def sendCommand(self, command):                                                                                         # dispatcher of commands inside thread
-        if self.modelrun:
-            if command == 'CancelModel':                                                                                    # check the command
-                self.command = ''                                                                                           # reset the command
-                self.cancel = True                                                                                          # set cancel flag
-                self.app.ui.btn_cancelModel.setStyleSheet(self.RED)                                                         # reset color of button
-            elif command == 'CancelAnalyseModel':                                                                           #
-                self.command = ''                                                                                           #
-                self.cancel = True                                                                                          #
-                self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)                                                  # reset color of button
-        else:
-            self.command = command                                                                                          # passing the command to main loop of thread
 
     def getStatusFast(self):                                                                                                # check app is running
         self.imagingHandler.checkAppStatus()
@@ -298,7 +278,7 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def clearAlignmentModel(self):
         self.modelAnalyseData = []
-        self.app.commandQueue.put('ClearAlign')
+        self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)                                                                                                       # we are waiting 4 seconds like Per did (don't know if necessary)
 
     def plateSolveSync(self):
@@ -322,9 +302,9 @@ class Modeling(PyQt5.QtCore.QThread):
             simulation = False
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
-        self.logger.info('modelData: {0}'.format(modelData))                                             # log data
-        self.app.commandQueue.put('PO')                                                                                     # unpark to start slewing
-        self.app.commandQueue.put('AP')                                                                                     # tracking on during the picture taking
+        self.logger.info('modelData: {0}'.format(modelData))
+        self.app.mountCommandQueue.put('PO')                                                                                # unpark to start slewing
+        self.app.mountCommandQueue.put('AP')                                                                                # tracking on during the picture taking
         if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
             os.makedirs(modelData['base_dir_images'])                                                                       # if path doesn't exist, generate is
         if self.app.ui.checkFastDownload.isChecked():
@@ -430,7 +410,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.app.ui.le_analyseFileName.setText(name)                                                                # set data name in GUI to start over quickly
                 self.analyse.saveData(self.modelAnalyseData, name)                                                          # save the data
         else:                                                                                                               # otherwise omit the run
-            self.logger.warning('There are no Refinement or Base Points to modeling')                     # write error log
+            self.logger.warning('There are no Refinement or Base Points to modeling')
 
     def runAllModel(self):
         self.runBaseModel()
@@ -509,9 +489,9 @@ class Modeling(PyQt5.QtCore.QThread):
             self.logger.warning('Model could not be calculated with current data!')                         # debug output
 
     def slewMountDome(self, az, alt):                                                                                       # slewing mount and dome to alt az point
-        self.app.commandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))                      # Azimuth setting
-        self.app.commandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))                  # Altitude Setting
-        self.app.commandQueue.put('MS')                                                                                     # initiate slewing with stop tracking
+        self.app.mountCommandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))                 # Azimuth setting
+        self.app.mountCommandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))             # Altitude Setting
+        self.app.mountCommandQueue.put('MS')                                                                                # initiate slewing with stop tracking
         self.logger.info('Connected:{0}'.format(self.app.dome.connected))
         break_counter = 0
         while not self.app.mount.slewing:                                                                                   # wait for mount starting slewing
@@ -542,7 +522,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 if self.cancel:
                     break
                 time.sleep(0.1)                                                                                             # loop time
-        # self.app.commandQueue.put('AP')                                                                                   # tracking on
+        # self.app.mountCommandQueue.put('AP')                                                                              # tracking on
 
     def prepareCaptureImageSubframes(self, scale, sizeX, sizeY, canSubframe, modelData):                                    # get camera data for doing subframes
         modelData['sizeX'] = 0                                                                                              # size inner window
@@ -557,7 +537,7 @@ class Modeling(PyQt5.QtCore.QThread):
             modelData['offY'] = int((sizeY - modelData['sizeY']) / 2)                                                       # same in y
             modelData['canSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
-            self.logger.warning('Camera does not support subframe.')                               # log message
+            self.logger.warning('Camera does not support subframe.')
         if 'binning' in modelData:                                                                                          # if binning, we have to respects
             modelData['sizeX'] = int(modelData['sizeX'] / modelData['binning'])
             modelData['sizeY'] = int(modelData['sizeY'] / modelData['binning'])
@@ -576,7 +556,7 @@ class Modeling(PyQt5.QtCore.QThread):
         else:
             pierside_fits_header = 'W'
         self.logger.info('modelData: {0}'.format(modelData))
-        suc, mes, modelData = self.imagingHandler.getImage(modelData)                                                             # imaging app specific abstraction
+        suc, mes, modelData = self.imagingHandler.getImage(modelData)                                                       # imaging app specific abstraction
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -609,7 +589,7 @@ class Modeling(PyQt5.QtCore.QThread):
                                  .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
                                          fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
                                          fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
-                                         fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                       # write all header data to debug
+                                         fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                        # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
             self.app.imageQueue.put(modelData['imagepath'])
@@ -633,7 +613,7 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def solveImage(self, modelData, simulation):                                                                            # solving image based on information inside the FITS files, no additional info
         modelData['usefitsheaders'] = True
-        suc, mes, modelData = self.imagingHandler.solveImage(modelData)                                                           # abstraction of solver for image
+        suc, mes, modelData = self.imagingHandler.solveImage(modelData)                                                     # abstraction of solver for image
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))                                                                # debug output
         if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['ra_sol'], modelData['dec_sol'], 3)          # transform J2000 -> Jnow
@@ -721,20 +701,19 @@ class Modeling(PyQt5.QtCore.QThread):
         if not self.app.ui.checkDoSubframe.isChecked():                                                                     # should we run with subframes
             modelData['canSubframe'] = False                                                                                # set default values
         self.logger.info('modelData: {0}'.format(modelData))
-        self.app.commandQueue.put('PO')                                                                                     # unpark to start slewing
-        self.app.commandQueue.put('AP')                                                                                     # tracking on during the picture taking
+        self.app.mountCommandQueue.put('PO')                                                                                # unpark to start slewing
+        self.app.mountCommandQueue.put('AP')                                                                                # tracking on during the picture taking
         if not os.path.isdir(modelData['base_dir_images']):                                                                 # if analyse dir doesn't exist, make it
             os.makedirs(modelData['base_dir_images'])                                                                       # if path doesn't exist, generate is
         timeStart = time.time()
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all modeling points
             modelData['azimuth'] = p_az
             modelData['altitude'] = p_alt
-            self.modelrun = True                                                                                            # sets the run flag true
             if p_item.isVisible():                                                                                          # is the modeling point to be run = true ?
-                if self.cancel:                                                                                             # here is the entry point for canceling the modeling run
+                # todo: put the code to multi thread modeling
+                if False:                                                                                                   # here is the entry point for canceling the modeling run
                     self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))     # we keep all the stars before
-                    self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
-                    self.cancel = False                                                                                     # and make it back to default
+                    self.app.mountCommandQueue.put('AP')                                                                    # tracking on during the picture taking
                     self.app.modelLogQueue.put('status-- of --')
                     self.app.modelLogQueue.put('percent0')
                     self.app.modelLogQueue.put('timeleft--:--')
@@ -745,7 +724,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
                         self.slewMountDome(p_az, p_alt)                                                                     # slewing mount and dome to az/alt for first slew only
-                        self.app.commandQueue.put('RT9')                                                                    # stop tracking until next round
+                        self.app.mountCommandQueue.put('RT9')                                                                    # stop tracking until next round
                 else:
                     self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for modeling point and analyse
                 self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
@@ -762,7 +741,7 @@ class Modeling(PyQt5.QtCore.QThread):
                     modelData['speed'] = 'HiSpeed'
                 else:                                                                                                       # otherwise
                     modelData['speed'] = 'Normal'
-                modelData['file'] = self.captureFile + '{0:03d}'.format(i) + '.fit'                                         # generate filename for storing image
+                modelData['file'] = self.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'                                         # generate filename for storing image
                 modelData['binning'] = int(float(self.app.ui.cameraBin.value()))
                 modelData['exposure'] = int(float(self.app.ui.cameraExposure.value()))
                 modelData['iso'] = int(float(self.app.ui.isoSetting.value()))
@@ -779,11 +758,11 @@ class Modeling(PyQt5.QtCore.QThread):
                 modelData['refractionTemp'] = self.app.mount.refractionTemp                                                 # set it if string available
                 modelData['refractionPress'] = self.app.mount.refractionPressure                                            # set it if string available
                 if modeltype in ['TimeChange']:
-                    self.app.commandQueue.put('AP')                                                                         # tracking on during the picture taking
+                    self.app.mountCommandQueue.put('AP')                                                                    # tracking on during the picture taking
                 self.app.modelLogQueue.put('{0} -\t Capturing image for modeling point {1:2d}\n'.format(self.timeStamp(), i + 1))   # gui output
                 suc, mes, imagepath = self.capturingImage(modelData, simulation)                                            # capturing image and store position (ra,dec), time, (az,alt)
                 if modeltype in ['TimeChange']:
-                    self.app.commandQueue.put('RT9')                                                                        # stop tracking until next round
+                    self.app.mountCommandQueue.put('RT9')                                                                   # stop tracking until next round
                 self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
                 if suc:                                                                                                     # if a picture could be taken
                     self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))                          # output for user GUI
@@ -818,5 +797,4 @@ class Modeling(PyQt5.QtCore.QThread):
             shutil.rmtree(modelData['base_dir_images'], ignore_errors=True)                                                 # otherwise just delete them
         self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
                                    .format(self.timeStamp(), modeltype, numCheckPoints))                                    # GUI output
-        self.modelrun = False
         return results                                                                                                      # return results for analysing
