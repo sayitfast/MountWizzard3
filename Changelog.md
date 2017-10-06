@@ -1,6 +1,8 @@
 # Changelog
 2.5.10
--
+- installer for Linux and MacOS
+- bugfix mount due to refactoring
+- bugfixes in camera class for enabling TheSkyX on MacOS
 
 2.5.9
 - rework imaging applications

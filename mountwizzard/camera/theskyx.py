@@ -11,6 +11,7 @@
 # Licence APL2.0
 #
 ############################################################
+import platform
 import json
 import logging
 import socket
@@ -29,7 +30,12 @@ class TheSkyX(MWCamera):
         self.appExe = 'TheSkyX.exe'
 
     def checkAppInstall(self):
-        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
+        if platform.system() == 'Windows':
+            self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('TheSkyX')
+        else:
+            self.appAvailable = True
+            self.appName = 'TheSkyX'
+            self.appInstallPath = ''
         if self.appAvailable:
             self.app.messageQueue.put('Found: {0}'.format(self.appName))
             self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))

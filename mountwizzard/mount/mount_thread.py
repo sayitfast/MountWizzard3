@@ -637,7 +637,7 @@ class Mount(PyQt5.QtCore.QThread):
             if self.stat != 0:                                                                                              # if no tracking, than autorefraction is good
                 self.setRefractionParameter()
         if self.app.ui.checkAutoRefractionCamera.isChecked():                                                               # check if autorefraction is set
-            if self.app.modeling.cpObject.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:                                  # if tracking, when camera is idle or downloading
+            if self.app.modeling.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:                            # if tracking, when camera is idle or downloading
                 self.setRefractionParameter()                                                                               # transfer refraction to mount
         self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
         self.signalMountTrackPreview.emit()

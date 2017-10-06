@@ -32,10 +32,12 @@ import pyfits
 # for data storing
 from analyse.analysedata import Analyse
 # cameras
-from camera import maximdl
 from camera import none
-from camera import sgpro
-from camera import theskyx
+if platform.system() == 'Windows':
+    from camera import maximdl
+    from camera import sgpro
+if platform.system() == 'Windows' or platform.system() == 'Darwin':
+    from camera import theskyx
 # modelpoints
 from modeling import modelpoints
 
@@ -59,8 +61,9 @@ class Modeling(PyQt5.QtCore.QThread):
         # make windows imaging applications available
         if platform.system() == 'Windows':
             self.SGPro = sgpro.SGPro(self.app)
-            self.TheSkyX = theskyx.TheSkyX(self.app)
             self.MaximDL = maximdl.MaximDLCamera(self.app)
+        if platform.system() == 'Windows' or platform.system() == 'Darwin':
+            self.TheSkyX = theskyx.TheSkyX(self.app)
         # make non windows applications available
         self.NoneCam = none.NoneCamera(self.app)
         # select default application
@@ -85,10 +88,11 @@ class Modeling(PyQt5.QtCore.QThread):
         if platform.system() == 'Windows':
             if self.SGPro.appAvailable:
                 self.app.ui.pd_chooseImagingApp.addItem('SGPro - ' + self.SGPro.appName)
-            if self.TheSkyX.appAvailable:
-                self.app.ui.pd_chooseImagingApp.addItem('TheSkyX - ' + self.TheSkyX.appName)
             if self.MaximDL.appAvailable:
                 self.app.ui.pd_chooseImagingApp.addItem('MaximDL - ' + self.MaximDL.appName)
+        if platform.system() == 'Windows' or platform.system() == 'Darwin':
+            if self.TheSkyX.appAvailable:
+                self.app.ui.pd_chooseImagingApp.addItem('TheSkyX - ' + self.TheSkyX.appName)
         try:
             if 'ImagingApplication' in self.app.config:
                 self.app.ui.pd_chooseImagingApp.setCurrentIndex(int(self.app.config['ImagingApplication']))

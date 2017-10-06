@@ -1,9 +1,10 @@
 # from distutils.core import setup
 from setuptools import setup
+import platform
 
 setup(
     name='mountwizzard',
-    version='2.5.9.1',
+    version='2.5.9.8',
     packages=[
         'mountwizzard',
         'mountwizzard.analyse',
@@ -23,12 +24,17 @@ setup(
     ],
     python_requires='~=3.5',
     install_requires=[
-        # 'PyQt5>=5.6',                 # problem on ubuntu, can't be installed via pip, should be done with apt-get install
+        # 'PyQt5>=5.6',                   # problem on ubuntu, can't be installed via pip, should be done with apt-get install
         'matplotlib>=1.5.3',            # sudo apt-get install libfreetype6-dev might be needed
         # 'pypiwin32>=219',             # not useful for linux
         'pyfits>=3.4',
-        'wakeonlan>=0.2.2'
-    ],
+        'wakeonlan>=0.2.2',
+        'requests'
+    ]
+    + (['PyQt5>=5.6'] if "Darwin" == platform.system() else [])
+    + (['PyQt5>=5.6'] if "Windows" == platform.system() else [])
+    + (['pypiwin32>=219'] if "Windows" == platform.system() else [])
+    ,
     url='https://pypi.python.org/pypi/mountwizzard',
     license='APL 2.0',
     author='mw',

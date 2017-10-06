@@ -11,8 +11,7 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
+import platform
 import logging
 
 # import for the PyQt5 Framework
@@ -53,6 +52,7 @@ class MwWidget(QWidget):
         self.moving = False                                                                                                 # check if window moves with mouse pointer
         self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
         self.modifiers = None
+        self.showStatus = False
         self.initUI()                                                                                                       # adapt the window to our purpose
 
     def mousePressEvent(self, mouseEvent):                                                                                  # overloading the mouse events for handling customized windows
@@ -87,22 +87,23 @@ class MwWidget(QWidget):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
         self.setMouseTracking(True)
-        darkPalette = QPalette()
-        darkPalette.setColor(QPalette.Window, self.COLOR_WINDOW)
-        darkPalette.setColor(QPalette.WindowText, self.COLOR_WINDOW_TEXT)
-        darkPalette.setColor(QPalette.Base, self.COLOR_BASE)
-        darkPalette.setColor(QPalette.AlternateBase, self.COLOR_ALTERNATE_BASE)
-        darkPalette.setColor(QPalette.ToolTipBase, self.COLOR_WHITE)
-        darkPalette.setColor(QPalette.ToolTipText, self.COLOR_WHITE)
-        darkPalette.setColor(QPalette.Text, self.COLOR_ASTRO)
-        darkPalette.setColor(QPalette.Button, self.COLOR_BASE)
-        darkPalette.setColor(QPalette.ButtonText, self.COLOR_WINDOW_TEXT)
-        darkPalette.setColor(QPalette.BrightText, self.COLOR_RED)
-        darkPalette.setColor(QPalette.Highlight, self.COLOR_HIGHLIGHT)
-        darkPalette.setColor(QPalette.HighlightedText, self.COLOR_BLACK)
-        self.setPalette(darkPalette)
-        self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
-        self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
+        if platform.system() == 'Windows' or platform.system() == 'Linux':
+            darkPalette = QPalette()
+            darkPalette.setColor(QPalette.Window, self.COLOR_WINDOW)
+            darkPalette.setColor(QPalette.WindowText, self.COLOR_WINDOW_TEXT)
+            darkPalette.setColor(QPalette.Base, self.COLOR_BASE)
+            darkPalette.setColor(QPalette.AlternateBase, self.COLOR_ALTERNATE_BASE)
+            darkPalette.setColor(QPalette.ToolTipBase, self.COLOR_WHITE)
+            darkPalette.setColor(QPalette.ToolTipText, self.COLOR_WHITE)
+            darkPalette.setColor(QPalette.Text, self.COLOR_ASTRO)
+            darkPalette.setColor(QPalette.Button, self.COLOR_BASE)
+            darkPalette.setColor(QPalette.ButtonText, self.COLOR_WINDOW_TEXT)
+            darkPalette.setColor(QPalette.BrightText, self.COLOR_RED)
+            darkPalette.setColor(QPalette.Highlight, self.COLOR_HIGHLIGHT)
+            darkPalette.setColor(QPalette.HighlightedText, self.COLOR_BLACK)
+            self.setPalette(darkPalette)
+            self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
+            self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
 
         # sizing
         self.setFixedSize(790, 640)
