@@ -3,6 +3,7 @@
 - installer for Linux and MacOS
 - bugfix mount due to refactoring
 - bugfixes in camera class for enabling TheSkyX on MacOS
+- added updates during pulse guiding
 
 2.5.9
 - rework imaging applications

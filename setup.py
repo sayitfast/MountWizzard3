@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='mountwizzard',
-    version='2.5.9.8',
+    version='2.5.10.1',
     packages=[
         'mountwizzard',
         'mountwizzard.analyse',
@@ -41,3 +41,14 @@ setup(
     author_email='michael@wuertenberger.org',
     description='tooling for a 10micron mount',
 )
+
+if platform.system() == 'Linux':
+    print('#############################################')
+    print('### Important hint:                       ###')
+    print('### you have to install PYQT5 manually    ###')
+    print('### sudo apt-get install pyqt5            ###')
+    print('### There might be the need to install    ###')
+    print('### libfreetype6-dev manually as well     ###')
+    print('### sudo apt-get install libfreetype6-dev ###')
+    print('#############################################')
+

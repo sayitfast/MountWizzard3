@@ -102,6 +102,11 @@ class Mount(PyQt5.QtCore.QThread):
             if 'MountConnection' in self.app.config:
                 self.app.ui.pd_chooseMountConnection.setCurrentIndex(int(self.app.config['MountConnection']))
                 self.showConfigEntries(int(self.app.config['MountConnection']))
+            if 'CheckAutoRefractionCamera' in self.app.config:
+                self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
+            if 'CheckAutoRefractionNotTracking' in self.app.config:
+                self.app.ui.checkAutoRefractionNotTracking.setChecked(self.app.config['CheckAutoRefractionNotTracking'])
+
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -112,6 +117,8 @@ class Mount(PyQt5.QtCore.QThread):
         if platform.system() == 'Windows':
             self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
         self.app.config['MountConnection'] = self.app.ui.pd_chooseMountConnection.currentIndex()
+        self.app.config['CheckAutoRefractionCamera'] = self.app.ui.checkAutoRefractionCamera.isChecked()
+        self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
 
     def showConfigEntries(self, index):
         if index == 0:

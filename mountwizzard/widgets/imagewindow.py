@@ -242,7 +242,7 @@ class ImagesWindow(widget.MwWidget):
         while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
         param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
-        suc, mes, param = self.app.modeling.cpObject.getImage(param)
+        suc, mes, param = self.app.modeling.imagingHandler.getImage(param)
         self.showFitsImage(param['imagepath'])
 
     def exposeContinuous(self):

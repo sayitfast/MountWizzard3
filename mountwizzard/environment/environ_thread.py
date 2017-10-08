@@ -123,6 +123,7 @@ class Environment(PyQt5.QtCore.QThread):
         try:
             if platform.system() == 'Windows':
                 if self.ascom:
+                    self.ascom.connected = False
                     self.ascom = None
                 self.chooser = Dispatch('ASCOM.Utilities.Chooser')
                 self.chooser.DeviceType = 'ObservingConditions'

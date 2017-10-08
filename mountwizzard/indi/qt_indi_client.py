@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
 
 A PyQt5 (client) interface to an INDI server. This will only work
@@ -10,7 +10,7 @@ from xml.etree import ElementTree
 from PyQt5 import QtCore, QtNetwork
 
 
-import indi_python.indi_xml as indiXML
+import indi.indi_xml as indiXML
 
 
 class QtINDIClientException(Exception):
@@ -18,18 +18,16 @@ class QtINDIClientException(Exception):
 
 
 class QtINDIClient(QtCore.QObject):
-    received = QtCore.pyqtSignal(object) # Received messages as INDI Python objects.
+    received = QtCore.pyqtSignal(object)
 
     def __init__(self,
-                 address = QtNetwork.QHostAddress(QtNetwork.QHostAddress.LocalHost),
-                 port = 7624,
-                 verbose = True,
+                 address=QtNetwork.QHostAddress('192.168.2.163'),
+                 port=7624,
                  **kwds):
         super().__init__(**kwds)
 
         self.device = None
         self.message_string = ""
-        self.verbose = verbose
 
         # Create socket.
         self.socket = QtNetwork.QTcpSocket()
@@ -44,16 +42,15 @@ class QtINDIClient(QtCore.QObject):
     def disconnect(self):
         if self.socket is not None:
             self.socket.disconnectFromHost()
-            
+
     def handleDisconnect(self):
         self.socket = None
 
     def handleReadyRead(self):
-
         # Add starting tag if this is new message.
-        if (len(self.message_string) == 0):
+        if len(self.message_string) == 0:
             self.message_string = "<data>"
-            
+
         # Get message from socket.
         while self.socket.bytesAvailable():
 
@@ -66,16 +63,14 @@ class QtINDIClient(QtCore.QObject):
 
         # Try and parse the message.
         try:
-            if self.verbose:
-                print("INDIClient: message length " + str(len(self.message_string)) + "bytes.")
             messages = ElementTree.fromstring(self.message_string)
             self.message_string = ""
             for message in messages:
                 xml_message = indiXML.parseETree(message)
-                
+
                 # Filter message is self.device is not None.
                 if self.device is not None:
-                    if (self.device == xml_message.getAttr("device")):
+                    if self.device == xml_message.getAttr("device"):
                         self.received.emit(xml_message)
 
                 # Otherwise just send them all.
@@ -84,63 +79,71 @@ class QtINDIClient(QtCore.QObject):
 
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
-            if self.verbose:
-                print("INDIClient: message is not yet complete.")
             self.message_string = self.message_string[:-7]
 
-    def setDevice(self, device = None):
+    def setDevice(self, device=None):
         self.device = device
 
     def sendMessage(self, indi_command):
-        if (self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState):
+        if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.write(indi_command.toXML() + b'\n')
         else:
             raise QtINDIClientException("Socket is not connected.")
 
 
-if (__name__ == "__main__"):
+if __name__ == "__main__":
 
     import sys
     import time
-    
+    from indi.simple_fits import FitsImage
+    import numpy
+
     from PyQt5 import QtWidgets
 
-    
+
     class Widget(QtWidgets.QWidget):
 
         def __init__(self):
             QtWidgets.QWidget.__init__(self)
 
-            self.client = INDIClient()
+            self.client = QtINDIClient()
             self.client.received.connect(self.handleReceived)
 
         def handleReceived(self, message):
-            print(message)
+            if isinstance(message, indiXML.SetBLOBVector):
+                print('Image received')
+                image = message.getElt(0).getValue()
+
+                print(image.getImage().shape)
+                # for key in image.getKeywords():
+                    # pass
+                    # print(image.getKeyword(key))
+                print(message)
+            else:
+                print(message)
 
         def send(self, message):
-            self.client.send(message)
+            self.client.sendMessage(message)
 
     app = QtWidgets.QApplication(sys.argv)
     widget = Widget()
     widget.show()
 
     # Get a list of devices.
-    widget.send(indiXML.clientGetProperties(indi_attr = {"version" : "1.0"}))
+    widget.client.sendMessage(indiXML.clientGetProperties(indi_attr={"version": "1.0", "device": "CCD Simulator"}))
     time.sleep(1)
 
     # Connect to the CCD simulator.
-    widget.send(indiXML.newSwitchVector([indiXML.oneSwitch("On", indi_attr = {"name" : "CONNECT"})],
-                                        indi_attr = {"name" : "CONNECTION", "device" : "CCD Simulator"}))
+    widget.client.sendMessage(indiXML.newSwitchVector([indiXML.oneSwitch("On", indi_attr={"name": "CONNECT"})], indi_attr={"name": "CONNECTION", "device": "CCD Simulator"}))
     time.sleep(1)
 
     if True:
         # Enable BLOB mode.
-        widget.send(indiXML.enableBLOB("Also", indi_attr = {"device" : "CCD Simulator"}))
+        widget.client.sendMessage(indiXML.enableBLOB("Also", indi_attr={"device": "CCD Simulator"}))
         time.sleep(1)
-        
+
         # Request image.
-        widget.send(indiXML.newNumberVector([indiXML.oneNumber(1, indi_attr = {"name" : "CCD_EXPOSURE_VALUE"})],
-                                            indi_attr = {"name" : "CCD_EXPOSURE", "device" : "CCD Simulator"}))
+        widget.client.sendMessage(indiXML.newNumberVector([indiXML.oneNumber(2, indi_attr={"name": "CCD_EXPOSURE_VALUE"})], indi_attr={"name": "CCD_EXPOSURE", "device": "CCD Simulator"}))
         time.sleep(1)
-    
+
     sys.exit(app.exec_())

@@ -387,12 +387,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.scaleSubframe.setValue(self.config['ScaleSubframe'])
             if 'CheckDoSubframe' in self.config:
                 self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
-            if 'CheckAutoRefractionCamera' in self.config:
-                self.ui.checkAutoRefractionCamera.setChecked(self.config['CheckAutoRefractionCamera'])
-            if 'CheckAutoRefractionPulseGuiding' in self.config:
-                self.ui.checkAutoRefractionPulseGuiding.setChecked(self.config['CheckAutoRefractionPulseGuiding'])
-            if 'CheckAutoRefractionNotTracking' in self.config:
-                self.ui.checkAutoRefractionNotTracking.setChecked(self.config['CheckAutoRefractionNotTracking'])
             if 'CheckKeepImages' in self.config:
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             if 'CheckRunTrackingWidget' in self.config:
@@ -484,9 +478,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['FocalLength'] = self.ui.focalLength.value()
         self.config['ScaleSubframe'] = self.ui.scaleSubframe.value()
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
-        self.config['CheckAutoRefractionCamera'] = self.ui.checkAutoRefractionCamera.isChecked()
-        self.config['CheckAutoRefractionPulseGuiding'] = self.ui.checkAutoRefractionPulseGuiding.isChecked()
-        self.config['CheckAutoRefractionNotTracking'] = self.ui.checkAutoRefractionNotTracking.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
         self.config['CheckRunTrackingWidget'] = self.modelWindow.ui.checkRunTrackingWidget.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()

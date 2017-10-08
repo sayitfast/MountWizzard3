@@ -3246,7 +3246,7 @@
       <string>Camera is IDLE</string>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_86">
@@ -3685,38 +3685,11 @@
       <string>Actuality of Time Data</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkAutoRefractionPulseGuiding">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>360</y>
-       <width>171</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>sets the refraction param updates to automatic</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>Pulse guiding</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkAutoRefractionNotTracking">
      <property name="geometry">
       <rect>
        <x>390</x>
-       <y>380</y>
+       <y>370</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -3757,7 +3730,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Reriodic refraction data update</string>
+      <string>Periodic refraction data update</string>
      </property>
     </widget>
     <widget class="Line" name="line_77">
