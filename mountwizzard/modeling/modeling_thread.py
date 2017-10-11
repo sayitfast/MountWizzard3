@@ -520,17 +520,11 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.logger.error('value: {0}, error: {1}'.format(az, e))
             self.logger.info('Azimuth:{0}'.format(az))
             while not self.app.mount.slewing:                                                                               # wait for mount starting slewing
-                if self.cancel:
-                    break
                 time.sleep(0.1)                                                                                             # loop time
             while self.app.mount.slewing or self.app.dome.slewing:                                                          # wait for stop slewing mount or dome not slewing
-                if self.cancel:
-                    break
                 time.sleep(0.1)                                                                                             # loop time
         else:
             while self.app.mount.slewing:                                                                                   # wait for tracking = 7 or dome not slewing
-                if self.cancel:
-                    break
                 time.sleep(0.1)                                                                                             # loop time
         # self.app.mountCommandQueue.put('AP')                                                                              # tracking on
 
@@ -554,8 +548,6 @@ class Modeling(PyQt5.QtCore.QThread):
         return modelData                                                                                                    # default without subframe
 
     def capturingImage(self, modelData, simulation):                                                                        # capturing image
-        if self.cancel:
-            return False, 'Cancel modeling pressed', modelData
         st_fits_header = modelData['sidereal_time'][0:10]                                                                   # store local sideral time as well
         ra_fits_header = self.transform.decimalToDegree(modelData['ra_J2000'], False, False, ' ')                           # set the point coordinates from mount in J2000 as hint precision 2
         dec_fits_header = self.transform.decimalToDegree(modelData['dec_J2000'], True, False, ' ')                          # set dec as well

@@ -1,4 +1,7 @@
 # Changelog
+2.5.12
+- bugfix fro missing cancel
+
 2.5.11
 - supporting now model maker and skychart horizon map file format
 - bugfix for environment (repoted from michel)
