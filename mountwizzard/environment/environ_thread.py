@@ -108,51 +108,51 @@ class Environment(PyQt5.QtCore.QThread):
         try:
             data['Temperature'] = self.ascom.Temperature                                                                    # actually there is single based communication
         except Exception as e:
-            pass
-        finally:
             data['Temperature'] = 0
+        finally:
+            pass
         try:
             data['Humidity'] = self.ascom.Humidity                                                                          # target should be queue
         except Exception as e:
-            pass
-        finally:
             data['Humidity'] = 0
+        finally:
+            pass
         try:
             data['Pressure'] = self.ascom.Pressure
         except Exception as e:
-            pass
-        finally:
             data['Pressure'] = 0
+        finally:
+            pass
         try:
             data['SQR'] = self.ascom.SkyQuality                                                                             # storing data in the signal object
         except Exception as e:
-            pass
-        finally:
             data['SQR'] = 0
-        try:
-            data['CloudCover'] = self.ascom.CloudCover
-        except Exception as e:
-            pass
         finally:
+            data['CloudCover'] = self.ascom.CloudCover
+        try:
+            pass
+        except Exception as e:
             data['CloudCover'] = 0
+        finally:
+            pass
         try:
             data['RainRate'] = self.ascom.RainRate
         except Exception as e:
-            pass
-        finally:
             data['RainRate'] = 0
+        finally:
+            pass
         try:
             data['WindSpeed'] = self.ascom.WindSpeed
         except Exception as e:
-            pass
-        finally:
             data['WindSpeed'] = 0
+        finally:
+            pass
         try:
             data['WindDirection'] = self.ascom.WindDirection
         except Exception as e:
-            pass
-        finally:
             data['WindDirection'] = 0
+        finally:
+            pass
         self.app.environmentQueue.put(data)                                                                                 # sending the data via signal
 
     def getStatusSlow(self):
