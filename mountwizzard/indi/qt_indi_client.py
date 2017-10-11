@@ -5,48 +5,56 @@ A PyQt5 (client) interface to an INDI server. This will only work
 in the context of a PyQt application.
 
 """
-
+import logging
 from xml.etree import ElementTree
 from PyQt5 import QtCore, QtNetwork
-
-
 import indi.indi_xml as indiXML
 
 
-class QtINDIClientException(Exception):
-    pass
-
-
 class QtINDIClient(QtCore.QObject):
+    logger = logging.getLogger(__name__)
     received = QtCore.pyqtSignal(object)
 
-    def __init__(self,
-                 address=QtNetwork.QHostAddress('192.168.2.163'),
-                 port=7624,
-                 **kwds):
+    def __init__(self, host, port, **kwds):
         super().__init__(**kwds)
 
         self.device = None
         self.message_string = ""
-
-        # Create socket.
         self.socket = QtNetwork.QTcpSocket()
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
+        self.socket.error.connect(self.handleError)
+        self.socket.stateChanged.connect(self.handleStateChanged)
 
-        # Connect to socket.
-        self.socket.connectToHost(address, port)
-        if not self.socket.waitForConnected():
-            raise QtINDIClientException("Cannot connect to indiserver at " + address + ", port " + str(port))
+        self.connect(host, port)
+
+    def connect(self, host, port):
+        if self.socket is not None:
+            self.socket.disconnectFromHost()
+            self.socket.connectToHost(host, port)
 
     def disconnect(self):
         if self.socket is not None:
             self.socket.disconnectFromHost()
 
+    def handleError(self, socketError):
+        if socketError == QtNetwork.QAbstractSocket.RemoteHostClosedError:
+            print('remote closed')
+        else:
+            print("The following error occurred: {0}".format(self.socket.errorString()))
+
+    def handleStateChanged(self):
+        if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
+            print('connected to host')
+        else:
+            print('not connected to host')
+
     def handleDisconnect(self):
-        self.socket = None
+        print('disconnected')
+        self.socket.close()
 
     def handleReadyRead(self):
+        print('read')
         # Add starting tag if this is new message.
         if len(self.message_string) == 0:
             self.message_string = "<data>"
@@ -88,62 +96,4 @@ class QtINDIClient(QtCore.QObject):
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.write(indi_command.toXML() + b'\n')
         else:
-            raise QtINDIClientException("Socket is not connected.")
-
-
-if __name__ == "__main__":
-
-    import sys
-    import time
-    from indi.simple_fits import FitsImage
-    import numpy
-
-    from PyQt5 import QtWidgets
-
-
-    class Widget(QtWidgets.QWidget):
-
-        def __init__(self):
-            QtWidgets.QWidget.__init__(self)
-
-            self.client = QtINDIClient()
-            self.client.received.connect(self.handleReceived)
-
-        def handleReceived(self, message):
-            if isinstance(message, indiXML.SetBLOBVector):
-                print('Image received')
-                image = message.getElt(0).getValue()
-
-                print(image.getImage().shape)
-                # for key in image.getKeywords():
-                    # pass
-                    # print(image.getKeyword(key))
-                print(message)
-            else:
-                print(message)
-
-        def send(self, message):
-            self.client.sendMessage(message)
-
-    app = QtWidgets.QApplication(sys.argv)
-    widget = Widget()
-    widget.show()
-
-    # Get a list of devices.
-    widget.client.sendMessage(indiXML.clientGetProperties(indi_attr={"version": "1.0", "device": "CCD Simulator"}))
-    time.sleep(1)
-
-    # Connect to the CCD simulator.
-    widget.client.sendMessage(indiXML.newSwitchVector([indiXML.oneSwitch("On", indi_attr={"name": "CONNECT"})], indi_attr={"name": "CONNECTION", "device": "CCD Simulator"}))
-    time.sleep(1)
-
-    if True:
-        # Enable BLOB mode.
-        widget.client.sendMessage(indiXML.enableBLOB("Also", indi_attr={"device": "CCD Simulator"}))
-        time.sleep(1)
-
-        # Request image.
-        widget.client.sendMessage(indiXML.newNumberVector([indiXML.oneNumber(2, indi_attr={"name": "CCD_EXPOSURE_VALUE"})], indi_attr={"name": "CCD_EXPOSURE", "device": "CCD Simulator"}))
-        time.sleep(1)
-
-    sys.exit(app.exec_())
+            self.logger.warning('Socket not connected')

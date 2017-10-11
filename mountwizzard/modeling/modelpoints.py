@@ -97,7 +97,10 @@ class ModelPoints:
                 try:                                                                                                        # try opening the file
                     with open(os.getcwd() + '/config/' + horizonPointsFileName) as f:                                       # run through file
                         for line in f:                                                                                      # run through lines
-                            m = line.rstrip('\n').split(':')                                                                # split the values
+                            if ':' in line:
+                                m = line.rstrip('\n').split(':')                                                            # model maker format
+                            else:
+                                m = line.rstrip('\n').split(' ')                                                            # card du ciel format
                             point = (int(m[0]), int(m[1]))                                                                  # get point data
                             hp.append(point)                                                                                # add the point
                     f.close()                                                                                               # close file again

@@ -76,9 +76,9 @@ class Environment(PyQt5.QtCore.QThread):
                             self.ascom.connected = True
                         self.connected = 1                                                                                  # set status to connected
                         self.logger.info('driver chosen:{0}'.format(self.driverName))
-                except Exception as e:                                                                                      # if general exception
+                except Exception as e:                                                                                      # if general except Exception
                     if self.driverName != '':
-                        self.logger.error('general exception: {0}'.format(e))                                               # write to logger
+                        self.logger.error('general error: {0}'.format(e))
                     if self.driverName == '':
                         self.connected = 2
                     else:
@@ -101,17 +101,59 @@ class Environment(PyQt5.QtCore.QThread):
         data = dict()
         try:
             data['DewPoint'] = self.ascom.DewPoint                                                                          # storing data in the signal object
-            data['Temperature'] = self.ascom.Temperature                                                                    # actually there is single based communication
-            data['Humidity'] = self.ascom.Humidity                                                                          # target should be queue
-            data['Pressure'] = self.ascom.Pressure
-            data['SQR'] = self.ascom.SkyQuality                                                                             # storing data in the signal object
-            data['CloudCover'] = self.ascom.CloudCover
-            data['RainRate'] = self.ascom.RainRate
-            data['WindSpeed'] = self.ascom.WindSpeed
-            data['WindDirection'] = self.ascom.WindDirection
-            self.app.environmentQueue.put(data)                                                                             # sending the data via signal
         except Exception as e:
-            self.logger.error('error accessing environment data: {}'.format(e))
+            data['DewPoint'] = 0
+        finally:
+            pass
+        try:
+            data['Temperature'] = self.ascom.Temperature                                                                    # actually there is single based communication
+        except Exception as e:
+            pass
+        finally:
+            data['Temperature'] = 0
+        try:
+            data['Humidity'] = self.ascom.Humidity                                                                          # target should be queue
+        except Exception as e:
+            pass
+        finally:
+            data['Humidity'] = 0
+        try:
+            data['Pressure'] = self.ascom.Pressure
+        except Exception as e:
+            pass
+        finally:
+            data['Pressure'] = 0
+        try:
+            data['SQR'] = self.ascom.SkyQuality                                                                             # storing data in the signal object
+        except Exception as e:
+            pass
+        finally:
+            data['SQR'] = 0
+        try:
+            data['CloudCover'] = self.ascom.CloudCover
+        except Exception as e:
+            pass
+        finally:
+            data['CloudCover'] = 0
+        try:
+            data['RainRate'] = self.ascom.RainRate
+        except Exception as e:
+            pass
+        finally:
+            data['RainRate'] = 0
+        try:
+            data['WindSpeed'] = self.ascom.WindSpeed
+        except Exception as e:
+            pass
+        finally:
+            data['WindSpeed'] = 0
+        try:
+            data['WindDirection'] = self.ascom.WindDirection
+        except Exception as e:
+            pass
+        finally:
+            data['WindDirection'] = 0
+        self.app.environmentQueue.put(data)                                                                                 # sending the data via signal
 
     def getStatusSlow(self):
         pass
@@ -134,8 +176,8 @@ class Environment(PyQt5.QtCore.QThread):
                 else:
                     self.connected = 0
         except Exception as e:
-            self.app.messageQueue.put('Driver Exception in setupEnvironment')
-            self.logger.error('general exception:{0}'.format(e))
+            self.app.messageQueue.put('Driver error as in setupEnvironment')
+            self.logger.error('general error:{0}'.format(e))
             if self.driverName == '':
                 self.connected = 2
             else:

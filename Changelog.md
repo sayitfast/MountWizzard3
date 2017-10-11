@@ -1,4 +1,8 @@
 # Changelog
+2.5.11
+- supporting now model maker and skychart horizon map file format
+- bugfix for environment (repoted from michel)
+
 2.5.10
 - installer for Linux and MacOS
 - bugfix mount due to refactoring

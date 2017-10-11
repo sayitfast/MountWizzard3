@@ -33,6 +33,7 @@ import pyfits
 from analyse.analysedata import Analyse
 # cameras
 from camera import none
+from camera import ekos
 if platform.system() == 'Windows':
     from camera import maximdl
     from camera import sgpro
@@ -66,6 +67,7 @@ class Modeling(PyQt5.QtCore.QThread):
             self.TheSkyX = theskyx.TheSkyX(self.app)
         # make non windows applications available
         self.NoneCam = none.NoneCamera(self.app)
+        self.Ekos = ekos.EKOSCamera(self.app)
         # select default application
         self.imagingHandler = self.NoneCam
         # assign support classes
@@ -85,6 +87,8 @@ class Modeling(PyQt5.QtCore.QThread):
     def initConfig(self):
         if self.NoneCam.appAvailable:
             self.app.ui.pd_chooseImagingApp.addItem('No Application')
+        if self.Ekos.appAvailable:
+            self.app.ui.pd_chooseImagingApp.addItem('EKOS INDI Server')
         if platform.system() == 'Windows':
             if self.SGPro.appAvailable:
                 self.app.ui.pd_chooseImagingApp.addItem('SGPro - ' + self.SGPro.appName)
@@ -112,6 +116,9 @@ class Modeling(PyQt5.QtCore.QThread):
         if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
             self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
+        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('EKOS'):
+            self.imagingHandler = self.Ekos
+            self.logger.info('actual camera / plate solver is EKOS INDI Server')
         elif self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
             self.imagingHandler = self.SGPro
             self.logger.info('actual camera / plate solver is SGPro')
@@ -251,7 +258,7 @@ class Modeling(PyQt5.QtCore.QThread):
             elif command == 'CancelAnalyseModel':
                 # todo: send cancel to model run
                 self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)
-            if self.counter % 5 == 0:                                                                                       # standard cycles in modeling thread fast
+            if self.counter % 10 == 0:                                                                                       # standard cycles in modeling thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in modeling thread slow
                 self.getStatusSlow()                                                                                        # calling slow part of status
