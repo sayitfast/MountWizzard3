@@ -101,56 +101,56 @@ class Environment(PyQt5.QtCore.QThread):
         data = dict()
         try:
             data['DewPoint'] = self.ascom.DewPoint                                                                          # storing data in the signal object
-        except Exception as e:
-            data['DewPoint'] = 0
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['Temperature'] = self.ascom.Temperature                                                                    # actually there is single based communication
-        except Exception as e:
-            data['Temperature'] = 0
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['Humidity'] = self.ascom.Humidity                                                                          # target should be queue
-        except Exception as e:
-            data['Humidity'] = 0
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['Pressure'] = self.ascom.Pressure
-        except Exception as e:
-            data['Pressure'] = 0
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['SQR'] = self.ascom.SkyQuality                                                                             # storing data in the signal object
-        except Exception as e:
-            data['SQR'] = 0
-        finally:
-            data['CloudCover'] = self.ascom.CloudCover
-        try:
+        except Exception:
             pass
-        except Exception as e:
-            data['CloudCover'] = 0
+        finally:
+            pass
+        try:
+            data['CloudCover'] = self.ascom.CloudCover
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['RainRate'] = self.ascom.RainRate
-        except Exception as e:
-            data['RainRate'] = 0
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['WindSpeed'] = self.ascom.WindSpeed
-        except Exception as e:
-            data['WindSpeed'] = 0
+        except Exception:
+            pass
         finally:
             pass
         try:
             data['WindDirection'] = self.ascom.WindDirection
-        except Exception as e:
-            data['WindDirection'] = 0
+        except Exception:
+            pass
         finally:
             pass
         self.app.environmentQueue.put(data)                                                                                 # sending the data via signal

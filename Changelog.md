@@ -1,4 +1,10 @@
 # Changelog
+2.5.13
+- changed behaviour environment
+- gui optimization: delete points below horizon mask by checkbox
+- gui optimization: sorting point by checkbox
+- fixed error in showing turn know value azimuth
+
 2.5.12
 - bugfix fro missing cancel
 

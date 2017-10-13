@@ -16,6 +16,7 @@ from baseclasses.camera import MWCamera
 from indi.qt_indi_client import QtINDIClient
 import indi.indi_xml as indiXML
 import pyfits
+import PyQt5
 
 
 class EKOSCamera(MWCamera):
@@ -34,7 +35,7 @@ class EKOSCamera(MWCamera):
         self.port = 7624
         self.tryConnectionCounter = 0
         self.indiClient = None
-        self.indiClient = QtINDIClient(self.host, self.port)
+        self.indiClient = QtINDIClient()
         self.indiClient.received.connect(self.handleReceived)
         self.checkAppInstall()
 
@@ -43,17 +44,14 @@ class EKOSCamera(MWCamera):
 
     def checkAppStatus(self):
         try:
-            state = self.indiClient.socket.state()
-            print(state)
+            print('check App')
             if not self.appRunning:
+                PyQt5.QtWidgets.QApplication.processEvents()
                 self.indiClient.connect(self.host, self.port)
-                state = self.indiClient.socket.state()
-                print(state)
-                if state == 3:
+                if self.indiClient.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                     self.tryConnectionCounter = 0
                     self.appRunning = True
                 else:
-                    self.indiClient.connect(self.host, self.port)
                     self.tryConnectionCounter += 1
                     self.appRunning = False
                     self.cameraConnected = False

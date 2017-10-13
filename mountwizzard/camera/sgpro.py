@@ -27,8 +27,8 @@ class SGPro(MWCamera):
         super(SGPro, self).__init__(app)
         self.host = '127.0.0.1'
         self.port = 59590
-        self.ipSGProBase = 'http://localhost:59590'
-        self.ipSGPro = 'http://localhost:59590/json/reply/'
+        self.ipSGProBase = 'http://' + self.host + ':' + str(self.port)
+        self.ipSGPro = 'http://' + self.host + ':' + str(self.port) + '/json/reply/'
         self.captureImagePath = 'SgCaptureImage'
         self.connectDevicePath = 'SgConnectDevicePath'
         self.disconnectDevicePath = 'SgDisconnectDevicePath'

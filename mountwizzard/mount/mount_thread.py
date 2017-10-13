@@ -409,7 +409,7 @@ class Mount(PyQt5.QtCore.QThread):
         if alignModel['azimuthKnobs'] > 0:
             value = '{0:2.2f} left'.format(abs(alignModel['azimuthKnobs']))
         else:
-            value = '{0:2.2f} left'.format(abs(alignModel['azimuthKnobs']))
+            value = '{0:2.2f} right'.format(abs(alignModel['azimuthKnobs']))
         self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAz', 'Value': '{0}'.format(value)})
         if alignModel['altitudeKnobs'] > 0:
             value = '{0:2.2f} down'.format(abs(alignModel['altitudeKnobs']))
@@ -569,20 +569,21 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
-        pressure = float(self.app.ui.le_pressure.text() + '0')
-        temperature = float(self.app.ui.le_temperature.text() + '0')
-        if self.app.environment.connected == 1:
-            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
-                self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressure.text())))
-                if temperature > 0:
-                    self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperature.text())))
+        if self.app.ui.le_pressure.text() != '---' and self.app.ui.le_temperature.text() != '---':
+            pressure = float(self.app.ui.le_pressure.text() + '0')
+            temperature = float(self.app.ui.le_temperature.text() + '0')
+            if self.app.environment.connected == 1:
+                if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
+                    self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressure.text())))
+                    if temperature > 0:
+                        self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperature.text())))
+                    else:
+                        self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperature.text())))
+                    self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
+                    self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
                 else:
-                    self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperature.text())))
-                self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
-                self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
-            else:
-                # todo : better check before writing warning
-                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
+                    # todo : better check before writing warning
+                    self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.mountHandler.sendCommand('GS')

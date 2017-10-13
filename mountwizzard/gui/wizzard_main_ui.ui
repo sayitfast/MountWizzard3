@@ -2257,6 +2257,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="text">
+      <string>---</string>
+     </property>
      <property name="maxLength">
       <number>8</number>
      </property>
@@ -2346,6 +2349,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="maxLength">
       <number>8</number>
@@ -2551,6 +2557,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="text">
+      <string>---</string>
+     </property>
      <property name="maxLength">
       <number>8</number>
      </property>
@@ -2592,6 +2601,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="maxLength">
       <number>8</number>
@@ -2683,6 +2695,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="text">
+      <string>---</string>
+     </property>
      <property name="maxLength">
       <number>8</number>
      </property>
@@ -2748,6 +2763,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="maxLength">
       <number>8</number>
@@ -2987,6 +3005,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="text">
+      <string>---</string>
+     </property>
      <property name="maxLength">
       <number>8</number>
      </property>
@@ -3052,6 +3073,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="maxLength">
       <number>8</number>
@@ -3418,6 +3442,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="maxLength">
       <number>8</number>
@@ -4062,22 +4089,6 @@ color: rgb(255,255,255);</string>
       <string>Open Modeling Plot Window</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_sortRefinementPoints">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>270</y>
-       <width>251</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Sort the order of modeling points. East-West-Low-High Altitude</string>
-     </property>
-     <property name="text">
-      <string>Sort Points East/West Side of Pier</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_generateGridPoints">
      <property name="geometry">
       <rect>
@@ -4272,22 +4283,6 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="text">
       <string>Run Refinement Model only</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_deleteBelowHorizonLine">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>230</y>
-       <width>251</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Delete all points below the horizon line from horizone file</string>
-     </property>
-     <property name="text">
-      <string>Delete all Points below Horizon Mask</string>
      </property>
     </widget>
     <widget class="Line" name="line_26">
@@ -4925,6 +4920,48 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="text">
       <string>Open Image Window</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>240</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Delete points below horizon mask</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkSortPoints">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>270</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Sort points East / West</string>
      </property>
     </widget>
    </widget>
@@ -11646,8 +11683,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_plateSolveSync</tabstop>
   <tabstop>btn_openModelingPlotWindow</tabstop>
   <tabstop>btn_deletePoints</tabstop>
-  <tabstop>btn_deleteBelowHorizonLine</tabstop>
-  <tabstop>btn_sortRefinementPoints</tabstop>
   <tabstop>btn_clearAlignmentModel</tabstop>
   <tabstop>btn_runCheckModel</tabstop>
   <tabstop>btn_cancelModel</tabstop>

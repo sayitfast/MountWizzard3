@@ -15,39 +15,52 @@ class QtINDIClient(QtCore.QObject):
     logger = logging.getLogger(__name__)
     received = QtCore.pyqtSignal(object)
 
-    def __init__(self, host, port, **kwds):
+    def __init__(self, **kwds):
         super().__init__(**kwds)
 
         self.device = None
         self.message_string = ""
         self.socket = QtNetwork.QTcpSocket()
-        self.socket.disconnected.connect(self.handleDisconnect)
+        self.socket.hostFound.connect(self.handleHostFound)
+        self.socket.connected.connect(self.handleConnected)
         self.socket.readyRead.connect(self.handleReadyRead)
-        self.socket.error.connect(self.handleError)
         self.socket.stateChanged.connect(self.handleStateChanged)
-
-        self.connect(host, port)
+        self.socket.disconnected.connect(self.handleDisconnect)
+        self.socket.error.connect(self.handleError)
 
     def connect(self, host, port):
-        if self.socket is not None:
-            self.socket.disconnectFromHost()
+        state = self.socket.state()
+        print(state)
+        if state == QtNetwork.QAbstractSocket.UnconnectedState:
+            print('connectToHost')
             self.socket.connectToHost(host, port)
+        if state == QtNetwork.QAbstractSocket.ConnectingState:
+            pass
+        if state == QtNetwork.QAbstractSocket.ConnectedState:
+            pass
 
     def disconnect(self):
-        if self.socket is not None:
-            self.socket.disconnectFromHost()
+        self.socket.disconnectFromHost()
+
+    def handleHostFound(self):
+        pass
+
+    def handleConnected(self):
+        pass
 
     def handleError(self, socketError):
+        print("The following error occurred: {0}".format(self.socket.errorString()))
         if socketError == QtNetwork.QAbstractSocket.RemoteHostClosedError:
-            print('remote closed')
+            pass
         else:
-            print("The following error occurred: {0}".format(self.socket.errorString()))
+            pass
 
     def handleStateChanged(self):
+        print('State changed: {0}'.format(self.socket.state()))
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
-            print('connected to host')
+            pass
         else:
-            print('not connected to host')
+            pass
 
     def handleDisconnect(self):
         print('disconnected')

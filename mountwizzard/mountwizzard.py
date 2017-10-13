@@ -175,8 +175,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.mountCommandQueue.put('RunTargetRMSAlignment'))
         self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.mountCommandQueue.put('DeleteWorstPoint'))
-        self.ui.btn_sortRefinementPoints.clicked.connect(lambda: self.modelCommandQueue.put('SortRefinementPoints'))
-        self.ui.btn_deleteBelowHorizonLine.clicked.connect(lambda: self.modelCommandQueue.put('DeleteBelowHorizonLine'))
         self.ui.btn_plateSolveSync.clicked.connect(lambda: self.modelCommandQueue.put('PlateSolveSync'))
         self.ui.btn_deletePoints.clicked.connect(lambda: self.modelCommandQueue.put('DeletePoints'))
         self.ui.btn_flipMount.clicked.connect(lambda: self.mountCommandQueue.put('FLIP'))
@@ -798,16 +796,26 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red;}')
 
     def fillEnvironmentData(self, data):
-        self.ui.le_dewPoint.setText('{0:4.1f}'.format(data['DewPoint']))
-        self.ui.le_temperature.setText('{0:4.1f}'.format(data['Temperature']))
-        self.ui.le_humidity.setText('{0:4.1f}'.format(data['Humidity']))
-        self.ui.le_pressure.setText('{0:4.1f}'.format(data['Pressure']))
-        self.ui.le_cloudCover.setText('{0:4.1f}'.format(data['CloudCover']))
-        self.ui.le_rainRate.setText('{0:4.1f}'.format(data['RainRate']))
-        self.ui.le_windSpeed.setText('{0:4.1f}'.format(data['WindSpeed']))
-        self.ui.le_windDirection.setText('{0:4.1f}'.format(data['WindDirection']))
-        self.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
-        self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
+        for value in data:
+            if value == 'DewPoint':
+                self.ui.le_dewPoint.setText('{0:4.1f}'.format(data['DewPoint']))
+            elif value == 'Temperature':
+                self.ui.le_temperature.setText('{0:4.1f}'.format(data['Temperature']))
+            elif value == 'Humidity':
+                self.ui.le_humidity.setText('{0:4.1f}'.format(data['Humidity']))
+            elif value == 'Pressure':
+                self.ui.le_pressure.setText('{0:4.1f}'.format(data['Pressure']))
+            elif value == 'CloudCover':
+                self.ui.le_cloudCover.setText('{0:4.1f}'.format(data['CloudCover']))
+            elif value == 'RainRate':
+                self.ui.le_rainRate.setText('{0:4.1f}'.format(data['RainRate']))
+            elif value == 'WindSpeed':
+                self.ui.le_windSpeed.setText('{0:4.1f}'.format(data['WindSpeed']))
+            elif value == 'WindDirection':
+                self.ui.le_windDirection.setText('{0:4.1f}'.format(data['WindDirection']))
+            elif value == 'SQR':
+                self.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
+                self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
 
     @QtCore.Slot(int)
     def setCameraPlateStatus(self, status):
@@ -889,7 +897,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.12 beta'
+    BUILD_NO = '2.5.13 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()

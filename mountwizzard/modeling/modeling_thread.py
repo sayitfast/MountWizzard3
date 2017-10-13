@@ -100,6 +100,10 @@ class Modeling(PyQt5.QtCore.QThread):
         try:
             if 'ImagingApplication' in self.app.config:
                 self.app.ui.pd_chooseImagingApp.setCurrentIndex(int(self.app.config['ImagingApplication']))
+            if 'CheckSortPoints' in self.app.config:
+                self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
+            if 'CheckDeletePointsHorizonMask' in self.app.config:
+                self.app.ui.checkDeletePointsHorizonMask.setChecked(self.app.config['CheckDeletePointsHorizonMask'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -108,6 +112,8 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApp.currentIndex()
+        self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
+        self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
 
     def chooseImagingApp(self):
         self.chooserLock.acquire()
@@ -211,16 +217,28 @@ class Modeling(PyQt5.QtCore.QThread):
                                                        int(float(self.app.ui.numberHoursPreview.value())),
                                                        copy.copy(self.app.mount.ra),
                                                        copy.copy(self.app.mount.dec))
+                    if self.app.ui.checkSortPoints.isChecked():
+                        self.modelpoints.sortPoints('refinement')
+                    if self.app.ui.checkDeletePointsHorizonMask.isChecked():
+                        self.modelpoints.deleteBelowHorizonLine()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)
                 elif command == 'GenerateDensePoints':
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)
                     self.modelpoints.generateDensePoints()
+                    if self.app.ui.checkSortPoints.isChecked():
+                        self.modelpoints.sortPoints('refinement')
+                    if self.app.ui.checkDeletePointsHorizonMask.isChecked():
+                        self.modelpoints.deleteBelowHorizonLine()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)
                 elif command == 'GenerateNormalPoints':
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)
                     self.modelpoints.generateNormalPoints()
+                    if self.app.ui.checkSortPoints.isChecked():
+                        self.modelpoints.sortPoints('refinement')
+                    if self.app.ui.checkDeletePointsHorizonMask.isChecked():
+                        self.modelpoints.deleteBelowHorizonLine()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
                 else:
@@ -230,9 +248,10 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.signalModelRedraw.emit(True)
             elif command == 'LoadRefinementPoints':
                 self.modelpoints.loadRefinementPoints(self.app.ui.le_modelPointsFileName.text())
-                self.signalModelRedraw.emit(True)
-            elif command == 'SortRefinementPoints':
-                self.modelpoints.sortPoints('refinement')
+                if self.app.ui.checkSortPoints.isChecked():
+                    self.modelpoints.sortPoints('refinement')
+                if self.app.ui.checkDeletePointsHorizonMask.isChecked():
+                    self.modelpoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
             elif command == 'GenerateGridPoints':
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
@@ -240,14 +259,15 @@ class Modeling(PyQt5.QtCore.QThread):
                                                     int(float(self.app.ui.numberGridPointsCol.value())),
                                                     int(float(self.app.ui.altitudeMin.value())),
                                                     int(float(self.app.ui.altitudeMax.value())))
+                if self.app.ui.checkSortPoints.isChecked():
+                    self.modelpoints.sortPoints('refinement')
+                if self.app.ui.checkDeletePointsHorizonMask.isChecked():
+                    self.modelpoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
             elif command == 'GenerateBasePoints':
                 self.modelpoints.generateBasePoints(float(self.app.ui.azimuthBase.value()),
                                                     float(self.app.ui.altitudeBase.value()))
-                self.signalModelRedraw.emit(True)
-            elif command == 'DeleteBelowHorizonLine':
-                self.modelpoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
             elif command == 'DeletePoints':
                 self.modelpoints.deletePoints()
