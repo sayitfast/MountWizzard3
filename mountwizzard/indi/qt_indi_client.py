@@ -6,20 +6,31 @@ in the context of a PyQt application.
 
 """
 import logging
+from queue import Queue
 from xml.etree import ElementTree
-from PyQt5 import QtCore, QtNetwork
+import PyQt5
+from PyQt5 import QtCore, QtNetwork, QtWidgets
 import indi.indi_xml as indiXML
+import time
 
 
-class QtINDIClient(QtCore.QObject):
+class QtINDIClient(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)
     received = QtCore.pyqtSignal(object)
 
-    def __init__(self, **kwds):
-        super().__init__(**kwds)
+    def __init__(self, ekos, host, port):
+        super().__init__()
 
+        self.INDIsendQueue = Queue()
         self.device = None
+        self.ekos = ekos
         self.message_string = ""
+        self.socket = None
+        self.host = host
+        self.port = port
+        self.connected = False
+
+    def run(self):
         self.socket = QtNetwork.QTcpSocket()
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
@@ -27,47 +38,40 @@ class QtINDIClient(QtCore.QObject):
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
+        self.socket.connectToHost(self.host, self.port)
 
-    def connect(self, host, port):
-        state = self.socket.state()
-        print(state)
-        if state == QtNetwork.QAbstractSocket.UnconnectedState:
-            print('connectToHost')
-            self.socket.connectToHost(host, port)
-        if state == QtNetwork.QAbstractSocket.ConnectingState:
-            pass
-        if state == QtNetwork.QAbstractSocket.ConnectedState:
-            pass
+        while True:
+            while not self.INDIsendQueue.empty():
+                indi_command = self.INDIsendQueue.get()
+                self.sendMessage(indi_command)
+            QtWidgets.QApplication.processEvents()
+            time.sleep(0.5)
+            if not self.connected and self.socket.state() == 0:
+                self.socket.connectToHost(self.host, self.port)
+        self.terminate()
 
-    def disconnect(self):
-        self.socket.disconnectFromHost()
+    def stop(self):
+        pass
 
     def handleHostFound(self):
         pass
 
     def handleConnected(self):
-        pass
+        self.connected = True
+        self.ekos.runConnected()
 
     def handleError(self, socketError):
-        print("The following error occurred: {0}".format(self.socket.errorString()))
-        if socketError == QtNetwork.QAbstractSocket.RemoteHostClosedError:
-            pass
-        else:
-            pass
+        print(socketError)
+        self.logger.error(self.socket.errorString())
 
     def handleStateChanged(self):
-        print('State changed: {0}'.format(self.socket.state()))
-        if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
-            pass
-        else:
-            pass
+        pass
 
     def handleDisconnect(self):
-        print('disconnected')
-        self.socket.close()
+        self.socket.disconnectFromHost()
+        self.connected = False
 
     def handleReadyRead(self):
-        print('read')
         # Add starting tag if this is new message.
         if len(self.message_string) == 0:
             self.message_string = "<data>"
@@ -75,7 +79,6 @@ class QtINDIClient(QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable():
 
-            # FIXME: This does not work with Python2.
             tmp = str(self.socket.read(1000000), "ascii")
             self.message_string += tmp
 

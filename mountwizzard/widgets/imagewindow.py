@@ -228,7 +228,7 @@ class ImagesWindow(widget.MwWidget):
         param = {'speed': 'HiSpeed',
                  'file': 'test.fit',
                  }
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.cpObject.getCameraProps()
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.imagingHandler.getCameraProps()
         param['gainValue'] = gainValue
         param['binning'] = self.app.ui.cameraBin.value()
         param['exposure'] = self.app.ui.cameraExposure.value()

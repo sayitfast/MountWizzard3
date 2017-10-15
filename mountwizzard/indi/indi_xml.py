@@ -29,17 +29,15 @@ Notes:
 
 import base64
 import numbers
+import logging
 from xml.etree import ElementTree
-
-
-class IndiXMLException(Exception):
-    pass
 
 
 class INDIBase(object):
     """
     INDI command base classes.
     """
+    logger = logging.getLogger(__name__)
 
     def __init__(self, etype, value, attr_dict, etree):
         self.etype = etype
@@ -105,7 +103,7 @@ class INDIElement(INDIBase):
             if etree.text is not None:
                 self.value = etree.text.strip()
             else:
-                print("Got None for", self.etype)
+                self.logger.warning('Got None for {0}'.format(self.etype))
 
     def __str__(self):
         base_str = INDIBase.__str__(self)

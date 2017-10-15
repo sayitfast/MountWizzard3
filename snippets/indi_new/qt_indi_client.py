@@ -1,16 +1,13 @@
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 """
-
 A PyQt5 (client) interface to an INDI server. This will only work
 in the context of a PyQt application.
-
 """
 
 from xml.etree import ElementTree
 from PyQt5 import QtCore, QtNetwork
 
-
-import indi.indi_xml as indiXML
+import snippets.indi_new.indi_xml as indiXML
 
 
 class QtINDIClientException(Exception):
@@ -18,43 +15,69 @@ class QtINDIClientException(Exception):
 
 
 class QtINDIClient(QtCore.QObject):
-    received = QtCore.pyqtSignal(object)
+    received = QtCore.pyqtSignal(object)  # Received messages as INDI Python objects.
 
     def __init__(self,
-                 address=QtNetwork.QHostAddress('192.168.2.163'),
+                 host='192.168.2.164',
                  port=7624,
+                 verbose=True,
                  **kwds):
         super().__init__(**kwds)
 
         self.device = None
         self.message_string = ""
+        self.host = host
+        self.port = port
+        self.connected = False
 
         # Create socket.
         self.socket = QtNetwork.QTcpSocket()
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
 
-        # Connect to socket.
-        self.socket.connectToHost(address, port)
-        if not self.socket.waitForConnected():
-            raise QtINDIClientException("Cannot connect to indiserver at " + address + ", port " + str(port))
+        self.socket.hostFound.connect(self.handleHostFound)
+        self.socket.connected.connect(self.handleConnected)
+        self.socket.stateChanged.connect(self.handleStateChanged)
+        self.socket.error.connect(self.handleError)
 
-    def disconnect(self):
-        if self.socket is not None:
-            self.socket.disconnectFromHost()
+        # if not self.socket.waitForConnected():
+        #    print("Cannot connect to indiserver at " + address + ", port " + str(port))
 
     def handleDisconnect(self):
-        self.socket = None
+        print('handleDisconnect')
+        self.connected = False
+        self.socket.disconnectFromHost()
+
+    def handleHostFound(self):
+        print('handleHostFound')
+
+    def handleConnected(self):
+        print('handleConnected')
+        print("Connect to indiserver at " + self.host + ", port " + str(self.port))
+        self.connected = True
+
+    def handleError(self, socketError):
+        print("The following error occurred: {0}".format(self.socket.errorString()))
+        if socketError == QtNetwork.QAbstractSocket.RemoteHostClosedError:
+            pass
+        else:
+            pass
+
+    def handleStateChanged(self):
+        print('State changed: {0}'.format(self.socket.state()))
+        if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
+            pass
+        else:
+            pass
 
     def handleReadyRead(self):
 
         # Add starting tag if this is new message.
-        if len(self.message_string) == 0:
+        if (len(self.message_string) == 0):
             self.message_string = "<data>"
 
         # Get message from socket.
         while self.socket.bytesAvailable():
-
             # FIXME: This does not work with Python2.
             tmp = str(self.socket.read(1000000), "ascii")
             self.message_string += tmp
@@ -71,7 +94,7 @@ class QtINDIClient(QtCore.QObject):
 
                 # Filter message is self.device is not None.
                 if self.device is not None:
-                    if self.device == xml_message.getAttr("device"):
+                    if (self.device == xml_message.getAttr("device")):
                         self.received.emit(xml_message)
 
                 # Otherwise just send them all.
@@ -86,13 +109,13 @@ class QtINDIClient(QtCore.QObject):
         self.device = device
 
     def sendMessage(self, indi_command):
-        if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
+        if (self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState):
             self.socket.write(indi_command.toXML() + b'\n')
         else:
-            raise QtINDIClientException("Socket is not connected.")
+            print("Socket is not connected.")
 
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
 
     import sys
     import time
@@ -108,32 +131,33 @@ if __name__ == "__main__":
             self.client = QtINDIClient()
             self.client.received.connect(self.handleReceived)
 
-        @staticmethod
-        def handleReceived(message):
-            print(message, 'test')
+        def handleReceived(self, message):
+            print(message)
 
         def send(self, message):
             self.client.sendMessage(message)
+
 
     app = QtWidgets.QApplication(sys.argv)
     widget = Widget()
     widget.show()
 
     # Get a list of devices.
-    widget.send(indiXML.clientGetProperties(indi_attr={"version": "1.0"}))
-    time.sleep(1)
+    # widget.send(indiXML.clientGetProperties(indi_attr={"version": "1.0"}))
 
     # Connect to the CCD simulator.
-    widget.send(indiXML.newSwitchVector([indiXML.oneSwitch("On", indi_attr={"name": "CONNECT"})], indi_attr={"name": "CONNECTION", "device": "CCD Simulator"}))
-    time.sleep(1)
+    # widget.send(indiXML.newSwitchVector([indiXML.oneSwitch("On", indi_attr={"name": "CONNECT"})], indi_attr={"name": "CONNECTION", "device": "CCD Simulator"}))
 
-    if True:
-        # Enable BLOB mode.
-        widget.send(indiXML.enableBLOB("Also", indi_attr={"device": "CCD Simulator"}))
+    while True:
         time.sleep(1)
+        QtWidgets.QApplication.processEvents()
+        if not widget.client.connected and widget.client.socket.state() == 0:
+            print('try to connect to', widget.client.host)
+            widget.client.socket.connectToHost(widget.client.host, widget.client.port)
+        # Enable BLOB mode.
+        # widget.send(indiXML.enableBLOB("Also", indi_attr={"device": "CCD Simulator"}))
 
         # Request image.
-        widget.send(indiXML.newNumberVector([indiXML.oneNumber(1, indi_attr={"name": "CCD_EXPOSURE_VALUE"})], indi_attr={"name": "CCD_EXPOSURE", "device": "CCD Simulator"}))
-        time.sleep(1)
+        # widget.send(indiXML.newNumberVector([indiXML.oneNumber(1, indi_attr={"name": "CCD_EXPOSURE_VALUE"})], indi_attr={"name": "CCD_EXPOSURE", "device": "CCD Simulator"}))
 
     sys.exit(app.exec_())

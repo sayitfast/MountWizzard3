@@ -67,7 +67,7 @@ class Modeling(PyQt5.QtCore.QThread):
             self.TheSkyX = theskyx.TheSkyX(self.app)
         # make non windows applications available
         self.NoneCam = none.NoneCamera(self.app)
-        self.Ekos = ekos.EKOSCamera(self.app)
+        self.Ekos = ekos.EKOS(self.app)
         # select default application
         self.imagingHandler = self.NoneCam
         # assign support classes
@@ -278,7 +278,7 @@ class Modeling(PyQt5.QtCore.QThread):
             elif command == 'CancelAnalyseModel':
                 # todo: send cancel to model run
                 self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)
-            if self.counter % 10 == 0:                                                                                       # standard cycles in modeling thread fast
+            if self.counter % 5 == 0:                                                                                       # standard cycles in modeling thread fast
                 self.getStatusFast()                                                                                        # calling fast part of status
             if self.counter % 20 == 0:                                                                                      # standard cycles in modeling thread slow
                 self.getStatusSlow()                                                                                        # calling slow part of status
@@ -291,16 +291,16 @@ class Modeling(PyQt5.QtCore.QThread):
         self.wait()
 
     def getStatusFast(self):                                                                                                # check app is running
+        pass
+
+    def getStatusSlow(self):                                                                                                # fast status
         self.imagingHandler.checkAppStatus()
         self.imagingHandler.getCameraStatus()
         self.signalModelConnected.emit(1)                                                                                   # send status to GUI
         if self.imagingHandler.appRunning:
             self.signalModelConnected.emit(2)                                                                               # send status to GUI
         if self.imagingHandler.cameraConnected:
-            self.signalModelConnected.emit(3)                                                                               # send status to GUI
-
-    def getStatusSlow(self):                                                                                                # fast status
-        pass
+            self.signalModelConnected.emit(3)
 
     @staticmethod
     def timeStamp():

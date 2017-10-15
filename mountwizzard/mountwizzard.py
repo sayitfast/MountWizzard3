@@ -112,7 +112,6 @@ class MountWizzardApp(widget.MwWidget):
             self.data.start()                                                                                               # starting data thread
         self.environment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)                                      # status from thread
         self.environment.start()                                                                                            # starting polling thread
-
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
         self.modeling.start()                                                                                               # starting polling thread
         self.mappingFunctions()                                                                                             # mapping the functions to ui
@@ -897,7 +896,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.13 beta'
+    BUILD_NO = '2.5.14 beta'
 
     # from snippets.parallel.model import NEWMODEL
     # test = NEWMODEL()
