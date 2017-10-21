@@ -58,6 +58,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.driverNameCCD = ''
         self.driverNameTelescope = ''
         self.connected = False
+        self.receivedImage = False
         self.app.ui.le_INDIServerIP.textChanged.connect(self.INDIServerIP)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.INDIServerPort)
         self.initConfig()
@@ -154,11 +155,13 @@ class INDIClient(PyQt5.QtCore.QObject):
             if device == self.driverNameCCD:
                 name = message.attr['name']
                 if name == 'CCD1':
-                    if 'size' in message.getElt(0).attr:
-                        imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
-                        imageHeader = imageHDU[0].header
-                        for key in imageHeader.keys():
-                           print(key)
+                    if 'format' in message.getElt(0).attr:
+                        if message.getElt(0).attr['format'] == '.fits':
+                            imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                            imageHDU.writeto('c:/temp/t3.fit')
+                        else:
+                            self.logger.warning('image file is not in raw fits format')
+                        self.receivedImage = True
 
         elif isinstance(message, indiXML.DelProperty):
             device = message.attr['device']

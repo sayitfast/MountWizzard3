@@ -14,6 +14,8 @@
 import logging
 from baseclasses.camera import MWCamera
 import indi.indi_xml as indiXML
+import time
+import PyQt5
 
 
 class INDICamera(MWCamera):
@@ -50,22 +52,27 @@ class INDICamera(MWCamera):
 
     def connectCamera(self):
         if self.appRunning and self.app.INDIworker.driverNameCCD != '':
-            self.app.INDIsendQueue.put(indiXML.setSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
     def disconnectCamera(self):
         if self.cameraConnected:
-            self.app.INDIsendQueue.put(
-                indiXML.setSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
     def getImage(self, modelData):
         if self.cameraConnected and self.app.INDIworker.driverNameCCD != '':
+            self.app.INDIworker.receivedImage = False
             # Enable BLOB mode.
             self.app.INDIsendQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.INDIworker.driverNameCCD}))
+            # set to raw - no compression mode
+            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_RAW'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.INDIworker.driverNameCCD}))
             # Request image.
             self.app.INDIsendQueue.put(indiXML.newNumberVector([indiXML.oneNumber(10, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})], indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.INDIworker.driverNameCCD}))
             print('start')
             self.imagingStarted = True
-        modelData['imagepath'] = 'c:/temp/t2.fit'
+            while not self.app.INDIworker.receivedImage:
+                PyQt5.QtWidgets.QApplication.processEvents()
+                time.sleep(0.1)
+        modelData['imagepath'] = 'c:/temp/t3.fit'
         return True, 'OK', modelData
 
     def solveImage(self, modelData):
