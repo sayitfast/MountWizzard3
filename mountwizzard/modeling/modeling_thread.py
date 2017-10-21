@@ -33,7 +33,7 @@ import pyfits
 from analyse.analysedata import Analyse
 # cameras
 from camera import none
-from camera import ekos
+from camera import indicamera
 if platform.system() == 'Windows':
     from camera import maximdl
     from camera import sgpro
@@ -67,7 +67,7 @@ class Modeling(PyQt5.QtCore.QThread):
             self.TheSkyX = theskyx.TheSkyX(self.app)
         # make non windows applications available
         self.NoneCam = none.NoneCamera(self.app)
-        self.Ekos = ekos.EKOS(self.app)
+        self.INDICamera = indicamera.INDICamera(self.app)
         # select default application
         self.imagingHandler = self.NoneCam
         # assign support classes
@@ -87,8 +87,8 @@ class Modeling(PyQt5.QtCore.QThread):
     def initConfig(self):
         if self.NoneCam.appAvailable:
             self.app.ui.pd_chooseImagingApp.addItem('No Application')
-        if self.Ekos.appAvailable:
-            self.app.ui.pd_chooseImagingApp.addItem('EKOS INDI Server')
+        if self.INDICamera.appAvailable:
+            self.app.ui.pd_chooseImagingApp.addItem('INDI Camera')
         if platform.system() == 'Windows':
             if self.SGPro.appAvailable:
                 self.app.ui.pd_chooseImagingApp.addItem('SGPro - ' + self.SGPro.appName)
@@ -122,9 +122,9 @@ class Modeling(PyQt5.QtCore.QThread):
         if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
             self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
-        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('EKOS'):
-            self.imagingHandler = self.Ekos
-            self.logger.info('actual camera / plate solver is EKOS INDI Server')
+        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('INDI Camera'):
+            self.imagingHandler = self.INDICamera
+            self.logger.info('actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
             self.imagingHandler = self.SGPro
             self.logger.info('actual camera / plate solver is SGPro')
@@ -291,9 +291,6 @@ class Modeling(PyQt5.QtCore.QThread):
         self.wait()
 
     def getStatusFast(self):                                                                                                # check app is running
-        pass
-
-    def getStatusSlow(self):                                                                                                # fast status
         self.imagingHandler.checkAppStatus()
         self.imagingHandler.getCameraStatus()
         self.signalModelConnected.emit(1)                                                                                   # send status to GUI
@@ -301,6 +298,9 @@ class Modeling(PyQt5.QtCore.QThread):
             self.signalModelConnected.emit(2)                                                                               # send status to GUI
         if self.imagingHandler.cameraConnected:
             self.signalModelConnected.emit(3)
+
+    def getStatusSlow(self):
+        pass
 
     @staticmethod
     def timeStamp():

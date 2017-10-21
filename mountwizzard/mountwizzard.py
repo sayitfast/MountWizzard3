@@ -54,6 +54,7 @@ from mount import mount_thread
 from relays import relays
 from remote import remote_thread
 from dome import dome_thread
+from indi import indi_client
 
 if platform.system() == 'Windows':
     from automation import upload_thread
@@ -82,6 +83,8 @@ class MountWizzardApp(widget.MwWidget):
         self.imageQueue = Queue()
         self.environmentQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
+        self.INDIsendQueue = Queue()
+        self.INDIDataQueue = Queue()                                                                                        # queue for sending data back to gui
         self.config = self.loadConfig()                                                                                     # load configuration
         self.ui = wizzard_main_ui.Ui_MainWindow()                                                                           # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
@@ -90,6 +93,18 @@ class MountWizzardApp(widget.MwWidget):
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
         self.dome = dome_thread.Dome(self)                                                                                  # dome control
+        # 1 - create Worker and Thread inside the Form
+        self.INDIworker = indi_client.INDIClient(self)
+        self.INDIthread = QThread()
+        # 2 - Connect Worker`s Signals to Form method slots to post data.
+        self.INDIworker.received.connect(self.INDIworker.handleReceived)
+        # 3 - Move the Worker object to the Thread object
+        self.INDIworker.moveToThread(self.INDIthread)
+        # 4 - Connect Worker Signals to the Thread slots
+        # self.INDIworker.finished.connect(self.INDIthread.quit)
+        # 5 - Connect Thread started signal to Worker operational slot method
+        self.INDIthread.started.connect(self.INDIworker.run)
+        self.INDIworker.status.connect(self.setINDIStatus)
         self.environment = environ_thread.Environment(self)
         if platform.system() == 'Windows':
             self.data = upload_thread.DataUploadToMount(self)                                                               # data thread for downloading topics
@@ -114,6 +129,8 @@ class MountWizzardApp(widget.MwWidget):
         self.environment.start()                                                                                            # starting polling thread
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
         self.modeling.start()                                                                                               # starting polling thread
+        # 6 - Start the thread
+        self.INDIthread.start()
         self.mappingFunctions()                                                                                             # mapping the functions to ui
         self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
         self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
@@ -525,6 +542,7 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
         self.relays.storeConfig()
+        self.INDIworker.storeConfig()
         try:
             if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
                 os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
@@ -659,9 +677,28 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
         self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
         self.mountCommandQueue.put('MA')                                                                                         # start Slewing
-    #
-    # mount handling
-    #
+
+    @QtCore.Slot(int)
+    def setINDIStatus(self, status):
+        if status == 0:
+            self.ui.le_INDIStatus.setText('UnconnectedState')
+        elif status == 1:
+            self.ui.le_INDIStatus.setText('HostLookupState')
+        elif status == 2:
+            self.ui.le_INDIStatus.setText('ConnectingState')
+        elif status == 3:
+            self.ui.le_INDIStatus.setText('ConnectedState')
+        elif status == 6:
+            self.ui.le_INDIStatus.setText('ClosingState')
+        else:
+            self.ui.le_INDIStatus.setText('Error')
+
+    @QtCore.Slot(dict)
+    def fillINDIData(self, data):
+        if data['Name'] == 'Telescope':
+            self.ui.le_INDITelescope.setText(data['value'])
+        elif data['Name'] == 'CCD':
+            self.ui.le_INDICCD.setText(data['value'])
 
     @QtCore.Slot(bool)
     def setMountStatus(self, status):
@@ -844,6 +881,9 @@ class MountWizzardApp(widget.MwWidget):
         while not self.environmentQueue.empty():
             data = self.environmentQueue.get()
             self.fillEnvironmentData(data)
+        while not self.INDIDataQueue.empty():
+            data = self.INDIDataQueue.get()
+            self.fillINDIData(data)
         while not self.messageQueue.empty():
             text = self.messageQueue.get()
             self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')
@@ -905,7 +945,7 @@ if __name__ == "__main__":
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)                                                     # define log handler
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(funcName)20s] - %(message)s',
+                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')                                                    # define log format
 
     if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
