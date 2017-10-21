@@ -1,6 +1,7 @@
 # Changelog
 2.5.14
--
+- updated indi functions
+- refactored indi client
 
 2.5.13
 - changed behaviour environment

@@ -32,7 +32,7 @@ use('Qt5Agg')
 # when using multiple embedded plots in different windows you should use figure instead of pyplot, because the state
 # machine from pyplot mixed multiple instances up.
 from matplotlib import figure as figure
-from matplotlib.colors import LogNorm
+from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
@@ -138,22 +138,37 @@ class ImagesWindow(widget.MwWidget):
             self.strechHigh()
 
     def strechLow(self):
-        self.imageVmin = numpy.min(self.image) * 1 + 1
-        self.imageVmax = max(numpy.var(self.image) / 1.41, self.imageVmin + 1)
-        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        image_new = self.loggray(self.image)
+        self.imageVmin = numpy.min(image_new)
+        self.imageVmax = numpy.max(image_new)
+        self.imageWidget.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
         self.imageWidget.draw()
 
     def strechMid(self):
-        self.imageVmin = numpy.min(self.image) * 0.95 + 1
-        self.imageVmax = max(numpy.var(self.image) / 4, self.imageVmin + 1)
-        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        image_new = self.loggray(self.image, a=numpy.min(self.image) * 1.25, b=numpy.max(self.image) * 0.8)
+        self.imageVmin = numpy.min(image_new)
+        self.imageVmax = numpy.max(image_new)
+        self.imageWidget.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
         self.imageWidget.draw()
 
     def strechHigh(self):
-        self.imageVmin = numpy.min(self.image) * 0.9 + 1
-        self.imageVmax = max(numpy.var(self.image) / 8, self.imageVmin + 1)
-        self.imageWidget.axes.imshow(self.image, cmap=self.cmapColor, norm=LogNorm(self.imageVmin, self.imageVmax))
+        image_new = self.loggray(self.image, a=numpy.min(self.image) * 1.5, b=numpy.max(self.image) * 0.66)
+        self.imageVmin = numpy.min(image_new)
+        self.imageVmax = numpy.max(image_new)
+        self.imageWidget.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
         self.imageWidget.draw()
+
+    def loggray(self, x, a=None, b=None):
+        """
+        Auxiliary function that specifies the logarithmic gray scale.
+        a and b are the cutoffs : if not specified, min and max are used
+        """
+        if not a:
+            a = numpy.min(x)
+        if not b:
+            b = numpy.max(x)
+        linval = 10.0 + 990.0 * (x - float(a)) / (b - a)
+        return (numpy.log10(linval) - 1.0) * 0.5 * 255.0
 
     def setZoom(self):
         if self.ui.btn_size25.isChecked():
@@ -244,6 +259,9 @@ class ImagesWindow(widget.MwWidget):
         param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
         suc, mes, param = self.app.modeling.imagingHandler.getImage(param)
         self.showFitsImage(param['imagepath'])
+        '''
+        self.showFitsImage('c:/temp/t2.fit')
+        '''
 
     def exposeContinuous(self):
         pass
