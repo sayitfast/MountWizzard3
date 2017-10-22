@@ -93,16 +93,10 @@ class MountWizzardApp(widget.MwWidget):
         self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
         self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
         self.dome = dome_thread.Dome(self)                                                                                  # dome control
-        # 1 - create Worker and Thread inside the Form
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = QThread()
-        # 2 - Connect Worker`s Signals to Form method slots to post data.
-        self.INDIworker.received.connect(self.INDIworker.handleReceived)
-        # 3 - Move the Worker object to the Thread object
         self.INDIworker.moveToThread(self.INDIthread)
-        # 4 - Connect Worker Signals to the Thread slots
         # self.INDIworker.finished.connect(self.INDIthread.quit)
-        # 5 - Connect Thread started signal to Worker operational slot method
         self.INDIthread.started.connect(self.INDIworker.run)
         self.INDIworker.status.connect(self.setINDIStatus)
         self.environment = environ_thread.Environment(self)

@@ -28,7 +28,6 @@ import pyfits
 
 class INDIClient(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    received = QtCore.pyqtSignal(object)
     status = QtCore.pyqtSignal(int)
 
     GENERAL_INTERFACE = 0
@@ -59,6 +58,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.driverNameTelescope = ''
         self.connected = False
         self.receivedImage = False
+        self.imagePath = ''
         self.app.ui.le_INDIServerIP.textChanged.connect(self.INDIServerIP)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.INDIServerPort)
         self.initConfig()
@@ -116,7 +116,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                 indi_command = self.app.INDIsendQueue.get()
                 self.sendMessage(indi_command)
             QtWidgets.QApplication.processEvents()
-            time.sleep(0.1)
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.host, self.port)
@@ -156,11 +155,13 @@ class INDIClient(PyQt5.QtCore.QObject):
                 name = message.attr['name']
                 if name == 'CCD1':
                     if 'format' in message.getElt(0).attr:
+                        print('got fits')
                         if message.getElt(0).attr['format'] == '.fits':
                             imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
-                            imageHDU.writeto('c:/temp/t3.fit')
+                            imageHDU.writeto(self.imagePath)
+                            self.logger.info('image file is in raw fits format')
                         else:
-                            self.logger.warning('image file is not in raw fits format')
+                            self.logger.info('image file is not in raw fits format')
                         self.receivedImage = True
 
         elif isinstance(message, indiXML.DelProperty):
@@ -198,6 +199,7 @@ class INDIClient(PyQt5.QtCore.QObject):
 
         # Get message from socket.
         while self.socket.bytesAvailable():
+            # print(self.socket.bytesAvailable())
             tmp = str(self.socket.read(1000000), "ascii")
             self.message_string += tmp
 
@@ -210,7 +212,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.message_string = ""
             for message in messages:
                 xml_message = indiXML.parseETree(message)
-                self.received.emit(xml_message)
+                self.handleReceived(xml_message)
 
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
