@@ -75,7 +75,7 @@ class SGPro(MWCamera):
         self.logger.info('message: {0}'.format(mes))
         if suc:                                                                                                             # if we successfully starts imaging, we ca move on
             while True:                                                                                                     # waiting for the image download before proceeding
-                suc, modelData['imagepath'] = self.SgGetImagePath(guid)                                                     # there is the image path, once the image is downloaded
+                suc, modelData['ImagePath'] = self.SgGetImagePath(guid)                                                     # there is the image path, once the image is downloaded
                 if suc:                                                                                                     # until then, the link is only the receipt
                     break                                                                                                   # stopping the loop
                 else:                                                                                                       # otherwise

@@ -486,36 +486,36 @@ class Modeling(PyQt5.QtCore.QThread):
         nameDataFile = self.app.ui.le_analyseFileName.text()
         self.logger.info('modeling from {0}'.format(nameDataFile))
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
-        if not('ra_Jnow' in data and 'dec_Jnow' in data):                                                                   # you need stored mount positions
-            self.logger.warning('ra_Jnow or dec_Jnow not in data file')
+        if not('RaJNow' in data and 'DecJNow' in data):                                                                   # you need stored mount positions
+            self.logger.warning('RaJNow or DecJNow not in data file')
             self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                        # Gui Output
             return
-        if not('ra_sol_Jnow' in data and 'dec_sol_Jnow' in data):                                                           # you need solved star positions
-            self.logger.warning('ra_sol_Jnow or dec_sol_Jnow not in data file')
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):                                                           # you need solved star positions
+            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
             self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                              # Gui Output
             return
-        if not('pierside' in data and 'sidereal_time' in data):                                                             # you need sidereal time and pierside
-            self.logger.warning('pierside and sidereal time not in data file')
-            self.app.modelLogQueue.put('{0} - time and pierside missing\n'.format(self.timeStamp()))                        # Gui Output
+        if not('Pierside' in data and 'LocalSiderealTime' in data):                                                             # you need sidereal time and pierside
+            self.logger.warning('Pierside and LocalSiderealTime not in data file')
+            self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
         self.app.mount.saveBackupModel()
         self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))    # Gui Output
         self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))                                # Gui Output
         for i in range(0, len(data['index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['ra_Jnow'][i], False, True),
-                                                              self.transform.decimalToDegree(data['dec_Jnow'][i], True, False),
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
+                                                              self.transform.decimalToDegree(data['DecJNow'][i], True, False),
                                                               data['pierside'][i],
-                                                              self.transform.decimalToDegree(data['ra_sol_Jnow'][i], False, True),
-                                                              self.transform.decimalToDegree(data['dec_sol_Jnow'][i], True, False),
-                                                              self.transform.decimalToDegree(data['sidereal_time_float'][i], False, True))
+                                                              self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
+                                                              self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
+                                                              self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))                           # debug output
                 self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))                   # Gui Output
             else:
                 self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
-                                           .format(self.timeStamp(), reply, int(data['azimuth'][i]), int(data['altitude'][i])))  # Gui Output
+                                           .format(self.timeStamp(), reply, int(data['Azimuth'][i]), int(data['Altitude'][i])))  # Gui Output
         reply = self.app.mount.mountHandler.sendCommand('endalig')
         if reply == 'V':
             self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))                      # Gui Output
@@ -599,9 +599,9 @@ class Modeling(PyQt5.QtCore.QThread):
                     bundle_dir = sys._MEIPASS                                                                               # we are running in a bundle
                 else:
                     bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)                                          # we are running in a normal Python environment
-                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['imagepath'])                                      # copy reference file as simulation target
+                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['ImagePath'])                                      # copy reference file as simulation target
             else:
-                self.logger.info('getImagePath-> suc: {0}, modelData{1}'.format(suc, modelData))
+                self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
                 fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')                                         # open for adding field info
                 fitsHeader = fitsFileHandle[0].header                                                                       # getting the header part
                 if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
@@ -628,7 +628,7 @@ class Modeling(PyQt5.QtCore.QThread):
                                          fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))                                        # write all header data to debug
                 fitsFileHandle.flush()                                                                                      # write all to disk
                 fitsFileHandle.close()                                                                                      # close FIT file
-            self.app.imageQueue.put(modelData['imagepath'])
+            self.app.imageQueue.put(modelData['ImagePath'])
             return True, 'OK', modelData                                                                                    # return true OK and imagepath
         else:                                                                                                               # otherwise
             return False, mes, modelData                                                                                    # image capturing was failing, writing message from SGPro back

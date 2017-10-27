@@ -193,7 +193,7 @@ class MaximDLCamera(MWCamera):
             self.logger.info('no start {0}'.format(status))
             suc = self.maximDocument.Close
             if not suc:
-                self.logger.error('document {0} could not be closed'.format(modelData['imagepath']))
+                self.logger.error('document {0} could not be closed'.format(modelData['ImagePath']))
                 return False, 'Problem closing document in MaximDL', modelData
             else:
                 return False, mes, modelData
