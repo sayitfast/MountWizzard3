@@ -81,7 +81,6 @@ class MountWizzardApp(widget.MwWidget):
         self.modelCommandQueue = Queue()
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
         self.imageQueue = Queue()
-        self.environmentQueue = Queue()
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.INDIsendQueue = Queue()
         self.INDIDataQueue = Queue()                                                                                        # queue for sending data back to gui
@@ -697,18 +696,18 @@ class MountWizzardApp(widget.MwWidget):
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
+    def setShowAlignmentModelMode(self):
+        if self.ui.checkPolarPlot.isChecked():
+            self.ui.alignErrorStars.setVisible(False)
+        else:
+            self.ui.alignErrorStars.setVisible(True)
+
     @QtCore.Slot(bool)
     def setMountStatus(self, status):
         if status:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
-
-    def setShowAlignmentModelMode(self):
-        if self.ui.checkPolarPlot.isChecked():
-            self.ui.alignErrorStars.setVisible(False)
-        else:
-            self.ui.alignErrorStars.setVisible(True)
 
     @QtCore.Slot(dict)
     def fillMountData(self, data):
@@ -828,27 +827,27 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    def fillEnvironmentData(self, data):
-        for value in data:
-            if value == 'DewPoint':
-                self.ui.le_dewPoint.setText('{0:4.1f}'.format(data['DewPoint']))
-            elif value == 'Temperature':
-                self.ui.le_temperature.setText('{0:4.1f}'.format(data['Temperature']))
-            elif value == 'Humidity':
-                self.ui.le_humidity.setText('{0:4.1f}'.format(data['Humidity']))
-            elif value == 'Pressure':
-                self.ui.le_pressure.setText('{0:4.1f}'.format(data['Pressure']))
-            elif value == 'CloudCover':
-                self.ui.le_cloudCover.setText('{0:4.1f}'.format(data['CloudCover']))
-            elif value == 'RainRate':
-                self.ui.le_rainRate.setText('{0:4.1f}'.format(data['RainRate']))
-            elif value == 'WindSpeed':
-                self.ui.le_windSpeed.setText('{0:4.1f}'.format(data['WindSpeed']))
-            elif value == 'WindDirection':
-                self.ui.le_windDirection.setText('{0:4.1f}'.format(data['WindDirection']))
-            elif value == 'SQR':
-                self.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
-                self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(data['SQR']))
+    def fillEnvironmentData(self):
+        for valueName in self.environment.data:
+            if valueName == 'DewPoint':
+                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'Temperature':
+                self.ui.le_temperature.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'Humidity':
+                self.ui.le_humidity.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'Pressure':
+                self.ui.le_pressure.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'CloudCover':
+                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'RainRate':
+                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'WindSpeed':
+                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'WindDirection':
+                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.environment.data[valueName]))
+            elif valueName == 'SQR':
+                self.ui.le_SQR.setText('{0:4.2f}'.format(self.environment.data[valueName]))
+                self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(self.environment.data[valueName]))
 
     @QtCore.Slot(int)
     def setCameraPlateStatus(self, status):
@@ -875,9 +874,7 @@ class MountWizzardApp(widget.MwWidget):
             data = self.mountDataQueue.get()
             self.fillMountData(data)
             self.mountDataQueue.task_done()
-        while not self.environmentQueue.empty():
-            data = self.environmentQueue.get()
-            self.fillEnvironmentData(data)
+        self.fillEnvironmentData()
         while not self.INDIDataQueue.empty():
             data = self.INDIDataQueue.get()
             self.fillINDIData(data)
@@ -933,7 +930,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.14 beta'
+    BUILD_NO = '2.5.15 beta'
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

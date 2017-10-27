@@ -1,4 +1,7 @@
 # Changelog
+2.5.15
+- refactoring threads.
+
 2.5.14
 - updated indi functions
 - refactored indi client

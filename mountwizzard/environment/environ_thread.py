@@ -28,6 +28,7 @@ class Environment(PyQt5.QtCore.QThread):
     def __init__(self, app):
         super().__init__()
         self.app = app
+        self.data = {}
         self.connected = 2
         self.ascom = None                                                                                                   # placeholder for ascom driver object
         self.chooser = None                                                                                                 # placeholder for ascom chooser object
@@ -97,63 +98,62 @@ class Environment(PyQt5.QtCore.QThread):
     def getStatusFast(self):
         pass
 
+    # noinspection PyBroadException
     def getStatusMedium(self):
-        data = dict()
         try:
-            data['DewPoint'] = self.ascom.DewPoint                                                                          # storing data in the signal object
+            self.data['DewPoint'] = self.ascom.DewPoint
         except Exception:
             pass
         finally:
             pass
         try:
-            data['Temperature'] = self.ascom.Temperature                                                                    # actually there is single based communication
+            self.data['Temperature'] = self.ascom.Temperature
         except Exception:
             pass
         finally:
             pass
         try:
-            data['Humidity'] = self.ascom.Humidity                                                                          # target should be queue
+            self.data['Humidity'] = self.ascom.Humidity
         except Exception:
             pass
         finally:
             pass
         try:
-            data['Pressure'] = self.ascom.Pressure
+            self.data['Pressure'] = self.ascom.Pressure
         except Exception:
             pass
         finally:
             pass
         try:
-            data['SQR'] = self.ascom.SkyQuality                                                                             # storing data in the signal object
+            self.data['SQR'] = self.ascom.SkyQuality
         except Exception:
             pass
         finally:
             pass
         try:
-            data['CloudCover'] = self.ascom.CloudCover
+            self.data['CloudCover'] = self.ascom.CloudCover
         except Exception:
             pass
         finally:
             pass
         try:
-            data['RainRate'] = self.ascom.RainRate
+            self.data['RainRate'] = self.ascom.RainRate
         except Exception:
             pass
         finally:
             pass
         try:
-            data['WindSpeed'] = self.ascom.WindSpeed
+            self.data['WindSpeed'] = self.ascom.WindSpeed
         except Exception:
             pass
         finally:
             pass
         try:
-            data['WindDirection'] = self.ascom.WindDirection
+            self.data['WindDirection'] = self.ascom.WindDirection
         except Exception:
             pass
         finally:
             pass
-        self.app.environmentQueue.put(data)                                                                                 # sending the data via signal
 
     def getStatusSlow(self):
         pass
