@@ -1,6 +1,7 @@
 # Changelog
 2.5.15
-- refactoring threads.
+- refactoring threads
+- refactoring data management mount thread and environment thread
 
 2.5.14
 - updated indi functions

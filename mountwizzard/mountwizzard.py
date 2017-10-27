@@ -76,7 +76,6 @@ class MountWizzardApp(widget.MwWidget):
     def __init__(self):
         super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
         self.mountCommandQueue = Queue()                                                                                    # queue for sending command to mount
-        self.mountDataQueue = Queue()                                                                                       # queue for sending data back to gui
         self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
         self.modelCommandQueue = Queue()
         self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
@@ -740,8 +739,7 @@ class MountWizzardApp(widget.MwWidget):
             if valueName == 'ModelErrorAlt':
                 self.ui.le_alignErrorAlt.setText(str(self.mount.data[valueName]))
             if valueName == 'ModelStarError':
-                    self.ui.alignErrorStars.setText(self.ui.alignErrorStars.toPlainText() + self.mount.data[valueName])
-                    self.ui.alignErrorStars.moveCursor(QTextCursor.End)
+                    self.ui.alignErrorStars.setText(self.mount.data[valueName])
             if valueName == 'CurrentHorizonLimitLow':
                 self.ui.le_horizonLimitLow.setText(str(self.mount.data[valueName]))
             if valueName == 'CurrentHorizonLimitHigh':

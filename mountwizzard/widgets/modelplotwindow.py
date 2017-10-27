@@ -144,33 +144,33 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui.modelPointsPlot.viewport().update()
         QApplication.processEvents()
 
-    def changeStatusTrackingWidget(self):                                                                                   # method for enable / disable tracking widget
+    def changeStatusTrackingWidget(self):
         if self.ui.checkRunTrackingWidget.isChecked():
             self.drawTrackPreview()
         else:
             self.pointerTrack.setVisible(False)
 
-    def drawTrackPreview(self):                                                                                             # method for drawing the track
+    def drawTrackPreview(self):
         if not self.ui.checkRunTrackingWidget.isChecked():
             return
-        raCopy = copy.copy(self.app.mount.ra)                                                                               # start wit the actual coordinates of the mount
-        decCopy = copy.copy(self.app.mount.dec)                                                                             # but copy it (otherwise it will be changes during the calculation -> python object modeling)
-        width = self.ui.modelPointsPlot.width()                                                                             # get data from ui
+        raCopy = copy.copy(self.app.mount.data['RaJ2000'])
+        decCopy = copy.copy(self.app.mount.data['DecJ2000'])
+        width = self.ui.modelPointsPlot.width()
         height = self.ui.modelPointsPlot.height()
         self.pointerTrack.setVisible(True)
-        for i in range(0, 50):                                                                                              # round modeling point from actual az alt position 24 hours
-            ra = raCopy - float(i) * 10 / 50                                                                                # 12 hours line max
-            az, alt = self.transform.transformERFA(ra, decCopy, 1)                                                         # transform to az alt
+        for i in range(0, 50):
+            ra = raCopy - float(i) * 10 / 50
+            az, alt = self.transform.transformERFA(ra, decCopy, 1)
             x, y = getXY(az, alt, height, width, BORDER_VIEW)
             self.pointerTrackLine[i].setPos(x, y)
             if alt > 0:
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.transform.transformERFA(self.app.mount.ra - float(self.app.mount.timeToFlip) / 60, decCopy, 1)
+        az, alt = self.transform.transformERFA(self.app.mount.data['RaJ2000'] - float(self.app.mount.data['TimeToFlip']) / 60, decCopy, 1)
         x, y = getXY(az, alt, height, width, BORDER_VIEW)
         self.itemFlipTime.setPos(x, y)
-        delta = float(self.app.mount.timeToFlip)
+        delta = float(self.app.mount.data['TimeToFlip'])
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:3.0f} min'.format(fliptime, delta))
         self.pointerTrack.update()
