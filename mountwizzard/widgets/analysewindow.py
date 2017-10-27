@@ -163,11 +163,11 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_xlabel('Number of Model Point', color='white')                                             # x axis
         self.plotWidget.axes.set_ylabel('DEC Error (arcsec)', color='white')                                                # y axis
         self.plotWidget.axes.set_title('DEC Error over Modeling\n ', color='white')                                         # title
-        self.plotWidget.axes.set_xlim(0, len(self.data['index']))
+        self.plotWidget.axes.set_xlim(0, len(self.data['Index']))
         self.plotWidget.axes.set_ylim(-self.scaleDEC, self.scaleDEC)                                                        # defining the scaling of the plot
-        self.plotWidget.axes.plot(self.data['index'], self.data['decError'], color='black')                                 # Basic Data
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['index'], self.data['decError'], c=colors, s=50)
+        self.plotWidget.axes.plot(self.data['Index'], self.data['DecError'], color='black')                                 # Basic Data
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Index'], self.data['DecError'], c=colors, s=50)
         self.plotWidget.draw()                                                                                              # put the plot in the widget
 
     def showDecErrorDeviation(self):
@@ -180,12 +180,12 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_xlabel('Number of Model Point', color='white')                                             # x axis
         self.plotWidget.axes.set_ylabel('DEC Error(arcsec)', color='white')                                                 # y axis
         self.plotWidget.axes.set_title('DEC Error referenced to 0 over Modeling\n ', color='white')                         # title
-        self.plotWidget.axes.set_xlim(0, len(self.data['index']))
+        self.plotWidget.axes.set_xlim(0, len(self.data['Index']))
         self.plotWidget.axes.set_ylim(-self.scaleDEC, self.scaleDEC)                                                        # defining the scaling of the plot
-        decErrorDeviation = numpy.asarray(self.data['decError'])
-        self.plotWidget.axes.plot(self.data['index'], decErrorDeviation - decErrorDeviation[0], color='black')              # Basic Data
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['index'], decErrorDeviation - decErrorDeviation[0], c=colors, s=50)
+        decErrorDeviation = numpy.asarray(self.data['DecError'])
+        self.plotWidget.axes.plot(self.data['Index'], decErrorDeviation - decErrorDeviation[0], color='black')              # Basic Data
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Index'], decErrorDeviation - decErrorDeviation[0], c=colors, s=50)
         self.plotWidget.draw()                                                                                              # put the plot in the widget
 
     def showRaError(self):
@@ -197,11 +197,11 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_xlabel('Number of Model Point', color='white')
         self.plotWidget.axes.set_ylabel('RA Error (arcsec)', color='white')
         self.plotWidget.axes.set_title('RA Error over Modeling\n ', color='white')
-        self.plotWidget.axes.set_xlim(0, len(self.data['index']))
+        self.plotWidget.axes.set_xlim(0, len(self.data['Index']))
         self.plotWidget.axes.set_ylim(-self.scaleRA, self.scaleRA)
-        self.plotWidget.axes.plot(self.data['index'], self.data['raError'], color='black')                                   # Basic Data
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['index'], self.data['raError'], c=colors, s=50)
+        self.plotWidget.axes.plot(self.data['Index'], self.data['RaError'], color='black')                                   # Basic Data
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Index'], self.data['RaError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showRaErrorDeviation(self):
@@ -213,11 +213,11 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_xlabel('Number of Model Point', color='white')
         self.plotWidget.axes.set_ylabel('RA Error', color='white')
         self.plotWidget.axes.set_title('RA Error referenced to 0 over Modeling\n ', color='white')
-        self.plotWidget.axes.axis([0, len(self.data['index']), -self.scaleRA, self.scaleRA])
-        raErrorDeviation = numpy.asarray(self.data['raError'])
-        self.plotWidget.axes.plot(self.data['index'], raErrorDeviation - raErrorDeviation[0], color='black')                 # Basic Data
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['index'], raErrorDeviation - raErrorDeviation[0], c=colors, s=50)
+        self.plotWidget.axes.axis([0, len(self.data['Index']), -self.scaleRA, self.scaleRA])
+        raErrorDeviation = numpy.asarray(self.data['RaError'])
+        self.plotWidget.axes.plot(self.data['Index'], raErrorDeviation - raErrorDeviation[0], color='black')                 # Basic Data
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Index'], raErrorDeviation - raErrorDeviation[0], c=colors, s=50)
         self.plotWidget.draw()
 
     def showDecErrorAltitude(self):
@@ -231,9 +231,9 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_title('DEC Error over Altitude\n ', color='white')
         self.plotWidget.axes.set_xlim(0, 90)
         self.plotWidget.axes.set_ylim(-self.scaleDEC, self.scaleDEC)
-        self.plotWidget.axes.plot(self.data['altitude'], self.data['decError'], color='black')
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['altitude'], self.data['decError'], c=colors, s=50)
+        self.plotWidget.axes.plot(self.data['Altitude'], self.data['DecError'], color='black')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Altitude'], self.data['DecError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showRaErrorAltitude(self):
@@ -247,9 +247,9 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_title('RA Error over Altitude\n ', color='white')
         self.plotWidget.axes.set_xlim(0, 90)
         self.plotWidget.axes.set_ylim(-self.scaleRA, self.scaleRA)
-        self.plotWidget.axes.plot(self.data['altitude'], self.data['raError'], color='black')
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['altitude'], self.data['raError'], c=colors, s=50)
+        self.plotWidget.axes.plot(self.data['Altitude'], self.data['RaError'], color='black')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Altitude'], self.data['RaError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showDecErrorAzimuth(self):
@@ -263,9 +263,9 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_title('DEC Error over Azimuth\n ', color='white')
         self.plotWidget.axes.set_xlim(0, 360)
         self.plotWidget.axes.set_ylim(-self.scaleDEC, self.scaleDEC)
-        self.plotWidget.axes.plot(self.data['azimuth'], self.data['decError'], color='black')
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['azimuth'], self.data['decError'], c=colors, s=50)
+        self.plotWidget.axes.plot(self.data['Azimuth'], self.data['DecError'], color='black')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Azimuth'], self.data['DecError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showRaErrorAzimuth(self):
@@ -279,9 +279,9 @@ class AnalyseWindow(MwWidget):
         self.plotWidget.axes.set_title('RA Error over Azimuth\n ', color='white')
         self.plotWidget.axes.set_xlim(0, 360)
         self.plotWidget.axes.set_ylim(-self.scaleRA, self.scaleRA)
-        self.plotWidget.axes.plot(self.data['azimuth'], self.data['raError'], color='black')
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
-        self.plotWidget.axes.scatter(self.data['azimuth'], self.data['raError'], c=colors, s=50)
+        self.plotWidget.axes.plot(self.data['Azimuth'], self.data['RaError'], color='black')
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
+        self.plotWidget.axes.scatter(self.data['Azimuth'], self.data['RaError'], c=colors, s=50)
         self.plotWidget.draw()
 
     def showModelPointPolar(self):
@@ -292,9 +292,9 @@ class AnalyseWindow(MwWidget):
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.axes.set_title('Model Points\n ', color='white')
-        azimuth = numpy.asarray(self.data['azimuth'])
-        altitude = numpy.asarray(self.data['altitude'])
-        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['azimuth']])
+        azimuth = numpy.asarray(self.data['Azimuth'])
+        altitude = numpy.asarray(self.data['Altitude'])
+        colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
         self.plotWidget.axes.plot(azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
         self.plotWidget.axes.scatter(azimuth / 180.0 * 3.141593, 90 - altitude, c=colors, s=50)
         self.plotWidget.axes.set_rmax(90)
@@ -309,11 +309,11 @@ class AnalyseWindow(MwWidget):
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.plotWidget.axes.set_yticklabels(yLabel, color='white')
         self.plotWidget.axes.set_title('Model Points Error\n ', color='white')
-        azimuth = numpy.asarray(self.data['azimuth'])
-        altitude = numpy.asarray(self.data['altitude'])
+        azimuth = numpy.asarray(self.data['Azimuth'])
+        altitude = numpy.asarray(self.data['Altitude'])
         self.plotWidget.axes.plot(azimuth / 180.0 * 3.141593, 90 - altitude, color='black')
         cm = plt.cm.get_cmap('RdYlGn_r')
-        colors = numpy.asarray(self.data['modelError'])
+        colors = numpy.asarray(self.data['ModelError'])
         scaleError = int(max(colors) / 4 + 1) * 4
         area = colors * 100 / self.scaleError + 20
         theta = azimuth / 180.0 * 3.141593

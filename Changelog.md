@@ -2,6 +2,9 @@
 2.5.15
 - refactoring threads
 - refactoring data management mount thread and environment thread
+- restored canceling modeling run
+- bugfix in cancel routine
+- refactoring data transfer from and to mount
 
 2.5.14
 - updated indi functions

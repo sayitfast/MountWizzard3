@@ -573,10 +573,10 @@ class Mount(PyQt5.QtCore.QThread):
             self.data['LocalSiderealTime'] = reply.strip('#')
         reply = self.mountHandler.sendCommand('GR')
         if reply:
-            self.raJnow = self.transform.degStringToDecimal(reply)
+            self.data['RaJNow'] = self.transform.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('GD')
         if reply:
-            self.decJnow = self.transform.degStringToDecimal(reply)
+            self.data['DecJNow'] = self.transform.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
         if reply:
             try:

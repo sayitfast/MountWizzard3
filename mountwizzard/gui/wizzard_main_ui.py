@@ -4538,7 +4538,7 @@ class Ui_MainWindow(object):
         self.label_186.setText(_translate("MainWindow", "Azimuth"))
         self.label_187.setText(_translate("MainWindow", "Point 2    Altitude"))
         self.btn_runBatchModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Generates a new pointing model from stored analyse data</p></body></html>"))
-        self.btn_runBatchModel.setText(_translate("MainWindow", "Make Mount Model from stored Analyse DataUploadToMount"))
+        self.btn_runBatchModel.setText(_translate("MainWindow", "Make Mount Model from Analyse Data"))
         self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.tab_5), _translate("MainWindow", "Model Analyse"))
         self.btn_relay1.setToolTip(_translate("MainWindow", "<html><head/><body><p>Sets Relay to configured state</p></body></html>"))
         self.btn_relay1.setText(_translate("MainWindow", "Relay1"))

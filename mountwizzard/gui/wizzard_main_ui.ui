@@ -7127,7 +7127,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Make Mount Model from stored Analyse DataUploadToMount</string>
+      <string>Make Mount Model from Analyse Data</string>
      </property>
     </widget>
     <widget class="Line" name="line_52">
