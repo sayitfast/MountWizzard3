@@ -48,6 +48,7 @@ class Mount(PyQt5.QtCore.QThread):
     def __init__(self, app):
         super().__init__()                                                                                                  # init of the class parent with super
         self.app = app                                                                                                      # accessing ui object from mount class
+        self.data = {}
         if platform.system() == 'Windows':
             self.MountAscom = ascommount.MountAscom(app)                                                                    # set ascom driver class
         self.MountIpDirect = ipdirect.MountIpDirect(app)
@@ -171,7 +172,6 @@ class Mount(PyQt5.QtCore.QThread):
                         if num == -1:
                             self.app.messageQueue.put('Show Model not available without real mount')
                         else:
-                            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
                             self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
                             self.showAlignmentModel(self.getAlignmentModel())
                             self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
@@ -392,35 +392,34 @@ class Mount(PyQt5.QtCore.QThread):
         return data
 
     def showAlignmentModel(self, alignModel):
-        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading data\n'})
+        self.data['ModelStarError'] = 'Downloading data\n'
         for i in range(0, alignModel['number']):
-            self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3.0f}\xb0\n'
-                                        .format(i, int(alignModel['points'][i][3]), int(alignModel['points'][i][4]), alignModel['points'][i][5], alignModel['points'][i][6])})
-        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'Downloading finished\n'})
-        self.app.mountDataQueue.put({'Name': 'NumberAlignmentStars', 'Value': alignModel['number']})
-        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(alignModel['RMS'])})
-        self.app.mountDataQueue.put({'Name': 'ModelRMSError', 'Value': '{0:3.1f}'.format(alignModel['RMS'])})
-        self.app.mountDataQueue.put({'Name': 'ModelErrorPosAngle', 'Value': '{0:3.1f}'.format(alignModel['posAngle'])})
-        self.app.mountDataQueue.put({'Name': 'ModelPolarError', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['polarError']))})
-        self.app.mountDataQueue.put({'Name': 'ModelOrthoError', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['orthoError']))})
-        self.app.mountDataQueue.put({'Name': 'ModelErrorAz', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['azimuthKnobs']))})
-        self.app.mountDataQueue.put({'Name': 'ModelErrorAlt', 'Value': '{0}'.format(self.transform.decimalToDegree(alignModel['altitudeKnobs']))})
-        self.app.mountDataQueue.put({'Name': 'ModelTerms', 'Value': '{0:2d}'.format(alignModel['terms'])})
+            self.data['ModelStarError'] = '#{0:02d}   AZ: {1:3d}   Alt: {2:3d}   Err: {3:4.1f}\x22   PA: {4:3.0f}\xb0\n'.format(i, int(alignModel['points'][i][3]), int(alignModel['points'][i][4]), alignModel['points'][i][5], alignModel['points'][i][6])
+        self.data['ModelStarError'] = 'Downloading finished\n'
+        self.data['NumberAlignmentStars'] = alignModel['number']
+        self.data['ModelRMSError'] = '{0:3.1f}'.format(alignModel['RMS'])
+        self.data['ModelRMSError'] = '{0:3.1f}'.format(alignModel['RMS'])
+        self.data['ModelErrorPosAngle'] = '{0:3.1f}'.format(alignModel['posAngle'])
+        self.data['ModelPolarError'] = '{0}'.format(self.transform.decimalToDegree(alignModel['polarError']))
+        self.data['ModelOrthoError'] = '{0}'.format(self.transform.decimalToDegree(alignModel['orthoError']))
+        self.data['ModelErrorAz'] = '{0}'.format(self.transform.decimalToDegree(alignModel['azimuthKnobs']))
+        self.data['ModelErrorAlt'] = '{0}'.format(self.transform.decimalToDegree(alignModel['altitudeKnobs']))
+        self.data['ModelTerms'] = '{0:2d}'.format(alignModel['terms'])
         if alignModel['azimuthKnobs'] > 0:
             value = '{0:2.2f} left'.format(abs(alignModel['azimuthKnobs']))
         else:
             value = '{0:2.2f} right'.format(abs(alignModel['azimuthKnobs']))
-        self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAz', 'Value': '{0}'.format(value)})
+        self.data['ModelKnobTurnAz'] = '{0}'.format(value)
         if alignModel['altitudeKnobs'] > 0:
             value = '{0:2.2f} down'.format(abs(alignModel['altitudeKnobs']))
         else:
             value = '{0:2.2f} up'.format(abs(alignModel['altitudeKnobs']))
-        self.app.mountDataQueue.put({'Name': 'ModelKnobTurnAlt', 'Value': '{0}'.format(value)})
+        self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
         self.app.showModelErrorPolar()
         return
 
     def runTargetRMSAlignment(self):
-        self.app.mountDataQueue.put({'Name': 'ModelStarError', 'Value': 'delete'})
+        self.data['ModelStarError'] = 'delete'
         alignModel = self.getAlignmentModel()
         if alignModel['number'] < 4:
             return                                                                                                          # set maximum
@@ -569,27 +568,26 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
-        if self.app.ui.le_pressure.text() != '---' and self.app.ui.le_temperature.text() != '---':
-            pressure = float(self.app.ui.le_pressure.text() + '0')
-            temperature = float(self.app.ui.le_temperature.text() + '0')
+        if 'Temperature' in self.app.environment.data and 'Pressure' in self.app.environment.data:
+            pressure = self.app.environment.data['Pressure']
+            temperature = self.app.environment.data['Temperature']
             if self.app.environment.connected == 1:
                 if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
-                    self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(float(self.app.ui.le_pressure.text())))
+                    self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(pressure))
                     if temperature > 0:
-                        self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(float(self.app.ui.le_temperature.text())))
+                        self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(temperature))
                     else:
-                        self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-float(self.app.ui.le_temperature.text())))
-                    self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.mountHandler.sendCommand('GRTMP')})
-                    self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.mountHandler.sendCommand('GRPRS')})
+                        self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-temperature))
+                    self.data['RefractionTemperature'] = self.mountHandler.sendCommand('GRTMP')
+                    self.data['RefractionPressure'] = self.mountHandler.sendCommand('GRPRS')
                 else:
-                    # todo : better check before writing warning
                     self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
     def getStatusFast(self):                                                                                                # fast status item like pointing
         reply = self.mountHandler.sendCommand('GS')
         if reply:
             self.sidereal_time = reply.strip('#')
-            self.app.mountDataQueue.put({'Name': 'GetLocalSiderealTime', 'Value': '{0}'.format(self.sidereal_time)})        # Sidereal local time
+            self.data['LocalSiderealTime'] = '{0}'.format(self.sidereal_time)
         reply = self.mountHandler.sendCommand('GR')
         if reply:
             self.raJnow = self.transform.degStringToDecimal(reply)
@@ -616,27 +614,27 @@ class Mount(PyQt5.QtCore.QThread):
                 self.slewing = (reply[7] == '1')
             else:
                 self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(reply))
-            self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                                  # convert J2000
+            self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)
             ra_show = self.transform.decimalToDegree(self.ra, False, False)
             dec_show = self.transform.decimalToDegree(self.dec, True, False)
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeDEC', 'Value': '{0}'.format(dec_show)})                       # put dec to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeRA', 'Value': '{0}'.format(ra_show)})                         # put ra to gui
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAltitude', 'Value': '{0:03.2f}'.format(self.alt)})            # Altitude
-            self.app.mountDataQueue.put({'Name': 'GetTelescopeAzimuth', 'Value': '{0:03.2f}'.format(self.az)})              # Azimuth
-            self.app.mountDataQueue.put({'Name': 'GetMountStatus', 'Value': '{0}'.format(self.stat)})                       # Mount status -> slew to stop
-            self.app.mountDataQueue.put({'Name': 'GetJulianDate', 'Value': '{0}'.format(self.jd[:13])})                     # Sidereal local time
-            if str(self.pierside) == str('W'):                                                                              # pier side
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'WEST'})                              # Transfer to test in GUI
-            else:                                                                                                           #
-                self.app.mountDataQueue.put({'Name': 'GetTelescopePierSide', 'Value': 'EAST'})                              # Transfer to Text for GUI
-            self.signalMountAzAltPointer.emit(self.az, self.alt)                                                            # set azalt Pointer in diagrams to actual pos
+            self.data['TelescopeDEC'] = '{0}'.format(dec_show)
+            self.data['TelescopeRA'] = '{0}'.format(ra_show)
+            self.data['TelescopeAltitude'] = '{0:03.2f}'.format(self.alt)
+            self.data['TelescopeAzimuth'] = '{0:03.2f}'.format(self.az)
+            self.data['MountStatus'] = '{0}'.format(self.stat)
+            self.data['JulianDate'] = '{0}'.format(self.jd[:13])
+            if str(self.pierside) == str('W'):
+                self.data['TelescopePierSide'] = 'WEST'
+            else:
+                self.data['TelescopePierSide'] = 'EAST'
+            self.signalMountAzAltPointer.emit(self.az, self.alt)
             self.timeToFlip = int(float(self.mountHandler.sendCommand('Gmte')))
             self.meridianLimitTrack = int(float(self.mountHandler.sendCommand('Glmt')))
             self.timeToMeridian = int(self.timeToFlip - self.meridianLimitTrack / 360 * 24 * 60)
-            self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.meridianLimitTrack})
-            self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': int(float(self.mountHandler.sendCommand('Glms')))})
-            self.app.mountDataQueue.put({'Name': 'GetTimeToFlip', 'Value': self.timeToFlip})                                # Flip time
-            self.app.mountDataQueue.put({'Name': 'GetTimeToMeridian', 'Value': self.timeToMeridian})                        # Time to meridian
+            self.data['GetMeridianLimitTrack'] = self.meridianLimitTrack
+            self.data['GetMeridianLimitSlew'] = int(float(self.mountHandler.sendCommand('Glms')))
+            self.data['GetTimeToFlip'] = self.timeToFlip
+            self.data['GetTimeToMeridian'] = self.timeToMeridian
 
     def getStatusMedium(self):                                                                                              # medium status items like refraction
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
@@ -645,30 +643,30 @@ class Mount(PyQt5.QtCore.QThread):
         if self.app.ui.checkAutoRefractionCamera.isChecked():                                                               # check if autorefraction is set
             if self.app.modeling.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:                            # if tracking, when camera is idle or downloading
                 self.setRefractionParameter()                                                                               # transfer refraction to mount
-        self.app.mountDataQueue.put({'Name': 'GetSlewRate', 'Value': self.mountHandler.sendCommand('GMs')})                 # get actual slew rate
+        self.data['GetSlewRate'] = self.mountHandler.sendCommand('GMs')
         self.signalMountTrackPreview.emit()
 
     def getStatusSlow(self):                                                                                                # slow update item like temps
         self.timeToFlip = self.mountHandler.sendCommand('Gmte')
-        self.app.mountDataQueue.put({'Name': 'GetTimeToTrackingLimit', 'Value': self.timeToFlip})                           # Flip time
+        self.data['GetTimeToTrackingLimit'] = self.timeToFlip
         self.refractionTemp = self.mountHandler.sendCommand('GRTMP')
-        self.app.mountDataQueue.put({'Name': 'GetRefractionTemperature', 'Value': self.refractionTemp})                     # refraction temp out of mount
+        self.data['GetRefractionTemperature'] = self.refractionTemp
         self.refractionPressure = self.mountHandler.sendCommand('GRPRS')
-        self.app.mountDataQueue.put({'Name': 'GetRefractionPressure', 'Value': self.refractionPressure})                    # refraction pressure out of mount
-        self.app.mountDataQueue.put({'Name': 'GetTelescopeTempDEC', 'Value': self.mountHandler.sendCommand('GTMP1')})       # temp motor circuit of both axes
-        self.app.mountDataQueue.put({'Name': 'GetRefractionStatus', 'Value': self.mountHandler.sendCommand('GREF')})
-        self.app.mountDataQueue.put({'Name': 'GetUnattendedFlip', 'Value': self.mountHandler.sendCommand('Guaf')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitTrack', 'Value': self.mountHandler.sendCommand('Glmt')})
-        self.app.mountDataQueue.put({'Name': 'GetMeridianLimitSlew', 'Value': self.mountHandler.sendCommand('Glms')})
-        self.app.mountDataQueue.put({'Name': 'GetDualAxisTracking', 'Value': self.mountHandler.sendCommand('Gdat')})
-        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitHigh', 'Value': self.mountHandler.sendCommand('Gh')})
-        self.app.mountDataQueue.put({'Name': 'GetCurrentHorizonLimitLow', 'Value': self.mountHandler.sendCommand('Go')})
+        self.data['GetRefractionPressure'] = self.refractionPressure
+        self.data['GetTelescopeTempDEC'] = self.mountHandler.sendCommand('GTMP1')
+        self.data['GetRefractionStatus'] = self.mountHandler.sendCommand('GREF')
+        self.data['GetUnattendedFlip'] = self.mountHandler.sendCommand('Guaf')
+        self.data['GetMeridianLimitTrack'] = self.mountHandler.sendCommand('Glmt')
+        self.data['GetMeridianLimitSlew'] = self.mountHandler.sendCommand('Glms')
+        self.data['GetDualAxisTracking'] = self.mountHandler.sendCommand('Gdat')
+        self.data['GetCurrentHorizonLimitHigh'] = self.mountHandler.sendCommand('Gh')
+        self.data['GetCurrentHorizonLimitLow'] = self.mountHandler.sendCommand('Go')
         try:
             reply = self.mountHandler.sendCommand('GDUTV')
             if reply:
                 valid, expirationDate = reply.split(',')
-                self.app.mountDataQueue.put({'Name': 'GetUTCDataValid', 'Value': valid})
-                self.app.mountDataQueue.put({'Name': 'GetUTCDataExpirationDate', 'Value': expirationDate})
+                self.data['GetUTCDataValid'] = valid
+                self.data['GetUTCDataExpirationDate'] = expirationDate
         except Exception as e:
             self.logger.error('receive error GDUTV command: {0}'.format(e))
         finally:
@@ -683,14 +681,14 @@ class Mount(PyQt5.QtCore.QThread):
         else:
             self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
         self.site_lat = self.mountHandler.sendCommand('Gt')                                                                 # get site latitude
-        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteElevation', 'Value': self.site_height})                         # write data to GUI
-        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLongitude', 'Value': lon1})
-        self.app.mountDataQueue.put({'Name': 'GetCurrentSiteLatitude', 'Value': self.site_lat})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareDate', 'Value': self.mountHandler.sendCommand('GVD')})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareNumber', 'Value': self.mountHandler.sendCommand('GVN')})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareProductName', 'Value': self.mountHandler.sendCommand('GVP')})
-        self.app.mountDataQueue.put({'Name': 'GetFirmwareTime', 'Value': self.mountHandler.sendCommand('GVT')})
-        self.app.mountDataQueue.put({'Name': 'GetHardwareVersion', 'Value': self.mountHandler.sendCommand('GVZ')})
+        self.data['GetCurrentSiteElevation'] = self.site_height
+        self.data['GetCurrentSiteLongitude'] = lon1
+        self.data['GetCurrentSiteLatitude'] = self.site_lat
+        self.data['GetFirmwareDate'] = self.mountHandler.sendCommand('GVD')
+        self.data['GetFirmwareNumber'] = self.mountHandler.sendCommand('GVN')
+        self.data['GetFirmwareProductName'] = self.mountHandler.sendCommand('GVP')
+        self.data['GetFirmwareTime'] = self.mountHandler.sendCommand('GVT')
+        self.data['GetHardwareVersion'] = self.mountHandler.sendCommand('GVZ')
         self.logger.info('FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                                             # firmware version for checking
         self.logger.info('Site Lon:{0}'.format(self.site_lon))                                                              # site lon
         self.logger.info('Site Lat:{0}'.format(self.site_lat))                                                              # site lat
