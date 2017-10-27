@@ -14,7 +14,6 @@
 import logging
 from baseclasses.camera import MWCamera
 import indi.indi_xml as indiXML
-import time
 import PyQt5
 
 
@@ -35,7 +34,7 @@ class INDICamera(MWCamera):
         self.checkAppInstall()
 
     def checkAppInstall(self):
-        self.appAvailable = True
+        self.appAvailable = False
 
     def checkAppStatus(self):
         if self.app.INDIworker.connected:
@@ -59,7 +58,6 @@ class INDICamera(MWCamera):
             self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
     def getImage(self, modelData):
-        print('start imaging')
         binning = int(float(modelData['binning']))
         exposureLength = int(float(modelData['exposure']))
         speed = modelData['speed']
@@ -111,6 +109,4 @@ class INDICamera(MWCamera):
         else:
             self.cameraStatus = 'ERROR'
             self.cameraConnected = False
-        print(self.cameraStatus)
-
-
+        self.app.INDIDataQueue.put({'Name': 'CameraStatus', 'value': self.cameraStatus})

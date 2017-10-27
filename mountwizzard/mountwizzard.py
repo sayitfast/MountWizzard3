@@ -85,7 +85,7 @@ class MountWizzardApp(widget.MwWidget):
         self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
         self.INDIsendQueue = Queue()
         self.INDIDataQueue = Queue()                                                                                        # queue for sending data back to gui
-        self.config = self.loadConfig()                                                                                     # load configuration
+        self.config = self.loadConfigData()                                                                                     # load configuration
         self.ui = wizzard_main_ui.Ui_MainWindow()                                                                           # load the dialog from "DESIGNER"
         self.ui.setupUi(self)                                                                                               # initialising the GUI
         self.initUI()                                                                                                       # adapt the window to our purpose
@@ -136,7 +136,7 @@ class MountWizzardApp(widget.MwWidget):
     # noinspection PyArgumentList
     def mappingFunctions(self):
         self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
-        self.ui.btn_mountSave.clicked.connect(self.saveConfigCont)
+        self.ui.btn_mountSave.clicked.connect(self.saveConfig)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
         self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put('hP'))
@@ -451,7 +451,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkRemoteAccess.setChecked(self.config['CheckRemoteAccess'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
-            print(e)
         finally:
             pass
 
@@ -515,7 +514,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['CheckRemoteAccess'] = self.ui.checkRemoteAccess.isChecked()
 
-    def loadConfig(self):
+    def loadConfigData(self):
         try:
             with open('config/config.cfg', 'r') as data_file:
                 return json.load(data_file)
@@ -524,7 +523,7 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
             return {}
 
-    def saveConfig(self):
+    def saveConfigData(self):
         self.storeConfig()
         self.mount.storeConfig()
         self.modeling.storeConfig()
@@ -550,12 +549,12 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.saveActualModel()                                                                                        # save current loaded modeling from mount
 
     def saveConfigQuit(self):
-        self.saveConfig()
+        self.saveConfigData()
         # noinspection PyArgumentList
         QCoreApplication.instance().quit()
 
-    def saveConfigCont(self):
-        self.saveConfig()
+    def saveConfig(self):
+        self.saveConfigData()
         self.messageQueue.put('Configuration saved.')
 
     def selectModelPointsFileName(self):
@@ -693,6 +692,10 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDITelescope.setText(data['value'])
         elif data['Name'] == 'CCD':
             self.ui.le_INDICCD.setText(data['value'])
+        elif data['Name'] == 'WEATHER':
+            self.ui.le_INDIWeather.setText(data['value'])
+        elif data['Name'] == 'CameraStatus':
+            self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
     @QtCore.Slot(bool)
     def setMountStatus(self, status):
@@ -931,9 +934,6 @@ if __name__ == "__main__":
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
     BUILD_NO = '2.5.14 beta'
-
-    # from snippets.parallel.model import NEWMODEL
-    # test = NEWMODEL()
 
     warnings.filterwarnings("ignore")                                                                                       # get output from console
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file

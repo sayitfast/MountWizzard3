@@ -598,26 +598,24 @@ class Mount(PyQt5.QtCore.QThread):
             self.decJnow = self.transform.degStringToDecimal(reply)
         reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
         if reply:
-            ra = ''
-            dec = ''
-            jd = ''
-            az = ''
-            alt = ''
-            stat = ''
-            slew = ''
             try:
-                ra, dec, self.pierside, az, alt, jd, stat, slew = reply.rstrip('#').strip().split(',')                      # split the response to its parts
+                reply = reply.rstrip('#').strip().split(',')
             except Exception as e:
                 self.logger.error('receive error Ginfo command: {0} reply:{1}'.format(e, reply))
             finally:
                 pass
-            self.raJnow = float(ra)
-            self.decJnow = float(dec)
-            self.jd = jd.rstrip('#')                                                                                        # needed for 2.14.8 beta firmware
-            self.az = float(az)                                                                                             # same to azimuth
-            self.alt = float(alt)                                                                                           # and altitude
-            self.stat = int(stat)                                                                                           # status should be int for referencing list
-            self.slewing = (slew == '1')                                                                                    # set status slewing
+            if len(reply) == 8:
+                self.raJnow = float(reply[0])
+                self.decJnow = float(reply[1])
+                self.pierside = reply[2]
+                self.az = float(reply[3])
+                self.alt = float(reply[4])
+                # needed for 2.14. firmware
+                self.jd = reply[5].rstrip('#')
+                self.stat = int(reply[6])
+                self.slewing = (reply[7] == '1')
+            else:
+                self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(reply))
             self.ra, self.dec = self.transform.transformERFA(self.raJnow, self.decJnow, 2)                                  # convert J2000
             ra_show = self.transform.decimalToDegree(self.ra, False, False)
             dec_show = self.transform.decimalToDegree(self.dec, True, False)

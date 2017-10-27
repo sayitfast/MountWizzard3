@@ -2,6 +2,9 @@
 2.5.14
 - updated indi functions
 - refactored indi client
+- fixed bug with closing application (Dave's issue)
+- added mor robustness to QCI Updater automation (Dave's issue)
+- removed INDI from usage
 
 2.5.13
 - changed behaviour environment

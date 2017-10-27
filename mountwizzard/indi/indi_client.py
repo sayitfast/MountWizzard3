@@ -56,6 +56,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.port = 0
         self.driverNameCCD = ''
         self.driverNameTelescope = ''
+        self.driverNameWeather = ''
         self.connected = False
         self.receivedImage = False
         self.imagePath = ''
@@ -155,7 +156,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                 name = message.attr['name']
                 if name == 'CCD1':
                     if 'format' in message.getElt(0).attr:
-                        print('got fits')
                         if message.getElt(0).attr['format'] == '.fits':
                             imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
                             imageHDU.writeto(self.imagePath)
@@ -191,6 +191,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(message.getElt(3).getValue()) & self.CCD_INTERFACE:
                         self.driverNameCCD = message.getElt(0).getValue()
                         self.app.INDIDataQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
+                    elif int(message.getElt(3).getValue()) == self.GENERAL_INTERFACE:
+                        if message.attr['device'] == 'MBox':
+                            self.driverNameWeather = message.getElt(0).getValue()
+                            self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': message.getElt(0).getValue()})
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.

@@ -75,13 +75,7 @@ class MwWidget(QWidget):
         self.moving = False
 
     def closeEvent(self, closeEvent):
-        if False:
-            super(MwWidget, self).closeEvent(closeEvent)
-        else:
-            closeEvent.ignore()
-            # self.setWindowState(Qt.WindowMinimized)
-            self.showStatus = False
-            self.setVisible(False)
+        self.showStatus = False
 
     def initUI(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
