@@ -8741,7 +8741,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>310</x>
-         <y>50</y>
+         <y>80</y>
          <width>61</width>
          <height>21</height>
         </rect>
@@ -8783,7 +8783,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>50</y>
+         <y>80</y>
          <width>131</width>
          <height>21</height>
         </rect>
@@ -8880,7 +8880,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>50</y>
+         <y>80</y>
          <width>31</width>
          <height>21</height>
         </rect>
@@ -8898,7 +8898,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>50</y>
+         <y>80</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -8916,7 +8916,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>80</y>
+         <y>110</y>
          <width>261</width>
          <height>21</height>
         </rect>
@@ -8958,7 +8958,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>80</y>
+         <y>110</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -8976,7 +8976,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>110</y>
+         <y>140</y>
          <width>261</width>
          <height>21</height>
         </rect>
@@ -9018,7 +9018,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>140</y>
+         <y>170</y>
          <width>261</width>
          <height>21</height>
         </rect>
@@ -9060,7 +9060,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
+         <y>140</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -9078,7 +9078,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
+         <y>170</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -9096,7 +9096,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>170</y>
+         <y>200</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -9114,7 +9114,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>110</x>
-         <y>170</y>
+         <y>200</y>
          <width>261</width>
          <height>21</height>
         </rect>
@@ -9149,6 +9149,30 @@ color: rgb(255,255,255);</string>
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkEnableINDI">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>201</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check, if you would like to remote control MountWizzard for shutdown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Enable INDI Client</string>
+       </property>
+       <property name="checked">
         <bool>false</bool>
        </property>
       </widget>

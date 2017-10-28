@@ -49,6 +49,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         super().__init__()
 
         self.app = app
+        self.isRunning = True
         self.device = {}
         self.message_string = ""
         self.socket = None
@@ -72,6 +73,8 @@ class INDIClient(PyQt5.QtCore.QObject):
             if 'INDIServerIP' in self.app.config:
                 self.app.ui.le_INDIServerIP.setText(self.app.config['INDIServerIP'])
                 self.host = self.app.config['INDIServerIP']
+            if 'CheckEnableINDI' in self.app.config:
+                self.app.ui.checkEnableINDI.setChecked(self.app.config['CheckEnableINDI'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -80,6 +83,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     def storeConfig(self):
         self.app.config['INDIServerPort'] = self.app.ui.le_INDIServerPort.text()
         self.app.config['INDIServerIP'] = self.app.ui.le_INDIServerIP.text()
+        self.app.config['CheckEnableINDI'] = self.app.ui.checkEnableINDI.isChecked()
 
     def INDIServerIP(self):
         if self.app.ui.le_INDIServerIP.text().strip() != '':
@@ -104,6 +108,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         pass
 
     def run(self):
+        if not self.isRunning:
+            self.isRunning = True
         self.socket = QtNetwork.QTcpSocket()
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
@@ -112,7 +118,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.connectToHost(self.host, self.port)
-        while True:
+        while self.isRunning:
             if not self.app.INDISendCommandQueue.empty():
                 indi_command = self.app.INDISendCommandQueue.get()
                 self.sendMessage(indi_command)
@@ -120,10 +126,10 @@ class INDIClient(PyQt5.QtCore.QObject):
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.host, self.port)
-        self.terminate()
+        self.handleDisconnect()
 
     def stop(self):
-        pass
+        self.isRunning = False
 
     def handleHostFound(self):
         pass
@@ -131,7 +137,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleConnected(self):
         self.connected = True
         self.logger.info('INDI Server connected at {}:{}'.format(self.host, self.port))
-        self.app.INDIsendQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
+        self.app.INDISendCommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
 
     def handleError(self, socketError):
         self.logger.error('the INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
@@ -144,8 +150,12 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.logger.info('the INDI connection disconnected from host')
         self.driverNameCCD = ''
         self.driverNameTelescope = ''
-        self.socket.disconnectFromHost()
+        self.driverNameWeather = ''
         self.connected = False
+        self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': '---'})
+        self.app.INDIDataQueue.put({'Name': 'CCD', 'value': '---'})
+        self.app.INDIDataQueue.put({'Name': 'Telescope', 'value': '---'})
+        self.socket.disconnectFromHost()
 
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the

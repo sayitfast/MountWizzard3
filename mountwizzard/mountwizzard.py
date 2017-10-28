@@ -130,7 +130,7 @@ class MountWizzardApp(widget.MwWidget):
         self.remote = remote_thread.Remote(self)
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.enableDisableRemoteAccess()
-        # self.INDIthread.start()
+        self.enableDisableINDI()
         self.initConfig()
         self.mappingFunctions()
         self.checkPlatformDependableMenus()
@@ -228,12 +228,21 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
+        self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
     def enableDisableRemoteAccess(self):
         if self.ui.checkRemoteAccess.isChecked():
             self.remote.start()
         else:
             self.remote.terminate()
+
+    def enableDisableINDI(self):
+        if self.ui.checkEnableINDI.isChecked():
+            self.INDIthread.start()
+        else:
+            self.INDIworker.isRunning = False
+            self.INDIthread.quit()
+            self.INDIthread.wait()
 
     def mountBoot(self):
         wol.send_magic_packet(self.ui.le_mountMAC.text().strip())

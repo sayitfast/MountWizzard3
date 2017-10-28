@@ -5,6 +5,7 @@
 - restored canceling modeling run
 - bugfix in cancel routine
 - refactoring data transfer from and to mount
+- reorganizing code for readability
 
 2.5.14
 - updated indi functions
