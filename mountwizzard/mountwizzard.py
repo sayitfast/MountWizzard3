@@ -74,23 +74,36 @@ class MountWizzardApp(widget.MwWidget):
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        super(MountWizzardApp, self).__init__()                                                                             # Initialize Class for UI
-        self.mountCommandQueue = Queue()                                                                                    # queue for sending command to mount
-        self.modelLogQueue = Queue()                                                                                        # queue for showing the modeling progress
+        super(MountWizzardApp, self).__init__()
+        # setting up communication queues for inter thread communication
+        self.mountCommandQueue = Queue()
+        self.modelLogQueue = Queue()
         self.modelCommandQueue = Queue()
-        self.messageQueue = Queue()                                                                                         # queue for showing messages in Gui from threads
+        self.messageQueue = Queue()
         self.imageQueue = Queue()
-        self.commandDataQueue = Queue()                                                                                     # queue for command to data thread for downloading data
-        self.INDIsendQueue = Queue()
-        self.INDIDataQueue = Queue()                                                                                        # queue for sending data back to gui
-        self.config = self.loadConfigData()                                                                                     # load configuration
-        self.ui = wizzard_main_ui.Ui_MainWindow()                                                                           # load the dialog from "DESIGNER"
-        self.ui.setupUi(self)                                                                                               # initialising the GUI
-        self.initUI()                                                                                                       # adapt the window to our purpose
+        self.commandDataQueue = Queue()
+        self.INDISendCommandQueue = Queue()
+        self.INDIDataQueue = Queue()
+        # loading config data
+        self.config = self.loadConfigData()
+        # initializing the gui
+        self.ui = wizzard_main_ui.Ui_MainWindow()
+        self.ui.setupUi(self)
+        # special setups for gui including box for matplotlib. margins to 0
+        self.initUI()
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
-        self.relays = relays.Relays(self)                                                                                   # Web base relays box for Booting and CCD / Heater On / OFF
-        self.mount = mount_thread.Mount(self)                                                                               # Mount -> everything with mount and alignment
-        self.dome = dome_thread.Dome(self)                                                                                  # dome control
+        self.ui.le_mwWorkingDir.setText(os.getcwd())
+        helper = QVBoxLayout(self.ui.model)
+        helper.setContentsMargins(0, 0, 0, 0)
+        self.modelWidget = ShowModel(self.ui.model)
+        # noinspection PyArgumentList
+        helper.addWidget(self.modelWidget)
+        # instantiating all subclasses and connecting thread signals
+        self.relays = relays.Relays(self)
+        self.mount = mount_thread.Mount(self)
+        self.mount.signalMountConnected.connect(self.setMountStatus)
+        self.dome = dome_thread.Dome(self)
+        self.dome.signalDomeConnected.connect(self.setDomeStatus)
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = QThread()
         self.INDIworker.moveToThread(self.INDIthread)
@@ -99,37 +112,30 @@ class MountWizzardApp(widget.MwWidget):
         self.INDIworker.status.connect(self.setINDIStatus)
         self.environment = environ_thread.Environment(self)
         if platform.system() == 'Windows':
-            self.data = upload_thread.DataUploadToMount(self)                                                               # data thread for downloading topics
-        self.modeling = modeling_thread.Modeling(self)                                                                      # transferring ui and mount object as well
-        self.analyseWindow = analysewindow.AnalyseWindow(self)                                                              # windows for analyse data
-        self.modelWindow = modelplotwindow.ModelPlotWindow(self)                                                            # window for modeling points
-        self.imageWindow = imagewindow.ImagesWindow(self)                                                                   # window for imaging
-        self.initConfig()
-        helper = QVBoxLayout(self.ui.model)                                                                                 # adding box layout for matplotlib
-        helper.setContentsMargins(0, 0, 0, 0)                                                                               # set margins to 0 -> box in qt is frameless
-        self.modelWidget = ShowModel(self.ui.model)                                                                         # build the polar plot widget
-        # noinspection PyArgumentList
-        helper.addWidget(self.modelWidget)                                                                                  # add widget to view
-        self.mount.signalMountConnected.connect(self.setMountStatus)                                                        # status from thread
-        self.mount.start()                                                                                                  # starting polling thread
+            self.data = upload_thread.DataUploadToMount(self)
+        self.modeling = modeling_thread.Modeling(self)
+        self.analyseWindow = analysewindow.AnalyseWindow(self)
+        self.modelWindow = modelplotwindow.ModelPlotWindow(self)
+        self.imageWindow = imagewindow.ImagesWindow(self)
+        # starting the threads
+        self.mount.start()
         if platform.system() == 'Windows':
             self.checkASCOM()
-            self.dome.signalDomeConnected.connect(self.setDomeStatus)                                                       # status from thread
-            self.dome.start()                                                                                               # starting polling thread
-            self.data.start()                                                                                               # starting data thread
-        self.environment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)                                      # status from thread
-        self.environment.start()                                                                                            # starting polling thread
-        self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)                                               # status from thread
-        self.modeling.start()                                                                                               # starting polling thread
-        # 6 - Start the thread
-        self.INDIthread.start()
-        self.mappingFunctions()                                                                                             # mapping the functions to ui
-        self.mainLoop()                                                                                                     # starting loop for cyclic data to gui from threads
-        self.ui.le_mwWorkingDir.setText(os.getcwd())                                                                        # put working directory into gui
+            self.dome.start()
+            self.data.start()
+        self.environment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
+        self.environment.start()
+        self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)
+        self.modeling.start()
         self.remote = remote_thread.Remote(self)
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
-        self.selectRemoteAccess()
-        self.checkAvailableMenus()
+        self.enableDisableRemoteAccess()
+        # self.INDIthread.start()
+        self.initConfig()
+        self.mappingFunctions()
+        self.checkPlatformDependableMenus()
+        # starting loop for cyclic data to gui from threads
+        self.mainLoop()
 
     # noinspection PyArgumentList
     def mappingFunctions(self):
@@ -221,9 +227,9 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
-        self.ui.checkRemoteAccess.stateChanged.connect(self.selectRemoteAccess)
+        self.ui.checkRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
 
-    def selectRemoteAccess(self):
+    def enableDisableRemoteAccess(self):
         if self.ui.checkRemoteAccess.isChecked():
             self.remote.start()
         else:
@@ -320,7 +326,7 @@ class MountWizzardApp(widget.MwWidget):
         finally:
             return appInstalled, appName, appInstallPath
 
-    def checkAvailableMenus(self):
+    def checkPlatformDependableMenus(self):
         if platform.system() != 'Windows':
             self.ui.settingsTabWidget.removeTab(5)
             self.ui.settingsTabWidget.removeTab(2)

@@ -113,8 +113,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.connectToHost(self.host, self.port)
         while True:
-            if not self.app.INDIsendQueue.empty():
-                indi_command = self.app.INDIsendQueue.get()
+            if not self.app.INDISendCommandQueue.empty():
+                indi_command = self.app.INDISendCommandQueue.get()
                 self.sendMessage(indi_command)
             QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:

@@ -51,11 +51,11 @@ class INDICamera(MWCamera):
 
     def connectCamera(self):
         if self.appRunning and self.app.INDIworker.driverNameCCD != '':
-            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
     def disconnectCamera(self):
         if self.cameraConnected:
-            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommand.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
     def getImage(self, modelData):
         binning = int(float(modelData['binning']))
@@ -68,15 +68,15 @@ class INDICamera(MWCamera):
         if self.cameraConnected and self.app.INDIworker.driverNameCCD != '':
             self.app.INDIworker.receivedImage = False
             # Enable BLOB mode.
-            self.app.INDIsendQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommand.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.INDIworker.driverNameCCD}))
             # set to raw - no compression mode
-            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_RAW'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommand.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_RAW'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.INDIworker.driverNameCCD}))
             # set frame type
-            self.app.INDIsendQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})], indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommand.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})], indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.INDIworker.driverNameCCD}))
             # set binning
-            self.app.INDIsendQueue.put(indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})], indi_attr={'name': 'CCD_BINNING', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommand.put(indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})], indi_attr={'name': 'CCD_BINNING', 'device': self.app.INDIworker.driverNameCCD}))
             # Request image.
-            self.app.INDIsendQueue.put(indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})], indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.INDIworker.driverNameCCD}))
+            self.app.INDISendCommand.put(indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})], indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.INDIworker.driverNameCCD}))
             self.imagingStarted = True
             while not self.app.INDIworker.receivedImage:
                 PyQt5.QtWidgets.QApplication.processEvents()
