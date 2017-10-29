@@ -6,6 +6,8 @@
 - bugfix in cancel routine
 - refactoring data transfer from and to mount
 - reorganizing code for readability
+- added enable disable indi client running
+- enabling window and taskbar icon
 
 2.5.14
 - updated indi functions

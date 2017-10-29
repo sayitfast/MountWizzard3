@@ -11,19 +11,16 @@
 # Licence APL2.0
 #
 ############################################################
-import datetime
-import json
-# import basic stuff
+import platform
+import os
+import sys
 import logging
 import logging.handlers
-import math
-import os
-import platform
-import sys
-
+import datetime
+import json
 # numerics
+import math
 import numpy
-
 if platform.system() == 'Windows':
     # application handling
     from winreg import *
@@ -240,7 +237,7 @@ class MountWizzardApp(widget.MwWidget):
         if self.ui.checkEnableINDI.isChecked():
             self.INDIthread.start()
         else:
-            self.INDIworker.isRunning = False
+            self.INDIworker.stop()
             self.INDIthread.quit()
             self.INDIthread.wait()
 
@@ -940,19 +937,19 @@ if __name__ == "__main__":
 
     BUILD_NO = '2.5.15 beta'
 
-    warnings.filterwarnings("ignore")                                                                                       # get output from console
-    name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))                                             # define log file
-    handler = logging.handlers.RotatingFileHandler(name, backupCount=3)                                                     # define log handler
+    warnings.filterwarnings("ignore")
+    name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
+    handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s] - %(message)s',
-                        handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')                                                    # define log format
+                        handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
-    if not os.path.isdir(os.getcwd() + '/analysedata'):                                                                     # if analyse dir doesn't exist, make it
-        os.makedirs(os.getcwd() + '/analysedata')                                                                           # if path doesn't exist, generate is
-    if not os.path.isdir(os.getcwd() + '/images'):                                                                          # if images dir doesn't exist, make it
-        os.makedirs(os.getcwd() + '/images')                                                                                # if path doesn't exist, generate is
-    if not os.path.isdir(os.getcwd() + '/config'):                                                                          # if config dir doesn't exist, make it
-        os.makedirs(os.getcwd() + '/config')                                                                                # if path doesn't exist, generate is
+    if not os.path.isdir(os.getcwd() + '/analysedata'):
+        os.makedirs(os.getcwd() + '/analysedata')
+    if not os.path.isdir(os.getcwd() + '/images'):
+        os.makedirs(os.getcwd() + '/images')
+    if not os.path.isdir(os.getcwd() + '/config'):
+        os.makedirs(os.getcwd() + '/config')
 
     logging.info('-----------------------------------------')
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')
@@ -972,21 +969,20 @@ if __name__ == "__main__":
     if not os.access(os.getcwd() + '/analysedata', os.W_OK):
         logging.error('no write access to /analysedata')
 
-    QApplication.setAttribute(Qt.AA_Use96Dpi)                                                                               # try to overcome windows, seems not to work
-    app = QApplication(sys.argv)                                                                                            # built application
+    app = QApplication(sys.argv)
 
-    sys.excepthook = except_hook                                                                                            # manage except hooks for logging
+    sys.excepthook = except_hook
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
-    app.setStyle(QStyleFactory.create('Fusion'))                                                                            # set theme
+    app.setStyle(QStyleFactory.create('Fusion'))
     app.setWindowIcon(QIcon('mw.ico'))
 
-    mountApp = MountWizzardApp()                                                                                            # instantiate Application
-    if mountApp.modelWindow.showStatus:                                                                                     # if windows was shown last run, open it directly
-        mountApp.modelWindow.redrawModelingWindow()                                                                         # update content
-        mountApp.modelWindow.showModelingPlotWindow()                                                                       # show it
-    if mountApp.imageWindow.showStatus:                                                                                     # if windows was shown last run, open it directly
-        mountApp.imageWindow.showImageWindow()                                                                              # show it
-    if mountApp.analyseWindow.showStatus:                                                                                   # if windows was shown last run, open it directly
-        mountApp.analyseWindow.showAnalyseWindow()                                                                          # show it
-    mountApp.show()                                                                                                         # show it
-    sys.exit(app.exec_())                                                                                                   # close application
+    mountApp = MountWizzardApp()
+    if mountApp.modelWindow.showStatus:
+        mountApp.modelWindow.redrawModelingWindow()
+        mountApp.modelWindow.showModelingPlotWindow()
+    if mountApp.imageWindow.showStatus:
+        mountApp.imageWindow.showImageWindow()
+    if mountApp.analyseWindow.showStatus:
+        mountApp.analyseWindow.showAnalyseWindow()
+    mountApp.show()
+    sys.exit(app.exec_())

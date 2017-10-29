@@ -28,6 +28,7 @@ import pyfits
 
 class INDIClient(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+    received = QtCore.pyqtSignal(object)
     status = QtCore.pyqtSignal(int)
 
     GENERAL_INTERFACE = 0
@@ -63,6 +64,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.imagePath = ''
         self.app.ui.le_INDIServerIP.textChanged.connect(self.INDIServerIP)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.INDIServerPort)
+        self.received.connect(self.handleReceived)
         self.initConfig()
 
     def initConfig(self):
@@ -126,7 +128,8 @@ class INDIClient(PyQt5.QtCore.QObject):
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.host, self.port)
-        self.handleDisconnect()
+        # if I leave the loop, I close the connection to remote host
+        self.socket.disconnectFromHost()
 
     def stop(self):
         self.isRunning = False
@@ -140,14 +143,14 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.INDISendCommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
 
     def handleError(self, socketError):
-        self.logger.error('the INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
+        self.logger.error('INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
-        self.logger.info('the INDI connection has state: {0}'.format(self.socket.state()))
+        self.logger.info('INDI connection has state: {0}'.format(self.socket.state()))
         self.status.emit(self.socket.state())
 
     def handleDisconnect(self):
-        self.logger.info('the INDI connection disconnected from host')
+        self.logger.info('INDI connection is disconnected from host')
         self.driverNameCCD = ''
         self.driverNameTelescope = ''
         self.driverNameWeather = ''
@@ -155,7 +158,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': '---'})
         self.app.INDIDataQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIDataQueue.put({'Name': 'Telescope', 'value': '---'})
-        self.socket.disconnectFromHost()
 
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
@@ -201,10 +203,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(message.getElt(3).getValue()) & self.CCD_INTERFACE:
                         self.driverNameCCD = message.getElt(0).getValue()
                         self.app.INDIDataQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
-                    elif int(message.getElt(3).getValue()) == self.GENERAL_INTERFACE:
-                        if message.attr['device'] == 'MBox':
-                            self.driverNameWeather = message.getElt(0).getValue()
-                            self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': message.getElt(0).getValue()})
+                    elif int(message.getElt(3).getValue()) == self.WEATHER_INTERFACE:
+                        self.driverNameWeather = message.getElt(0).getValue()
+                        self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': message.getElt(0).getValue()})
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.

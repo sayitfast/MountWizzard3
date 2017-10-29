@@ -13,6 +13,8 @@
 ############################################################
 import platform
 import logging
+import os
+import sys
 
 # import for the PyQt5 Framework
 from PyQt5.QtGui import *
@@ -98,6 +100,13 @@ class MwWidget(QWidget):
             self.setPalette(darkPalette)
             self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
             self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
-
-        # sizing
+        # sizing in gui should be fixed, because I have a static layout
         self.setFixedSize(790, 640)
+        # set app icon
+        if getattr(sys, 'frozen', False):
+            # we are running in a bundle
+            bundle_dir = sys._MEIPASS
+        else:
+            # we are running in a normal Python environment
+            bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
+        self.setWindowIcon(QIcon(bundle_dir + '\\mw.ico'))

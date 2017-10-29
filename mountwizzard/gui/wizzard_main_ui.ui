@@ -8836,7 +8836,7 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Configuration of INDI Server</string>
+        <string>Configuration of INDI Subsystem</string>
        </property>
       </widget>
       <widget class="Line" name="line_78">
@@ -9170,7 +9170,7 @@ color: rgb(255,255,255);</string>
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check, if you would like to remote control MountWizzard for shutdown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Enable INDI Client</string>
+        <string>Enable INDI Client running</string>
        </property>
        <property name="checked">
         <bool>false</bool>

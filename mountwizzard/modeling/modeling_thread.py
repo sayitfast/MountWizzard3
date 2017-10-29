@@ -352,7 +352,7 @@ class Modeling(PyQt5.QtCore.QThread):
         modelData['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
         modelData['Iso'] = int(float(self.app.ui.isoSetting.value()))
         modelData['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-        modelData['ScaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['binning'] * 206.6 / float(self.app.ui.focalLength.value())
+        modelData['ScaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
         modelData['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.mount.sidereal_time[0:9])
         modelData['RaJ2000'] = self.app.mount.ra
@@ -486,15 +486,15 @@ class Modeling(PyQt5.QtCore.QThread):
         nameDataFile = self.app.ui.le_analyseFileName.text()
         self.logger.info('modeling from {0}'.format(nameDataFile))
         data = self.analyse.loadData(nameDataFile)                                                                          # load data
-        if not('RaJNow' in data and 'DecJNow' in data):                                                                   # you need stored mount positions
+        if not('RaJNow' in data and 'DecJNow' in data):                                                                     # you need stored mount positions
             self.logger.warning('RaJNow or DecJNow not in data file')
             self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))                        # Gui Output
             return
-        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):                                                           # you need solved star positions
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):                                                         # you need solved star positions
             self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
             self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))                              # Gui Output
             return
-        if not('Pierside' in data and 'LocalSiderealTime' in data):                                                             # you need sidereal time and pierside
+        if not('Pierside' in data and 'LocalSiderealTime' in data):                                                         # you need sidereal time and pierside
             self.logger.warning('Pierside and LocalSiderealTime not in data file')
             self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(self.timeStamp()))                        # Gui Output
             return
@@ -574,7 +574,7 @@ class Modeling(PyQt5.QtCore.QThread):
             modelData['CanSubframe'] = True                                                                                 # same in y
         else:                                                                                                               # otherwise error
             self.logger.warning('Camera does not support subframe.')
-        if 'binning' in modelData:                                                                                          # if binning, we have to respects
+        if 'Binning' in modelData:                                                                                          # if binning, we have to respects
             modelData['SizeX'] = int(modelData['SizeX'] / modelData['Binning'])
             modelData['SizeY'] = int(modelData['SizeY'] / modelData['Binning'])
         return modelData                                                                                                    # default without subframe
@@ -582,11 +582,11 @@ class Modeling(PyQt5.QtCore.QThread):
     def capturingImage(self, modelData, simulation):                                                                        # capturing image
         if self.cancel:
             return False, 'Cancel modeling pressed', modelData
-        st_fits_header = modelData['LocalSiderealTime'][0:10]                                                                   # store local sideral time as well
-        ra_fits_header = self.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')                           # set the point coordinates from mount in J2000 as hint precision 2
-        dec_fits_header = self.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')                          # set dec as well
-        raJnow_fits_header = self.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')                         # set the point coordinates from mount in J2000 as hint precision 2
-        decJnow_fits_header = self.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')                        # set dec as well
+        LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]                                                  # store local sideral time as well
+        RaJ2000FitsHeader = self.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')                         # set the point coordinates from mount in J2000 as hint precision 2
+        DecJ2000FitsHeader = self.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')                        # set dec as well
+        RaJNowFitsHeader = self.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')                            # set the point coordinates from mount in J2000 as hint precision 2
+        DecJNowFitsHeader = self.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')                           # set dec as well
         if modelData['Pierside'] == '1':
             pierside_fits_header = 'E'
         else:
@@ -607,15 +607,15 @@ class Modeling(PyQt5.QtCore.QThread):
                 if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
                     modelData['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
                 fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()                                                # set time to current time of the mount
-                fitsHeader['OBJCTRA'] = ra_fits_header                                                                      # set ra in header from solver in J2000
-                fitsHeader['OBJCTDEC'] = dec_fits_header                                                                    # set dec in header from solver in J2000
+                fitsHeader['OBJCTRA'] = RaJ2000FitsHeader                                                                   # set ra in header from solver in J2000
+                fitsHeader['OBJCTDEC'] = DecJ2000FitsHeader                                                                 # set dec in header from solver in J2000
                 fitsHeader['CDELT1'] = str(modelData['ScaleHint'])                                                          # x is the same as y
                 fitsHeader['CDELT2'] = str(modelData['ScaleHint'])                                                          # and vice versa
                 fitsHeader['PIXSCALE'] = str(modelData['ScaleHint'])                                                        # and vice versa
                 fitsHeader['SCALE'] = str(modelData['ScaleHint'])                                                           # and vice versa
-                fitsHeader['MW_MRA'] = raJnow_fits_header                                                                   # reported RA of mount in JNOW
-                fitsHeader['MW_MDEC'] = decJnow_fits_header                                                                 # reported DEC of mount in JNOW
-                fitsHeader['MW_ST'] = st_fits_header                                                                        # reported local sideral time of mount from GS command
+                fitsHeader['MW_MRA'] = RaJNowFitsHeader                                                                     # reported RA of mount in JNOW
+                fitsHeader['MW_MDEC'] = DecJNowFitsHeader                                                                   # reported DEC of mount in JNOW
+                fitsHeader['MW_ST'] = LocalSiderealTimeFitsHeader                                                           # reported local sideral time of mount from GS command
                 fitsHeader['MW_MSIDE'] = pierside_fits_header                                                               # reported pierside of mount from SD command
                 fitsHeader['MW_EXP'] = modelData['Exposure']                                                                # store the exposure time as well
                 fitsHeader['MW_AZ'] = modelData['Azimuth']                                                                  # x is the same as y
@@ -652,11 +652,11 @@ class Modeling(PyQt5.QtCore.QThread):
         suc, mes, modelData = self.imagingHandler.solveImage(modelData)                                                     # abstraction of solver for image
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))                                                                # debug output
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)          # transform J2000 -> Jnow
-            modelData['RaJNowSolved'] = ra_sol_Jnow                                                                          # ra in Jnow
-            modelData['DecJNowSolved'] = dec_sol_Jnow                                                                        # dec in  Jnow
-            modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600                                     # calculate the alignment error ra
-            modelData['DecError'] = (modelData['DecJ2000Solved'] - modelData['DecJ2000']) * 3600                                  # calculate the alignment error dec
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+            modelData['RaJNowSolved'] = ra_sol_Jnow                                                                         # ra in Jnow
+            modelData['DecJNowSolved'] = dec_sol_Jnow                                                                       # dec in  Jnow
+            modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600                               # calculate the alignment error ra
+            modelData['DecError'] = (modelData['DecJ2000Solved'] - modelData['DecJ2000']) * 3600                            # calculate the alignment error dec
             modelData['ModelError'] = math.sqrt(modelData['RaError'] * modelData['RaError'] + modelData['DecError'] * modelData['DecError'])
             fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')                                             # open for adding field info
             fitsHeader = fitsFileHandle[0].header                                                                           # getting the header part
@@ -679,7 +679,7 @@ class Modeling(PyQt5.QtCore.QThread):
             return False, mes, modelData
 
     def addRefinementStar(self, ra, dec):                                                                                   # add refinement star during modeling run
-        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))                                               # debug output
+        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
         self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))                                                         # Write jnow ra to mount
         self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))                                                        # Write jnow dec to mount
         starNumber = self.app.mount.numberModelStars()
@@ -714,14 +714,14 @@ class Modeling(PyQt5.QtCore.QThread):
         self.app.modelLogQueue.put('status-- of --')
         self.app.modelLogQueue.put('percent0')
         self.app.modelLogQueue.put('timeleft--:--')
-        modelData = dict()                                                                                                  # all modeling data
-        results = list()                                                                                                    # results
-        self.app.modelLogQueue.put('delete')                                                                                # deleting the logfile view
-        self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))                        # Start informing user
-        numCheckPoints = 0                                                                                                  # number og checkpoints done
-        modelData['BaseDirImages'] = self.IMAGEDIR + '/' + directory                                                      # define subdirectory for storing the images
-        scaleSubframe = self.app.ui.scaleSubframe.value() / 100                                                             # scale subframe in percent
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingHandler.getCameraProps()                                     # look for capabilities of cam
+        modelData = {}
+        results = []
+        self.app.modelLogQueue.put('delete')
+        self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))
+        numCheckPoints = 0
+        modelData['BaseDirImages'] = self.IMAGEDIR + '/' + directory
+        scaleSubframe = self.app.ui.scaleSubframe.value() / 100
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingHandler.getCameraProps()
         modelData['GainValue'] = gainValue
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
@@ -739,8 +739,8 @@ class Modeling(PyQt5.QtCore.QThread):
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')                                                                                # unpark to start slewing
         self.app.mountCommandQueue.put('AP')                                                                                # tracking on during the picture taking
-        if not os.path.isdir(modelData['BaseDirImages']):                                                                 # if analyse dir doesn't exist, make it
-            os.makedirs(modelData['BaseDirImages'])                                                                       # if path doesn't exist, generate is
+        if not os.path.isdir(modelData['BaseDirImages']):                                                                   # if analyse dir doesn't exist, make it
+            os.makedirs(modelData['BaseDirImages'])                                                                         # if path doesn't exist, generate is
         timeStart = time.time()
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):                                                      # run through all modeling points
             self.modelRun = True
@@ -750,36 +750,39 @@ class Modeling(PyQt5.QtCore.QThread):
                 # todo: put the code to multi thread modeling
                 if self.cancel:                                                                                             # here is the entry point for canceling the modeling run
                     self.cancel = False
-                    self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))     # we keep all the stars before
-                    self.app.mountCommandQueue.put('AP')                                                                         # tracking on during the picture taking
+                    self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
+                    # tracking should be on during the picture taking
+                    self.app.mountCommandQueue.put('AP')
                     self.app.modelLogQueue.put('status-- of --')
                     self.app.modelLogQueue.put('percent0')
                     self.app.modelLogQueue.put('timeleft--:--')
-                    break                                                                                                   # finally stopping modeling run
+                    # finally stopping modeling run
+                    break
                 self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
-                                           .format(self.timeStamp(), i+1, p_az, p_alt))                                     # Gui Output
+                                           .format(self.timeStamp(), i+1, p_az, p_alt))
                 self.logger.info('point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))
-                if modeltype in ['TimeChange']:                                                                             # in time change there is only slew for the first time, than only track during imaging
+                if modeltype in ['TimeChange']:
+                    # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
-                        self.slewMountDome(p_az, p_alt)                                                                     # slewing mount and dome to az/alt for first slew only
-                        self.app.mountCommandQueue.put('RT9')                                                               # stop tracking until next round
+                        self.slewMountDome(p_az, p_alt)
+                        self.app.mountCommandQueue.put('RT9')
                 else:
-                    self.slewMountDome(p_az, p_alt)                                                                         # slewing mount and dome to az/alt for modeling point and analyse
+                    self.slewMountDome(p_az, p_alt)
                 self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
-                                           .format(self.timeStamp(), settlingTime))                                         # Gui Output
+                                           .format(self.timeStamp(), settlingTime))
                 timeCounter = settlingTime
-                while timeCounter > 0:                                                                                      # waiting for settling time and showing data
-                    time.sleep(1)                                                                                           # only step n seconds
-                    timeCounter -= 1                                                                                        # count down
+                while timeCounter > 0:
+                    time.sleep(1)
+                    timeCounter -= 1
                     self.app.modelLogQueue.put('backspace')
-                    self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))                                           # write to gui
-                self.app.modelLogQueue.put('\n')                                                                            # clear gui for next line
-            if p_item.isVisible() and p_solve:                                                                              # is the modeling point to be run = visible and to be evaluated p_solve = True
-                if self.app.ui.checkFastDownload.isChecked():                                                               # if camera is supporting high speed download
+                    self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))
+                self.app.modelLogQueue.put('\n')
+            if p_item.isVisible() and p_solve:
+                if self.app.ui.checkFastDownload.isChecked():
                     modelData['Speed'] = 'HiSpeed'
-                else:                                                                                                       # otherwise
+                else:
                     modelData['Speed'] = 'Normal'
-                modelData['File'] = self.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'                                         # generate filename for storing image
+                modelData['File'] = self.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
                 modelData['Binning'] = int(float(self.app.ui.cameraBin.value()))
                 modelData['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
                 modelData['Iso'] = int(float(self.app.ui.isoSetting.value()))
