@@ -51,7 +51,10 @@ class Slewpoint(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def run(self):
-        self.isRunning = True
+        if not self.isRunning:
+            self.isRunning = True
+        while self.isRunning:
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
@@ -68,7 +71,6 @@ class Slewpoint(PyQt5.QtCore.QObject):
             time.sleep(0.5)
             print('Tracking of point {0}'.format(number))
             self.main.workerImage.queueImage.put(number)
-            self.main.workerImage.signalImaging.emit()
 
 
 class Image(PyQt5.QtCore.QObject):
@@ -80,60 +82,56 @@ class Image(PyQt5.QtCore.QObject):
         PyQt5.QtCore.QThread.__init__(self)
         self.main = main
         self.isRunning = True
-        self.signalImaging.connect(self.imaging)
 
     @PyQt5.QtCore.pyqtSlot()
     def run(self):
-        self.isRunning = True
+        if not self.isRunning:
+            self.isRunning = True
+        while self.isRunning:
+            PyQt5.QtWidgets.QApplication.processEvents()
+            if not self.queueImage.empty():
+                number = self.queueImage.get()
+                time.sleep(0.5)
+                print('Start Integration of point {0}'.format(number))
+                time.sleep(5)
+                print('Download of point {0}'.format(number))
+                self.main.workerSlewpoint.signalSlewing.emit()
+                time.sleep(2)
+                print('Store Image of point {0}'.format(number))
+                time.sleep(0.2)
+                self.main.workerPlatesolve.queuePlatesolve.put(number)
 
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
         self.isRunning = False
-
-    @PyQt5.QtCore.pyqtSlot()
-    def imaging(self):
-        if not self.queueImage.empty():
-            number = self.queueImage.get()
-            time.sleep(0.5)
-            print('Start Integration of point {0}'.format(number))
-            time.sleep(5)
-            print('Download of point {0}'.format(number))
-            self.main.workerSlewpoint.signalSlewing.emit()
-            time.sleep(2)
-            print('Store Image of point {0}'.format(number))
-            time.sleep(0.2)
-            self.main.workerPlatesolve.queuePlatesolve.put(number)
-            self.main.workerPlatesolve.signalPlatesolve.emit()
 
 
 class Platesolve(PyQt5.QtCore.QObject):
 
     queuePlatesolve = Queue()
-    signalPlatesolve = PyQt5.QtCore.pyqtSignal(name='plate')
+    signalPlatesolveFinished = PyQt5.QtCore.pyqtSignal(name='platesolveFinished')
 
     def __init__(self, main):
         PyQt5.QtCore.QThread.__init__(self)
         self.main = main
         self.isRunning = True
-        self.signalPlatesolve.connect(self.platesolving)
 
     @PyQt5.QtCore.pyqtSlot()
     def run(self):
-        self.isRunning = True
+        if not self.isRunning:
+            self.isRunning = True
+        while self.isRunning:
+            PyQt5.QtWidgets.QApplication.processEvents()
+            if not self.queuePlatesolve.empty():
+                number = self.queuePlatesolve.get()
+                print('Start Platesolve of point {0}'.format(number))
+                time.sleep(5)
+                print('Got coordinates of point {0}'.format(number))
+                time.sleep(0.1)
 
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
         self.isRunning = False
-
-    @PyQt5.QtCore.pyqtSlot()
-    def platesolving(self):
-        if not self.queuePlatesolve.empty():
-            number = self.queuePlatesolve.get()
-            print('Start Platesolve of point {0}'.format(number))
-            time.sleep(5)
-            print('Got coordinates of point {0}'.format(number))
-            time.sleep(0.1)
-            # self.main.workerSlewpoint.signalSlewing.emit()
 
 
 class Modeling(PyQt5.QtCore.QThread):
@@ -174,15 +172,18 @@ class Modeling(PyQt5.QtCore.QThread):
         self.workerSlewpoint = Slewpoint(self)
         self.threadSlewpoint = PyQt5.QtCore.QThread()
         self.workerSlewpoint.moveToThread(self.threadSlewpoint)
-        self.threadSlewpoint.start()
+        self.threadSlewpoint.started.connect(self.workerSlewpoint.run)
+        #self.threadSlewpoint.start()
         self.workerImage = Image(self)
         self.threadImage = PyQt5.QtCore.QThread()
         self.workerImage.moveToThread(self.threadImage)
-        self.threadImage.start()
+        self.threadImage.started.connect(self.workerImage.run)
+        #self.threadImage.start()
         self.workerPlatesolve = Platesolve(self)
         self.threadPlatesolve = PyQt5.QtCore.QThread()
         self.workerPlatesolve.moveToThread(self.threadPlatesolve)
-        self.threadPlatesolve.start()
+        self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
+        #self.threadPlatesolve.start()
 
         # counter for thread timing
         self.counter = 0
@@ -428,8 +429,27 @@ class Modeling(PyQt5.QtCore.QThread):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
 
     def runBoostModeling(self, simulation):
+        print('starting')
+        self.modelRun = True
+        self.threadSlewpoint.start()
+        self.threadImage.start()
+        self.threadPlatesolve.start()
         # loading test data
         for i in range(1, 10):
             self.workerSlewpoint.queuePoint.put(i)
         # start process
         self.workerSlewpoint.signalSlewing.emit()
+        while self.modelRun:
+            PyQt5.QtWidgets.QApplication.processEvents()
+            if self.cancel:
+                break
+        self.workerSlewpoint.stop()
+        self.threadSlewpoint.quit()
+        self.threadSlewpoint.wait()
+        self.workerImage.stop()
+        self.threadImage.quit()
+        self.threadImage.wait()
+        self.workerPlatesolve.stop()
+        self.threadPlatesolve.quit()
+        self.threadPlatesolve.wait()
+        self.modelRun = False
