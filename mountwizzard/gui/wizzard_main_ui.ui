@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -3794,7 +3794,7 @@
       <string>Runs the base model, if ther are any points</string>
      </property>
      <property name="text">
-      <string>Run Base Model only</string>
+      <string>Run Base Model</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkUseBlindSolve">
@@ -4274,7 +4274,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>180</x>
        <y>400</y>
-       <width>271</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
@@ -4282,7 +4282,7 @@ color: rgb(255,255,255);</string>
       <string>Run refinment model</string>
      </property>
      <property name="text">
-      <string>Run Refinement Model only</string>
+      <string>Run Refinement Model</string>
      </property>
     </widget>
     <widget class="Line" name="line_26">
@@ -4983,6 +4983,22 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="text">
       <string>Do Simulation</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_runBoostModel">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>400</y>
+       <width>121</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Run refinment model</string>
+     </property>
+     <property name="text">
+      <string>Run Boost Model</string>
      </property>
     </widget>
    </widget>

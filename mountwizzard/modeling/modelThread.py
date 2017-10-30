@@ -15,8 +15,11 @@ import copy
 import logging
 import os
 import platform
+import time
 # threading
 import threading
+# queuing
+from queue import Queue
 # PyQt5
 import PyQt5
 # for data storing
@@ -33,6 +36,104 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
 from modeling import modelPoints
 # workers
 from modeling import modelWorker
+
+
+class Slewpoint(PyQt5.QtCore.QObject):
+
+    queuePoint = Queue()
+    signalSlewing = PyQt5.QtCore.pyqtSignal(name='slew')
+
+    def __init__(self, main):
+        PyQt5.QtCore.QThread.__init__(self)
+        self.main = main
+        self.isRunning = True
+        self.signalSlewing.connect(self.slewing)
+
+    @PyQt5.QtCore.pyqtSlot()
+    def run(self):
+        self.isRunning = True
+
+    @PyQt5.QtCore.pyqtSlot()
+    def stop(self):
+        self.isRunning = False
+
+    @PyQt5.QtCore.pyqtSlot()
+    def slewing(self):
+        if not self.queuePoint.empty():
+            number = self.queuePoint.get()
+            time.sleep(0.1)
+            print('Start Slewing to Point {0}'.format(number))
+            time.sleep(5)
+            print('Settling of point {0}'.format(number))
+            time.sleep(0.5)
+            print('Tracking of point {0}'.format(number))
+            self.main.workerImage.queueImage.put(number)
+            self.main.workerImage.signalImaging.emit()
+
+
+class Image(PyQt5.QtCore.QObject):
+
+    queueImage = Queue()
+    signalImaging = PyQt5.QtCore.pyqtSignal(name='image')
+
+    def __init__(self, main):
+        PyQt5.QtCore.QThread.__init__(self)
+        self.main = main
+        self.isRunning = True
+        self.signalImaging.connect(self.imaging)
+
+    @PyQt5.QtCore.pyqtSlot()
+    def run(self):
+        self.isRunning = True
+
+    @PyQt5.QtCore.pyqtSlot()
+    def stop(self):
+        self.isRunning = False
+
+    @PyQt5.QtCore.pyqtSlot()
+    def imaging(self):
+        if not self.queueImage.empty():
+            number = self.queueImage.get()
+            time.sleep(0.5)
+            print('Start Integration of point {0}'.format(number))
+            time.sleep(5)
+            print('Download of point {0}'.format(number))
+            self.main.workerSlewpoint.signalSlewing.emit()
+            time.sleep(2)
+            print('Store Image of point {0}'.format(number))
+            time.sleep(0.2)
+            self.main.workerPlatesolve.queuePlatesolve.put(number)
+            self.main.workerPlatesolve.signalPlatesolve.emit()
+
+
+class Platesolve(PyQt5.QtCore.QObject):
+
+    queuePlatesolve = Queue()
+    signalPlatesolve = PyQt5.QtCore.pyqtSignal(name='plate')
+
+    def __init__(self, main):
+        PyQt5.QtCore.QThread.__init__(self)
+        self.main = main
+        self.isRunning = True
+        self.signalPlatesolve.connect(self.platesolving)
+
+    @PyQt5.QtCore.pyqtSlot()
+    def run(self):
+        self.isRunning = True
+
+    @PyQt5.QtCore.pyqtSlot()
+    def stop(self):
+        self.isRunning = False
+
+    @PyQt5.QtCore.pyqtSlot()
+    def platesolving(self):
+        if not self.queuePlatesolve.empty():
+            number = self.queuePlatesolve.get()
+            print('Start Platesolve of point {0}'.format(number))
+            time.sleep(5)
+            print('Got coordinates of point {0}'.format(number))
+            time.sleep(0.1)
+            # self.main.workerSlewpoint.signalSlewing.emit()
 
 
 class Modeling(PyQt5.QtCore.QThread):
@@ -69,16 +170,28 @@ class Modeling(PyQt5.QtCore.QThread):
         self.transform = self.app.mount.transform
         self.modelPoints = modelPoints.ModelPoints(self.transform)
         self.modelWorker = modelWorker.ModelWorker(self.app)
-        # class variables
-        self.modelAnalyseData = []
-        self.modelData = {}
-        self.results = []
+        # initialize the parallel thread modeling parts
+        self.workerSlewpoint = Slewpoint(self)
+        self.threadSlewpoint = PyQt5.QtCore.QThread()
+        self.workerSlewpoint.moveToThread(self.threadSlewpoint)
+        self.threadSlewpoint.start()
+        self.workerImage = Image(self)
+        self.threadImage = PyQt5.QtCore.QThread()
+        self.workerImage.moveToThread(self.threadImage)
+        self.threadImage.start()
+        self.workerPlatesolve = Platesolve(self)
+        self.threadPlatesolve = PyQt5.QtCore.QThread()
+        self.workerPlatesolve.moveToThread(self.threadPlatesolve)
+        self.threadPlatesolve.start()
+
         # counter for thread timing
         self.counter = 0
         self.chooserLock = threading.Lock()
         # finally initialize the class configuration
         self.cancel = False
         self.modelRun = False
+        self.modelAnalyseData = []
+        self.modelData = {}
         # setting the config up
         self.initConfig()
         # run it first, to set all imaging applications up
@@ -166,10 +279,19 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
+                    elif command == 'RunBoostModel':
+                        self.app.imageWindow.disableExposures()
+                        self.app.ui.btn_runBoostModel.setStyleSheet(self.BLUE)
+                        simulation = self.app.ui.checkSimulation.isChecked()
+                        self.runBoostModeling(simulation)
+                        self.app.ui.btn_runBoostModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
+                        self.app.imageWindow.enableExposures()
                     elif command == 'PlateSolveSync':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
-                        self.modelWorker.plateSolveSync()
+                        simulation = self.app.ui.checkSimulation.isChecked()
+                        self.modelWorker.plateSolveSync(simulation)
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunBatchModel':
@@ -304,3 +426,10 @@ class Modeling(PyQt5.QtCore.QThread):
             self.signalModelConnected.emit(3)
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
+
+    def runBoostModeling(self, simulation):
+        # loading test data
+        for i in range(1, 10):
+            self.workerSlewpoint.queuePoint.put(i)
+        # start process
+        self.workerSlewpoint.signalSlewing.emit()

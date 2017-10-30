@@ -45,72 +45,6 @@ class ModelWorker:
         self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)
 
-    def plateSolveSync(self):
-        self.app.modelLogQueue.put('delete')
-        self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
-        modelData = {}
-        scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-        modelData['base_dir_images'] = self.app.modeling.IMAGEDIR + '/platesolvesync'
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.imagingHandler.getCameraProps()
-        modelData['gainValue'] = gainValue
-        if suc:
-            self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
-        else:
-            self.logger.warning('SgGetCameraProps with error: {0}'.format(mes))
-            self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), 'Base', mes))
-            return {}
-        modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)
-        if modelData['sizeX'] == 800 and modelData['sizeY'] == 600:
-            simulation = True
-        else:
-            simulation = False
-        if not self.app.ui.checkDoSubframe.isChecked():
-            modelData['CanSubframe'] = False
-        self.logger.info('modelData: {0}'.format(modelData))
-        self.app.mountCommandQueue.put('PO')
-        self.app.mountCommandQueue.put('AP')
-        if not os.path.isdir(modelData['BaseDirImages']):
-            os.makedirs(modelData['BaseDirImages'])
-        if self.app.ui.checkFastDownload.isChecked():
-            modelData['Speed'] = 'HiSpeed'
-        else:
-            modelData['Speed'] = 'Normal'
-        modelData['File'] = 'platesolvesync.fit'
-        modelData['Binning'] = int(float(self.app.ui.cameraBin.value()))
-        modelData['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
-        modelData['Iso'] = int(float(self.app.ui.isoSetting.value()))
-        modelData['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-        modelData['ScaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
-        modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
-        modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(self.app.mount.sidereal_time[0:9])
-        modelData['RaJ2000'] = self.app.mount.ra
-        modelData['DecJ2000'] = self.app.mount.dec
-        modelData['RaJNow'] = self.app.mount.raJnow
-        modelData['DecJNow'] = self.app.mount.decJnow
-        modelData['Pierside'] = self.app.mount.pierside
-        modelData['RefractionTemperature'] = self.app.mount.refractionTemp
-        modelData['RefractionPressure'] = self.app.mount.refractionPressure
-        modelData['Azimuth'] = 0
-        modelData['Altitude'] = 0
-        self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
-        suc, mes, imagepath = self.capturingImage(modelData, simulation)
-        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
-        if suc:
-            self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
-            suc, mes, modelData = self.solveImage(modelData, simulation)
-            self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
-            if suc:
-                suc = self.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
-                if suc:
-                    self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
-                else:
-                    self.app.modelLogQueue.put('{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
-            else:
-                self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
-        if not self.app.ui.checkKeepImages.isChecked():
-            shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
-
     def setupRunningParameters(self):
         settlingTime = int(float(self.app.ui.settlingTime.value()))
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
@@ -473,6 +407,50 @@ class ModelWorker:
             self.logger.warning('error in sync mount modeling')
             return False
 
+    def plateSolveSync(self, simulation=False):
+        self.app.modelLogQueue.put('delete')
+        self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
+        modelData = {}
+        modelData = self.prepareImaging(modelData, '')
+        modelData['base_dir_images'] = self.app.modeling.IMAGEDIR + '/platesolvesync'
+        self.logger.info('modelData: {0}'.format(modelData))
+        self.app.mountCommandQueue.put('PO')
+        self.app.mountCommandQueue.put('AP')
+        if not os.path.isdir(modelData['BaseDirImages']):
+            os.makedirs(modelData['BaseDirImages'])
+        modelData['File'] = 'platesolvesync.fit'
+        modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
+        modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(
+            self.app.mount.sidereal_time[0:9])
+        modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
+        modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
+        modelData['RaJNow'] = self.app.mount.data['RaJNow']
+        modelData['DecJNow'] = self.app.mount.data['DecJNow']
+        modelData['Pierside'] = self.app.mount.data['Pierside']
+        modelData['RefractionTemperature'] = self.app.mount.data['RefractionTemperature']
+        modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
+        modelData['Azimuth'] = 0
+        modelData['Altitude'] = 0
+        self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
+        suc, mes, imagepath = self.capturingImage(modelData, simulation)
+        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
+        if suc:
+            self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
+            suc, mes, modelData = self.solveImage(modelData, simulation)
+            self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
+            if suc:
+                suc = self.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
+                if suc:
+                    self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
+                else:
+                    self.app.modelLogQueue.put(
+                        '{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
+            else:
+                self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
+        if not self.app.ui.checkKeepImages.isChecked():
+            shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
+        self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
+
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime, simulation=False, keepImages=False):
         # start clearing the data
@@ -484,14 +462,14 @@ class ModelWorker:
         self.app.modelLogQueue.put('timeleft--:--')
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))
-        # counter for solved points
-        numCheckPoints = 0
         modelData = self.prepareImaging(modelData, directory)
         if not os.path.isdir(modelData['BaseDirImages']):
             os.makedirs(modelData['BaseDirImages'])
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')
         self.app.mountCommandQueue.put('AP')
+        # counter and timer for performance estimation
+        numCheckPoints = 0
         timeStart = time.time()
         # here starts the real model running cycle
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):

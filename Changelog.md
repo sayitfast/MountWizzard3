@@ -1,4 +1,8 @@
 # Changelog
+2.5.16
+- bugfix in platesolvesync
+- enabling parallel precessing
+
 2.5.15
 - refactoring threads
 - refactoring data management mount thread and environment thread
