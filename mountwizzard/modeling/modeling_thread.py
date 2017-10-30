@@ -289,11 +289,13 @@ class Modeling(PyQt5.QtCore.QThread):
     def cancelModeling(self):
         if self.modelRun:
             self.app.ui.btn_cancelModel.setStyleSheet(self.RED)
+            self.logger.info('User canceled modeling with cancel any model run')
             self.cancel = True
 
     def cancelAnalyseModeling(self):
         if self.modelRun:
             self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)
+            self.logger.info('User canceled modeling with cancel analyse run')
             self.cancel = True
 
     def getStatusFast(self):                                                                                                # check app is running
@@ -547,15 +549,18 @@ class Modeling(PyQt5.QtCore.QThread):
             self.logger.info('Azimuth:{0}'.format(az))
             while not self.app.mount.data['Slewing']:                                                                       # wait for mount starting slewing
                 if self.cancel:
+                    self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)                                                                                             # loop time
             while self.app.mount.slewing or self.app.dome.slewing:                                                          # wait for stop slewing mount or dome not slewing
                 if self.cancel:
+                    self.logger.info('Modeling cancelled after dome slewing')
                     break
                 time.sleep(0.1)                                                                                             # loop time
         else:
             while self.app.mount.data['Slewing']:                                                                           # wait for tracking = 7 or dome not slewing
                 if self.cancel:
+                    self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)                                                                                             # loop time
         # self.app.mountCommandQueue.put('AP')                                                                              # tracking on
@@ -581,6 +586,7 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def capturingImage(self, modelData, simulation):                                                                        # capturing image
         if self.cancel:
+            self.logger.info('Modeling cancelled after capturing image')
             return False, 'Cancel modeling pressed', modelData
         LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]                                                  # store local sideral time as well
         RaJ2000FitsHeader = self.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')                         # set the point coordinates from mount in J2000 as hint precision 2
@@ -757,6 +763,7 @@ class Modeling(PyQt5.QtCore.QThread):
                     self.app.modelLogQueue.put('percent0')
                     self.app.modelLogQueue.put('timeleft--:--')
                     # finally stopping modeling run
+                    self.logger.info('Modeling cancelled in main loop')
                     break
                 self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
                                            .format(self.timeStamp(), i+1, p_az, p_alt))

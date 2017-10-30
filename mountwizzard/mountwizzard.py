@@ -234,6 +234,9 @@ class MountWizzardApp(widget.MwWidget):
             self.remote.terminate()
 
     def enableDisableINDI(self):
+        if not self.modeling.INDICamera.appAvailable:
+            self.ui.checkEnableINDI.setChecked(False)
+            self.ui.settingsTabWidget.removeTab(3)
         if self.ui.checkEnableINDI.isChecked():
             self.INDIthread.start()
         else:

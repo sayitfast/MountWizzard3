@@ -3,7 +3,7 @@
 - refactoring threads
 - refactoring data management mount thread and environment thread
 - restored canceling modeling run
-- bugfix in cancel routine
+- bugfix in cancel routine added mor logging
 - refactoring data transfer from and to mount
 - reorganizing code for readability
 - added enable disable indi client running
