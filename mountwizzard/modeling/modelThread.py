@@ -36,8 +36,8 @@ from modeling import modelWorker
 
 
 class Modeling(PyQt5.QtCore.QThread):
-    logger = logging.getLogger(__name__)                                                                                   # logging enabling
-    signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')                                             # message for errors
+    logger = logging.getLogger(__name__)
+    signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')
     signalModelRedraw = PyQt5.QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -46,7 +46,7 @@ class Modeling(PyQt5.QtCore.QThread):
     REF_PICTURE = '/model001.fit'
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CAPTUREFILE = 'modeling'
-    CYCLESTATUSFAST = 500
+    CYCLESTATUSFAST = 1000
 
     def __init__(self, app):
         super().__init__()
@@ -71,7 +71,7 @@ class Modeling(PyQt5.QtCore.QThread):
         self.modelWorker = modelWorker.ModelWorker(self.app)
         # class variables
         self.modelAnalyseData = []
-        self.modelData = None
+        self.modelData = {}
         self.results = []
         # counter for thread timing
         self.counter = 0
@@ -83,7 +83,6 @@ class Modeling(PyQt5.QtCore.QThread):
         self.initConfig()
         # run it first, to set all imaging applications up
         self.chooseImagingApp()
-        self.getStatusFast()
 
     def initConfig(self):
         if self.NoneCam.appAvailable:
@@ -105,6 +104,8 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
             if 'CheckDeletePointsHorizonMask' in self.app.config:
                 self.app.ui.checkDeletePointsHorizonMask.setChecked(self.app.config['CheckDeletePointsHorizonMask'])
+            if 'CheckSimulation' in self.app.config:
+                self.app.ui.checkSimulation.setChecked(self.app.config['CheckSimulation'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -116,6 +117,7 @@ class Modeling(PyQt5.QtCore.QThread):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApp.currentIndex()
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
+        self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
 
     def chooseImagingApp(self):
         self.chooserLock.acquire()
@@ -141,7 +143,8 @@ class Modeling(PyQt5.QtCore.QThread):
         self.chooserLock.release()
 
     def run(self):
-        PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
+        # start first time the loop for status updates
+        self.getStatusFast()
         while self.isRunning:
             if not self.app.modelCommandQueue.empty():
                 command = self.app.modelCommandQueue.get()
@@ -275,6 +278,9 @@ class Modeling(PyQt5.QtCore.QThread):
                 self.modelPoints.deletePoints()
                 self.signalModelRedraw.emit(True)
             PyQt5.QtWidgets.QApplication.processEvents()
+
+    def stop(self):
+        self.isRunning = False
 
     def cancelModeling(self):
         if self.modelRun:

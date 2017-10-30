@@ -56,7 +56,7 @@ class ModelWorker:
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
         else:
-            self.logger.warning('runModel       -> SgGetCameraProps with error: {0}'.format(mes))
+            self.logger.warning('SgGetCameraProps with error: {0}'.format(mes))
             self.app.modelLogQueue.put('{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), 'Base', mes))
             return {}
         modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)
@@ -123,7 +123,9 @@ class ModelWorker:
             self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime, directory = self.setupRunningParameters()
         if len(self.app.modeling.modelPoints.BasePoints) > 0:
-            self.modelData = self.runModel('Base', self.app.modeling.modelPoints.BasePoints, directory, settlingTime)
+            simulation = self.app.ui.checkSimulation.isChecked()
+            keepImages = self.app.ui.checkKeepImages.isChecked()
+            self.modelData = self.runModel('Base', self.app.modeling.modelPoints.BasePoints, directory, settlingTime, simulation, keepImages)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_base.dat'
             if len(self.modelData) > 0:
@@ -148,7 +150,9 @@ class ModelWorker:
                     self.app.mount.loadRefinementModel()
                 else:
                     self.app.mount.loadBaseModel()
-                refinePoints = self.runModel('Refinement', self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime)
+                simulation = self.app.ui.checkSimulation.isChecked()
+                keepImages = self.app.ui.checkKeepImages.isChecked()
+                refinePoints = self.runModel('Refinement', self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
                 for i in range(0, len(refinePoints)):
                     refinePoints[i]['index'] += len(self.modelData)
                 self.modelData = self.modelData + refinePoints
@@ -168,7 +172,9 @@ class ModelWorker:
         settlingTime, directory = self.setupRunningParameters()
         points = self.app.modeling.modelPoints.BasePoints + self.app.modeling.modelPoints.RefinementPoints
         if len(points) > 0:
-            self.app.modeling.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)
+            simulation = self.app.ui.checkSimulation.isChecked()
+            keepImages = self.app.ui.checkKeepImages.isChecked()
+            self.app.modeling.modelAnalyseData = self.runModel('Check', points, directory, settlingTime, simulation, keepImages)
             name = directory + '_check.dat'
             if len(self.app.modeling.modelAnalyseData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
@@ -186,7 +192,9 @@ class ModelWorker:
         for i in range(0, int(float(self.app.ui.numberRunsTimeChange.value()))):
             points.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value()),
                            PyQt5.QtWidgets.QGraphicsTextItem(''), True))
-        self.app.modeling.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime)
+        simulation = self.app.ui.checkSimulation.isChecked()
+        keepImages = self.app.ui.checkKeepImages.isChecked()
+        self.app.modeling.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime, simulation, keepImages)
         name = directory + '_timechange.dat'
         if len(self.app.modeling.modelAnalyseData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
@@ -203,7 +211,9 @@ class ModelWorker:
         for i in range(0, numberRunsHysterese):
             points.append((az1, alt1, PyQt5.QtWidgets.QGraphicsTextItem(''), True))
             points.append((az2, alt2, PyQt5.QtWidgets.QGraphicsTextItem(''), False))
-        self.app.modeling.modelAnalyseData = self.runModel('Hysterese', points, directory, waitingTime)
+        simulation = self.app.ui.checkSimulation.isChecked()
+        keepImages = self.app.ui.checkKeepImages.isChecked()
+        self.app.modeling.modelAnalyseData = self.runModel('Hysterese', points, directory, waitingTime, simulation, keepImages)
         name = directory + '_hysterese.dat'
         self.app.ui.le_analyseFileName.setText(name)
         if len(self.app.modeling.modelAnalyseData) > 0:
@@ -289,22 +299,40 @@ class ModelWorker:
                     self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)
-        # self.app.mountCommandQueue.put('AP')
 
-    def prepareCaptureImageSubframes(self, scale, sizeX, sizeY, canSubframe, modelData):
-        modelData['SizeX'] = 0
-        modelData['SizeY'] = 0
-        modelData['OffX'] = 0
-        modelData['OffY'] = 0
-        modelData['CanSubframe'] = False
-        if canSubframe:
-            modelData['SizeX'] = int(sizeX * scale)
-            modelData['SizeY'] = int(sizeY * scale)
+    def prepareImaging(self, modelData, directory):
+        # do all the calculations once
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.imagingHandler.getCameraProps()
+        if suc:
+            self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
+        else:
+            self.logger.warning('SgGetCameraProps with error: {0}'.format(mes))
+            return {}
+        if canSubframe and self.app.ui.checkDoSubframe.isChecked():
+            scaleSubframe = self.app.ui.scaleSubframe.value() / 100
+            modelData['SizeX'] = int(sizeX * scaleSubframe)
+            modelData['SizeY'] = int(sizeY * scaleSubframe)
             modelData['OffX'] = int((sizeX - modelData['SizeX']) / 2)
             modelData['OffY'] = int((sizeY - modelData['SizeY']) / 2)
             modelData['CanSubframe'] = True
         else:
+            modelData['SizeX'] = 0
+            modelData['SizeY'] = 0
+            modelData['OffX'] = 0
+            modelData['OffY'] = 0
+            modelData['CanSubframe'] = False
             self.logger.warning('Camera does not support subframe.')
+        modelData['GainValue'] = gainValue
+        modelData['BaseDirImages'] = self.app.modeling.IMAGEDIR + '/' + directory
+        if self.app.ui.checkFastDownload.isChecked():
+            modelData['Speed'] = 'HiSpeed'
+        else:
+            modelData['Speed'] = 'Normal'
+        modelData['Binning'] = int(float(self.app.ui.cameraBin.value()))
+        modelData['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
+        modelData['Iso'] = int(float(self.app.ui.isoSetting.value()))
+        modelData['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
+        modelData['ScaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         if 'Binning' in modelData:
             modelData['SizeX'] = int(modelData['SizeX'] / modelData['Binning'])
             modelData['SizeY'] = int(modelData['SizeY'] / modelData['Binning'])
@@ -446,38 +474,26 @@ class ModelWorker:
             return False
 
     # noinspection PyUnresolvedReferences
-    def runModel(self, modeltype, runPoints, directory, settlingTime):
+    def runModel(self, modeltype, runPoints, directory, settlingTime, simulation=False, keepImages=False):
+        # start clearing the data
+        modelData = {}
+        results = []
+        # preparing the gui outputs
         self.app.modelLogQueue.put('status-- of --')
         self.app.modelLogQueue.put('percent0')
         self.app.modelLogQueue.put('timeleft--:--')
-        modelData = {}
-        results = []
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))
+        # counter for solved points
         numCheckPoints = 0
-        modelData['BaseDirImages'] = self.app.modeling.IMAGEDIR + '/' + directory
-        scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.imagingHandler.getCameraProps()
-        modelData['GainValue'] = gainValue
-        if suc:
-            self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
-        else:
-            self.logger.warning('SgGetCameraProps with error: {0}'.format(mes))
-            self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled! Error: {2}\n'.format(self.timeStamp(), modeltype, mes))
-            return {}
-        modelData = self.prepareCaptureImageSubframes(scaleSubframe, sizeX, sizeY, canSubframe, modelData)
-        if modelData['SizeX'] == 800 and modelData['SizeY'] == 600:
-            simulation = True
-        else:
-            simulation = False
-        if not self.app.ui.checkDoSubframe.isChecked():
-            modelData['CanSubframe'] = False
+        modelData = self.prepareImaging(modelData, directory)
+        if not os.path.isdir(modelData['BaseDirImages']):
+            os.makedirs(modelData['BaseDirImages'])
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')
         self.app.mountCommandQueue.put('AP')
-        if not os.path.isdir(modelData['BaseDirImages']):
-            os.makedirs(modelData['BaseDirImages'])
         timeStart = time.time()
+        # here starts the real model running cycle
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):
             self.app.modeling.modelRun = True
             modelData['Azimuth'] = p_az
@@ -487,16 +503,16 @@ class ModelWorker:
                 if self.app.modeling.cancel:
                     self.app.modeling.cancel = False
                     self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
-                    # tracking should be on during the picture taking
+                    # tracking should be on after canceling the modeling
                     self.app.mountCommandQueue.put('AP')
+                    # clearing the gui
                     self.app.modelLogQueue.put('status-- of --')
                     self.app.modelLogQueue.put('percent0')
                     self.app.modelLogQueue.put('timeleft--:--')
-                    # finally stopping modeling run
                     self.logger.info('Modeling cancelled in main loop')
+                    # finally stopping modeling run
                     break
-                self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'
-                                           .format(self.timeStamp(), i+1, p_az, p_alt))
+                self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.timeStamp(), i+1, p_az, p_alt))
                 self.logger.info('point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))
                 if modeltype in ['TimeChange']:
                     # in time change there is only slew for the first time, than only track during imaging
@@ -505,8 +521,7 @@ class ModelWorker:
                         self.app.mountCommandQueue.put('RT9')
                 else:
                     self.slewMountDome(p_az, p_alt)
-                self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'
-                                           .format(self.timeStamp(), settlingTime))
+                self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'.format(self.timeStamp(), settlingTime))
                 timeCounter = settlingTime
                 while timeCounter > 0:
                     time.sleep(1)
@@ -515,16 +530,7 @@ class ModelWorker:
                     self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))
                 self.app.modelLogQueue.put('\n')
             if p_item.isVisible() and p_solve:
-                if self.app.ui.checkFastDownload.isChecked():
-                    modelData['Speed'] = 'HiSpeed'
-                else:
-                    modelData['Speed'] = 'Normal'
                 modelData['File'] = self.app.modeling.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
-                modelData['Binning'] = int(float(self.app.ui.cameraBin.value()))
-                modelData['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
-                modelData['Iso'] = int(float(self.app.ui.isoSetting.value()))
-                modelData['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-                modelData['ScaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
                 modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime']
                 modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(self.app.mount.data['LocalSiderealTime'][0:9])
                 modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
@@ -556,10 +562,8 @@ class ModelWorker:
                                 p_item.setVisible(False)
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
-                                self.logger.info('raE:{0} decE:{1} star could not be added'
-                                                 .format(modelData['RaError'], modelData['DecError']))
-                        self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'
-                                                   .format(self.timeStamp(), modelData['RaError'], modelData['DecError']))
+                                self.logger.info('raE:{0} decE:{1} star could not be added'.format(modelData['RaError'], modelData['DecError']))
+                        self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.timeStamp(), modelData['RaError'], modelData['DecError']))
                         self.logger.info('modelData: {0}'.format(modelData))
                     else:
                         self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
@@ -571,9 +575,8 @@ class ModelWorker:
                 mm = int(timeCalculated / 60)
                 ss = int(timeCalculated - 60 * mm)
                 self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))
-        if not self.app.ui.checkKeepImages.isChecked():
+        if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'
-                                   .format(self.timeStamp(), modeltype, numCheckPoints))
+        self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'.format(self.timeStamp(), modeltype, numCheckPoints))
         self.app.modeling.modelRun = False
         return results

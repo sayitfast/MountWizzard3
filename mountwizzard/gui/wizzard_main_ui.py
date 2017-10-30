@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'wizzard_main_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.8.2
+# Created by: PyQt5 UI code generator 5.9
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -1629,17 +1629,23 @@ class Ui_MainWindow(object):
 "color: rgb(255,255,255);")
         self.btn_openImageWindow.setObjectName("btn_openImageWindow")
         self.checkDeletePointsHorizonMask = QtWidgets.QCheckBox(self.tab_6)
-        self.checkDeletePointsHorizonMask.setGeometry(QtCore.QRect(500, 240, 241, 20))
+        self.checkDeletePointsHorizonMask.setGeometry(QtCore.QRect(500, 230, 241, 20))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.checkDeletePointsHorizonMask.setFont(font)
         self.checkDeletePointsHorizonMask.setObjectName("checkDeletePointsHorizonMask")
         self.checkSortPoints = QtWidgets.QCheckBox(self.tab_6)
-        self.checkSortPoints.setGeometry(QtCore.QRect(500, 270, 241, 20))
+        self.checkSortPoints.setGeometry(QtCore.QRect(500, 250, 241, 20))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.checkSortPoints.setFont(font)
         self.checkSortPoints.setObjectName("checkSortPoints")
+        self.checkSimulation = QtWidgets.QCheckBox(self.tab_6)
+        self.checkSimulation.setGeometry(QtCore.QRect(500, 280, 241, 20))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.checkSimulation.setFont(font)
+        self.checkSimulation.setObjectName("checkSimulation")
         self.mainTabWidget.addTab(self.tab_6, "")
         self.tab_8 = QtWidgets.QWidget()
         self.tab_8.setObjectName("tab_8")
@@ -4438,6 +4444,8 @@ class Ui_MainWindow(object):
         self.checkDeletePointsHorizonMask.setText(_translate("MainWindow", "Delete points below horizon mask"))
         self.checkSortPoints.setToolTip(_translate("MainWindow", "If checked, a blind solve would be made (needs internet connection)"))
         self.checkSortPoints.setText(_translate("MainWindow", "Sort points East / West"))
+        self.checkSimulation.setToolTip(_translate("MainWindow", "If checked, a blind solve would be made (needs internet connection)"))
+        self.checkSimulation.setText(_translate("MainWindow", "Do Simulation"))
         self.mainTabWidget.setTabText(self.mainTabWidget.indexOf(self.tab_6), _translate("MainWindow", "Make Mount Model"))
         self.le_alignNumberStars.setToolTip(_translate("MainWindow", "Number of alignment stars in actual used pointing model"))
         self.le_alignNumberStars.setText(_translate("MainWindow", "NN"))

@@ -104,7 +104,6 @@ class MountWizzardApp(widget.MwWidget):
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = QThread()
         self.INDIworker.moveToThread(self.INDIthread)
-        # self.INDIworker.finished.connect(self.INDIthread.quit)
         self.INDIthread.started.connect(self.INDIworker.run)
         self.INDIworker.status.connect(self.setINDIStatus)
         self.environment = environThread.Environment(self)

@@ -129,10 +129,10 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.ui.btn_setupMountDriver.setEnabled(True)
 
     def chooseMountConn(self):
-        self.chooserLock.acquire()                                                                                          # avoid multiple switches running at the same time
+        self.chooserLock.acquire()
         if self.mountHandler.connected:
-            self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
-            self.mountHandler.disconnect()                                                                                  # do formal disconnection
+            self.mountHandler.connected = False
+            self.mountHandler.disconnect()
         if self.app.ui.pd_chooseMountConnection.currentText().startswith('IP Direct Connection'):
             self.mountHandler = self.MountIpDirect
             self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
@@ -140,19 +140,19 @@ class Mount(PyQt5.QtCore.QThread):
             self.mountHandler = self.MountAscom
             self.logger.info('actual driver is ASCOM')
         self.showConfigEntries(self.app.ui.pd_chooseMountConnection.currentIndex())
-        self.chooserLock.release()                                                                                          # free the lock to move again
+        self.chooserLock.release()
 
-    def run(self):                                                                                                          # runnable of the thread
+    def run(self):
         if platform.system() == 'Windows':
-            pythoncom.CoInitialize()                                                                                        # needed for doing COM objects in threads
+            pythoncom.CoInitialize()
         self.chooseMountConn()
-        self.counter = 0                                                                                                    # init count for managing different cycle times
-        while True:                                                                                                         # main loop in thread
-            self.signalMountConnected.emit(self.mountHandler.connected)                                                     # sending the connection status
-            if self.mountHandler.connected:                                                                                 # when connected, starting the work
-                if not self.app.mountCommandQueue.empty():                                                                       # checking if in queue is something to do
-                    command = self.app.mountCommandQueue.get()                                                                   # if yes, getting the work command
-                    if command == 'ShowAlignmentModel':                                                                     # checking which command was sent
+        self.counter = 0
+        while True:
+            self.signalMountConnected.emit(self.mountHandler.connected)
+            if self.mountHandler.connected:
+                if not self.app.mountCommandQueue.empty():
+                    command = self.app.mountCommandQueue.get()
+                    if command == 'ShowAlignmentModel':
                         num = self.numberModelStars()
                         if num == -1:
                             self.app.messageQueue.put('Show Model not available without real mount')
@@ -180,9 +180,9 @@ class Mount(PyQt5.QtCore.QThread):
                             self.deleteWorstPoint()
                             self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
                     elif command == 'SaveBackupModel':
-                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.BLUE)                                                # button blue
+                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.BLUE)
                         self.saveBackupModel()
-                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.DEFAULT)                                             # button to default back
+                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.DEFAULT)
                     elif command == 'LoadBackupModel':
                         self.app.ui.btn_loadBackupModel.setStyleSheet(self.BLUE)
                         self.loadBackupModel()
@@ -236,30 +236,26 @@ class Mount(PyQt5.QtCore.QThread):
                     elif command == 'Shutdown':
                         self.mountShutdown()
                     else:
-                        self.mountHandler.sendCommand(command)                                                              # doing the command directly to mount (no method necessary)
+                        self.mountHandler.sendCommand(command)
                     self.app.mountCommandQueue.task_done()
-                else:                                                                                                       # if not connected, the we should do this
-                    if self.counter == 0:                                                                                   # jobs once done at the beginning
-                        self.getStatusOnce()                                                                                # task once
-                    if self.counter % 2 == 0:                                                                               # all tasks with 400 ms
-                        self.getStatusFast()                                                                                # polling the mount status Ginfo
-                    if self.counter % 15 == 0:                                                                              # all tasks with 3 s
-                        self.getStatusMedium()                                                                              # polling the mount
-                    if self.counter % 150 == 0:                                                                             # all task with 30 seconds
-                        self.getStatusSlow()                                                                                # slow ones
-                time.sleep(0.2)                                                                                             # time base is 200 ms
-                self.counter += 1                                                                                           # increasing counter for selection
-            else:                                                                                                           # when not connected try to connect
+                else:
+                    if self.counter == 0:
+                        self.getStatusOnce()
+                    if self.counter % 2 == 0:
+                        self.getStatusFast()
+                    if self.counter % 15 == 0:
+                        self.getStatusMedium()
+                    if self.counter % 150 == 0:
+                        self.getStatusSlow()
+                time.sleep(0.2)
+                self.counter += 1
+            else:
                 self.mountHandler.connect()
                 self.counter = 0
-                time.sleep(1)                                                                                               # try it every second, not more
+                time.sleep(1)
         self.mountHandler.disconnect()
         if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()                                                                                      # needed for doing COM objects in threads
-        self.terminate()                                                                                                    # closing the thread at the end
-
-    def __del__(self):                                                                                                      # remove thread
-        self.wait()                                                                                                         # wait for stop of thread
+            pythoncom.CoUninitialize()
 
     def mountShutdown(self):
         reply = self.mountHandler.sendCommand('shutdown')
@@ -267,28 +263,31 @@ class Mount(PyQt5.QtCore.QThread):
             self.logger.error('error: {0}'.format(reply))
             self.app.messageQueue.put('Error in mount shutdown !')
         else:
-            self.mountHandler.connected = False                                                                             # connection to False -> no commands emitted
+            self.mountHandler.connected = False
             time.sleep(1)
             self.mountHandler.disconnect()
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !')
 
-    def flipMount(self):                                                                                                    # doing the flip of the mount
+    def flipMount(self):
         reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
-        if reply == '0':                                                                                                    # error handling if not successful
-            self.app.messageQueue.put('Flip Mount could not be executed !')                                                 # write to gui
+        if reply == '0':
+            self.app.messageQueue.put('Flip Mount could not be executed !')
             self.logger.error('error: {0}'.format(reply))
 
     def numberModelStars(self):
-        return int(self.mountHandler.sendCommand('getalst'))                                                                # if there are some points, a modeling must be there
+        return int(self.mountHandler.sendCommand('getalst'))
 
     def getAlignmentModelStatus(self, alignModel):
         try:
-            reply = self.mountHandler.sendCommand('getain')                                                                 # load the data from new command
-            if reply:                                                                                                       # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
-                if reply != 'E':                                                                                            # if a single 'E' returns, there is a problem, not further parameter will follow
+            reply = self.mountHandler.sendCommand('getain')
+            # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
+            if reply:
+                # if a single 'E' returns, there is a problem, not further parameter will follow
+                if reply != 'E':
                     a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
-                    if a1 != 'E':                                                                                           # 'E' could be sent if not calculable or no value available
+                    # 'E' could be sent if not calculable or no value available
+                    if a1 != 'E':
                         alignModel['azimuth'] = float(a1)
                     else:
                         alignModel['azimuth'] = 0
@@ -329,9 +328,9 @@ class Mount(PyQt5.QtCore.QThread):
         finally:
             return alignModel
 
-    def getAlignmentModel(self):                                                                                            # download alignment modeling from mount
-        alignModel = {}                                                                                                     # clear alignment data
-        points = []                                                                                                         # clear points list
+    def getAlignmentModel(self):
+        alignModel = {}
+        points = []
         alignModel['azimuth'] = 0.0
         alignModel['altitude'] = 0.0
         alignModel['polarError'] = 0.0
@@ -340,14 +339,14 @@ class Mount(PyQt5.QtCore.QThread):
         alignModel['azimuthKnobs'] = 0.0
         alignModel['altitudeKnobs'] = 0.0
         alignModel['terms'] = 0
-        alignModel['RMS'] = 0.0                                                                                             # clear the alignment points downloaded
+        alignModel['RMS'] = 0.0
         alignModel['points'] = points
-        numberStars = self.numberModelStars()                                                                               # get number of stars
+        numberStars = self.numberModelStars()
         alignModel['number'] = numberStars
-        if numberStars < 1:                                                                                                 # if no stars or no real mount, finish
+        if numberStars < 1:
             return alignModel
-        alignModel = self.getAlignmentModelStatus(alignModel)                                                               # add status information
-        for i in range(1, numberStars + 1):                                                                                 # otherwise download them step for step
+        alignModel = self.getAlignmentModelStatus(alignModel)
+        for i in range(1, numberStars + 1):
             reply = self.mountHandler.sendCommand('getalp{0:d}'.format(i)).split(',')
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
@@ -357,18 +356,19 @@ class Mount(PyQt5.QtCore.QThread):
             ra_J2000 = self.transform.degStringToDecimal(ha)
             dec_J2000 = self.transform.degStringToDecimal(dec)
             az, alt = self.transform.ra_dec_lst_to_az_alt(ra_J2000, dec_J2000)
-            alignModel['points'].append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))                   # index should start with 0, but numbering in mount starts with 1
+            # index should start with 0, but numbering in mount starts with 1
+            alignModel['points'].append((i-1, ra_J2000, dec_J2000, az, alt, errorRMS, float(errorAngle)))
         return alignModel
 
     def retrofitMountData(self, data):
-        num = self.numberModelStars()                                                                                       # size mount modeling
+        num = self.numberModelStars()
         if num == len(data):
-            alignModel = self.getAlignmentModel()                                                                           # get mount points
+            alignModel = self.getAlignmentModel()
             self.showAlignmentModel(alignModel)
-            for i in range(0, alignModel['number']):                                                                        # run through all the points
-                data[i]['modelError'] = float(alignModel['points'][i][5])                                                   # and for the total error
-                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(alignModel['points'][i][6]))             # set raError new from total error mount with polar error angle from mount
-                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))            # same to dec
+            for i in range(0, alignModel['number']):
+                data[i]['modelError'] = float(alignModel['points'][i][5])
+                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(alignModel['points'][i][6]))
+                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))
             self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
             self.logger.warning('size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
@@ -406,7 +406,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.data['ModelStarError'] = 'delete'
         alignModel = self.getAlignmentModel()
         if alignModel['number'] < 4:
-            return                                                                                                          # set maximum
+            return
         while alignModel['RMS'] > float(self.app.ui.targetRMS.value()) and alignModel['number'] > 3:
             alignModel = self.deleteWorstPointRaw(alignModel)
 
@@ -418,10 +418,12 @@ class Mount(PyQt5.QtCore.QThread):
         if alignModel['number'] < 4:
             return
         if alignModel['number'] > 3:
-            a = sorted(alignModel['points'], key=itemgetter(5), reverse=True)                                               # index 0 is the worst star, index starts with 0
+            # index 0 is the worst star, index starts with 0
+            a = sorted(alignModel['points'], key=itemgetter(5), reverse=True)
             index = a[0][0]
-            reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))                                         # numbering in mount starts with 1
-            if reply == '1':                                                                                                # worst point could be deleted
+            # numbering in mount starts with 1
+            reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))
+            if reply == '1':
                 alignModel = self.getAlignmentModel()
                 self.app.modeling.modelData.pop(index)
                 for i in range(0, alignModel['number']):
@@ -567,7 +569,7 @@ class Mount(PyQt5.QtCore.QThread):
                 else:
                     self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
-    def getStatusFast(self):                                                                                                # fast status item like pointing
+    def getStatusFast(self):
         reply = self.mountHandler.sendCommand('GS')
         if reply:
             self.data['LocalSiderealTime'] = reply.strip('#')
@@ -577,7 +579,7 @@ class Mount(PyQt5.QtCore.QThread):
         reply = self.mountHandler.sendCommand('GD')
         if reply:
             self.data['DecJNow'] = self.transform.degStringToDecimal(reply)
-        reply = self.mountHandler.sendCommand('Ginfo')                                                                      # use command "Ginfo" for fast topics
+        reply = self.mountHandler.sendCommand('Ginfo')
         if reply:
             try:
                 reply = reply.rstrip('#').strip().split(',')
@@ -649,15 +651,17 @@ class Mount(PyQt5.QtCore.QThread):
         finally:
             pass
 
-    def getStatusOnce(self):                                                                                                # one time updates for settings
-        self.mountHandler.sendCommand('U2')                                                                                 # Set high precision mode
-        self.site_height = self.mountHandler.sendCommand('Gev')                                                             # site height
-        lon1 = self.mountHandler.sendCommand('Gg')                                                                          # get site lon
-        if lon1[0] == '-':                                                                                                  # due to compatibility to LX200 protocol east is negative
-            self.site_lon = lon1.replace('-', '+')                                                                          # change that
+    def getStatusOnce(self):
+        # Set high precision mode
+        self.mountHandler.sendCommand('U2')
+        self.site_height = self.mountHandler.sendCommand('Gev')
+        lon1 = self.mountHandler.sendCommand('Gg')
+        # due to compatibility to LX200 protocol east is negative
+        if lon1[0] == '-':
+            self.site_lon = lon1.replace('-', '+')
         else:
-            self.site_lon = lon1.replace('+', '-')                                                                          # and vice versa
-        self.site_lat = self.mountHandler.sendCommand('Gt')                                                                 # get site latitude
+            self.site_lon = lon1.replace('+', '-')
+        self.site_lat = self.mountHandler.sendCommand('Gt')
         self.data['CurrentSiteElevation'] = self.site_height
         self.data['CurrentSiteLongitude'] = lon1
         self.data['CurrentSiteLatitude'] = self.site_lat
@@ -666,12 +670,12 @@ class Mount(PyQt5.QtCore.QThread):
         self.data['FirmwareProductName'] = self.mountHandler.sendCommand('GVP')
         self.data['FirmwareTime'] = self.mountHandler.sendCommand('GVT')
         self.data['HardwareVersion'] = self.mountHandler.sendCommand('GVZ')
-        self.logger.info('FW:{0}'.format(self.mountHandler.sendCommand('GVN')))                                             # firmware version for checking
-        self.logger.info('Site Lon:{0}'.format(self.site_lon))                                                              # site lon
-        self.logger.info('Site Lat:{0}'.format(self.site_lat))                                                              # site lat
-        self.logger.info('Site Height:{0}'.format(self.site_height))                                                        # site height
-        self.loadActualModel()                                                                                              # prepare data synchronisation, load modeling data
-        alignModel = self.getAlignmentModel()                                                                               # get modeling data from mount
+        self.logger.info('FW:{0}'.format(self.mountHandler.sendCommand('GVN')))
+        self.logger.info('Site Lon:{0}'.format(self.site_lon))
+        self.logger.info('Site Lat:{0}'.format(self.site_lat))
+        self.logger.info('Site Height:{0}'.format(self.site_height))
+        self.loadActualModel()
+        alignModel = self.getAlignmentModel()
         if not self.app.modeling.modelData and alignModel['RMS'] > 0:
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
             self.app.modeling.modelData = []

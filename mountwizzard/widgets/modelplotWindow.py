@@ -125,17 +125,17 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.config['HorizonPointsFileName'] = self.app.ui.le_horizonPointsFileName.text()
         self.app.config['CheckUseMinimumHorizonLine'] = self.app.ui.checkUseMinimumHorizonLine.isChecked()
         self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
-        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()                                                                                          # hide it
+        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
 
-    def setAzAltPointer(self, az, alt):                                                                                     # method for pointer drawing
-        x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)               # get the right coordinates
-        self.pointerAzAlt.setPos(x, y)                                                                                      # set it position
-        self.pointerAzAlt.setVisible(True)                                                                                  # show it
+    def setAzAltPointer(self, az, alt):
+        x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)
+        self.pointerAzAlt.setPos(x, y)
+        self.pointerAzAlt.setVisible(True)
         self.pointerAzAlt.update()
         self.ui.modelPointsPlot.viewport().update()
         QApplication.processEvents()
 
-    def setDomePointer(self, az):                                                                                           # same for dome
+    def setDomePointer(self, az):
         width = self.ui.modelPointsPlot.width()
         x, y = getXYRectangle(az, width, BORDER_VIEW)
         self.pointerDome.setPos(x, y)
