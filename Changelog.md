@@ -1,4 +1,7 @@
 # Changelog
+2.7.1
+- multiple threads for modeling
+
 2.5.16
 - bugfix in platesolvesync
 - enabling parallel precessing
