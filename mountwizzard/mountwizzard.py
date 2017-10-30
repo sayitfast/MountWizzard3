@@ -39,18 +39,18 @@ from matplotlib import figure as figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 # import the UI part, which is done via QT Designer and exported
 from baseclasses import widget
-from widgets import modelplotwindow
-from widgets import imagewindow
-from widgets import analysewindow
+from widgets import modelplotWindow
+from widgets import imageWindow
+from widgets import analyseWindow
 from gui import wizzard_main_ui
-from environment import environ_thread
+from environment import environThread
 # modeling
-from modeling import modeling_thread
+from modeling import modelThread
 # import mount functions classes
-from mount import mount_thread
+from mount import mountThread
 from relays import relays
-from remote import remote_thread
-from dome import dome_thread
+from remote import remoteThread
+from dome import domeThread
 from indi import indi_client
 
 if platform.system() == 'Windows':
@@ -97,9 +97,9 @@ class MountWizzardApp(widget.MwWidget):
         helper.addWidget(self.modelWidget)
         # instantiating all subclasses and connecting thread signals
         self.relays = relays.Relays(self)
-        self.mount = mount_thread.Mount(self)
+        self.mount = mountThread.Mount(self)
         self.mount.signalMountConnected.connect(self.setMountStatus)
-        self.dome = dome_thread.Dome(self)
+        self.dome = domeThread.Dome(self)
         self.dome.signalDomeConnected.connect(self.setDomeStatus)
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = QThread()
@@ -107,13 +107,13 @@ class MountWizzardApp(widget.MwWidget):
         # self.INDIworker.finished.connect(self.INDIthread.quit)
         self.INDIthread.started.connect(self.INDIworker.run)
         self.INDIworker.status.connect(self.setINDIStatus)
-        self.environment = environ_thread.Environment(self)
+        self.environment = environThread.Environment(self)
         if platform.system() == 'Windows':
             self.data = upload_thread.DataUploadToMount(self)
-        self.modeling = modeling_thread.Modeling(self)
-        self.analyseWindow = analysewindow.AnalyseWindow(self)
-        self.modelWindow = modelplotwindow.ModelPlotWindow(self)
-        self.imageWindow = imagewindow.ImagesWindow(self)
+        self.modeling = modelThread.Modeling(self)
+        self.analyseWindow = analyseWindow.AnalyseWindow(self)
+        self.modelWindow = modelplotWindow.ModelPlotWindow(self)
+        self.imageWindow = imageWindow.ImagesWindow(self)
         # starting the threads
         self.mount.start()
         if platform.system() == 'Windows':
@@ -124,7 +124,7 @@ class MountWizzardApp(widget.MwWidget):
         self.environment.start()
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)
         self.modeling.start()
-        self.remote = remote_thread.Remote(self)
+        self.remote = remoteThread.Remote(self)
         self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
@@ -234,6 +234,8 @@ class MountWizzardApp(widget.MwWidget):
             self.remote.terminate()
 
     def enableDisableINDI(self):
+        # todo: enable INDI Subsystem as soon as INDI is tested
+        # switch on and off INDI subsystem by setting INDICamera available to True (than it will occur in Imaging as well
         if not self.modeling.INDICamera.appAvailable:
             self.ui.checkEnableINDI.setChecked(False)
             self.ui.settingsTabWidget.removeTab(3)
@@ -938,7 +940,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.5.15 beta'
+    BUILD_NO = '2.5.16 beta'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

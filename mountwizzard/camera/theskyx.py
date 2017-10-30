@@ -28,6 +28,7 @@ class TheSkyX(MWCamera):
         self.port = 3040
         self.responseSuccess = '|No error. Error = 0.'
         self.appExe = 'TheSkyX.exe'
+        self.checkAppInstall()
 
     def checkAppInstall(self):
         if platform.system() == 'Windows':

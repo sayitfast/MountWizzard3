@@ -39,6 +39,7 @@ class SGPro(MWCamera):
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
         self.appExe = 'Sequence Generator.exe'
+        self.checkAppInstall()
 
     def checkAppInstall(self):
         if platform.system() == 'Windows':
@@ -246,17 +247,19 @@ class SGPro(MWCamera):
 
 
 if __name__ == "__main__":
-    max = 20
     cam = SGPro(MWCamera)
     print(cam.getCameraProps())
+    '''
     value = {'Binning': 1, 'Exposure': 1, 'Iso': 100,
              'GainValue': 'Not Set', 'Speed': 'HiSpeed',
              'File': 'test.fit', 'BaseDirImages': 'c:/temp',
              'CanSubframe': True, 'OffX': 0, 'OffY': 0,
              'SizeX': 3388, 'SizeY': 2712}
-    t_start = time.time()
-    for i in range(0, max):
-        print(i)
-        cam.getImage(value)
-    t_stop = time.time()
-    print((t_stop - t_start - max) / max)
+    '''
+    suci, msgi, guidi = cam.SgCaptureImage(binningMode=1, exposureLength=10, gain='Not Set', iso=100, speed='HighSpeed', frameType='Light', path='c:\\temp\\', filename= 'test.fit', useSubframe=False, posX=0, posY=0, width=1, height=1)
+    suc, msg, guid = cam.SgSolveImage(path='C:\\Users\\mw\\Projects\\mountwizzard\\mountwizzard\\model001.fit', scaleHint=1.3, useFitsHeaders=True)
+    print(suci, msgi, guidi, suc, msg, guid)
+    while True:
+        print(cam.SgGetImagePath(guidi))
+        print(cam.SgGetSolvedImageData(guid))
+        time.sleep(1)

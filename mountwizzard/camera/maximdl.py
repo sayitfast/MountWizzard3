@@ -32,6 +32,7 @@ class MaximDLCamera(MWCamera):
         self.maximDocument = None                                                                                           # placeholder for ascom driver object
         self.cameraStatus = ''
         self.appExe = 'MaxIm_DL.exe'
+        self.checkAppInstall()
 
     def checkAppInstall(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
