@@ -12,23 +12,13 @@
 #
 ############################################################
 import copy
-import datetime
 import logging
-import math
 import os
 import platform
-import random
-import shutil
-import sys
 # threading
 import threading
-import time
-
 # PyQt5
 import PyQt5
-# library for fits file handling
-import pyfits
-
 # for data storing
 from analyse.analysedata import Analyse
 # cameras
@@ -39,7 +29,7 @@ if platform.system() == 'Windows':
     from camera import sgpro
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
     from camera import theskyx
-# modelpoints
+# modelPoints
 from modeling import modelPoints
 # workers
 from modeling import modelWorker
@@ -56,11 +46,13 @@ class Modeling(PyQt5.QtCore.QThread):
     REF_PICTURE = '/model001.fit'
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CAPTUREFILE = 'modeling'
+    CYCLESTATUSFAST = 500
 
     def __init__(self, app):
         super().__init__()
         # make main sources available
         self.app = app
+        self.isRunning = True
         # make windows imaging applications available
         if platform.system() == 'Windows':
             self.SGPro = sgpro.SGPro(self.app)
@@ -75,7 +67,7 @@ class Modeling(PyQt5.QtCore.QThread):
         # assign support classes
         self.analyse = Analyse(self.app)
         self.transform = self.app.mount.transform
-        self.modelpoints = modelPoints.ModelPoints(self.transform)
+        self.modelPoints = modelPoints.ModelPoints(self.transform)
         self.modelWorker = modelWorker.ModelWorker(self.app)
         # class variables
         self.modelAnalyseData = []
@@ -87,8 +79,11 @@ class Modeling(PyQt5.QtCore.QThread):
         # finally initialize the class configuration
         self.cancel = False
         self.modelRun = False
+        # setting the config up
         self.initConfig()
+        # run it first, to set all imaging applications up
         self.chooseImagingApp()
+        self.getStatusFast()
 
     def initConfig(self):
         if self.NoneCam.appAvailable:
@@ -114,6 +109,7 @@ class Modeling(PyQt5.QtCore.QThread):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+        # connect change in imaging app to the subroutine of setting it up
         self.app.ui.pd_chooseImagingApp.currentIndexChanged.connect(self.chooseImagingApp)
 
     def storeConfig(self):
@@ -144,32 +140,33 @@ class Modeling(PyQt5.QtCore.QThread):
         self.imagingHandler.connectCamera()
         self.chooserLock.release()
 
-    def run(self):                                                                                                          # runnable for doing the work
-        self.counter = 0                                                                                                    # cyclic counter
-        while True:                                                                                                         # thread loop for doing jobs
-            command = ''
+    def run(self):
+        PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
+        while self.isRunning:
             if not self.app.modelCommandQueue.empty():
                 command = self.app.modelCommandQueue.get()
+            else:
+                command = ''
             if self.app.mount.mountHandler.connected:
                 if self.imagingHandler.cameraConnected:
                     if command == 'RunBaseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runBaseModel()                                                                                 # should be refactored to queue only without signal
+                        self.modelWorker.runBaseModel()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunRefinementModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
                         self.modelWorker.runRefinementModel()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'PlateSolveSync':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
-                        self.modelWorker.plateSolveSync()                                                                               # should be refactored to queue only without signal
+                        self.modelWorker.plateSolveSync()
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunBatchModel':
@@ -178,7 +175,7 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
                     elif command == 'RunCheckModel':
                         self.app.imageWindow.disableExposures()
-                        self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)                                              # button blue (running)
+                        self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)
                         num = self.app.mount.numberModelStars()
                         if num > 2:
                             self.modelWorker.runCheckModel()
@@ -186,28 +183,28 @@ class Modeling(PyQt5.QtCore.QThread):
                             self.app.modelLogQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                             self.app.messageQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunAllModel':
                         self.app.imageWindow.disableExposures()
-                        self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)                                                # button blue (running)
+                        self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)
                         self.modelWorker.runAllModel()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)                                             # button back to default color
+                        self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunTimeChangeModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
                         self.modelWorker.runTimeChangeModel()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
+                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunHystereseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
                         self.modelWorker.runHystereseModel()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
-                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)                                      # button back to default color
+                        self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'ClearAlignmentModel':
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
@@ -217,74 +214,67 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 if command == 'GenerateDSOPoints':
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)
-                    self.modelpoints.generateDSOPoints(int(float(self.app.ui.numberHoursDSO.value())),
+                    self.modelPoints.generateDSOPoints(int(float(self.app.ui.numberHoursDSO.value())),
                                                        int(float(self.app.ui.numberPointsDSO.value())),
                                                        int(float(self.app.ui.numberHoursPreview.value())),
                                                        copy.copy(self.app.mount.ra),
                                                        copy.copy(self.app.mount.dec))
                     if self.app.ui.checkSortPoints.isChecked():
-                        self.modelpoints.sortPoints('refinement')
+                        self.modelPoints.sortPoints('refinement')
                     if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                        self.modelpoints.deleteBelowHorizonLine()
+                        self.modelPoints.deleteBelowHorizonLine()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)
                 elif command == 'GenerateDensePoints':
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)
-                    self.modelpoints.generateDensePoints()
+                    self.modelPoints.generateDensePoints()
                     if self.app.ui.checkSortPoints.isChecked():
-                        self.modelpoints.sortPoints('refinement')
+                        self.modelPoints.sortPoints('refinement')
                     if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                        self.modelpoints.deleteBelowHorizonLine()
+                        self.modelPoints.deleteBelowHorizonLine()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)
                 elif command == 'GenerateNormalPoints':
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)
-                    self.modelpoints.generateNormalPoints()
+                    self.modelPoints.generateNormalPoints()
                     if self.app.ui.checkSortPoints.isChecked():
-                        self.modelpoints.sortPoints('refinement')
+                        self.modelPoints.sortPoints('refinement')
                     if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                        self.modelpoints.deleteBelowHorizonLine()
+                        self.modelPoints.deleteBelowHorizonLine()
                     self.signalModelRedraw.emit(True)
                     self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
                 else:
                     pass
             if command == 'LoadBasePoints':
-                self.modelpoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
+                self.modelPoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
                 self.signalModelRedraw.emit(True)
             elif command == 'LoadRefinementPoints':
-                self.modelpoints.loadRefinementPoints(self.app.ui.le_modelPointsFileName.text())
+                self.modelPoints.loadRefinementPoints(self.app.ui.le_modelPointsFileName.text())
                 if self.app.ui.checkSortPoints.isChecked():
-                    self.modelpoints.sortPoints('refinement')
+                    self.modelPoints.sortPoints('refinement')
                 if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                    self.modelpoints.deleteBelowHorizonLine()
+                    self.modelPoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
             elif command == 'GenerateGridPoints':
                 self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
-                self.modelpoints.generateGridPoints(int(float(self.app.ui.numberGridPointsRow.value())),
+                self.modelPoints.generateGridPoints(int(float(self.app.ui.numberGridPointsRow.value())),
                                                     int(float(self.app.ui.numberGridPointsCol.value())),
                                                     int(float(self.app.ui.altitudeMin.value())),
                                                     int(float(self.app.ui.altitudeMax.value())))
                 if self.app.ui.checkSortPoints.isChecked():
-                    self.modelpoints.sortPoints('refinement')
+                    self.modelPoints.sortPoints('refinement')
                 if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                    self.modelpoints.deleteBelowHorizonLine()
+                    self.modelPoints.deleteBelowHorizonLine()
                 self.signalModelRedraw.emit(True)
-                self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)                                              # color button back, routine finished
+                self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)
             elif command == 'GenerateBasePoints':
-                self.modelpoints.generateBasePoints(float(self.app.ui.azimuthBase.value()),
+                self.modelPoints.generateBasePoints(float(self.app.ui.azimuthBase.value()),
                                                     float(self.app.ui.altitudeBase.value()))
                 self.signalModelRedraw.emit(True)
             elif command == 'DeletePoints':
-                self.modelpoints.deletePoints()
+                self.modelPoints.deletePoints()
                 self.signalModelRedraw.emit(True)
-            if self.counter % 5 == 0:                                                                                       # standard cycles in modeling thread fast
-                self.getStatusFast()                                                                                        # calling fast part of status
-            if self.counter % 20 == 0:                                                                                      # standard cycles in modeling thread slow
-                self.getStatusSlow()                                                                                        # calling slow part of status
-            self.counter += 1                                                                                               # loop +1
-            time.sleep(.1)                                                                                                  # wait for the next cycle
-        self.app.modelCommandQueue.task_done()
-        self.terminate()                                                                                                    # closing the thread at the end
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def cancelModeling(self):
         if self.modelRun:
@@ -298,14 +288,13 @@ class Modeling(PyQt5.QtCore.QThread):
             self.logger.info('User canceled modeling with cancel analyse run')
             self.cancel = True
 
-    def getStatusFast(self):                                                                                                # check app is running
+    def getStatusFast(self):
         self.imagingHandler.checkAppStatus()
         self.imagingHandler.getCameraStatus()
-        self.signalModelConnected.emit(1)                                                                                   # send status to GUI
+        self.signalModelConnected.emit(1)
         if self.imagingHandler.appRunning:
-            self.signalModelConnected.emit(2)                                                                               # send status to GUI
+            self.signalModelConnected.emit(2)
         if self.imagingHandler.cameraConnected:
             self.signalModelConnected.emit(3)
-
-    def getStatusSlow(self):
-        pass
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)

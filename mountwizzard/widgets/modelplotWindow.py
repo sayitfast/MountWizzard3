@@ -97,7 +97,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.show()
 
     def selectHorizonPointsMode(self):
-        msg = self.app.modeling.modelpoints.loadHorizonPoints(self.app.ui.le_horizonPointsFileName.text(),
+        msg = self.app.modeling.modelPoints.loadHorizonPoints(self.app.ui.le_horizonPointsFileName.text(),
                                                               self.app.ui.checkUseFileHorizonLine.isChecked(),
                                                               self.app.ui.checkUseMinimumHorizonLine.isChecked(),
                                                               self.app.ui.altitudeMinimumHorizon.value())
@@ -290,8 +290,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome.setVisible(False)
         self.pointerDome.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, BORDER_VIEW, TEXTHEIGHT_VIEW, scene)
-        scene = self.constructHorizon(scene, self.app.modeling.modelpoints.horizonPoints, height, width, BORDER_VIEW)
-        for i, p in enumerate(self.app.modeling.modelpoints.BasePoints):                                                    # show the points
+        scene = self.constructHorizon(scene, self.app.modeling.modelPoints.horizonPoints, height, width, BORDER_VIEW)
+        for i, p in enumerate(self.app.modeling.modelPoints.BasePoints):                                                    # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -303,8 +303,8 @@ class ModelPlotWindow(widget.MwWidget):
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.app.modeling.modelpoints.BasePoints[i] = (p[0], p[1], item, True)                                          # storing the objects in the list
-        for i, p in enumerate(self.app.modeling.modelpoints.RefinementPoints):                                              # show the points
+            self.app.modeling.modelPoints.BasePoints[i] = (p[0], p[1], item, True)                                          # storing the objects in the list
+        for i, p in enumerate(self.app.modeling.modelPoints.RefinementPoints):                                              # show the points
             pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -316,7 +316,7 @@ class ModelPlotWindow(widget.MwWidget):
             text_item.setDefaultTextColor(self.COLOR_WHITE)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.app.modeling.modelpoints.RefinementPoints[i] = (p[0], p[1], item, True)                                    # storing the objects in the list
+            self.app.modeling.modelPoints.RefinementPoints[i] = (p[0], p[1], item, True)                                    # storing the objects in the list
         self.pointerAzAlt = self.constructAzAltPointer(ELLIPSE_VIEW)
         self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(ELLIPSE_VIEW)
         scene.addItem(self.pointerAzAlt)

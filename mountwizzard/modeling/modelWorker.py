@@ -122,8 +122,8 @@ class ModelWorker:
             self.clearAlignmentModel()
             self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime, directory = self.setupRunningParameters()
-        if len(self.app.modeling.modelpoints.BasePoints) > 0:
-            self.modelData = self.runModel('Base', self.app.modeling.modelpoints.BasePoints, directory, settlingTime)
+        if len(self.app.modeling.modelPoints.BasePoints) > 0:
+            self.modelData = self.runModel('Base', self.app.modeling.modelPoints.BasePoints, directory, settlingTime)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_base.dat'
             if len(self.modelData) > 0:
@@ -143,12 +143,12 @@ class ModelWorker:
             simulation = False
         if num > 2 or simulation:
             settlingTime, directory = self.setupRunningParameters()
-            if len(self.app.modeling.modelpoints.RefinementPoints) > 0:
+            if len(self.app.modeling.modelPoints.RefinementPoints) > 0:
                 if self.app.ui.checkKeepRefinement.isChecked():
                     self.app.mount.loadRefinementModel()
                 else:
                     self.app.mount.loadBaseModel()
-                refinePoints = self.runModel('Refinement', self.app.modeling.modelpoints.RefinementPoints, directory, settlingTime)
+                refinePoints = self.runModel('Refinement', self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime)
                 for i in range(0, len(refinePoints)):
                     refinePoints[i]['index'] += len(self.modelData)
                 self.modelData = self.modelData + refinePoints
@@ -166,13 +166,13 @@ class ModelWorker:
 
     def runCheckModel(self):
         settlingTime, directory = self.setupRunningParameters()
-        points = self.app.modeling.modelpoints.BasePoints + self.app.modeling.modelpoints.RefinementPoints
+        points = self.app.modeling.modelPoints.BasePoints + self.app.modeling.modelPoints.RefinementPoints
         if len(points) > 0:
             self.app.modeling.modelAnalyseData = self.runModel('Check', points, directory, settlingTime)
             name = directory + '_check.dat'
-            if len(self.modelAnalyseData) > 0:
+            if len(self.app.modeling.modelAnalyseData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.app.modeling.analyse.saveData(self.modelAnalyseData, name)
+                self.app.modeling.analyse.saveData(self.app.modeling.modelAnalyseData, name)
         else:
             self.logger.warning('There are no Refinement or Base Points to modeling')
 
@@ -188,7 +188,7 @@ class ModelWorker:
                            PyQt5.QtWidgets.QGraphicsTextItem(''), True))
         self.app.modeling.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime)
         name = directory + '_timechange.dat'
-        if len(self.modelAnalyseData) > 0:
+        if len(self.app.modeling.modelAnalyseData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
             self.app.modeling.analyse.saveData(self.app.modeling.modelAnalyseData, name)
 
