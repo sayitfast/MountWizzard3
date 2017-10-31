@@ -1,6 +1,8 @@
 # Changelog
 2.7.1
 - multiple threads for modeling
+- bugfix keep refinement
+- added boost mode for modeling
 
 2.5.16
 - bugfix in platesolvesync
