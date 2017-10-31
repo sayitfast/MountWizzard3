@@ -13,12 +13,14 @@
 ############################################################
 import logging
 import time
+
 # windows automation
 from pywinauto import findwindows
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
+
 # base for cameras
-from baseclasses.camera import MWCamera
+from camera.cameraBase import MWCamera
 
 
 class MaximDLCamera(MWCamera):

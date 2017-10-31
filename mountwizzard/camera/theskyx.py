@@ -11,12 +11,13 @@
 # Licence APL2.0
 #
 ############################################################
-import platform
 import json
 import logging
+import platform
 import socket
 import timeit
-from baseclasses.camera import MWCamera
+
+from camera.cameraBase import MWCamera
 
 
 class TheSkyX(MWCamera):

@@ -15,7 +15,7 @@
 # import basic stuff
 import logging
 
-from baseclasses.camera import MWCamera
+from camera.cameraBase import MWCamera
 
 
 class NoneCamera(MWCamera):

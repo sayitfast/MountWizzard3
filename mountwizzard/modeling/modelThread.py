@@ -15,12 +15,8 @@ import copy
 import logging
 import os
 import platform
-import time
 # threading
 import threading
-# queuing
-from queue import Queue
-# PyQt5
 import PyQt5
 # for data storing
 from analyse.analysedata import Analyse
@@ -35,103 +31,8 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
 # modelPoints
 from modeling import modelPoints
 # workers
-from modeling import modelWorker
-
-
-class Slewpoint(PyQt5.QtCore.QObject):
-
-    queuePoint = Queue()
-    signalSlewing = PyQt5.QtCore.pyqtSignal(name='slew')
-
-    def __init__(self, main):
-        PyQt5.QtCore.QThread.__init__(self)
-        self.main = main
-        self.isRunning = True
-        self.signalSlewing.connect(self.slewing)
-
-    @PyQt5.QtCore.pyqtSlot()
-    def run(self):
-        if not self.isRunning:
-            self.isRunning = True
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-
-    @PyQt5.QtCore.pyqtSlot()
-    def stop(self):
-        self.isRunning = False
-
-    @PyQt5.QtCore.pyqtSlot()
-    def slewing(self):
-        if not self.queuePoint.empty():
-            number = self.queuePoint.get()
-            time.sleep(0.1)
-            print('Start Slewing to Point {0}'.format(number))
-            time.sleep(5)
-            print('Settling of point {0}'.format(number))
-            time.sleep(0.5)
-            print('Tracking of point {0}'.format(number))
-            self.main.workerImage.queueImage.put(number)
-
-
-class Image(PyQt5.QtCore.QObject):
-
-    queueImage = Queue()
-    signalImaging = PyQt5.QtCore.pyqtSignal(name='image')
-
-    def __init__(self, main):
-        PyQt5.QtCore.QThread.__init__(self)
-        self.main = main
-        self.isRunning = True
-
-    @PyQt5.QtCore.pyqtSlot()
-    def run(self):
-        if not self.isRunning:
-            self.isRunning = True
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if not self.queueImage.empty():
-                number = self.queueImage.get()
-                time.sleep(0.5)
-                print('Start Integration of point {0}'.format(number))
-                time.sleep(5)
-                print('Download of point {0}'.format(number))
-                self.main.workerSlewpoint.signalSlewing.emit()
-                time.sleep(2)
-                print('Store Image of point {0}'.format(number))
-                time.sleep(0.2)
-                self.main.workerPlatesolve.queuePlatesolve.put(number)
-
-    @PyQt5.QtCore.pyqtSlot()
-    def stop(self):
-        self.isRunning = False
-
-
-class Platesolve(PyQt5.QtCore.QObject):
-
-    queuePlatesolve = Queue()
-    signalPlatesolveFinished = PyQt5.QtCore.pyqtSignal(name='platesolveFinished')
-
-    def __init__(self, main):
-        PyQt5.QtCore.QThread.__init__(self)
-        self.main = main
-        self.isRunning = True
-
-    @PyQt5.QtCore.pyqtSlot()
-    def run(self):
-        if not self.isRunning:
-            self.isRunning = True
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if not self.queuePlatesolve.empty():
-                number = self.queuePlatesolve.get()
-                print('Start Platesolve of point {0}'.format(number))
-                time.sleep(5)
-                print('Got coordinates of point {0}'.format(number))
-                time.sleep(0.1)
-
-    @PyQt5.QtCore.pyqtSlot()
-    def stop(self):
-        self.isRunning = False
+from modeling import modelStandard
+from modeling import modelBoost
 
 
 class Modeling(PyQt5.QtCore.QThread):
@@ -167,24 +68,8 @@ class Modeling(PyQt5.QtCore.QThread):
         self.analyse = Analyse(self.app)
         self.transform = self.app.mount.transform
         self.modelPoints = modelPoints.ModelPoints(self.transform)
-        self.modelWorker = modelWorker.ModelWorker(self.app)
-        # initialize the parallel thread modeling parts
-        self.workerSlewpoint = Slewpoint(self)
-        self.threadSlewpoint = PyQt5.QtCore.QThread()
-        self.workerSlewpoint.moveToThread(self.threadSlewpoint)
-        self.threadSlewpoint.started.connect(self.workerSlewpoint.run)
-        #self.threadSlewpoint.start()
-        self.workerImage = Image(self)
-        self.threadImage = PyQt5.QtCore.QThread()
-        self.workerImage.moveToThread(self.threadImage)
-        self.threadImage.started.connect(self.workerImage.run)
-        #self.threadImage.start()
-        self.workerPlatesolve = Platesolve(self)
-        self.threadPlatesolve = PyQt5.QtCore.QThread()
-        self.workerPlatesolve.moveToThread(self.threadPlatesolve)
-        self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
-        #self.threadPlatesolve.start()
-
+        self.modelStandard = modelStandard.ModelStandard(self.app)
+        self.modelBoost = modelBoost.ModelBoost(self.app)
         # counter for thread timing
         self.counter = 0
         self.chooserLock = threading.Lock()
@@ -269,14 +154,14 @@ class Modeling(PyQt5.QtCore.QThread):
                     if command == 'RunBaseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runBaseModel()
+                        self.modelStandard.runBaseModel()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunRefinementModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runRefinementModel()
+                        self.modelStandard.runRefinementModel()
                         self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
@@ -284,7 +169,7 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBoostModel.setStyleSheet(self.BLUE)
                         simulation = self.app.ui.checkSimulation.isChecked()
-                        self.runBoostModeling(simulation)
+                        self.modelBoost.runModel()
                         self.app.ui.btn_runBoostModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
@@ -292,19 +177,19 @@ class Modeling(PyQt5.QtCore.QThread):
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
                         simulation = self.app.ui.checkSimulation.isChecked()
-                        self.modelWorker.plateSolveSync(simulation)
+                        self.modelStandard.plateSolveSync(simulation)
                         self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunBatchModel':
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runBatchModel()
+                        self.modelStandard.runBatchModel()
                         self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
                     elif command == 'RunCheckModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)
                         num = self.app.mount.numberModelStars()
                         if num > 2:
-                            self.modelWorker.runCheckModel()
+                            self.modelStandard.runCheckModel()
                         else:
                             self.app.modelLogQueue.put('Run Analyse stopped, not BASE modeling available !\n')
                             self.app.messageQueue.put('Run Analyse stopped, not BASE modeling available !\n')
@@ -314,28 +199,28 @@ class Modeling(PyQt5.QtCore.QThread):
                     elif command == 'RunAllModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runAllModel()
+                        self.modelStandard.runAllModel()
                         self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunTimeChangeModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runTimeChangeModel()
+                        self.modelStandard.runTimeChangeModel()
                         self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'RunHystereseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
-                        self.modelWorker.runHystereseModel()
+                        self.modelStandard.runHystereseModel()
                         self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()
                     elif command == 'ClearAlignmentModel':
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
                         self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
-                        self.modelWorker.clearAlignmentModel()
+                        self.modelStandard.clearAlignmentModel()
                         self.app.modelLogQueue.put('Model cleared!\n')
                         self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
                 if command == 'GenerateDSOPoints':
@@ -427,29 +312,3 @@ class Modeling(PyQt5.QtCore.QThread):
             self.signalModelConnected.emit(3)
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
-
-    def runBoostModeling(self, simulation):
-        print('starting')
-        self.modelRun = True
-        self.threadSlewpoint.start()
-        self.threadImage.start()
-        self.threadPlatesolve.start()
-        # loading test data
-        for i in range(1, 10):
-            self.workerSlewpoint.queuePoint.put(i)
-        # start process
-        self.workerSlewpoint.signalSlewing.emit()
-        while self.modelRun:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if self.cancel:
-                break
-        self.workerSlewpoint.stop()
-        self.threadSlewpoint.quit()
-        self.threadSlewpoint.wait()
-        self.workerImage.stop()
-        self.threadImage.quit()
-        self.threadImage.wait()
-        self.workerPlatesolve.stop()
-        self.threadPlatesolve.quit()
-        self.threadPlatesolve.wait()
-        self.modelRun = False

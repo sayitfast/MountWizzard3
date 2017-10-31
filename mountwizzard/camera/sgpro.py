@@ -11,13 +11,14 @@
 # Licence APL2.0
 #
 ############################################################
-import platform
 import json
 import logging
+import platform
 import time
 # packages for handling web interface to SGPro
 from urllib import request
-from baseclasses.camera import MWCamera
+
+from camera.cameraBase import MWCamera
 
 
 class SGPro(MWCamera):

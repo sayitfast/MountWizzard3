@@ -12,9 +12,11 @@
 #
 ############################################################
 import logging
-from baseclasses.camera import MWCamera
-import indi.indi_xml as indiXML
+
 import PyQt5
+
+import indi.indi_xml as indiXML
+from camera.cameraBase import MWCamera
 
 
 class INDICamera(MWCamera):
