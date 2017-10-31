@@ -155,7 +155,7 @@ class ModelBoost(ModelBase):
             refinePoints = self.runBoost(self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
             for i in range(0, len(refinePoints)):
                 refinePoints[i]['index'] += len(self.modelData)
-            self.modelData = self.modelData + refinePoints
+            self.modelData = refinePoints
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_boost.dat'
             if len(self.modelData) > 0:
@@ -182,7 +182,7 @@ class ModelBoost(ModelBase):
         self.app.mountCommandQueue.put('PO')
         self.app.mountCommandQueue.put('AP')
 
-        self.modelRun = True
+        self.app.modeling.modelRun = True
         self.threadSlewpoint.start()
         self.threadImage.start()
         self.threadPlatesolve.start()
@@ -191,7 +191,7 @@ class ModelBoost(ModelBase):
             self.workerSlewpoint.queuePoint.put(i)
         # start process
         self.workerSlewpoint.signalSlewing.emit()
-        while self.modelRun:
+        while self.app.modeling.modelRun:
             PyQt5.QtWidgets.QApplication.processEvents()
             if self.app.modeling.cancel:
                 break
@@ -204,7 +204,7 @@ class ModelBoost(ModelBase):
         self.workerPlatesolve.stop()
         self.threadPlatesolve.quit()
         self.threadPlatesolve.wait()
-        self.modelRun = False
+        self.app.modeling.modelRun = False
 
         return results
         # counter and timer for performance estimation
