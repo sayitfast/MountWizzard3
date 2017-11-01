@@ -168,8 +168,8 @@ class Modeling(PyQt5.QtCore.QThread):
                     elif command == 'RunBoostModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBoostModel.setStyleSheet(self.BLUE)
-                        simulation = self.app.ui.checkSimulation.isChecked()
-                        self.modelBoost.runModel()
+                        if self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
+                            self.modelBoost.runModel()
                         self.app.ui.btn_runBoostModel.setStyleSheet(self.DEFAULT)
                         self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
                         self.app.imageWindow.enableExposures()

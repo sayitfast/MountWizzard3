@@ -113,6 +113,9 @@ class ModelPoints:
             minAlt = int(line_value)
             if len(hp) == 0:                                                                                                # there is no file loaded
                 hp = ((0, minAlt), (359, minAlt))
+        # is there is the mask not until 360, we do it
+        if hp[len(hp)-1][0] < 360:
+            hp.append((359, hp[len(hp)-1][1]))
         az_last = 0                                                                                                         # starting azimuth
         alt_last = 0                                                                                                        # starting altitude
         for i in range(0, len(hp)):                                                                                         # run through all points an link them via line
@@ -133,7 +136,8 @@ class ModelPoints:
         return msg
 
     def isAboveHorizonLine(self, point):                                                                                    # check, if point is above horizon list (by horizon file)
-        if len(self.horizonPoints) > 0:                                                                                     # check if there are horizon points
+        length = len(self.horizonPoints)
+        if length > 0 and point[0] < length:                                                                                # check if there are horizon points
             if point[1] > self.horizonPoints[int(point[0])][1]:                                                             # simple comparison. important: each Int(az) has value set
                 return True                                                                                                 # point is above -> True
             else:                                                                                                           #
