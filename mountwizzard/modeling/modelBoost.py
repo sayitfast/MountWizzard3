@@ -129,6 +129,8 @@ class Platesolve(PyQt5.QtCore.QObject):
                     modelData['PlateSolveSuccess'] = suc
                     if modelData['PlateSolveSuccess']:
                         self.main.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
+                        self.main.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
+
                         modelData['Item'].setVisible(False)
                     else:
                         self.main.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
