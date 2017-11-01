@@ -90,7 +90,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelData['Pierside'] = self.main.app.mount.data['Pierside']
                 modelData['RefractionTemperature'] = self.main.app.mount.data['RefractionTemperature']
                 modelData['RefractionPressure'] = self.main.app.mount.data['RefractionPressure']
-                self.main.app.modelLogQueue.put('{0} -\t Capturing image for modeling point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
+                self.main.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                 while True:
                     suc, mes = self.main.app.modeling.SGPro.SgGetDeviceStatus('Camera')
                     if suc and mes == 'IDLE':

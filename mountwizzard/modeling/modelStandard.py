@@ -199,7 +199,7 @@ class ModelStandard(ModelBase):
                 modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
                 if modeltype in ['TimeChange']:
                     self.app.mountCommandQueue.put('AP')
-                self.app.modelLogQueue.put('{0} -\t Capturing image for modeling point {1:2d}\n'.format(self.timeStamp(), i + 1))
+                self.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))
                 suc, mes, imagepath = self.capturingImage(modelData, simulation)
                 if modeltype in ['TimeChange']:
                     self.app.mountCommandQueue.put('RT9')
