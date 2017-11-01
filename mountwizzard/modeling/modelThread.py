@@ -120,6 +120,8 @@ class Modeling(PyQt5.QtCore.QThread):
 
     def chooseImagingApp(self):
         self.chooserLock.acquire()
+        self.app.ui.btn_runBoostModel.setVisible(False)
+        self.app.ui.btn_runBoostModel.setEnabled(False)
         if self.imagingHandler.cameraConnected:
             self.imagingHandler.disconnectCamera()
         if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
@@ -130,6 +132,8 @@ class Modeling(PyQt5.QtCore.QThread):
             self.logger.info('actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
             self.imagingHandler = self.SGPro
+            self.app.ui.btn_runBoostModel.setEnabled(True)
+            self.app.ui.btn_runBoostModel.setVisible(True)
             self.logger.info('actual camera / plate solver is SGPro')
         elif self.app.ui.pd_chooseImagingApp.currentText().startswith('TheSkyX'):
             self.imagingHandler = self.TheSkyX
