@@ -134,9 +134,6 @@ class Platesolve(PyQt5.QtCore.QObject):
                         modelData['Item'].setVisible(False)
                     else:
                         self.main.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
-                del modelData['Item']
-                del modelData['Simulation']
-                del modelData['SettlingTime']
                 self.main.solvedPointsQueue.put(modelData)
                 self.main.app.modelLogQueue.put('status{0} of {1}'.format(modelData['Index'] + 1, self.main.numberPointsMax))
                 self.main.numberSolvedPoints += 1
@@ -278,6 +275,34 @@ class ModelBoost(ModelBase):
             self.app.imageQueue.put(modelData['ImagePath'])
             return True, 'OK', modelData
 
+    def runBatchModel(self, modelData):
+        self.logger.info('Make model from data')
+        self.app.mount.saveBackupModel()
+        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
+        self.app.mount.mountHandler.sendCommand('newalig')
+        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
+        for i in range(0, len(modelData['Index'])):
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.modeling.transform.decimalToDegree(modelData['RaJNow'][i], False, True),
+                                                              self.app.modeling.transform.decimalToDegree(modelData['DecJNow'][i], True, False),
+                                                              modelData['Pierside'][i],
+                                                              self.app.modeling.transform.decimalToDegree(modelData['RaJNowSolved'][i], False, True),
+                                                              self.app.modeling.transform.decimalToDegree(modelData['DecJNowSolved'][i], True, False),
+                                                              self.app.modeling.ttransform.decimalToDegree(modelData['LocalSiderealTimeFloat'][i], False, True))
+            reply = self.app.mount.mountHandler.sendCommand(command)
+            if reply == 'E':
+                self.logger.warning('point {0} could not be added'.format(reply))
+                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
+            else:
+                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
+                                           .format(self.timeStamp(), reply, int(modelData['Azimuth'][i]), int(modelData['Altitude'][i])))
+        reply = self.app.mount.mountHandler.sendCommand('endalig')
+        if reply == 'V':
+            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))
+            self.logger.info('Model successful finished!')
+        else:
+            self.app.modelLogQueue.put('{0} - Model could not be calculated with current modelData! \n'.format(self.timeStamp()))
+            self.logger.warning('Model could not be calculated with current modelData!')
+
     # noinspection PyUnresolvedReferences
     def runModel(self):
         settlingTime, directory = self.setupRunningParameters()
@@ -308,6 +333,7 @@ class ModelBoost(ModelBase):
         self.app.modelLogQueue.put('timeleft--:--')
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
+        # setting up the data from gui to running applications
         modelData = self.prepareImaging(modelData, directory)
         if not os.path.isdir(modelData['BaseDirImages']):
             os.makedirs(modelData['BaseDirImages'])
@@ -358,7 +384,13 @@ class ModelBoost(ModelBase):
         self.threadPlatesolve.wait()
         self.app.modeling.modelRun = False
         while not self.solvedPointsQueue.empty():
-            results.append(self.solvedPointsQueue.get())
+            modelData = self.solvedPointsQueue.get()
+            # clean up intermediate data
+            del modelData['Item']
+            del modelData['Simulation']
+            del modelData['SettlingTime']
+            results.append(modelData)
+        self.runBatchModel(modelData)
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
         self.app.modelLogQueue.put('#BW{0} - Boost Model run finished. Number of modeled points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))

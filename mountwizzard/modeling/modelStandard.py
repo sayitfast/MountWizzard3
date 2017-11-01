@@ -130,48 +130,6 @@ class ModelStandard(ModelBase):
             self.app.ui.le_analyseFileName.setText(name)
             self.app.modeling.analyse.saveData(self.app.modeling.modelAnalyseData, name)
 
-    def runBatchModel(self):
-        nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.info('modeling from {0}'.format(nameDataFile))
-        data = self.app.modeling.analyse.loadData(nameDataFile)
-        if not('RaJNow' in data and 'DecJNow' in data):
-            self.logger.warning('RaJNow or DecJNow not in data file')
-            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))
-            return
-        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
-            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
-            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))
-            return
-        if not('Pierside' in data and 'LocalSiderealTime' in data):
-            self.logger.warning('Pierside and LocalSiderealTime not in data file')
-            self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(self.timeStamp()))
-            return
-        self.app.mount.saveBackupModel()
-        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
-        self.app.mount.mountHandler.sendCommand('newalig')
-        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
-        for i in range(0, len(data['index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.modeling.transform.decimalToDegree(data['RaJNow'][i], False, True),
-                                                              self.app.modeling.transform.decimalToDegree(data['DecJNow'][i], True, False),
-                                                              data['pierside'][i],
-                                                              self.app.modeling.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
-                                                              self.app.modeling.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
-                                                              self.app.modeling.ttransform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
-            reply = self.app.mount.mountHandler.sendCommand(command)
-            if reply == 'E':
-                self.logger.warning('point {0} could not be added'.format(reply))
-                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
-            else:
-                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
-                                           .format(self.timeStamp(), reply, int(data['Azimuth'][i]), int(data['Altitude'][i])))
-        reply = self.app.mount.mountHandler.sendCommand('endalig')
-        if reply == 'V':
-            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))
-            self.logger.info('Model successful finished!')
-        else:
-            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))
-            self.logger.warning('Model could not be calculated with current data!')
-
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime, simulation=False, keepImages=False):
         # start clearing the data
