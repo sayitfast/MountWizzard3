@@ -201,8 +201,8 @@ class ModelBoost(ModelBase):
             # waiting for the start of integration
             time.sleep(1)
             # storing the mount and environment data
-            modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
-            modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(self.app.mount.sidereal_time[0:9])
+            modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime'][0:9]
+            modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(modelData['LocalSiderealTime'])
             modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
             modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
             modelData['RaJNow'] = self.app.mount.data['RaJNow']
@@ -280,6 +280,15 @@ class ModelBoost(ModelBase):
 
     def runBatchModel(self, modelData):
         self.logger.info('Make model from data')
+        # transform data
+        resultData = dict()
+        for timestepdict in modelData:
+            for (keyData, valueData) in timestepdict.items():
+                if keyData in resultData:
+                    resultData[keyData].append(valueData)
+                else:
+                    resultData[keyData] = [valueData]
+        modelData = resultData
         self.app.mount.saveBackupModel()
         self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
         self.app.mount.mountHandler.sendCommand('newalig')
@@ -290,7 +299,7 @@ class ModelBoost(ModelBase):
                                                               modelData['Pierside'][i],
                                                               self.app.modeling.transform.decimalToDegree(modelData['RaJNowSolved'][i], False, True),
                                                               self.app.modeling.transform.decimalToDegree(modelData['DecJNowSolved'][i], True, False),
-                                                              self.app.modeling.ttransform.decimalToDegree(modelData['LocalSiderealTimeFloat'][i], False, True))
+                                                              self.app.modeling.transform.decimalToDegree(modelData['LocalSiderealTimeFloat'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
@@ -310,10 +319,6 @@ class ModelBoost(ModelBase):
     def runModel(self):
         settlingTime, directory = self.setupRunningParameters()
         if len(self.app.modeling.modelPoints.RefinementPoints) > 0:
-            if self.app.ui.checkKeepRefinement.isChecked():
-                self.app.mount.loadRefinementModel()
-            else:
-                self.app.mount.loadBaseModel()
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
             self.modelData = self.runBoost(self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
@@ -323,8 +328,8 @@ class ModelBoost(ModelBase):
                 self.app.ui.le_analyseFileName.setText(name)
                 self.app.modeling.analyse.saveData(self.modelData, name)
                 self.app.mount.saveRefinementModel()
-                if not self.app.modeling.cancel:
-                    self.runBatchModel(self.modelData)
+                # if not self.app.modeling.cancel:
+                self.runBatchModel(self.modelData)
         else:
             self.logger.warning('There are no Refinement Points to modeling')
 
@@ -397,5 +402,5 @@ class ModelBoost(ModelBase):
             results.append(modelData)
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('#BW{0} - Boost Model run finished. Number of modeled points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
+        self.app.modelLogQueue.put('#BW{0} - Boost Model run finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
         return results

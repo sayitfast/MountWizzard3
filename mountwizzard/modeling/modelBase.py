@@ -111,7 +111,7 @@ class ModelBase:
                                                               data['Pierside'][i],
                                                               self.app.modeling.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
                                                               self.app.modeling.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
-                                                              self.app.modeling.ttransform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
+                                                              self.app.modeling.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
