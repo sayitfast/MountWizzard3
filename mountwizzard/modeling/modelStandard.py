@@ -158,7 +158,6 @@ class ModelStandard(ModelBase):
             if p_item.isVisible():
                 # todo: put the code to multi thread modeling
                 if self.app.modeling.cancel:
-                    self.app.modeling.cancel = False
                     self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
                     # tracking should be on after canceling the modeling
                     self.app.mountCommandQueue.put('AP')

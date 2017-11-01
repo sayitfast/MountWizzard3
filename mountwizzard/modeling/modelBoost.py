@@ -45,6 +45,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
         self.isRunning = False
+        self.queuePoint.queue.clear()
 
     @PyQt5.QtCore.pyqtSlot()
     def slewing(self):
@@ -103,6 +104,7 @@ class Image(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
         self.isRunning = False
+        self.queueImage.queue.clear()
 
 
 class Platesolve(PyQt5.QtCore.QObject):
@@ -143,6 +145,7 @@ class Platesolve(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
         self.isRunning = False
+        self.queuePlatesolve.queue.clear()
 
 
 class ModelBoost(ModelBase):
@@ -320,6 +323,8 @@ class ModelBoost(ModelBase):
                 self.app.ui.le_analyseFileName.setText(name)
                 self.app.modeling.analyse.saveData(self.modelData, name)
                 self.app.mount.saveRefinementModel()
+                if not self.app.modeling.cancel:
+                    self.runBatchModel(modelData)
         else:
             self.logger.warning('There are no Refinement Points to modeling')
 
@@ -390,7 +395,6 @@ class ModelBoost(ModelBase):
             del modelData['Simulation']
             del modelData['SettlingTime']
             results.append(modelData)
-        self.runBatchModel(modelData)
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
         self.app.modelLogQueue.put('#BW{0} - Boost Model run finished. Number of modeled points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))

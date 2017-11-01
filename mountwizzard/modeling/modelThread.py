@@ -155,6 +155,7 @@ class Modeling(PyQt5.QtCore.QThread):
                 command = ''
             if self.app.mount.mountHandler.connected:
                 if self.imagingHandler.cameraConnected:
+                    self.cancel = False
                     if command == 'RunBaseModel':
                         self.app.imageWindow.disableExposures()
                         self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
