@@ -161,6 +161,7 @@ class ModelBoost(ModelBase):
         self.hasFinished = False
         self.numberPointsMax = 0
         self.numberSolvedPoints = 0
+        self.timeStart = 0
         # initialize the parallel thread modeling parts
         self.workerSlewpoint = Slewpoint(self)
         self.threadSlewpoint = PyQt5.QtCore.QThread()
@@ -364,6 +365,7 @@ class ModelBoost(ModelBase):
                 self.workerSlewpoint.queuePoint.put(copy.copy(modelData))
         self.numberPointsMax = len(runPoints)
         # start process
+        self.timeStart = time.time()
         self.hasFinished = False
         self.workerSlewpoint.signalSlewing.emit()
         while self.app.modeling.modelRun:

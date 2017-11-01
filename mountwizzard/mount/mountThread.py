@@ -427,9 +427,9 @@ class Mount(PyQt5.QtCore.QThread):
                 alignModel = self.getAlignmentModel()
                 self.app.modeling.modelData.pop(index)
                 for i in range(0, alignModel['number']):
-                    self.app.modeling.modelData[i]['modelError'] = float(alignModel['points'][i][5])
-                    self.app.modeling.modelData[i]['raError'] = self.app.modeling.modelData[i]['modelError'] * math.sin(math.radians(float(alignModel['points'][i][6])))
-                    self.app.modeling.modelData[i]['decError'] = self.app.modeling.modelData[i]['modelError'] * math.cos(math.radians(float(alignModel['points'][i][6])))
+                    self.app.modeling.modelData[i]['ModelError'] = float(alignModel['points'][i][5])
+                    self.app.modeling.modelData[i]['RaError'] = self.app.modeling.modelData[i]['ModelError'] * math.sin(math.radians(float(alignModel['points'][i][6])))
+                    self.app.modeling.modelData[i]['DecError'] = self.app.modeling.modelData[i]['ModelError'] * math.cos(math.radians(float(alignModel['points'][i][6])))
                 self.showAlignmentModel(alignModel)
             else:
                 self.logger.warning('Point {0} could not be deleted').format(index)
