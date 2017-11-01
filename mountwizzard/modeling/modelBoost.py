@@ -126,7 +126,7 @@ class Platesolve(PyQt5.QtCore.QObject):
             if not self.queuePlatesolve.empty():
                 modelData = self.queuePlatesolve.get()
                 if modelData['ImagingSuccess']:
-                    self.main.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.main.timeStamp()))
+                    self.main.app.modelLogQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                     suc, mes, modelData = self.main.solveImage(modelData, modelData['Simulation'])
                     modelData['PlateSolveSuccess'] = suc
                     if modelData['PlateSolveSuccess']:

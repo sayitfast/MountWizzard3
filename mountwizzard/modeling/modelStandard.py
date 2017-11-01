@@ -205,7 +205,7 @@ class ModelStandard(ModelBase):
                     self.app.mountCommandQueue.put('RT9')
                 self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
                 if suc:
-                    self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
+                    self.app.modelLogQueue.put('{0} -\t Solving image for model point{1}\n'.format(self.timeStamp(), i + 1))
                     suc, mes, modelData = self.solveImage(modelData, simulation)
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
                     if suc:
