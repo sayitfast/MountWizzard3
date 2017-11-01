@@ -324,7 +324,7 @@ class ModelBoost(ModelBase):
                 self.app.modeling.analyse.saveData(self.modelData, name)
                 self.app.mount.saveRefinementModel()
                 if not self.app.modeling.cancel:
-                    self.runBatchModel(modelData)
+                    self.runBatchModel(self.modelData)
         else:
             self.logger.warning('There are no Refinement Points to modeling')
 
