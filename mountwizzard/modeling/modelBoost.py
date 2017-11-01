@@ -210,8 +210,6 @@ class ModelBoost(ModelBase):
             modelData['Pierside'] = self.app.mount.data['Pierside']
             modelData['RefractionTemperature'] = self.app.mount.data['RefractionTemperature']
             modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
-            modelData['Azimuth'] = 0
-            modelData['Altitude'] = 0
             # waiting for the end of integration
             while True:
                 suc, mes = self.app.modeling.SGPro.SgGetDeviceStatus('Camera')
@@ -290,9 +288,9 @@ class ModelBoost(ModelBase):
                     resultData[keyData] = [valueData]
         modelData = resultData
         self.app.mount.saveBackupModel()
-        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
+        self.app.modelLogQueue.put('#BW\n{0} - Start Boost Model Step 2. Transfer Data to Mount.\n'.format(self.timeStamp()))
         self.app.mount.mountHandler.sendCommand('newalig')
-        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
+        self.app.modelLogQueue.put('#BG{0} - \tOpening Calculation\n'.format(self.timeStamp()))
         for i in range(0, len(modelData['Index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.modeling.transform.decimalToDegree(modelData['RaJNow'][i], False, True),
                                                               self.app.modeling.transform.decimalToDegree(modelData['DecJNow'][i], True, False),
@@ -305,15 +303,14 @@ class ModelBoost(ModelBase):
                 self.logger.warning('point {0} could not be added'.format(reply))
                 self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
             else:
-                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
-                                           .format(self.timeStamp(), reply, int(modelData['Azimuth'][i]), int(modelData['Altitude'][i])))
+                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'.format(self.timeStamp(), i +1 , int(modelData['Azimuth'][i]), int(modelData['Altitude'][i])))
         reply = self.app.mount.mountHandler.sendCommand('endalig')
         if reply == 'V':
-            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))
+            self.app.modelLogQueue.put('#BW{0} - Boost Model successful finished! \n'.format(self.timeStamp()))
             self.logger.info('Model successful finished!')
         else:
-            self.app.modelLogQueue.put('{0} - Model could not be calculated with current modelData! \n'.format(self.timeStamp()))
-            self.logger.warning('Model could not be calculated with current modelData!')
+            self.app.modelLogQueue.put('#BW{0} - Model could not be calculated with current modelData! \n'.format(self.timeStamp()))
+            self.logger.warning('Model could not be calculated with current Data!')
 
     # noinspection PyUnresolvedReferences
     def runModel(self):
@@ -399,8 +396,8 @@ class ModelBoost(ModelBase):
             del modelData['Item']
             del modelData['Simulation']
             del modelData['SettlingTime']
-            results.append(modelData)
+            results.append(copy.copy(modelData))
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('#BW{0} - Boost Model run finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
+        self.app.modelLogQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
         return results
