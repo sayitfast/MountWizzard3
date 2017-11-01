@@ -200,7 +200,8 @@ class ModelBoost(ModelBase):
         self.logger.info('Capture Image from SGPro {0}, {1}, {2}'.format(suc, mes, guid))
         if suc:
             # waiting for the start of integration
-            time.sleep(1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+            time.sleep(0.5)
             # storing the mount and environment data
             modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime'][0:9]
             modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(modelData['LocalSiderealTime'])
@@ -213,7 +214,10 @@ class ModelBoost(ModelBase):
             modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
             # waiting for the end of integration
             while True:
+                PyQt5.QtWidgets.QApplication.processEvents()
+                time.sleep(0.1)
                 suc, mes = self.app.modeling.SGPro.SgGetDeviceStatus('Camera')
+                print(mes)
                 if suc:
                     if mes != 'INTEGRATING':
                         break
@@ -221,6 +225,7 @@ class ModelBoost(ModelBase):
             # waiting for downloading and storing the image as fits file
             # todo: what if there is no fits file ?
             while True:
+                PyQt5.QtWidgets.QApplication.processEvents()
                 suc, modelData['ImagePath'] = self.app.modeling.SGPro.SgGetImagePath(guid)
                 if suc:
                     break
@@ -304,7 +309,7 @@ class ModelBoost(ModelBase):
                 self.logger.warning('point {0} could not be added'.format(reply))
                 self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
             else:
-                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'.format(self.timeStamp(), i +1 , int(modelData['Azimuth'][i]), int(modelData['Altitude'][i])))
+                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'.format(self.timeStamp(), i + 1, int(modelData['Azimuth'][i]), int(modelData['Altitude'][i])))
         reply = self.app.mount.mountHandler.sendCommand('endalig')
         if reply == 'V':
             self.app.modelLogQueue.put('#BW{0} - Boost Model successful finished! \n'.format(self.timeStamp()))

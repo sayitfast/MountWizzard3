@@ -25,9 +25,11 @@ class Transform:
         self.app = app
         self.ERFA = ERFA()
         self.transformationLockERFA = threading.Lock()                                                                      # locking object for single access to ascom transformation object
+        self.conversionLock = threading.Lock()                                                                      # locking object for single access to ascom transformation object
 
     def ra_dec_lst_to_az_alt(self, ra, dec):                                                                                # formula to make alt/az from hour angle and dec
         LAT = self.degStringToDecimal(self.app.mount.site_lat)
+        self.conversionLock.acquire()
         ra = (ra * 360 / 24 + 360.0) % 360.0                                                                                # using hours.
         dec = math.radians(dec)
         ra = math.radians(ra)
@@ -40,9 +42,11 @@ class Transform:
             az = 360.0 - A
         else:
             az = A
+        self.conversionLock.release()
         return az, alt
 
     def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
+        self.conversionLock.acquire()
         sign = 1
         if '-' in value:
             value = value.replace('-', '')
@@ -52,16 +56,20 @@ class Transform:
         try:
             if len(value.split(splitter)) == 3:
                 hour, minute, second = value.split(splitter)
-                return (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
+                returnValue = (float(hour) + float(minute) / 60 + float(second) / 3600) * sign
             elif len(value.split(splitter)) == 2:
                 hour, minute = value.split(splitter)
-                return (float(hour) + float(minute) / 60) * sign
+                returnValue = (float(hour) + float(minute) / 60) * sign
         except Exception as e:
             self.logger.error('error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
-            return 0
+            returnValue = 0
+        finally:
+            pass
+        self.conversionLock.release()
+        return returnValue
 
-    @staticmethod
-    def decimalToDegree(value, with_sign=True, with_decimal=False, spl=':'):                                               # format decimal value to string in degree format
+    def decimalToDegree(self, value, with_sign=True, with_decimal=False, spl=':'):                                               # format decimal value to string in degree format
+        self.conversionLock.acquire()
         if value >= 0:
             sign = '+'
         else:
@@ -75,9 +83,11 @@ class Transform:
         else:
             second_dec = ''
         if with_sign:
-            return '{0}{1:02d}{5}{2:02d}{5}{3:02d}{4}'.format(sign, hour, minute, second, second_dec, spl)
+            returnValue = '{0}{1:02d}{5}{2:02d}{5}{3:02d}{4}'.format(sign, hour, minute, second, second_dec, spl)
         else:
-            return '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
+            returnValue = '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
+        self.conversionLock.release()
+        return returnValue
 
     # ---------------------------------------------------------------------------
     # implementation ascom.transform to erfa.py
