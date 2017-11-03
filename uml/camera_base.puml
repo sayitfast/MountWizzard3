@@ -1,16 +1,18 @@
 @startuml
 
 class Camera {
-checkAppRunning
-connectCamera
-disconnectCamera
-getCameraStatus
-getImage
-getCameraProps
-
-(bool) appRunning
-(int) appLinkStatus
-(int) cameraStatus
+cameraStatus = list['Not Connected','Connected','Integrating','Downloading','IDLE','Error']
+int binX
+int binY
+int
+connect()
+disconnect()
+getStatus()
+_getProps()
+downloadImage()
+expose()
+abortExposure()
+setup()
 }
 
 @enduml
