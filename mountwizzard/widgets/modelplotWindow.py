@@ -66,9 +66,9 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
         self.app.modeling.signalModelRedraw.connect(self.redrawModelingWindow)                                              # signal for redrawing the window content
-        self.app.dome.signalDomPointer.connect(self.setDomePointer)                                                         # signal for redrawing the dome
+        self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)                                              # signal for redrawing the dome
         self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
-        # self.show()                                                                                                         # construct the window
+        # self.show()                                                                                                       # construct the window
         self.setVisible(False)                                                                                              # but hide it first
 
     def initConfig(self):

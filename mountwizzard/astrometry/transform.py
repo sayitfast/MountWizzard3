@@ -24,13 +24,12 @@ class Transform:
     def __init__(self, app):
         self.app = app
         self.ERFA = ERFA()
-        self.transformationLockERFA = threading.Lock()                                                                      # locking object for single access to ascom transformation object
-        self.conversionLock = threading.Lock()                                                                      # locking object for single access to ascom transformation object
+        self.transformationLockERFA = threading.Lock()
+        self.conversionLock = threading.Lock()
 
-    def ra_dec_lst_to_az_alt(self, ra, dec):                                                                                # formula to make alt/az from hour angle and dec
+    def ra_dec_lst_to_az_alt(self, ra, dec):
         LAT = self.degStringToDecimal(self.app.mount.site_lat)
-        self.conversionLock.acquire()
-        ra = (ra * 360 / 24 + 360.0) % 360.0                                                                                # using hours.
+        ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
         ra = math.radians(ra)
         lat = math.radians(LAT)
@@ -42,11 +41,10 @@ class Transform:
             az = 360.0 - A
         else:
             az = A
-        self.conversionLock.release()
         return az, alt
 
-    def degStringToDecimal(self, value, splitter=':'):                                                                      # conversion between Strings formats and decimal representation
-        self.conversionLock.acquire()
+    def degStringToDecimal(self, value, splitter=':'):
+        returnValue = 0
         sign = 1
         if '-' in value:
             value = value.replace('-', '')
@@ -65,11 +63,9 @@ class Transform:
             returnValue = 0
         finally:
             pass
-        self.conversionLock.release()
         return returnValue
 
-    def decimalToDegree(self, value, with_sign=True, with_decimal=False, spl=':'):                                               # format decimal value to string in degree format
-        self.conversionLock.acquire()
+    def decimalToDegree(self, value, with_sign=True, with_decimal=False, spl=':'):
         if value >= 0:
             sign = '+'
         else:
@@ -86,7 +82,6 @@ class Transform:
             returnValue = '{0}{1:02d}{5}{2:02d}{5}{3:02d}{4}'.format(sign, hour, minute, second, second_dec, spl)
         else:
             returnValue = '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
-        self.conversionLock.release()
         return returnValue
 
     # ---------------------------------------------------------------------------

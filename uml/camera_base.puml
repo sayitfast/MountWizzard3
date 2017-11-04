@@ -4,6 +4,10 @@ class Camera {
 cameraStatus = list['Not Connected','Connected','Integrating','Downloading','IDLE','Error']
 int binX
 int binY
+bool canSubframe
+int numX
+int numY
+
 int
 connect()
 disconnect()

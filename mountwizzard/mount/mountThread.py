@@ -554,20 +554,19 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParameter(self):
-        if 'Temperature' in self.app.environment.data and 'Pressure' in self.app.environment.data:
-            pressure = self.app.environment.data['Pressure']
-            temperature = self.app.environment.data['Temperature']
-            if self.app.environment.connected == 1:
-                if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
-                    self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(pressure))
-                    if temperature > 0:
-                        self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(temperature))
-                    else:
-                        self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-temperature))
-                    self.data['RefractionTemperature'] = self.mountHandler.sendCommand('GRTMP')
-                    self.data['RefractionPressure'] = self.mountHandler.sendCommand('GRPRS')
+        if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
+            pressure = self.app.workerAscomEnvironment.data['Pressure']
+            temperature = self.app.workerAscomEnvironment.data['Temperature']
+            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
+                self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(pressure))
+                if temperature > 0:
+                    self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(temperature))
                 else:
-                    self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
+                    self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-temperature))
+                self.data['RefractionTemperature'] = self.mountHandler.sendCommand('GRTMP')
+                self.data['RefractionPressure'] = self.mountHandler.sendCommand('GRPRS')
+            else:
+                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
     def getStatusFast(self):
         reply = self.mountHandler.sendCommand('GS')
