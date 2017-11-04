@@ -70,16 +70,20 @@ class AscomEnvironment(PyQt5.QtCore.QObject):
             self.signalAscomEnvironmentConnected.emit(0)
             self.stop()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
+        '''
         while self.isRunning:
-            time.sleep(0.2)
+            # time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
+        '''
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        # if no running main loop is necessary, finished emit moves to stop directly
+        self.finished.emit()
 
     # noinspection PyBroadException
     def getData(self):
