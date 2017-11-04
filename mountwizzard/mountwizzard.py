@@ -963,7 +963,7 @@ class MountWizzardApp(widget.MwWidget):
         while not self.modelLogQueue.empty():
             text = self.modelLogQueue.get()
             if text == 'delete':
-                self.modelWindow.ui.modellingLog.clear()                                                                    # reset window text
+                self.modelWindow.ui.modellingLog.clear()
             elif text == 'backspace':
                 for i in range(0, 6):
                     self.modelWindow.ui.modellingLog.textCursor().deletePreviousChar()
@@ -988,11 +988,11 @@ class MountWizzardApp(widget.MwWidget):
             else:
                 self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_ASTRO)
                 self.modelWindow.ui.modellingLog.setFontWeight(QFont.Normal)
-                self.modelWindow.ui.modellingLog.insertPlainText(text)                                                      # otherwise add text at the end
-            self.modelWindow.ui.modellingLog.moveCursor(QTextCursor.End)                                                    # and move cursor up
+                self.modelWindow.ui.modellingLog.insertPlainText(text)
+            self.modelWindow.ui.modellingLog.moveCursor(QTextCursor.End)
             self.modelLogQueue.task_done()
         # noinspection PyCallByClass,PyTypeChecker
-        QTimer.singleShot(200, self.mainLoop)                                                                               # 200ms repeat time cyclic
+        QTimer.singleShot(500, self.mainLoop)
 
 
 if __name__ == "__main__":
