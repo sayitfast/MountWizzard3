@@ -23,7 +23,7 @@ class Remote(PyQt5.QtCore.QObject):
     signalRemoteConnected = PyQt5.QtCore.pyqtSignal(bool, name='RemoteConnected')
     signalRemoteShutdown = PyQt5.QtCore.pyqtSignal(bool, name='RemoteShutdown')
     TCP_IP = '127.0.0.1'
-    BUFFER_SIZE = 20                                                                                                        # Normally 1024, but we want fast response
+    SIZEOF_UINT16 = 2
 
     def __init__(self, app):
         super().__init__()
@@ -41,7 +41,7 @@ class Remote(PyQt5.QtCore.QObject):
         try:
             if 'RemotePort' in self.app.config:
                 self.app.ui.le_remotePort.setText(self.app.config['RemotePort'])
-            if 'CheckRemoteAccess' in self.config:
+            if 'CheckRemoteAccess' in self.app.config:
                 self.app.ui.checkRemoteAccess.setChecked(self.app.config['CheckRemoteAccess'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
@@ -56,12 +56,11 @@ class Remote(PyQt5.QtCore.QObject):
         if self.app.ui.le_remotePort.text().strip() != '':
             self.remotePort = int(self.app.ui.le_remotePort.text())
         else:
-            self.logger.warning('empty input value for remote port')
+            self.logger.warning('Empty input value for remote port')
             self.app.messageQueue.put('No remote port configured')
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop
-        print('start remote')
         if not self.isRunning:
             self.isRunning = True
         result = 0
@@ -87,11 +86,15 @@ class Remote(PyQt5.QtCore.QObject):
         else:
             self.logger.warning('port {0} is already in use'.format(self.remotePort))
         while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()  # when the worker thread finished, it emit the finished signal to the parent to clean up
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.tcpServer.close()
+        self.tcpServer = None
+        self.clientConnection = None
+        self.logger.info('MountWizzard Remote Server is shut down'.format(self.remotePort))
+        # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
 
     def stop(self):
-        print('stop remote')
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
@@ -106,21 +109,10 @@ class Remote(PyQt5.QtCore.QObject):
 
     def receiveMessage(self):
         if self.clientConnection.bytesAvailable() > 0:
-            stream = PyQt5.QtNetwork.QDataStream(self.clientConnection)
-            stream.setVersion(PyQt5.QtNetwork.QDataStream.Qt_4_2)
-            if self.clientConnection.nextBlockSize == 0:
-                if self.clientConnection.bytesAvailable() < PyQt5.QtNetwork.SIZEOF_UINT32:
-                    return
-                self.clientConnection.nextBlockSize = stream.readUInt32()
-            if self.clientConnection.bytesAvailable() < self.clientConnection.nextBlockSize:
-                return
-            textFromClient = stream.readQString()
-            if textFromClient == 'shutdown':
+            message = str(self.clientConnection.read(100), "ascii")
+            if message == 'shutdown\r\n':
                 self.logger.info('Shutdown MountWizzard from {0}'.format(self.clientConnection))
                 self.signalRemoteShutdown.emit(True)
-            self.clientConnection.nextBlockSize = 0
-            self.sendMessage(textFromClient, self.clientConnection.socketDescriptor())
-            self.clientConnection.nextBlockSize = 0
 
     def removeConnection(self):
         pass
