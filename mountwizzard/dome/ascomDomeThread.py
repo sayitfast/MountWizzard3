@@ -21,9 +21,10 @@ class AscomDome(PyQt5.QtCore.QObject):
     # signals for communication to main Thread / GUI
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
+
     signalAscomDomeConnected = PyQt5.QtCore.pyqtSignal([int])
     signalDomPointer = PyQt5.QtCore.pyqtSignal([float])
-    # cycle time for recurrent task which are managed via QTimer
+
     CYCLE_DATA = 500
 
     def __init__(self, app):
@@ -54,21 +55,21 @@ class AscomDome(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-            if self.driverName != '':
-                pythoncom.CoInitialize()
-                try:
-                    self.ascom = Dispatch(self.driverName)
-                    self.ascom.connected = True
-                    self.signalAscomDomeConnected.emit(3)
-                except Exception as e:
-                    self.logger.error('Could not dispatch driver: {0} and connect it. Stopping thread.'.format(self.driverName))
-                finally:
-                    pass
-                # now starting all the tasks for cyclic doing (the ones which rely on QTimer)
-                self.getData()
-            else:
-                self.signalAscomDomeConnected.emit(0)
-                self.isRunning = False
+        if self.driverName != '':
+            pythoncom.CoInitialize()
+            try:
+                self.ascom = Dispatch(self.driverName)
+                self.ascom.connected = True
+                self.signalAscomDomeConnected.emit(3)
+            except Exception as e:
+                self.logger.error('Could not dispatch driver: {0} and connect it. Stopping thread.'.format(self.driverName))
+            finally:
+                pass
+            # now starting all the tasks for cyclic doing (the ones which rely on QTimer)
+            self.getData()
+        else:
+            self.signalAscomDomeConnected.emit(0)
+            self.stop()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
             PyQt5.QtWidgets.QApplication.processEvents()

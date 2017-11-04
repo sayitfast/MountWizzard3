@@ -3568,7 +3568,7 @@
       </font>
      </property>
      <property name="text">
-      <string>UTC DataUploadToMount is</string>
+      <string>UTC UpdaterAuto is</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_UTCDataExpirationDate">

@@ -50,20 +50,20 @@ class Camera(QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-            if self.driverName != '':
-                pythoncom.CoInitialize()
-                try:
-                    self.ascom = Dispatch(self.driverName)
-                    self.ascom.connected = True
-                except Exception as e:
-                    # self.logger.error('Could not dispatch driver: {0} and connect it. Stopping thread.'.format(self.driverName))
-                    print('could not dispatch', e)
-                finally:
-                    pass
-                # now starting all the tasks for cyclic doing (the ones which rely on QTimer)
-                self.getProps()
-            else:
-                self.isRunning = False
+        if self.driverName != '':
+            pythoncom.CoInitialize()
+            try:
+                self.ascom = Dispatch(self.driverName)
+                self.ascom.connected = True
+            except Exception as e:
+                # self.logger.error('Could not dispatch driver: {0} and connect it. Stopping thread.'.format(self.driverName))
+                print('could not dispatch', e)
+            finally:
+                pass
+            # now starting all the tasks for cyclic doing (the ones which rely on QTimer)
+            self.getProps()
+        else:
+            self.isRunning = False
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
             QtWidgets.QApplication.processEvents()

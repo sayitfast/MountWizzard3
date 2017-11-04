@@ -11,8 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
 import os
 import logging
 import time
@@ -25,8 +23,8 @@ from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
-class DataUploadToMount(PyQt5.QtCore.QThread):
-    logger = logging.getLogger(__name__)                                                                                    # get logger for  problems
+class UpdaterAuto(PyQt5.QtCore.QThread):
+    logger = logging.getLogger(__name__)
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'

@@ -52,7 +52,7 @@ from relays import relays
 from remote import remoteThread
 from dome import ascomDomeThread
 from indi import indi_client
-from environment import ascomEnvironThread
+from environment import ascomEnvirThread
 
 if platform.system() == 'Windows':
     from automation import upload_thread
@@ -103,14 +103,16 @@ class MountWizzardApp(widget.MwWidget):
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = QThread()
         self.INDIworker.moveToThread(self.INDIthread)
+        # noinspection PyUnresolvedReferences
         self.INDIthread.started.connect(self.INDIworker.run)
         self.INDIworker.status.connect(self.setINDIStatus)
 
         # threading for ascom environment data
         if platform.system() == 'Windows':
-            self.workerAscomEnvironment = ascomEnvironThread.AscomEnvironment(self)
+            self.workerAscomEnvironment = ascomEnvirThread.AscomEnvironment(self)
             self.threadAscomEnvironment = PyQt5.QtCore.QThread()
             self.workerAscomEnvironment.moveToThread(self.threadAscomEnvironment)
+            # noinspection PyUnresolvedReferences
             self.threadAscomEnvironment.started.connect(self.workerAscomEnvironment.run)
             self.workerAscomEnvironment.finished.connect(self.workerAscomEnvironmentStop)
             self.workerAscomEnvironment.signalAscomEnvironmentConnected.connect(self.setEnvironmentStatus)
@@ -121,13 +123,25 @@ class MountWizzardApp(widget.MwWidget):
             self.workerAscomDome = ascomDomeThread.AscomDome(self)
             self.threadAscomDome = PyQt5.QtCore.QThread()
             self.workerAscomDome.moveToThread(self.threadAscomDome)
+            # noinspection PyUnresolvedReferences
             self.threadAscomDome.started.connect(self.workerAscomDome.run)
             self.workerAscomDome.finished.connect(self.workerAscomDomeStop)
             self.workerAscomDome.signalAscomDomeConnected.connect(self.setDomeStatus)
             self.threadAscomDome.start()
 
+        self.workerRemote = remoteThread.Remote(self)
+        self.threadRemote = PyQt5.QtCore.QThread()
+        self.workerRemote.moveToThread(self.threadRemote)
+        # noinspection PyUnresolvedReferences
+        self.threadRemote.started.connect(self.workerRemote.run)
+        self.workerRemote.finished.connect(self.workerRemoteStop)
+        # thread start will be done when enabled
+        # self.threadRemote.start()
+        self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
+
         if platform.system() == 'Windows':
-            self.data = upload_thread.DataUploadToMount(self)
+            self.data = upload_thread.UpdaterAuto(self)
+
         self.modeling = modelThread.Modeling(self)
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
@@ -140,8 +154,6 @@ class MountWizzardApp(widget.MwWidget):
 
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)
         self.modeling.start()
-        self.remote = remoteThread.Remote(self)
-        self.remote.signalRemoteShutdown.connect(self.saveConfigQuit)
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
         self.initConfig()
@@ -161,6 +173,40 @@ class MountWizzardApp(widget.MwWidget):
         self.workerAscomEnvironment.setupDriver()
         self.threadAscomEnvironment.start()
 
+    def setEnvironmentStatus(self, status):
+        if status == 0:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;}')
+        elif status == 1:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red;}')
+        elif status == 2:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+        elif status == 3:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green;}')
+        else:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: black;}')
+
+    def fillEnvironmentData(self):
+        for valueName in self.workerAscomEnvironment.data:
+            if valueName == 'DewPoint':
+                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'Temperature':
+                self.ui.le_temperature.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'Humidity':
+                self.ui.le_humidity.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'Pressure':
+                self.ui.le_pressure.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'CloudCover':
+                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'RainRate':
+                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'WindSpeed':
+                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'WindDirection':
+                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'SQR':
+                self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
+
     def workerAscomDomeStop(self):
         self.threadAscomDome.quit()
         self.threadAscomDome.wait()
@@ -171,6 +217,31 @@ class MountWizzardApp(widget.MwWidget):
             self.workerAscomDome.stop()
         self.workerAscomDome.setupDriver()
         self.threadAscomDome.start()
+
+    def setDomeStatus(self, status):
+        if status == 0:
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: gray;}')
+        elif status == 1:
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
+        elif status == 2:
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+        elif status == 3:
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;}')
+        else:
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: black;}')
+
+    def workerRemoteStop(self):
+        self.threadRemote.quit()
+        self.threadRemote.wait()
+
+    def enableDisableRemoteAccess(self):
+        if self.ui.checkRemoteAccess.isChecked():
+            self.messageQueue.put('Remote Access enabled')
+            self.threadRemote.start()
+        else:
+            self.messageQueue.put('Remote Access disabled')
+            if self.workerRemote.isRunning:
+                self.workerRemote.stop()
 
     # noinspection PyArgumentList
     def mappingFunctions(self):
@@ -265,12 +336,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
-
-    def enableDisableRemoteAccess(self):
-        if self.ui.checkRemoteAccess.isChecked():
-            self.remote.start()
-        else:
-            self.remote.terminate()
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
@@ -503,8 +568,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_mountMAC.setText(self.config['MountMAC'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
-            if 'CheckRemoteAccess' in self.config:
-                self.ui.checkRemoteAccess.setChecked(self.config['CheckRemoteAccess'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -568,7 +631,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['MountMAC'] = self.ui.le_mountMAC.text()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
-        self.config['CheckRemoteAccess'] = self.ui.checkRemoteAccess.isChecked()
 
     def loadConfigData(self):
         try:
@@ -873,41 +935,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_UTCDataExpirationDate.setText(str(self.mount.data[valueName]))
 
     @QtCore.Slot(int)
-    def setEnvironmentStatus(self, status):
-        if status == 0:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;}')
-        elif status == 1:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red;}')
-        elif status == 2:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow;}')
-        elif status == 3:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green;}')
-        else:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: black;}')
-
-    def fillEnvironmentData(self):
-        for valueName in self.workerAscomEnvironment.data:
-            if valueName == 'DewPoint':
-                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'Temperature':
-                self.ui.le_temperature.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'Humidity':
-                self.ui.le_humidity.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'Pressure':
-                self.ui.le_pressure.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'CloudCover':
-                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'RainRate':
-                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'WindSpeed':
-                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'WindDirection':
-                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'SQR':
-                self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
-                self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
-
-    @QtCore.Slot(int)
     def setCameraPlateStatus(self, status):
         if status == 3:
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: green;}')
@@ -917,19 +944,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: red;}')
         else:
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: gray;}')
-
-    @QtCore.Slot(int)
-    def setDomeStatus(self, status):
-        if status == 0:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: gray;}')
-        elif status == 1:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
-        elif status == 2:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: yellow;}')
-        elif status == 3:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;}')
-        else:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: black;}')
 
     def mainLoop(self):
         self.fillMountData()
