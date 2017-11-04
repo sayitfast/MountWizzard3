@@ -14,6 +14,7 @@
 import logging
 import PyQt5
 import socket
+import time
 
 
 class Remote(PyQt5.QtCore.QObject):
@@ -86,6 +87,7 @@ class Remote(PyQt5.QtCore.QObject):
         else:
             self.logger.warning('port {0} is already in use'.format(self.remotePort))
         while self.isRunning:
+            time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.tcpServer.close()
         self.tcpServer = None
@@ -105,13 +107,13 @@ class Remote(PyQt5.QtCore.QObject):
         self.clientConnection.readyRead.connect(self.receiveMessage)
         self.clientConnection.disconnected.connect(self.removeConnection)
         self.clientConnection.error.connect(self.socketError)
-        self.logger.info('Connection to MountWizzard from {0}'.format(self.clientConnection))
+        self.logger.info('Connection to MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
 
     def receiveMessage(self):
         if self.clientConnection.bytesAvailable() > 0:
             message = str(self.clientConnection.read(100), "ascii")
             if message == 'shutdown\r\n':
-                self.logger.info('Shutdown MountWizzard from {0}'.format(self.clientConnection))
+                self.logger.info('Shutdown MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
                 self.signalRemoteShutdown.emit(True)
 
     def removeConnection(self):
