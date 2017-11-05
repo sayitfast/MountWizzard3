@@ -49,7 +49,6 @@ class ModelStandard(ModelBase):
             self.logger.warning('There are no Basepoints for modeling')
 
     def runRefinementModel(self):
-        print('refinement ', PyQt5.QtCore.QThread.currentThread())
         num = self.app.mount.numberModelStars()
         simulation = self.app.ui.checkSimulation.isChecked()
         if num > 2 or simulation:

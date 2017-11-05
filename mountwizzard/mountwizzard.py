@@ -168,7 +168,7 @@ class MountWizzardApp(widget.MwWidget):
         self.initConfig()
         self.mappingFunctions()
         self.checkPlatformDependableMenus()
-        print('main app', PyQt5.QtCore.QThread.currentThread())
+        # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
 
@@ -297,8 +297,11 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
             self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.mountCommandQueue.put('SetRefractionParameter'))
-        self.ui.btn_cancelModel.clicked.connect(self.workerModeling.cancelModeling)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(self.workerModeling.cancelAnalyseModeling)
+        # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
+        # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
+        # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
+        self.ui.btn_cancelModel.clicked.connect(lambda: self.workerModeling.cancelModeling())
+        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModeling.cancelAnalyseModeling())
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
