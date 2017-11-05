@@ -23,8 +23,9 @@ from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
-class UpdaterAuto(PyQt5.QtCore.QThread):
+class UpdaterAuto(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+    finished = PyQt5.QtCore.pyqtSignal()
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
@@ -55,6 +56,9 @@ class UpdaterAuto(PyQt5.QtCore.QThread):
 
     def __init__(self, app):
         super().__init__()
+        self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
+
         self.app = app
         self.appAvailable = False
         self.appName = ''
@@ -97,8 +101,13 @@ class UpdaterAuto(PyQt5.QtCore.QThread):
         else:
             self.logger.info('Application 10micron Updater  not found on computer')
 
-    def run(self):                                                                                                          # runnable for doing the work
-        while True:                                                                                                         # main loop for stick thread
+    def run(self):
+        # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
+        if not self.isRunning:
+            self.isRunning = True
+        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
+        while self.isRunning:
+            PyQt5.QtWidgets.QApplication.processEvents()
             if not self.app.commandDataQueue.empty():
                 command = self.app.commandDataQueue.get()
                 if command == 'SPACESTATIONS':
@@ -177,11 +186,13 @@ class UpdaterAuto(PyQt5.QtCore.QThread):
                     self.app.ui.btn_uploadMount.setStyleSheet(self.DEFAULT)
                 else:
                     pass
-            time.sleep(0.3)                                                                                                 # wait for the next cycle
-        self.terminate()                                                                                                    # closing the thread at the end
+            time.sleep(0.1)
+        self.finished.emit()
 
-    def __del__(self):                                                                                                      # remove thread
-        self.wait()
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
 
     def filterFileMPC(self, directory, filename, expression, start, end):
         numberEntry = 0

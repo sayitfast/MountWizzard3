@@ -86,20 +86,17 @@ class Remote(PyQt5.QtCore.QObject):
             self.tcpServer.newConnection.connect(self.addConnection)
         else:
             self.logger.warning('port {0} is already in use'.format(self.remotePort))
-        while self.isRunning:
-            time.sleep(1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
         self.tcpServer.close()
         self.tcpServer = None
         self.clientConnection = None
         self.logger.info('MountWizzard Remote Server is shut down'.format(self.remotePort))
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
-
-    def stop(self):
-        self._mutex.lock()
-        self.isRunning = False
-        self._mutex.unlock()
 
     def addConnection(self):
         self.clientConnection = self.tcpServer.nextPendingConnection()

@@ -55,7 +55,7 @@ from indi import indi_client
 from environment import ascomEnvirThread
 
 if platform.system() == 'Windows':
-    from automation import upload_thread
+    from automation import uploadThread
 from wakeonlan import wol
 
 
@@ -106,7 +106,6 @@ class MountWizzardApp(widget.MwWidget):
         # noinspection PyUnresolvedReferences
         self.INDIthread.started.connect(self.INDIworker.run)
         self.INDIworker.status.connect(self.setINDIStatus)
-
         # threading for ascom environment data
         if platform.system() == 'Windows':
             self.workerAscomEnvironment = ascomEnvirThread.AscomEnvironment(self)
@@ -117,7 +116,6 @@ class MountWizzardApp(widget.MwWidget):
             self.workerAscomEnvironment.finished.connect(self.workerAscomEnvironmentStop)
             self.workerAscomEnvironment.signalAscomEnvironmentConnected.connect(self.setEnvironmentStatus)
             self.threadAscomEnvironment.start()
-
         # threading for ascom dome data
         if platform.system() == 'Windows':
             self.workerAscomDome = ascomDomeThread.AscomDome(self)
@@ -128,7 +126,7 @@ class MountWizzardApp(widget.MwWidget):
             self.workerAscomDome.finished.connect(self.workerAscomDomeStop)
             self.workerAscomDome.signalAscomDomeConnected.connect(self.setDomeStatus)
             self.threadAscomDome.start()
-
+        # threading for remote shutdown
         self.workerRemote = remoteThread.Remote(self)
         self.threadRemote = PyQt5.QtCore.QThread()
         self.workerRemote.moveToThread(self.threadRemote)
@@ -138,9 +136,15 @@ class MountWizzardApp(widget.MwWidget):
         # thread start will be done when enabled
         # self.threadRemote.start()
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
-
+        # threading for updater automation
         if platform.system() == 'Windows':
-            self.data = upload_thread.UpdaterAuto(self)
+            self.workerUpload = uploadThread.UpdaterAuto(self)
+            self.threadUpload = PyQt5.QtCore.QThread()
+            self.workerUpload.moveToThread(self.threadUpload)
+            # noinspection PyUnresolvedReferences
+            self.threadUpload.started.connect(self.workerUpload.run)
+            self.workerUpload.finished.connect(self.workerUploadStop)
+            self.threadUpload.start()
 
         self.modeling = modelThread.Modeling(self)
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
@@ -150,8 +154,6 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.start()
         if platform.system() == 'Windows':
             self.checkASCOM()
-            self.data.start()
-
         self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)
         self.modeling.start()
         self.enableDisableRemoteAccess()
@@ -233,6 +235,10 @@ class MountWizzardApp(widget.MwWidget):
     def workerRemoteStop(self):
         self.threadRemote.quit()
         self.threadRemote.wait()
+
+    def workerUploadStop(self):
+        self.threadUpload.quit()
+        self.threadUpload.wait()
 
     def enableDisableRemoteAccess(self):
         if self.ui.checkRemoteAccess.isChecked():
@@ -648,7 +654,7 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() == 'Windows':
             self.workerAscomEnvironment.storeConfig()
             self.workerAscomDome.storeConfig()
-            self.data.storeConfig()
+            self.workerUpload.storeConfig()
         self.modelWindow.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()

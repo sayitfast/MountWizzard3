@@ -13,7 +13,6 @@
 ############################################################
 import logging
 import PyQt5
-import time
 from win32com.client.dynamic import Dispatch
 import pythoncom
 
