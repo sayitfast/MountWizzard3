@@ -38,7 +38,7 @@ class ModelBase:
         return time.strftime("%H:%M:%S", time.localtime())
 
     def clearAlignmentModel(self):
-        self.app.modeling.modelAnalyseData = []
+        self.app.workerModeling.modelAnalyseData = []
         self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)
 
@@ -51,36 +51,36 @@ class ModelBase:
         self.app.mountCommandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))
         self.app.mountCommandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))
         self.app.mountCommandQueue.put('MS')
-        self.logger.info('Connected:{0}'.format(self.app.dome.connected))
+        self.logger.info('Ascom Dome Thread running: {0}'.format(self.app.workerAscomDome.isRunning))
         break_counter = 0
         while not self.app.mount.data['Slewing']:
             time.sleep(0.1)
             break_counter += 1
             if break_counter == 30:
                 break
-        if self.app.dome.connected == 1:
+        if self.app.workerAscomDome.isRunning:
             if az >= 360:
                 az = 359.9
             elif az < 0.0:
                 az = 0.0
             try:
-                self.app.dome.ascom.SlewToAzimuth(float(az))
+                self.app.workerAscomDome.ascom.SlewToAzimuth(float(az))
             except Exception as e:
                 self.logger.error('value: {0}, error: {1}'.format(az, e))
             self.logger.info('Azimuth:{0}'.format(az))
             while not self.app.mount.data['Slewing']:
-                if self.app.modeling.cancel:
+                if self.app.workerModeling.cancel:
                     self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)
             while self.app.mount.slewing or self.app.dome.slewing:
-                if self.app.modeling.cancel:
+                if self.app.workerModeling.cancel:
                     self.logger.info('Modeling cancelled after dome slewing')
                     break
                 time.sleep(0.1)
         else:
             while self.app.mount.data['Slewing']:
-                if self.app.modeling.cancel:
+                if self.app.workerModeling.cancel:
                     self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)
@@ -88,7 +88,7 @@ class ModelBase:
     def runBatchModel(self):
         nameDataFile = self.app.ui.le_analyseFileName.text()
         self.logger.info('modeling from {0}'.format(nameDataFile))
-        data = self.app.modeling.analyse.loadData(nameDataFile)
+        data = self.app.workerModeling.analyse.loadData(nameDataFile)
         if not('RaJNow' in data and 'DecJNow' in data):
             self.logger.warning('RaJNow or DecJNow not in data file')
             self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))
@@ -106,12 +106,12 @@ class ModelBase:
         self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
         for i in range(0, len(data['Index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.modeling.transform.decimalToDegree(data['RaJNow'][i], False, True),
-                                                              self.app.modeling.transform.decimalToDegree(data['DecJNow'][i], True, False),
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.workerModeling.transform.decimalToDegree(data['RaJNow'][i], False, True),
+                                                              self.app.workerModeling.transform.decimalToDegree(data['DecJNow'][i], True, False),
                                                               data['Pierside'][i],
-                                                              self.app.modeling.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
-                                                              self.app.modeling.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
-                                                              self.app.modeling.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
+                                                              self.app.workerModeling.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
+                                                              self.app.workerModeling.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
+                                                              self.app.workerModeling.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
@@ -127,10 +127,9 @@ class ModelBase:
             self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))
             self.logger.warning('Model could not be calculated with current data!')
 
-
     def prepareImaging(self, modelData, directory):
         # do all the calculations once
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.imagingHandler.getCameraProps()
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.workerModeling.imagingHandler.getCameraProps()
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
         else:
@@ -151,7 +150,7 @@ class ModelBase:
             modelData['CanSubframe'] = False
             self.logger.warning('Camera does not support subframe.')
         modelData['GainValue'] = gainValue
-        modelData['BaseDirImages'] = self.app.modeling.IMAGEDIR + '/' + directory
+        modelData['BaseDirImages'] = self.app.workerModeling.IMAGEDIR + '/' + directory
         if self.app.ui.checkFastDownload.isChecked():
             modelData['Speed'] = 'HiSpeed'
         else:
@@ -167,20 +166,20 @@ class ModelBase:
         return modelData
 
     def capturingImage(self, modelData, simulation):
-        if self.app.modeling.cancel:
+        if self.app.workerModeling.cancel:
             self.logger.info('Modeling cancelled after capturing image')
             return False, 'Cancel modeling pressed', modelData
         LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]
-        RaJ2000FitsHeader = self.app.modeling.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
-        DecJ2000FitsHeader = self.app.modeling.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
-        RaJNowFitsHeader = self.app.modeling.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
-        DecJNowFitsHeader = self.app.modeling.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
+        RaJ2000FitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
+        DecJ2000FitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
+        RaJNowFitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
+        DecJNowFitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
         if modelData['Pierside'] == '1':
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
         self.logger.info('modelData: {0}'.format(modelData))
-        suc, mes, modelData = self.app.modeling.imagingHandler.getImage(modelData)
+        suc, mes, modelData = self.app.workerModeling.imagingHandler.getImage(modelData)
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -189,7 +188,7 @@ class ModelBase:
                 else:
                     # we are running in a normal Python environment
                     bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-                shutil.copyfile(bundle_dir + self.app.modeling.REF_PICTURE, modelData['ImagePath'])
+                shutil.copyfile(bundle_dir + self.app.workerModeling.REF_PICTURE, modelData['ImagePath'])
             else:
                 self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
                 fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
@@ -229,7 +228,7 @@ class ModelBase:
         modelData['Scale'] = 1.3
         modelData['Angle'] = 90
         modelData['TimeTS'] = 2.5
-        ra, dec = self.app.modeling.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+        ra, dec = self.app.workerModeling.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
         modelData['RaJNowSolved'] = ra
         modelData['DecJNowSolved'] = dec
         modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
@@ -239,10 +238,10 @@ class ModelBase:
 
     def solveImage(self, modelData, simulation):
         modelData['UseFitsHeaders'] = True
-        suc, mes, modelData = self.app.modeling.imagingHandler.solveImage(modelData)
+        suc, mes, modelData = self.app.workerModeling.imagingHandler.solveImage(modelData)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.app.modeling.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+            ra_sol_Jnow, dec_sol_Jnow = self.app.workerModeling.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
             modelData['RaJNowSolved'] = ra_sol_Jnow
             modelData['DecJNowSolved'] = dec_sol_Jnow
             modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
@@ -306,7 +305,7 @@ class ModelBase:
         self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
         modelData = {}
         modelData = self.prepareImaging(modelData, '')
-        modelData['base_dir_images'] = self.app.modeling.IMAGEDIR + '/platesolvesync'
+        modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')
         self.app.mountCommandQueue.put('AP')
@@ -314,7 +313,7 @@ class ModelBase:
             os.makedirs(modelData['BaseDirImages'])
         modelData['File'] = 'platesolvesync.fit'
         modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
-        modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(
+        modelData['LocalSiderealTimeFloat'] = self.app.workerModeling.transform.degStringToDecimal(
             self.app.mount.sidereal_time[0:9])
         modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
         modelData['DecJ2000'] = self.app.mount.data['DecJ2000']

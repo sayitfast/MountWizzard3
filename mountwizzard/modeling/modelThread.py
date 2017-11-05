@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-import copy
 import logging
 import os
 import platform
@@ -36,8 +35,10 @@ from modeling import modelStandard
 from modeling import modelBoost
 
 
-class Modeling(PyQt5.QtCore.QThread):
+class Modeling(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+    finished = PyQt5.QtCore.pyqtSignal()
+
     signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')
     signalModelRedraw = PyQt5.QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
 
@@ -47,13 +48,16 @@ class Modeling(PyQt5.QtCore.QThread):
     REF_PICTURE = '/model001.fit'
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CAPTUREFILE = 'modeling'
+
     CYCLESTATUSFAST = 1000
 
     def __init__(self, app):
         super().__init__()
+        self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
+
         # make main sources available
         self.app = app
-        self.isRunning = True
         # make windows imaging applications available
         if platform.system() == 'Windows':
             self.SGPro = sgpro.SGPro(self.app)
@@ -68,17 +72,243 @@ class Modeling(PyQt5.QtCore.QThread):
         # assign support classes
         self.analyse = Analyse(self.app)
         self.transform = self.app.mount.transform
-        self.modelPoints = modelPoints.ModelPoints(self.transform)
+        self.modelPoints = modelPoints.ModelPoints(self.app, self.transform)
         self.modelStandard = modelStandard.ModelStandard(self.app)
         self.modelBoost = modelBoost.ModelBoost(self.app)
-        # counter for thread timing
-        self.counter = 0
+
         self.chooserLock = threading.Lock()
         # finally initialize the class configuration
         self.cancel = False
         self.modelRun = False
         self.modelAnalyseData = []
         self.modelData = {}
+
+        self.commandDispatch = {
+            'RunBaseModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runBaseModel,
+                            'Method': self.modelStandard.runBaseModel,
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'RunRefinementModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runRefinementModel,
+                            'Method': self.modelStandard.runRefinementModel,
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'RunBoostModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runBoostModel,
+                            'Method': self.modelBoost.runModel,
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'PlateSolveSync':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_plateSolveSync,
+                            'Method': self.modelStandard.plateSolveSync,
+                            'Parameter': ['self.app.ui.checkSimulation.isChecked()'],
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'RunBatchModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runBatchModel,
+                            'Method': self.modelStandard.runBatchModel,
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'RunCheckModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runCheckModel,
+                            'Method': self.modelStandard.runBatchModel,
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'RunAllModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runAllModel,
+                            'Method': self.modelStandard.runAllModel,
+                            'Cancel': self.app.ui.btn_cancelModel
+                        }
+                    ]
+                },
+            'RunTimeChangeModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runTimeChangeModel,
+                            'Method': self.modelStandard.runTimeChangeModel,
+                            'Cancel': self.app.ui.btn_cancelAnalyseModel
+                        }
+                    ]
+                },
+            'RunHystereseModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runHystereseModel,
+                            'Method': self.modelStandard.runHystereseModel,
+                            'Cancel': self.app.ui.btn_cancelAnalyseModel
+                        }
+                    ]
+                },
+            'ClearAlignmentModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_clearAlignmentModel,
+                            'Method': self.modelStandard.clearAlignmentModel,
+                            'Cancel': self.app.ui.btn_cancelAnalyseModel
+                        }
+                    ]
+                },
+            'GenerateDSOPoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateDSOPoints,
+                            'Method': self.modelPoints.generateDSOPoints,
+                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                                          'int(float(self.app.ui.numberHoursDSO.value()))',
+                                          'int(float(self.app.ui.numberPointsDSO.value()))',
+                                          'int(float(self.app.ui.numberHoursPreview.value()))'
+                                          ]
+                        }
+                    ]
+                },
+            'GenerateDensePoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateDensePoints,
+                            'Method': self.modelPoints.generateDensePoints,
+                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                                          'self.app.ui.checkSortPoints.isChecked()'
+                                          ]
+                        }
+                    ]
+                },
+            'GenerateNormalPoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateNormalPoints,
+                            'Method': self.modelPoints.generateNormalPoints,
+                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                                          'self.app.ui.checkSortPoints.isChecked()'
+                                          ]
+                        }
+                    ]
+                },
+            'LoadBasePoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadBasePoints,
+                            'Method': self.modelPoints.loadBasePoints,
+                            'Parameter': ['self.app.ui.le_modelPointsFileName.text()']
+                        }
+                    ]
+                },
+            'LoadRefinementPoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateNormalPoints,
+                            'Method': self.modelPoints.loadRefinementPoints,
+                            'Parameter': ['self.app.ui.le_modelPointsFileName.text()',
+                                          'self.app.ui.checkSortPoints.isChecked()',
+                                          'self.app.ui.checkSortPoints.isChecked()']
+                        }
+                    ]
+                },
+            'GenerateGridPoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateGridPoints,
+                            'Method': self.modelPoints.generateGridPoints,
+                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                                          'self.app.ui.checkSortPoints.isChecked()',
+                                          'int(float(self.app.ui.numberGridPointsRow.value()))',
+                                          'int(float(self.app.ui.numberGridPointsCol.value()))',
+                                          'int(float(self.app.ui.altitudeMin.value()))',
+                                          'int(float(self.app.ui.altitudeMax.value()))']
+                        }
+                    ]
+                },
+            'GenerateBasePoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateBasePoints,
+                            'Method': self.modelPoints.generateBasePoints,
+                            'Parameter': ['float(self.app.ui.azimuthBase.value())',
+                                          'float(self.app.ui.altitudeBase.value())']
+                        }
+                    ]
+                },
+            'DeletePoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_deletePoints,
+                            'Method': self.modelPoints.deletePoints
+                        }
+                    ]
+                }
+            }
+        self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcher('PlateSolveSync'))
+        self.app.ui.btn_deletePoints.clicked.connect(lambda: self.commandDispatcher('DeletePoints'))
+        self.app.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.commandDispatcher('LoadRefinementPoints'))
+        self.app.ui.btn_loadBasePoints.clicked.connect(lambda: self.commandDispatcher('LoadBasePoints'))
+        self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
+        self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
+        self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
+        self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
+        self.app.ui.btn_generateDensePoints.clicked.connect(lambda: self.commandDispatcher('GenerateDensePoints'))
+        self.app.ui.btn_generateNormalPoints.clicked.connect(lambda: self.commandDispatcher('GenerateNormalPoints'))
+        self.app.ui.btn_generateGridPoints.clicked.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
+        self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
+        self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
+        self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
+        self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
+        self.app.ui.btn_generateBasePoints.clicked.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
+        self.app.ui.btn_runCheckModel.clicked.connect(lambda: self.commandDispatcher('RunCheckModel'))
+        self.app.ui.btn_runAllModel.clicked.connect(lambda: self.commandDispatcher('RunAllModel'))
+        self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcher('RunTimeChangeModel'))
+        self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcher('RunHystereseModel'))
+        self.app.ui.btn_runCheckModel.clicked.connect(lambda: self.commandDispatcher('RunCheckModel'))
+        self.app.ui.btn_runRefinementModel.clicked.connect(lambda: self.commandDispatcher('RunRefinementModel'))
+        self.app.ui.btn_runBoostModel.clicked.connect(lambda: self.commandDispatcher('RunBoostModel'))
+        self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcher('RunBatchModel'))
+        self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlignmentModel'))
+        self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
+        print('modeling init', PyQt5.QtCore.QThread.currentThread())
+
         # setting the config up
         self.initConfig()
         # run it first, to set all imaging applications up
@@ -147,153 +377,39 @@ class Modeling(PyQt5.QtCore.QThread):
         self.chooserLock.release()
 
     def run(self):
-        # start first time the loop for status updates
+        # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         self.getStatusFast()
-        while self.isRunning:
-            if not self.app.modelCommandQueue.empty():
-                command = self.app.modelCommandQueue.get()
-                if self.app.mount.mountHandler.connected:
-                    if self.imagingHandler.cameraConnected:
-                        self.cancel = False
-                        if command == 'RunBaseModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runBaseModel.setStyleSheet(self.BLUE)
-                            self.modelStandard.runBaseModel()
-                            self.app.ui.btn_runBaseModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'RunRefinementModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runRefinementModel.setStyleSheet(self.BLUE)
-                            self.modelStandard.runRefinementModel()
-                            self.app.ui.btn_runRefinementModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'RunBoostModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runBoostModel.setStyleSheet(self.BLUE)
-                            if self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
-                                self.modelBoost.runModel()
-                            self.app.ui.btn_runBoostModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'PlateSolveSync':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_plateSolveSync.setStyleSheet(self.BLUE)
-                            simulation = self.app.ui.checkSimulation.isChecked()
-                            self.modelStandard.plateSolveSync(simulation)
-                            self.app.ui.btn_plateSolveSync.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'RunBatchModel':
-                            self.app.ui.btn_runBatchModel.setStyleSheet(self.BLUE)
-                            self.modelStandard.runBatchModel()
-                            self.app.ui.btn_runBatchModel.setStyleSheet(self.DEFAULT)
-                        elif command == 'RunCheckModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runCheckModel.setStyleSheet(self.BLUE)
-                            num = self.app.mount.numberModelStars()
-                            if num > 2:
-                                self.modelStandard.runCheckModel()
-                            else:
-                                self.app.modelLogQueue.put('Run Analyse stopped, not BASE modeling available !\n')
-                                self.app.messageQueue.put('Run Analyse stopped, not BASE modeling available !\n')
-                            self.app.ui.btn_runCheckModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'RunAllModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runAllModel.setStyleSheet(self.BLUE)
-                            self.modelStandard.runAllModel()
-                            self.app.ui.btn_runAllModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'RunTimeChangeModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.BLUE)
-                            self.modelStandard.runTimeChangeModel()
-                            self.app.ui.btn_runTimeChangeModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'RunHystereseModel':
-                            self.app.imageWindow.disableExposures()
-                            self.app.ui.btn_runHystereseModel.setStyleSheet(self.BLUE)
-                            self.modelStandard.runHystereseModel()
-                            self.app.ui.btn_runHystereseModel.setStyleSheet(self.DEFAULT)
-                            self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
-                            self.app.imageWindow.enableExposures()
-                        elif command == 'ClearAlignmentModel':
-                            self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.BLUE)
-                            self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
-                            self.modelStandard.clearAlignmentModel()
-                            self.app.modelLogQueue.put('Model cleared!\n')
-                            self.app.ui.btn_clearAlignmentModel.setStyleSheet(self.DEFAULT)
-                    if command == 'GenerateDSOPoints':
-                        self.app.ui.btn_generateDSOPoints.setStyleSheet(self.BLUE)
-                        self.modelPoints.generateDSOPoints(int(float(self.app.ui.numberHoursDSO.value())),
-                                                           int(float(self.app.ui.numberPointsDSO.value())),
-                                                           int(float(self.app.ui.numberHoursPreview.value())),
-                                                           copy.copy(self.app.mount.ra),
-                                                           copy.copy(self.app.mount.dec))
-                        if self.app.ui.checkSortPoints.isChecked():
-                            self.modelPoints.sortPoints('refinement')
-                        if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                            self.modelPoints.deleteBelowHorizonLine()
-                        self.signalModelRedraw.emit(True)
-                        self.app.ui.btn_generateDSOPoints.setStyleSheet(self.DEFAULT)
-                    elif command == 'GenerateDensePoints':
-                        self.app.ui.btn_generateDensePoints.setStyleSheet(self.BLUE)
-                        self.modelPoints.generateDensePoints()
-                        if self.app.ui.checkSortPoints.isChecked():
-                            self.modelPoints.sortPoints('refinement')
-                        if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                            self.modelPoints.deleteBelowHorizonLine()
-                        self.signalModelRedraw.emit(True)
-                        self.app.ui.btn_generateDensePoints.setStyleSheet(self.DEFAULT)
-                    elif command == 'GenerateNormalPoints':
-                        self.app.ui.btn_generateNormalPoints.setStyleSheet(self.BLUE)
-                        self.modelPoints.generateNormalPoints()
-                        if self.app.ui.checkSortPoints.isChecked():
-                            self.modelPoints.sortPoints('refinement')
-                        if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                            self.modelPoints.deleteBelowHorizonLine()
-                        self.signalModelRedraw.emit(True)
-                        self.app.ui.btn_generateNormalPoints.setStyleSheet(self.DEFAULT)
-                    else:
-                        pass
-                if command == 'LoadBasePoints':
-                    self.modelPoints.loadBasePoints(self.app.ui.le_modelPointsFileName.text())
-                    self.signalModelRedraw.emit(True)
-                elif command == 'LoadRefinementPoints':
-                    self.modelPoints.loadRefinementPoints(self.app.ui.le_modelPointsFileName.text())
-                    if self.app.ui.checkSortPoints.isChecked():
-                        self.modelPoints.sortPoints('refinement')
-                    if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                        self.modelPoints.deleteBelowHorizonLine()
-                    self.signalModelRedraw.emit(True)
-                elif command == 'GenerateGridPoints':
-                    self.app.ui.btn_generateGridPoints.setStyleSheet(self.BLUE)
-                    self.modelPoints.generateGridPoints(int(float(self.app.ui.numberGridPointsRow.value())),
-                                                        int(float(self.app.ui.numberGridPointsCol.value())),
-                                                        int(float(self.app.ui.altitudeMin.value())),
-                                                        int(float(self.app.ui.altitudeMax.value())))
-                    if self.app.ui.checkSortPoints.isChecked():
-                        self.modelPoints.sortPoints('refinement')
-                    if self.app.ui.checkDeletePointsHorizonMask.isChecked():
-                        self.modelPoints.deleteBelowHorizonLine()
-                    self.signalModelRedraw.emit(True)
-                    self.app.ui.btn_generateGridPoints.setStyleSheet(self.DEFAULT)
-                elif command == 'GenerateBasePoints':
-                    self.modelPoints.generateBasePoints(float(self.app.ui.azimuthBase.value()),
-                                                        float(self.app.ui.altitudeBase.value()))
-                    self.signalModelRedraw.emit(True)
-                elif command == 'DeletePoints':
-                    self.modelPoints.deletePoints()
-                    self.signalModelRedraw.emit(True)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        if not self.isRunning:
+            self.isRunning = True
 
     def stop(self):
+        self._mutex.lock()
         self.isRunning = False
+        self._mutex.unlock()
+        self.finished.emit()
+
+    def commandDispatcher(self, command):
+        print('modeling dispatcher', PyQt5.QtCore.QThread.currentThread())
+        # if we have a command in dispatcher
+        if command in self.commandDispatch:
+            # running through all necessary commands
+            for work in self.commandDispatch[command]['Worker']:
+                # if we want to color a button, which one
+                if 'Button' in work:
+                    work['Button'].setStyleSheet(self.BLUE)
+                PyQt5.QtWidgets.QApplication.processEvents()
+                if 'Parameter' in work:
+                    parameter = []
+                    for p in work['Parameter']:
+                        parameter.append(eval(p))
+                    work['Method'](*parameter)
+                else:
+                    work['Method']()
+                time.sleep(1)
+                if 'Button' in work:
+                    work['Button'].setStyleSheet(self.DEFAULT)
+                self.signalModelRedraw.emit(True)
+                PyQt5.QtWidgets.QApplication.processEvents()
 
     def cancelModeling(self):
         if self.modelRun:
@@ -317,3 +433,4 @@ class Modeling(PyQt5.QtCore.QThread):
             self.signalModelConnected.emit(3)
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
+            PyQt5.QtWidgets.QApplication.processEvents()

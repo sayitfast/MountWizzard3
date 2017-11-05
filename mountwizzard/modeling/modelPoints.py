@@ -13,6 +13,7 @@
 ############################################################
 import logging
 import os
+import copy
 # for the sorting
 import operator
 
@@ -20,7 +21,8 @@ import operator
 class ModelPoints:
     logger = logging.getLogger(__name__)                                                                                    # logging enabling
 
-    def __init__(self, transform):
+    def __init__(self, app, transform):
+        self.app = app
         self.transform = transform
         self.horizonPoints = []                                                                                             # point out of file for showing the horizon
         self.BasePoints = []                                                                                                # base point out of a file for modeling
@@ -160,18 +162,28 @@ class ModelPoints:
     def loadBasePoints(self, filename):
         self.BasePoints, msg = self.loadModelPoints(filename, 'base')
 
-    def loadRefinementPoints(self, filename):
+    def loadRefinementPoints(self, filename, horizonMask, sortPoints):
         self.RefinementPoints, msg = self.loadModelPoints(filename, 'refinement')
+        if horizonMask:
+            self.deleteBelowHorizonLine()
+        if sortPoints:
+            self.sortPoints('refinement')
 
-    def generateDSOPoints(self, hours, numPoints, hoursPrev, ra, dec):                                                      # modeling points along dso path
+    def generateDSOPoints(self, horizonMask, hours, numPoints, hoursPrev):                                                      # modeling points along dso path
+        if 'RaJNow' not in self.app.mount.data:
+            return
         self.RefinementPoints = []                                                                                          # clear point list
+        ra = copy.copy(self.app.mount.data['RaJNow'])
+        dec = copy.copy(self.app.mount.data['DecJNow'])
         for i in range(0, numPoints):                                                                                       # round modeling point from actual az alt position 24 hours
             ra = ra - float(i) * hours / numPoints - hoursPrev
             az, alt = self.transform.transformERFA(ra, dec, 1)                                                             # transform to az alt
             if alt > 0:                                                                                                     # we only take point alt > 0
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
+        if horizonMask:
+            self.deleteBelowHorizonLine()
 
-    def generateDensePoints(self):                                                                                          # generate pointcloud in greater circles of sky
+    def generateDensePoints(self, horizonMask, sortPoints):                                                                 # generate pointcloud in greater circles of sky
         west = []                                                                                                           # no sorting, point will be for west and east prepared
         east = []                                                                                                           #
         for dec in range(-10, 90, 10):                                                                                      # range, actually referenced from european situation
@@ -189,8 +201,12 @@ class ModelPoints:
                     else:
                         west.append((az, alt))                                                                              # add to west
         self.RefinementPoints = west + east
+        if horizonMask:
+            self.deleteBelowHorizonLine()
+        if sortPoints:
+            self.sortPoints('refinement')
 
-    def generateNormalPoints(self):
+    def generateNormalPoints(self, horizonMask, sortPoints):
         west = []                                                                                                           # no sorting, point will be for west and east prepared
         east = []                                                                                                           #
         for dec in range(-15, 90, 15):                                                                                      # range, actually referenced from european situation
@@ -206,12 +222,20 @@ class ModelPoints:
                     else:
                         west.append((az, alt))                                                                              # add to west
         self.RefinementPoints = west + east
+        if horizonMask:
+            self.deleteBelowHorizonLine()
+        if sortPoints:
+            self.sortPoints('refinement')
 
-    def generateGridPoints(self, row, col, altMin, altMax):                                                                                           # modeling points along dso path
+    def generateGridPoints(self, horizonMask, sortPoints, row, col, altMin, altMax):                                                                                           # modeling points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
         for az in range(5, 360, int(360 / col)):                                                                            # make point for all azimuth
             for alt in range(altMin, altMax + 1, int((altMax - altMin) / (row - 1))):                                       # make point for all altitudes
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
+        if horizonMask:
+            self.deleteBelowHorizonLine()
+        if sortPoints:
+            self.sortPoints('refinement')
 
     def generateBasePoints(self, az, alt):                                                                                           # do base point equally distributed
         self.BasePoints = []

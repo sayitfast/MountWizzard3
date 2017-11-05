@@ -145,7 +145,16 @@ class MountWizzardApp(widget.MwWidget):
             self.workerUpload.finished.connect(self.workerUploadStop)
             self.threadUpload.start()
 
-        self.modeling = modelThread.Modeling(self)
+        self.workerModeling = modelThread.Modeling(self)
+        self.threadModeling = PyQt5.QtCore.QThread()
+        self.workerModeling.moveToThread(self.threadModeling)
+        # noinspection PyUnresolvedReferences
+        self.threadModeling.started.connect(self.workerModeling.run)
+        self.workerModeling.finished.connect(self.workerModelingStop)
+        self.workerModeling.signalModelConnected.connect(self.setCameraPlateStatus)
+        # thread start will be done when enabled
+        self.threadModeling.start()
+
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
@@ -153,13 +162,13 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.start()
         if platform.system() == 'Windows':
             self.checkASCOM()
-        self.modeling.signalModelConnected.connect(self.setCameraPlateStatus)
-        self.modeling.start()
+
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
         self.initConfig()
         self.mappingFunctions()
         self.checkPlatformDependableMenus()
+        print('main app', PyQt5.QtCore.QThread.currentThread())
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
 
@@ -239,6 +248,10 @@ class MountWizzardApp(widget.MwWidget):
         self.threadUpload.quit()
         self.threadUpload.wait()
 
+    def workerModelingStop(self):
+        self.threadModeling.quit()
+        self.threadModeling.wait()
+
     def enableDisableRemoteAccess(self):
         if self.ui.checkRemoteAccess.isChecked():
             self.messageQueue.put('Remote Access enabled')
@@ -284,13 +297,8 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
             self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.mountCommandQueue.put('SetRefractionParameter'))
-        self.ui.btn_runBaseModel.clicked.connect(lambda: self.modelCommandQueue.put('RunBaseModel'))
-        self.ui.btn_cancelModel.clicked.connect(self.modeling.cancelModeling)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(self.modeling.cancelAnalyseModeling)
-        self.ui.btn_runRefinementModel.clicked.connect(lambda: self.modelCommandQueue.put('RunRefinementModel'))
-        self.ui.btn_runBoostModel.clicked.connect(lambda: self.modelCommandQueue.put('RunBoostModel'))
-        self.ui.btn_runBatchModel.clicked.connect(lambda: self.modelCommandQueue.put('RunBatchModel'))
-        self.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.modelCommandQueue.put('ClearAlignmentModel'))
+        self.ui.btn_cancelModel.clicked.connect(self.workerModeling.cancelModeling)
+        self.ui.btn_cancelAnalyseModel.clicked.connect(self.workerModeling.cancelAnalyseModeling)
         self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -302,11 +310,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.mountCommandQueue.put('RunTargetRMSAlignment'))
         self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.mountCommandQueue.put('DeleteWorstPoint'))
-        self.ui.btn_plateSolveSync.clicked.connect(lambda: self.modelCommandQueue.put('PlateSolveSync'))
-        self.ui.btn_deletePoints.clicked.connect(lambda: self.modelCommandQueue.put('DeletePoints'))
         self.ui.btn_flipMount.clicked.connect(lambda: self.mountCommandQueue.put('FLIP'))
-        self.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.modelCommandQueue.put('LoadRefinementPoints'))
-        self.ui.btn_loadBasePoints.clicked.connect(lambda: self.modelCommandQueue.put('LoadBasePoints'))
         self.ui.btn_saveBackupModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveBackupModel'))
         self.ui.btn_loadBackupModel.clicked.connect(lambda: self.mountCommandQueue.put('LoadBackupModel'))
         self.ui.btn_saveSimpleModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveSimpleModel'))
@@ -319,33 +323,16 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_loadDSO1Model.clicked.connect(lambda: self.mountCommandQueue.put('LoadDSO1Model'))
         self.ui.btn_saveDSO2Model.clicked.connect(lambda: self.mountCommandQueue.put('SaveDSO2Model'))
         self.ui.btn_loadDSO2Model.clicked.connect(lambda: self.mountCommandQueue.put('LoadDSO2Model'))
-        self.ui.btn_generateDSOPoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
-        self.ui.numberHoursDSO.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
-        self.ui.numberPointsDSO.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
-        self.ui.numberHoursPreview.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateDSOPoints'))
-        self.ui.btn_generateDensePoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateDensePoints'))
-        self.ui.btn_generateNormalPoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateNormalPoints'))
-        self.ui.btn_generateGridPoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
-        self.ui.numberGridPointsRow.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
-        self.ui.numberGridPointsCol.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
-        self.ui.altitudeMin.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
-        self.ui.altitudeMax.valueChanged.connect(lambda: self.modelCommandQueue.put('GenerateGridPoints'))
-        self.ui.btn_generateBasePoints.clicked.connect(lambda: self.modelCommandQueue.put('GenerateBasePoints'))
-        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
-        self.ui.btn_runAllModel.clicked.connect(lambda: self.modelCommandQueue.put('RunAllModel'))
-        self.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.modelCommandQueue.put('RunTimeChangeModel'))
-        self.ui.btn_runHystereseModel.clicked.connect(lambda: self.modelCommandQueue.put('RunHystereseModel'))
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
-        self.ui.btn_runCheckModel.clicked.connect(lambda: self.modelCommandQueue.put('RunCheckModel'))
         self.ui.checkRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
         # switch on and off INDI subsystem by setting INDICamera available to True (than it will occur in Imaging as well
-        if not self.modeling.INDICamera.appAvailable:
+        if not self.workerModeling.INDICamera.appAvailable:
             self.ui.checkEnableINDI.setChecked(False)
             self.ui.settingsTabWidget.removeTab(3)
         if self.ui.checkEnableINDI.isChecked():
@@ -364,11 +351,11 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put('Shutdown')
 
     def showModelErrorPolar(self):
-        if not self.modeling.modelData:
+        if not self.workerModeling.modelData:
             return
         data = dict()
-        for i in range(0, len(self.modeling.modelData)):
-            for (keyData, valueData) in self.modeling.modelData[i].items():
+        for i in range(0, len(self.workerModeling.modelData)):
+            for (keyData, valueData) in self.workerModeling.modelData[i].items():
                 if keyData == 'azimuth':
                     return
                 if keyData in data:
@@ -649,7 +636,7 @@ class MountWizzardApp(widget.MwWidget):
     def saveConfigData(self):
         self.storeConfig()
         self.mount.storeConfig()
-        self.modeling.storeConfig()
+        self.workerModeling.storeConfig()
         if platform.system() == 'Windows':
             self.workerAscomEnvironment.storeConfig()
             self.workerAscomDome.storeConfig()

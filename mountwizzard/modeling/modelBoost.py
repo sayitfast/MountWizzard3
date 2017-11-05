@@ -80,9 +80,9 @@ class Image(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.queueImage.empty():
                 modelData = self.queueImage.get()
-                modelData['File'] = self.main.app.modeling.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
+                modelData['File'] = self.main.app.workerModeling.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
                 modelData['LocalSiderealTime'] = self.main.app.mount.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.main.app.modeling.transform.degStringToDecimal(self.main.app.mount.data['LocalSiderealTime'][0:9])
+                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.mount.data['LocalSiderealTime'][0:9])
                 modelData['RaJ2000'] = self.main.app.mount.data['RaJ2000']
                 modelData['DecJ2000'] = self.main.app.mount.data['DecJ2000']
                 modelData['RaJNow'] = self.main.app.mount.data['RaJNow']
@@ -92,7 +92,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelData['RefractionPressure'] = self.main.app.mount.data['RefractionPressure']
                 self.main.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                 while True:
-                    suc, mes = self.main.app.modeling.SGPro.SgGetDeviceStatus('Camera')
+                    suc, mes = self.main.app.workerModeling.SGPro.SgGetDeviceStatus('Camera')
                     if suc and mes == 'IDLE':
                             break
                 suc, mes, imagepath = self.main.capturingImage(modelData, modelData['Simulation'])
@@ -180,10 +180,10 @@ class ModelBoost(ModelBase):
         # self.threadPlatesolve.start()
 
     def capturingImage(self, modelData, simulation):
-        if self.app.modeling.cancel:
+        if self.app.workerModeling.cancel:
             self.logger.info('Modeling cancelled while capturing image')
             return False, 'Modeling cancelled by user', modelData
-        suc, mes, guid = self.app.modeling.SGPro.SgCaptureImage(binningMode=modelData['Binning'],
+        suc, mes, guid = self.app.workerModeling.SGPro.SgCaptureImage(binningMode=modelData['Binning'],
                                                                 exposureLength=modelData['Exposure'],
                                                                 iso=str(modelData['Iso']),
                                                                 gain=modelData['GainValue'],
@@ -204,7 +204,7 @@ class ModelBoost(ModelBase):
             time.sleep(0.5)
             # storing the mount and environment data
             modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime'][0:9]
-            modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(modelData['LocalSiderealTime'])
+            modelData['LocalSiderealTimeFloat'] = self.app.workerModeling.transform.degStringToDecimal(modelData['LocalSiderealTime'])
             modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
             modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
             modelData['RaJNow'] = self.app.mount.data['RaJNow']
@@ -216,27 +216,27 @@ class ModelBoost(ModelBase):
             while True:
                 PyQt5.QtWidgets.QApplication.processEvents()
                 time.sleep(0.1)
-                suc, mes = self.app.modeling.SGPro.SgGetDeviceStatus('Camera')
+                suc, mes = self.app.workerModeling.SGPro.SgGetDeviceStatus('Camera')
                 print(mes)
                 if suc:
                     if mes != 'INTEGRATING':
                         break
-            self.app.modeling.modelBoost.workerSlewpoint.signalSlewing.emit()
+            self.app.workerModeling.modelBoost.workerSlewpoint.signalSlewing.emit()
             # waiting for downloading and storing the image as fits file
             # todo: what if there is no fits file ?
             while True:
                 PyQt5.QtWidgets.QApplication.processEvents()
-                suc, modelData['ImagePath'] = self.app.modeling.SGPro.SgGetImagePath(guid)
+                suc, modelData['ImagePath'] = self.app.workerModeling.SGPro.SgGetImagePath(guid)
                 if suc:
                     break
                 else:
                     time.sleep(0.5)
             # I got a fits file, than i have to add some data
             LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]
-            RaJ2000FitsHeader = self.app.modeling.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
-            DecJ2000FitsHeader = self.app.modeling.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
-            RaJNowFitsHeader = self.app.modeling.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
-            DecJNowFitsHeader = self.app.modeling.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
+            RaJ2000FitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
+            DecJ2000FitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
+            RaJNowFitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
+            DecJNowFitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
             if modelData['Pierside'] == '1':
                 pierside_fits_header = 'E'
             else:
@@ -249,7 +249,7 @@ class ModelBoost(ModelBase):
                 else:
                     # we are running in a normal Python environment
                     bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-                shutil.copyfile(bundle_dir + self.app.modeling.REF_PICTURE, modelData['ImagePath'])
+                shutil.copyfile(bundle_dir + self.app.workerModeling.REF_PICTURE, modelData['ImagePath'])
             else:
                 self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
                 fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
@@ -298,12 +298,12 @@ class ModelBoost(ModelBase):
         self.app.mount.mountHandler.sendCommand('newalig')
         self.app.modelLogQueue.put('#BG{0} - \tOpening Calculation\n'.format(self.timeStamp()))
         for i in range(0, len(modelData['Index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.modeling.transform.decimalToDegree(modelData['RaJNow'][i], False, True),
-                                                              self.app.modeling.transform.decimalToDegree(modelData['DecJNow'][i], True, False),
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.workerModeling.transform.decimalToDegree(modelData['RaJNow'][i], False, True),
+                                                              self.app.workerModeling.transform.decimalToDegree(modelData['DecJNow'][i], True, False),
                                                               modelData['Pierside'][i],
-                                                              self.app.modeling.transform.decimalToDegree(modelData['RaJNowSolved'][i], False, True),
-                                                              self.app.modeling.transform.decimalToDegree(modelData['DecJNowSolved'][i], True, False),
-                                                              self.app.modeling.transform.decimalToDegree(modelData['LocalSiderealTimeFloat'][i], False, True))
+                                                              self.app.workerModeling.transform.decimalToDegree(modelData['RaJNowSolved'][i], False, True),
+                                                              self.app.workerModeling.transform.decimalToDegree(modelData['DecJNowSolved'][i], True, False),
+                                                              self.app.workerModeling.transform.decimalToDegree(modelData['LocalSiderealTimeFloat'][i], False, True))
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
@@ -320,18 +320,20 @@ class ModelBoost(ModelBase):
 
     # noinspection PyUnresolvedReferences
     def runModel(self):
+        if not self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
+            return
         settlingTime, directory = self.setupRunningParameters()
-        if len(self.app.modeling.modelPoints.RefinementPoints) > 0:
+        if len(self.app.workerModeling.modelPoints.RefinementPoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            self.modelData = self.runBoost(self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
+            self.modelData = self.runBoost(self.app.workerModeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_boost.dat'
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.app.modeling.analyse.saveData(self.modelData, name)
+                self.app.workerModeling.analyse.saveData(self.modelData, name)
                 self.app.mount.saveRefinementModel()
-                # if not self.app.modeling.cancel:
+                # if not self.app.workerModeling.cancel:
                 self.runBatchModel(self.modelData)
         else:
             self.logger.warning('There are no Refinement Points to modeling')
@@ -353,7 +355,7 @@ class ModelBoost(ModelBase):
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')
         self.app.mountCommandQueue.put('AP')
-        self.app.modeling.modelRun = True
+        self.app.workerModeling.modelRun = True
         self.threadSlewpoint.start()
         self.threadImage.start()
         self.threadPlatesolve.start()
@@ -373,15 +375,15 @@ class ModelBoost(ModelBase):
         self.timeStart = time.time()
         self.hasFinished = False
         self.workerSlewpoint.signalSlewing.emit()
-        while self.app.modeling.modelRun:
+        while self.app.workerModeling.modelRun:
             PyQt5.QtWidgets.QApplication.processEvents()
             # stop loop if cancelled
-            if self.app.modeling.cancel:
+            if self.app.workerModeling.cancel:
                 break
             # stop loop if finished
             if self.hasFinished:
                 break
-        if self.app.modeling.cancel:
+        if self.app.workerModeling.cancel:
             # clearing the gui
             self.app.modelLogQueue.put('status-- of --')
             self.app.modelLogQueue.put('percent0')
@@ -396,7 +398,7 @@ class ModelBoost(ModelBase):
         self.workerPlatesolve.stop()
         self.threadPlatesolve.quit()
         self.threadPlatesolve.wait()
-        self.app.modeling.modelRun = False
+        self.app.workerModeling.modelRun = False
         while not self.solvedPointsQueue.empty():
             modelData = self.solvedPointsQueue.get()
             # clean up intermediate data

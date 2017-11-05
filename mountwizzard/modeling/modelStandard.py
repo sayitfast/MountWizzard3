@@ -35,31 +35,32 @@ class ModelStandard(ModelBase):
             self.clearAlignmentModel()
             self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime, directory = self.setupRunningParameters()
-        if len(self.app.modeling.modelPoints.BasePoints) > 0:
+        if len(self.app.workerModeling.modelPoints.BasePoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            self.modelData = self.runModel('Base', self.app.modeling.modelPoints.BasePoints, directory, settlingTime, simulation, keepImages)
+            self.modelData = self.runModel('Base', self.app.workerModeling.modelPoints.BasePoints, directory, settlingTime, simulation, keepImages)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_base.dat'
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.app.modeling.analyse.saveData(self.modelData, name)
+                self.app.workerModeling.analyse.saveData(self.modelData, name)
                 self.app.mount.saveBaseModel()
         else:
             self.logger.warning('There are no Basepoints for modeling')
 
     def runRefinementModel(self):
+        print('refinement ', PyQt5.QtCore.QThread.currentThread())
         num = self.app.mount.numberModelStars()
         simulation = self.app.ui.checkSimulation.isChecked()
         if num > 2 or simulation:
             settlingTime, directory = self.setupRunningParameters()
-            if len(self.app.modeling.modelPoints.RefinementPoints) > 0:
+            if len(self.app.workerModeling.modelPoints.RefinementPoints) > 0:
                 if self.app.ui.checkKeepRefinement.isChecked():
                     self.app.mount.loadRefinementModel()
                 else:
                     self.app.mount.loadBaseModel()
                 keepImages = self.app.ui.checkKeepImages.isChecked()
-                refinePoints = self.runModel('Refinement', self.app.modeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
+                refinePoints = self.runModel('Refinement', self.app.workerModeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
                 if self.app.ui.checkKeepRefinement.isChecked():
                     for i in range(0, len(refinePoints)):
                         refinePoints[i]['Index'] += len(self.modelData)
@@ -70,7 +71,7 @@ class ModelStandard(ModelBase):
                 name = directory + '_refinement.dat'
                 if len(self.modelData) > 0:
                     self.app.ui.le_analyseFileName.setText(name)
-                    self.app.modeling.analyse.saveData(self.modelData, name)
+                    self.app.workerModeling.analyse.saveData(self.modelData, name)
                     self.app.mount.saveRefinementModel()
             else:
                 self.logger.warning('There are no Refinement Points to modeling')
@@ -80,15 +81,15 @@ class ModelStandard(ModelBase):
 
     def runCheckModel(self):
         settlingTime, directory = self.setupRunningParameters()
-        points = self.app.modeling.modelPoints.BasePoints + self.app.modeling.modelPoints.RefinementPoints
+        points = self.app.workerModeling.modelPoints.BasePoints + self.app.workerModeling.modelPoints.RefinementPoints
         if len(points) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            self.app.modeling.modelAnalyseData = self.runModel('Check', points, directory, settlingTime, simulation, keepImages)
+            self.app.workerModeling.modelAnalyseData = self.runModel('Check', points, directory, settlingTime, simulation, keepImages)
             name = directory + '_check.dat'
-            if len(self.app.modeling.modelAnalyseData) > 0:
+            if len(self.app.workerModeling.modelAnalyseData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.app.modeling.analyse.saveData(self.app.modeling.modelAnalyseData, name)
+                self.app.workerModeling.analyse.saveData(self.app.workerModeling.modelAnalyseData, name)
         else:
             self.logger.warning('There are no Refinement or Base Points to modeling')
 
@@ -104,11 +105,11 @@ class ModelStandard(ModelBase):
                            PyQt5.QtWidgets.QGraphicsTextItem(''), True))
         simulation = self.app.ui.checkSimulation.isChecked()
         keepImages = self.app.ui.checkKeepImages.isChecked()
-        self.app.modeling.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime, simulation, keepImages)
+        self.app.workerModeling.modelAnalyseData = self.runModel('TimeChange', points, directory, settlingTime, simulation, keepImages)
         name = directory + '_timechange.dat'
-        if len(self.app.modeling.modelAnalyseData) > 0:
+        if len(self.app.workerModeling.modelAnalyseData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
-            self.app.modeling.analyse.saveData(self.app.modeling.modelAnalyseData, name)
+            self.app.workerModeling.analyse.saveData(self.app.workerModeling.modelAnalyseData, name)
 
     def runHystereseModel(self):
         waitingTime, directory = self.setupRunningParameters()
@@ -123,12 +124,12 @@ class ModelStandard(ModelBase):
             points.append((az2, alt2, PyQt5.QtWidgets.QGraphicsTextItem(''), False))
         simulation = self.app.ui.checkSimulation.isChecked()
         keepImages = self.app.ui.checkKeepImages.isChecked()
-        self.app.modeling.modelAnalyseData = self.runModel('Hysterese', points, directory, waitingTime, simulation, keepImages)
+        self.app.workerModeling.modelAnalyseData = self.runModel('Hysterese', points, directory, waitingTime, simulation, keepImages)
         name = directory + '_hysterese.dat'
         self.app.ui.le_analyseFileName.setText(name)
-        if len(self.app.modeling.modelAnalyseData) > 0:
+        if len(self.app.workerModeling.modelAnalyseData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
-            self.app.modeling.analyse.saveData(self.app.modeling.modelAnalyseData, name)
+            self.app.workerModeling.analyse.saveData(self.app.workerModeling.modelAnalyseData, name)
 
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, directory, settlingTime, simulation=False, keepImages=False):
@@ -152,12 +153,12 @@ class ModelStandard(ModelBase):
         timeStart = time.time()
         # here starts the real model running cycle
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):
-            self.app.modeling.modelRun = True
+            self.app.workerModeling.modelRun = True
             modelData['Azimuth'] = p_az
             modelData['Altitude'] = p_alt
             if p_item.isVisible():
                 # todo: put the code to multi thread modeling
-                if self.app.modeling.cancel:
+                if self.app.workerModeling.cancel:
                     self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
                     # tracking should be on after canceling the modeling
                     self.app.mountCommandQueue.put('AP')
@@ -186,9 +187,9 @@ class ModelStandard(ModelBase):
                     self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))
                 self.app.modelLogQueue.put('\n')
             if p_item.isVisible() and p_solve:
-                modelData['File'] = self.app.modeling.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
+                modelData['File'] = self.app.workerModeling.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
                 modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.app.modeling.transform.degStringToDecimal(self.app.mount.data['LocalSiderealTime'][0:9])
+                modelData['LocalSiderealTimeFloat'] = self.app.workerModeling.transform.degStringToDecimal(self.app.mount.data['LocalSiderealTime'][0:9])
                 modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
                 modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
                 modelData['RaJNow'] = self.app.mount.data['RaJNow']
@@ -216,6 +217,7 @@ class ModelStandard(ModelBase):
                                 numCheckPoints += 1
                                 results.append(copy.copy(modelData))
                                 p_item.setVisible(False)
+                                PyQt5.QtWidgets.QApplication.processEvents()
                             else:
                                 self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
                                 self.logger.info('raE:{0} decE:{1} star could not be added'.format(modelData['RaError'], modelData['DecError']))
@@ -234,5 +236,5 @@ class ModelStandard(ModelBase):
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
         self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'.format(self.timeStamp(), modeltype, numCheckPoints))
-        self.app.modeling.modelRun = False
+        self.app.workerModeling.modelRun = False
         return results

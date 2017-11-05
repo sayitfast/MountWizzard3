@@ -72,7 +72,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadComets,
                             'Method': self.downloadFile,
-                            'Parameter': [self.COMETS, self.TARGET_DIR + self.COMETS_FILE],
+                            'Parameter': ['self.COMETS',
+                                          'self.TARGET_DIR + self.COMETS_FILE'],
                             'Checkbox': self.app.ui.checkComets
                         }
                     ]
@@ -92,7 +93,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadSpacestations,
                             'Method': self.downloadFile,
-                            'Parameter': [self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE],
+                            'Parameter': ['self.SPACESTATIONS',
+                                          'self.TARGET_DIR + self.SPACESTATIONS_FILE'],
                             'Checkbox': self.app.ui.checkTLE
                         }
                     ]
@@ -103,7 +105,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadSatbrighest,
                             'Method': self.downloadFile,
-                            'Parameter': [self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE],
+                            'Parameter': ['self.SATBRIGHTEST',
+                                          'self.TARGET_DIR + self.SATBRIGHTEST_FILE'],
                             'Checkbox': self.app.ui.checkTLE
                         }
                     ]
@@ -114,7 +117,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadAsteroidsMPC5000,
                             'Method': self.downloadFile,
-                            'Parameter': [self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Parameter': ['self.ASTEROIDS_MPC5000',
+                                          'self.TARGET_DIR + self.ASTEROIDS_FILE'],
                             'Checkbox': self.app.ui.checkAsteroids
                         }
                     ]
@@ -125,7 +129,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadAsteroidsNEA,
                             'Method': self.downloadFile,
-                            'Parameter': [self.ASTEROIDS_NEA, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Parameter': ['self.ASTEROIDS_NEA',
+                                          'self.TARGET_DIR + self.ASTEROIDS_FILE'],
                             'Checkbox': self.app.ui.checkAsteroids
                         }
                     ]
@@ -136,7 +141,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadAsteroidsPHA,
                             'Method': self.downloadFile,
-                            'Parameter': [self.ASTEROIDS_PHA, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Parameter': ['self.ASTEROIDS_PHA',
+                                          'self.TARGET_DIR + self.ASTEROIDS_FILE'],
                             'Checkbox': self.app.ui.checkAsteroids
                         }
                     ]
@@ -147,7 +153,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadAsteroidsTNO,
                             'Method': self.downloadFile,
-                            'Parameter': [self.ASTEROIDS_TNO, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Parameter': ['self.ASTEROIDS_TNO',
+                                          'self.TARGET_DIR + self.ASTEROIDS_FILE'],
                             'Checkbox': self.app.ui.checkAsteroids
                         }]
                 },
@@ -157,12 +164,14 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadEarthrotation,
                             'Method': self.downloadFile,
-                            'Parameter': [self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE]
+                            'Parameter': ['self.UTC_1',
+                                          'self.TARGET_DIR + self.UTC_1_FILE']
                         },
                         {
                             'Button': self.app.ui.btn_downloadEarthrotation,
                             'Method': self.downloadFile,
-                            'Parameter': [self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE],
+                            'Parameter': ['self.UTC_2',
+                                          'self.TARGET_DIR + self.UTC_2_FILE'],
                             'Checkbox': self.app.ui.checkEarthrotation
                         }
                     ]
@@ -173,41 +182,47 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_downloadEarthrotation,
                             'Method': self.downloadFile,
-                            'Parameter': [self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE]
+                            'Parameter': ['self.UTC_1',
+                                          'self.TARGET_DIR + self.UTC_1_FILE']
                         },
                         {
                             'Button': self.app.ui.btn_downloadEarthrotation,
                             'Method': self.downloadFile,
-                            'Parameter': [self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE],
+                            'Parameter': ['self.UTC_2',
+                                          'self.TARGET_DIR + self.UTC_2_FILE'],
                             'Checkbox': self.app.ui.checkEarthrotation
                         },
                         {
                             'Button': self.app.ui.btn_downloadSpacestations,
                             'Method': self.downloadFile,
-                            'Parameter': [self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE],
+                            'Parameter': ['self.SPACESTATIONS',
+                                          'self.TARGET_DIR + self.SPACESTATIONS_FILE'],
                             'Checkbox': self.app.ui.checkTLE
                         },
                         {
                             'Button': self.app.ui.btn_downloadSatbrighest,
                             'Method': self.downloadFile,
-                            'Parameter': [self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE],
+                            'Parameter': ['self.SATBRIGHTEST',
+                                          'self.TARGET_DIR + self.SATBRIGHTEST_FILE'],
                             'Checkbox': self.app.ui.checkTLE
                         },
                         {
                             'Button': self.app.ui.btn_downloadComets,
                             'Method': self.downloadFile,
-                            'Parameter': [self.COMETS, self.TARGET_DIR + self.COMETS_FILE],
+                            'Parameter': ['self.COMETS',
+                                          'self.TARGET_DIR + self.COMETS_FILE'],
                             'Checkbox': self.app.ui.checkComets
                         },
                         {
                             'Button': self.app.ui.btn_downloadAsteroidsMPC5000,
                             'Method': self.downloadFile,
-                            'Parameter': [self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Parameter': ['self.ASTEROIDS_MPC5000',
+                                          'self.TARGET_DIR + self.ASTEROIDS_FILE'],
                             'Checkbox': self.app.ui.checkAsteroids
                         }
                     ]
                 }
-        }
+            }
         self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcher('EARTHROTATION'))
         self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcher('SPACESTATIONS'))
         self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcher('SATBRIGHTEST'))
@@ -250,15 +265,6 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-        '''
-        elif command == 'ALL':
-            self.app.ui.btn_downloadAll.setStyleSheet(self.BLUE)
-            self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
-            self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
-            self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
-            self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.BLUE)
-            self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
-        '''
 
     def stop(self):
         self._mutex.lock()
@@ -276,11 +282,12 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                     work['Button'].setStyleSheet(self.BLUE)
                 PyQt5.QtWidgets.QApplication.processEvents()
                 if 'Parameter' in work:
-                    parameter = work['Parameter']
+                    parameter = []
+                    for p in work['Parameter']:
+                        parameter.append(eval(p))
                     work['Method'](*parameter)
                 else:
                     work['Method']()
-                time.sleep(1)
                 if 'Checkbox' in work:
                     work['Checkbox'].setChecked(True)
                 if 'Button' in work:
