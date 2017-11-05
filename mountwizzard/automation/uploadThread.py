@@ -64,16 +64,113 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         self.appName = ''
         self.appInstallPath = ''
         self.appExe = 'GmQCIv2.exe'
-        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.app.commandDataQueue.put('EARTHROTATION'))
-        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.app.commandDataQueue.put('SPACESTATIONS'))
-        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.app.commandDataQueue.put('SATBRIGHTEST'))
-        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_MPC5000'))
-        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_NEA'))
-        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_PHA'))
-        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.app.commandDataQueue.put('ASTEROIDS_TNO'))
-        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.app.commandDataQueue.put('COMETS'))
-        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.app.commandDataQueue.put('ALL'))
-        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.app.commandDataQueue.put('UPLOADMOUNT'))
+        # defining the command dispatcher
+        self.commandDispatch = {
+            'COMETS':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadComets,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.COMETS, self.TARGET_DIR + self.COMETS_FILE],
+                            'Checkbox': self.app.ui.checkComets
+                        }]
+                },
+            'UPLOADMOUNT':
+                {
+                    'Worker': [{
+                        'Button': self.app.ui.btn_uploadMount,
+                        'Method': self.uploadMount
+                    }]
+                },
+            'SPACESTATIONS':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadSpacestations,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE],
+                            'Checkbox': self.app.ui.checkTLE
+                        }]
+                },
+            'SATBRIGHTEST':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadSatbrighest,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE],
+                            'Checkbox': self.app.ui.checkTLE
+                        }]
+                },
+            'ASTEROIDS_MPC5000':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadAsteroidsMPC5000,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Checkbox': self.app.ui.checkAsteroids
+                        }]
+                },
+            'ASTEROIDS_NEA':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadAsteroidsNEA,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.ASTEROIDS_NEA, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Checkbox': self.app.ui.checkAsteroids
+                        }]
+                },
+            'ASTEROIDS_PHA':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadAsteroidsPHA,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.ASTEROIDS_PHA, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Checkbox': self.app.ui.checkAsteroids
+                        }]
+                },
+            'ASTEROIDS_TNO':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadAsteroidsTNO,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.ASTEROIDS_TNO, self.TARGET_DIR + self.ASTEROIDS_FILE],
+                            'Checkbox': self.app.ui.checkAsteroids
+                        }]
+                },
+            'EARTHROTATION':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_downloadEarthrotation,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE]
+                        },
+                        {
+                            'Button': self.app.ui.btn_downloadEarthrotation,
+                            'Method': self.downloadFile,
+                            'Parameter': [self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE],
+                            'Checkbox': self.app.ui.checkEarthrotation
+                        }
+                    ]
+                }
+        }
+        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcher('EARTHROTATION'))
+        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcher('SPACESTATIONS'))
+        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcher('SATBRIGHTEST'))
+        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_MPC5000'))
+        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_NEA'))
+        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_PHA'))
+        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_TNO'))
+        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.commandDispatcher('COMETS'))
+        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.commandDispatcher('ALL'))
+        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.commandDispatcher('UPLOADMOUNT'))
+
         self.checkApplication()
         self.TARGET_DIR = self.appInstallPath
         self.initConfig()
@@ -105,94 +202,61 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if not self.app.commandDataQueue.empty():
-                command = self.app.commandDataQueue.get()
-                if command == 'SPACESTATIONS':
-                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
-                    self.app.ui.checkSpacestations.setChecked(True)
-                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
-                elif command == 'SATBRIGHTEST':
-                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
-                    self.app.ui.checkSatellites.setChecked(True)
-                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
-                elif command == 'ASTEROIDS_MPC5000':
-                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.DEFAULT)
-                elif command == 'ASTEROIDS_NEA':
-                    self.app.ui.btn_downloadAsteroidsNEA.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS_NEA, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAsteroidsNEA.setStyleSheet(self.DEFAULT)
-                elif command == 'ASTEROIDS_PHA':
-                    self.app.ui.btn_downloadAsteroidsPHA.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS_PHA, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAsteroidsPHA.setStyleSheet(self.DEFAULT)
-                elif command == 'ASTEROIDS_TNO':
-                    self.app.ui.btn_downloadAsteroidsTNO.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS_TNO, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAsteroidsTNO.setStyleSheet(self.DEFAULT)
-                elif command == 'ASTEROIDS_UNUSAL':
-                    self.app.ui.btn_downloadAsteroidsUNUSAL.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.ASTEROIDS_UNUSAL, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAsteroidsUNUSAL.setStyleSheet(self.DEFAULT)
-                elif command == 'COMETS':
-                    self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
-                    self.app.ui.checkComets.setChecked(True)
-                    self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
-                elif command == 'EARTHROTATION':
-                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
-                    self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
-                    self.app.ui.checkEarthrotation.setChecked(True)
-                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
-                elif command == 'ALL':
-                    self.app.ui.btn_downloadAll.setStyleSheet(self.BLUE)
-                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
-                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
-                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
-                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.BLUE)
-                    self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
-                    self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
-                    self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
-                    self.app.ui.checkEarthrotation.setChecked(True)
-                    self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
-                    self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
-                    self.app.ui.checkTLE.setChecked(True)
-                    self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
-                    self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
-                    self.app.ui.checkTLE.setChecked(True)
-                    self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
-                    self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
-                    self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
-                    self.app.ui.checkComets.setChecked(True)
-                    self.downloadFile(self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE)
-                    self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.DEFAULT)
-                    self.app.ui.checkAsteroids.setChecked(True)
-                    self.app.ui.btn_downloadAll.setStyleSheet(self.DEFAULT)
-                elif command == 'UPLOADMOUNT':
-                    self.app.ui.btn_uploadMount.setStyleSheet(self.BLUE)
-                    self.uploadMount()
-                    self.app.ui.btn_uploadMount.setStyleSheet(self.DEFAULT)
-                else:
-                    pass
-            time.sleep(0.1)
-        self.finished.emit()
+        '''
+        elif command == 'ALL':
+            self.app.ui.btn_downloadAll.setStyleSheet(self.BLUE)
+            self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.BLUE)
+            self.app.ui.btn_downloadSpacestations.setStyleSheet(self.BLUE)
+            self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.BLUE)
+            self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.BLUE)
+            self.app.ui.btn_downloadComets.setStyleSheet(self.BLUE)
+            self.downloadFile(self.UTC_1, self.TARGET_DIR + self.UTC_1_FILE)
+            self.downloadFile(self.UTC_2, self.TARGET_DIR + self.UTC_2_FILE)
+            self.app.ui.checkEarthrotation.setChecked(True)
+            self.app.ui.btn_downloadEarthrotation.setStyleSheet(self.DEFAULT)
+            self.downloadFile(self.SPACESTATIONS, self.TARGET_DIR + self.SPACESTATIONS_FILE)
+            self.app.ui.checkTLE.setChecked(True)
+            self.app.ui.btn_downloadSpacestations.setStyleSheet(self.DEFAULT)
+            self.downloadFile(self.SATBRIGHTEST, self.TARGET_DIR + self.SATBRIGHTEST_FILE)
+            self.app.ui.checkTLE.setChecked(True)
+            self.app.ui.btn_downloadSatbrighest.setStyleSheet(self.DEFAULT)
+            self.downloadFile(self.COMETS, self.TARGET_DIR + self.COMETS_FILE)
+            self.app.ui.btn_downloadComets.setStyleSheet(self.DEFAULT)
+            self.app.ui.checkComets.setChecked(True)
+            self.downloadFile(self.ASTEROIDS_MPC5000, self.TARGET_DIR + self.ASTEROIDS_FILE)
+            self.app.ui.btn_downloadAsteroidsMPC5000.setStyleSheet(self.DEFAULT)
+            self.app.ui.checkAsteroids.setChecked(True)
+            self.app.ui.btn_downloadAll.setStyleSheet(self.DEFAULT)
+        else:
+            pass
+        '''
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.finished.emit()
+
+    def commandDispatcher(self, command):
+        # if we have a command in dispatcher
+        if command in self.commandDispatch:
+            # running through all necessary commands
+            for work in self.commandDispatch[command]['Worker']:
+                # if we want to color a button, which one
+                if 'Button' in work:
+                    work['Button'].setStyleSheet(self.BLUE)
+                PyQt5.QtWidgets.QApplication.processEvents()
+                if 'Parameter' in work:
+                    parameter = work['Parameter']
+                    work['Method'](*parameter)
+                else:
+                    work['Method']()
+                time.sleep(1)
+                if 'Checkbox' in work:
+                    work['Checkbox'].setChecked(True)
+                if 'Button' in work:
+                    work['Button'].setStyleSheet(self.DEFAULT)
+                PyQt5.QtWidgets.QApplication.processEvents()
 
     def filterFileMPC(self, directory, filename, expression, start, end):
         numberEntry = 0

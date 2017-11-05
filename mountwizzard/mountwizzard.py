@@ -79,7 +79,6 @@ class MountWizzardApp(widget.MwWidget):
         self.modelCommandQueue = Queue()
         self.messageQueue = Queue()
         self.imageQueue = Queue()
-        self.commandDataQueue = Queue()
         self.INDISendCommandQueue = Queue()
         self.INDIDataQueue = Queue()
         # loading config data
