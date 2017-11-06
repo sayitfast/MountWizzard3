@@ -114,7 +114,7 @@ class ModelPoints:
         if line_check:
             minAlt = int(line_value)
             if len(hp) == 0:                                                                                                # there is no file loaded
-                hp = ((0, minAlt), (359, minAlt))
+                hp = [(0, minAlt), (359, minAlt)]
         # is there is the mask not until 360, we do it
         if hp[len(hp)-1][0] < 360:
             hp.append((359, hp[len(hp)-1][1]))
