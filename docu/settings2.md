@@ -1,4 +1,4 @@
-## Settings for ASCOM / Mount Drivers environment drivers and remote access
+## Settings for ASCOM / Mount Drivers environment drivers
 
 <img src="pics/tab_settings_ascommountdriver.png"/>
 
@@ -39,29 +39,6 @@ you find the driver on http://www.dizzy.eu/downloads.html. It does a great job!
 ### Area 4: ASCOM Camera PlateSolver
 
 Still experimental, you might run into troubles. I let you know, when it works!
-
-### Area 5: Remote Access for MW.
-
-A first shot enabling backyard automation. When checked, MountWizzard will listen on port 3495 for commands send over via TCP. Actually
-the only command is
-<pre>shutdown</pre>
-You could send the command on a windows pc by tool, which allows you to send a string via TCP. Here an example: Google for "NCAT Portable"
-and download that tool. You can move the exe file in a directory which is available from your scripting environment (SGPro etc.) The command
-for shutting down MountWizzard woudl be from the command line (or batch file):
-
-<pre>echo shutdown | ncat --send-only localhost 3495</pre>
-
-Still experimental, you might run into troubles. I let you know, when it works!
-
-### Hints for configuration:
-I'm using SGPro as my imaging setup. To make the best out of it, I choose the ASCOM Observation Conditions Hub as my environment device:
-
-<img src="pics/observationconditions_sgpro.png"/>
-
-if you configure that hub with data from open waether, stickstation (or MBox) and unihedron driver, SGPro puts all this data in you FITS
-image files. With that information you can later check the conditions of you night ! Here my setup in the ASCOM hub:
-
-<img src="pics/observationconditionshub.png"/>
 
 [Back to settings](settings.md)
 
