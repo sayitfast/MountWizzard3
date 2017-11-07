@@ -311,9 +311,7 @@ class Mount(PyQt5.QtCore.QThread):
 
     def programBatchData(self, data):
         self.saveBackupModel()
-        self.app.modelLogQueue.put('{0} - Start Batch modeling programming. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
         self.mountHandler.sendCommand('newalig')
-        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
         for i in range(0, len(data['Index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
                                                               self.transform.decimalToDegree(data['DecJNow'][i], True, False),
@@ -324,16 +322,10 @@ class Mount(PyQt5.QtCore.QThread):
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
-                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
-            else:
-                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
-                                           .format(self.timeStamp(), reply, int(data['Azimuth'][i]), int(data['Altitude'][i])))
         reply = self.mountHandler.sendCommand('endalig')
         if reply == 'V':
-            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))
             self.logger.info('Model successful finished!')
         else:
-            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))
             self.logger.warning('Model could not be calculated with current data!')
 
     def numberModelStars(self):
