@@ -282,7 +282,7 @@ class ModelBoost(ModelBase):
             self.app.imageQueue.put(modelData['ImagePath'])
             return True, 'OK', modelData
 
-    def runBatchModel(self, modelData):
+    def runBoostBatchModel(self, modelData):
         self.logger.info('Make model from data')
         # transform data
         resultData = dict()
@@ -334,7 +334,7 @@ class ModelBoost(ModelBase):
                 self.app.workerModeling.analyse.saveData(self.modelData, name)
                 self.app.mount.saveRefinementModel()
                 # if not self.app.workerModeling.cancel:
-                self.runBatchModel(self.modelData)
+                self.runBoostBatchModel(self.modelData)
         else:
             self.logger.warning('There are no Refinement Points to modeling')
 

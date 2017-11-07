@@ -210,7 +210,7 @@ class ModelStandard(ModelBase):
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
                     if suc:
                         if modeltype in ['Base', 'Refinement', 'All']:
-                            suc = self.addRefinementStar(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
+                            suc = self.app.mount.addRefinementStar(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
                             if suc:
                                 self.app.modelLogQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
                                 numCheckPoints += 1

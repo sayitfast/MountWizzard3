@@ -36,8 +36,8 @@ from astrometry import transform
 
 
 class Mount(PyQt5.QtCore.QThread):
-    logger = logging.getLogger(__name__)                                                                                    # enable logging
-    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')                                           # signal for connection status
+    logger = logging.getLogger(__name__)
+    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
@@ -46,11 +46,11 @@ class Mount(PyQt5.QtCore.QThread):
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
     def __init__(self, app):
-        super().__init__()                                                                                                  # init of the class parent with super
-        self.app = app                                                                                                      # accessing ui object from mount class
+        super().__init__()
+        self.app = app
         self.data = {}
         if platform.system() == 'Windows':
-            self.MountAscom = ascommount.MountAscom(app)                                                                    # set ascom driver class
+            self.MountAscom = ascommount.MountAscom(app)
         self.MountIpDirect = ipdirect.MountIpDirect(app)
         self.mountHandler = self.MountIpDirect
         self.transform = transform.Transform(app)
@@ -68,12 +68,12 @@ class Mount(PyQt5.QtCore.QThread):
                                 '11': 'User OK Needed',
                                 '98': 'Unknown Status',
                                 '99': 'Error'
-                                }                                                                                           # conversion list Gstat to text
-        self.site_lat = '49'                                                                                                # site lat
-        self.site_lon = '0'                                                                                                 # site lon
-        self.site_height = '0'                                                                                              # site height
-        self.sidereal_time = ''                                                                                             # local sidereal time
-        self.counter = 0                                                                                                    # counter im main loop
+                                }
+        self.site_lat = '49'
+        self.site_lon = '0'
+        self.site_height = '0'
+        self.sidereal_time = ''
+        self.counter = 0
         self.chooserLock = threading.Lock()
         self.initConfig()
 
@@ -275,6 +275,66 @@ class Mount(PyQt5.QtCore.QThread):
         if reply == '0':
             self.app.messageQueue.put('Flip Mount could not be executed !')
             self.logger.error('error: {0}'.format(reply))
+
+    def syncMountModel(self, ra, dec):
+        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
+        self.mountHandler.sendCommand('Sr{0}'.format(ra))
+        self.mountHandler.sendCommand('Sd{0}'.format(dec))
+        self.mountHandler.sendCommand('CMCFG0')
+        # send sync command
+        reply = self.mountHandler.sendCommand('CM')
+        if reply[:5] == 'Coord':
+            self.logger.info('mount modeling synced')
+            return True
+        else:
+            self.logger.warning('error in sync mount modeling')
+            return False
+
+    def addRefinementStar(self, ra, dec):
+        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
+        self.mountHandler.sendCommand('Sr{0}'.format(ra))
+        self.mountHandler.sendCommand('Sd{0}'.format(dec))
+        starNumber = self.numberModelStars()
+        reply = self.mountHandler.sendCommand('CMS')
+        starAdded = self.numberModelStars() - starNumber
+        if reply == 'E':
+            # 'E' says star could not be added
+            if starAdded == 1:
+                self.logger.error('star added, but return value was E')
+                return True
+            else:
+                self.logger.error('error adding star')
+                return False
+        else:
+            self.logger.info('refinement star added')
+            return True
+
+    def programBatchData(self, data):
+        self.saveBackupModel()
+        self.app.modelLogQueue.put('{0} - Start Batch modeling programming. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
+        self.mountHandler.sendCommand('newalig')
+        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
+        for i in range(0, len(data['Index'])):
+            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
+                                                              self.transform.decimalToDegree(data['DecJNow'][i], True, False),
+                                                              data['Pierside'][i],
+                                                              self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
+                                                              self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
+                                                              self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
+            reply = self.app.mount.mountHandler.sendCommand(command)
+            if reply == 'E':
+                self.logger.warning('point {0} could not be added'.format(reply))
+                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
+            else:
+                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
+                                           .format(self.timeStamp(), reply, int(data['Azimuth'][i]), int(data['Altitude'][i])))
+        reply = self.mountHandler.sendCommand('endalig')
+        if reply == 'V':
+            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))
+            self.logger.info('Model successful finished!')
+        else:
+            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))
+            self.logger.warning('Model could not be calculated with current data!')
 
     def numberModelStars(self):
         return int(self.mountHandler.sendCommand('getalst'))

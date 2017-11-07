@@ -85,48 +85,6 @@ class ModelBase:
                     break
                 time.sleep(0.1)
 
-    def runBatchModel(self):
-        nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.info('modeling from {0}'.format(nameDataFile))
-        data = self.app.workerModeling.analyse.loadData(nameDataFile)
-        if not('RaJNow' in data and 'DecJNow' in data):
-            self.logger.warning('RaJNow or DecJNow not in data file')
-            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))
-            return
-        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
-            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
-            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))
-            return
-        if not('Pierside' in data and 'LocalSiderealTime' in data):
-            self.logger.warning('Pierside and LocalSiderealTime not in data file')
-            self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(self.timeStamp()))
-            return
-        self.app.mount.saveBackupModel()
-        self.app.modelLogQueue.put('{0} - Start Batch modeling. Saving Actual modeling to BATCH\n'.format(self.timeStamp()))
-        self.app.mount.mountHandler.sendCommand('newalig')
-        self.app.modelLogQueue.put('{0} - \tOpening Calculation\n'.format(self.timeStamp()))
-        for i in range(0, len(data['Index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.app.workerModeling.transform.decimalToDegree(data['RaJNow'][i], False, True),
-                                                              self.app.workerModeling.transform.decimalToDegree(data['DecJNow'][i], True, False),
-                                                              data['Pierside'][i],
-                                                              self.app.workerModeling.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
-                                                              self.app.workerModeling.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
-                                                              self.app.workerModeling.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
-            reply = self.app.mount.mountHandler.sendCommand(command)
-            if reply == 'E':
-                self.logger.warning('point {0} could not be added'.format(reply))
-                self.app.modelLogQueue.put('{0} - \tPoint could not be added\n'.format(self.timeStamp()))
-            else:
-                self.app.modelLogQueue.put('{0} - \tAdded point {1} @ Az:{2}, Alt:{3} \n'
-                                           .format(self.timeStamp(), reply, int(data['Azimuth'][i]), int(data['Altitude'][i])))
-        reply = self.app.mount.mountHandler.sendCommand('endalig')
-        if reply == 'V':
-            self.app.modelLogQueue.put('{0} - Model successful finished! \n'.format(self.timeStamp()))
-            self.logger.info('Model successful finished!')
-        else:
-            self.app.modelLogQueue.put('{0} - Model could not be calculated with current data! \n'.format(self.timeStamp()))
-            self.logger.warning('Model could not be calculated with current data!')
-
     def prepareImaging(self, modelData, directory):
         # do all the calculations once
         suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.workerModeling.imagingHandler.getCameraProps()
@@ -267,39 +225,6 @@ class ModelBase:
         else:
             return False, mes, modelData
 
-    def addRefinementStar(self, ra, dec):
-        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))
-        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))
-        starNumber = self.app.mount.numberModelStars()
-        reply = self.app.mount.mountHandler.sendCommand('CMS')
-        starAdded = self.app.mount.numberModelStars() - starNumber
-        if reply == 'E':
-            # 'E' says star could not be added
-            if starAdded == 1:
-                self.logger.error('star added, but return value was E')
-                return True
-            else:
-                self.logger.error('error adding star')
-                return False
-        else:
-            self.logger.info('refinement star added')
-            return True
-
-    def syncMountModel(self, ra, dec):
-        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.app.mount.mountHandler.sendCommand('Sr{0}'.format(ra))
-        self.app.mount.mountHandler.sendCommand('Sd{0}'.format(dec))
-        self.app.mount.mountHandler.sendCommand('CMCFG0')
-        # send sync command
-        reply = self.app.mount.mountHandler.sendCommand('CM')
-        if reply[:5] == 'Coord':
-            self.logger.info('mount modeling synced')
-            return True
-        else:
-            self.logger.warning('error in sync mount modeling')
-            return False
-
     def plateSolveSync(self, simulation=False):
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
@@ -332,7 +257,7 @@ class ModelBase:
             suc, mes, modelData = self.solveImage(modelData, simulation)
             self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
             if suc:
-                suc = self.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
+                suc = self.app.mount.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
                 if suc:
                     self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
                 else:
@@ -343,3 +268,21 @@ class ModelBase:
         if not self.app.ui.checkKeepImages.isChecked():
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
         self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
+
+    def runBatchModel(self):
+        nameDataFile = self.app.ui.le_analyseFileName.text()
+        self.logger.info('modeling from {0}'.format(nameDataFile))
+        data = self.app.workerModeling.analyse.loadData(nameDataFile)
+        if not('RaJNow' in data and 'DecJNow' in data):
+            self.logger.warning('RaJNow or DecJNow not in data file')
+            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))
+            return
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
+            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
+            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))
+            return
+        if not('Pierside' in data and 'LocalSiderealTime' in data):
+            self.logger.warning('Pierside and LocalSiderealTime not in data file')
+            self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(self.timeStamp()))
+            return
+        self.app.mount.programBatchData(data)

@@ -140,7 +140,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runCheckModel,
-                            'Method': self.modelStandard.runBatchModel,
+                            'Method': self.modelStandard.runCheckModel,
                             'Cancel': self.app.ui.btn_cancelModel
                         }
                     ]
