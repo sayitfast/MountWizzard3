@@ -7,6 +7,18 @@
 - refactoring for reactive design of threads from qthreads and event loops
 - reduced load -> improved performance
 
+2.5.20
+- bugfix
+- added some backward compatibility to older firmwares
+- added some support for threading in maximDL
+
+2.5.19
+- performance optimizations
+- bugfixes
+
+2.5.18
+- some more bugfixes discovered by further development
+
 2.5.17
 - bugfix keep refinement model
 - bugfix index key wrong
