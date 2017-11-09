@@ -281,29 +281,27 @@ class Modeling(PyQt5.QtCore.QObject):
                     ]
                 }
             }
-
-
         # setting the config up
         self.initConfig()
         # run it first, to set all imaging applications up
-        self.chooseImagingApp()
+        self.chooseImaging()
 
     def initConfig(self):
         if self.NoneCam.appAvailable:
-            self.app.ui.pd_chooseImagingApp.addItem('No Application')
+            self.app.ui.pd_chooseImaging.addItem('No Application')
         if self.INDICamera.appAvailable:
-            self.app.ui.pd_chooseImagingApp.addItem('INDI Camera')
+            self.app.ui.pd_chooseImaging.addItem('INDI Camera')
         if platform.system() == 'Windows':
             if self.SGPro.appAvailable:
-                self.app.ui.pd_chooseImagingApp.addItem('SGPro - ' + self.SGPro.appName)
+                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.appName)
             if self.MaximDL.appAvailable:
-                self.app.ui.pd_chooseImagingApp.addItem('MaximDL - ' + self.MaximDL.appName)
+                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.MaximDL.appName)
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
             if self.TheSkyX.appAvailable:
-                self.app.ui.pd_chooseImagingApp.addItem('TheSkyX - ' + self.TheSkyX.appName)
+                self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
         try:
             if 'ImagingApplication' in self.app.config:
-                self.app.ui.pd_chooseImagingApp.setCurrentIndex(int(self.app.config['ImagingApplication']))
+                self.app.ui.pd_chooseImaging.setCurrentIndex(int(self.app.config['ImagingApplication']))
             if 'CheckSortPoints' in self.app.config:
                 self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
             if 'CheckDeletePointsHorizonMask' in self.app.config:
@@ -315,35 +313,35 @@ class Modeling(PyQt5.QtCore.QObject):
         finally:
             pass
         # connect change in imaging app to the subroutine of setting it up
-        self.app.ui.pd_chooseImagingApp.currentIndexChanged.connect(self.chooseImagingApp)
+        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def storeConfig(self):
-        self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImagingApp.currentIndex()
+        self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
         self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
 
-    def chooseImagingApp(self):
+    def chooseImaging(self):
         self.chooserLock.acquire()
         self.app.ui.btn_runBoostModel.setVisible(False)
         self.app.ui.btn_runBoostModel.setEnabled(False)
         if self.imagingHandler.cameraConnected:
             self.imagingHandler.disconnectCamera()
-        if self.app.ui.pd_chooseImagingApp.currentText().startswith('No Application'):
+        if self.app.ui.pd_chooseImaging.currentText().startswith('No Application'):
             self.imagingHandler = self.NoneCam
             self.logger.info('actual camera / plate solver is None')
-        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('INDI Camera'):
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
             self.imagingHandler = self.INDICamera
             self.logger.info('actual camera / plate solver is INDI Camera')
-        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
             self.imagingHandler = self.SGPro
             self.app.ui.btn_runBoostModel.setEnabled(True)
             self.app.ui.btn_runBoostModel.setVisible(True)
             self.logger.info('actual camera / plate solver is SGPro')
-        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('TheSkyX'):
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
             self.imagingHandler = self.TheSkyX
             self.logger.info('actual camera / plate solver is TheSkyX')
-        elif self.app.ui.pd_chooseImagingApp.currentText().startswith('MaximDL'):
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
             self.imagingHandler = self.MaximDL
             self.logger.info('actual camera / plate solver is MaximDL')
         self.imagingHandler.checkAppStatus()

@@ -78,15 +78,15 @@ class Mount(PyQt5.QtCore.QThread):
         self.initConfig()
 
     def initConfig(self):
-        self.app.ui.pd_chooseMountConnection.addItem('IP Direct Connection')
+        self.app.ui.pd_chooseMount.addItem('IP Direct Connection')
         if platform.system() == 'Windows':
-            self.app.ui.pd_chooseMountConnection.addItem('ASCOM Driver Connection')
+            self.app.ui.pd_chooseMount.addItem('ASCOM Driver Connection')
         try:
             if platform.system() == 'Windows':
                 if 'ASCOMTelescopeDriverName' in self.app.config:
                     self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
             if 'MountConnection' in self.app.config:
-                self.app.ui.pd_chooseMountConnection.setCurrentIndex(int(self.app.config['MountConnection']))
+                self.app.ui.pd_chooseMount.setCurrentIndex(int(self.app.config['MountConnection']))
                 self.showConfigEntries(int(self.app.config['MountConnection']))
             if 'CheckAutoRefractionCamera' in self.app.config:
                 self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
@@ -97,49 +97,26 @@ class Mount(PyQt5.QtCore.QThread):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.app.ui.pd_chooseMountConnection.currentIndexChanged.connect(self.chooseMountConn)
+        self.app.ui.pd_chooseMount.currentIndexChanged.connect(self.chooseMountConn)
 
     def storeConfig(self):
         if platform.system() == 'Windows':
             self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
-        self.app.config['MountConnection'] = self.app.ui.pd_chooseMountConnection.currentIndex()
+        self.app.config['MountConnection'] = self.app.ui.pd_chooseMount.currentIndex()
         self.app.config['CheckAutoRefractionCamera'] = self.app.ui.checkAutoRefractionCamera.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
-
-    def showConfigEntries(self, index):
-        if index == 0:
-            self.app.ui.le_mountIP.setVisible(True)
-            self.app.ui.le_mountIP.setEnabled(True)
-            self.app.ui.le_mountMAC.setVisible(True)
-            self.app.ui.le_mountMAC.setEnabled(True)
-            self.app.ui.label_mountIP.setVisible(True)
-            self.app.ui.label_mountMAC.setVisible(True)
-
-            self.app.ui.btn_setupMountDriver.setVisible(False)
-            self.app.ui.btn_setupMountDriver.setEnabled(False)
-        elif index == 1:
-            self.app.ui.le_mountIP.setVisible(False)
-            self.app.ui.le_mountIP.setEnabled(False)
-            self.app.ui.le_mountMAC.setVisible(False)
-            self.app.ui.le_mountMAC.setEnabled(False)
-            self.app.ui.label_mountIP.setVisible(False)
-            self.app.ui.label_mountMAC.setVisible(False)
-
-            self.app.ui.btn_setupMountDriver.setVisible(True)
-            self.app.ui.btn_setupMountDriver.setEnabled(True)
 
     def chooseMountConn(self):
         self.chooserLock.acquire()
         if self.mountHandler.connected:
             self.mountHandler.connected = False
             self.mountHandler.disconnect()
-        if self.app.ui.pd_chooseMountConnection.currentText().startswith('IP Direct Connection'):
+        if self.app.ui.pd_chooseMount.currentText().startswith('IP Direct Connection'):
             self.mountHandler = self.MountIpDirect
             self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
-        if self.app.ui.pd_chooseMountConnection.currentText().startswith('ASCOM Driver Connection'):
+        if self.app.ui.pd_chooseMount.currentText().startswith('ASCOM Driver Connection'):
             self.mountHandler = self.MountAscom
             self.logger.info('actual driver is ASCOM')
-        self.showConfigEntries(self.app.ui.pd_chooseMountConnection.currentIndex())
         self.chooserLock.release()
 
     def run(self):
@@ -726,6 +703,8 @@ class Mount(PyQt5.QtCore.QThread):
         fw = self.data['FirmwareNumber'].split('.')
         if len(fw) == 3:
             self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
+        else:
+            self.data['FW'] = 0
         self.data['FirmwareProductName'] = self.mountHandler.sendCommand('GVP')
         self.data['FirmwareTime'] = self.mountHandler.sendCommand('GVT')
         self.data['HardwareVersion'] = self.mountHandler.sendCommand('GVZ')

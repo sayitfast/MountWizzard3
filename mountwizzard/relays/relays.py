@@ -107,10 +107,10 @@ class Relays:
             if 'Relay8Text' in self.app.config:
                 self.app.ui.relay8Text.setText(self.app.config['Relay8Text'])
                 self.app.ui.btn_relay8.setText(self.app.config['Relay8Text'])
-            if 'KMUsername' in self.app.config:
-                self.app.ui.KMUsername.setText(self.app.config['KMUsername'])
-            if 'KMPassword' in self.app.config:
-                self.app.ui.KMPassword.setText(self.app.config['KMPassword'])
+            if 'RelayUsername' in self.app.config:
+                self.app.ui.le_relayUsername.setText(self.app.config['RelayUsername'])
+            if 'RelayPassword' in self.app.config:
+                self.app.ui.le_relayPassword.setText(self.app.config['RelayPassword'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -134,8 +134,8 @@ class Relays:
         self.app.config['Relay6Text'] = self.app.ui.relay6Text.text()
         self.app.config['Relay7Text'] = self.app.ui.relay7Text.text()
         self.app.config['Relay8Text'] = self.app.ui.relay8Text.text()
-        self.app.config['KMUsername'] = self.app.ui.KMUsername.text()
-        self.app.config['KMPassword'] = self.app.ui.KMPassword.text()
+        self.app.config['RelayUsername'] = self.app.ui.le_relayUsername.text()
+        self.app.config['RelayPassword'] = self.app.ui.le_relayPassword.text()
 
     def relayIP(self):
         if self.app.ui.le_relayIP.text().strip() != '':
@@ -270,7 +270,7 @@ class Relays:
                 self.pulse(relayNumber)
 
     def geturl(self, url):
-        result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.KMUsername.text(), self.app.ui.KMPassword.text()))
+        result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
         return result
 
     def pulse(self, relayNumber):

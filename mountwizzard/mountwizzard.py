@@ -181,6 +181,7 @@ class MountWizzardApp(widget.MwWidget):
         if self.workerAscomEnvironment.isRunning:
             self.workerAscomEnvironment.stop()
         self.workerAscomEnvironment.setupDriver()
+        self.ui.le_ascomEnvironmentDriverName.setText(self.workerAscomEnvironment.driverName)
         self.threadAscomEnvironment.start()
 
     def setEnvironmentStatus(self, status):
@@ -226,6 +227,7 @@ class MountWizzardApp(widget.MwWidget):
         if self.workerAscomDome.isRunning:
             self.workerAscomDome.stop()
         self.workerAscomDome.setupDriver()
+        self.ui.le_ascomDomeDriverName.setText(self.workerAscomDome.driverName)
         self.threadAscomDome.start()
 
     def setDomeStatus(self, status):

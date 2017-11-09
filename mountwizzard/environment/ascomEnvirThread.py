@@ -41,6 +41,7 @@ class AscomEnvironment(PyQt5.QtCore.QObject):
         try:
             if 'AscomEnvironmentDriverName' in self.app.config:
                 self.driverName = self.app.config['AscomEnvironmentDriverName']
+                self.app.ui.le_ascomEnvironmentDriverName.setText(self.app.config['AscomEnvironmentDriverName'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:

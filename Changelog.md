@@ -7,6 +7,9 @@
 - refactoring for reactive design of threads from qthreads and event loops
 - reduced load -> improved performance
 
+2.5.21
+- bugfix and rollback
+
 2.5.20
 - bugfix
 - added some backward compatibility to older firmwares

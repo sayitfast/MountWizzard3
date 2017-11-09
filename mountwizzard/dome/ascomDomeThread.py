@@ -44,6 +44,7 @@ class AscomDome(PyQt5.QtCore.QObject):
         try:
             if 'ASCOMDomeDriverName' in self.app.config:
                 self.driverName = self.app.config['ASCOMDomeDriverName']
+                self.app.ui.le_ascomDomeDriverName.setText(self.app.config['ASCOMDomeDriverName'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
