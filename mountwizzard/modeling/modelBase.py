@@ -29,7 +29,6 @@ class ModelBase:
     def __init__(self, app):
         # make main sources available
         self.app = app
-        self.modelData = None
         self.results = []
         self.modelRun = False
 

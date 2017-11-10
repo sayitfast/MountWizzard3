@@ -398,14 +398,14 @@ class Mount(PyQt5.QtCore.QThread):
             alignModel = self.getAlignmentModel()
             self.showAlignmentModel(alignModel)
             for i in range(0, alignModel['number']):
-                data[i]['modelError'] = float(alignModel['points'][i][5])
-                data[i]['raError'] = data[i]['modelError'] * math.sin(math.radians(alignModel['points'][i][6]))
-                data[i]['decError'] = data[i]['modelError'] * math.cos(math.radians(alignModel['points'][i][6]))
+                data[i]['ModelError'] = float(alignModel['points'][i][5])
+                data[i]['RaError'] = data[i]['ModelError'] * math.sin(math.radians(alignModel['points'][i][6]))
+                data[i]['DecError'] = data[i]['ModelError'] * math.cos(math.radians(alignModel['points'][i][6]))
             self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
             self.logger.warning('size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
             self.app.modelLogQueue.put('Mount Model and Model Data could not be synced\n')
-            self.app.messageQueue.put('Error- Mount Model and Model Data mismatch!\n')
+            self.app.messageQueue.put('Error - Mount Model and Model Data mismatch!\n')
         return data
 
     def showAlignmentModel(self, alignModel):

@@ -154,7 +154,6 @@ class ModelBoost(ModelBase):
         super(ModelBoost, self).__init__(app)
         # make main sources available
         self.app = app
-        self.modelData = None
         self.results = []
         self.solvedPointsQueue = Queue()
         self.modelRun = False
@@ -326,15 +325,15 @@ class ModelBoost(ModelBase):
         if len(self.app.workerModeling.modelPoints.RefinementPoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            self.modelData = self.runBoost(self.app.workerModeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
-            self.modelData = self.app.mount.retrofitMountData(self.modelData)
+            self.app.modeling.modelData = self.runBoost(self.app.workerModeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
+            self.app.modeling.modelData = self.app.mount.retrofitMountData(self.app.modeling.modelData)
             name = directory + '_boost.dat'
-            if len(self.modelData) > 0:
+            if len(self.app.modeling.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.app.workerModeling.analyse.saveData(self.modelData, name)
+                self.app.workerModeling.analyse.saveData(self.app.modeling.modelData, name)
                 self.app.mount.saveRefinementModel()
                 # if not self.app.workerModeling.cancel:
-                self.runBoostBatchModel(self.modelData)
+                self.runBoostBatchModel(self.app.modeling.modelData)
         else:
             self.logger.warning('There are no Refinement Points to modeling')
 
