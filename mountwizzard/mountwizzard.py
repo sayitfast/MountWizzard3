@@ -559,10 +559,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.numberRunsHysterese.setValue(self.config['NumberRunsHysterese'])
             if 'DelayTimeHysterese' in self.config:
                 self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
-            if 'MountIP' in self.config:
-                self.ui.le_mountIP.setText(self.config['MountIP'])
-            if 'MountMAC' in self.config:
-                self.ui.le_mountMAC.setText(self.config['MountMAC'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
         except Exception as e:
@@ -624,8 +620,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['AzimuthHysterese2'] = self.ui.azimuthHysterese2.value()
         self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
-        self.config['MountIP'] = self.ui.le_mountIP.text()
-        self.config['MountMAC'] = self.ui.le_mountMAC.text()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
 
@@ -1006,7 +1000,7 @@ if __name__ == "__main__":
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s] - %(message)s',
+                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s][%(thread)5d] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
     if not os.path.isdir(os.getcwd() + '/analysedata'):
