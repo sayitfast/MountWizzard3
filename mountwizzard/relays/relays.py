@@ -108,7 +108,6 @@ class Relays:
                 self.app.ui.btn_relay8.setText(self.app.config['Relay8Text'])
             if 'RelayIP' in self.app.config:
                 self.app.ui.le_relayIP.setText(self.app.config['RelayIP'])
-                self.relayIP = self.app.config['RelayIP']
             if 'RelayUsername' in self.app.config:
                 self.app.ui.le_relayUsername.setText(self.app.config['RelayUsername'])
             if 'RelayPassword' in self.app.config:
@@ -116,7 +115,7 @@ class Relays:
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            pass
+            self.setIP()
 
     def storeConfig(self):
         self.app.config['RelayIP'] = self.relayIP
