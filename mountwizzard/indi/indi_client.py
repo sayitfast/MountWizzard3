@@ -63,31 +63,28 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.connected = False
         self.receivedImage = False
         self.imagePath = ''
+        self.initConfig()
         self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.received.connect(self.handleReceived)
-        self.initConfig()
 
     def initConfig(self):
         try:
             if 'INDIServerPort' in self.app.config:
                 self.app.ui.le_INDIServerPort.setText(self.app.config['INDIServerPort'])
-                self.INDIServerPort = int(self.app.config['INDIServerPort'])
             if 'INDIServerIP' in self.app.config:
                 self.app.ui.le_INDIServerIP.setText(self.app.config['INDIServerIP'])
-                self.INDIServerIP = self.app.config['INDIServerIP']
             if 'CheckEnableINDI' in self.app.config:
                 self.app.ui.checkEnableINDI.setChecked(self.app.config['CheckEnableINDI'])
-            self.setIP()
-            self.setPort()
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            pass
+            self.setIP()
+            self.setPort()
 
     def storeConfig(self):
-        self.app.config['INDIServerPort'] = self.INDIServerPort
-        self.app.config['INDIServerIP'] = self.INDIServerIP
+        self.app.config['INDIServerPort'] = self.app.ui.le_INDIServerPort.text()
+        self.app.config['INDIServerIP'] = self.app.ui.le_INDIServerIP.text()
         self.app.config['CheckEnableINDI'] = self.app.ui.checkEnableINDI.isChecked()
 
     def setPort(self):

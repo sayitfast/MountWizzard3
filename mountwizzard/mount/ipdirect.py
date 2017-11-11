@@ -44,17 +44,17 @@ class MountIpDirect:
         try:
             if 'MountIP' in self.app.config:
                 self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
-                self.mountIP = self.app.config['MountIP']
             if 'MountPort' in self.app.config:
                 self.app.ui.le_mountPort.setText(self.app.config['MountPort'])
-                self.mountPort = int(float(self.app.config['MountPort']))
             if 'MountMAC' in self.app.config:
                 self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
-                self.mountMAC = self.app.config['MountMAC']
+
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            pass
+            self.setIP()
+            self.setPort()
+            self.setMAC()
 
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()

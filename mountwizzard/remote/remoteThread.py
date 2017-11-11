@@ -43,7 +43,6 @@ class Remote(PyQt5.QtCore.QObject):
         try:
             if 'RemotePort' in self.app.config:
                 self.app.ui.le_remotePort.setText(self.app.config['RemotePort'])
-                self.remotePort = self.app.config['RemotePort']
             if 'CheckRemoteAccess' in self.app.config:
                 self.app.ui.checkEnableRemoteAccess.setChecked(self.app.config['CheckRemoteAccess'])
         except Exception as e:
@@ -52,7 +51,7 @@ class Remote(PyQt5.QtCore.QObject):
             self.setPort()
 
     def storeConfig(self):
-        self.app.config['RemotePort'] = self.remotePort
+        self.app.config['RemotePort'] = self.app.ui.le_remotePort.text()
         self.app.config['CheckRemoteAccess'] = self.app.ui.checkEnableRemoteAccess.isChecked()
 
     def setPort(self):
