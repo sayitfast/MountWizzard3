@@ -92,11 +92,6 @@ class Mount(PyQt5.QtCore.QThread):
                 self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
                 self.app.ui.checkAutoRefractionNotTracking.setChecked(self.app.config['CheckAutoRefractionNotTracking'])
-            if 'MountIP' in self.app.config:
-                self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
-            if 'MountMAC' in self.app.config:
-                self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
-
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -109,8 +104,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.app.config['MountConnection'] = self.app.ui.pd_chooseMount.currentIndex()
         self.app.config['CheckAutoRefractionCamera'] = self.app.ui.checkAutoRefractionCamera.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
-        self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
-        self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
+        self.MountIpDirect.storeConfig()
 
     def chooseMountConn(self):
         self.chooserLock.acquire()
@@ -119,7 +113,7 @@ class Mount(PyQt5.QtCore.QThread):
             self.mountHandler.disconnect()
         if self.app.ui.pd_chooseMount.currentText().startswith('IP Direct Connection'):
             self.mountHandler = self.MountIpDirect
-            self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP()))
+            self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP))
         if self.app.ui.pd_chooseMount.currentText().startswith('ASCOM Driver Connection'):
             self.mountHandler = self.MountAscom
             self.logger.info('actual driver is ASCOM')

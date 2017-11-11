@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>7</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -4294,7 +4294,7 @@ color: rgb(255,255,255);</string>
       <string>Run in simulation mode</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelModelBase">
+    <widget class="QPushButton" name="btn_cancelModel1">
      <property name="geometry">
       <rect>
        <x>530</x>
@@ -5202,7 +5202,7 @@ color: rgb(255,255,255);</string>
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Name of Analysis file, where the data ist stored</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Model Points file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -5238,7 +5238,7 @@ color: rgb(255,255,255);</string>
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Name of Analysis file, where the data ist stored</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -5253,14 +5253,14 @@ color: rgb(255,255,255);</string>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
-     <string>Make Mount Model</string>
+     <string>Refinement Model</string>
     </attribute>
     <widget class="QPushButton" name="btn_generateGridPoints">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>100</y>
-       <width>131</width>
+       <x>10</x>
+       <y>110</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5268,15 +5268,15 @@ color: rgb(255,255,255);</string>
       <string>Generates a regular pattern with 100 stars</string>
      </property>
      <property name="text">
-      <string>Grid Points</string>
+      <string>Generate a Grid of Points</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_108">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>10</x>
        <y>20</y>
-       <width>161</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5292,9 +5292,9 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_179">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>140</y>
-       <width>61</width>
+       <x>190</x>
+       <y>150</y>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -5310,9 +5310,9 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_178">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>140</y>
-       <width>61</width>
+       <x>10</x>
+       <y>150</y>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -5328,9 +5328,9 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_generateNormalPoints">
      <property name="geometry">
       <rect>
-       <x>320</x>
-       <y>210</y>
-       <width>131</width>
+       <x>190</x>
+       <y>220</y>
+       <width>171</width>
        <height>31</height>
       </rect>
      </property>
@@ -5338,15 +5338,15 @@ color: rgb(255,255,255);</string>
       <string>Generates a pointcloud with greater circles medium number</string>
      </property>
      <property name="text">
-      <string>Pointcloud Normal</string>
+      <string>Pointcloud Norm</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_generateDensePoints">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>210</y>
-       <width>131</width>
+       <x>10</x>
+       <y>220</y>
+       <width>171</width>
        <height>31</height>
       </rect>
      </property>
@@ -5354,14 +5354,14 @@ color: rgb(255,255,255);</string>
       <string>Generates a pointcloud with greater circles high number</string>
      </property>
      <property name="text">
-      <string>Pointcloud Dense</string>
+      <string>Pointcloud Max</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="numberGridPointsRow">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>140</y>
+       <x>110</x>
+       <y>150</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -5391,9 +5391,9 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_34">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>10</x>
        <y>30</y>
-       <width>271</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5407,8 +5407,8 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="numberGridPointsCol">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>140</y>
+       <x>290</x>
+       <y>150</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -5438,9 +5438,9 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_runRefinementModel">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>400</y>
-       <width>141</width>
+       <x>10</x>
+       <y>430</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5454,9 +5454,9 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_26">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>240</y>
-       <width>271</width>
+       <x>10</x>
+       <y>300</y>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5470,9 +5470,9 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_loadRefinementPoints">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>50</y>
-       <width>271</width>
+       <x>10</x>
+       <y>60</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5483,12 +5483,12 @@ color: rgb(255,255,255);</string>
       <string>Refinepoints from File</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelModel">
+    <widget class="QPushButton" name="btn_cancelModel2">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>440</y>
-       <width>251</width>
+       <x>400</x>
+       <y>430</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5499,15 +5499,15 @@ color: rgb(255,255,255);</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Cancel any Model Run</string>
+      <string>Cancel Model Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runCheckModel">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>390</y>
-       <width>251</width>
+       <x>400</x>
+       <y>150</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5521,9 +5521,9 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_98">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>360</y>
-       <width>251</width>
+       <x>400</x>
+       <y>120</y>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5539,9 +5539,9 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_32">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>370</y>
-       <width>251</width>
+       <x>400</x>
+       <y>130</y>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5555,9 +5555,9 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_28">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>80</y>
-       <width>271</width>
+       <x>10</x>
+       <y>90</y>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5571,9 +5571,9 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_generateDSOPoints">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>260</y>
-       <width>131</width>
+       <x>10</x>
+       <y>320</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5587,10 +5587,10 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_40">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>370</x>
        <y>10</y>
        <width>21</width>
-       <height>461</height>
+       <height>451</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5603,9 +5603,9 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_42">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>190</y>
-       <width>271</width>
+       <x>10</x>
+       <y>200</y>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -5619,8 +5619,8 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="numberHoursDSO">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>300</y>
+       <x>60</x>
+       <y>360</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -5650,8 +5650,8 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_181">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>300</y>
+       <x>20</x>
+       <y>360</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -5668,8 +5668,8 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_188">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>330</y>
+       <x>130</x>
+       <y>360</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -5686,8 +5686,8 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="numberPointsDSO">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>330</y>
+       <x>170</x>
+       <y>360</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -5717,8 +5717,8 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_189">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>300</y>
+       <x>240</x>
+       <y>360</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -5729,14 +5729,14 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>TimeShift [h]</string>
+      <string>TimeShift</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="numberHoursPreview">
      <property name="geometry">
       <rect>
-       <x>410</x>
-       <y>300</y>
+       <x>300</x>
+       <y>360</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -5766,9 +5766,9 @@ color: rgb(255,255,255);</string>
     <widget class="QCheckBox" name="checkKeepRefinement">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>370</y>
-       <width>261</width>
+       <x>20</x>
+       <y>390</y>
+       <width>341</width>
        <height>20</height>
       </rect>
      </property>
@@ -5781,15 +5781,15 @@ color: rgb(255,255,255);</string>
       <string>If checked, a blind solve would be made (needs internet connection)</string>
      </property>
      <property name="text">
-      <string>Keep Refinement Model</string>
+      <string>Keep Refinement Model as Start for DSO Track</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_180">
      <property name="geometry">
       <rect>
-       <x>340</x>
-       <y>170</y>
-       <width>61</width>
+       <x>190</x>
+       <y>180</y>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -5799,14 +5799,14 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Alt Max</string>
+      <string>Altitude Max</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="altitudeMax">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>170</y>
+       <x>290</x>
+       <y>180</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -5836,8 +5836,8 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="altitudeMin">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>170</y>
+       <x>110</x>
+       <y>180</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -5867,9 +5867,9 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_190">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>170</y>
-       <width>61</width>
+       <x>10</x>
+       <y>180</y>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -5879,15 +5879,15 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Alt Min</string>
+      <string>Altitude Min</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runBoostModel">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>400</y>
-       <width>121</width>
+       <x>400</x>
+       <y>50</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -5898,10 +5898,190 @@ color: rgb(255,255,255);</string>
       <string>Run Boost Model</string>
      </property>
     </widget>
+    <widget class="Line" name="line_36">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>30</y>
+       <width>351</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_136">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>20</y>
+       <width>341</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Boost Model (parallel processing)</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_38">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>410</y>
+       <width>351</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_137">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>150</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_144">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>180</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_202">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>150</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_203">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>180</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_generateNormalPoints_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>260</y>
+       <width>171</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Generates a pointcloud with greater circles medium number</string>
+     </property>
+     <property name="text">
+      <string>Pointcloud Min</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_204">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>360</y>
+       <width>16</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>h</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
-     <string>Manage Mount Models</string>
+     <string>Manage Model</string>
     </attribute>
     <widget class="QTextBrowser" name="alignErrorStars">
      <property name="geometry">
@@ -6507,14 +6687,14 @@ color: rgb(255,255,255);</string>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
-     <string>Model Analyse</string>
+     <string>Analyse Model</string>
     </attribute>
     <widget class="QLabel" name="label_107">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>191</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -6531,8 +6711,8 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>340</y>
-       <width>291</width>
+       <y>440</y>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -6540,7 +6720,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels a analyse cycle by constant pointing alt/az and measuring the error (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Cancel any Analyse Run</string>
+      <string>Cancel Analyse Run</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runTimeChangeModel">
@@ -6548,7 +6728,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>10</x>
        <y>110</y>
-       <width>291</width>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -6564,7 +6744,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>291</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -6596,7 +6776,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="azimuthTimeChange">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>290</x>
        <y>50</y>
        <width>51</width>
        <height>22</height>
@@ -6621,7 +6801,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_175">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>220</x>
        <y>50</y>
        <width>51</width>
        <height>21</height>
@@ -6639,7 +6819,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="altitudeTimeChange">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>50</y>
        <width>51</width>
        <height>22</height>
@@ -6685,7 +6865,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="numberRunsTimeChange">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>80</y>
        <width>51</width>
        <height>22</height>
@@ -6713,7 +6893,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_111">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>340</x>
        <y>50</y>
        <width>21</width>
        <height>20</height>
@@ -6737,7 +6917,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_112">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>180</x>
        <y>50</y>
        <width>21</width>
        <height>20</height>
@@ -6761,7 +6941,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_177">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>220</x>
        <y>80</y>
        <width>41</width>
        <height>21</height>
@@ -6779,7 +6959,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="delayTimeTimeChange">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>290</x>
        <y>80</y>
        <width>51</width>
        <height>22</height>
@@ -6807,7 +6987,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_115">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>340</x>
        <y>80</y>
        <width>21</width>
        <height>20</height>
@@ -6833,7 +7013,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>10</x>
        <y>160</y>
-       <width>191</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -6867,7 +7047,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>10</x>
        <y>280</y>
-       <width>291</width>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -6878,12 +7058,12 @@ color: rgb(255,255,255);</string>
       <string>Run Hysteresis</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_analyseFileName">
+    <widget class="ClickableLineEdit" name="le_analyseFileName">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>50</y>
-       <width>311</width>
+       <x>400</x>
+       <y>100</y>
+       <width>341</width>
        <height>21</height>
       </rect>
      </property>
@@ -6902,7 +7082,7 @@ color: rgb(255,255,255);</string>
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>Name of Analysis file, where the data ist stored</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Analysis file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -6914,9 +7094,9 @@ color: rgb(255,255,255);</string>
     <widget class="Line" name="line_29">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>30</y>
-       <width>311</width>
+       <x>400</x>
+       <y>80</y>
+       <width>341</width>
        <height>21</height>
       </rect>
      </property>
@@ -6930,9 +7110,9 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_openAnalyseWindow">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>130</y>
-       <width>311</width>
+       <x>400</x>
+       <y>30</y>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -6947,33 +7127,12 @@ color: rgb(255,255,255);</string>
       <string>Open Analyse Window</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_selectAnalyseFileName">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>80</y>
-       <width>121</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Selects the file, where the analyse data is stored&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Select File</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_99">
      <property name="geometry">
       <rect>
-       <x>430</x>
-       <y>20</y>
-       <width>161</width>
+       <x>400</x>
+       <y>70</y>
+       <width>191</width>
        <height>21</height>
       </rect>
      </property>
@@ -6983,13 +7142,13 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Select Analyse File</string>
+      <string>Analyse File</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_182">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>220</x>
        <y>220</y>
        <width>51</width>
        <height>21</height>
@@ -7007,7 +7166,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="numberRunsHysterese">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>250</y>
        <width>51</width>
        <height>22</height>
@@ -7053,7 +7212,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_184">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>220</x>
        <y>250</y>
        <width>41</width>
        <height>21</height>
@@ -7071,7 +7230,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="delayTimeHysterese">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>290</x>
        <y>250</y>
        <width>51</width>
        <height>22</height>
@@ -7099,7 +7258,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="azimuthHysterese2">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>290</x>
        <y>220</y>
        <width>51</width>
        <height>22</height>
@@ -7124,7 +7283,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_117">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>340</x>
        <y>250</y>
        <width>21</width>
        <height>20</height>
@@ -7148,7 +7307,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_114">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>180</x>
        <y>220</y>
        <width>21</width>
        <height>20</height>
@@ -7172,7 +7331,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="altitudeHysterese2">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>220</y>
        <width>51</width>
        <height>22</height>
@@ -7200,7 +7359,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_119">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>340</x>
        <y>220</y>
        <width>21</width>
        <height>20</height>
@@ -7242,7 +7401,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_120">
      <property name="geometry">
       <rect>
-       <x>160</x>
+       <x>180</x>
        <y>190</y>
        <width>21</width>
        <height>20</height>
@@ -7266,7 +7425,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_121">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>340</x>
        <y>190</y>
        <width>21</width>
        <height>20</height>
@@ -7290,7 +7449,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="azimuthHysterese1">
      <property name="geometry">
       <rect>
-       <x>240</x>
+       <x>290</x>
        <y>190</y>
        <width>51</width>
        <height>22</height>
@@ -7315,7 +7474,7 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="altitudeHysterese1">
      <property name="geometry">
       <rect>
-       <x>110</x>
+       <x>130</x>
        <y>190</y>
        <width>51</width>
        <height>22</height>
@@ -7343,7 +7502,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_186">
      <property name="geometry">
       <rect>
-       <x>190</x>
+       <x>220</x>
        <y>190</y>
        <width>51</width>
        <height>21</height>
@@ -7363,7 +7522,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>10</x>
        <y>170</y>
-       <width>291</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -7392,22 +7551,6 @@ color: rgb(255,255,255);</string>
       <string>Point 2    Altitude</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runBatchModel">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>340</y>
-       <width>311</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Make Mount Model from Analyse Data</string>
-     </property>
-    </widget>
     <widget class="Line" name="line_52">
      <property name="geometry">
       <rect>
@@ -7434,7 +7577,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>30</y>
-       <width>271</width>
+       <width>341</width>
        <height>21</height>
       </rect>
      </property>
@@ -7450,7 +7593,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>50</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7466,7 +7609,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>130</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7482,7 +7625,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>90</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7516,7 +7659,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>170</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7532,7 +7675,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>210</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7548,7 +7691,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>250</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7564,7 +7707,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>290</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7580,7 +7723,7 @@ color: rgb(255,255,255);</string>
       <rect>
        <x>20</x>
        <y>330</y>
-       <width>131</width>
+       <width>341</width>
        <height>31</height>
       </rect>
      </property>
@@ -7589,6 +7732,22 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="text">
       <string>Relay8</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_59">
+     <property name="geometry">
+      <rect>
+       <x>370</x>
+       <y>10</y>
+       <width>21</width>
+       <height>451</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </widget>
@@ -7612,18 +7771,18 @@ color: rgb(255,255,255);</string>
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_13">
       <attribute name="title">
-       <string>Imaging</string>
+       <string>Image / Relay</string>
       </attribute>
       <widget class="QCheckBox" name="checkFastDownload">
        <property name="geometry">
         <rect>
          <x>40</x>
-         <y>190</y>
-         <width>121</width>
+         <y>110</y>
+         <width>311</width>
          <height>20</height>
         </rect>
        </property>
@@ -7636,18 +7795,18 @@ color: rgb(255,255,255);</string>
         <string>Use Highspeed download of CCD camera if availabe</string>
        </property>
        <property name="text">
-        <string>Fast Download</string>
+        <string>Use Fast Download Mode of Camera</string>
        </property>
        <property name="checked">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
       <widget class="QCheckBox" name="checkKeepImages">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>390</y>
-         <width>231</width>
+         <y>320</y>
+         <width>331</width>
          <height>20</height>
         </rect>
        </property>
@@ -7663,17 +7822,17 @@ color: rgb(255,255,255);</string>
         <enum>Qt::LeftToRight</enum>
        </property>
        <property name="text">
-        <string>Keep Images from Modeling</string>
+        <string>Keep Images from Modeling in File System</string>
        </property>
        <property name="checked">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
       <widget class="QLabel" name="label_38">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>250</y>
+         <y>180</y>
          <width>191</width>
          <height>21</height>
         </rect>
@@ -7690,9 +7849,9 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_173">
        <property name="geometry">
         <rect>
-         <x>160</x>
-         <y>360</y>
-         <width>91</width>
+         <x>330</x>
+         <y>280</y>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -7702,15 +7861,15 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>% of total Size</string>
+        <string>%</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_39">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>160</y>
-         <width>121</width>
+         <y>80</y>
+         <width>251</width>
          <height>21</height>
         </rect>
        </property>
@@ -7720,14 +7879,14 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Exposure Camera</string>
+        <string>Exposure Time of Camera</string>
        </property>
       </widget>
       <widget class="QSpinBox" name="cameraBin">
        <property name="geometry">
         <rect>
-         <x>140</x>
-         <y>130</y>
+         <x>270</x>
+         <y>50</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -7756,29 +7915,11 @@ color: rgb(255,255,255);</string>
         <number>1</number>
        </property>
       </widget>
-      <widget class="QLabel" name="label_102">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>360</y>
-         <width>61</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Subframe</string>
-       </property>
-      </widget>
       <widget class="QDoubleSpinBox" name="scaleSubframe">
        <property name="geometry">
         <rect>
-         <x>100</x>
-         <y>360</y>
+         <x>270</x>
+         <y>280</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -7809,8 +7950,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>100</y>
-         <width>231</width>
+         <y>10</y>
+         <width>331</width>
          <height>21</height>
         </rect>
        </property>
@@ -7826,8 +7967,8 @@ color: rgb(255,255,255);</string>
       <widget class="QDoubleSpinBox" name="isoSetting">
        <property name="geometry">
         <rect>
-         <x>220</x>
-         <y>220</y>
+         <x>250</x>
+         <y>150</y>
          <width>71</width>
          <height>22</height>
         </rect>
@@ -7858,9 +7999,9 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>340</y>
-         <width>131</width>
-         <height>20</height>
+         <y>280</y>
+         <width>231</width>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -7872,7 +8013,7 @@ color: rgb(255,255,255);</string>
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked, subframes were used if possible&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Use Subframe</string>
+        <string>Use Subframe as Part of total Size</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -7882,8 +8023,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
-         <width>311</width>
+         <y>30</y>
+         <width>331</width>
          <height>21</height>
         </rect>
        </property>
@@ -7903,7 +8044,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>220</y>
+         <y>150</y>
          <width>181</width>
          <height>21</height>
         </rect>
@@ -7920,8 +8061,8 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_167">
        <property name="geometry">
         <rect>
-         <x>300</x>
-         <y>280</y>
+         <x>330</x>
+         <y>210</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -7939,7 +8080,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>310</y>
+         <y>240</y>
          <width>181</width>
          <height>21</height>
         </rect>
@@ -7956,7 +8097,7 @@ color: rgb(255,255,255);</string>
       <widget class="Line" name="line_55">
        <property name="geometry">
         <rect>
-         <x>340</x>
+         <x>360</x>
          <y>10</y>
          <width>21</width>
          <height>411</height>
@@ -7973,8 +8114,8 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>130</y>
-         <width>101</width>
+         <y>50</y>
+         <width>251</width>
          <height>21</height>
         </rect>
        </property>
@@ -7984,14 +8125,14 @@ color: rgb(255,255,255);</string>
         </font>
        </property>
        <property name="text">
-        <string>Camera Bin X/Y</string>
+        <string>Camera Binning in  X and Y</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_166">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>280</y>
+         <y>210</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -8008,8 +8149,8 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_164">
        <property name="geometry">
         <rect>
-         <x>200</x>
-         <y>160</y>
+         <x>330</x>
+         <y>80</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -8026,8 +8167,8 @@ color: rgb(255,255,255);</string>
       <widget class="QDoubleSpinBox" name="pixelSize">
        <property name="geometry">
         <rect>
-         <x>240</x>
-         <y>280</y>
+         <x>270</x>
+         <y>210</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -8054,8 +8195,8 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_169">
        <property name="geometry">
         <rect>
-         <x>300</x>
-         <y>310</y>
+         <x>330</x>
+         <y>240</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -8072,8 +8213,8 @@ color: rgb(255,255,255);</string>
       <widget class="QDoubleSpinBox" name="focalLength">
        <property name="geometry">
         <rect>
-         <x>240</x>
-         <y>310</y>
+         <x>270</x>
+         <y>240</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -8100,8 +8241,8 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_165">
        <property name="geometry">
         <rect>
-         <x>300</x>
-         <y>250</y>
+         <x>330</x>
+         <y>180</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -8118,8 +8259,8 @@ color: rgb(255,255,255);</string>
       <widget class="QSpinBox" name="cameraExposure">
        <property name="geometry">
         <rect>
-         <x>140</x>
-         <y>160</y>
+         <x>270</x>
+         <y>80</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -8151,8 +8292,8 @@ color: rgb(255,255,255);</string>
       <widget class="QDoubleSpinBox" name="settlingTime">
        <property name="geometry">
         <rect>
-         <x>240</x>
-         <y>250</y>
+         <x>270</x>
+         <y>180</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -8177,6 +8318,632 @@ color: rgb(255,255,255);</string>
        </property>
        <property name="value">
         <double>1.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay8Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>290</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_162">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>110</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay1Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>80</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay6Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>230</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_148">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>200</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>5</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay4Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>170</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay1Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>80</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_150">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>170</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>4</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_161">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>230</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>6</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_101">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>140</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>3</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay3Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>140</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay7Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>260</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_191">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>260</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>7</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_103">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>20</y>
+         <width>331</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Relay Button Text Setup</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay5Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>200</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_192">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>290</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>8</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay5Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>200</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay3Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>140</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay7Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>260</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_41">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Text</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay2Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>110</y>
+         <width>111</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay6Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>230</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="Line" name="line_22">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>30</y>
+         <width>331</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay2Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>110</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay8Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>290</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_36">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>80</y>
+         <width>31</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>1</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay4Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>170</y>
+         <width>161</width>
+         <height>22</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_195">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Function</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_53">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Relay</string>
        </property>
       </widget>
      </widget>
@@ -8777,13 +9544,13 @@ color: rgb(255,255,255);</string>
      </widget>
      <widget class="QWidget" name="tab_14">
       <attribute name="title">
-       <string>IP Drivers</string>
+       <string>INDI / IP Drivers</string>
       </attribute>
       <widget class="QLabel" name="label_mountMAC">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>80</y>
+         <y>110</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -8845,7 +9612,7 @@ color: rgb(255,255,255);</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>192.168.2.15</string>
+        <string>127.0.0.1</string>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -8861,7 +9628,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>80</y>
+         <y>110</y>
          <width>151</width>
          <height>21</height>
         </rect>
@@ -8903,7 +9670,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>200</y>
+         <y>220</y>
          <width>151</width>
          <height>21</height>
         </rect>
@@ -8929,7 +9696,7 @@ color: rgb(255,255,255);</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>192.168.2.14</string>
+        <string>127.0.0.1</string>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -8945,7 +9712,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>230</y>
+         <y>250</y>
          <width>151</width>
          <height>21</height>
         </rect>
@@ -8987,7 +9754,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>230</y>
+         <y>250</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9023,7 +9790,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>260</y>
+         <y>280</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9062,7 +9829,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>260</y>
+         <y>280</y>
          <width>151</width>
          <height>21</height>
         </rect>
@@ -9104,7 +9871,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>370</y>
+         <y>390</y>
          <width>61</width>
          <height>21</height>
         </rect>
@@ -9129,6 +9896,9 @@ color: rgb(255,255,255);</string>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
+       <property name="inputMask">
+        <string>99999</string>
+       </property>
        <property name="text">
         <string>3495</string>
        </property>
@@ -9141,12 +9911,15 @@ color: rgb(255,255,255);</string>
        <property name="readOnly">
         <bool>false</bool>
        </property>
+       <property name="cursorMoveStyle">
+        <enum>Qt::VisualMoveStyle</enum>
+       </property>
       </widget>
       <widget class="QLabel" name="label_193">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>310</y>
+         <y>330</y>
          <width>171</width>
          <height>21</height>
         </rect>
@@ -9164,7 +9937,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>320</y>
+         <y>340</y>
          <width>331</width>
          <height>21</height>
         </rect>
@@ -9181,11 +9954,11 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkRemoteAccess">
+      <widget class="QCheckBox" name="checkEnableRemoteAccess">
        <property name="geometry">
         <rect>
          <x>30</x>
-         <y>340</y>
+         <y>360</y>
          <width>201</width>
          <height>21</height>
         </rect>
@@ -9209,7 +9982,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
+         <y>80</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9227,7 +10000,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>290</x>
-         <y>110</y>
+         <y>80</y>
          <width>61</width>
          <height>21</height>
         </rect>
@@ -9251,6 +10024,9 @@ color: rgb(255,255,255);</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="inputMask">
+        <string>99999</string>
        </property>
        <property name="text">
         <string>3492</string>
@@ -9324,7 +10100,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>200</y>
+         <y>220</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9342,7 +10118,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>370</y>
+         <y>390</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9356,192 +10132,12 @@ color: rgb(255,255,255);</string>
         <string>Port Number</string>
        </property>
       </widget>
-     </widget>
-     <widget class="QWidget" name="tab_21">
-      <attribute name="title">
-       <string>INDI Drivers</string>
-      </attribute>
-      <widget class="QLineEdit" name="le_INDIServerPort">
-       <property name="geometry">
-        <rect>
-         <x>310</x>
-         <y>80</y>
-         <width>61</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>7624</string>
-       </property>
-       <property name="maxLength">
-        <number>5</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_INDIServerIP">
-       <property name="geometry">
-        <rect>
-         <x>110</x>
-         <y>80</y>
-         <width>131</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>192.168.2.164</string>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_259">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>10</y>
-         <width>201</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Configuration of INDI Subsystem</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_78">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>351</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="Line" name="line_79">
-       <property name="geometry">
-        <rect>
-         <x>380</x>
-         <y>10</y>
-         <width>21</width>
-         <height>411</height>
-        </rect>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_mountIP_3">
-       <property name="geometry">
-        <rect>
-         <x>270</x>
-         <y>80</y>
-         <width>31</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Port: </string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_145">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>80</y>
-         <width>71</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>IP Address:</string>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="le_INDIStatus">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>110</y>
-         <width>261</width>
+         <x>470</x>
+         <y>140</y>
+         <width>251</width>
          <height>21</height>
         </rect>
        </property>
@@ -9581,8 +10177,8 @@ color: rgb(255,255,255);</string>
       <widget class="QLabel" name="label_146">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>110</y>
+         <x>390</x>
+         <y>140</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -9596,113 +10192,11 @@ color: rgb(255,255,255);</string>
         <string>INDI Status</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_INDITelescope">
-       <property name="geometry">
-        <rect>
-         <x>110</x>
-         <y>140</y>
-         <width>261</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>---</string>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_INDICCD">
-       <property name="geometry">
-        <rect>
-         <x>110</x>
-         <y>170</y>
-         <width>261</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>---</string>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_149">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>140</y>
-         <width>71</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Telescope</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_198">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>170</y>
+         <x>390</x>
+         <y>200</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -9716,30 +10210,12 @@ color: rgb(255,255,255);</string>
         <string>CCD</string>
        </property>
       </widget>
-      <widget class="QLabel" name="label_199">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>200</y>
-         <width>71</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Weather</string>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="le_INDIWeather">
        <property name="geometry">
         <rect>
-         <x>110</x>
-         <y>200</y>
-         <width>261</width>
+         <x>470</x>
+         <y>230</y>
+         <width>251</width>
          <height>21</height>
         </rect>
        </property>
@@ -9779,7 +10255,7 @@ color: rgb(255,255,255);</string>
       <widget class="QCheckBox" name="checkEnableINDI">
        <property name="geometry">
         <rect>
-         <x>20</x>
+         <x>400</x>
          <y>40</y>
          <width>201</width>
          <height>21</height>
@@ -9795,6 +10271,312 @@ color: rgb(255,255,255);</string>
        </property>
        <property name="text">
         <string>Enable INDI Client running</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_INDIServerPort">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>100</y>
+         <width>61</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="inputMask">
+        <string>99999</string>
+       </property>
+       <property name="text">
+        <string>7624</string>
+       </property>
+       <property name="maxLength">
+        <number>5</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_INDIServerIP">
+       <property name="geometry">
+        <rect>
+         <x>590</x>
+         <y>70</y>
+         <width>131</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>127.0.0.1</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_199">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>230</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Weather</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_259">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>10</y>
+         <width>201</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Configuration of INDI Subsystem</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_INDICCD">
+       <property name="geometry">
+        <rect>
+         <x>470</x>
+         <y>200</y>
+         <width>251</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>---</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="Line" name="line_78">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>20</y>
+         <width>351</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_INDITelescope">
+       <property name="geometry">
+        <rect>
+         <x>470</x>
+         <y>170</y>
+         <width>251</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>---</string>
+       </property>
+       <property name="maxLength">
+        <number>15</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_149">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>170</y>
+         <width>71</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Telescope</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_mountIP_6">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>100</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Port Number</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_mountIP_3">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>70</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>IP Address</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkEnableRelay">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>190</y>
+         <width>201</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;check, if you would like to remote control MountWizzard for shutdown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Enable Relais Box</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -10870,7 +11652,7 @@ color: rgb(255,255,255);</string>
      </widget>
      <widget class="QWidget" name="tab_7">
       <attribute name="title">
-       <string>UTC / MPC / TLE </string>
+       <string>Uploads</string>
       </attribute>
       <widget class="QPushButton" name="btn_downloadEarthrotation">
        <property name="geometry">
@@ -11330,635 +12112,6 @@ color: rgb(255,255,255);</string>
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab">
-      <attribute name="title">
-       <string>Relay</string>
-      </attribute>
-      <widget class="QLineEdit" name="relay2Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>110</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_101">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>140</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 3</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay5Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>200</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_103">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>191</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay Button Text Setup</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay3Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>140</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_36">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>80</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 1</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay4Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>170</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_148">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>200</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 5</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_22">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>30</y>
-         <width>361</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay6Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>230</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_150">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>170</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 4</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay1Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>80</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_161">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>230</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 6</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_162">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>110</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 2</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay8Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>290</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay7Text">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>260</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_191">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>260</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 7</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_192">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>290</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay 8</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_41">
-       <property name="geometry">
-        <rect>
-         <x>80</x>
-         <y>50</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Text</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_195">
-       <property name="geometry">
-        <rect>
-         <x>230</x>
-         <y>50</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Function</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_59">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>10</y>
-         <width>21</width>
-         <height>411</height>
-        </rect>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay1Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>80</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay2Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>110</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay3Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>140</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay4Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>170</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay5Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>200</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay6Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>230</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay7Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>260</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay8Function">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>290</y>
-         <width>161</width>
-         <height>22</height>
-        </rect>
-       </property>
-      </widget>
-     </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
        <string>Versions</string>
@@ -12246,6 +12399,22 @@ color: rgb(255,255,255);</string>
         <string>Firmware:</string>
        </property>
       </widget>
+      <widget class="QPushButton" name="btn_runBatchModel">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>260</y>
+         <width>311</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Make Mount Model from Analyse Data</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -12523,7 +12692,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>checkKeepRefinement</tabstop>
   <tabstop>btn_runRefinementModel</tabstop>
   <tabstop>btn_runCheckModel</tabstop>
-  <tabstop>btn_cancelModel</tabstop>
+  <tabstop>btn_cancelModel2</tabstop>
   <tabstop>altitudeTimeChange</tabstop>
   <tabstop>azimuthTimeChange</tabstop>
   <tabstop>numberRunsTimeChange</tabstop>
@@ -12538,9 +12707,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_runHystereseModel</tabstop>
   <tabstop>btn_cancelAnalyseModel</tabstop>
   <tabstop>le_analyseFileName</tabstop>
-  <tabstop>btn_selectAnalyseFileName</tabstop>
   <tabstop>btn_openAnalyseWindow</tabstop>
-  <tabstop>btn_runBatchModel</tabstop>
   <tabstop>btn_showActualModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
@@ -12617,14 +12784,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_downloadAsteroidsTNO</tabstop>
   <tabstop>btn_downloadAsteroidsPHA</tabstop>
   <tabstop>btn_mountSave</tabstop>
-  <tabstop>relay1Text</tabstop>
-  <tabstop>relay2Text</tabstop>
-  <tabstop>relay3Text</tabstop>
-  <tabstop>relay4Text</tabstop>
-  <tabstop>relay5Text</tabstop>
-  <tabstop>relay6Text</tabstop>
-  <tabstop>relay7Text</tabstop>
-  <tabstop>relay8Text</tabstop>
   <tabstop>btn_relay5</tabstop>
   <tabstop>btn_relay4</tabstop>
   <tabstop>btn_relay6</tabstop>

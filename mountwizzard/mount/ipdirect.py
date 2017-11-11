@@ -16,6 +16,7 @@
 import logging
 import threading
 import socket
+from baseclasses import checkParamIP
 
 
 class MountIpDirect:
@@ -26,29 +27,61 @@ class MountIpDirect:
         self.app = app
         self.connected = False
         self.socket = None
+        self.checkIP = checkParamIP.CheckIP()
+        self.mountIP = ''
+        self.mountMAC = ''
+        self.mountPort = 0
         self.value_azimuth = 0
         self.value_altitude = 0
         self.tryConnectionCounter = 0
         self.sendCommandLock = threading.Lock()
+        self.initConfig()
+        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
+        self.app.ui.le_mountPort.textChanged.connect(self.setPort)
+        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
 
-    def mountIP(self):
-        value = self.app.ui.le_mountIP.text().split('.')
-        if len(value) != 4:
-            self.logger.warning('wrong input value:{0}'.format(value))
-            self.app.messageQueue.put('Wrong IP configuration for mount, please check!')
-            return
-        v = []
-        for i in range(0, 4):
-            v.append(int(value[i]))
-        ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
-        return ip
+    def initConfig(self):
+        try:
+            if 'MountIP' in self.app.config:
+                self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
+                self.mountIP = self.app.config['MountIP']
+            if 'MountPort' in self.app.config:
+                self.app.ui.le_mountPort.setText(self.app.config['MountPort'])
+                self.mountPort = int(float(self.app.config['MountPort']))
+            if 'MountMAC' in self.app.config:
+                self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
+                self.mountMAC = self.app.config['MountMAC']
+        except Exception as e:
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
+
+    def storeConfig(self):
+        self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
+        self.app.config['MountPort'] = self.app.ui.le_mountPort.text()
+        self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
+
+    def setPort(self):
+        valid, value = self.checkIP.checkPort(self.app.ui.le_mountPort)
+        if valid:
+            self.mountPort = value
+
+    def setIP(self):
+        valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+        if valid:
+            self.mountIP = value
+
+    def setMAC(self):
+        valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
+        if valid:
+            self.mountMAC = value
 
     def connect(self):
         try:
             if self.socket is None:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.settimeout(60)
-            self.socket.connect((self.mountIP(), self.PORT))
+            self.socket.connect((self.mountIP, self.mountPort))
             self.connected = True
             self.tryConnectionCounter = 0
         except ConnectionRefusedError:
@@ -58,7 +91,7 @@ class MountIpDirect:
         except Exception as e:
             self.tryConnectionCounter += 1
             if self.tryConnectionCounter < 3:
-                self.logger.warning('Direct mount connection is broken')
+                self.logger.warning('Direct mount connection is broken to Host:{0}:{1}'.format(self.mountIP, self.mountPort))
             elif self.tryConnectionCounter == 3:
                 self.logger.error('No connection to Mount possible - stop logging this connection error')
             else:

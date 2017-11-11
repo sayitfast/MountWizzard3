@@ -90,7 +90,7 @@ class Modeling(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runBaseModel,
                             'Method': self.modelStandard.runBaseModel,
-                            'Cancel': self.app.ui.btn_cancelModel
+                            'Cancel': self.app.ui.btn_cancelModel1
                         }
                     ]
                 },
@@ -100,7 +100,7 @@ class Modeling(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runRefinementModel,
                             'Method': self.modelStandard.runRefinementModel,
-                            'Cancel': self.app.ui.btn_cancelModel
+                            'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
                 },
@@ -110,7 +110,7 @@ class Modeling(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runBoostModel,
                             'Method': self.modelBoost.runModel,
-                            'Cancel': self.app.ui.btn_cancelModel
+                            'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
                 },
@@ -121,7 +121,6 @@ class Modeling(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_plateSolveSync,
                             'Method': self.modelStandard.plateSolveSync,
                             'Parameter': ['self.app.ui.checkSimulation.isChecked()'],
-                            'Cancel': self.app.ui.btn_cancelModel
                         }
                     ]
                 },
@@ -131,7 +130,7 @@ class Modeling(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runBatchModel,
                             'Method': self.modelStandard.runBatchModel,
-                            'Cancel': self.app.ui.btn_cancelModel
+                            'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
                 },
@@ -141,7 +140,7 @@ class Modeling(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runCheckModel,
                             'Method': self.modelStandard.runCheckModel,
-                            'Cancel': self.app.ui.btn_cancelModel
+                            'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
                 },
@@ -395,8 +394,8 @@ class Modeling(PyQt5.QtCore.QObject):
                 time.sleep(1)
                 if 'Button' in work:
                     work['Button'].setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelModel.setStyleSheet(self.DEFAULT)
-                    self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.DEFAULT)
+                if 'Cancel' in work:
+                    work['Cancel'].setStyleSheet(self.DEFAULT)
                 self.signalModelRedraw.emit(True)
                 PyQt5.QtWidgets.QApplication.processEvents()
 

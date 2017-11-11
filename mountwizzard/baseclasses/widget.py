@@ -25,6 +25,9 @@ from PyQt5.QtCore import *
 class MwWidget(QWidget):
 
     logger = logging.getLogger(__name__)
+    TEXT_COLOR_BLUE = 'background-color: rgb(25, 25, 25); color: rgb(32, 144, 192);'
+    TEXT_COLOR_RED = 'background-color: rgb(25, 25, 25); color: rgb(255, 0, 0);'
+    TEXT_COLOR_DEFAULT = 'background-color: rgb(25, 25, 25); color: rgb(192, 192, 192);'
     BLUE = 'background-color: rgb(42, 130, 218);'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
@@ -49,13 +52,10 @@ class MwWidget(QWidget):
 
     def __init__(self):
         # noinspection PyArgumentList
-        super(MwWidget, self).__init__()                                                                                    # Initialize Class for UI
-        self.palette = QPalette()                                                                                           # title text
-        self.moving = False                                                                                                 # check if window moves with mouse pointer
-        self.offset = None                                                                                                  # check offset from mouse pick point to window 0,0 reference point
-        self.modifiers = None
+        super(MwWidget, self).__init__()
+        self.palette = QPalette()
         self.showStatus = False
-        self.initUI()                                                                                                       # adapt the window to our purpose
+        self.initUI()
 
     def closeEvent(self, closeEvent):
         self.showStatus = False

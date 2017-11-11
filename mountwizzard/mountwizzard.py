@@ -76,6 +76,7 @@ class MountWizzardApp(widget.MwWidget):
 
     def __init__(self):
         super(MountWizzardApp, self).__init__()
+        self.setObjectName("Main")
         # setting up communication queues for inter thread communication
         self.mountCommandQueue = Queue()
         self.modelLogQueue = Queue()
@@ -101,9 +102,11 @@ class MountWizzardApp(widget.MwWidget):
         # instantiating all subclasses and connecting thread signals
         self.relays = relays.Relays(self)
         self.mount = mountThread.Mount(self)
+        self.mount.setObjectName("Mount")
         self.mount.signalMountConnected.connect(self.setMountStatus)
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = QThread()
+        self.INDIthread.setObjectName("INDI")
         self.INDIworker.moveToThread(self.INDIthread)
         # noinspection PyUnresolvedReferences
         self.INDIthread.started.connect(self.INDIworker.run)
@@ -112,6 +115,7 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() == 'Windows':
             self.workerAscomEnvironment = ascomEnvirThread.AscomEnvironment(self)
             self.threadAscomEnvironment = PyQt5.QtCore.QThread()
+            self.threadAscomEnvironment.setObjectName("Environ")
             self.workerAscomEnvironment.moveToThread(self.threadAscomEnvironment)
             # noinspection PyUnresolvedReferences
             self.threadAscomEnvironment.started.connect(self.workerAscomEnvironment.run)
@@ -122,6 +126,7 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() == 'Windows':
             self.workerAscomDome = ascomDomeThread.AscomDome(self)
             self.threadAscomDome = PyQt5.QtCore.QThread()
+            self.threadAscomDome.setObjectName("Dome")
             self.workerAscomDome.moveToThread(self.threadAscomDome)
             # noinspection PyUnresolvedReferences
             self.threadAscomDome.started.connect(self.workerAscomDome.run)
@@ -131,6 +136,7 @@ class MountWizzardApp(widget.MwWidget):
         # threading for remote shutdown
         self.workerRemote = remoteThread.Remote(self)
         self.threadRemote = PyQt5.QtCore.QThread()
+        self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
         # noinspection PyUnresolvedReferences
         self.threadRemote.started.connect(self.workerRemote.run)
@@ -142,14 +148,15 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() == 'Windows':
             self.workerUpload = uploadThread.UpdaterAuto(self)
             self.threadUpload = PyQt5.QtCore.QThread()
+            self.threadUpload.setObjectName("Upload")
             self.workerUpload.moveToThread(self.threadUpload)
             # noinspection PyUnresolvedReferences
             self.threadUpload.started.connect(self.workerUpload.run)
             self.workerUpload.finished.connect(self.workerUploadStop)
             self.threadUpload.start()
-
         self.workerModeling = modelThread.Modeling(self)
         self.threadModeling = PyQt5.QtCore.QThread()
+        self.threadModeling.setObjectName("Model")
         self.workerModeling.moveToThread(self.threadModeling)
         # noinspection PyUnresolvedReferences
         self.threadModeling.started.connect(self.workerModeling.run)
@@ -157,7 +164,6 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModeling.signalModelConnected.connect(self.setCameraPlateStatus)
         # thread start will be done when enabled
         self.threadModeling.start()
-
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
@@ -165,7 +171,6 @@ class MountWizzardApp(widget.MwWidget):
         self.mount.start()
         if platform.system() == 'Windows':
             self.checkASCOM()
-
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
         self.initConfig()
@@ -258,7 +263,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModeling.wait()
 
     def enableDisableRemoteAccess(self):
-        if self.ui.checkRemoteAccess.isChecked():
+        if self.ui.checkEnableRemoteAccess.isChecked():
             self.messageQueue.put('Remote Access enabled')
             self.threadRemote.start()
         else:
@@ -305,17 +310,15 @@ class MountWizzardApp(widget.MwWidget):
         # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
         # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
         # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
-        self.ui.btn_cancelModel.clicked.connect(lambda: self.workerModeling.cancelModeling())
+        self.ui.btn_cancelModel1.clicked.connect(lambda: self.workerModeling.cancelModeling())
+        self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModeling.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModeling.cancelAnalyseModeling())
-
         self.ui.le_horizonPointsFileName.doubleClicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
-
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
-
-        self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
+        self.ui.le_analyseFileName.doubleClicked.connect(self.selectAnalyseFileName)
         self.ui.btn_showActualModel.clicked.connect(lambda: self.mountCommandQueue.put('ShowAlignmentModel'))
         self.ui.checkPolarPlot.clicked.connect(self.setShowAlignmentModelMode)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
@@ -337,15 +340,11 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
-        self.ui.checkRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
+        self.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
-        # switch on and off INDI subsystem by setting INDICamera available to True (than it will occur in Imaging as well
-        if not self.workerModeling.INDICamera.appAvailable:
-            self.ui.checkEnableINDI.setChecked(False)
-            self.ui.settingsTabWidget.removeTab(3)
         if self.ui.checkEnableINDI.isChecked():
             self.INDIthread.start()
         else:
@@ -1006,7 +1005,7 @@ if __name__ == "__main__":
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s][%(thread)5d] - %(message)s',
+                        format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
     if not os.path.isdir(os.getcwd() + '/analysedata'):

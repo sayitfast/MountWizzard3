@@ -14,7 +14,7 @@
 import logging
 import PyQt5
 import socket
-import time
+from baseclasses import checkParamIP
 
 
 class Remote(PyQt5.QtCore.QObject):
@@ -32,33 +32,33 @@ class Remote(PyQt5.QtCore.QObject):
         self._mutex = PyQt5.QtCore.QMutex()
 
         self.app = app
+        self.checkIP = checkParamIP.CheckIP()
         self.remotePort = 0
         self.tcpServer = None
         self.clientConnection = None
         self.initConfig()
-        self.app.ui.le_remotePort.textChanged.connect(self.setRemotePort)
+        self.app.ui.le_remotePort.textChanged.connect(self.setPort)
 
     def initConfig(self):
         try:
             if 'RemotePort' in self.app.config:
                 self.app.ui.le_remotePort.setText(self.app.config['RemotePort'])
+                self.remotePort = self.app.config['RemotePort']
             if 'CheckRemoteAccess' in self.app.config:
-                self.app.ui.checkRemoteAccess.setChecked(self.app.config['CheckRemoteAccess'])
+                self.app.ui.checkEnableRemoteAccess.setChecked(self.app.config['CheckRemoteAccess'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            self.setRemotePort()
+            self.setPort()
 
     def storeConfig(self):
-        self.app.config['RemotePort'] = self.app.ui.le_remotePort.Text()
-        self.app.config['CheckRemoteAccess'] = self.app.ui.checkRemoteAccess.isChecked()
+        self.app.config['RemotePort'] = self.remotePort
+        self.app.config['CheckRemoteAccess'] = self.app.ui.checkEnableRemoteAccess.isChecked()
 
-    def setRemotePort(self):
-        if self.app.ui.le_remotePort.text().strip() != '':
-            self.remotePort = int(self.app.ui.le_remotePort.text())
-        else:
-            self.logger.warning('Empty input value for remote port')
-            self.app.messageQueue.put('No remote port configured')
+    def setPort(self):
+        valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)
+        if valid:
+            self.remotePort = value
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop

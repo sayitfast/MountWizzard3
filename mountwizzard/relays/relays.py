@@ -15,6 +15,7 @@ import logging
 import time
 import requests
 import urllib
+from baseclasses import checkParamIP
 
 
 class Relays:
@@ -25,10 +26,9 @@ class Relays:
         self.stat = [False, False, False, False, False, False, False, False, False]
         self.username = ''
         self.password = ''
-        self.ip = None
+        self.relayIP = ''
+        self.checkIP = checkParamIP.CheckIP()
         self.initConfig()
-        self.relayIP()
-        self.connected = self.checkAppStatus()
         self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
         self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
         self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))
@@ -45,7 +45,8 @@ class Relays:
         self.app.ui.relay6Text.textChanged.connect(lambda: self.app.ui.btn_relay6.setText(self.app.ui.relay6Text.text()))
         self.app.ui.relay7Text.textChanged.connect(lambda: self.app.ui.btn_relay7.setText(self.app.ui.relay7Text.text()))
         self.app.ui.relay8Text.textChanged.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
-        self.app.ui.le_relayIP.textChanged.connect(self.relayIP)
+        self.app.ui.le_relayIP.textChanged.connect(self.setIP)
+        self.connected = self.checkAppStatus()
 
     def initConfig(self):                                                                                                   # index 0 is first entry etc.
         self.app.ui.relay1Function.addItem('Switch - Toggle')
@@ -65,8 +66,6 @@ class Relays:
         self.app.ui.relay8Function.addItem('Switch - Toggle')
         self.app.ui.relay8Function.addItem('Pulse 1 sec')
         try:
-            if 'RelayIP' in self.app.config:
-                self.app.ui.le_relayIP.setText(self.app.config['RelayIP'])
             if 'Relay1Function' in self.app.config:
                 self.app.ui.relay1Function.setCurrentIndex(self.app.config['Relay1Function'])
             if 'Relay2Function' in self.app.config:
@@ -107,6 +106,9 @@ class Relays:
             if 'Relay8Text' in self.app.config:
                 self.app.ui.relay8Text.setText(self.app.config['Relay8Text'])
                 self.app.ui.btn_relay8.setText(self.app.config['Relay8Text'])
+            if 'RelayIP' in self.app.config:
+                self.app.ui.le_relayIP.setText(self.app.config['RelayIP'])
+                self.relayIP = self.app.config['RelayIP']
             if 'RelayUsername' in self.app.config:
                 self.app.ui.le_relayUsername.setText(self.app.config['RelayUsername'])
             if 'RelayPassword' in self.app.config:
@@ -117,7 +119,7 @@ class Relays:
             pass
 
     def storeConfig(self):
-        self.app.config['RelayIP'] = self.app.ui.le_relayIP.text()
+        self.app.config['RelayIP'] = self.relayIP
         self.app.config['Relay1Function'] = self.app.ui.relay1Function.currentIndex()
         self.app.config['Relay2Function'] = self.app.ui.relay2Function.currentIndex()
         self.app.config['Relay3Function'] = self.app.ui.relay3Function.currentIndex()
@@ -137,40 +139,26 @@ class Relays:
         self.app.config['RelayUsername'] = self.app.ui.le_relayUsername.text()
         self.app.config['RelayPassword'] = self.app.ui.le_relayPassword.text()
 
-    def relayIP(self):
-        if self.app.ui.le_relayIP.text().strip() != '':
-            value = self.app.ui.le_relayIP.text().strip().split('.')
-            if len(value) != 4:
-                self.logger.warning('wrong input value:{0}'.format(value))
-                self.app.messageQueue.put('Wrong IP configuration for relay, please check!')
-                return
-            v = []
-            for i in range(0, 4):
-                try:
-                    v.append(int(value[i]))
-                    ip = '{0:d}.{1:d}.{2:d}.{3:d}'.format(v[0], v[1], v[2], v[3])
-                    self.ip = ip
-                except Exception as e:
-                    pass
-        else:
-            self.logger.warning('empty input value for relay')
-            self.app.messageQueue.put('No relay IP configured')
+    def setIP(self):
+        valid, value = self.checkIP.checkIP(self.app.ui.le_relayIP)
+        if valid:
+            self.relayIP = value
 
     def checkAppStatus(self):
         connected = False
-        if self.ip:
+        if self.relayIP:
             try:
-                urllib.request.urlopen('http://' + self.ip, None, 2)
-                self.geturl('http://' + self.ip)
+                urllib.request.urlopen('http://' + self.relayIP, None, 2)
+                self.geturl('http://' + self.relayIP)
                 connected = True
             except urllib.error.HTTPError as e:
                 if e.code == 401:
-                    self.logger.info('relaybox present under ip: {0}'.format(self.ip))
+                    self.logger.info('relaybox present under ip: {0}'.format(self.relayIP))
                     connected = True
                 else:
                     self.logger.error('connection error: {0}'.format(e))
             except urllib.request.URLError:
-                self.logger.info('there is no relaybox present under ip: {0}'.format(self.ip))
+                self.logger.info('there is no relaybox present under ip: {0}'.format(self.relayIP))
             except Exception as e:
                 self.logger.error('connection error: {0}'.format(e))
             finally:
@@ -275,9 +263,9 @@ class Relays:
 
     def pulse(self, relayNumber):
         try:
-            self.geturl('http://' + self.ip + '/FF0{0:1d}01'.format(relayNumber))
+            self.geturl('http://' + self.relayIP + '/FF0{0:1d}01'.format(relayNumber))
             time.sleep(1)
-            self.geturl('http://' + self.ip + '/FF0{0:1d}00'.format(relayNumber))
+            self.geturl('http://' + self.relayIP + '/FF0{0:1d}00'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
             self.logger.error('relay:{0}, error:{1}'.format(relayNumber, e))
@@ -286,7 +274,7 @@ class Relays:
 
     def switch(self, relayNumber):
         try:
-            self.geturl('http://' + self.ip + '/relays.cgi?relay={0:1d}'.format(relayNumber))
+            self.geturl('http://' + self.relayIP + '/relays.cgi?relay={0:1d}'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
             self.logger.error('relay:{0}, error:{1}'.format(relayNumber, e))
@@ -295,7 +283,7 @@ class Relays:
 
     def requestStatus(self):
         try:
-            result = self.geturl('http://' + self.ip + '/status.xml')
+            result = self.geturl('http://' + self.relayIP + '/status.xml')
             self.setStatus(result.content.decode())
         except Exception as e:
             self.logger.error('error {0}'.format(e))
@@ -304,7 +292,7 @@ class Relays:
 
     def switchAllOff(self):
         try:
-            self.geturl('http://' + self.ip + '/FFE000')
+            self.geturl('http://' + self.relayIP + '/FFE000')
             self.requestStatus()
         except Exception as e:
             self.logger.error('error {0}'.format(e))
