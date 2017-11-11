@@ -211,7 +211,7 @@ class Mount(PyQt5.QtCore.QThread):
                         self.saveDSO2Model()
                         self.app.ui.btn_saveDSO2Model.setStyleSheet(self.DEFAULT)
                     elif command == 'SetRefractionParameter':
-                        self.setRefractionParameter()
+                        self.setRefractionParam()
                     elif command == 'FLIP':
                         self.flipMount()
                     elif command == 'SetupAscomDriver':
@@ -591,7 +591,7 @@ class Mount(PyQt5.QtCore.QThread):
             if not self.app.workerModeling.modelData:
                 self.app.messageQueue.put('No data file for DSO2')
 
-    def setRefractionParameter(self):
+    def setRefractionParam(self):
         if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
             pressure = self.app.workerAscomEnvironment.data['Pressure']
             temperature = self.app.workerAscomEnvironment.data['Temperature']
@@ -657,11 +657,11 @@ class Mount(PyQt5.QtCore.QThread):
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
             # if there is no tracking, than updating is good
             if self.data['Status'] != 0:
-                self.setRefractionParameter()
+                self.setRefractionParam()
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
             if self.app.workerModeling.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:
-                self.setRefractionParameter()
+                self.setRefractionParam()
         self.data['SlewRate'] = self.mountHandler.sendCommand('GMs')
         self.signalMountTrackPreview.emit()
 

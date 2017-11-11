@@ -11,16 +11,18 @@
 # Licence APL2.0
 #
 ############################################################
-import platform
-import os
-import sys
-import logging
-import logging.handlers
 import datetime
 import json
+import logging
+import logging.handlers
 # numerics
 import math
+import os
+import platform
+import sys
+
 import numpy
+
 if platform.system() == 'Windows':
     # application handling
     from winreg import *
@@ -44,6 +46,7 @@ from widgets import modelplotWindow
 from widgets import imageWindow
 from widgets import analyseWindow
 from gui import wizzard_main_ui
+
 # modeling
 from modeling import modelThread
 # import mount functions classes
@@ -304,11 +307,14 @@ class MountWizzardApp(widget.MwWidget):
         # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
         self.ui.btn_cancelModel.clicked.connect(lambda: self.workerModeling.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModeling.cancelAnalyseModeling())
-        self.ui.btn_selectHorizonPointsFileName.clicked.connect(self.modelWindow.selectHorizonPointsFileName)
+
+        self.ui.le_horizonPointsFileName.doubleClicked.connect(self.modelWindow.selectHorizonPointsFileName)
+        self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
+
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
-        self.ui.btn_selectModelPointsFileName.clicked.connect(self.selectModelPointsFileName)
+
         self.ui.btn_selectAnalyseFileName.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_showActualModel.clicked.connect(lambda: self.mountCommandQueue.put('ShowAlignmentModel'))
         self.ui.checkPolarPlot.clicked.connect(self.setShowAlignmentModelMode)

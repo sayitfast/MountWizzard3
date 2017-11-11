@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -3777,32 +3777,16 @@
      </property>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_6">
+   <widget class="QWidget" name="tab_15">
     <attribute name="title">
-     <string>Make Mount Model</string>
+     <string>Base Model</string>
     </attribute>
-    <widget class="QPushButton" name="btn_runBaseModel">
+    <widget class="QCheckBox" name="checkClearModelFirst">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>400</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Runs the base model, if ther are any points</string>
-     </property>
-     <property name="text">
-      <string>Run Base Model</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkUseBlindSolve">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>220</y>
-       <width>131</width>
+       <x>20</x>
+       <y>380</y>
+       <width>241</width>
        <height>20</height>
       </rect>
      </property>
@@ -3815,47 +3799,96 @@
       <string>If checked, a blind solve would be made (needs internet connection)</string>
      </property>
      <property name="text">
-      <string>Use Blind Solve</string>
+      <string>Clear model before start BASE model</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_clearAlignmentModel">
+    <widget class="QLabel" name="label_109">
      <property name="geometry">
       <rect>
-       <x>490</x>
-       <y>320</y>
-       <width>251</width>
-       <height>31</height>
+       <x>480</x>
+       <y>140</y>
+       <width>21</width>
+       <height>20</height>
       </rect>
      </property>
-     <property name="toolTip">
-      <string>Clear the model in mount. Can't be revised.</string>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
-      <string>Clear Pointing Model in Mount</string>
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadBasePoints">
+    <widget class="QLabel" name="label_116">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>50</y>
-       <width>131</width>
-       <height>31</height>
+       <x>290</x>
+       <y>20</y>
+       <width>211</width>
+       <height>21</height>
       </rect>
      </property>
-     <property name="toolTip">
-      <string>Shows the base points of model point file</string>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="text">
-      <string>Basepoints from File</string>
+      <string>Generate Base Points</string>
      </property>
     </widget>
-    <widget class="Line" name="line_24">
+    <widget class="QLabel" name="label_171">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>190</y>
-       <width>131</width>
+       <x>290</x>
+       <y>170</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Azimuth</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_170">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>140</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Altitude</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_27">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>80</y>
+       <width>211</width>
        <height>21</height>
       </rect>
      </property>
@@ -3866,26 +3899,10 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_generateBasePoints">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>131</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Generates Basepoint based on Altitude and AZ</string>
-     </property>
-     <property name="text">
-      <string>Generate Basepoints</string>
-     </property>
-    </widget>
     <widget class="QDoubleSpinBox" name="azimuthBase">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>430</x>
        <y>170</y>
        <width>51</width>
        <height>22</height>
@@ -3907,10 +3924,103 @@
       <double>120.000000000000000</double>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_runBaseModel">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>240</y>
+       <width>221</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Runs the base model, if ther are any points</string>
+     </property>
+     <property name="text">
+      <string>Run Base Model</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_35">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>30</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_110">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>170</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_generateBasePoints">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>100</y>
+       <width>211</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Generates Basepoint based on Altitude and AZ</string>
+     </property>
+     <property name="text">
+      <string>Generate Basepoints</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseBlindSolve">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>410</y>
+       <width>231</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Use blind solver for Base points</string>
+     </property>
+    </widget>
     <widget class="QDoubleSpinBox" name="altitudeBase">
      <property name="geometry">
       <rect>
-       <x>70</x>
+       <x>430</x>
        <y>140</y>
        <width>51</width>
        <height>22</height>
@@ -3935,114 +4045,60 @@
       <double>70.000000000000000</double>
      </property>
     </widget>
-    <widget class="QLabel" name="label_170">
+    <widget class="QPushButton" name="btn_loadBasePoints">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>140</y>
-       <width>51</width>
-       <height>21</height>
+       <x>290</x>
+       <y>50</y>
+       <width>211</width>
+       <height>31</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
+     <property name="toolTip">
+      <string>Shows the base points of model point file</string>
      </property>
      <property name="text">
-      <string>Altitude</string>
+      <string>Basepoints from File</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_171">
+    <widget class="Line" name="line_39">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>170</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Azimuth</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_109">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>140</y>
+       <x>260</x>
+       <y>10</y>
        <width>21</width>
-       <height>20</height>
+       <height>461</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
      </property>
-     <property name="text">
-      <string>°</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
-    <widget class="QLabel" name="label_110">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>170</y>
-       <width>21</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>°</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="wordWrap">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_116">
+    <widget class="QPushButton" name="btn_clearAlignmentModel">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
-       <width>131</width>
-       <height>21</height>
+       <y>270</y>
+       <width>251</width>
+       <height>31</height>
       </rect>
      </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
+     <property name="toolTip">
+      <string>Clear the model in mount. Can't be revised.</string>
      </property>
      <property name="text">
-      <string>Generate Base Points</string>
+      <string>Clear Pointing Model in Mount</string>
      </property>
     </widget>
-    <widget class="Line" name="line_35">
+    <widget class="Line" name="line_45">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
-       <width>131</width>
+       <y>300</y>
+       <width>251</width>
        <height>21</height>
       </rect>
      </property>
@@ -4053,12 +4109,33 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="Line" name="line_36">
+    <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>320</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Auto delete points below horizon</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_30">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>240</y>
-       <width>131</width>
+       <y>120</y>
+       <width>251</width>
        <height>21</height>
       </rect>
      </property>
@@ -4067,12 +4144,33 @@
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkSortPoints">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>350</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Auto sort points East / West</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_openModelingPlotWindow">
      <property name="geometry">
       <rect>
-       <x>490</x>
+       <x>10</x>
        <y>50</y>
        <width>251</width>
        <height>31</height>
@@ -4089,6 +4187,1074 @@ color: rgb(255,255,255);</string>
       <string>Open Modeling Plot Window</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_113">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>161</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>General Functions</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_deletePoints">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>251</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Clear Points in Modeling Plot Window</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_41">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_plateSolveSync">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>251</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image, Platesolve and Sync the model of the mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Plate Solve and Sync Model</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_openImageWindow">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>160</y>
+       <width>251</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(16, 72, 96);
+color: rgb(255,255,255);</string>
+     </property>
+     <property name="text">
+      <string>Open Image Window</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkSimulation">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>440</y>
+       <width>241</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Run in simulation mode</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_cancelModelBase">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>240</y>
+       <width>221</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Cancel Model Run</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>320</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Number of Stars</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorAz">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>410</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Polar Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorPosAngle">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>350</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.N</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignKnobTurnAz">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>440</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Turns azimuth ajustment knobs for correction (left if polar axis has to be moved to the left) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorPolar">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>380</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Polar Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>350</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>RMS</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_153">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>380</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Ortho Align Error</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignNumberTerms">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>320</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Terms in actual used pointing model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignKnobTurnAlt">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>440</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Turns altitude ajustment knobs for correction (down if the polar axis has to be moved downwards) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_156">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>440</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Turn Knob AZ</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_158">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>410</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>AZ Pointing</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignNumberStars">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>320</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Number of alignment stars in actual used pointing model</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorRMS">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>350</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>NN.N</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_155">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>290</y>
+       <width>291</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Aligment Info from Mount Computer</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorOrtho">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>380</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Ortho Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_159">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>410</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>ALT Pointing</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>380</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Polar Align Error </string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignErrorAlt">
+     <property name="geometry">
+      <rect>
+       <x>640</x>
+       <y>410</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Ortho Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>HH:MM:SS</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_154">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>320</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Number of Terms</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_157">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>440</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Turn Knob Alt</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_54">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>300</y>
+       <width>461</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_160">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>350</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>PosAngle</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_62">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>210</y>
+       <width>251</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_122">
+     <property name="geometry">
+      <rect>
+       <x>660</x>
+       <y>200</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseFileHorizonLine">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>140</y>
+       <width>221</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use horizon mask file in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Use Horizon Mask File</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="Line" name="line_58">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>90</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>200</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Value for minimum altitude for horizon mask&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>90.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>20.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="Line" name="line_57">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>30</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_147">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>20</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Model Points File (Base &amp; Refine) </string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>170</y>
+       <width>221</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use minimum altitude for horizon mask in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Use Minumum Altitude as Horizon Mask</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_194">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>80</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Horizon Mask</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_63">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>10</y>
+       <width>21</width>
+       <height>211</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_201">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>200</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Altitude</string>
+     </property>
+    </widget>
+    <widget class="ClickableLineEdit" name="le_modelPointsFileName">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>50</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Name of Analysis file, where the data ist stored</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="ClickableLineEdit" name="le_horizonPointsFileName">
+     <property name="geometry">
+      <rect>
+       <x>540</x>
+       <y>110</y>
+       <width>211</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Name of Analysis file, where the data ist stored</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_6">
+    <attribute name="title">
+     <string>Make Mount Model</string>
+    </attribute>
     <widget class="QPushButton" name="btn_generateGridPoints">
      <property name="geometry">
       <rect>
@@ -4386,22 +5552,6 @@ color: rgb(255,255,255);</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="Line" name="line_27">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>131</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
     <widget class="Line" name="line_28">
      <property name="geometry">
       <rect>
@@ -4434,22 +5584,6 @@ color: rgb(255,255,255);</string>
       <string>Generate DSO Track</string>
      </property>
     </widget>
-    <widget class="Line" name="line_39">
-     <property name="geometry">
-      <rect>
-       <x>150</x>
-       <y>10</y>
-       <width>21</width>
-       <height>421</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
     <widget class="Line" name="line_40">
      <property name="geometry">
       <rect>
@@ -4466,40 +5600,6 @@ color: rgb(255,255,255);</string>
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
-    <widget class="QLabel" name="label_113">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>20</y>
-       <width>161</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>General Functions</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_41">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>30</y>
-       <width>251</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
     <widget class="Line" name="line_42">
      <property name="geometry">
       <rect>
@@ -4514,38 +5614,6 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_deletePoints">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>130</y>
-       <width>251</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Clear Points in Modeling Plot Window</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_runAllModel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>440</y>
-       <width>441</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run base and refinement model directly after another&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Run Base and Refinement Model together</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="numberHoursDSO">
@@ -4695,46 +5763,6 @@ color: rgb(255,255,255);</string>
       <double>0.000000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_plateSolveSync">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>180</y>
-       <width>251</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image, Platesolve and Sync the model of the mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Plate Solve and Sync Model</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkClearModelFirst">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>370</y>
-       <width>121</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Clear Model first</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkKeepRefinement">
      <property name="geometry">
       <rect>
@@ -4754,38 +5782,6 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="text">
       <string>Keep Refinement Model</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_30">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>160</y>
-       <width>251</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="Line" name="line_38">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>300</y>
-       <width>251</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <widget class="QLabel" name="label_180">
@@ -4886,105 +5882,6 @@ color: rgb(255,255,255);</string>
       <string>Alt Min</string>
      </property>
     </widget>
-    <widget class="Line" name="line_45">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>210</y>
-       <width>251</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_openImageWindow">
-     <property name="geometry">
-      <rect>
-       <x>490</x>
-       <y>90</y>
-       <width>251</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 96);
-color: rgb(255,255,255);</string>
-     </property>
-     <property name="text">
-      <string>Open Image Window</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
-     <property name="geometry">
-      <rect>
-       <x>500</x>
-       <y>230</y>
-       <width>241</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Delete points below horizon mask</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkSortPoints">
-     <property name="geometry">
-      <rect>
-       <x>500</x>
-       <y>250</y>
-       <width>241</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Sort points East / West</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkSimulation">
-     <property name="geometry">
-      <rect>
-       <x>500</x>
-       <y>280</y>
-       <width>241</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Do Simulation</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_runBoostModel">
      <property name="geometry">
       <rect>
@@ -5006,115 +5903,13 @@ color: rgb(255,255,255);</string>
     <attribute name="title">
      <string>Manage Mount Models</string>
     </attribute>
-    <widget class="QLineEdit" name="le_alignNumberStars">
-     <property name="geometry">
-      <rect>
-       <x>570</x>
-       <y>50</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>Number of alignment stars in actual used pointing model</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>NN</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>50</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Number Stars</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignErrorRMS">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>80</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>NN.N</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
     <widget class="QTextBrowser" name="alignErrorStars">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>120</y>
-       <width>411</width>
-       <height>351</height>
+       <x>460</x>
+       <y>290</y>
+       <width>291</width>
+       <height>181</height>
       </rect>
      </property>
      <property name="font">
@@ -5131,24 +5926,6 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="sizeAdjustPolicy">
       <enum>QAbstractScrollArea::AdjustToContents</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>80</y>
-       <width>71</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>RMS</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_showActualModel">
@@ -5227,7 +6004,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>240</y>
+       <y>50</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5243,7 +6020,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>240</y>
+       <y>50</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5259,7 +6036,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>220</y>
+       <y>30</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -5275,7 +6052,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>360</y>
+       <y>170</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5291,7 +6068,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>360</y>
+       <y>170</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5357,7 +6134,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>210</y>
+       <y>20</y>
        <width>241</width>
        <height>21</height>
       </rect>
@@ -5375,7 +6152,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>280</y>
+       <y>90</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5391,7 +6168,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>280</y>
+       <y>90</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5407,7 +6184,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>240</y>
+       <y>50</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -5431,7 +6208,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>280</y>
+       <y>90</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -5455,7 +6232,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>360</y>
+       <y>170</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -5479,7 +6256,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>400</y>
+       <y>210</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5495,7 +6272,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>400</y>
+       <y>210</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5511,7 +6288,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>440</y>
+       <y>250</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5527,7 +6304,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>440</y>
+       <y>250</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5543,7 +6320,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>400</y>
+       <y>210</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -5567,7 +6344,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>440</y>
+       <y>250</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -5591,7 +6368,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>320</y>
+       <y>130</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5607,7 +6384,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>320</y>
+       <y>130</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -5631,7 +6408,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>320</y>
+       <y>130</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -5696,524 +6473,6 @@ color: rgb(255,255,255);</string>
       <string>Polar Plot</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_alignErrorPolar">
-     <property name="geometry">
-      <rect>
-       <x>520</x>
-       <y>110</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Polar Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>HH:MM:SS</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_15">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>110</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Polar </string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_153">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>110</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Ortho</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignErrorOrtho">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>110</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Ortho Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>HH:MM:SS</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_154">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>50</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Number Terms</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignNumberTerms">
-     <property name="geometry">
-      <rect>
-       <x>720</x>
-       <y>50</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Terms in actual used pointing model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>NN</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="Line" name="line_54">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>30</y>
-       <width>291</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_155">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>20</y>
-       <width>291</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Actual Model Status from Mount Computer</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_156">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>170</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Turn AZ</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignKnobTurnAz">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>170</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Turns azimuth ajustment knobs for correction (left if polar axis has to be moved to the left) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>NN.NN</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_157">
-     <property name="geometry">
-      <rect>
-       <x>610</x>
-       <y>170</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Turn Alt</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignKnobTurnAlt">
-     <property name="geometry">
-      <rect>
-       <x>660</x>
-       <y>170</y>
-       <width>91</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Turns altitude ajustment knobs for correction (down if the polar axis has to be moved downwards) &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>NN.NN</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_158">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>140</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>AZ</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_159">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>140</y>
-       <width>41</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>ALT</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignErrorAz">
-     <property name="geometry">
-      <rect>
-       <x>520</x>
-       <y>140</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Polar Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>HH:MM:SS</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignErrorAlt">
-     <property name="geometry">
-      <rect>
-       <x>670</x>
-       <y>140</y>
-       <width>81</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual Ortho Error&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>HH:MM:SS</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_alignErrorPosAngle">
-     <property name="geometry">
-      <rect>
-       <x>700</x>
-       <y>80</y>
-       <width>51</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Actual RMS Error in arc sec&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>NN.N</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_160">
-     <property name="geometry">
-      <rect>
-       <x>620</x>
-       <y>80</y>
-       <width>71</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>PosAngle</string>
-     </property>
-    </widget>
-    <zorder>le_alignNumberStars</zorder>
-    <zorder>label</zorder>
-    <zorder>le_alignErrorRMS</zorder>
-    <zorder>label_14</zorder>
     <zorder>btn_showActualModel</zorder>
     <zorder>label_37</zorder>
     <zorder>btn_runTargetRMSAlignment</zorder>
@@ -6245,24 +6504,6 @@ color: rgb(255,255,255);</string>
     <zorder>model</zorder>
     <zorder>alignErrorStars</zorder>
     <zorder>checkPolarPlot</zorder>
-    <zorder>le_alignErrorPolar</zorder>
-    <zorder>label_15</zorder>
-    <zorder>label_153</zorder>
-    <zorder>le_alignErrorOrtho</zorder>
-    <zorder>label_154</zorder>
-    <zorder>le_alignNumberTerms</zorder>
-    <zorder>line_54</zorder>
-    <zorder>label_155</zorder>
-    <zorder>label_156</zorder>
-    <zorder>le_alignKnobTurnAz</zorder>
-    <zorder>label_157</zorder>
-    <zorder>le_alignKnobTurnAlt</zorder>
-    <zorder>label_158</zorder>
-    <zorder>label_159</zorder>
-    <zorder>le_alignErrorAz</zorder>
-    <zorder>le_alignErrorAlt</zorder>
-    <zorder>le_alignErrorPosAngle</zorder>
-    <zorder>label_160</zorder>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
@@ -7371,7 +7612,7 @@ color: rgb(255,255,255);</string>
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_13">
       <attribute name="title">
@@ -7936,313 +8177,6 @@ color: rgb(255,255,255);</string>
        </property>
        <property name="value">
         <double>1.000000000000000</double>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_194">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>110</y>
-         <width>351</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Horizon Mask</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_147">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>20</y>
-         <width>351</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Model Points File (Base &amp; Refinement) </string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_selectModelPointsFileName">
-       <property name="geometry">
-        <rect>
-         <x>680</x>
-         <y>70</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Sets dual tracking on / off</string>
-       </property>
-       <property name="text">
-        <string>Select</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_58">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>120</y>
-         <width>351</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_horizonPointsFileName">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>140</y>
-         <width>301</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Filename for horizon file mask&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_122">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>180</y>
-         <width>21</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>°</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="wordWrap">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>180</y>
-         <width>281</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use minimum altitude for horizon mask in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Use Minumum Altitude as Horizon Mask</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_35">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>50</y>
-         <width>121</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Filename</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_57">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>30</y>
-         <width>351</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
-       <property name="geometry">
-        <rect>
-         <x>660</x>
-         <y>180</y>
-         <width>51</width>
-         <height>22</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Value for minimum altitude for horizon mask&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="decimals">
-        <number>0</number>
-       </property>
-       <property name="minimum">
-        <double>0.000000000000000</double>
-       </property>
-       <property name="maximum">
-        <double>90.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>1.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>20.000000000000000</double>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkUseFileHorizonLine">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>160</y>
-         <width>171</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use horizon mask file in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Use Horizon Mask File</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_modelPointsFileName">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>70</y>
-         <width>301</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Filename for model points data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_selectHorizonPointsFileName">
-       <property name="geometry">
-        <rect>
-         <x>680</x>
-         <y>140</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Sets dual tracking on / off</string>
-       </property>
-       <property name="text">
-        <string>Select</string>
        </property>
       </widget>
      </widget>
@@ -12538,9 +12472,15 @@ p, li { white-space: pre-wrap; }
    </property>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ClickableLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>clickablelineedit.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>btn_mountShutdown</tabstop>
-  <tabstop>btn_openImageWindow</tabstop>
   <tabstop>mainTabWidget</tabstop>
   <tabstop>le_slewRate</tabstop>
   <tabstop>btn_setSlewRate</tabstop>
@@ -12570,13 +12510,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_mountPark</tabstop>
   <tabstop>btn_mountUnpark</tabstop>
   <tabstop>btn_stop</tabstop>
-  <tabstop>btn_loadBasePoints</tabstop>
-  <tabstop>btn_generateBasePoints</tabstop>
-  <tabstop>altitudeBase</tabstop>
-  <tabstop>azimuthBase</tabstop>
-  <tabstop>checkUseBlindSolve</tabstop>
-  <tabstop>checkClearModelFirst</tabstop>
-  <tabstop>btn_runBaseModel</tabstop>
   <tabstop>btn_loadRefinementPoints</tabstop>
   <tabstop>btn_generateGridPoints</tabstop>
   <tabstop>numberGridPointsRow</tabstop>
@@ -12589,11 +12522,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>numberPointsDSO</tabstop>
   <tabstop>checkKeepRefinement</tabstop>
   <tabstop>btn_runRefinementModel</tabstop>
-  <tabstop>btn_runAllModel</tabstop>
-  <tabstop>btn_plateSolveSync</tabstop>
-  <tabstop>btn_openModelingPlotWindow</tabstop>
-  <tabstop>btn_deletePoints</tabstop>
-  <tabstop>btn_clearAlignmentModel</tabstop>
   <tabstop>btn_runCheckModel</tabstop>
   <tabstop>btn_cancelModel</tabstop>
   <tabstop>altitudeTimeChange</tabstop>

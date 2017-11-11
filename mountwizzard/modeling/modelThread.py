@@ -145,16 +145,6 @@ class Modeling(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'RunAllModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_runAllModel,
-                            'Method': self.modelStandard.runAllModel,
-                            'Cancel': self.app.ui.btn_cancelModel
-                        }
-                    ]
-                },
             'RunTimeChangeModel':
                 {
                     'Worker': [
@@ -368,7 +358,6 @@ class Modeling(PyQt5.QtCore.QObject):
         self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
         self.app.ui.btn_generateBasePoints.clicked.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
         self.app.ui.btn_runCheckModel.clicked.connect(lambda: self.commandDispatcher('RunCheckModel'))
-        self.app.ui.btn_runAllModel.clicked.connect(lambda: self.commandDispatcher('RunAllModel'))
         self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcher('RunTimeChangeModel'))
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcher('RunHystereseModel'))
         self.app.ui.btn_runCheckModel.clicked.connect(lambda: self.commandDispatcher('RunCheckModel'))
