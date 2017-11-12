@@ -6102,9 +6102,9 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>630</x>
        <y>90</y>
-       <width>81</width>
+       <width>71</width>
        <height>31</height>
       </rect>
      </property>
@@ -6630,6 +6630,22 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="sizeAdjustPolicy">
       <enum>QAbstractScrollArea::AdjustToContents</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_cancelRunTargetRMSAlignment">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>130</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Deletes worst point of actual model until error is below target RMS</string>
+     </property>
+     <property name="text">
+      <string>Cancel Optimise Run</string>
      </property>
     </widget>
    </widget>

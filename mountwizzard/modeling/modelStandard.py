@@ -138,6 +138,8 @@ class ModelStandard(ModelBase):
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))
         modelData = self.prepareImaging(modelData, directory)
+        if not modelData:
+            return []
         if not os.path.isdir(modelData['BaseDirImages']):
             os.makedirs(modelData['BaseDirImages'])
         self.logger.info('modelData: {0}'.format(modelData))

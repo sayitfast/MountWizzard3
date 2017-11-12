@@ -323,6 +323,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_showActualModel.clicked.connect(lambda: self.mountCommandQueue.put('ShowAlignmentModel'))
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.mountCommandQueue.put('RunTargetRMSAlignment'))
+        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.mount.cancelRunTargetRMS)
         self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.mountCommandQueue.put('DeleteWorstPoint'))
         self.ui.btn_flipMount.clicked.connect(lambda: self.mountCommandQueue.put('FLIP'))
         self.ui.btn_saveBackupModel.clicked.connect(lambda: self.mountCommandQueue.put('SaveBackupModel'))

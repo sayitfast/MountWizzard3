@@ -41,8 +41,6 @@ class Mount(PyQt5.QtCore.QThread):
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
-    BLUE = 'background-color: rgb(42, 130, 218)'
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
     def __init__(self, app):
@@ -74,6 +72,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.site_height = '0'
         self.sidereal_time = ''
         self.counter = 0
+        self.cancelTargetRMS = False
         self.chooserLock = threading.Lock()
         self.initConfig()
 
@@ -134,9 +133,9 @@ class Mount(PyQt5.QtCore.QThread):
                         if num == -1:
                             self.app.messageQueue.put('Show Model not available without real mount')
                         else:
-                            self.app.ui.btn_showActualModel.setStyleSheet(self.BLUE)
+                            self.app.ui.btn_showActualModel.setStyleSheet(self.app.BLUE)
                             self.showAlignmentModel(self.getAlignmentModel())
-                            self.app.ui.btn_showActualModel.setStyleSheet(self.DEFAULT)
+                            self.app.ui.btn_showActualModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'ClearAlign':
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('Clear Align not available without real mount')
@@ -146,64 +145,65 @@ class Mount(PyQt5.QtCore.QThread):
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('Run Optimize not available without real mount')
                         else:
-                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.BLUE)
+                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.BLUE)
                             self.runTargetRMSAlignment()
-                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.DEFAULT)
+                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
+                        self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
                     elif command == 'DeleteWorstPoint':
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('Delete worst point not available without real mount')
                         else:
-                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.BLUE)
+                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.BLUE)
                             self.deleteWorstPoint()
-                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.DEFAULT)
+                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveBackupModel':
-                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.BLUE)
                         self.saveBackupModel()
-                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadBackupModel':
-                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.app.BLUE)
                         self.loadBackupModel()
-                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadBaseModel':
-                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.app.BLUE)
                         self.loadBaseModel()
-                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveBaseModel':
-                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.app.BLUE)
                         self.saveBaseModel()
-                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadRefinementModel':
-                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.app.BLUE)
                         self.loadRefinementModel()
-                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveRefinementModel':
-                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.app.BLUE)
                         self.saveRefinementModel()
-                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadSimpleModel':
-                        self.app.ui.btn_loadSimpleModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_loadSimpleModel.setStyleSheet(self.app.BLUE)
                         self.loadSimpleModel()
-                        self.app.ui.btn_loadSimpleModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_loadSimpleModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveSimpleModel':
-                        self.app.ui.btn_saveSimpleModel.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_saveSimpleModel.setStyleSheet(self.app.BLUE)
                         self.saveSimpleModel()
-                        self.app.ui.btn_saveSimpleModel.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_saveSimpleModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadDSO1Model':
-                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.app.BLUE)
                         self.loadDSO1Model()
-                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveDSO1Model':
-                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.app.BLUE)
                         self.saveDSO1Model()
-                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadDSO2Model':
-                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.app.BLUE)
                         self.loadDSO2Model()
-                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveDSO2Model':
-                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.BLUE)
+                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.app.BLUE)
                         self.saveDSO2Model()
-                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.DEFAULT)
+                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SetRefractionParameter':
                         self.setRefractionParam()
                     elif command == 'FLIP':
@@ -396,15 +396,15 @@ class Mount(PyQt5.QtCore.QThread):
         if num == len(data):
             alignModel = self.getAlignmentModel()
             self.showAlignmentModel(alignModel)
-            for i in range(0, alignModel['number']):
+            for i in range(0, alignModel['Number']):
                 data[i]['ModelError'] = float(alignModel['Points'][i][5])
                 data[i]['RaError'] = data[i]['ModelError'] * math.sin(math.radians(alignModel['Points'][i][6]))
                 data[i]['DecError'] = data[i]['ModelError'] * math.cos(math.radians(alignModel['Points'][i][6]))
             self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
-            self.logger.warning('size mount modeling {0} and modeling data {1} do not fit !'.format(num, len(data)))
-            self.app.modelLogQueue.put('Mount Model and Model Data could not be synced\n')
-            self.app.messageQueue.put('Error - Mount Model and Model Data mismatch!\n')
+            self.logger.warning('Size of mount data {0} and modeling data {1} do not fit !'.format(num, len(data)))
+            self.app.modelLogQueue.put('Mount Data and Model Data could not be synced\n')
+            self.app.messageQueue.put('Error - Mount Data and Model Data mismatch!\n')
         return data
 
     def showAlignmentModel(self, alignModel):
@@ -434,12 +434,16 @@ class Mount(PyQt5.QtCore.QThread):
         return
 
     def runTargetRMSAlignment(self):
-        self.data['ModelStarError'] = 'delete'
+        self.cancelTargetRMS = False
         alignModel = self.getAlignmentModel()
         if alignModel['Number'] < 4:
             return
-        while alignModel['RMS'] > float(self.app.ui.targetRMS.value()) and alignModel['Number'] > 3:
+        while alignModel['RMS'] > float(self.app.ui.targetRMS.value()) and alignModel['Number'] > 3 and not self.cancelTargetRMS:
             alignModel = self.deleteWorstPointRaw(alignModel)
+
+    def cancelRunTargetRMS(self):
+        self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.RED)
+        self.cancelTargetRMS = True
 
     def deleteWorstPoint(self):
         alignModel = self.getAlignmentModel()
