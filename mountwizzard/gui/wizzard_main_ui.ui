@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -6083,37 +6083,12 @@ color: rgb(255,255,255);</string>
     <attribute name="title">
      <string>Manage Model</string>
     </attribute>
-    <widget class="QTextBrowser" name="alignErrorStars">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>290</y>
-       <width>291</width>
-       <height>181</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier New</family>
-       <pointsize>8</pointsize>
-      </font>
-     </property>
-     <property name="verticalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOn</enum>
-     </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="sizeAdjustPolicy">
-      <enum>QAbstractScrollArea::AdjustToContents</enum>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_showActualModel">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>460</x>
        <y>50</y>
-       <width>131</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
@@ -6121,16 +6096,16 @@ color: rgb(255,255,255);</string>
       <string>Download actual model from mount</string>
      </property>
      <property name="text">
-      <string>Show Actual Model</string>
+      <string>Show Model</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>610</x>
        <y>90</y>
-       <width>41</width>
-       <height>21</height>
+       <width>81</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -6139,15 +6114,15 @@ color: rgb(255,255,255);</string>
       </font>
      </property>
      <property name="text">
-      <string>Target</string>
+      <string>Target RMS</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runTargetRMSAlignment">
      <property name="geometry">
       <rect>
-       <x>150</x>
-       <y>50</y>
-       <width>131</width>
+       <x>460</x>
+       <y>90</y>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
@@ -6161,10 +6136,10 @@ color: rgb(255,255,255);</string>
     <widget class="QDoubleSpinBox" name="targetRMS">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>90</y>
+       <x>700</x>
+       <y>91</y>
        <width>51</width>
-       <height>22</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="alignment">
@@ -6184,7 +6159,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>50</y>
+       <y>240</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6200,7 +6175,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>50</y>
+       <y>240</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6216,7 +6191,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>30</y>
+       <y>220</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -6232,7 +6207,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>170</y>
+       <y>360</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6248,7 +6223,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>170</y>
+       <y>360</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6263,9 +6238,9 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
-       <x>290</x>
+       <x>610</x>
        <y>50</y>
-       <width>131</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
@@ -6273,15 +6248,15 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes worst point of actual model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Delete worst Point</string>
+      <string>Delete Worst Point</string>
      </property>
     </widget>
     <widget class="Line" name="line_44">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>460</x>
        <y>30</y>
-       <width>411</width>
+       <width>291</width>
        <height>21</height>
       </rect>
      </property>
@@ -6295,7 +6270,7 @@ color: rgb(255,255,255);</string>
     <widget class="QLabel" name="label_124">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>460</x>
        <y>20</y>
        <width>161</width>
        <height>21</height>
@@ -6314,7 +6289,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>20</y>
+       <y>210</y>
        <width>241</width>
        <height>21</height>
       </rect>
@@ -6332,7 +6307,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>90</y>
+       <y>280</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6348,7 +6323,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>90</y>
+       <y>280</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6364,7 +6339,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>50</y>
+       <y>240</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6388,7 +6363,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>90</y>
+       <y>280</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6412,7 +6387,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>170</y>
+       <y>360</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6436,7 +6411,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>210</y>
+       <y>400</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6452,7 +6427,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>210</y>
+       <y>400</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6468,7 +6443,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>250</y>
+       <y>440</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6484,7 +6459,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>250</y>
+       <y>440</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6500,7 +6475,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>210</y>
+       <y>400</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6524,7 +6499,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>250</y>
+       <y>440</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6548,7 +6523,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>130</y>
+       <y>320</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6564,7 +6539,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>130</y>
+       <y>320</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6588,7 +6563,7 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>130</y>
+       <y>320</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -6623,67 +6598,40 @@ color: rgb(255,255,255);</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>10</y>
        <width>411</width>
-       <height>351</height>
+       <height>301</height>
       </rect>
      </property>
      <property name="autoFillBackground">
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkPolarPlot">
+    <widget class="QTextBrowser" name="alignErrorStars">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>90</y>
-       <width>101</width>
-       <height>20</height>
+       <x>10</x>
+       <y>310</y>
+       <width>411</width>
+       <height>161</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <pointsize>10</pointsize>
+       <family>Courier New</family>
+       <pointsize>8</pointsize>
       </font>
      </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOn</enum>
      </property>
-     <property name="text">
-      <string>Polar Plot</string>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QAbstractScrollArea::AdjustToContents</enum>
      </property>
     </widget>
-    <zorder>btn_showActualModel</zorder>
-    <zorder>label_37</zorder>
-    <zorder>btn_runTargetRMSAlignment</zorder>
-    <zorder>targetRMS</zorder>
-    <zorder>btn_saveBackupModel</zorder>
-    <zorder>btn_loadBackupModel</zorder>
-    <zorder>line_18</zorder>
-    <zorder>btn_loadSimpleModel</zorder>
-    <zorder>btn_saveSimpleModel</zorder>
-    <zorder>btn_deleteWorstPoint</zorder>
-    <zorder>line_44</zorder>
-    <zorder>label_124</zorder>
-    <zorder>label_125</zorder>
-    <zorder>btn_loadBaseModel</zorder>
-    <zorder>btn_saveBaseModel</zorder>
-    <zorder>label_126</zorder>
-    <zorder>label_127</zorder>
-    <zorder>label_128</zorder>
-    <zorder>btn_saveDSO1Model</zorder>
-    <zorder>btn_loadDSO1Model</zorder>
-    <zorder>btn_saveDSO2Model</zorder>
-    <zorder>btn_loadDSO2Model</zorder>
-    <zorder>label_129</zorder>
-    <zorder>label_130</zorder>
-    <zorder>btn_saveRefinementModel</zorder>
-    <zorder>label_133</zorder>
-    <zorder>btn_loadRefinementModel</zorder>
-    <zorder>line_46</zorder>
-    <zorder>model</zorder>
-    <zorder>alignErrorStars</zorder>
-    <zorder>checkPolarPlot</zorder>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
@@ -7771,7 +7719,7 @@ color: rgb(255,255,255);</string>
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <widget class="QWidget" name="tab_13">
       <attribute name="title">
@@ -12711,9 +12659,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_showActualModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
-  <tabstop>checkPolarPlot</tabstop>
   <tabstop>targetRMS</tabstop>
-  <tabstop>alignErrorStars</tabstop>
   <tabstop>btn_saveBackupModel</tabstop>
   <tabstop>btn_loadBackupModel</tabstop>
   <tabstop>btn_saveBaseModel</tabstop>

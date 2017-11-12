@@ -321,7 +321,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.le_analyseFileName.doubleClicked.connect(self.selectAnalyseFileName)
         self.ui.btn_showActualModel.clicked.connect(lambda: self.mountCommandQueue.put('ShowAlignmentModel'))
-        self.ui.checkPolarPlot.clicked.connect(self.setShowAlignmentModelMode)
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.mountCommandQueue.put('RunTargetRMSAlignment'))
         self.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.mountCommandQueue.put('DeleteWorstPoint'))
@@ -811,12 +810,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDIWeather.setText(data['value'])
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
-
-    def setShowAlignmentModelMode(self):
-        if self.ui.checkPolarPlot.isChecked():
-            self.ui.alignErrorStars.setVisible(False)
-        else:
-            self.ui.alignErrorStars.setVisible(True)
 
     @QtCore.Slot(bool)
     def setMountStatus(self, status):
