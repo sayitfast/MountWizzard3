@@ -168,8 +168,8 @@ class Relays:
             self.logger.info('there is no ip given for relaybox')
 
     def setStatus(self, response):
-        lines = response.splitlines()                                                                                       # read over all the lines
-        if lines[0] == '<response>':                                                                                        # here are the values of the relay stats
+        lines = response.splitlines()
+        if lines[0] == '<response>':
             self.stat[1] = (lines[2][8] == '1')
             self.stat[2] = (lines[3][8] == '1')
             self.stat[3] = (lines[4][8] == '1')
