@@ -79,6 +79,7 @@ class MountWizzardApp(widget.MwWidget):
         self.setObjectName("Main")
         # setting up communication queues for inter thread communication
         self.mountCommandQueue = Queue()
+        self.domeCommandQueue = Queue()
         self.modelLogQueue = Queue()
         self.modelCommandQueue = Queue()
         self.messageQueue = Queue()

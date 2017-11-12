@@ -62,17 +62,13 @@ class ModelBase:
                 az = 359.9
             elif az < 0.0:
                 az = 0.0
-            try:
-                self.app.workerAscomDome.ascom.SlewToAzimuth(float(az))
-            except Exception as e:
-                self.logger.error('value: {0}, error: {1}'.format(az, e))
-            self.logger.info('Azimuth:{0}'.format(az))
-            while not self.app.mount.data['Slewing']:
+            self.app.domeCommandQueue.put(('SlewAzimuth', az))
+            while not self.app.mount.data['Slewing'] and not self.app.workerDome.data['Slewing']:
                 if self.app.workerModeling.cancel:
                     self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)
-            while self.app.mount.slewing or self.app.dome.slewing:
+            while self.app.mount.data['Slewing'] or self.app.workerAscomDome.data['Slewing']:
                 if self.app.workerModeling.cancel:
                     self.logger.info('Modeling cancelled after dome slewing')
                     break

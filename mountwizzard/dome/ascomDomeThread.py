@@ -37,7 +37,7 @@ class AscomDome(PyQt5.QtCore.QObject):
         self.ascom = None
         self.chooser = None
         self.driverName = ''
-        self.slewing = False
+        self.data = {}
         self.initConfig()
 
     def initConfig(self):
@@ -73,24 +73,38 @@ class AscomDome(PyQt5.QtCore.QObject):
             self.signalAscomDomeConnected.emit(0)
             self.stop()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        '''
+
         while self.isRunning:
+            if not self.app.domeCommandQueue.empty():
+                command, value = self.app.domeCommandQueue.get()
+                if command == 'SlewAzimuth':
+                    self.app.workerAscomDome.ascom.SlewToAzimuth(float(value))
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
-        '''
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        # if no running main loop is necessary, finished emit moves to stop directly
-        self.finished.emit()
 
     def getData(self):
-        self.slewing = self.ascom.Slewing
-        self.signalDomPointer.emit(self.ascom.Azimuth)
+        try:
+            self.data['Slewing'] = self.ascom.Slewing
+            self.data['Azimuth'] = self.ascom.Azimuth
+        except Exception as e:
+            pass
+        finally:
+            pass
+        try:
+            self.data['Altitude'] = self.ascom.Altitude
+        except Exception as e:
+            pass
+        finally:
+            pass
+        if 'Azimuth' in self.data:
+            self.signalDomPointer.emit(self.data['Azimuth'])
         PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
     def setupDriver(self):

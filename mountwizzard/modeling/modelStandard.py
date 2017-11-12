@@ -37,12 +37,12 @@ class ModelStandard(ModelBase):
         if len(self.app.workerModeling.modelPoints.BasePoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            self.app.modeling.modelData = self.runModel('Base', self.app.workerModeling.modelPoints.BasePoints, directory, settlingTime, simulation, keepImages)
-            self.app.modeling.modelData = self.app.mount.retrofitMountData(self.app.modeling.modelData)
+            self.app.workerModeling.modelData = self.runModel('Base', self.app.workerModeling.modelPoints.BasePoints, directory, settlingTime, simulation, keepImages)
+            self.app.workerModeling.modelData = self.app.mount.retrofitMountData(self.app.workerModeling.modelData)
             name = directory + '_base.dat'
-            if len(self.app.modeling.modelData) > 0:
+            if len(self.app.workerModeling.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.app.workerModeling.analyse.saveData(self.app.modeling.modelData, name)
+                self.app.workerModeling.analyse.saveData(self.app.workerModeling.modelData, name)
                 self.app.mount.saveBaseModel()
         else:
             self.logger.warning('There are no Basepoints for modeling')
@@ -60,13 +60,13 @@ class ModelStandard(ModelBase):
                 keepImages = self.app.ui.checkKeepImages.isChecked()
                 refinePoints = self.runModel('Refinement', self.app.workerModeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
                 for i in range(0, len(refinePoints)):
-                    refinePoints[i]['Index'] += len(self.app.modeling.modelData)
-                self.app.modeling.modelData = self.app.modeling.modelData + refinePoints
-                self.app.modeling.modelData = self.app.mount.retrofitMountData(self.app.modeling.modelData)
+                    refinePoints[i]['Index'] += len(self.app.workerModeling.modelData)
+                self.app.workerModeling.modelData = self.app.workerModeling.modelData + refinePoints
+                self.app.workerModeling.modelData = self.app.mount.retrofitMountData(self.app.workerModeling.modelData)
                 name = directory + '_refinement.dat'
-                if len(self.app.modeling.modelData) > 0:
+                if len(self.app.workerModeling.modelData) > 0:
                     self.app.ui.le_analyseFileName.setText(name)
-                    self.app.workerModeling.analyse.saveData(self.app.modeling.modelData, name)
+                    self.app.workerModeling.analyse.saveData(self.app.workerModeling.modelData, name)
                     self.app.mount.saveRefinementModel()
             else:
                 self.logger.warning('There are no Refinement Points to modeling')

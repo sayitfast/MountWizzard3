@@ -81,7 +81,7 @@ class Modeling(PyQt5.QtCore.QObject):
         self.cancel = False
         self.modelRun = False
         self.modelAnalyseData = []
-        self.modelData = {}
+        self.modelData = []
 
         self.commandDispatch = {
             'RunBaseModel':
@@ -188,12 +188,12 @@ class Modeling(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'GenerateDensePoints':
+            'GenerateMaxPoints':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_generateDensePoints,
-                            'Method': self.modelPoints.generateDensePoints,
+                            'Button': self.app.ui.btn_generateMaxPoints,
+                            'Method': self.modelPoints.generateMaxPoints,
                             'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()'
                                           ]
@@ -226,7 +226,7 @@ class Modeling(PyQt5.QtCore.QObject):
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_generateNormalPoints,
+                            'Button': self.app.ui.btn_loadRefinementPoints,
                             'Method': self.modelPoints.loadRefinementPoints,
                             'Parameter': ['self.app.ui.le_modelPointsFileName.text()',
                                           'self.app.ui.checkSortPoints.isChecked()',
@@ -348,7 +348,7 @@ class Modeling(PyQt5.QtCore.QObject):
         self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
         self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
         self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
-        self.app.ui.btn_generateDensePoints.clicked.connect(lambda: self.commandDispatcher('GenerateDensePoints'))
+        self.app.ui.btn_generateMaxPoints.clicked.connect(lambda: self.commandDispatcher('GenerateMaxPoints'))
         self.app.ui.btn_generateNormalPoints.clicked.connect(lambda: self.commandDispatcher('GenerateNormalPoints'))
         self.app.ui.btn_generateGridPoints.clicked.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
         self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
@@ -383,7 +383,6 @@ class Modeling(PyQt5.QtCore.QObject):
                 # if we want to color a button, which one
                 if 'Button' in work:
                     work['Button'].setStyleSheet(self.BLUE)
-                PyQt5.QtWidgets.QApplication.processEvents()
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -396,7 +395,6 @@ class Modeling(PyQt5.QtCore.QObject):
                     work['Button'].setStyleSheet(self.DEFAULT)
                 if 'Cancel' in work:
                     work['Cancel'].setStyleSheet(self.DEFAULT)
-                self.signalModelRedraw.emit(True)
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def cancelModeling(self):
