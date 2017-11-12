@@ -535,7 +535,7 @@ class Mount(PyQt5.QtCore.QThread):
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
             if self.app.workerModeling.modelData:
-                if 'index' in self.app.workerModeling.modelData[0].keys():
+                if 'Index' in self.app.workerModeling.modelData[0].keys():
                     self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'actual.dat')
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
