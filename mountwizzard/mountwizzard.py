@@ -386,17 +386,15 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget.axes.set_yticklabels(yLabel, color='white')
         azimuth = numpy.asarray(data['Azimuth'])
         altitude = numpy.asarray(data['Altitude'])
-        # self.modelWidget.axes.plot(azimuth / 180.0 * math.pi, 90 - altitude, color='black')
         cm = plt.cm.get_cmap('RdYlGn_r')
         colors = numpy.asarray(data['ModelError'])
-        # noinspection PyTypeChecker
         scaleError = int(max(colors) / 4 + 1) * 4
         area = [125 if x >= max(colors) else 50 for x in data['ModelError']]
         theta = azimuth / 180.0 * math.pi
         r = 90 - altitude
         scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
         scatter.set_alpha(0.75)
-        colorbar = self.modelWidget.fig.colorbar(scatter)
+        colorbar = self.modelWidget.fig.colorbar(scatter, pad=0.1)
         colorbar.set_label('Error [arcsec]', color='white')
         plt.setp(plt.getp(colorbar.ax.axes, 'yticklabels'), color='white')
         self.modelWidget.axes.set_rmax(90)
