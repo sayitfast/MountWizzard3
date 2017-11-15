@@ -12,22 +12,15 @@
 #
 ############################################################
 import logging
-import os
 import platform
 import time
 # threading
 import threading
 import PyQt5
-# for data storing
-from analyse.analysedata import Analyse
-# cameras
-from camera import none
-from camera import indicamera
-if platform.system() == 'Windows':
-    from camera import maximdl
-    from camera import sgpro
-if platform.system() == 'Windows' or platform.system() == 'Darwin':
-    from camera import theskyx
+# transformations
+from astrometry import transform
+# Cameras
+from modeling import imagingApps
 # modelPoints
 from modeling import modelPoints
 # workers
@@ -39,50 +32,32 @@ class Modeling(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    signalModelConnected = PyQt5.QtCore.pyqtSignal(int, name='ModelConnected')
-    signalModelRedraw = PyQt5.QtCore.pyqtSignal(bool, name='ModelRedrawPoints')
+    signalStatusImagingApp = PyQt5.QtCore.pyqtSignal(int)
+    signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal(bool)
 
     BLUE = 'background-color: rgb(42, 130, 218)'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
-    REF_PICTURE = '/model001.fit'
-    IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
-    CAPTUREFILE = 'modeling'
 
-    CYCLESTATUSFAST = 1000
+    CYCLESTATUS = 1000
 
     def __init__(self, app):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
-
         # make main sources available
         self.app = app
-        # make windows imaging applications available
-        if platform.system() == 'Windows':
-            self.SGPro = sgpro.SGPro(self.app)
-            self.MaximDL = maximdl.MaximDLCamera(self.app)
-        if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            self.TheSkyX = theskyx.TheSkyX(self.app)
-        # make non windows applications available
-        self.NoneCam = none.NoneCamera(self.app)
-        self.INDICamera = indicamera.INDICamera(self.app)
-        # select default application
-        self.imagingHandler = self.NoneCam
+        self.imagingApps = imagingApps.ImagingApps(app)
         # assign support classes
-        self.analyse = Analyse(self.app)
-        self.transform = self.app.mount.transform
-        self.modelPoints = modelPoints.ModelPoints(self.app, self.transform)
+        self.transform = transform.Transform(app)
+        self.modelPoints = modelPoints.ModelPoints(self.app)
         self.modelStandard = modelStandard.ModelStandard(self.app)
         self.modelBoost = modelBoost.ModelBoost(self.app)
-
-        self.chooserLock = threading.Lock()
         # finally initialize the class configuration
         self.cancel = False
         self.modelRun = False
-        self.modelAnalyseData = []
         self.modelData = []
-
+        # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
             'RunBaseModel':
                 {
@@ -119,7 +94,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_plateSolveSync,
-                            'Method': self.modelStandard.plateSolveSync,
+                            'Method': self.imagingApps.plateSolveSync,
                             'Parameter': ['self.app.ui.checkSimulation.isChecked()'],
                         }
                     ]
@@ -272,22 +247,8 @@ class Modeling(PyQt5.QtCore.QObject):
             }
         # setting the config up
         self.initConfig()
-        # run it first, to set all imaging applications up
-        self.chooseImaging()
 
     def initConfig(self):
-        if self.NoneCam.appAvailable:
-            self.app.ui.pd_chooseImaging.addItem('No Application')
-        if self.INDICamera.appAvailable:
-            self.app.ui.pd_chooseImaging.addItem('INDI Camera')
-        if platform.system() == 'Windows':
-            if self.SGPro.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.appName)
-            if self.MaximDL.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.MaximDL.appName)
-        if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            if self.TheSkyX.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
         try:
             if 'ImagingApplication' in self.app.config:
                 self.app.ui.pd_chooseImaging.setCurrentIndex(int(self.app.config['ImagingApplication']))
@@ -301,41 +262,14 @@ class Modeling(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # connect change in imaging app to the subroutine of setting it up
-        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
+        self.imagingApps.initConfig()
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
         self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
-
-    def chooseImaging(self):
-        self.chooserLock.acquire()
-        self.app.ui.btn_runBoostModel.setVisible(False)
-        self.app.ui.btn_runBoostModel.setEnabled(False)
-        if self.imagingHandler.cameraConnected:
-            self.imagingHandler.disconnectCamera()
-        if self.app.ui.pd_chooseImaging.currentText().startswith('No Application'):
-            self.imagingHandler = self.NoneCam
-            self.logger.info('actual camera / plate solver is None')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
-            self.imagingHandler = self.INDICamera
-            self.logger.info('actual camera / plate solver is INDI Camera')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
-            self.imagingHandler = self.SGPro
-            self.app.ui.btn_runBoostModel.setEnabled(True)
-            self.app.ui.btn_runBoostModel.setVisible(True)
-            self.logger.info('actual camera / plate solver is SGPro')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
-            self.imagingHandler = self.TheSkyX
-            self.logger.info('actual camera / plate solver is TheSkyX')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
-            self.imagingHandler = self.MaximDL
-            self.logger.info('actual camera / plate solver is MaximDL')
-        self.imagingHandler.checkAppStatus()
-        self.imagingHandler.connectCamera()
-        self.chooserLock.release()
+        self.imagingApps.storeConfig()
 
     def run(self):
         if not self.isRunning:
@@ -365,9 +299,10 @@ class Modeling(PyQt5.QtCore.QObject):
         self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcher('RunBatchModel'))
         self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlignmentModel'))
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
-        self.signalModelConnected.emit(3)
+        # TODO: it's not Model Connected, but imaging app connected
+        self.signalStatusImagingApp.emit(3)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        self.getStatusFast()
+        self.getStatus()
 
     def stop(self):
         self._mutex.lock()
@@ -397,6 +332,9 @@ class Modeling(PyQt5.QtCore.QObject):
                     work['Cancel'].setStyleSheet(self.DEFAULT)
                 PyQt5.QtWidgets.QApplication.processEvents()
 
+    # cancel modeling is defined outside command Dispatcher, because when running commands, there is no chance to interrupt this process
+    # from outside if I would use the event queue of this task (because the methods don't respect updating event queue and the modeling
+    # processes should be modal. Therefore cancelModeling and cancelAnayseModeling is connected to main app with it's separate event queue.
     def cancelModeling(self):
         if self.modelRun:
             self.app.ui.btn_cancelModel.setStyleSheet(self.RED)
@@ -409,14 +347,19 @@ class Modeling(PyQt5.QtCore.QObject):
             self.logger.info('User canceled modeling with cancel analyse run')
             self.cancel = True
 
-    def getStatusFast(self):
-        self.imagingHandler.checkAppStatus()
-        self.imagingHandler.getCameraStatus()
-        self.signalModelConnected.emit(1)
-        if self.imagingHandler.appRunning:
-            self.signalModelConnected.emit(2)
-        if self.imagingHandler.cameraConnected:
-            self.signalModelConnected.emit(3)
+    def getStatus(self):
+        # the status should be:
+        # 0: No Imaging App available
+        # 1: Imaging solution is installed
+        # 2: Imaging app Task is running
+        # 3: Application is ready for Imaging
+        self.imagingApps.imagingAppHandler.checkAppStatus()
+        self.imagingApps.imagingAppHandler.getCameraStatus()
+        self.signalStatusImagingApp.emit(1)
+        if self.imagingApps.imagingAppHandler.appRunning:
+            self.signalStatusImagingApp.emit(2)
+        if self.imagingApps.imagingAppHandler.cameraConnected:
+            self.signalStatusImagingApp.emit(3)
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
             PyQt5.QtWidgets.QApplication.processEvents()

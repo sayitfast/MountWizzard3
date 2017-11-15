@@ -123,6 +123,20 @@ class Mount(PyQt5.QtCore.QThread):
             pythoncom.CoInitialize()
         self.chooseMountConn()
         self.counter = 0
+
+        self.loadActualModel()
+        alignModel = self.getAlignmentModel()
+        if not self.app.workerModeling.modelData and alignModel['RMS'] > 0:
+            self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
+            self.app.workerModeling.modelData = []
+            for i in range(0, alignModel['Number']):
+                self.app.workerModeling.modelData.append({'ModelError': float(alignModel['Points'][i][5]),
+                                                          'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
+                                                          'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
+                                                          'Azimuth': float(alignModel['Points'][i][3]),
+                                                          'Altitude': float(alignModel['Points'][i][4])})
+        self.showAlignmentModel(alignModel)
+
         while True:
             self.signalMountConnected.emit(self.mountHandler.connected)
             if self.mountHandler.connected:
@@ -715,15 +729,3 @@ class Mount(PyQt5.QtCore.QThread):
         self.logger.info('Site Lon:{0}'.format(self.site_lon))
         self.logger.info('Site Lat:{0}'.format(self.site_lat))
         self.logger.info('Site Height:{0}'.format(self.site_height))
-        self.loadActualModel()
-        alignModel = self.getAlignmentModel()
-        if not self.app.workerModeling.modelData and alignModel['RMS'] > 0:
-            self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
-            self.app.workerModeling.modelData = []
-            for i in range(0, alignModel['Number']):
-                self.app.workerModeling.modelData.append({'ModelError': float(alignModel['Points'][i][5]),
-                                                          'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
-                                                          'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
-                                                          'Azimuth': float(alignModel['Points'][i][3]),
-                                                          'Altitude': float(alignModel['Points'][i][4])})
-        self.showAlignmentModel(alignModel)

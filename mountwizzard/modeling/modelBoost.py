@@ -325,7 +325,8 @@ class ModelBoost(ModelBase):
         if len(self.app.workerModeling.modelPoints.RefinementPoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            self.app.modeling.modelData = self.runBoost(self.app.workerModeling.modelPoints.RefinementPoints, directory, settlingTime, simulation, keepImages)
+            modelData = self.app.workerModeling.imagingApps.prepareImaging(directory)
+            self.app.modeling.modelData = self.runBoost(self.app.workerModeling.modelPoints.RefinementPoints, modelData, settlingTime, simulation, keepImages)
             self.app.modeling.modelData = self.app.mount.retrofitMountData(self.app.modeling.modelData)
             name = directory + '_boost.dat'
             if len(self.app.modeling.modelData) > 0:
@@ -337,9 +338,8 @@ class ModelBoost(ModelBase):
         else:
             self.logger.warning('There are no Refinement Points to modeling')
 
-    def runBoost(self, runPoints, directory, settlingTime, simulation=False, keepImages=False):
+    def runBoost(self, runPoints, modelData, settlingTime, simulation=False, keepImages=False):
         # start clearing the data
-        modelData = {}
         results = []
         # preparing the gui outputs
         self.app.modelLogQueue.put('status-- of --')
@@ -347,8 +347,6 @@ class ModelBoost(ModelBase):
         self.app.modelLogQueue.put('timeleft--:--')
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
-        # setting up the data from gui to running applications
-        modelData = self.prepareImaging(modelData, directory)
         if not os.path.isdir(modelData['BaseDirImages']):
             os.makedirs(modelData['BaseDirImages'])
         self.logger.info('modelData: {0}'.format(modelData))

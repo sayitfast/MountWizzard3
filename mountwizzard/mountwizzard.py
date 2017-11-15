@@ -162,7 +162,7 @@ class MountWizzardApp(widget.MwWidget):
         # noinspection PyUnresolvedReferences
         self.threadModeling.started.connect(self.workerModeling.run)
         self.workerModeling.finished.connect(self.workerModelingStop)
-        self.workerModeling.signalModelConnected.connect(self.setCameraPlateStatus)
+        self.workerModeling.signalStatusImagingApp.connect(self.setStatusImagingApp)
         # thread start will be done when enabled
         self.threadModeling.start()
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
@@ -924,7 +924,7 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_UTCDataExpirationDate.setText(str(self.mount.data[valueName]))
 
     @QtCore.Slot(int)
-    def setCameraPlateStatus(self, status):
+    def setStatusImagingApp(self, status):
         if status == 3:
             self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
