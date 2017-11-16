@@ -93,6 +93,13 @@ class ModelBase:
             return
         self.app.mount.programBatchData(data)
 
+    def checkModelingAvailable(self):
+        if not self.app.mount.mountHandler.connected or not self.app.modeling.imagingApps.imagingAppHandler.cameraConnected:
+            return False
+        else:
+            return True
+
+
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, modelData, settlingTime, simulation=False, keepImages=False):
         # start clearing the data

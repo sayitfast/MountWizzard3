@@ -25,6 +25,8 @@ class ModelStandard(ModelBase):
         self.modelRun = False
 
     def runBaseModel(self):
+        if not self.checkModelingAvailable():
+            return
         if self.app.ui.checkClearModelFirst.isChecked():
             self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
             self.clearAlignmentModel()
@@ -45,6 +47,8 @@ class ModelStandard(ModelBase):
             self.logger.warning('There are no Basepoints for modeling')
 
     def runRefinementModel(self):
+        if not self.checkModelingAvailable():
+            return
         num = self.app.mount.numberModelStars()
         simulation = self.app.ui.checkSimulation.isChecked()
         if num > 2 or simulation:
@@ -73,6 +77,8 @@ class ModelStandard(ModelBase):
             self.app.messageQueue.put('Refine stopped, no BASE model available !\n')
 
     def runCheckModel(self):
+        if not self.checkModelingAvailable():
+            return
         settlingTime, directory = self.setupRunningParameters()
         points = self.app.workerModeling.modelPoints.BasePoints + self.app.workerModeling.modelPoints.RefinementPoints
         if len(points) > 0:
@@ -92,6 +98,8 @@ class ModelStandard(ModelBase):
         self.runRefinementModel()
 
     def runTimeChangeModel(self):
+        if not self.checkModelingAvailable():
+            return
         settlingTime, directory = self.setupRunningParameters()
         points = []
         for i in range(0, int(float(self.app.ui.numberRunsTimeChange.value()))):
@@ -107,6 +115,8 @@ class ModelStandard(ModelBase):
             self.app.workerModeling.analyse.saveData(self.app.workerModeling.modelAnalyseData, name)
 
     def runHystereseModel(self):
+        if not self.checkModelingAvailable():
+            return
         waitingTime, directory = self.setupRunningParameters()
         alt1 = int(float(self.app.ui.altitudeHysterese1.value()))
         alt2 = int(float(self.app.ui.altitudeHysterese2.value()))
