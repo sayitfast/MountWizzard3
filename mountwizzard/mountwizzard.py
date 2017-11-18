@@ -48,17 +48,17 @@ from widgets import analyseWindow
 from gui import wizzard_main_ui
 
 # modeling
-from modeling import modelThread
+from modeling import modelingDispatcher
 # import mount functions classes
 from mount import mountThread
 from relays import relays
 from remote import remoteThread
-from dome import ascomDomeThread
+from dome import ascomDome
 from indi import indi_client
-from environment import ascomEnvirThread
+from environment import ascomEnvironment
 
 if platform.system() == 'Windows':
-    from automation import uploadThread
+    from automation import upload
 from wakeonlan import wol
 
 
@@ -114,7 +114,7 @@ class MountWizzardApp(widget.MwWidget):
         self.INDIworker.status.connect(self.setINDIStatus)
         # threading for ascom environment data
         if platform.system() == 'Windows':
-            self.workerAscomEnvironment = ascomEnvirThread.AscomEnvironment(self)
+            self.workerAscomEnvironment = ascomEnvironment.AscomEnvironment(self)
             self.threadAscomEnvironment = PyQt5.QtCore.QThread()
             self.threadAscomEnvironment.setObjectName("Environ")
             self.workerAscomEnvironment.moveToThread(self.threadAscomEnvironment)
@@ -125,7 +125,7 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAscomEnvironment.start()
         # threading for ascom dome data
         if platform.system() == 'Windows':
-            self.workerAscomDome = ascomDomeThread.AscomDome(self)
+            self.workerAscomDome = ascomDome.AscomDome(self)
             self.threadAscomDome = PyQt5.QtCore.QThread()
             self.threadAscomDome.setObjectName("Dome")
             self.workerAscomDome.moveToThread(self.threadAscomDome)
@@ -147,7 +147,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for updater automation
         if platform.system() == 'Windows':
-            self.workerUpload = uploadThread.UpdaterAuto(self)
+            self.workerUpload = upload.UpdaterAuto(self)
             self.threadUpload = PyQt5.QtCore.QThread()
             self.threadUpload.setObjectName("Upload")
             self.workerUpload.moveToThread(self.threadUpload)
@@ -155,16 +155,16 @@ class MountWizzardApp(widget.MwWidget):
             self.threadUpload.started.connect(self.workerUpload.run)
             self.workerUpload.finished.connect(self.workerUploadStop)
             self.threadUpload.start()
-        self.workerModeling = modelThread.Modeling(self)
-        self.threadModeling = PyQt5.QtCore.QThread()
-        self.threadModeling.setObjectName("Model")
-        self.workerModeling.moveToThread(self.threadModeling)
+        self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self)
+        self.threadModelingDispatcher = PyQt5.QtCore.QThread()
+        self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
+        self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         # noinspection PyUnresolvedReferences
-        self.threadModeling.started.connect(self.workerModeling.run)
-        self.workerModeling.finished.connect(self.workerModelingStop)
-        self.workerModeling.signalStatusImagingApp.connect(self.setStatusImagingApp)
+        self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
+        self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
+        self.workerModelingDispatcher.signalStatusImagingApp.connect(self.setStatusImagingApp)
         # thread start will be done when enabled
-        self.threadModeling.start()
+        self.threadModelingDispatcher.start()
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
@@ -259,9 +259,9 @@ class MountWizzardApp(widget.MwWidget):
         self.threadUpload.quit()
         self.threadUpload.wait()
 
-    def workerModelingStop(self):
-        self.threadModeling.quit()
-        self.threadModeling.wait()
+    def workerModelingDispatcherStop(self):
+        self.threadModelingDispatcher.quit()
+        self.threadModelingDispatcher.wait()
 
     def enableDisableRemoteAccess(self):
         if self.ui.checkEnableRemoteAccess.isChecked():
@@ -311,9 +311,9 @@ class MountWizzardApp(widget.MwWidget):
         # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
         # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
         # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
-        self.ui.btn_cancelModel1.clicked.connect(lambda: self.workerModeling.cancelModeling())
-        self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModeling.cancelModeling())
-        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModeling.cancelAnalyseModeling())
+        self.ui.btn_cancelModel1.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
+        self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
+        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.le_horizonPointsFileName.doubleClicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -362,11 +362,11 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put('Shutdown')
 
     def showModelErrorPolar(self):
-        if not self.workerModeling.modelData:
+        if not self.workerModelingDispatcher.modelingRunner.modelData:
             return
         data = dict()
-        for i in range(0, len(self.workerModeling.modelData)):
-            for (keyData, valueData) in self.workerModeling.modelData[i].items():
+        for i in range(0, len(self.workerModelingDispatcher.modelingRunner.modelData)):
+            for (keyData, valueData) in self.workerModelingDispatcher.modelingRunner.modelData[i].items():
                 if keyData == 'azimuth':
                     return
                 if keyData in data:
@@ -639,7 +639,7 @@ class MountWizzardApp(widget.MwWidget):
     def saveConfigData(self):
         self.storeConfig()
         self.mount.storeConfig()
-        self.workerModeling.storeConfig()
+        self.workerModelingDispatcher.storeConfig()
         if platform.system() == 'Windows':
             self.workerAscomEnvironment.storeConfig()
             self.workerAscomDome.storeConfig()

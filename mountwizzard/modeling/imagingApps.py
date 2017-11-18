@@ -52,8 +52,8 @@ class ImagingApps:
         self.INDICamera = indicamera.INDICamera(self.app)
         # select default application
         self.imagingAppHandler = self.NoneCam
-
         self.chooserLock = threading.Lock()
+        self.initConfig()
         # run it first, to set all imaging applications up
         self.chooseImaging()
 
@@ -113,7 +113,7 @@ class ImagingApps:
     def prepareImaging(self, directory):
         modelData = {}
         # do all the calculations once
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.workerModeling.imagingApps.imagingAppHandler.getCameraProps()
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingAppHandler.getCameraProps()
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
         else:
@@ -150,20 +150,20 @@ class ImagingApps:
         return modelData
 
     def capturingImage(self, modelData, simulation):
-        if self.app.workerModeling.cancel:
+        if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Modeling cancelled after capturing image')
             return False, 'Cancel modeling pressed', modelData
         LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]
-        RaJ2000FitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
-        DecJ2000FitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
-        RaJNowFitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
-        DecJNowFitsHeader = self.app.workerModeling.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
+        RaJ2000FitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
+        DecJ2000FitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
+        RaJNowFitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
+        DecJNowFitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
         if modelData['Pierside'] == '1':
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
         self.logger.info('modelData: {0}'.format(modelData))
-        suc, mes, modelData = self.app.workerModeling.imagingApps.imagingAppHandler.getImage(modelData)
+        suc, mes, modelData = self.imagingAppHandler.getImage(modelData)
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -172,7 +172,7 @@ class ImagingApps:
                 else:
                     # we are running in a normal Python environment
                     bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-                shutil.copyfile(bundle_dir + self.app.workerModeling.REF_PICTURE, modelData['ImagePath'])
+                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['ImagePath'])
             else:
                 self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
                 fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
@@ -212,7 +212,7 @@ class ImagingApps:
         modelData['Scale'] = 1.3
         modelData['Angle'] = 90
         modelData['TimeTS'] = 2.5
-        ra, dec = self.app.workerModeling.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+        ra, dec = self.app.workerModelingDispatcher.modelingRunner.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
         modelData['RaJNowSolved'] = ra
         modelData['DecJNowSolved'] = dec
         modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
@@ -222,10 +222,10 @@ class ImagingApps:
 
     def solveImage(self, modelData, simulation):
         modelData['UseFitsHeaders'] = True
-        suc, mes, modelData = self.app.workerModeling.imagingApps.imagingAppHandler.solveImage(modelData)
+        suc, mes, modelData = self.imagingAppHandler.solveImage(modelData)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.app.workerModeling.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+            ra_sol_Jnow, dec_sol_Jnow = self.app.workerModelingDispatcher.modelingRunner.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
             modelData['RaJNowSolved'] = ra_sol_Jnow
             modelData['DecJNowSolved'] = dec_sol_Jnow
             modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
@@ -251,46 +251,3 @@ class ImagingApps:
         else:
             return False, mes, modelData
 
-    def plateSolveSync(self, simulation=False):
-        self.app.modelLogQueue.put('delete')
-        self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
-        modelData = {}
-        modelData = self.prepareImaging(modelData, '')
-        modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
-        self.logger.info('modelData: {0}'.format(modelData))
-        self.app.mountCommandQueue.put('PO')
-        self.app.mountCommandQueue.put('AP')
-        if not os.path.isdir(modelData['BaseDirImages']):
-            os.makedirs(modelData['BaseDirImages'])
-        modelData['File'] = 'platesolvesync.fit'
-        modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
-        modelData['LocalSiderealTimeFloat'] = self.app.workerModeling.transform.degStringToDecimal(
-            self.app.mount.sidereal_time[0:9])
-        modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
-        modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
-        modelData['RaJNow'] = self.app.mount.data['RaJNow']
-        modelData['DecJNow'] = self.app.mount.data['DecJNow']
-        modelData['Pierside'] = self.app.mount.data['Pierside']
-        modelData['RefractionTemperature'] = self.app.mount.data['RefractionTemperature']
-        modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
-        modelData['Azimuth'] = 0
-        modelData['Altitude'] = 0
-        self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
-        suc, mes, imagepath = self.capturingImage(modelData, simulation)
-        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
-        if suc:
-            self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
-            suc, mes, modelData = self.solveImage(modelData, simulation)
-            self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
-            if suc:
-                suc = self.app.mount.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
-                if suc:
-                    self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
-                else:
-                    self.app.modelLogQueue.put(
-                        '{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
-            else:
-                self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
-        if not self.app.ui.checkKeepImages.isChecked():
-            shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))

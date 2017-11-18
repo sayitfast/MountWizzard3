@@ -83,7 +83,7 @@ class ModelPoints:
             self.BasePoints = eastSide + westSide                                                                           # put them together
         else:
             self.RefinementPoints = eastSide + westSide                                                                     # put them together
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def loadHorizonPoints(self, horizonPointsFileName, file_check, line_check, line_value):                                 # load a ModelMaker modeling file, return base & refine points as lists of (az,alt) tuples
         self.horizonPoints = []                                                                                             # clear horizon variable
@@ -160,11 +160,11 @@ class ModelPoints:
     def deletePoints(self):
         self.BasePoints = []
         self.RefinementPoints = []
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def loadBasePoints(self, filename):
         self.BasePoints, msg = self.loadModelPoints(filename, 'base')
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def loadRefinementPoints(self, filename, horizonMask, sortPoints):
         self.RefinementPoints, msg = self.loadModelPoints(filename, 'refinement')
@@ -172,7 +172,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if sortPoints:
             self.sortPoints('refinement')
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateDSOPoints(self, horizonMask, hours, numPoints, hoursPrev):                                                      # modeling points along dso path
         if 'RaJNow' not in self.app.mount.data:
@@ -187,7 +187,7 @@ class ModelPoints:
                 self.RefinementPoints.append((az, alt))                                                                     # add point to list
         if horizonMask:
             self.deleteBelowHorizonLine()
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateMaxPoints(self, horizonMask, sortPoints):                                                                   # generate pointcloud in greater circles of sky
         west = []                                                                                                           # no sorting, point will be for west and east prepared
@@ -211,7 +211,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if sortPoints:
             self.sortPoints('refinement')
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateNormalPoints(self, horizonMask, sortPoints):
         west = []                                                                                                           # no sorting, point will be for west and east prepared
@@ -233,7 +233,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if sortPoints:
             self.sortPoints('refinement')
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateGridPoints(self, horizonMask, sortPoints, row, col, altMin, altMax):                                                                                           # modeling points along dso path
         self.RefinementPoints = []                                                                                          # clear point list
@@ -244,7 +244,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if sortPoints:
             self.sortPoints('refinement')
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateBasePoints(self, az, alt):                                                                                           # do base point equally distributed
         self.BasePoints = []
@@ -254,4 +254,4 @@ class ModelPoints:
                 azp -= 360                                                                                                  # shift it if necessary
             point = (azp, alt)                                                                                              # generate the point value az,alt
             self.BasePoints.append(point)                                                                                   # put it to list
-        self.app.workerModeling.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)

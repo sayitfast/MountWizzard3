@@ -12,23 +12,14 @@
 #
 ############################################################
 import logging
-import platform
 import time
-# threading
-import threading
 import PyQt5
-# transformations
-from astrometry import transform
-# Cameras
-from modeling import imagingApps
-# modelPoints
-from modeling import modelPoints
 # workers
-from modeling import modelStandard
+from modeling import modelingRunner
 from modeling import modelBoost
 
 
-class Modeling(PyQt5.QtCore.QObject):
+class ModelingDispatcher(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
@@ -47,16 +38,8 @@ class Modeling(PyQt5.QtCore.QObject):
         self._mutex = PyQt5.QtCore.QMutex()
         # make main sources available
         self.app = app
-        self.imagingApps = imagingApps.ImagingApps(app)
-        # assign support classes
-        self.transform = transform.Transform(app)
-        self.modelPoints = modelPoints.ModelPoints(self.app)
-        self.modelStandard = modelStandard.ModelStandard(self.app)
+        self.modelingRunner = modelingRunner.ModelingRunner(self.app)
         self.modelBoost = modelBoost.ModelBoost(self.app)
-        # finally initialize the class configuration
-        self.cancel = False
-        self.modelRun = False
-        self.modelData = []
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
             'RunBaseModel':
@@ -64,7 +47,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runBaseModel,
-                            'Method': self.modelStandard.runBaseModel,
+                            'Method': self.modelingRunner.runBaseModel,
                             'Cancel': self.app.ui.btn_cancelModel1
                         }
                     ]
@@ -74,7 +57,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runRefinementModel,
-                            'Method': self.modelStandard.runRefinementModel,
+                            'Method': self.modelingRunner.runRefinementModel,
                             'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
@@ -94,7 +77,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_plateSolveSync,
-                            'Method': self.imagingApps.plateSolveSync,
+                            'Method': self.modelingRunner.plateSolveSync,
                             'Parameter': ['self.app.ui.checkSimulation.isChecked()'],
                         }
                     ]
@@ -104,7 +87,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runBatchModel,
-                            'Method': self.modelStandard.runBatchModel,
+                            'Method': self.modelingRunner.runBatchModel,
                             'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
@@ -114,7 +97,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runCheckModel,
-                            'Method': self.modelStandard.runCheckModel,
+                            'Method': self.modelingRunner.runCheckModel,
                             'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
@@ -124,7 +107,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runTimeChangeModel,
-                            'Method': self.modelStandard.runTimeChangeModel,
+                            'Method': self.modelingRunner.runTimeChangeModel,
                             'Cancel': self.app.ui.btn_cancelAnalyseModel
                         }
                     ]
@@ -134,7 +117,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_runHystereseModel,
-                            'Method': self.modelStandard.runHystereseModel,
+                            'Method': self.modelingRunner.runHystereseModel,
                             'Cancel': self.app.ui.btn_cancelAnalyseModel
                         }
                     ]
@@ -144,7 +127,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_clearAlignmentModel,
-                            'Method': self.modelStandard.clearAlignmentModel,
+                            'Method': self.modelingRunner.clearAlignmentModel,
                             'Cancel': self.app.ui.btn_cancelAnalyseModel
                         }
                     ]
@@ -154,7 +137,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_generateDSOPoints,
-                            'Method': self.modelPoints.generateDSOPoints,
+                            'Method': self.modelingRunner.modelPoints.generateDSOPoints,
                             'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
                                           'int(float(self.app.ui.numberHoursDSO.value()))',
                                           'int(float(self.app.ui.numberPointsDSO.value()))',
@@ -168,7 +151,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_generateMaxPoints,
-                            'Method': self.modelPoints.generateMaxPoints,
+                            'Method': self.modelingRunner.modelPoints.generateMaxPoints,
                             'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()'
                                           ]
@@ -180,7 +163,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_generateNormalPoints,
-                            'Method': self.modelPoints.generateNormalPoints,
+                            'Method': self.modelingRunner.modelPoints.generateNormalPoints,
                             'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()'
                                           ]
@@ -192,7 +175,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadBasePoints,
-                            'Method': self.modelPoints.loadBasePoints,
+                            'Method': self.modelingRunner.modelPoints.loadBasePoints,
                             'Parameter': ['self.app.ui.le_modelPointsFileName.text()']
                         }
                     ]
@@ -202,7 +185,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadRefinementPoints,
-                            'Method': self.modelPoints.loadRefinementPoints,
+                            'Method': self.modelingRunner.modelPoints.loadRefinementPoints,
                             'Parameter': ['self.app.ui.le_modelPointsFileName.text()',
                                           'self.app.ui.checkSortPoints.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()']
@@ -214,7 +197,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_generateGridPoints,
-                            'Method': self.modelPoints.generateGridPoints,
+                            'Method': self.modelingRunner.modelPoints.generateGridPoints,
                             'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()',
                                           'int(float(self.app.ui.numberGridPointsRow.value()))',
@@ -229,7 +212,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_generateBasePoints,
-                            'Method': self.modelPoints.generateBasePoints,
+                            'Method': self.modelingRunner.modelPoints.generateBasePoints,
                             'Parameter': ['float(self.app.ui.azimuthBase.value())',
                                           'float(self.app.ui.altitudeBase.value())']
                         }
@@ -240,7 +223,7 @@ class Modeling(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_deletePoints,
-                            'Method': self.modelPoints.deletePoints
+                            'Method': self.modelingRunner.modelPoints.deletePoints
                         }
                     ]
                 }
@@ -262,14 +245,12 @@ class Modeling(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.imagingApps.initConfig()
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
         self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
-        self.imagingApps.storeConfig()
 
     def run(self):
         if not self.isRunning:
@@ -336,16 +317,16 @@ class Modeling(PyQt5.QtCore.QObject):
     # from outside if I would use the event queue of this task (because the methods don't respect updating event queue and the modeling
     # processes should be modal. Therefore cancelModeling and cancelAnayseModeling is connected to main app with it's separate event queue.
     def cancelModeling(self):
-        if self.modelRun:
+        if self.modelingRunner.modelRun:
             self.app.ui.btn_cancelModel.setStyleSheet(self.RED)
             self.logger.info('User canceled modeling with cancel any model run')
-            self.cancel = True
+            self.modelingRunner.cancel = True
 
     def cancelAnalyseModeling(self):
-        if self.modelRun:
+        if self.modelingRunner.modelRun:
             self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)
             self.logger.info('User canceled modeling with cancel analyse run')
-            self.cancel = True
+            self.modelingRunner.cancel = True
 
     def getStatus(self):
         # the status should be:
@@ -353,12 +334,12 @@ class Modeling(PyQt5.QtCore.QObject):
         # 1: Imaging solution is installed
         # 2: Imaging app Task is running
         # 3: Application is ready for Imaging
-        self.imagingApps.imagingAppHandler.checkAppStatus()
-        self.imagingApps.imagingAppHandler.getCameraStatus()
+        self.modelingRunner.imagingApps.imagingAppHandler.checkAppStatus()
+        self.modelingRunner.imagingApps.imagingAppHandler.getCameraStatus()
         self.signalStatusImagingApp.emit(1)
-        if self.imagingApps.imagingAppHandler.appRunning:
+        if self.modelingRunner.imagingApps.imagingAppHandler.appRunning:
             self.signalStatusImagingApp.emit(2)
-        if self.imagingApps.imagingAppHandler.cameraConnected:
+        if self.modelingRunner.imagingApps.imagingAppHandler.cameraConnected:
             self.signalStatusImagingApp.emit(3)
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)

@@ -126,15 +126,15 @@ class Mount(PyQt5.QtCore.QThread):
 
         self.loadActualModel()
         alignModel = self.getAlignmentModel()
-        if not self.app.workerModeling.modelData and alignModel['RMS'] > 0:
+        if not self.app.workerModelingDispatcher.modelingRunner.modelData and alignModel['RMS'] > 0:
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
             self.app.workerModeling.modelData = []
             for i in range(0, alignModel['Number']):
-                self.app.workerModeling.modelData.append({'ModelError': float(alignModel['Points'][i][5]),
-                                                          'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
-                                                          'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
-                                                          'Azimuth': float(alignModel['Points'][i][3]),
-                                                          'Altitude': float(alignModel['Points'][i][4])})
+                self.app.workerModelingDispatcher.modelingRunner.modelData.append({'ModelError': float(alignModel['Points'][i][5]),
+                                                                                   'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
+                                                                                   'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
+                                                                                   'Azimuth': float(alignModel['Points'][i][3]),
+                                                                                   'Altitude': float(alignModel['Points'][i][4])})
         self.showAlignmentModel(alignModel)
 
         while True:
@@ -474,11 +474,11 @@ class Mount(PyQt5.QtCore.QThread):
             reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))
             if reply == '1':
                 alignModel = self.getAlignmentModel()
-                self.app.workerModeling.modelData.pop(index)
+                self.app.workerModelingDispatcher.modelingRunner.modelData.pop(index)
                 for i in range(0, alignModel['Number']):
-                    self.app.workerModeling.modelData[i]['ModelError'] = float(alignModel['Points'][i][5])
-                    self.app.workerModeling.modelData[i]['RaError'] = self.app.workerModeling.modelData[i]['ModelError'] * math.sin(math.radians(float(alignModel['Points'][i][6])))
-                    self.app.workerModeling.modelData[i]['DecError'] = self.app.workerModeling.modelData[i]['ModelError'] * math.cos(math.radians(float(alignModel['Points'][i][6])))
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = float(alignModel['Points'][i][5])
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(math.radians(float(alignModel['Points'][i][6])))
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(math.radians(float(alignModel['Points'][i][6])))
                 self.showAlignmentModel(alignModel)
             else:
                 self.logger.warning('Point {0} could not be deleted').format(index)
@@ -514,92 +514,92 @@ class Mount(PyQt5.QtCore.QThread):
 
     def saveBackupModel(self):
         if self.saveModel('BACKUP'):
-            if self.app.workerModeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'backup.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'backup.dat')
 
     def loadBackupModel(self):
         if self.loadModel('BACKUP'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('backup.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('backup.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for BACKUP')
 
     def saveBaseModel(self):
         if self.saveModel('BASE'):
-            if self.app.workerModeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'base.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'base.dat')
             else:
                 self.app.messageQueue.put('No data for BASE')
 
     def loadBaseModel(self):
         if self.loadModel('BASE'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('base.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('base.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for BASE')
 
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
-            if self.app.workerModeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'refine.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'refine.dat')
             else:
                 self.app.messageQueue.put('No data for REFINE')
 
     def loadRefinementModel(self):
         if self.loadModel('REFINE'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('refine.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('refine.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for REFINE')
 
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
-            if self.app.workerModeling.modelData:
-                if 'Index' in self.app.workerModeling.modelData[0].keys():
-                    self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'actual.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                if 'Index' in self.app.workerModelingDispatcher.modelingRunner.modelData[0].keys():
+                    self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'actual.dat')
             else:
                 self.app.messageQueue.put('No data for ACTUAL')
 
     def loadActualModel(self):
         if self.loadModel('ACTUAL'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('actual.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('actual.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for ACTUAL')
 
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
-            if self.app.workerModeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'simple.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'simple.dat')
             else:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
     def loadSimpleModel(self):
         if self.loadModel('SIMPLE'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('simple.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('simple.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for SIMPLE')
 
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
-            if self.app.workerModeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'DSO1.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'DSO1.dat')
             else:
                 self.app.messageQueue.put('No data file for DSO1')
 
     def loadDSO1Model(self):
         if self.loadModel('DSO1'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('DSO1.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('DSO1.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for DSO1')
 
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
-            if self.app.workerModeling.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModeling.modelData, 'DSO2.dat')
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'DSO2.dat')
             else:
                 self.app.messageQueue.put('No data file for DSO2')
 
     def loadDSO2Model(self):
         if self.loadModel('DSO2'):
-            self.app.workerModeling.modelData = self.app.analyseWindow.analyse.loadDataRaw('dso2.dat')
-            if not self.app.workerModeling.modelData:
+            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('dso2.dat')
+            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.messageQueue.put('No data file for DSO2')
 
     def setRefractionParam(self):
@@ -671,7 +671,7 @@ class Mount(PyQt5.QtCore.QThread):
                 self.setRefractionParam()
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
-            if self.app.workerModeling.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:
+            if self.app.workerModelingDispatcher.modelingRunner.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:
                 self.setRefractionParam()
         self.data['SlewRate'] = self.mountHandler.sendCommand('GMs')
         self.signalMountTrackPreview.emit()

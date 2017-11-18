@@ -16,6 +16,15 @@ import copy
 import os
 import shutil
 import time
+import PyQt5
+# Cameras
+from modeling import imagingApps
+# analyse save functions
+from analyse import analysedata
+# modelPoints
+from modeling import modelPoints
+# transformations
+from astrometry import transform
 
 
 class ModelBase:
@@ -25,14 +34,24 @@ class ModelBase:
         # make main sources available
         self.app = app
         self.results = []
+        self.modelingResultData = []
+        self.modelData = []
         self.modelRun = False
+        # finally initialize the class configuration
+        self.cancel = False
+        self.analyseData = analysedata.Analyse(app)
+        # assign support classes
+        self.transform = transform.Transform(app)
+        self.modelPoints = modelPoints.ModelPoints(self.app)
+        self.imagingApps = imagingApps.ImagingApps(app)
+
 
     @staticmethod
     def timeStamp():
         return time.strftime("%H:%M:%S", time.localtime())
 
     def clearAlignmentModel(self):
-        self.app.workerModeling.modelAnalyseData = []
+        self.modelingResultData = []
         self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)
 
@@ -59,18 +78,18 @@ class ModelBase:
                 az = 0.0
             self.app.domeCommandQueue.put(('SlewAzimuth', az))
             while not self.app.mount.data['Slewing'] and not self.app.workerDome.data['Slewing']:
-                if self.app.workerModeling.cancel:
+                if self.cancel:
                     self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)
             while self.app.mount.data['Slewing'] or self.app.workerAscomDome.data['Slewing']:
-                if self.app.workerModeling.cancel:
+                if self.cancel:
                     self.logger.info('Modeling cancelled after dome slewing')
                     break
                 time.sleep(0.1)
         else:
             while self.app.mount.data['Slewing']:
-                if self.app.workerModeling.cancel:
+                if self.app.workerModelingDispatcher.modelingRunner.cancel:
                     self.logger.info('Modeling cancelled after mount slewing')
                     break
                 time.sleep(0.1)
@@ -94,11 +113,53 @@ class ModelBase:
         self.app.mount.programBatchData(data)
 
     def checkModelingAvailable(self):
-        if not self.app.mount.mountHandler.connected or not self.app.modeling.imagingApps.imagingAppHandler.cameraConnected:
+        if not self.app.mount.mountHandler.connected or not self.imagingApps.imagingAppHandler.cameraConnected:
             return False
         else:
             return True
 
+    def plateSolveSync(self, simulation=False):
+        self.app.modelLogQueue.put('delete')
+        self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
+        modelData = {}
+        modelData = self.prepareImaging(modelData, '')
+        modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
+        self.logger.info('modelData: {0}'.format(modelData))
+        self.app.mountCommandQueue.put('PO')
+        self.app.mountCommandQueue.put('AP')
+        if not os.path.isdir(modelData['BaseDirImages']):
+            os.makedirs(modelData['BaseDirImages'])
+        modelData['File'] = 'platesolvesync.fit'
+        modelData['LocalSiderealTime'] = self.app.mount.sidereal_time[0:9]
+        modelData['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.mount.sidereal_time[0:9])
+        modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
+        modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
+        modelData['RaJNow'] = self.app.mount.data['RaJNow']
+        modelData['DecJNow'] = self.app.mount.data['DecJNow']
+        modelData['Pierside'] = self.app.mount.data['Pierside']
+        modelData['RefractionTemperature'] = self.app.mount.data['RefractionTemperature']
+        modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
+        modelData['Azimuth'] = 0
+        modelData['Altitude'] = 0
+        self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
+        suc, mes, imagepath = self.capturingImage(modelData, simulation)
+        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
+        if suc:
+            self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
+            suc, mes, modelData = self.solveImage(modelData, simulation)
+            self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
+            if suc:
+                suc = self.app.mount.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
+                if suc:
+                    self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
+                else:
+                    self.app.modelLogQueue.put(
+                        '{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
+            else:
+                self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
+        if not self.app.ui.checkKeepImages.isChecked():
+            shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
+        self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
 
     # noinspection PyUnresolvedReferences
     def runModel(self, modeltype, runPoints, modelData, settlingTime, simulation=False, keepImages=False):
@@ -122,12 +183,12 @@ class ModelBase:
         timeStart = time.time()
         # here starts the real model running cycle
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):
-            self.app.workerModeling.modelRun = True
+            self.app.workerModelingDispatcher.modelingRunner.modelRun = True
             modelData['Azimuth'] = p_az
             modelData['Altitude'] = p_alt
             if p_item.isVisible():
                 # todo: put the code to multi thread modeling
-                if self.app.workerModeling.cancel:
+                if self.cancel:
                     self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
                     # tracking should be on after canceling the modeling
                     self.app.mountCommandQueue.put('AP')
@@ -156,9 +217,9 @@ class ModelBase:
                     self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))
                 self.app.modelLogQueue.put('\n')
             if p_item.isVisible() and p_solve:
-                modelData['File'] = self.app.workerModeling.imagingApps.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
+                modelData['File'] = self.imagingApps.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
                 modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.app.workerModeling.transform.degStringToDecimal(self.app.mount.data['LocalSiderealTime'][0:9])
+                modelData['LocalSiderealTimeFloat'] = self.transform.degStringToDecimal(self.app.mount.data['LocalSiderealTime'][0:9])
                 modelData['RaJ2000'] = self.app.mount.data['RaJ2000']
                 modelData['DecJ2000'] = self.app.mount.data['DecJ2000']
                 modelData['RaJNow'] = self.app.mount.data['RaJNow']
@@ -170,13 +231,13 @@ class ModelBase:
                 if modeltype in ['TimeChange']:
                     self.app.mountCommandQueue.put('AP')
                 self.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))
-                suc, mes, imagepath = self.capturingImage(modelData, simulation)
+                suc, mes, imagepath = self.imagingApps.capturingImage(modelData, simulation)
                 if modeltype in ['TimeChange']:
                     self.app.mountCommandQueue.put('RT9')
                 self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
                 if suc:
                     self.app.modelLogQueue.put('{0} -\t Solving image for model point{1}\n'.format(self.timeStamp(), i + 1))
-                    suc, mes, modelData = self.solveImage(modelData, simulation)
+                    suc, mes, modelData = self.imagingApps.solveImage(modelData, simulation)
                     self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
                     if suc:
                         if modeltype in ['Base', 'Refinement', 'All']:
@@ -205,5 +266,5 @@ class ModelBase:
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
         self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'.format(self.timeStamp(), modeltype, numCheckPoints))
-        self.app.workerModeling.modelRun = False
+        self.app.workerModelingDispatcher.modelingRunner.modelRun = False
         return results
