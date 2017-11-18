@@ -12,7 +12,7 @@
 #
 ############################################################
 import PyQt5
-from modeling.modelBase import ModelBase
+from modeling.modelingBase import ModelBase
 
 
 class ModelingRunner(ModelBase):

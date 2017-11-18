@@ -315,10 +315,11 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     # cancel modeling is defined outside command Dispatcher, because when running commands, there is no chance to interrupt this process
     # from outside if I would use the event queue of this task (because the methods don't respect updating event queue and the modeling
-    # processes should be modal. Therefore cancelModeling and cancelAnayseModeling is connected to main app with it's separate event queue.
+    # processes should be modal. Therefore cancelModeling and cancelAnalyseModeling is connected to main app with it's separate event queue.
     def cancelModeling(self):
         if self.modelingRunner.modelRun:
-            self.app.ui.btn_cancelModel.setStyleSheet(self.RED)
+            self.app.ui.btn_cancelModel1.setStyleSheet(self.RED)
+            self.app.ui.btn_cancelModel2.setStyleSheet(self.RED)
             self.logger.info('User canceled modeling with cancel any model run')
             self.modelingRunner.cancel = True
 

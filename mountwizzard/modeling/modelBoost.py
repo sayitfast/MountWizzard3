@@ -21,7 +21,7 @@ import datetime
 import PyQt5
 import pyfits
 from queue import Queue
-from modeling.modelBase import ModelBase
+from modeling.modelingBase import ModelBase
 
 
 class Slewpoint(PyQt5.QtCore.QObject):

@@ -22,7 +22,7 @@ from modeling import imagingApps
 # analyse save functions
 from analyse import analysedata
 # modelPoints
-from modeling import modelPoints
+from modeling import modelingPoints
 # transformations
 from astrometry import transform
 
@@ -42,9 +42,8 @@ class ModelBase:
         self.analyseData = analysedata.Analyse(app)
         # assign support classes
         self.transform = transform.Transform(app)
-        self.modelPoints = modelPoints.ModelPoints(self.app)
+        self.modelPoints = modelingPoints.ModelPoints(self.app)
         self.imagingApps = imagingApps.ImagingApps(app)
-
 
     @staticmethod
     def timeStamp():
