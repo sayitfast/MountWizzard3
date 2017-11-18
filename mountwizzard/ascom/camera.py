@@ -44,7 +44,7 @@ class Camera(QtCore.QObject):
         self.driverName = 'ASCOM.Simulator.Camera'
         self.ascom = None
         self.status = ''
-        self.props = {}
+        self.data = {}
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
@@ -65,43 +65,50 @@ class Camera(QtCore.QObject):
         else:
             self.isRunning = False
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
+        '''
         while self.isRunning:
-            QtWidgets.QApplication.processEvents()
+            # time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.finishedSignal.emit()
+        self.finished.emit()
+        '''
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.ascom = None
+        pythoncom.CoUninitialize()
+        # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.finishedSignal.emit()
 
     def getProps(self):
         if self.isRunning:
             print('stat')
-            self.props['CameraState'] = self.ascom.CameraState
-            self.props['CameraXSize'] = self.ascom.CameraXSize
-            self.props['CameraYSize'] = self.ascom.CameraYSize
+            self.data['CameraState'] = self.ascom.CameraState
+            self.data['CameraXSize'] = self.ascom.CameraXSize
+            self.data['CameraYSize'] = self.ascom.CameraYSize
             '''
-            self.props['CanAbortExposure'] = self.ascom.CanAbortExposure
-            self.props['CanFastReadout'] = self.ascom.CanFastReadout
-            self.props['CanStopExposure'] = self.ascom.CanStopExposure
-            self.props['CanGetCoolerPower'] = self.ascom.CanGetCoolerPower
-            self.props['CCDTemperature'] = self.ascom.CCDTemperature
-            self.props['Gain'] = self.ascom.Gain
-            self.props['Gains'] = self.ascom.Gains
-            self.props['InterfaceVersion'] = self.ascom.InterfaceVersion
-            self.props['MaxBinX'] = self.ascom.MaxBinX
-            self.props['MaxBinY'] = self.ascom.MaxBinY
-            self.props['PixelSizeX'] = self.ascom.PixelSizeX
-            self.props['PixelSizeY'] = self.ascom.PixelSizeY
-            self.props['ReadoutMode'] = self.ascom.ReadoutMode
-            self.props['ReadoutModes'] = self.ascom.ReadoutModes
+            self.data['CanAbortExposure'] = self.ascom.CanAbortExposure
+            self.data['CanFastReadout'] = self.ascom.CanFastReadout
+            self.data['CanStopExposure'] = self.ascom.CanStopExposure
+            self.data['CanGetCoolerPower'] = self.ascom.CanGetCoolerPower
+            self.data['CCDTemperature'] = self.ascom.CCDTemperature
+            self.data['Gain'] = self.ascom.Gain
+            self.data['Gains'] = self.ascom.Gains
+            self.data['InterfaceVersion'] = self.ascom.InterfaceVersion
+            self.data['MaxBinX'] = self.ascom.MaxBinX
+            self.data['MaxBinY'] = self.ascom.MaxBinY
+            self.data['PixelSizeX'] = self.ascom.PixelSizeX
+            self.data['PixelSizeY'] = self.ascom.PixelSizeY
+            self.data['ReadoutMode'] = self.ascom.ReadoutMode
+            self.data['ReadoutModes'] = self.ascom.ReadoutModes
             '''
-            if self.props['CameraState'] in [0]:
+            if self.data['CameraState'] in [0]:
                 self.statusSignal.emit('IDLE')
-            elif self.props['CameraState'] in [1, 2, 3]:
+            elif self.data['CameraState'] in [1, 2, 3]:
                 self.statusSignal.emit('INTEGRATING')
-            elif self.props['CameraState'] in [4]:
+            elif self.data['CameraState'] in [4]:
                 self.statusSignal.emit('DOWNLOADING')
             else:
                 self.statusSignal.emit('ERROR')

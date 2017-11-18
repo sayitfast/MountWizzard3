@@ -15,17 +15,32 @@ import json
 import logging
 import platform
 import time
+import PyQt5
 # packages for handling web interface to SGPro
 from urllib import request
 
-from camera.cameraBase import MWCamera
 
+class SGPro(PyQt5.QtCore.QObject):
+    logger = logging.getLogger(__name__)
+    finished = PyQt5.QtCore.pyqtSignal()
 
-class SGPro(MWCamera):
-    logger = logging.getLogger(__name__)                                                                                    # logging enabling
+    CYCLESTATUS = 200
+    SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
+    CAMERASTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'IDLE': 'IDLE', 'CAPTURING': 'INTEGRATING'}
 
     def __init__(self, app):
-        super(SGPro, self).__init__(app)
+        super().__init__()
+        self.app = app
+        self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
+        self.data = {}
+
+        self.cameraConnected = False
+        self.data['CameraStatus'] = 'DISCONNECTED'
+        self.solverConnected = False
+        self.data['SolverStatus'] = 'DISCONNECTED'
+        self.tryConnectionCounter = 0
+
         self.host = '127.0.0.1'
         self.port = 59590
         self.ipSGProBase = 'http://' + self.host + ':' + str(self.port)
@@ -39,25 +54,74 @@ class SGPro(MWCamera):
         self.getImagePath = 'SgGetImagePath'
         self.getSolvedImageDataPath = 'SgGetSolvedImageData'
         self.solveImagePath = 'SgSolveImage'
+
         self.appExe = 'Sequence Generator.exe'
         self.checkAppInstall()
 
+    def run(self):
+        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        if not self.isRunning:
+            self.isRunning = True
+        self.getStatus()
+        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
+        '''
+        while self.isRunning:
+            # time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.finished.emit()
+        '''
+
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
+        # if no running main loop is necessary, finished emit moves to stop directly
+        self.finished.emit()
+
     def checkAppInstall(self):
         if platform.system() == 'Windows':
-            self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('Sequence Generator')
-            if self.appAvailable:
-                self.app.messageQueue.put('Found: {0}'.format(self.appName))
-                self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
+            self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
+            if self.data['AppAvailable']:
+                self.app.messageQueue.put('Found: {0}'.format(self.data['AppName']))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.data['AppName'], self.data['AppInstallPath']))
             else:
                 self.logger.info('Application SGPro not found on computer')
 
-    def connectCamera(self):
-        if self.appRunning:
-            pass
-
-    def disconnectCamera(self):
-        if self.appRunning:
+    def getStatus(self):
+        suc, mes = self.SgGetDeviceStatus('Camera')
+        if suc:
+            self.cameraConnected = True
+            if mes in self.CAMERASTATUS:
+                self.data['CameraStatus'] = self.CAMERASTATUS[mes]
+                if self.data['CameraStatus'] == 'DISCONNECTED':
+                    self.cameraConnected = False
+            else:
+                print('error status {0}'.format(mes))
+        else:
+            self.data['CameraStatus'] = 'ERROR'
             self.cameraConnected = False
+
+        suc, mes = self.SgGetDeviceStatus('PlateSolver')
+        if suc:
+            self.solverConnected = True
+            if mes in self.SOLVERSTATUS:
+                self.data['SolverStatus'] = self.SOLVERSTATUS[mes]
+                if self.data['SolverStatus'] == 'DISCONNECTED':
+                    self.solverConnected = False
+                else:
+                    print('error status {0}'.format(mes))
+        else:
+            self.data['SolverStatus'] = 'ERROR'
+            self.solverConnected = False
+
+        if self.cameraConnected and self.solverConnected:
+            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+        else:
+            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
 
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['Binning'],
@@ -75,13 +139,13 @@ class SGPro(MWCamera):
                                              height=modelData['SizeY'])
         modelData['ImagePath'] = ''
         self.logger.info('message: {0}'.format(mes))
-        if suc:                                                                                                             # if we successfully starts imaging, we ca move on
-            while True:                                                                                                     # waiting for the image download before proceeding
-                suc, modelData['ImagePath'] = self.SgGetImagePath(guid)                                                     # there is the image path, once the image is downloaded
-                if suc:                                                                                                     # until then, the link is only the receipt
-                    break                                                                                                   # stopping the loop
-                else:                                                                                                       # otherwise
-                    time.sleep(0.5)                                                                                         # wait for 0.5 seconds
+        if suc:
+            while True:
+                suc, modelData['ImagePath'] = self.SgGetImagePath(guid)
+                if suc:
+                    break
+                else:
+                    time.sleep(0.5)
         return suc, mes, modelData
 
     def solveImage(self, modelData):
@@ -120,24 +184,6 @@ class SGPro(MWCamera):
 
     def getCameraProps(self):
         return self.SgGetCameraProps()
-
-    def getCameraStatus(self):
-        if self.appRunning:
-            suc, mes = self.SgGetDeviceStatus('Camera')
-            if suc:
-                self.cameraConnected = True
-                if mes == 'IDLE':
-                    self.cameraStatus = 'READY - IDLE'
-                elif mes == 'CAPTURING':
-                    self.cameraStatus = 'INTEGRATING'
-                elif mes == 'BUSY':
-                    self.cameraStatus = 'DOWNLOADING'
-                elif mes == 'DISCONNECTED':
-                    self.cameraStatus = 'DISCONNECTED'
-                    self.cameraConnected = False
-            else:
-                self.cameraStatus = 'ERROR'
-                self.cameraConnected = False
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,
@@ -245,22 +291,3 @@ class SGPro(MWCamera):
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''
-
-
-if __name__ == "__main__":
-    cam = SGPro(MWCamera)
-    print(cam.getCameraProps())
-    '''
-    value = {'Binning': 1, 'Exposure': 1, 'Iso': 100,
-             'GainValue': 'Not Set', 'Speed': 'HiSpeed',
-             'File': 'test.fit', 'BaseDirImages': 'c:/temp',
-             'CanSubframe': True, 'OffX': 0, 'OffY': 0,
-             'SizeX': 3388, 'SizeY': 2712}
-    '''
-    suci, msgi, guidi = cam.SgCaptureImage(binningMode=1, exposureLength=10, gain='Not Set', iso=100, speed='HighSpeed', frameType='Light', path='c:\\temp\\', filename= 'test.fit', useSubframe=False, posX=0, posY=0, width=1, height=1)
-    suc, msg, guid = cam.SgSolveImage(path='C:\\Users\\mw\\Projects\\mountwizzard\\mountwizzard\\model001.fit', scaleHint=1.3, useFitsHeaders=True)
-    print(suci, msgi, guidi, suc, msg, guid)
-    while True:
-        print(cam.SgGetImagePath(guidi))
-        print(cam.SgGetSolvedImageData(guid))
-        time.sleep(1)

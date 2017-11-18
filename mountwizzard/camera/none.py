@@ -11,26 +11,68 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
+import PyQt5
 import logging
 
-from camera.cameraBase import MWCamera
 
-
-class NoneCamera(MWCamera):
+class NoneCamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+    finished = PyQt5.QtCore.pyqtSignal()
+
+    CYCLESTATUS = 5000
 
     def __init__(self, app):
-        super(NoneCamera, self).__init__(app)
+        super().__init__()
+        self.app = app
+        self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
+        self.data = {}
+
+        self.cameraConnected = False
+        self.data['CameraStatus'] = 'DISCONNECTED'
+        self.solverConnected = False
+        self.data['SolverStatus'] = 'DISCONNECTED'
         self.checkAppInstall()
 
-    def checkAppInstall(self):
-        self.appAvailable = True
+    def run(self):
+        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        if not self.isRunning:
+            self.isRunning = True
+        self.getStatus()
+        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
+        '''
+        while self.isRunning:
+            # time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.finished.emit()
+        '''
 
-    def checkAppStatus(self):
-        self.appRunning = False
-        self.cameraConnected = False
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
+        # if no running main loop is necessary, finished emit moves to stop directly
+        self.finished.emit()
+
+    def checkAppInstall(self):
+        self.data['AppAvailable'] = True
+        self.data['AppName'] = 'None'
+        self.data['AppInstallPath'] = 'None'
+
+    def getStatus(self):
+        self.cameraConnected = True
+        self.solverConnected = True
+        self.data['CameraStatus'] = 'IDLE'
+        self.data['SolverStatus'] = 'IDLE'
+
+        if self.cameraConnected and self.solverConnected:
+            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+        else:
+            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
 
     def getImage(self, modelData):
         return False, 'DISCONNECTED', modelData
@@ -43,9 +85,6 @@ class NoneCamera(MWCamera):
         sizeX = 1
         sizeY = 1
         return suc, mes, sizeX, sizeY, canSubframe, gains
-
-    def getCameraStatus(self):
-        self.cameraStatus = 'DISCONNECTED'
 
     def solveImage(self, modelData):
         return False, 'ERROR', modelData

@@ -16,7 +16,6 @@ import time
 import PyQt5
 # workers
 from modeling import modelingRunner
-from modeling import modelBoost
 
 
 class ModelingDispatcher(PyQt5.QtCore.QObject):
@@ -30,7 +29,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
-    CYCLESTATUS = 1000
+    CYCLESTATUS = 5000
 
     def __init__(self, app):
         super().__init__()
@@ -39,7 +38,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         # make main sources available
         self.app = app
         self.modelingRunner = modelingRunner.ModelingRunner(self.app)
-        self.modelBoost = modelBoost.ModelBoost(self.app)
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
             'RunBaseModel':
@@ -58,16 +56,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runRefinementModel,
                             'Method': self.modelingRunner.runRefinementModel,
-                            'Cancel': self.app.ui.btn_cancelModel2
-                        }
-                    ]
-                },
-            'RunBoostModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_runBoostModel,
-                            'Method': self.modelBoost.runModel,
                             'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
@@ -233,8 +221,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         try:
-            if 'ImagingApplication' in self.app.config:
-                self.app.ui.pd_chooseImaging.setCurrentIndex(int(self.app.config['ImagingApplication']))
             if 'CheckSortPoints' in self.app.config:
                 self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
             if 'CheckDeletePointsHorizonMask' in self.app.config:
@@ -247,10 +233,10 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             pass
 
     def storeConfig(self):
-        self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
         self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
+        self.modelingRunner.storeConfig()
 
     def run(self):
         if not self.isRunning:
@@ -281,7 +267,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlignmentModel'))
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
         # TODO: it's not Model Connected, but imaging app connected
-        self.signalStatusImagingApp.emit(3)
+        self.signalStatusImagingApp.emit(0)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         self.getStatus()
 
@@ -335,13 +321,5 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         # 1: Imaging solution is installed
         # 2: Imaging app Task is running
         # 3: Application is ready for Imaging
-        self.modelingRunner.imagingApps.imagingAppHandler.checkAppStatus()
-        self.modelingRunner.imagingApps.imagingAppHandler.getCameraStatus()
-        self.signalStatusImagingApp.emit(1)
-        if self.modelingRunner.imagingApps.imagingAppHandler.appRunning:
-            self.signalStatusImagingApp.emit(2)
-        if self.modelingRunner.imagingApps.imagingAppHandler.cameraConnected:
-            self.signalStatusImagingApp.emit(3)
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
-            PyQt5.QtWidgets.QApplication.processEvents()

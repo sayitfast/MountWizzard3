@@ -20,6 +20,8 @@ import math
 import random
 import shutil
 import sys
+import PyQt5
+from astrometry import transform
 # library for fits file handling
 import pyfits
 # cameras
@@ -42,22 +44,58 @@ class ImagingApps:
     def __init__(self, app):
         # make main sources available
         self.app = app
+        self.transform = transform.Transform(self.app)
         # make imaging applications available
         if platform.system() == 'Windows':
-            self.SGPro = sgpro.SGPro(self.app)
-            self.MaximDL = maximdl.MaximDLCamera(self.app)
+            self.workerSGPro = sgpro.SGPro(self.app)
+            self.threadSGPro = PyQt5.QtCore.QThread()
+            self.threadSGPro.setObjectName("SGPro")
+            self.workerSGPro.moveToThread(self.threadSGPro)
+            # noinspection PyUnresolvedReferences
+            self.threadSGPro.started.connect(self.workerSGPro.run)
+            self.workerSGPro.finished.connect(self.workerSGProStop)
+
+            self.workerMaximDL = maximdl.MaximDLCamera(self.app)
+            self.threadMaximDL = PyQt5.QtCore.QThread()
+            self.threadMaximDL.setObjectName("MaximDL")
+            self.workerMaximDL.moveToThread(self.threadMaximDL)
+            # noinspection PyUnresolvedReferences
+            self.threadMaximDL.started.connect(self.workerMaximDL.run)
+            self.workerMaximDL.finished.connect(self.workerMaximDLStop)
+
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
             self.TheSkyX = theskyx.TheSkyX(self.app)
-        self.NoneCam = none.NoneCamera(self.app)
+
+        self.workerNoneCam = none.NoneCamera(self.app)
+        self.threadNoneCam = PyQt5.QtCore.QThread()
+        self.threadNoneCam.setObjectName("NoneCamera")
+        self.workerNoneCam.moveToThread(self.threadNoneCam)
+        # noinspection PyUnresolvedReferences
+        self.threadNoneCam.started.connect(self.workerNoneCam.run)
+        self.workerNoneCam.finished.connect(self.workerNoneCamStop)
+
         self.INDICamera = indicamera.INDICamera(self.app)
+
         # select default application
-        self.imagingAppHandler = self.NoneCam
+        self.imagingWorkerAppHandler = self.workerNoneCam
+        self.imagingThreadAppHandler = self.threadNoneCam
         self.chooserLock = threading.Lock()
         self.initConfig()
-        # run it first, to set all imaging applications up
-        self.chooseImaging()
 
     def initConfig(self):
+        if self.workerNoneCam.data['AppAvailable']:
+            self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['AppName'])
+        if self.INDICamera.appAvailable:
+            self.app.ui.pd_chooseImaging.addItem('INDI Camera')
+        if platform.system() == 'Windows':
+            if self.workerSGPro.data['AppAvailable']:
+                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.workerSGPro.data['AppName'])
+            if self.workerMaximDL.data['AppAvailable']:
+                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
+        if platform.system() == 'Windows' or platform.system() == 'Darwin':
+            if self.TheSkyX.appAvailable:
+                self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
+
         try:
             if 'ImagingApplication' in self.app.config:
                 self.app.ui.pd_chooseImaging.setCurrentIndex(int(self.app.config['ImagingApplication']))
@@ -65,55 +103,66 @@ class ImagingApps:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        if self.NoneCam.appAvailable:
-            self.app.ui.pd_chooseImaging.addItem('No Application')
-        if self.INDICamera.appAvailable:
-            self.app.ui.pd_chooseImaging.addItem('INDI Camera')
-        if platform.system() == 'Windows':
-            if self.SGPro.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.appName)
-            if self.MaximDL.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.MaximDL.appName)
-        if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            if self.TheSkyX.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
         # connect change in imaging app to the subroutine of setting it up
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
+        self.chooseImaging()
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
 
+    def workerNoneCamStop(self):
+        self.threadNoneCam.quit()
+        self.threadNoneCam.wait()
+
+    def workerSGProStop(self):
+        self.threadSGPro.quit()
+        self.threadSGPro.wait()
+
+    def workerMaximDLStop(self):
+        self.threadMaximDL.quit()
+        self.threadMaximDL.wait()
+
+    def workerTheSkyXStop(self):
+        self.threadTheSkyX.quit()
+        self.threadTheSkyX.wait()
+
+    def workerINDICameraStop(self):
+        self.threadINDICamera.quit()
+        self.threadINDICamera.wait()
+
     def chooseImaging(self):
         self.chooserLock.acquire()
-        self.app.ui.btn_runBoostModel.setVisible(False)
-        self.app.ui.btn_runBoostModel.setEnabled(False)
-        if self.imagingAppHandler.cameraConnected:
-            self.imagingAppHandler.disconnectCamera()
-        if self.app.ui.pd_chooseImaging.currentText().startswith('No Application'):
-            self.imagingAppHandler = self.NoneCam
+        if self.imagingWorkerAppHandler.isRunning:
+            self.imagingWorkerAppHandler.stop()
+        if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
+            self.imagingWorkerAppHandler = self.workerNoneCam
+            self.imagingThreadAppHandler = self.threadNoneCam
             self.logger.info('actual camera / plate solver is None')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
-            self.imagingAppHandler = self.INDICamera
-            self.logger.info('actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
-            self.imagingAppHandler = self.SGPro
-            self.app.ui.btn_runBoostModel.setEnabled(True)
-            self.app.ui.btn_runBoostModel.setVisible(True)
+            self.imagingWorkerAppHandler = self.workerSGPro
+            self.imagingThreadAppHandler = self.threadSGPro
             self.logger.info('actual camera / plate solver is SGPro')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
-            self.imagingAppHandler = self.TheSkyX
-            self.logger.info('actual camera / plate solver is TheSkyX')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
-            self.imagingAppHandler = self.MaximDL
+            self.imagingWorkerAppHandler = self.workerMaximDL
+            self.imagingThreadAppHandler = self.threadMaximDL
             self.logger.info('actual camera / plate solver is MaximDL')
-        self.imagingAppHandler.checkAppStatus()
-        self.imagingAppHandler.connectCamera()
+        '''
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
+            self.imagingWorkerAppHandler = self.workerNoneCam
+            self.imagingThreadAppHandler = self.threadNoneCam
+            self.logger.info('actual camera / plate solver is INDI Camera')
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
+            self.imagingWorkerAppHandler = self.workerNoneCam
+            self.imagingThreadAppHandler = self.threadNoneCam
+            self.logger.info('actual camera / plate solver is TheSkyX')
+        '''
+        self.imagingThreadAppHandler.start()
         self.chooserLock.release()
 
     def prepareImaging(self, directory):
         modelData = {}
         # do all the calculations once
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingAppHandler.getCameraProps()
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingWorkerAppHandler.getCameraProps()
         if suc:
             self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
         else:
@@ -154,16 +203,16 @@ class ImagingApps:
             self.logger.info('Modeling cancelled after capturing image')
             return False, 'Cancel modeling pressed', modelData
         LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]
-        RaJ2000FitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
-        DecJ2000FitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
-        RaJNowFitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
-        DecJNowFitsHeader = self.app.workerModelingDispatcher.modelingRunner.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
+        RaJ2000FitsHeader = self.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
+        DecJ2000FitsHeader = self.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
+        RaJNowFitsHeader = self.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
+        DecJNowFitsHeader = self.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
         if modelData['Pierside'] == '1':
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
         self.logger.info('modelData: {0}'.format(modelData))
-        suc, mes, modelData = self.imagingAppHandler.getImage(modelData)
+        suc, mes, modelData = self.imagingWorkerAppHandler.getImage(modelData)
         if suc:
             if simulation:
                 if getattr(sys, 'frozen', False):
@@ -212,7 +261,7 @@ class ImagingApps:
         modelData['Scale'] = 1.3
         modelData['Angle'] = 90
         modelData['TimeTS'] = 2.5
-        ra, dec = self.app.workerModelingDispatcher.modelingRunner.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+        ra, dec = self.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
         modelData['RaJNowSolved'] = ra
         modelData['DecJNowSolved'] = dec
         modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
@@ -222,10 +271,10 @@ class ImagingApps:
 
     def solveImage(self, modelData, simulation):
         modelData['UseFitsHeaders'] = True
-        suc, mes, modelData = self.imagingAppHandler.solveImage(modelData)
+        suc, mes, modelData = self.imagingWorkerAppHandler.solveImage(modelData)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.app.workerModelingDispatcher.modelingRunner.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
             modelData['RaJNowSolved'] = ra_sol_Jnow
             modelData['DecJNowSolved'] = dec_sol_Jnow
             modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600

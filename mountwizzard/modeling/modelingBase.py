@@ -27,7 +27,7 @@ from modeling import modelingPoints
 from astrometry import transform
 
 
-class ModelBase:
+class ModelingBase:
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
@@ -37,13 +37,19 @@ class ModelBase:
         self.modelingResultData = []
         self.modelData = []
         self.modelRun = False
-        # finally initialize the class configuration
         self.cancel = False
         self.analyseData = analysedata.Analyse(app)
         # assign support classes
         self.transform = transform.Transform(app)
         self.modelPoints = modelingPoints.ModelPoints(self.app)
         self.imagingApps = imagingApps.ImagingApps(app)
+        self.initConfig()
+
+    def initConfig(self):
+        pass
+
+    def storeConfig(self):
+        self.imagingApps.storeConfig()
 
     @staticmethod
     def timeStamp():
@@ -112,7 +118,7 @@ class ModelBase:
         self.app.mount.programBatchData(data)
 
     def checkModelingAvailable(self):
-        if not self.app.mount.mountHandler.connected or not self.imagingApps.imagingAppHandler.cameraConnected:
+        if not self.app.mount.mountHandler.connected or not self.imagingApps.imagingWorkerAppHandler.isRunning:
             return False
         else:
             return True
@@ -121,7 +127,7 @@ class ModelBase:
         self.app.modelLogQueue.put('delete')
         self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
         modelData = {}
-        modelData = self.prepareImaging(modelData, '')
+        modelData = self.imagingApps.prepareImaging(modelData, '')
         modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')
@@ -141,11 +147,11 @@ class ModelBase:
         modelData['Azimuth'] = 0
         modelData['Altitude'] = 0
         self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
-        suc, mes, imagepath = self.capturingImage(modelData, simulation)
+        suc, mes, imagepath = self.imagingApps.capturingImage(modelData, simulation)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
             self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
-            suc, mes, modelData = self.solveImage(modelData, simulation)
+            suc, mes, modelData = self.imagingApps.solveImage(modelData, simulation)
             self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
             if suc:
                 suc = self.app.mount.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])

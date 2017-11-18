@@ -12,22 +12,23 @@
 #
 ############################################################
 import PyQt5
-from modeling.modelingBase import ModelBase
+# modeling runner get most of is basic parts from ModelingBase
+from modeling.modelingBase import ModelingBase
 
 
-class ModelingRunner(ModelBase):
+class ModelingRunner(ModelingBase):
 
     def __init__(self, app):
-        super(ModelingRunner, self).__init__(app)
+        super().__init__(app)
         # make main sources available
         self.app = app
-        self.modelRun = False
+        self.initConfig()
 
     def initConfig(self):
         pass
 
     def storeConfig(self):
-        self.imagingApps.storeConfig()
+        pass
 
     def runBaseModel(self):
         if not self.checkModelingAvailable():
@@ -37,16 +38,16 @@ class ModelingRunner(ModelBase):
             self.clearAlignmentModel()
             self.app.modelLogQueue.put('Model cleared!\n')
         settlingTime, directory = self.setupRunningParameters()
-        if len(self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints) > 0:
+        if len(self.modelPoints.BasePoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
             modelData = self.imagingApps.prepareImaging(directory)
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.runModel('Base', self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints, modelData, settlingTime, simulation, keepImages)
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.mount.retrofitMountData(self.app.workerModelingDispatcher.modelingRunner.modelData)
+            self.modelData = self.runModel('Base', self.modelPoints.BasePoints, modelData, settlingTime, simulation, keepImages)
+            self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = directory + '_base.dat'
-            if len(self.app.workerModelingDispatcher.modelingRunner.modelData) > 0:
+            if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.analyseData.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, name)
+                self.analyseData.saveData(self.modelData, name)
                 self.app.mount.saveBaseModel()
         else:
             self.logger.warning('There are no Basepoints for modeling')
@@ -58,22 +59,22 @@ class ModelingRunner(ModelBase):
         simulation = self.app.ui.checkSimulation.isChecked()
         if num > 2 or simulation:
             settlingTime, directory = self.setupRunningParameters()
-            if len(self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints) > 0:
+            if len(self.modelPoints.RefinementPoints) > 0:
                 if self.app.ui.checkKeepRefinement.isChecked():
                     self.app.mount.loadRefinementModel()
                 else:
                     self.app.mount.loadBaseModel()
                 keepImages = self.app.ui.checkKeepImages.isChecked()
                 modelData = self.imagingApps.prepareImaging(directory)
-                refinePoints = self.runModel('Refinement', self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints, modelData, settlingTime, simulation, keepImages)
+                refinePoints = self.runModel('Refinement', self.modelPoints.RefinementPoints, modelData, settlingTime, simulation, keepImages)
                 for i in range(0, len(refinePoints)):
-                    refinePoints[i]['Index'] += len(self.app.workerModelingDispatcher.modelingRunner.modelData)
-                self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.workerModelingDispatcher.modelingRunner.modelData + refinePoints
-                self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.mount.retrofitMountData(self.app.workerModelingDispatcher.modelingRunner.modelData)
+                    refinePoints[i]['Index'] += len(self.modelData)
+                self.modelData = self.modelData + refinePoints
+                self.modelData = self.app.mount.retrofitMountData(self.modelData)
                 name = directory + '_refinement.dat'
-                if len(self.app.workerModelingDispatcher.modelingRunner.modelData) > 0:
+                if len(self.modelData) > 0:
                     self.app.ui.le_analyseFileName.setText(name)
-                    self.analyseData.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, name)
+                    self.analyseData.saveData(self.modelData, name)
                     self.app.mount.saveRefinementModel()
             else:
                 self.logger.warning('There are no Refinement Points to modeling')
@@ -85,7 +86,7 @@ class ModelingRunner(ModelBase):
         if not self.checkModelingAvailable():
             return
         settlingTime, directory = self.setupRunningParameters()
-        points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints + self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
+        points = self.modelPoints.BasePoints + self.modelPoints.RefinementPoints
         if len(points) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()

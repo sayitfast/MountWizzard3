@@ -21,7 +21,7 @@ import datetime
 import PyQt5
 import pyfits
 from queue import Queue
-from modeling.modelingBase import ModelBase
+from modeling.modelingBase import ModelingBase
 
 
 class Slewpoint(PyQt5.QtCore.QObject):
@@ -148,10 +148,10 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.queuePlatesolve.queue.clear()
 
 
-class ModelBoost(ModelBase):
+class ModelingBoost(ModelingBase):
 
     def __init__(self, app):
-        super(ModelBoost, self).__init__(app)
+        super(ModelingBoost, self).__init__(app)
         # make main sources available
         self.app = app
         self.results = []

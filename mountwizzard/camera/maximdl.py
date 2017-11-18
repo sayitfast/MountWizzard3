@@ -13,52 +13,45 @@
 ############################################################
 import logging
 import time
-
-# windows automation
-from pywinauto import findwindows
+import PyQt5
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
-
-# base for cameras
-from camera.cameraBase import MWCamera
+import pythoncom
 
 
-class MaximDLCamera(MWCamera):
+class MaximDLCamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+    finished = PyQt5.QtCore.pyqtSignal()
+
+    CYCLESTATUS = 500
+    SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
+    CAMERASTATUS = {'1': 'Error', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
 
     def __init__(self, app):
-        super(MaximDLCamera, self).__init__(app)
-        self.driverNameCamera = 'MaxIm.CCDCamera'                                                                           # driver object name
-        self.driverNameDocument = 'MaxIm.Document'                                                                          # driver object name
-        self.maximCamera = None                                                                                             # placeholder for ascom driver object
-        self.maximDocument = None                                                                                           # placeholder for ascom driver object
-        self.cameraStatus = ''
+        super().__init__()
+        self.app = app
+        self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
+        self.data = {}
+
+        self.driverNameCamera = 'MaxIm.CCDCamera'
+        self.driverNameDocument = 'MaxIm.Document'
+        self.maximCamera = None
+        self.maximDocument = None
+        self.cameraConnected = False
+        self.data['CameraStatus'] = 'DISCONNECTED'
+        self.solverConnected = False
+        self.data['SolverStatus'] = 'DISCONNECTED'
         self.appExe = 'MaxIm_DL.exe'
         self.checkAppInstall()
 
-    def checkAppInstall(self):
-        self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('MaxIm DL')
-        if self.appAvailable:
-            self.app.messageQueue.put('Found: {0}'.format(self.appName))
-            self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
-        else:
-            self.logger.info('Application MaxIm DL not found on computer')
+    def run(self):
+        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        if not self.isRunning:
+            self.isRunning = True
 
-    def checkAppStatus(self):
-        try:
-            a = findwindows.find_windows(title_re='^(.*?)(\\bMaxIm DL Pro\\b)(.*)$')
-            if len(a) == 0:
-                self.appRunning = False
-            else:
-                self.appRunning = True
-                self.connectCamera()
-        except Exception as e:
-            self.logger.error('error{0}'.format(e))
-        finally:
-            pass
-
-    def connectCamera(self):
-        if self.appRunning:
+        if self.driverNameCamera != '' and self.driverNameDocument != '':
+            pythoncom.CoInitialize()
             try:
                 if not self.maximCamera:
                     self.maximCamera = Dispatch(self.driverNameCamera)
@@ -67,22 +60,62 @@ class MaximDLCamera(MWCamera):
                 if not self.maximCamera.LinkEnabled:
                     self.maximCamera.LinkEnabled = True
                 self.cameraConnected = True
+                self.solverConnected = True
+                # self.getCameraProps()
+                self.getStatus()
+                print('maxim running')
             except Exception as e:
                 self.cameraConnected = False
+                self.solverConnected = False
                 self.logger.error('error: {0}'.format(e))
             finally:
-                pass
+                self.isRunning = False
+        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
+        while self.isRunning:
+            # time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.finished.emit()
 
-    def disconnectCamera(self):
-        if self.appRunning:
-            try:
-                self.maximCamera.LinkEnabled = False
-            except Exception as e:
-                self.logger.error('error: {0}'.format(e))
-            finally:
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
+        self.maximCamera.LinkEnabled = False
+        self.maximCamera = None
+        self.maximDocument = None
+        pythoncom.CoUninitialize()
+
+    def checkAppInstall(self):
+        self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('MaxIm DL')
+        if self.data['AppAvailable']:
+            self.app.messageQueue.put('Found: {0}'.format(self.data['AppName']))
+            self.logger.info('Name: {0}, Path: {1}'.format(self.data['AppName'], self.data['AppInstallPath']))
+        else:
+            self.logger.info('Application MaxIm DL not found on computer')
+
+    def getStatus(self):
+        mes = self.maximCamera.CameraStatus
+        print(mes, self.CAMERASTATUS[mes])
+        if mes in self.CAMERASTATUS:
+            self.cameraConnected = True
+            self.solverConnected = True
+            self.data['CameraStatus'] = self.CAMERASTATUS[mes]
+            if self.data['CameraStatus'] == 'DISCONNECTED':
                 self.cameraConnected = False
-                self.maximCamera = None
-                self.maximDocument = None
+                self.solverConnected = False
+        else:
+            print('Error missing key {0} ind {1}'.format(mes, self.CAMERASTATUS))
+
+        if self.cameraConnected and self.solverConnected:
+            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+        else:
+            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
 
     def getImage(self, modelData):
         suc = False
@@ -135,33 +168,6 @@ class MaximDLCamera(MWCamera):
         finally:
             return suc, mes, sizeX, sizeY, canSubframe, gains
 
-    def getCameraStatus(self):
-        if self.appRunning:
-            try:
-                if self.maximCamera:
-                    if self.maximCamera.LinkEnabled:
-                        value = self.maximCamera.CameraStatus
-                        self.cameraConnected = True
-                    else:
-                        value = 0
-                    if value == 0:
-                        self.cameraStatus = 'DISCONNECTED'
-                    elif value == 2:
-                        self.cameraStatus = 'READY - IDLE'
-                    elif value == 3:
-                        self.cameraStatus = 'INTEGRATING'
-                    elif value == 4 or value == 5:
-                        self.cameraStatus = 'DOWNLOADING'
-                    else:
-                        self.cameraStatus = 'ERROR'
-                        self.cameraConnected = False
-            except Exception as e:
-                self.cameraStatus = 'ERROR'
-                self.cameraConnected = False
-                self.logger.error('error: {0}'.format(e))
-            finally:
-                pass
-
     def solveImage(self, modelData):
         startTime = time.time()                                                                                             # start timer for plate solve
         mes = ''
@@ -211,22 +217,3 @@ class MaximDLCamera(MWCamera):
             modelData['TimeTS'] = timeTS
             self.logger.info('modelData {0}'.format(modelData))
             return True, 'Solved', modelData
-
-
-if __name__ == "__main__":
-    max = 10
-    cam = MaximDLCamera(MWCamera)
-    cam.appRunning = True
-    cam.connectApplication()
-    print(cam.getCameraProps())
-    value = {'Binning': 1, 'Exposure': 1, 'Iso': 100,
-             'GainValue': 'Not Set', 'Speed': 'HiSpeed',
-             'File': 'test.fit', 'BaseDirImages': 'c:/temp',
-             'CanSubframe': True, 'OffX': 0, 'OffY': 0,
-             'SizeX': 3388, 'SizeY': 2712}
-    t_start = time.time()
-    for i in range(0, max):
-        print(i)
-        cam.getImage(value)
-    t_stop = time.time()
-    print((t_stop - t_start - max) / max)
