@@ -26,7 +26,7 @@ class SGPro(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 200
     SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
-    CAMERASTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'IDLE': 'IDLE', 'CAPTURING': 'INTEGRATING'}
+    CAMERASTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
     def __init__(self, app):
         super().__init__()
