@@ -23,7 +23,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLESTATUS = 500
+    CYCLESTATUS = 200
     SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
     CAMERASTATUS = {'1': 'Error', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
 
@@ -49,7 +49,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-
         if self.driverNameCamera != '' and self.driverNameDocument != '':
             pythoncom.CoInitialize()
             try:
@@ -62,29 +61,29 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 self.cameraConnected = True
                 self.solverConnected = True
                 # self.getCameraProps()
-                self.getStatus()
-                print('maxim running')
             except Exception as e:
                 self.cameraConnected = False
                 self.solverConnected = False
                 self.logger.error('error: {0}'.format(e))
-            finally:
                 self.isRunning = False
+            finally:
+                if self.isRunning:
+                    self.getStatus()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
             # time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.maximCamera.LinkEnabled = False
+        self.maximCamera = None
+        self.maximDocument = None
+        pythoncom.CoUninitialize()
         self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.maximCamera.LinkEnabled = False
-        self.maximCamera = None
-        self.maximDocument = None
-        pythoncom.CoUninitialize()
 
     def checkAppInstall(self):
         self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('MaxIm DL')
@@ -95,27 +94,26 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             self.logger.info('Application MaxIm DL not found on computer')
 
     def getStatus(self):
-        mes = self.maximCamera.CameraStatus
-        print(mes, self.CAMERASTATUS[mes])
-        if mes in self.CAMERASTATUS:
-            self.cameraConnected = True
-            self.solverConnected = True
-            self.data['CameraStatus'] = self.CAMERASTATUS[mes]
-            if self.data['CameraStatus'] == 'DISCONNECTED':
-                self.cameraConnected = False
-                self.solverConnected = False
-        else:
-            print('Error missing key {0} ind {1}'.format(mes, self.CAMERASTATUS))
-
-        if self.cameraConnected and self.solverConnected:
-            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
-        else:
-            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
-
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            mes = str(self.maximCamera.CameraStatus)
+            if mes in self.CAMERASTATUS:
+                self.cameraConnected = True
+                self.solverConnected = True
+                self.data['CameraStatus'] = self.CAMERASTATUS[mes]
+                if self.data['CameraStatus'] == 'DISCONNECTED':
+                    self.cameraConnected = False
+                    self.solverConnected = False
+            else:
+                print('Error missing key {0} ind {1}'.format(mes, self.CAMERASTATUS))
 
+            if self.cameraConnected and self.solverConnected:
+                self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+            else:
+                self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+
+            if self.isRunning:
+                PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
+                PyQt5.QtWidgets.QApplication.processEvents()
 
     def getImage(self, modelData):
         suc = False

@@ -15,6 +15,7 @@ import logging
 from PyQt5 import QtCore, QtWidgets
 import sys
 import time
+import PyQt5
 
 import numpy
 import pyfits
@@ -65,22 +66,18 @@ class Camera(QtCore.QObject):
         else:
             self.isRunning = False
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        '''
         while self.isRunning:
-            # time.sleep(0.2)
+            time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
-        '''
+        self.ascom = None
+        pythoncom.CoUninitialize()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.ascom = None
-        pythoncom.CoUninitialize()
-        # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.finishedSignal.emit()
 
     def getProps(self):
         if self.isRunning:

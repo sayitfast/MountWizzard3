@@ -24,12 +24,6 @@ class ModelingRunner(ModelingBase):
         self.app = app
         self.initConfig()
 
-    def initConfig(self):
-        pass
-
-    def storeConfig(self):
-        pass
-
     def runBaseModel(self):
         if not self.checkModelingAvailable():
             return
