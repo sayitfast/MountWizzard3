@@ -25,6 +25,7 @@ class SGPro(PyQt5.QtCore.QObject):
     finished = PyQt5.QtCore.pyqtSignal()
 
     CYCLESTATUS = 200
+    CYCLEPROPS = 3000
     SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
     CAMERASTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
@@ -63,6 +64,7 @@ class SGPro(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.getStatus()
+        self.getCameraProps()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
             time.sleep(0.2)
@@ -116,11 +118,21 @@ class SGPro(PyQt5.QtCore.QObject):
         else:
             self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
 
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
-
     def getCameraProps(self):
-        return self.SgGetCameraProps()
+        value = self.SgGetCameraProps()
+        if value['Success']:
+            if 'GainValues' not in value['GainValues']:
+                self.data['Gain'] = 0
+                self.data['Gains'] = ['High']
+            else:
+                self.data['Gains'] = value['GainValues']
+            self.data['Message'] = value['Message']
+            self.data['CanSubframe'] = value['SupportsSubframe']
+            self.data['CameraXSize'] = value['NumPixelsX']
+            self.data['CameraYSize'] = value['NumPixelsY']
+
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.getCameraProps)
 
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['Binning'],
@@ -217,10 +229,7 @@ class SGPro(PyQt5.QtCore.QObject):
             req.add_header('Content-Type', 'application/json')
             with request.urlopen(req) as f:
                 captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","NumPixelsX":0,"NumPixelsY":0,"SupportsSubframe":false}
-            if 'GainValues' not in captureResponse:
-                captureResponse['GainValues'] = ['High']
-            return captureResponse['Success'], captureResponse['Message'], int(captureResponse['NumPixelsX']), int(captureResponse['NumPixelsY']), captureResponse['SupportsSubframe'], captureResponse['GainValues'][0]
+            return captureResponse
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', ''

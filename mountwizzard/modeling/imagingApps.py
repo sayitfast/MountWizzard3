@@ -161,19 +161,19 @@ class ImagingApps:
 
     def prepareImaging(self, directory):
         modelData = {}
-        # do all the calculations once
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.imagingWorkerAppHandler.getCameraProps()
-        if suc:
-            self.logger.info('camera props: {0}, {1}, {2}'.format(sizeX, sizeY, canSubframe))
+        camData = self.imagingWorkerAppHandler.data
+        print(camData)
+        if self.imagingWorkerAppHandler.data['CanSubframe']:
+            self.logger.info('camera props: {0}, {1}, {2}'.format(camData['CameraXSize'], camData['CameraYSize'], camData['CanSubframe']))
         else:
-            self.logger.warning('SgGetCameraProps with error: {0}'.format(mes))
+            self.logger.warning('SgGetCameraProps with error: {0}'.format(camData['Message']))
             return {}
-        if canSubframe and self.app.ui.checkDoSubframe.isChecked():
+        if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            modelData['SizeX'] = int(sizeX * scaleSubframe)
-            modelData['SizeY'] = int(sizeY * scaleSubframe)
-            modelData['OffX'] = int((sizeX - modelData['SizeX']) / 2)
-            modelData['OffY'] = int((sizeY - modelData['SizeY']) / 2)
+            modelData['SizeX'] = int(camData['CameraXSize'] * scaleSubframe)
+            modelData['SizeY'] = int(camData['CameraYSize'] * scaleSubframe)
+            modelData['OffX'] = int((camData['CameraXSize'] - modelData['SizeX']) / 2)
+            modelData['OffY'] = int((camData['CameraYSize'] - modelData['SizeY']) / 2)
             modelData['CanSubframe'] = True
         else:
             modelData['SizeX'] = 0
@@ -182,7 +182,7 @@ class ImagingApps:
             modelData['OffY'] = 0
             modelData['CanSubframe'] = False
             self.logger.warning('Camera does not support subframe.')
-        modelData['GainValue'] = gainValue
+        modelData['GainValue'] = camData['Gains'][camData['Gain']]
         modelData['BaseDirImages'] = self.IMAGEDIR + '/' + directory
         if self.app.ui.checkFastDownload.isChecked():
             modelData['Speed'] = 'HiSpeed'
