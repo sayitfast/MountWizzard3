@@ -64,20 +64,16 @@ class SGPro(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.getStatus()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        '''
         while self.isRunning:
-            # time.sleep(0.2)
+            time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
-        '''
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        # if no running main loop is necessary, finished emit moves to stop directly
-        self.finished.emit()
 
     def checkAppInstall(self):
         if platform.system() == 'Windows':
@@ -123,6 +119,9 @@ class SGPro(PyQt5.QtCore.QObject):
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
 
+    def getCameraProps(self):
+        return self.SgGetCameraProps()
+
     def getImage(self, modelData):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['Binning'],
                                              exposureLength=modelData['Exposure'],
@@ -145,7 +144,8 @@ class SGPro(PyQt5.QtCore.QObject):
                 if suc:
                     break
                 else:
-                    time.sleep(0.5)
+                    time.sleep(0.2)
+                    PyQt5.QtWidgets.QApplication.processEvents()
         return suc, mes, modelData
 
     def solveImage(self, modelData):
@@ -156,34 +156,29 @@ class SGPro(PyQt5.QtCore.QObject):
         if not suc:
             self.logger.warning('no start {0}'.format(mes))
             return False, mes, modelData
-        while True:                                                                                                         # retrieving solving data in loop
-            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)                               # retrieving the data from solver
-            mes = mes.strip('\n')                                                                                           # sometimes there are heading \n in message
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:                                                     # if there is success, we can move on
+        while True:
+            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
+            mes = mes.strip('\n')
+            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
                 self.logger.info('modelData {0}'.format(modelData))
                 solved = True
                 modelData['RaJ2000Solved'] = float(ra_sol)
-                modelData['DecJ2000Solved'] = float(dec_sol)                                                                       # convert values to float, should be stored in float not string
+                modelData['DecJ2000Solved'] = float(dec_sol)
                 modelData['Scale'] = float(scale)
                 modelData['Angle'] = float(angle)
                 modelData['TimeTS'] = float(timeTS)
                 break
-            elif mes != 'Solving':                                                                                          # general error
+            elif mes != 'Solving':
                 solved = False
                 break
             # TODO: clarification should we again introduce model run cancel during plate solving -> very complicated solver should cancel if not possible after some time
             # elif app.model.cancel:
             #    solved = False
             #    break
-            else:                                                                                                           # otherwise
-                if modelData['Blind']:                                                                                      # when using blind solve, it takes 30-60 s
-                    time.sleep(5)                                                                                           # therefore slow cycle
-                else:                                                                                                       # local solver takes 1-2 s
-                    time.sleep(.25)                                                                                         # therefore quicker cycle
+            else:
+                time.sleep(0.2)
+                PyQt5.QtWidgets.QApplication.processEvents()
         return solved, mes, modelData
-
-    def getCameraProps(self):
-        return self.SgGetCameraProps()
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

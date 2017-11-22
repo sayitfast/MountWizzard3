@@ -115,6 +115,25 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
                 PyQt5.QtWidgets.QApplication.processEvents()
 
+    def getCameraProps(self):
+        suc = True
+        mes = 'OK'
+        canSubframe = False
+        gains = ''
+        sizeX = 1
+        sizeY = 1
+        try:
+            sizeX = self.maximCamera.CameraXSize
+            sizeY = self.maximCamera.CameraYSize
+            canSubframe = True
+            gains = ['Not Set']
+        except Exception as e:
+            self.logger.error('error: {0}'.format(e))
+            suc = False
+            mes = '{0}'.format(e)
+        finally:
+            return suc, mes, sizeX, sizeY, canSubframe, gains
+
     def getImage(self, modelData):
         suc = False
         mes = ''
@@ -146,25 +165,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 return suc, mes, modelData
         else:
             return False, 'Camera not Connected', modelData
-
-    def getCameraProps(self):
-        suc = True
-        mes = 'OK'
-        canSubframe = False
-        gains = ''
-        sizeX = 1
-        sizeY = 1
-        try:
-            sizeX = self.maximCamera.CameraXSize
-            sizeY = self.maximCamera.CameraYSize
-            canSubframe = True
-            gains = ['Not Set']
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-            suc = False
-            mes = '{0}'.format(e)
-        finally:
-            return suc, mes, sizeX, sizeY, canSubframe, gains
 
     def solveImage(self, modelData):
         startTime = time.time()                                                                                             # start timer for plate solve

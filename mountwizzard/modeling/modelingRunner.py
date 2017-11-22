@@ -136,3 +136,43 @@ class ModelingRunner(ModelingBase):
         if len(self.modelingResultData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
             self.analyseData.saveData(self.modelingResultData, name)
+
+    def runBatchModel(self):
+        nameDataFile = self.app.ui.le_analyseFileName.text()
+        self.logger.info('modeling from {0}'.format(nameDataFile))
+        data = self.app.workerModeling.analyse.loadData(nameDataFile)
+        if not('RaJNow' in data and 'DecJNow' in data):
+            self.logger.warning('RaJNow or DecJNow not in data file')
+            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(self.timeStamp()))
+            return
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
+            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
+            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(self.timeStamp()))
+            return
+        if not('Pierside' in data and 'LocalSiderealTime' in data):
+            self.logger.warning('Pierside and LocalSiderealTime not in data file')
+            self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(self.timeStamp()))
+            return
+        self.app.mount.programBatchData(data)
+
+    def runBoostModel(self):
+        if not self.checkModelingAvailable():
+            return
+        if not self.app.ui.pd_chooseImagingApp.currentText().startswith('SGPro'):
+            return
+        settlingTime, directory = self.setupRunningParameters()
+        if len(self.app.workerModeling.modelPoints.RefinementPoints) > 0:
+            simulation = self.app.ui.checkSimulation.isChecked()
+            keepImages = self.app.ui.checkKeepImages.isChecked()
+            modelData = self.app.workerModeling.imagingApps.prepareImaging(directory)
+            self.app.modeling.modelData = self.runBoost(self.app.workerModeling.modelPoints.RefinementPoints, modelData, settlingTime, simulation, keepImages)
+            self.app.modeling.modelData = self.app.mount.retrofitMountData(self.app.modeling.modelData)
+            name = directory + '_boost.dat'
+            if len(self.app.modeling.modelData) > 0:
+                self.app.ui.le_analyseFileName.setText(name)
+                self.app.workerModeling.analyse.saveData(self.app.modeling.modelData, name)
+                self.app.mount.saveRefinementModel()
+                # if not self.app.workerModeling.cancel:
+                self.app.mount.programBatchData(self.modelData)
+        else:
+            self.logger.warning('There are no Refinement Points to modeling')
