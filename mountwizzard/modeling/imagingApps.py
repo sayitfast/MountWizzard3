@@ -163,10 +163,10 @@ class ImagingApps:
         modelData = {}
         camData = self.imagingWorkerAppHandler.data
         print(camData)
-        if self.imagingWorkerAppHandler.data['CanSubframe']:
+        if camData['CanSubframe']:
             self.logger.info('camera props: {0}, {1}, {2}'.format(camData['CameraXSize'], camData['CameraYSize'], camData['CanSubframe']))
         else:
-            self.logger.warning('SgGetCameraProps with error: {0}'.format(camData['Message']))
+            self.logger.warning('GetCameraProps with error: {0}'.format(camData['Message']))
             return {}
         if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
