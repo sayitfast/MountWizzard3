@@ -86,7 +86,6 @@ class Mount(PyQt5.QtCore.QThread):
                     self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
             if 'MountConnection' in self.app.config:
                 self.app.ui.pd_chooseMount.setCurrentIndex(int(self.app.config['MountConnection']))
-                self.showConfigEntries(int(self.app.config['MountConnection']))
             if 'CheckAutoRefractionCamera' in self.app.config:
                 self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
