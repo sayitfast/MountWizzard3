@@ -106,14 +106,18 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             else:
                 print('Error missing key {0} ind {1}'.format(mes, self.CAMERASTATUS))
 
-            if self.cameraConnected and self.solverConnected:
-                self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+            if self.cameraConnected:
+                self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
             else:
-                self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+                self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+
+            if self.solverConnected:
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+            else:
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
 
             if self.isRunning:
                 PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
-                PyQt5.QtWidgets.QApplication.processEvents()
 
     def getCameraProps(self):
         suc = True

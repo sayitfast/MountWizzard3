@@ -89,6 +89,8 @@ class ModelPoints:
 
     def loadHorizonPoints(self, horizonPointsFileName, file_check, line_check, line_value):
         self.horizonPoints = []
+        if not (file_check or line_check):
+            return
         hp = []
         msg = None
         minAlt = 0

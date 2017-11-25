@@ -123,6 +123,9 @@ class SGPro(PyQt5.QtCore.QObject):
         else:
             self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
 
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
+
     def getCameraProps(self):
         if self.cameraConnected:
             value = self.SgGetCameraProps()

@@ -28,135 +28,12 @@ from astrometry import transform
 from queue import Queue
 
 
-class Slewpoint(PyQt5.QtCore.QObject):
-    logger = logging.getLogger(__name__)
-    queuePoint = Queue()
-    signalSlewing = PyQt5.QtCore.pyqtSignal(name='slew')
-
-    def __init__(self, main):
-        super().__init__()
-        self.main = main
-        self.isRunning = True
-        self.signalSlewing.connect(self.slewing)
-
-    @PyQt5.QtCore.pyqtSlot()
-    def run(self):
-        if not self.isRunning:
-            self.isRunning = True
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-
-    @PyQt5.QtCore.pyqtSlot()
-    def stop(self):
-        self.isRunning = False
-        self.queuePoint.queue.clear()
-
-    @PyQt5.QtCore.pyqtSlot()
-    def slewing(self):
-        if not self.queuePoint.empty():
-            modelData = self.queuePoint.get()
-            if modelData['Item'].isVisible():
-                self.main.app.messageQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.main.timeStamp(), modelData['Index'] + 1, modelData['Azimuth'], modelData['Altitude']))
-                self.main.slewMountDome(modelData['Azimuth'], modelData['Altitude'])
-                self.main.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec\n'.format(self.main.timeStamp(), modelData['SettlingTime']))
-                timeCounter = modelData['SettlingTime']
-                while timeCounter > 0:
-                    time.sleep(1)
-                    timeCounter -= 1
-            self.main.workerImage.queueImage.put(modelData)
-
-
-class Image(PyQt5.QtCore.QObject):
-    logger = logging.getLogger(__name__)
-    queueImage = Queue()
-    signalImaging = PyQt5.QtCore.pyqtSignal(name='image')
-
-    def __init__(self, main):
-        super().__init__()
-        self.main = main
-        self.isRunning = True
-
-    @PyQt5.QtCore.pyqtSlot()
-    def run(self):
-        if not self.isRunning:
-            self.isRunning = True
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if not self.queueImage.empty():
-                modelData = self.queueImage.get()
-                modelData['File'] = self.main.app.workerModeling.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
-                modelData['LocalSiderealTime'] = self.main.app.mount.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.mount.data['LocalSiderealTime'][0:9])
-                modelData['RaJ2000'] = self.main.app.mount.data['RaJ2000']
-                modelData['DecJ2000'] = self.main.app.mount.data['DecJ2000']
-                modelData['RaJNow'] = self.main.app.mount.data['RaJNow']
-                modelData['DecJNow'] = self.main.app.mount.data['DecJNow']
-                modelData['Pierside'] = self.main.app.mount.data['Pierside']
-                modelData['RefractionTemperature'] = self.main.app.mount.data['RefractionTemperature']
-                modelData['RefractionPressure'] = self.main.app.mount.data['RefractionPressure']
-                self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
-                while True:
-                    suc, mes = self.main.app.workerModeling.SGPro.SgGetDeviceStatus('Camera')
-                    if suc and mes == 'IDLE':
-                            break
-                suc, mes, imagepath = self.main.capturingImage(modelData, modelData['Simulation'])
-                self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
-                modelData['ImagingSuccess'] = suc
-                # self.main.workerSlewpoint.signalSlewing.emit()
-                self.main.workerPlatesolve.queuePlatesolve.put(modelData)
-
-    @PyQt5.QtCore.pyqtSlot()
-    def stop(self):
-        self.isRunning = False
-        self.queueImage.queue.clear()
-
-
-class Platesolve(PyQt5.QtCore.QObject):
-    logger = logging.getLogger(__name__)
-    queuePlatesolve = Queue()
-    signalPlatesolveFinished = PyQt5.QtCore.pyqtSignal(name='platesolveFinished')
-
-    def __init__(self, main):
-        super().__init__()
-        self.main = main
-        self.isRunning = True
-
-    @PyQt5.QtCore.pyqtSlot()
-    def run(self):
-        if not self.isRunning:
-            self.isRunning = True
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if not self.queuePlatesolve.empty():
-                modelData = self.queuePlatesolve.get()
-                if modelData['ImagingSuccess']:
-                    self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
-                    suc, mes, modelData = self.main.solveImage(modelData, modelData['Simulation'])
-                    modelData['PlateSolveSuccess'] = suc
-                    if modelData['PlateSolveSuccess']:
-                        self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
-                        self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
-
-                        modelData['Item'].setVisible(False)
-                    else:
-                        self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
-                self.main.solvedPointsQueue.put(modelData)
-                self.main.app.messageQueue.put('status{0} of {1}'.format(modelData['Index'] + 1, self.main.numberPointsMax))
-                self.main.numberSolvedPoints += 1
-                if self.main.numberSolvedPoints == self.main.numberPointsMax:
-                    self.main.hasFinished = True
-
-    @PyQt5.QtCore.pyqtSlot()
-    def stop(self):
-        self.isRunning = False
-        self.queuePlatesolve.queue.clear()
 
 
 class ModelingBase:
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
-        # make main sources available
         self.app = app
         # initialize the parallel thread modeling parts
         self.workerSlewpoint = Slewpoint(self)
@@ -184,15 +61,14 @@ class ModelingBase:
         self.numberPointsMax = 0
         self.numberSolvedPoints = 0
         self.cancel = False
-        self.analyseData = analysedata.Analyse(app)
+        self.analyseData = analysedata.Analyse(self.app)
         # assign support classes
-        self.transform = transform.Transform(app)
+        self.transform = transform.Transform(self.app)
         self.modelPoints = modelingPoints.ModelPoints(self.app)
-        self.imagingApps = imagingApps.ImagingApps(app)
-        self.initConfig()
+        self.imagingApps = imagingApps.ImagingApps(self.app)
 
     def initConfig(self):
-        pass
+        self.imagingApps.initConfig()
 
     def storeConfig(self):
         self.imagingApps.storeConfig()

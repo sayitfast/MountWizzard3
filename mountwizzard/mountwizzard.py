@@ -71,6 +71,7 @@ class MountWizzardApp(widget.MwWidget):
 
     def __init__(self):
         super().__init__()
+        self.config = {}
         # defining name of thread
         self.setObjectName("Main")
         # setting up communication queues for inter thread communication
@@ -87,9 +88,6 @@ class MountWizzardApp(widget.MwWidget):
         # INDI subsystem
         self.INDISendCommandQueue = Queue()
         self.INDIDataQueue = Queue()
-
-        # loading config data - will be config.cfg
-        self.config = self.loadConfigData()
 
         # initializing the gui from file generated from qt creator
         self.ui = wizzard_main_ui.Ui_MainWindow()
@@ -186,12 +184,10 @@ class MountWizzardApp(widget.MwWidget):
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
 
-        # initialize the config  by calling the config routine
-        self.initConfig()
-
         # map all the button to functions for gui
         self.mappingFunctions()
-
+        # loading config data - will be config.cfg
+        self.loadConfigData()
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
@@ -289,8 +285,10 @@ class MountWizzardApp(widget.MwWidget):
 
     # noinspection PyArgumentList
     def mappingFunctions(self):
-        self.ui.btn_quit.clicked.connect(self.saveConfigQuit)
-        self.ui.btn_save.clicked.connect(self.saveConfig)
+        self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
+        self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
+        self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
+        self.ui.btn_loadFrom.clicked.connect(self.loadConfigDataFrom)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
         self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put('hP'))
@@ -581,10 +579,45 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
             if 'WindowPositionX' in self.config:
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+            if 'ConfigName' in self.config:
+                self.ui.le_configName.setText(self.config['ConfigName'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+
+        # initialize all configs in submodules
+        self.mount.initConfig()
+        self.workerModelingDispatcher.initConfig()
+        if platform.system() == 'Windows':
+            self.workerAscomEnvironment.initConfig()
+            self.workerAscomDome.initConfig()
+            self.workerUpload.initConfig()
+        self.modelWindow.initConfig()
+        self.imageWindow.initConfig()
+        self.analyseWindow.initConfig()
+        self.messageWindow.initConfig()
+        self.relays.initConfig()
+        self.INDIworker.initConfig()
+
+        # make windows visible, if they were on the desktop
+        if self.modelWindow.showStatus:
+            self.modelWindow.redrawModelingWindow()
+            self.modelWindow.showWindow()
+        else:
+            self.messageWindow.setVisible(False)
+        if self.imageWindow.showStatus:
+            self.imageWindow.showWindow()
+        else:
+            self.imageWindow.setVisible((False))
+        if self.analyseWindow.showStatus:
+            self.analyseWindow.showWindow()
+        else:
+            self.analyseWindow.setVisible(False)
+        if self.messageWindow.showStatus:
+            self.messageWindow.showWindow()
+        else:
+            self.messageWindow.setVisible(False)
 
     def storeConfig(self):
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
@@ -642,27 +675,9 @@ class MountWizzardApp(widget.MwWidget):
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
+        self.config['ConfigName'] = self.ui.le_configName.text()
 
-    def loadConfigData(self):
-        try:
-            with open('config/config.cfg', 'r') as data_file:
-                return json.load(data_file)
-        except Exception as e:
-            self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
-            self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
-            return {}
-
-    def loadConfigDataFrom(self):
-        try:
-            with open('config/config.cfg', 'r') as data_file:
-                return json.load(data_file)
-        except Exception as e:
-            self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
-            self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
-            return {}
-
-    def saveConfigData(self):
-        self.storeConfig()
+        # store config in all submodules
         self.mount.storeConfig()
         self.workerModelingDispatcher.storeConfig()
         if platform.system() == 'Windows':
@@ -675,29 +690,75 @@ class MountWizzardApp(widget.MwWidget):
         self.messageWindow.storeConfig()
         self.relays.storeConfig()
         self.INDIworker.storeConfig()
+
+    def loadConfigData(self):
         try:
-            if not os.path.isdir(os.getcwd() + '/config'):                                                                  # if config dir doesn't exist, make it
-                os.makedirs(os.getcwd() + '/config')                                                                        # if path doesn't exist, generate is
-            with open('config/config.cfg', 'w') as outfile:
-                json.dump(self.config, outfile)
-            outfile.close()
+            with open('config/config.cfg', 'r') as data_file:
+                self.config = json.load(data_file)
+                self.initConfig()
         except Exception as e:
-            self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
-            self.logger.error('Item in config.cfg not saved error {0}'.format(e))
-            return
-        self.mount.saveActualModel()                                                                                        # save current loaded modeling from mount
+            self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
+            self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
+            self.config = {}
+
+    def loadConfigDataFrom(self):
+        dlg = PyQt5.QtWidgets.QFileDialog()
+        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
+        dlg.setNameFilter("Config files (*.cfg)")
+        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
+        # noinspection PyArgumentList
+        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Config files (*.cfg)')
+        if a[0] != '':
+            self.ui.le_configName.setText(os.path.basename(a[0]))
+            try:
+                with open(a[0], 'r') as data_file:
+                    self.config = json.load(data_file)
+                    self.initConfig()
+            except Exception as e:
+                self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
+                self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
+                self.config = {}
+        else:
+            self.logger.warning('no config file selected')
+
+    def saveConfig(self):
+        self.saveConfigData()
+        self.messageQueue.put('Configuration saved.\n')
 
     def saveConfigQuit(self):
         self.saveConfigData()
         # noinspection PyArgumentList
         PyQt5.QtCore.QCoreApplication.instance().quit()
 
-    def saveConfigAs(self):
-        self.saveConfigData()
-        self.messageQueue.put('Configuration saved.\n')
+    def saveConfigData(self, filepath=''):
+        self.storeConfig()
+        try:
+            if not os.path.isdir(os.getcwd() + '/config'):
+                os.makedirs(os.getcwd() + '/config')
+            if filepath == '':
+                filepath = 'config/config.cfg'
+            with open(filepath, 'w') as outfile:
+                json.dump(self.config, outfile)
+            outfile.close()
+        except Exception as e:
+            self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
+            self.logger.error('Item in config.cfg not saved error {0}'.format(e))
+            return
+        self.mount.saveActualModel()
 
-    def saveConfig(self):
-        self.saveConfigData()
+    def saveConfigAs(self):
+        dlg = PyQt5.QtWidgets.QFileDialog()
+        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
+        dlg.setNameFilter("Config files (*.cfg)")
+        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
+        # noinspection PyArgumentList
+        a = dlg.getSaveFileName(self, 'Save file', os.getcwd()+'/config', 'Config files (*.cfg)')
+        if a[0] != '':
+            self.ui.le_configName.setText(os.path.basename(a[0]))
+            self.saveConfigData(a[0])
+            self.saveConfigData()
+        else:
+            self.logger.warning('No config file selected')
         self.messageQueue.put('Configuration saved.\n')
 
     def selectModelPointsFileName(self):
@@ -710,7 +771,7 @@ class MountWizzardApp(widget.MwWidget):
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
         else:
-            self.logger.warning('no file selected')
+            self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
         dlg = PyQt5.QtWidgets.QFileDialog()
@@ -1024,6 +1085,7 @@ if __name__ == "__main__":
     import traceback
     import warnings
 
+    # setting except hook to get stack traces into the log files
     def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
@@ -1037,6 +1099,7 @@ if __name__ == "__main__":
                         format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
+    # population the working directory with necessary subdirs
     if not os.path.isdir(os.getcwd() + '/analysedata'):
         os.makedirs(os.getcwd() + '/analysedata')
     if not os.path.isdir(os.getcwd() + '/images'):
@@ -1044,6 +1107,7 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):
         os.makedirs(os.getcwd() + '/config')
 
+    # start logging with basic system data
     logging.info('-----------------------------------------')
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')
     logging.info('-----------------------------------------')
@@ -1062,22 +1126,12 @@ if __name__ == "__main__":
     if not os.access(os.getcwd() + '/analysedata', os.W_OK):
         logging.error('no write access to /analysedata')
 
+    # and finally starting the application
     app = PyQt5.QtWidgets.QApplication(sys.argv)
-
     sys.excepthook = except_hook
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
     app.setStyle(PyQt5.QtWidgets.QStyleFactory.create('Fusion'))
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
-
     mountApp = MountWizzardApp()
-    if mountApp.modelWindow.showStatus:
-        mountApp.modelWindow.redrawModelingWindow()
-        mountApp.modelWindow.showWindow()
-    if mountApp.imageWindow.showStatus:
-        mountApp.imageWindow.showWindow()
-    if mountApp.analyseWindow.showStatus:
-        mountApp.analyseWindow.showWindow()
-    if mountApp.messageWindow.showStatus:
-        mountApp.messageWindow.showWindow()
     mountApp.show()
     sys.exit(app.exec_())

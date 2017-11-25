@@ -80,7 +80,6 @@ class ImagingApps:
         self.imagingWorkerAppHandler = self.workerNoneCam
         self.imagingThreadAppHandler = self.threadNoneCam
         self.chooserLock = threading.Lock()
-        self.initConfig()
 
     def initConfig(self):
         if self.workerNoneCam.data['AppAvailable']:

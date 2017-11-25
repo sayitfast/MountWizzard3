@@ -218,7 +218,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                 }
             }
         # setting the config up
-        self.initConfig()
 
     def initConfig(self):
         try:
@@ -232,6 +231,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+        self.modelingRunner.initConfig()
 
     def storeConfig(self):
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
