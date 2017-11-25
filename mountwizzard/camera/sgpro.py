@@ -148,7 +148,7 @@ class SGPro(PyQt5.QtCore.QObject):
         suc, mes, guid = self.SgCaptureImage(binningMode=modelData['Binning'],
                                              exposureLength=modelData['Exposure'],
                                              iso=str(modelData['Iso']),
-                                             gain=modelData['GainValue'],
+                                             gain='Not Set',
                                              speed=modelData['Speed'],
                                              frameType='Light',
                                              filename=modelData['File'],

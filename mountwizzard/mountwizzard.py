@@ -588,7 +588,7 @@ class MountWizzardApp(widget.MwWidget):
         finally:
             pass
 
-        # initialize all configs in submodules, if necessary stop thread and restart
+        # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
         self.mount.initConfig()
         self.workerModelingDispatcher.initConfig()
         if platform.system() == 'Windows':
@@ -608,7 +608,7 @@ class MountWizzardApp(widget.MwWidget):
         self.relays.initConfig()
         self.INDIworker.initConfig()
 
-        # make windows visible, if they were on the desktop
+        # make windows visible, if they were on the desktop depending on their show status
         if self.modelWindow.showStatus:
             self.modelWindow.redrawModelingWindow()
             self.modelWindow.showWindow()

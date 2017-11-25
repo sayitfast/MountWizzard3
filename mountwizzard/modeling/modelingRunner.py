@@ -463,7 +463,6 @@ class ModelingRunner:
         self.app.workerModelingDispatcher.modelingRunner.modelRun = False
         return results
 
-
     def runBaseModel(self):
         if not self.checkModelingAvailable():
             return
