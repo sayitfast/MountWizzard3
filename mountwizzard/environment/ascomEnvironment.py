@@ -60,6 +60,7 @@ class AscomEnvironment(PyQt5.QtCore.QObject):
                 self.ascom = Dispatch(self.driverName)
                 self.ascom.connected = True
                 self.signalAscomEnvironmentConnected.emit(3)
+                self.logger.info('Driver chosen:{0}'.format(self.driverName))
             except Exception as e:
                 self.logger.error('Could not dispatch driver: {0} and connect it. Stopping thread.'.format(self.driverName))
             finally:
