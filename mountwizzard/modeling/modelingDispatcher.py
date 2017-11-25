@@ -141,7 +141,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_generateMaxPoints,
                             'Method': self.modelingRunner.modelPoints.generateMaxPoints,
-                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                            'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()'
                                           ]
                         }
@@ -153,7 +153,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_generateNormalPoints,
                             'Method': self.modelingRunner.modelPoints.generateNormalPoints,
-                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                            'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()'
                                           ]
                         }
@@ -176,7 +176,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_loadRefinementPoints,
                             'Method': self.modelingRunner.modelPoints.loadRefinementPoints,
                             'Parameter': ['self.app.ui.le_modelPointsFileName.text()',
-                                          'self.app.ui.checkSortPoints.isChecked()',
+                                          'self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()']
                         }
                     ]
@@ -187,7 +187,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_generateGridPoints,
                             'Method': self.modelingRunner.modelPoints.generateGridPoints,
-                            'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
+                            'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()',
                                           'int(float(self.app.ui.numberGridPointsRow.value()))',
                                           'int(float(self.app.ui.numberGridPointsCol.value()))',
