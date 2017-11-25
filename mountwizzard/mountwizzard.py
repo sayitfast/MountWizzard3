@@ -11,35 +11,27 @@
 # Licence APL2.0
 #
 ############################################################
+import os
+import platform
+import sys
 import datetime
 import json
 import logging
 import logging.handlers
 # numerics
 import math
-import os
-import platform
-import sys
-
 import numpy
-
+# i want to have multi platform, therefore there will be some specific features happening
 if platform.system() == 'Windows':
     # application handling
     from winreg import *
-# commands to threads
+# queues are used for inter thread communication
 from queue import Queue
 # import for the PyQt5 Framework
 import PyQt5
-from PyQt5 import QtCore
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-# matplotlib
-from matplotlib import use
-use('Qt5Agg')
-from matplotlib import pyplot as plt
-from matplotlib import figure as figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+# matplotlib framework
+import matplotlib
+matplotlib.use('Qt5Agg')
 # import the UI part, which is done via QT Designer and exported
 from baseclasses import widget
 from widgets import modelplotWindow
@@ -60,53 +52,70 @@ from environment import ascomEnvironment
 
 if platform.system() == 'Windows':
     from automation import upload
+# to be able to boot the system via wol
 from wakeonlan import wol
 
 
-class ShowModel(FigureCanvas):
+# class for embed the matplotlib in pyqt5 framework
+class ShowModel(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
-        self.fig = figure.Figure(dpi=75, facecolor=(25/256, 25/256, 25/256))
-        FigureCanvas.__init__(self, self.fig)
+        self.fig = matplotlib.figure.Figure(dpi=75, facecolor=(25/256, 25/256, 25/256))
+        matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg.__init__(self, self.fig)
         self.setParent(parent)
-        FigureCanvas.updateGeometry(self)
+        matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg.updateGeometry(self)
 
 
 class MountWizzardApp(widget.MwWidget):
     logger = logging.getLogger(__name__)
 
     def __init__(self):
-        super(MountWizzardApp, self).__init__()
+        super().__init__()
+        # defining name of thread
         self.setObjectName("Main")
         # setting up communication queues for inter thread communication
+        # commands to the mount
         self.mountCommandQueue = Queue()
+        # commands to the dome
         self.domeCommandQueue = Queue()
+        # command to the modeling thread
         self.modelCommandQueue = Queue()
+        # messages back to main gui (message window)
         self.messageQueue = Queue()
+        # commands / images to visualize in images window
         self.imageQueue = Queue()
+        # INDI subsystem
         self.INDISendCommandQueue = Queue()
         self.INDIDataQueue = Queue()
-        # loading config data
+
+        # loading config data - will be config.cfg
         self.config = self.loadConfigData()
-        # initializing the gui
+
+        # initializing the gui from file generated from qt creator
         self.ui = wizzard_main_ui.Ui_MainWindow()
         self.ui.setupUi(self)
         # special setups for gui including box for matplotlib. margins to 0
         self.initUI()
+        self.checkPlatformDependableMenus()
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
-        self.ui.le_mwWorkingDir.setText(os.getcwd())
-        helper = QVBoxLayout(self.ui.model)
+        # show icon in main gui
+        pixmap = PyQt5.QtGui.QPixmap(self.bundle_dir + '\\mw.ico')
+        pixmap = pixmap.scaled(48, 48)
+        self.ui.mainicon.setPixmap(pixmap)
+        # enable a matplotlib figure in main gui
+        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.model)
         helper.setContentsMargins(0, 0, 0, 0)
         self.modelWidget = ShowModel(self.ui.model)
         # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)
+
         # instantiating all subclasses and connecting thread signals
         self.relays = relays.Relays(self)
         self.mount = mountThread.Mount(self)
         self.mount.setObjectName("Mount")
         self.mount.signalMountConnected.connect(self.setMountStatus)
         self.INDIworker = indi_client.INDIClient(self)
-        self.INDIthread = QThread()
+        self.INDIthread = PyQt5.QtCore.QThread()
         self.INDIthread.setObjectName("INDI")
         self.INDIworker.moveToThread(self.INDIthread)
         # noinspection PyUnresolvedReferences
@@ -163,7 +172,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
         self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
         self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
-        self.workerModelingDispatcher.signalStatusPlatesolver.connect(self.setStatusPlatesolver)
+        self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
         # thread start will be done when enabled
         self.threadModelingDispatcher.start()
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
@@ -176,9 +185,13 @@ class MountWizzardApp(widget.MwWidget):
             self.checkASCOM()
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
+
+        # initialize the config  by calling the config routine
         self.initConfig()
+
+        # map all the button to functions for gui
         self.mappingFunctions()
-        self.checkPlatformDependableMenus()
+
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
@@ -390,7 +403,7 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget.axes.set_yticklabels(yLabel, color='white')
         azimuth = numpy.asarray(data['Azimuth'])
         altitude = numpy.asarray(data['Altitude'])
-        cm = plt.cm.get_cmap('RdYlGn_r')
+        cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
         colors = numpy.asarray(data['ModelError'])
         scaleError = int(max(colors) / 4 + 1) * 4
         area = [125 if x >= max(colors) else 50 for x in data['ModelError']]
@@ -400,7 +413,7 @@ class MountWizzardApp(widget.MwWidget):
         scatter.set_alpha(0.75)
         colorbar = self.modelWidget.fig.colorbar(scatter, pad=0.1)
         colorbar.set_label('Error [arcsec]', color='white')
-        plt.setp(plt.getp(colorbar.ax.axes, 'yticklabels'), color='white')
+        matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
         self.modelWidget.axes.set_rmax(90)
         self.modelWidget.axes.set_rmin(0)
         self.modelWidget.draw()
@@ -677,7 +690,7 @@ class MountWizzardApp(widget.MwWidget):
     def saveConfigQuit(self):
         self.saveConfigData()
         # noinspection PyArgumentList
-        QCoreApplication.instance().quit()
+        PyQt5.QtCore.QCoreApplication.instance().quit()
 
     def saveConfigAs(self):
         self.saveConfigData()
@@ -688,10 +701,10 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue.put('Configuration saved.\n')
 
     def selectModelPointsFileName(self):
-        dlg = QFileDialog()
-        dlg.setViewMode(QFileDialog.List)
+        dlg = PyQt5.QtWidgets.QFileDialog()
+        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
         dlg.setNameFilter("Text files (*.txt)")
-        dlg.setFileMode(QFileDialog.ExistingFile)
+        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
         # noinspection PyArgumentList
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
         if a[0] != '':
@@ -700,10 +713,10 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no file selected')
 
     def selectAnalyseFileName(self):
-        dlg = QFileDialog()
-        dlg.setViewMode(QFileDialog.List)
+        dlg = PyQt5.QtWidgets.QFileDialog()
+        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
         dlg.setNameFilter("Data Files (*.dat)")
-        dlg.setFileMode(QFileDialog.AnyFile)
+        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.AnyFile)
         # noinspection PyArgumentList
         a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)')
         if a[0] != '':
@@ -801,7 +814,7 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
         self.mountCommandQueue.put('MA')                                                                                         # start Slewing
 
-    @QtCore.Slot(int)
+    @PyQt5.QtCore.Slot(int)
     def setINDIStatus(self, status):
         if status == 0:
             self.ui.le_INDIStatus.setText('UnconnectedState')
@@ -816,7 +829,7 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.le_INDIStatus.setText('Error')
 
-    @QtCore.Slot(dict)
+    @PyQt5.QtCore.Slot(dict)
     def fillINDIData(self, data):
         if data['Name'] == 'Telescope':
             self.ui.le_INDITelescope.setText(data['value'])
@@ -827,14 +840,14 @@ class MountWizzardApp(widget.MwWidget):
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
-    @QtCore.Slot(bool)
+    @PyQt5.QtCore.Slot(bool)
     def setMountStatus(self, status):
         if status:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
 
-    @QtCore.Slot(dict)
+    @PyQt5.QtCore.Slot(dict)
     def fillMountData(self):
         for valueName in self.mount.data:
             if valueName == 'Reply':
@@ -940,7 +953,7 @@ class MountWizzardApp(widget.MwWidget):
             if valueName == 'UTCDataExpirationDate':
                 self.ui.le_UTCDataExpirationDate.setText(str(self.mount.data[valueName]))
 
-    @QtCore.Slot(int)
+    @PyQt5.QtCore.Slot(int)
     def setStatusCamera(self, status):
         if status == 3:
             self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green;}')
@@ -951,16 +964,16 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;}')
 
-    @QtCore.Slot(int)
-    def setStatusPlatesolver(self, status):
+    @PyQt5.QtCore.Slot(int)
+    def setStatusSolver(self, status):
         if status == 3:
-            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: green;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: yellow;}')
         elif status == 1:
-            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: red;}')
         else:
-            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;}')
 
     def mainLoop(self):
         self.fillMountData()
@@ -980,31 +993,31 @@ class MountWizzardApp(widget.MwWidget):
                 self.modelWindow.ui.le_modelingStatusTime.setText(text[8:])
             elif text.startswith('#BW'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_WHITE)
-                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(text[3:])
             elif text.startswith('#BG'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_GREEN)
-                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(text[3:])
             elif text.startswith('#BY'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_YELLOW)
-                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(text[3:])
             elif text.startswith('#BR'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_RED)
-                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(text[3:])
             else:
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_ASTRO)
-                self.messageWindow.ui.messages.setFontWeight(QFont.Normal)
+                self.messageWindow.ui.messages.setFontWeight(PyQt5.QtGui.QFont.Normal)
                 self.messageWindow.ui.messages.insertPlainText(text)
-            self.messageWindow.ui.messages.moveCursor(QTextCursor.End)
+            self.messageWindow.ui.messages.moveCursor(PyQt5.QtGui.QTextCursor.End)
         while not self.imageQueue.empty():
             filename = self.imageQueue.get()
             if self.imageWindow.showStatus:
                 self.imageWindow.showFitsImage(filename)
         # noinspection PyCallByClass,PyTypeChecker
-        QTimer.singleShot(500, self.mainLoop)
+        PyQt5.QtCore.QTimer.singleShot(500, self.mainLoop)
 
 
 if __name__ == "__main__":
@@ -1049,12 +1062,12 @@ if __name__ == "__main__":
     if not os.access(os.getcwd() + '/analysedata', os.W_OK):
         logging.error('no write access to /analysedata')
 
-    app = QApplication(sys.argv)
+    app = PyQt5.QtWidgets.QApplication(sys.argv)
 
     sys.excepthook = except_hook
     # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
-    app.setStyle(QStyleFactory.create('Fusion'))
-    app.setWindowIcon(QIcon('mw.ico'))
+    app.setStyle(PyQt5.QtWidgets.QStyleFactory.create('Fusion'))
+    app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
 
     mountApp = MountWizzardApp()
     if mountApp.modelWindow.showStatus:

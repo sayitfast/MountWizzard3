@@ -70,16 +70,16 @@
   <widget class="QLineEdit" name="le_mountStatus">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>90</y>
-     <width>291</width>
+     <x>20</x>
+     <y>50</y>
+     <width>391</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <family>Arial</family>
-     <pointsize>12</pointsize>
+     <pointsize>10</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -842,7 +842,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>210</y>
+       <y>280</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -863,7 +863,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>330</y>
+       <y>400</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -884,7 +884,7 @@
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>330</y>
+       <y>400</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -905,7 +905,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>310</y>
+       <y>380</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -926,7 +926,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>20</y>
+       <y>90</y>
        <width>171</width>
        <height>21</height>
       </rect>
@@ -944,7 +944,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>180</y>
+       <y>250</y>
        <width>171</width>
        <height>21</height>
       </rect>
@@ -962,7 +962,7 @@
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>90</y>
+       <y>160</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -980,7 +980,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>190</y>
+       <y>260</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -1001,7 +1001,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>300</y>
+       <y>370</y>
        <width>171</width>
        <height>21</height>
       </rect>
@@ -1019,7 +1019,7 @@
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>50</y>
+       <y>120</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -1037,7 +1037,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>90</y>
+       <y>160</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -1055,7 +1055,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>50</y>
+       <y>120</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -1073,7 +1073,7 @@
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>210</y>
+       <y>280</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -1094,7 +1094,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>30</y>
+       <y>100</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -1115,7 +1115,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>370</y>
+       <y>440</y>
        <width>291</width>
        <height>31</height>
       </rect>
@@ -1157,7 +1157,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>250</y>
+       <y>320</y>
        <width>91</width>
        <height>31</height>
       </rect>
@@ -1178,7 +1178,7 @@
      <property name="geometry">
       <rect>
        <x>560</x>
-       <y>250</y>
+       <y>320</y>
        <width>91</width>
        <height>31</height>
       </rect>
@@ -1199,7 +1199,7 @@
      <property name="geometry">
       <rect>
        <x>660</x>
-       <y>250</y>
+       <y>320</y>
        <width>91</width>
        <height>31</height>
       </rect>
@@ -1499,7 +1499,7 @@
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>130</y>
+       <y>200</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -1517,7 +1517,7 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>130</y>
+       <y>200</y>
        <width>141</width>
        <height>31</height>
       </rect>
@@ -1809,6 +1809,87 @@
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_mountShutdown">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Send shutdown command to the mount and quit the tool</string>
+     </property>
+     <property name="text">
+      <string>Shutdown Mount</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_mountBoot">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>50</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Boot Mount WOL</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_97">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>20</y>
+       <width>171</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Mount Control</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_20">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>30</y>
+       <width>291</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </widget>
@@ -12126,24 +12207,6 @@ color: rgb(255,255,255);</string>
         <string>Firmware Time</string>
        </property>
       </widget>
-      <widget class="QLabel" name="firmwareProductName_7">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>250</y>
-         <width>271</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Working Directory of MountWizzard is actually: </string>
-       </property>
-      </widget>
       <widget class="QLabel" name="le_firmwareProductName">
        <property name="geometry">
         <rect>
@@ -12314,28 +12377,6 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-      <widget class="QLabel" name="le_mwWorkingDir">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>270</y>
-         <width>701</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Here the actually used working directory is shown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Diectory Name</string>
-       </property>
-      </widget>
       <widget class="QLabel" name="firmwareProductName_4">
        <property name="geometry">
         <rect>
@@ -12410,33 +12451,12 @@ color: rgb(255,255,255);</string>
     </widget>
    </widget>
   </widget>
-  <widget class="QPushButton" name="btn_mountShutdown">
-   <property name="geometry">
-    <rect>
-     <x>330</x>
-     <y>10</y>
-     <width>91</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Send shutdown command to the mount and quit the tool</string>
-   </property>
-   <property name="text">
-    <string>Shutdown</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="btn_quit">
    <property name="geometry">
     <rect>
-     <x>690</x>
+     <x>630</x>
      <y>10</y>
-     <width>91</width>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
@@ -12455,9 +12475,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_save">
    <property name="geometry">
     <rect>
-     <x>690</x>
-     <y>50</y>
-     <width>91</width>
+     <x>480</x>
+     <y>80</y>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
@@ -12470,15 +12490,15 @@ color: rgb(255,255,255);</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>Save Config</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_cameraConnected">
    <property name="geometry">
     <rect>
-     <x>110</x>
+     <x>180</x>
      <y>10</y>
-     <width>91</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -12497,9 +12517,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_domeConnected">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>91</width>
+     <x>100</x>
+     <y>10</y>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -12518,9 +12538,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_driverMountConnected">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>10</y>
-     <width>91</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -12536,33 +12556,12 @@ color: rgb(255,255,255);</string>
     <string>Mount</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_mountBoot">
-   <property name="geometry">
-    <rect>
-     <x>330</x>
-     <y>50</y>
-     <width>91</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Boot</string>
-   </property>
-  </widget>
   <widget class="QPushButton" name="btn_environmentConnected">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>50</y>
-     <width>91</width>
+     <x>340</x>
+     <y>10</y>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -12575,15 +12574,15 @@ color: rgb(255,255,255);</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Environment</string>
+    <string>Environ</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_openMessageWindow">
    <property name="geometry">
     <rect>
-     <x>460</x>
-     <y>10</y>
-     <width>91</width>
+     <x>20</x>
+     <y>80</y>
+     <width>391</width>
      <height>31</height>
     </rect>
    </property>
@@ -12598,12 +12597,12 @@ color: rgb(255,255,255);</string>
     <string>Show Messages</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_platesolverConnected">
+  <widget class="QPushButton" name="btn_solverConnected">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>260</x>
      <y>10</y>
-     <width>91</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -12616,15 +12615,15 @@ color: rgb(255,255,255);</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>PlateSolver</string>
+    <string>Solver</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_load">
    <property name="geometry">
     <rect>
-     <x>590</x>
+     <x>480</x>
      <y>10</y>
-     <width>91</width>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
@@ -12643,9 +12642,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_saveAs">
    <property name="geometry">
     <rect>
-     <x>590</x>
-     <y>50</y>
-     <width>91</width>
+     <x>630</x>
+     <y>80</y>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
@@ -12658,7 +12657,59 @@ color: rgb(255,255,255);</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Save as</string>
+    <string>Save Config As</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="le_configName">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>50</y>
+     <width>291</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="toolTip">
+    <string>Status feedback from mount </string>
+   </property>
+   <property name="text">
+    <string>Configuration</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="mainicon">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>40</y>
+     <width>48</width>
+     <height>48</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
    </property>
   </widget>
  </widget>
@@ -12670,7 +12721,6 @@ color: rgb(255,255,255);</string>
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>btn_mountShutdown</tabstop>
   <tabstop>mainTabWidget</tabstop>
   <tabstop>le_slewRate</tabstop>
   <tabstop>btn_setSlewRate</tabstop>

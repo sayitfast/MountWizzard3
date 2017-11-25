@@ -72,9 +72,9 @@ class NoneCamera(PyQt5.QtCore.QObject):
             self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
 
         if self.solverConnected:
-            self.app.workerModelingDispatcher.signalStatusPlatesolver.emit(3)
+            self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
         else:
-            self.app.workerModelingDispatcher.signalStatusPlatesolver.emit(2)
+            self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)

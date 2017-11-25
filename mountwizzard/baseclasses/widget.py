@@ -54,6 +54,7 @@ class MwWidget(QWidget):
         # noinspection PyArgumentList
         super(MwWidget, self).__init__()
         self.palette = QPalette()
+        self.bundle_dir = ''
         self.showStatus = False
         self.initUI()
 
@@ -86,8 +87,8 @@ class MwWidget(QWidget):
         # set app icon
         if getattr(sys, 'frozen', False):
             # we are running in a bundle
-            bundle_dir = sys._MEIPASS
+            self.bundle_dir = sys._MEIPASS
         else:
             # we are running in a normal Python environment
-            bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-        self.setWindowIcon(QIcon(bundle_dir + '\\mw.ico'))
+            self.bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
+        self.setWindowIcon(QIcon(self.bundle_dir + '\\mw.ico'))
