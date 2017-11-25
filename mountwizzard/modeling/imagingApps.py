@@ -82,6 +82,7 @@ class ImagingApps:
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
+        self.app.ui.pd_chooseImaging.clear()
         if self.workerNoneCam.data['AppAvailable']:
             self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['AppName'])
         if self.INDICamera.appAvailable:

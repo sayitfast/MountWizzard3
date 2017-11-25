@@ -11,9 +11,9 @@
 # Licence APL2.0
 #
 ############################################################
-# standard solutions
 import logging
 from baseclasses import widget
+import PyQt5
 from gui import message_dialog_ui
 
 
@@ -27,7 +27,14 @@ class MessageWindow(widget.MwWidget):
         self.ui = message_dialog_ui.Ui_MessageDialog()
         self.ui.setupUi(self)
         self.initUI()
+        self.setSizePolicy(PyQt5.QtWidgets.QSizePolicy.Fixed, PyQt5.QtWidgets.QSizePolicy.Ignored)
+        self.setMinimumSize(790, 200)
+        # self.setFixedSize(790)
         self.initConfig()
+
+    def resizeEvent(self, QResizeEvent):
+        # allow message window to be resized in height
+        self.ui.messages.setGeometry(10, 10, 771, self.height() - 20)
 
     def initConfig(self):
         try:
@@ -35,6 +42,8 @@ class MessageWindow(widget.MwWidget):
                 self.move(self.app.config['MessagePopupWindowPositionX'], self.app.config['MessagePopupWindowPositionY'])
             if 'MessagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['MessagePopupWindowShowStatus']
+            if 'MessagePopupWindowHeight' in self.app.config:
+                self.resize(791, self.app.config['MessagePopupWindowHeight'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -44,6 +53,7 @@ class MessageWindow(widget.MwWidget):
         self.app.config['MessagePopupWindowPositionX'] = self.pos().x()
         self.app.config['MessagePopupWindowPositionY'] = self.pos().y()
         self.app.config['MessagePopupWindowShowStatus'] = self.showStatus
+        self.app.config['MessagePopupWindowHeight'] = self.height()
 
     def showWindow(self):
         self.showStatus = True

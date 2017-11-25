@@ -38,7 +38,6 @@ class AscomDome(PyQt5.QtCore.QObject):
         self.chooser = None
         self.driverName = ''
         self.data = {}
-        self.initConfig()
 
     def initConfig(self):
         try:

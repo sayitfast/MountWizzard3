@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-
 import logging
 import math
 # import basic stuff
@@ -20,10 +19,8 @@ import threading
 import time
 # for the sorting
 from operator import itemgetter
-
 # import PyQT5 for threading purpose
 import PyQt5
-
 if platform.system() == 'Windows':
     # win32com
     import pythoncom
@@ -77,6 +74,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.initConfig()
 
     def initConfig(self):
+        self.app.ui.pd_chooseMount.clear()
         self.app.ui.pd_chooseMount.addItem('IP Direct Connection')
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseMount.addItem('ASCOM Driver Connection')
@@ -486,7 +484,7 @@ class Mount(PyQt5.QtCore.QThread):
     def saveModel(self, target):
         num = self.numberModelStars()
         if num == -1:
-            self.app.messageQueue.put('#BRSave Model not available without real mount\n')
+            self.app.messageQueue.put('#BWSave Model not available in simulation\n')
             return False
         self.mountHandler.sendCommand('modeldel0' + target)
         reply = self.mountHandler.sendCommand('modelsv0' + target)
@@ -500,7 +498,7 @@ class Mount(PyQt5.QtCore.QThread):
     def loadModel(self, target):
         num = self.numberModelStars()
         if num == -1:
-            self.app.messageQueue.put('#BRLoad Model not available without real mount\n')
+            self.app.messageQueue.put('#BWLoad Model not available in simulation\n')
             return False
         reply = self.mountHandler.sendCommand('modelld0' + target)
         if reply == '1':

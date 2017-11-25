@@ -12663,9 +12663,9 @@ color: rgb(255,255,255);</string>
   <widget class="QLineEdit" name="le_configName">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>570</x>
      <y>50</y>
-     <width>291</width>
+     <width>201</width>
      <height>21</height>
     </rect>
    </property>
@@ -12710,6 +12710,24 @@ color: rgb(255,255,255);</string>
    </property>
    <property name="text">
     <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_102">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>50</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Used Config:</string>
    </property>
   </widget>
  </widget>

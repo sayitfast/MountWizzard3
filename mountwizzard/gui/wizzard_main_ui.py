@@ -4179,7 +4179,7 @@ class Ui_MainWindow(object):
         self.btn_saveConfigAs.setFont(font)
         self.btn_saveConfigAs.setObjectName("btn_saveConfigAs")
         self.le_configName = QtWidgets.QLineEdit(MainWindow)
-        self.le_configName.setGeometry(QtCore.QRect(480, 50, 291, 21))
+        self.le_configName.setGeometry(QtCore.QRect(570, 50, 201, 21))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(10)
@@ -4195,6 +4195,12 @@ class Ui_MainWindow(object):
         self.mainicon = QtWidgets.QLabel(MainWindow)
         self.mainicon.setGeometry(QtCore.QRect(420, 40, 48, 48))
         self.mainicon.setObjectName("mainicon")
+        self.label_102 = QtWidgets.QLabel(MainWindow)
+        self.label_102.setGeometry(QtCore.QRect(490, 50, 81, 21))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.label_102.setFont(font)
+        self.label_102.setObjectName("label_102")
 
         self.retranslateUi(MainWindow)
         self.mainTabWidget.setCurrentIndex(0)
@@ -5000,5 +5006,6 @@ class Ui_MainWindow(object):
         self.le_configName.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.le_configName.setText(_translate("MainWindow", "Configuration"))
         self.mainicon.setText(_translate("MainWindow", "TextLabel"))
+        self.label_102.setText(_translate("MainWindow", "Used Config:"))
 
 from clickablelineedit import ClickableLineEdit

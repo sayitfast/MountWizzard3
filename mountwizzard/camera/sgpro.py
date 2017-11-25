@@ -100,6 +100,7 @@ class SGPro(PyQt5.QtCore.QObject):
             self.data['CameraStatus'] = 'ERROR'
             self.cameraConnected = False
 
+        # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
         suc, mes = self.SgGetDeviceStatus('PlateSolver')
         if suc:
             self.solverConnected = True

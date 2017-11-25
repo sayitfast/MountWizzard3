@@ -35,7 +35,6 @@ class AscomEnvironment(PyQt5.QtCore.QObject):
         self.ascom = None
         self.chooser = None
         self.driverName = ''
-        self.initConfig()
 
     def initConfig(self):
         try:

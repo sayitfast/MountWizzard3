@@ -129,7 +129,7 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAscomEnvironment.started.connect(self.workerAscomEnvironment.run)
             self.workerAscomEnvironment.finished.connect(self.workerAscomEnvironmentStop)
             self.workerAscomEnvironment.signalAscomEnvironmentConnected.connect(self.setEnvironmentStatus)
-            self.threadAscomEnvironment.start()
+            # self.threadAscomEnvironment.start()
         # threading for ascom dome data
         if platform.system() == 'Windows':
             self.workerAscomDome = ascomDome.AscomDome(self)
@@ -140,7 +140,7 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAscomDome.started.connect(self.workerAscomDome.run)
             self.workerAscomDome.finished.connect(self.workerAscomDomeStop)
             self.workerAscomDome.signalAscomDomeConnected.connect(self.setDomeStatus)
-            self.threadAscomDome.start()
+            # self.threadAscomDome.start()
         # threading for remote shutdown
         self.workerRemote = remoteThread.Remote(self)
         self.threadRemote = PyQt5.QtCore.QThread()
@@ -188,6 +188,8 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # loading config data - will be config.cfg
         self.loadConfigData()
+        # init config starts necessary threads
+        self.initConfig()
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
@@ -586,12 +588,18 @@ class MountWizzardApp(widget.MwWidget):
         finally:
             pass
 
-        # initialize all configs in submodules
+        # initialize all configs in submodules, if necessary stop thread and restart
         self.mount.initConfig()
         self.workerModelingDispatcher.initConfig()
         if platform.system() == 'Windows':
             self.workerAscomEnvironment.initConfig()
+            if self.workerAscomEnvironment.isRunning:
+                self.workerAscomEnvironment.stop()
+            self.threadAscomEnvironment.start()
             self.workerAscomDome.initConfig()
+            if self.workerAscomDome.isRunning:
+                self.workerAscomDome.stop()
+            self.threadAscomDome.start()
             self.workerUpload.initConfig()
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()
@@ -609,7 +617,7 @@ class MountWizzardApp(widget.MwWidget):
         if self.imageWindow.showStatus:
             self.imageWindow.showWindow()
         else:
-            self.imageWindow.setVisible((False))
+            self.imageWindow.setVisible(False)
         if self.analyseWindow.showStatus:
             self.analyseWindow.showWindow()
         else:
@@ -695,7 +703,6 @@ class MountWizzardApp(widget.MwWidget):
         try:
             with open('config/config.cfg', 'r') as data_file:
                 self.config = json.load(data_file)
-                self.initConfig()
         except Exception as e:
             self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
             self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
@@ -722,8 +729,8 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no config file selected')
 
     def saveConfig(self):
-        self.saveConfigData()
-        self.messageQueue.put('Configuration saved.\n')
+        filepath = os.getcwd() + '/config' + self.ui.le_configName.text()
+        self.saveConfigData(filepath)
 
     def saveConfigQuit(self):
         self.saveConfigData()
@@ -735,11 +742,13 @@ class MountWizzardApp(widget.MwWidget):
         try:
             if not os.path.isdir(os.getcwd() + '/config'):
                 os.makedirs(os.getcwd() + '/config')
-            if filepath == '':
-                filepath = 'config/config.cfg'
+            with open('config/config.cfg', 'w') as outfile:
+                json.dump(self.config, outfile)
+            outfile.close()
             with open(filepath, 'w') as outfile:
                 json.dump(self.config, outfile)
             outfile.close()
+            self.messageQueue.put('Configuration saved.\n')
         except Exception as e:
             self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
             self.logger.error('Item in config.cfg not saved error {0}'.format(e))
@@ -752,14 +761,12 @@ class MountWizzardApp(widget.MwWidget):
         dlg.setNameFilter("Config files (*.cfg)")
         dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
         # noinspection PyArgumentList
-        a = dlg.getSaveFileName(self, 'Save file', os.getcwd()+'/config', 'Config files (*.cfg)')
+        a = dlg.getSaveFileName(self, 'Save file', os.getcwd() + '/config', 'Config files (*.cfg)')
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
             self.saveConfigData(a[0])
-            self.saveConfigData()
         else:
             self.logger.warning('No config file selected')
-        self.messageQueue.put('Configuration saved.\n')
 
     def selectModelPointsFileName(self):
         dlg = PyQt5.QtWidgets.QFileDialog()
@@ -1065,7 +1072,11 @@ class MountWizzardApp(widget.MwWidget):
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(text[3:])
             elif text.startswith('#BR'):
-                self.messageWindow.ui.messages.setTextColor(self.COLOR_RED)
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_ORANGE)
+                # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                self.messageWindow.ui.messages.insertPlainText(text[3:])
+            elif text.startswith('#BO'):
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_ORANGE)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
                 self.messageWindow.ui.messages.insertPlainText(text[3:])
             else:
@@ -1099,7 +1110,7 @@ if __name__ == "__main__":
                         format='%(asctime)s [%(levelname)7s][%(filename)20s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
-    # population the working directory with necessary subdirs
+    # population the working directory with necessary subdir
     if not os.path.isdir(os.getcwd() + '/analysedata'):
         os.makedirs(os.getcwd() + '/analysedata')
     if not os.path.isdir(os.getcwd() + '/images'):

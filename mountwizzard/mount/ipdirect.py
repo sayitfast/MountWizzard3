@@ -11,8 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
 import logging
 import threading
 import socket
