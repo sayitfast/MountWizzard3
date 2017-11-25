@@ -377,18 +377,9 @@ class MountWizzardApp(widget.MwWidget):
     def mountShutdown(self):
         self.mountCommandQueue.put('Shutdown')
 
-    def showModelErrorPolar(self):
-        if not self.workerModelingDispatcher.modelingRunner.modelData:
+    def showModelErrorPolar(self, alignModel):
+        if len(alignModel['Index']) == 0:
             return
-        data = dict()
-        for i in range(0, len(self.workerModelingDispatcher.modelingRunner.modelData)):
-            for (keyData, valueData) in self.workerModelingDispatcher.modelingRunner.modelData[i].items():
-                if keyData == 'azimuth':
-                    return
-                if keyData in data:
-                    data[keyData].append(valueData)
-                else:
-                    data[keyData] = [valueData]
         self.modelWidget.fig.clf()
         self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
         self.modelWidget.axes.grid(True, color='gray')
@@ -401,12 +392,12 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget.axes.set_yticks(range(0, 90, 10))
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.modelWidget.axes.set_yticklabels(yLabel, color='white')
-        azimuth = numpy.asarray(data['Azimuth'])
-        altitude = numpy.asarray(data['Altitude'])
+        azimuth = numpy.asarray(alignModel['Azimuth'])
+        altitude = numpy.asarray(alignModel['Altitude'])
         cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
-        colors = numpy.asarray(data['ModelError'])
+        colors = numpy.asarray(alignModel['ModelError'])
         scaleError = int(max(colors) / 4 + 1) * 4
-        area = [125 if x >= max(colors) else 50 for x in data['ModelError']]
+        area = [125 if x >= max(colors) else 50 for x in alignModel['ModelError']]
         theta = azimuth / 180.0 * math.pi
         r = 90 - altitude
         scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
@@ -946,7 +937,7 @@ class MountWizzardApp(widget.MwWidget):
             if valueName == 'ModelErrorAlt':
                 self.ui.le_alignErrorAlt.setText(str(self.mount.data[valueName]))
             if valueName == 'ModelStarError':
-                    self.ui.alignErrorStars.setText(self.mount.data[valueName])
+                self.ui.alignErrorStars.setText(self.mount.data[valueName])
             if valueName == 'CurrentHorizonLimitLow':
                 self.ui.le_horizonLimitLow.setText(str(self.mount.data[valueName]))
             if valueName == 'CurrentHorizonLimitHigh':

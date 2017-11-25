@@ -48,6 +48,7 @@ class MwWidget(QWidget):
     COLOR_WINDOW_TEXT = QColor(192, 192, 192)
     COLOR_BACKGROUND = QColor(53, 53, 53)
     COLOR_BASE = QColor(25, 25, 25)
+    COLOR_BASE_MAIN = QColor(16, 72, 96)
     COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
     COLOR_HIGHLIGHT = QColor(42, 130, 218)
 
