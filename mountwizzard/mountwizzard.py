@@ -45,6 +45,7 @@ from baseclasses import widget
 from widgets import modelplotWindow
 from widgets import imageWindow
 from widgets import analyseWindow
+from widgets import messageWindow
 from gui import wizzard_main_ui
 
 # modeling
@@ -80,7 +81,6 @@ class MountWizzardApp(widget.MwWidget):
         # setting up communication queues for inter thread communication
         self.mountCommandQueue = Queue()
         self.domeCommandQueue = Queue()
-        self.modelLogQueue = Queue()
         self.modelCommandQueue = Queue()
         self.messageQueue = Queue()
         self.imageQueue = Queue()
@@ -162,12 +162,14 @@ class MountWizzardApp(widget.MwWidget):
         # noinspection PyUnresolvedReferences
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
         self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
-        self.workerModelingDispatcher.signalStatusImagingApp.connect(self.setStatusImagingApp)
+        self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
+        self.workerModelingDispatcher.signalStatusPlatesolver.connect(self.setStatusPlatesolver)
         # thread start will be done when enabled
         self.threadModelingDispatcher.start()
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
+        self.messageWindow = messageWindow.MessageWindow(self)
         # starting the threads
         self.mount.start()
         if platform.system() == 'Windows':
@@ -265,17 +267,17 @@ class MountWizzardApp(widget.MwWidget):
 
     def enableDisableRemoteAccess(self):
         if self.ui.checkEnableRemoteAccess.isChecked():
-            self.messageQueue.put('Remote Access enabled')
+            self.messageQueue.put('Remote Access enabled\n')
             self.threadRemote.start()
         else:
-            self.messageQueue.put('Remote Access disabled')
+            self.messageQueue.put('Remote Access disabled\n')
             if self.workerRemote.isRunning:
                 self.workerRemote.stop()
 
     # noinspection PyArgumentList
     def mappingFunctions(self):
-        self.ui.btn_mountQuit.clicked.connect(self.saveConfigQuit)
-        self.ui.btn_mountSave.clicked.connect(self.saveConfig)
+        self.ui.btn_quit.clicked.connect(self.saveConfigQuit)
+        self.ui.btn_save.clicked.connect(self.saveConfig)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
         self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
         self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put('hP'))
@@ -338,9 +340,10 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_loadDSO1Model.clicked.connect(lambda: self.mountCommandQueue.put('LoadDSO1Model'))
         self.ui.btn_saveDSO2Model.clicked.connect(lambda: self.mountCommandQueue.put('SaveDSO2Model'))
         self.ui.btn_loadDSO2Model.clicked.connect(lambda: self.mountCommandQueue.put('LoadDSO2Model'))
-        self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showAnalyseWindow)
-        self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showModelingPlotWindow)
-        self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showImageWindow)
+        self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showWindow)
+        self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
+        self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showWindow)
+        self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
@@ -355,7 +358,7 @@ class MountWizzardApp(widget.MwWidget):
 
     def mountBoot(self):
         wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
-        self.messageQueue.put('Send WOL and boot mount !')
+        self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')
 
     def mountShutdown(self):
@@ -405,7 +408,7 @@ class MountWizzardApp(widget.MwWidget):
     def checkASCOM(self):
         appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
         if appAvailable:
-            self.messageQueue.put('Found: {0}'.format(appName))
+            self.messageQueue.put('Found: {0}\n'.format(appName))
             self.logger.info('Name: {0}, Path: {1}'.format(appName, appInstallPath))
         else:
             self.logger.warning('Application ASCOM not found on computer')
@@ -632,7 +635,16 @@ class MountWizzardApp(widget.MwWidget):
             with open('config/config.cfg', 'r') as data_file:
                 return json.load(data_file)
         except Exception as e:
-            self.messageQueue.put('Config.cfg could not be loaded !')
+            self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
+            self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
+            return {}
+
+    def loadConfigDataFrom(self):
+        try:
+            with open('config/config.cfg', 'r') as data_file:
+                return json.load(data_file)
+        except Exception as e:
+            self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
             self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
             return {}
 
@@ -647,6 +659,7 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWindow.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
+        self.messageWindow.storeConfig()
         self.relays.storeConfig()
         self.INDIworker.storeConfig()
         try:
@@ -656,7 +669,7 @@ class MountWizzardApp(widget.MwWidget):
                 json.dump(self.config, outfile)
             outfile.close()
         except Exception as e:
-            self.messageQueue.put('Config.cfg could not be saved !')
+            self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
             self.logger.error('Item in config.cfg not saved error {0}'.format(e))
             return
         self.mount.saveActualModel()                                                                                        # save current loaded modeling from mount
@@ -666,9 +679,13 @@ class MountWizzardApp(widget.MwWidget):
         # noinspection PyArgumentList
         QCoreApplication.instance().quit()
 
+    def saveConfigAs(self):
+        self.saveConfigData()
+        self.messageQueue.put('Configuration saved.\n')
+
     def saveConfig(self):
         self.saveConfigData()
-        self.messageQueue.put('Configuration saved.')
+        self.messageQueue.put('Configuration saved.\n')
 
     def selectModelPointsFileName(self):
         dlg = QFileDialog()
@@ -924,15 +941,26 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_UTCDataExpirationDate.setText(str(self.mount.data[valueName]))
 
     @QtCore.Slot(int)
-    def setStatusImagingApp(self, status):
+    def setStatusCamera(self, status):
         if status == 3:
-            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: green;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green;}')
         elif status == 2:
-            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow;}')
         elif status == 1:
-            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: red;}')
         else:
-            self.ui.btn_camPlateConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;}')
+
+    @QtCore.Slot(int)
+    def setStatusPlatesolver(self, status):
+        if status == 3:
+            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: green;}')
+        elif status == 2:
+            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+        elif status == 1:
+            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: red;}')
+        else:
+            self.ui.btn_platesolverConnected.setStyleSheet('QPushButton {background-color: gray;}')
 
     def mainLoop(self):
         self.fillMountData()
@@ -942,20 +970,8 @@ class MountWizzardApp(widget.MwWidget):
             self.fillINDIData(data)
         while not self.messageQueue.empty():
             text = self.messageQueue.get()
-            self.ui.errorStatus.setText(self.ui.errorStatus.toPlainText() + text + '\n')
-            self.messageQueue.task_done()
-            self.ui.errorStatus.moveCursor(QTextCursor.End)
-        while not self.imageQueue.empty():
-            filename = self.imageQueue.get()
-            if self.imageWindow.showStatus:
-                self.imageWindow.showFitsImage(filename)
-        while not self.modelLogQueue.empty():
-            text = self.modelLogQueue.get()
             if text == 'delete':
-                self.modelWindow.ui.modellingLog.clear()
-            elif text == 'backspace':
-                for i in range(0, 6):
-                    self.modelWindow.ui.modellingLog.textCursor().deletePreviousChar()
+                self.messageWindow.ui.messages.clear()
             elif text.startswith('status'):
                 self.modelWindow.ui.le_modelingStatus.setText(text[6:])
             elif text.startswith('percent'):
@@ -963,23 +979,30 @@ class MountWizzardApp(widget.MwWidget):
             elif text.startswith('timeleft'):
                 self.modelWindow.ui.le_modelingStatusTime.setText(text[8:])
             elif text.startswith('#BW'):
-                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_WHITE)
-                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Bold)
-                self.modelWindow.ui.modellingLog.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_WHITE)
+                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                self.messageWindow.ui.messages.insertPlainText(text[3:])
             elif text.startswith('#BG'):
-                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_GREEN)
-                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Bold)
-                self.modelWindow.ui.modellingLog.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_GREEN)
+                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                self.messageWindow.ui.messages.insertPlainText(text[3:])
             elif text.startswith('#BY'):
-                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_YELLOW)
-                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Bold)
-                self.modelWindow.ui.modellingLog.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_YELLOW)
+                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                self.messageWindow.ui.messages.insertPlainText(text[3:])
+            elif text.startswith('#BR'):
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_RED)
+                #self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
+                self.messageWindow.ui.messages.insertPlainText(text[3:])
             else:
-                self.modelWindow.ui.modellingLog.setTextColor(self.COLOR_ASTRO)
-                self.modelWindow.ui.modellingLog.setFontWeight(QFont.Normal)
-                self.modelWindow.ui.modellingLog.insertPlainText(text)
-            self.modelWindow.ui.modellingLog.moveCursor(QTextCursor.End)
-            self.modelLogQueue.task_done()
+                self.messageWindow.ui.messages.setTextColor(self.COLOR_ASTRO)
+                self.messageWindow.ui.messages.setFontWeight(QFont.Normal)
+                self.messageWindow.ui.messages.insertPlainText(text)
+            self.messageWindow.ui.messages.moveCursor(QTextCursor.End)
+        while not self.imageQueue.empty():
+            filename = self.imageQueue.get()
+            if self.imageWindow.showStatus:
+                self.imageWindow.showFitsImage(filename)
         # noinspection PyCallByClass,PyTypeChecker
         QTimer.singleShot(500, self.mainLoop)
 
@@ -1036,10 +1059,12 @@ if __name__ == "__main__":
     mountApp = MountWizzardApp()
     if mountApp.modelWindow.showStatus:
         mountApp.modelWindow.redrawModelingWindow()
-        mountApp.modelWindow.showModelingPlotWindow()
+        mountApp.modelWindow.showWindow()
     if mountApp.imageWindow.showStatus:
-        mountApp.imageWindow.showImageWindow()
+        mountApp.imageWindow.showWindow()
     if mountApp.analyseWindow.showStatus:
-        mountApp.analyseWindow.showAnalyseWindow()
+        mountApp.analyseWindow.showWindow()
+    if mountApp.messageWindow.showStatus:
+        mountApp.messageWindow.showWindow()
     mountApp.show()
     sys.exit(app.exec_())

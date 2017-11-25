@@ -56,9 +56,9 @@ class Slewpoint(PyQt5.QtCore.QObject):
         if not self.queuePoint.empty():
             modelData = self.queuePoint.get()
             if modelData['Item'].isVisible():
-                self.main.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.main.timeStamp(), modelData['Index'] + 1, modelData['Azimuth'], modelData['Altitude']))
+                self.main.app.messageQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.main.timeStamp(), modelData['Index'] + 1, modelData['Azimuth'], modelData['Altitude']))
                 self.main.slewMountDome(modelData['Azimuth'], modelData['Altitude'])
-                self.main.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec\n'.format(self.main.timeStamp(), modelData['SettlingTime']))
+                self.main.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec\n'.format(self.main.timeStamp(), modelData['SettlingTime']))
                 timeCounter = modelData['SettlingTime']
                 while timeCounter > 0:
                     time.sleep(1)
@@ -94,7 +94,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelData['Pierside'] = self.main.app.mount.data['Pierside']
                 modelData['RefractionTemperature'] = self.main.app.mount.data['RefractionTemperature']
                 modelData['RefractionPressure'] = self.main.app.mount.data['RefractionPressure']
-                self.main.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
+                self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                 while True:
                     suc, mes = self.main.app.workerModeling.SGPro.SgGetDeviceStatus('Camera')
                     if suc and mes == 'IDLE':
@@ -130,18 +130,18 @@ class Platesolve(PyQt5.QtCore.QObject):
             if not self.queuePlatesolve.empty():
                 modelData = self.queuePlatesolve.get()
                 if modelData['ImagingSuccess']:
-                    self.main.app.modelLogQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
+                    self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                     suc, mes, modelData = self.main.solveImage(modelData, modelData['Simulation'])
                     modelData['PlateSolveSuccess'] = suc
                     if modelData['PlateSolveSuccess']:
-                        self.main.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
-                        self.main.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
+                        self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
+                        self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
 
                         modelData['Item'].setVisible(False)
                     else:
-                        self.main.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
+                        self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
                 self.main.solvedPointsQueue.put(modelData)
-                self.main.app.modelLogQueue.put('status{0} of {1}'.format(modelData['Index'] + 1, self.main.numberPointsMax))
+                self.main.app.messageQueue.put('status{0} of {1}'.format(modelData['Index'] + 1, self.main.numberPointsMax))
                 self.main.numberSolvedPoints += 1
                 if self.main.numberSolvedPoints == self.main.numberPointsMax:
                     self.main.hasFinished = True
@@ -252,8 +252,7 @@ class ModelingBase:
             return True
 
     def plateSolveSync(self, simulation=False):
-        self.app.modelLogQueue.put('delete')
-        self.app.modelLogQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
+        self.app.messageQueue.put('{0} - Start Sync Mount Model\n'.format(self.timeStamp()))
         modelData = {}
         modelData = self.imagingApps.prepareImaging(modelData, '')
         modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
@@ -274,35 +273,33 @@ class ModelingBase:
         modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
         modelData['Azimuth'] = 0
         modelData['Altitude'] = 0
-        self.app.modelLogQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
+        self.app.messageQueue.put('{0} -\t Capturing image\n'.format(self.timeStamp()))
         suc, mes, imagepath = self.imagingApps.capturingImage(modelData, simulation)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
-            self.app.modelLogQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
+            self.app.messageQueue.put('{0} -\t Solving Image\n'.format(self.timeStamp()))
             suc, mes, modelData = self.imagingApps.solveImage(modelData, simulation)
-            self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
+            self.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
             if suc:
                 suc = self.app.mount.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
                 if suc:
-                    self.app.modelLogQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
+                    self.app.messageQueue.put('{0} -\t Mount Model Synced\n'.format(self.timeStamp()))
                 else:
-                    self.app.modelLogQueue.put(
-                        '{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
+                    self.app.messageQueue.put('{0} -\t Mount Model could not be synced - please check!\n'.format(self.timeStamp()))
             else:
-                self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
+                self.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
         if not self.app.ui.checkKeepImages.isChecked():
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
+        self.app.messageQueue.put('{0} - Sync Mount Model finished !\n'.format(self.timeStamp()))
 
     def runBoost(self, runPoints, modelData, settlingTime, simulation=False, keepImages=False):
         # start clearing the data
         results = []
         # preparing the gui outputs
-        self.app.modelLogQueue.put('status-- of --')
-        self.app.modelLogQueue.put('percent0')
-        self.app.modelLogQueue.put('timeleft--:--')
-        self.app.modelLogQueue.put('delete')
-        self.app.modelLogQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
+        self.app.messageQueue.put('status-- of --')
+        self.app.messageQueue.put('percent0')
+        self.app.messageQueue.put('timeleft--:--')
+        self.app.messageQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
         if not os.path.isdir(modelData['BaseDirImages']):
             os.makedirs(modelData['BaseDirImages'])
         self.logger.info('modelData: {0}'.format(modelData))
@@ -338,9 +335,9 @@ class ModelingBase:
                 break
         if self.app.workerModeling.cancel:
             # clearing the gui
-            self.app.modelLogQueue.put('status-- of --')
-            self.app.modelLogQueue.put('percent0')
-            self.app.modelLogQueue.put('timeleft--:--')
+            self.app.messageQueue.put('status-- of --')
+            self.app.messageQueue.put('percent0')
+            self.app.messageQueue.put('timeleft--:--')
             self.logger.info('Modeling cancelled in main loop')
         self.workerSlewpoint.stop()
         self.threadSlewpoint.quit()
@@ -361,18 +358,17 @@ class ModelingBase:
             results.append(copy.copy(modelData))
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
+        self.app.messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
         return results
 
     def runModel(self, modeltype, runPoints, modelData, settlingTime, simulation=False, keepImages=False):
         # start clearing the data
         results = []
         # preparing the gui outputs
-        self.app.modelLogQueue.put('status-- of --')
-        self.app.modelLogQueue.put('percent0')
-        self.app.modelLogQueue.put('timeleft--:--')
-        self.app.modelLogQueue.put('delete')
-        self.app.modelLogQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))
+        self.app.messageQueue.put('status-- of --')
+        self.app.messageQueue.put('percent0')
+        self.app.messageQueue.put('timeleft--:--')
+        self.app.messageQueue.put('#BW{0} - Start {1} Model\n'.format(self.timeStamp(), modeltype))
         if not modelData:
             return []
         if not os.path.isdir(modelData['BaseDirImages']):
@@ -391,17 +387,17 @@ class ModelingBase:
             if p_item.isVisible():
                 # todo: put the code to multi thread modeling
                 if self.cancel:
-                    self.app.modelLogQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
+                    self.app.messageQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
                     # tracking should be on after canceling the modeling
                     self.app.mountCommandQueue.put('AP')
                     # clearing the gui
-                    self.app.modelLogQueue.put('status-- of --')
-                    self.app.modelLogQueue.put('percent0')
-                    self.app.modelLogQueue.put('timeleft--:--')
+                    self.app.messageQueue.put('status-- of --')
+                    self.app.messageQueue.put('percent0')
+                    self.app.messageQueue.put('timeleft--:--')
                     self.logger.info('Modeling cancelled in main loop')
                     # finally stopping modeling run
                     break
-                self.app.modelLogQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.timeStamp(), i+1, p_az, p_alt))
+                self.app.messageQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.timeStamp(), i+1, p_az, p_alt))
                 self.logger.info('point {0:2d}  Az: {1:3.0f} Alt: {2:2.0f}'.format(i+1, p_az, p_alt))
                 if modeltype in ['TimeChange']:
                     # in time change there is only slew for the first time, than only track during imaging
@@ -410,14 +406,12 @@ class ModelingBase:
                         self.app.mountCommandQueue.put('RT9')
                 else:
                     self.slewMountDome(p_az, p_alt)
-                self.app.modelLogQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'.format(self.timeStamp(), settlingTime))
+                self.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'.format(self.timeStamp(), settlingTime))
                 timeCounter = settlingTime
                 while timeCounter > 0:
                     time.sleep(1)
                     timeCounter -= 1
-                    self.app.modelLogQueue.put('backspace')
-                    self.app.modelLogQueue.put('{0:02d} sec'.format(timeCounter))
-                self.app.modelLogQueue.put('\n')
+                self.app.messageQueue.put('\n')
             if p_item.isVisible() and p_solve:
                 modelData['File'] = self.imagingApps.CAPTUREFILE + '{0:03d}'.format(i) + '.fit'
                 modelData['LocalSiderealTime'] = self.app.mount.data['LocalSiderealTime']
@@ -432,41 +426,41 @@ class ModelingBase:
                 modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
                 if modeltype in ['TimeChange']:
                     self.app.mountCommandQueue.put('AP')
-                self.app.modelLogQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))
+                self.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.timeStamp(), i + 1))
                 suc, mes, imagepath = self.imagingApps.capturingImage(modelData, simulation)
                 if modeltype in ['TimeChange']:
                     self.app.mountCommandQueue.put('RT9')
                 self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
                 if suc:
-                    self.app.modelLogQueue.put('{0} -\t Solving image for model point{1}\n'.format(self.timeStamp(), i + 1))
+                    self.app.messageQueue.put('{0} -\t Solving image for model point{1}\n'.format(self.timeStamp(), i + 1))
                     suc, mes, modelData = self.imagingApps.solveImage(modelData, simulation)
-                    self.app.modelLogQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
+                    self.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.timeStamp(), modelData['ImagePath']))
                     if suc:
                         if modeltype in ['Base', 'Refinement', 'All']:
                             suc = self.app.mount.addRefinementStar(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
                             if suc:
-                                self.app.modelLogQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
+                                self.app.messageQueue.put('{0} -\t Point added\n'.format(self.timeStamp()))
                                 numCheckPoints += 1
                                 results.append(copy.copy(modelData))
                                 p_item.setVisible(False)
                                 PyQt5.QtWidgets.QApplication.processEvents()
                             else:
-                                self.app.modelLogQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
+                                self.app.messageQueue.put('{0} -\t Point could not be added - please check!\n'.format(self.timeStamp()))
                                 self.logger.info('raE:{0} decE:{1} star could not be added'.format(modelData['RaError'], modelData['DecError']))
-                        self.app.modelLogQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.timeStamp(), modelData['RaError'], modelData['DecError']))
+                        self.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.timeStamp(), modelData['RaError'], modelData['DecError']))
                         self.logger.info('modelData: {0}'.format(modelData))
                     else:
-                        self.app.modelLogQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
-                self.app.modelLogQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))
+                        self.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.timeStamp(), mes))
+                self.app.messageQueue.put('status{0} of {1}'.format(i+1, len(runPoints)))
                 modelBuildDone = (i + 1) / len(runPoints)
-                self.app.modelLogQueue.put('percent{0}'.format(modelBuildDone))
+                self.app.messageQueue.put('percent{0}'.format(modelBuildDone))
                 actualTime = time.time() - timeStart
                 timeCalculated = actualTime / (i + 1) * (len(runPoints) - i - 1)
                 mm = int(timeCalculated / 60)
                 ss = int(timeCalculated - 60 * mm)
-                self.app.modelLogQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))
+                self.app.messageQueue.put('timeleft{0:02d}:{1:02d}'.format(mm, ss))
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.modelLogQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n\n'.format(self.timeStamp(), modeltype, numCheckPoints))
+        self.app.messageQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n'.format(self.timeStamp(), modeltype, numCheckPoints))
         self.app.workerModelingDispatcher.modelingRunner.modelRun = False
         return results

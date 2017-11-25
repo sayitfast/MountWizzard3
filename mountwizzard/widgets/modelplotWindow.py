@@ -91,7 +91,7 @@ class ModelPlotWindow(widget.MwWidget):
         finally:
             pass
 
-    def showModelingPlotWindow(self):
+    def showWindow(self):
         self.showStatus = True
         self.setVisible(True)
         self.show()
@@ -102,7 +102,7 @@ class ModelPlotWindow(widget.MwWidget):
                                                                                              self.app.ui.checkUseMinimumHorizonLine.isChecked(),
                                                                                              self.app.ui.altitudeMinimumHorizon.value())
         if msg:
-            self.app.messageQueue.put(msg)
+            self.app.messageQueue.put(msg + '\n')
         self.redrawModelingWindow()
 
     def selectHorizonPointsFileName(self):

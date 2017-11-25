@@ -126,7 +126,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.loadActualModel()
         alignModel = self.getAlignmentModel()
         if not self.app.workerModelingDispatcher.modelingRunner.modelData and alignModel['RMS'] > 0:
-            self.app.messageQueue.put('Model Data will be reconstructed from Mount Data')
+            self.app.messageQueue.put('Model Data will be reconstructed from Mount Data\n')
             self.app.workerModeling.modelData = []
             for i in range(0, alignModel['Number']):
                 self.app.workerModelingDispatcher.modelingRunner.modelData.append({'ModelError': float(alignModel['Points'][i][5]),
@@ -144,19 +144,19 @@ class Mount(PyQt5.QtCore.QThread):
                     if command == 'ShowAlignmentModel':
                         num = self.numberModelStars()
                         if num == -1:
-                            self.app.messageQueue.put('Show Model not available without real mount')
+                            self.app.messageQueue.put('#BRShow Model not available without real mount\n')
                         else:
                             self.app.ui.btn_showActualModel.setStyleSheet(self.app.BLUE)
                             self.showAlignmentModel(self.getAlignmentModel())
                             self.app.ui.btn_showActualModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'ClearAlign':
                         if self.numberModelStars() == -1:
-                            self.app.messageQueue.put('Clear Align not available without real mount')
+                            self.app.messageQueue.put('#BRClear Align not available without real mount\n')
                         else:
                             self.mountHandler.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
                         if self.numberModelStars() == -1:
-                            self.app.messageQueue.put('Run Optimize not available without real mount')
+                            self.app.messageQueue.put('#BRRun Optimize not available without real mount\n')
                         else:
                             self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.BLUE)
                             self.runTargetRMSAlignment()
@@ -164,7 +164,7 @@ class Mount(PyQt5.QtCore.QThread):
                         self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
                     elif command == 'DeleteWorstPoint':
                         if self.numberModelStars() == -1:
-                            self.app.messageQueue.put('Delete worst point not available without real mount')
+                            self.app.messageQueue.put('#BRDelete worst point not available without real mount\n')
                         else:
                             self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.BLUE)
                             self.deleteWorstPoint()
@@ -252,7 +252,7 @@ class Mount(PyQt5.QtCore.QThread):
         reply = self.mountHandler.sendCommand('shutdown')
         if reply != '1':
             self.logger.error('error: {0}'.format(reply))
-            self.app.messageQueue.put('Error in mount shutdown !')
+            self.app.messageQueue.put('#BRError in mount shutdown\n')
         else:
             self.mountHandler.connected = False
             time.sleep(1)
@@ -263,7 +263,7 @@ class Mount(PyQt5.QtCore.QThread):
     def flipMount(self):
         reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':
-            self.app.messageQueue.put('Flip Mount could not be executed !')
+            self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
             self.logger.error('error: {0}'.format(reply))
 
     def syncMountModel(self, ra, dec):
@@ -416,8 +416,8 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.modelLogQueue.put('Mount Model and Model Data synced\n')
         else:
             self.logger.warning('Size of mount data {0} and modeling data {1} do not fit !'.format(num, len(data)))
-            self.app.modelLogQueue.put('Mount Data and Model Data could not be synced\n')
-            self.app.messageQueue.put('Error - Mount Data and Model Data mismatch!\n')
+            self.app.messageQueue.put('Mount Data and Model Data could not be synced\n')
+            self.app.messageQueue.put('#BRMount Data and Model Data mismatch\n')
         return data
 
     def showAlignmentModel(self, alignModel):
@@ -486,12 +486,12 @@ class Mount(PyQt5.QtCore.QThread):
     def saveModel(self, target):
         num = self.numberModelStars()
         if num == -1:
-            self.app.messageQueue.put('Save Model not available without real mount')
+            self.app.messageQueue.put('#BRSave Model not available without real mount\n')
             return False
         self.mountHandler.sendCommand('modeldel0' + target)
         reply = self.mountHandler.sendCommand('modelsv0' + target)
         if reply == '1':
-            self.app.messageQueue.put('Actual Mount Model saved to file {0}'.format(target))
+            self.app.messageQueue.put('Actual Mount Model saved to file {0}\n'.format(target))
             return True
         else:
             self.logger.warning('Model {0} could not be saved'.format(target))
@@ -500,14 +500,14 @@ class Mount(PyQt5.QtCore.QThread):
     def loadModel(self, target):
         num = self.numberModelStars()
         if num == -1:
-            self.app.messageQueue.put('Load Model not available without real mount')
+            self.app.messageQueue.put('#BRLoad Model not available without real mount\n')
             return False
         reply = self.mountHandler.sendCommand('modelld0' + target)
         if reply == '1':
             self.app.messageQueue.put('Mount Model loaded from file {0}'.format(target))
             return True
         else:
-            self.app.messageQueue.put('There is no modeling named {0} or error while loading'.format(target))
+            self.app.messageQueue.put('#BRThere is no modeling named {0} or error while loading\n'.format(target))
             self.logger.warning('Model {0} could not be loaded'.format(target))
             return False
 
@@ -520,33 +520,33 @@ class Mount(PyQt5.QtCore.QThread):
         if self.loadModel('BACKUP'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('backup.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for BACKUP')
+                self.app.messageQueue.put('#BRNo data file for BACKUP\n')
 
     def saveBaseModel(self):
         if self.saveModel('BASE'):
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'base.dat')
             else:
-                self.app.messageQueue.put('No data for BASE')
+                self.app.messageQueue.put('#BRNo data for BASE\n')
 
     def loadBaseModel(self):
         if self.loadModel('BASE'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('base.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for BASE')
+                self.app.messageQueue.put('#BRNo data file for BASE\n')
 
     def saveRefinementModel(self):
         if self.saveModel('REFINE'):
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'refine.dat')
             else:
-                self.app.messageQueue.put('No data for REFINE')
+                self.app.messageQueue.put('#BRNo data for REFINE\n')
 
     def loadRefinementModel(self):
         if self.loadModel('REFINE'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('refine.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for REFINE')
+                self.app.messageQueue.put('#BRNo data file for REFINE\n')
 
     def saveActualModel(self):
         if self.saveModel('ACTUAL'):
@@ -554,52 +554,52 @@ class Mount(PyQt5.QtCore.QThread):
                 if 'Index' in self.app.workerModelingDispatcher.modelingRunner.modelData[0].keys():
                     self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'actual.dat')
             else:
-                self.app.messageQueue.put('No data for ACTUAL')
+                self.app.messageQueue.put('#BRNo data for ACTUAL\n')
 
     def loadActualModel(self):
         if self.loadModel('ACTUAL'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('actual.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for ACTUAL')
+                self.app.messageQueue.put('#BRNo data file for ACTUAL\n')
 
     def saveSimpleModel(self):
         if self.saveModel('SIMPLE'):
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'simple.dat')
             else:
-                self.app.messageQueue.put('No data file for SIMPLE')
+                self.app.messageQueue.put('#BRNo data file for SIMPLE\n')
 
     def loadSimpleModel(self):
         if self.loadModel('SIMPLE'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('simple.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for SIMPLE')
+                self.app.messageQueue.put('#BRNo data file for SIMPLE\n')
 
     def saveDSO1Model(self):
         if self.saveModel('DSO1'):
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'DSO1.dat')
             else:
-                self.app.messageQueue.put('No data file for DSO1')
+                self.app.messageQueue.put('#BRNo data file for DSO1\n')
 
     def loadDSO1Model(self):
         if self.loadModel('DSO1'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('DSO1.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for DSO1')
+                self.app.messageQueue.put('#BRNo data file for DSO1\n')
 
     def saveDSO2Model(self):
         if self.saveModel('DSO2'):
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'DSO2.dat')
             else:
-                self.app.messageQueue.put('No data file for DSO2')
+                self.app.messageQueue.put('#BRNo data file for DSO2\n')
 
     def loadDSO2Model(self):
         if self.loadModel('DSO2'):
             self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('dso2.dat')
             if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('No data file for DSO2')
+                self.app.messageQueue.put('#BRNo data file for DSO2\n')
 
     def setRefractionParam(self):
         if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:

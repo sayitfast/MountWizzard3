@@ -75,7 +75,7 @@ class MountAscom:
                 else:                                                                                                       #
                     reply = self.ascom.CommandString(command)                                                               # with return value do regular command
             except pythoncom.com_error as e:                                                                                # error handling
-                self.app.messageQueue.put('Driver COM Error in sendCommand')                                                # gui
+                self.app.messageQueue.put('#BRDriver COM Error in sendCommand\n')                                                # gui
                 self.logger.error('error: {0} command:{1}  reply:{2} '.format(e, command, reply))
             finally:                                                                                                        # we don't stop
                 if len(reply) > 0:                                                                                          # if there is a reply
@@ -190,7 +190,7 @@ class MountAscom:
                 self.driver_real = False
             self.connected = False                                                                                          # run the driver setup dialog
         except Exception as e:                                                                                              # general exception
-            self.app.messageQueue.put('Driver Exception in setupMount')                                                     # write to gui
+            self.app.messageQueue.put('#BRDriver Exception in setupMount\n')                                                     # write to gui
             self.logger.error('general exception:{0}'.format(e))
             self.connected = False                                                                                          # set to disconnected
         finally:                                                                                                            # won't stop the program, continue

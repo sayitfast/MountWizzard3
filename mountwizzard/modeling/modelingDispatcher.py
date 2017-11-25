@@ -22,7 +22,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    signalStatusImagingApp = PyQt5.QtCore.pyqtSignal(int)
+    signalStatusCamera = PyQt5.QtCore.pyqtSignal(int)
+    signalStatusPlatesolver = PyQt5.QtCore.pyqtSignal(int)
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal(bool)
 
     BLUE = 'background-color: rgb(42, 130, 218)'
@@ -267,7 +268,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlignmentModel'))
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
         # TODO: it's not Model Connected, but imaging app connected
-        self.signalStatusImagingApp.emit(0)
+        self.signalStatusCamera.emit(0)
+        self.signalStatusPlatesolver.emit(0)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         self.getStatus()
 

@@ -106,7 +106,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
 
-    def showImageWindow(self):
+    def showWindow(self):
         self.showStatus = True
         self.setVisible(True)
         self.show()

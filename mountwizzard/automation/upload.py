@@ -245,7 +245,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
     def checkApplication(self):
         self.appAvailable, self.appName, self.appInstallPath = self.app.checkRegistrationKeys('10micron QCI')
         if self.appAvailable:
-            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.app.messageQueue.put('Found: {0}\n'.format(self.appName))
             self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
             self.logger.info('Application 10micron Updater  not found on computer')
@@ -305,7 +305,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         if numberEntry == 0:
             return False
         else:
-            self.app.messageQueue.put('Found {0} target(s) in MPC file: {1}!'.format(numberEntry, filename))
+            self.app.messageQueue.put('Found {0} target(s) in MPC file: {1}\n'.format(numberEntry, filename))
             self.logger.info('Found {0} target(s) in MPC file: {1}!'.format(numberEntry, filename))
             return True
 
@@ -319,7 +319,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                 file_size = None
                 if meta_length:
                     file_size = int(meta_length[0])
-                self.app.messageQueue.put('{0}'.format(url))
+                self.app.messageQueue.put('{0}\n'.format(url))
                 file_size_dl = 0
                 block_sz = 8192
                 while True:
@@ -328,10 +328,10 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                         break
                     file_size_dl += len(buffer)
                     f.write(buffer)
-            self.app.messageQueue.put('Downloaded {0} Bytes'.format(file_size))
+            self.app.messageQueue.put('Downloaded {0} Bytes\n'.format(file_size))
         except Exception as e:
             self.logger.error('Download of {0} failed, error{1}'.format(url, e))
-            self.app.messageQueue.put('Download Error {0}'.format(e))
+            self.app.messageQueue.put('#BRDownload Error {0}\n'.format(e))
         return
 
     def uploadMount(self):
@@ -344,7 +344,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
             # timings.Timings.Slow()
         except application.AppStartError:
             self.logger.error('Failed to start updater, please check!')
-            self.app.messageQueue.put('Failed to start updater, please check!')
+            self.app.messageQueue.put('#BRFailed to start updater, please check\n')
             os.chdir(actual_work_dir)
             return
         try:
@@ -364,7 +364,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
             ButtonWrapper(win['Control box firmware']).UncheckByClick()                                                       # no firmware updates
         except Exception as e:
             self.logger.error('error{0}'.format(e))
-            self.app.messageQueue.put('Error in starting 10micron updater, please check!')
+            self.app.messageQueue.put('#BRError in starting 10micron updater, please check\n')
             os.chdir(actual_work_dir)
             return
         ButtonWrapper(win['Orbital parameters of comets']).UncheckByClick()
@@ -449,7 +449,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                 ButtonWrapper(win['UTC / Earth rotation data']).UncheckByClick()
         except Exception as e:
             self.logger.error('error{0}'.format(e))
-            self.app.messageQueue.put('Error in choosing upload files, please check 10micron updater!')
+            self.app.messageQueue.put('#BRError in choosing upload files, please check 10micron updater\n')
             os.chdir(actual_work_dir)
             return
         if self.app.mount.mountHandler.sendCommand('GVD') == 'Simulation' or not self.app.mount.mountHandler.connected:     # Upload with real mount which is connected
@@ -462,7 +462,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                 win['Update Now'].click()
             except Exception as e:
                 self.logger.error('error{0}'.format(e))
-                self.app.messageQueue.put('Error in uploading files, please check 10micron updater!')
+                self.app.messageQueue.put('#BRError in uploading files, please check 10micron updater\n')
                 os.chdir(actual_work_dir)
                 return
             try:
@@ -471,7 +471,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                 winOK['OK'].click()
             except Exception as e:
                 self.logger.error('error{0}'.format(e))
-                self.app.messageQueue.put('Error in closing 10micron updater, please check!')
+                self.app.messageQueue.put('#BRError in closing 10micron updater, please check\n')
                 os.chdir(actual_work_dir)
                 return
         else:
@@ -481,7 +481,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                 winOK['Yes'].click()
             except Exception as e:
                 self.logger.error('error{0}'.format(e))
-                self.app.messageQueue.put('Error in closing Updater, please check!')
+                self.app.messageQueue.put('#BRError in closing Updater, please check\n')
                 os.chdir(actual_work_dir)
                 return
 

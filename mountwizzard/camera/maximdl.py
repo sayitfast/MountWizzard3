@@ -88,7 +88,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     def checkAppInstall(self):
         self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('MaxIm DL')
         if self.data['AppAvailable']:
-            self.app.messageQueue.put('Found: {0}'.format(self.data['AppName']))
+            self.app.messageQueue.put('Found: {0}\n'.format(self.data['AppName']))
             self.logger.info('Name: {0}, Path: {1}'.format(self.data['AppName'], self.data['AppInstallPath']))
         else:
             self.logger.info('Application MaxIm DL not found on computer')

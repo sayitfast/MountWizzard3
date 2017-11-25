@@ -81,7 +81,7 @@ class SGPro(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
             if self.data['AppAvailable']:
-                self.app.messageQueue.put('Found: {0}'.format(self.data['AppName']))
+                self.app.messageQueue.put('Found: {0}\n'.format(self.data['AppName']))
                 self.logger.info('Name: {0}, Path: {1}'.format(self.data['AppName'], self.data['AppInstallPath']))
             else:
                 self.logger.info('Application SGPro not found on computer')
@@ -113,23 +113,29 @@ class SGPro(PyQt5.QtCore.QObject):
             self.data['SolverStatus'] = 'ERROR'
             self.solverConnected = False
 
-        if self.cameraConnected and self.solverConnected:
-            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+        if self.cameraConnected:
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
         else:
-            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+
+        if self.solverConnected:
+            self.app.workerModelingDispatcher.signalStatusPlatesolver.emit(3)
+        else:
+            self.app.workerModelingDispatcher.signalStatusPlatesolver.emit(2)
 
     def getCameraProps(self):
-        value = self.SgGetCameraProps()
-        if value['Success']:
-            if 'GainValues' not in value['GainValues']:
-                self.data['Gain'] = 0
-                self.data['Gains'] = ['High']
-            else:
-                self.data['Gains'] = value['GainValues']
-            self.data['Message'] = value['Message']
-            self.data['CanSubframe'] = value['SupportsSubframe']
-            self.data['CameraXSize'] = value['NumPixelsX']
-            self.data['CameraYSize'] = value['NumPixelsY']
+        if self.cameraConnected:
+            value = self.SgGetCameraProps()
+            if value['Success']:
+                if 'GainValues' not in value['GainValues']:
+                    self.data['Gain'] = 0
+                    self.data['Gains'] = ['High']
+                else:
+                    self.data['Gains'] = value['GainValues']
+                self.data['Message'] = value['Message']
+                self.data['CanSubframe'] = value['SupportsSubframe']
+                self.data['CameraXSize'] = value['NumPixelsX']
+                self.data['CameraYSize'] = value['NumPixelsY']
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.getCameraProps)

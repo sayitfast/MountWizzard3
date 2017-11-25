@@ -167,7 +167,7 @@ class MountIpDirect:
                 else:
                     reply = self.commandString(command)
             except Exception as e:
-                self.app.messageQueue.put('TCP error in sendCommand')
+                self.app.messageQueue.put('#BRTCP error in sendCommand\n')
                 self.logger.error('error: {0} command:{1}  reply:{2} '.format(e, command, reply))
             finally:
                 if len(reply) > 0:

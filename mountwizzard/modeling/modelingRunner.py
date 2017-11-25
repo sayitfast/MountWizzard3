@@ -73,7 +73,6 @@ class ModelingRunner(ModelingBase):
             else:
                 self.logger.warning('There are no Refinement Points to modeling')
         else:
-            self.app.modelLogQueue.put('Refine stopped, no BASE model available !\n')
             self.app.messageQueue.put('Refine stopped, no BASE model available !\n')
 
     def runCheckModel(self):

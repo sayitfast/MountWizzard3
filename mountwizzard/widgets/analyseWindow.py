@@ -116,7 +116,7 @@ class AnalyseWindow(MwWidget):
         self.app.config['ScalePlotDEC'] = self.ui.scalePlotDEC.value()
         self.app.config['ScalePlotError'] = self.ui.scalePlotError.value()
 
-    def showAnalyseWindow(self):
+    def showWindow(self):
         self.getData()
         self.setWindowTitle('Analyse:    ' + self.app.ui.le_analyseFileName.text())
         self.showDecError()

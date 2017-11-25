@@ -71,15 +71,15 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>50</y>
-     <width>351</width>
+     <y>90</y>
+     <width>291</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
-     <family>MS Shell Dlg 2</family>
-     <pointsize>10</pointsize>
+     <family>Arial</family>
+     <pointsize>12</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7735,7 +7735,7 @@ color: rgb(255,255,255);</string>
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_13">
       <attribute name="title">
@@ -7769,7 +7769,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>320</y>
+         <y>350</y>
          <width>331</width>
          <height>20</height>
         </rect>
@@ -7796,7 +7796,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>180</y>
+         <y>170</y>
          <width>191</width>
          <height>21</height>
         </rect>
@@ -7814,7 +7814,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>280</y>
+         <y>310</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -7883,7 +7883,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>280</y>
+         <y>310</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -7932,7 +7932,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>150</y>
+         <y>140</y>
          <width>71</width>
          <height>22</height>
         </rect>
@@ -7963,7 +7963,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>280</y>
+         <y>310</y>
          <width>231</width>
          <height>21</height>
         </rect>
@@ -8008,7 +8008,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>150</y>
+         <y>140</y>
          <width>181</width>
          <height>21</height>
         </rect>
@@ -8147,7 +8147,7 @@ color: rgb(255,255,255);</string>
         <number>1</number>
        </property>
        <property name="maximum">
-        <double>10.000000000000000</double>
+        <double>25.000000000000000</double>
        </property>
        <property name="singleStep">
         <double>0.100000000000000</double>
@@ -8206,7 +8206,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>180</y>
+         <y>170</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -8257,7 +8257,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>180</y>
+         <y>170</y>
          <width>51</width>
          <height>22</height>
         </rect>
@@ -8908,6 +8908,33 @@ color: rgb(255,255,255);</string>
        </property>
        <property name="text">
         <string>Relay</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkUseFITSHeaders">
+       <property name="geometry">
+        <rect>
+         <x>50</x>
+         <y>270</y>
+         <width>301</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Checked if you would like to keep the images of modeling session</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
+       <property name="text">
+        <string>Use FITS Header(if available)</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
@@ -12386,9 +12413,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>80</y>
-     <width>81</width>
+     <x>330</x>
+     <y>10</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12404,12 +12431,12 @@ color: rgb(255,255,255);</string>
     <string>Shutdown</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_mountQuit">
+  <widget class="QPushButton" name="btn_quit">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>80</y>
-     <width>81</width>
+     <x>690</x>
+     <y>10</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12425,65 +12452,12 @@ color: rgb(255,255,255);</string>
     <string>Save / Quit</string>
    </property>
   </widget>
-  <widget class="QTextBrowser" name="errorStatus">
+  <widget class="QPushButton" name="btn_save">
    <property name="geometry">
     <rect>
-     <x>370</x>
-     <y>30</y>
-     <width>411</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <family>MS Shell Dlg 2</family>
-     <pointsize>8</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Error Messages from Tool</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <property name="sizeAdjustPolicy">
-    <enum>QAbstractScrollArea::AdjustToContents</enum>
-   </property>
-   <property name="html">
-    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="acceptRichText">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_104">
-   <property name="geometry">
-    <rect>
-     <x>370</x>
-     <y>10</y>
-     <width>171</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Message Board:</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_mountSave">
-   <property name="geometry">
-    <rect>
-     <x>190</x>
-     <y>80</y>
-     <width>81</width>
+     <x>690</x>
+     <y>50</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12499,12 +12473,12 @@ p, li { white-space: pre-wrap; }
     <string>Save</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_camPlateConnected">
+  <widget class="QPushButton" name="btn_cameraConnected">
    <property name="geometry">
     <rect>
-     <x>100</x>
+     <x>110</x>
      <y>10</y>
-     <width>81</width>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12523,9 +12497,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_domeConnected">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>10</y>
-     <width>81</width>
+     <x>10</x>
+     <y>50</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12546,7 +12520,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>81</width>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12565,9 +12539,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_mountBoot">
    <property name="geometry">
     <rect>
-     <x>100</x>
-     <y>80</y>
-     <width>81</width>
+     <x>330</x>
+     <y>50</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12586,9 +12560,9 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="btn_environmentConnected">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>10</y>
-     <width>81</width>
+     <x>110</x>
+     <y>50</y>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -12602,6 +12576,89 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Environment</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_openMessageWindow">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>10</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: rgb(16, 72, 96);
+color: rgb(255,255,255);</string>
+   </property>
+   <property name="text">
+    <string>Show Messages</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_platesolverConnected">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>10</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>PlateSolver</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_load">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>10</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Load Config</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_saveAs">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>50</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Save as</string>
    </property>
   </widget>
  </widget>
@@ -12619,7 +12676,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_setSlewRate</tabstop>
   <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>btn_setDualTracking</tabstop>
-  <tabstop>btn_mountQuit</tabstop>
+  <tabstop>btn_quit</tabstop>
   <tabstop>le_telescopeUnattendedFlip</tabstop>
   <tabstop>btn_setUnattendedFlip</tabstop>
   <tabstop>le_meridianLimitTrack</tabstop>
@@ -12722,8 +12779,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_uploadMount</tabstop>
   <tabstop>btn_driverMountConnected</tabstop>
   <tabstop>btn_domeConnected</tabstop>
-  <tabstop>btn_camPlateConnected</tabstop>
-  <tabstop>errorStatus</tabstop>
+  <tabstop>btn_cameraConnected</tabstop>
   <tabstop>settingsTabWidget</tabstop>
   <tabstop>btn_relay3</tabstop>
   <tabstop>btn_relay2</tabstop>
@@ -12745,7 +12801,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>btn_downloadAsteroidsNEA</tabstop>
   <tabstop>btn_downloadAsteroidsTNO</tabstop>
   <tabstop>btn_downloadAsteroidsPHA</tabstop>
-  <tabstop>btn_mountSave</tabstop>
+  <tabstop>btn_save</tabstop>
   <tabstop>btn_relay5</tabstop>
   <tabstop>btn_relay4</tabstop>
   <tabstop>btn_relay6</tabstop>

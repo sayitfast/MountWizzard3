@@ -66,10 +66,15 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.data['CameraStatus'] = 'IDLE'
         self.data['SolverStatus'] = 'IDLE'
 
-        if self.cameraConnected and self.solverConnected:
-            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(3)
+        if self.cameraConnected:
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
         else:
-            self.app.workerModelingDispatcher.signalStatusImagingApp.emit(2)
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+
+        if self.solverConnected:
+            self.app.workerModelingDispatcher.signalStatusPlatesolver.emit(3)
+        else:
+            self.app.workerModelingDispatcher.signalStatusPlatesolver.emit(2)
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)

@@ -149,10 +149,10 @@ class AscomEnvironment(PyQt5.QtCore.QObject):
             self.chooser = Dispatch('ASCOM.Utilities.Chooser')
             self.chooser.DeviceType = 'ObservingConditions'
             self.driverName = self.chooser.Choose(self.driverName)
-            self.app.messageQueue.put('Driver chosen:{0}'.format(self.driverName))
+            self.app.messageQueue.put('Driver chosen:{0}\n'.format(self.driverName))
             self.logger.info('Driver chosen:{0}'.format(self.driverName))
         except Exception as e:
-            self.app.messageQueue.put('Driver error in Setup Driver')
+            self.app.messageQueue.put('#BRDriver error in Setup Driver\n')
             self.logger.error('General error:{0}'.format(e))
         finally:
             pass

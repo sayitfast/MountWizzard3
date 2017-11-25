@@ -39,7 +39,7 @@ class TheSkyX(MWCamera):
             self.appName = 'TheSkyX'
             self.appInstallPath = ''
         if self.appAvailable:
-            self.app.messageQueue.put('Found: {0}'.format(self.appName))
+            self.app.messageQueue.put('Found: {0}\n'.format(self.appName))
             self.logger.info('Name: {0}, Path: {1}'.format(self.appName, self.appInstallPath))
         else:
             self.logger.info('Application TheSkyX not found on computer')

@@ -7,8 +7,11 @@
 - refactoring for reactive design of threads from qthreads and event loops
 - reduced load -> improved performance
 
+2.5.26
+- extended pixel size entry 25 um
+
 2.5.25
-- bugfix improvment save actual
+- bugfix improvement save actual
 
 2.5.24
 - bugfix DOME slewing
