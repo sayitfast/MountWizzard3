@@ -48,7 +48,7 @@ class Mount(PyQt5.QtCore.QThread):
             self.MountAscom = ascommount.MountAscom(self.app)
         self.MountIpDirect = ipdirect.MountIpDirect(self.app)
         self.mountHandler = self.MountIpDirect
-        self.mountModelHandling = mountModelHandling.MountModelHandling(self, self.app.messageQueue)
+        self.mountModelHandling = mountModelHandling.MountModelHandling(self.app)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.statusReference = {'0': 'Tracking',
@@ -481,12 +481,18 @@ class Mount(PyQt5.QtCore.QThread):
                 maxError = alignModel['ModelError'][i]
         reply = self.mountHandler.sendCommand('delalst{0:d}'.format(worstPointIndex + 1))
         if reply == '1':
+            # point could be deleted, feedback from mount ok
+            self.logger.info('Point {0} deleted').format(worstPointIndex)
+            # get new calculated alignment model from mount
             alignModel = self.getAlignmentModel()
-            self.modelData.pop(worstPointIndex)
-            for i in range(0, alignModel['Number']):
-                self.modelData[i]['ModelError'] = alignModel['ModelError'][i]
-                self.modelData[i]['RaError'] = self.modelData[i]['ModelError'] * math.sin(math.radians(alignModel['ModelErrorAngle'][i]))
-                self.modelData[i]['DecError'] = self.modelData[i]['ModelError'] * math.cos(math.radians(alignModel['ModelErrorAngle'][i]))
+            # if data set is there, than delete this point as well
+            if self.app.workerModelingDispatcher.modelingRunner.modelData:
+                self.app.workerModelingDispatcher.modelingRunner.modelData.pop(worstPointIndex)
+                # update the rest of point with the new error vectors
+                for i in range(0, alignModel['Number']):
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = alignModel['ModelError'][i]
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(math.radians(alignModel['ModelErrorAngle'][i]))
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(math.radians(alignModel['ModelErrorAngle'][i]))
             self.showAlignmentModel(alignModel)
         else:
             self.logger.warning('Point {0} could not be deleted').format(worstPointIndex)

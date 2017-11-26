@@ -109,9 +109,6 @@ class MountWizzardApp(widget.MwWidget):
 
         # instantiating all subclasses and connecting thread signals
         self.relays = relays.Relays(self)
-        self.mount = mountThread.Mount(self)
-        self.mount.setObjectName("Mount")
-        self.mount.signalMountConnected.connect(self.setMountStatus)
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = PyQt5.QtCore.QThread()
         self.INDIthread.setObjectName("INDI")
@@ -169,6 +166,10 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
         self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
         self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
+        # mount class
+        self.mount = mountThread.Mount(self)
+        self.mount.setObjectName("Mount")
+        self.mount.signalMountConnected.connect(self.setMountStatus)
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
