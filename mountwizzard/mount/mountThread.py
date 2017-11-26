@@ -482,7 +482,7 @@ class Mount(PyQt5.QtCore.QThread):
         reply = self.mountHandler.sendCommand('delalst{0:d}'.format(worstPointIndex + 1))
         if reply == '1':
             # point could be deleted, feedback from mount ok
-            self.logger.info('Point {0} deleted').format(worstPointIndex)
+            self.logger.info('Point {0} deleted'.format(worstPointIndex))
             # get new calculated alignment model from mount
             alignModel = self.getAlignmentModel()
             # if data set is there, than delete this point as well
