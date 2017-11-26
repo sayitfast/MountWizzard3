@@ -509,7 +509,7 @@ class Mount(PyQt5.QtCore.QThread):
             return False
         reply = self.mountHandler.sendCommand('modelld0' + target)
         if reply == '1':
-            self.app.messageQueue.put('Mount Model loaded from file {0}'.format(target))
+            self.app.messageQueue.put('Mount Model loaded from file {0}\n'.format(target))
             return True
         else:
             self.app.messageQueue.put('#BRThere is no modeling named {0} or error while loading\n'.format(target))

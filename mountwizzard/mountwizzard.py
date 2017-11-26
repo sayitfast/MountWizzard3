@@ -920,6 +920,7 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_alignNumberStars.setText(str(self.mount.data[valueName]))
             if valueName == 'ModelRMSError':
                 self.ui.le_alignErrorRMS.setText(str(self.mount.data[valueName]))
+                self.ui.le_alignErrorRMS2.setText(str(self.mount.data[valueName]))
             if valueName == 'ModelErrorPosAngle':
                 self.ui.le_alignErrorPosAngle.setText(str(self.mount.data[valueName]))
             if valueName == 'ModelPolarError':
