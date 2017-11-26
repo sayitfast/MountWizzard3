@@ -724,7 +724,8 @@ class MountWizzardApp(widget.MwWidget):
         self.saveConfigData(filepath)
 
     def saveConfigQuit(self):
-        self.saveConfigData()
+        filepath = os.getcwd() + '/config' + self.ui.le_configName.text()
+        self.saveConfigData(filepath)
         # noinspection PyArgumentList
         PyQt5.QtCore.QCoreApplication.instance().quit()
 

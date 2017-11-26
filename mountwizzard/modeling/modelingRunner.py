@@ -156,7 +156,15 @@ class ModelingRunner:
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
+        # make environment available to class
         self.app = app
+
+        # assign support classes
+        self.analyseData = analysedata.Analyse(self.app)
+        self.transform = transform.Transform(self.app)
+        self.modelPoints = modelingPoints.ModelPoints(self.app)
+        self.imagingApps = imagingApps.ImagingApps(self.app)
+
         # initialize the parallel thread modeling parts
         self.workerSlewpoint = Slewpoint(self)
         self.threadSlewpoint = PyQt5.QtCore.QThread()
@@ -173,6 +181,8 @@ class ModelingRunner:
         self.workerPlatesolve.moveToThread(self.threadPlatesolve)
         self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
         # self.threadPlatesolve.start()
+
+        # class variables
         self.solvedPointsQueue = Queue()
         self.timeStart = 0
         self.results = []
@@ -183,11 +193,6 @@ class ModelingRunner:
         self.numberPointsMax = 0
         self.numberSolvedPoints = 0
         self.cancel = False
-        self.analyseData = analysedata.Analyse(self.app)
-        # assign support classes
-        self.transform = transform.Transform(self.app)
-        self.modelPoints = modelingPoints.ModelPoints(self.app)
-        self.imagingApps = imagingApps.ImagingApps(self.app)
 
     def initConfig(self):
         self.imagingApps.initConfig()
@@ -200,7 +205,9 @@ class ModelingRunner:
         return time.strftime("%H:%M:%S", time.localtime())
 
     def clearAlignmentModel(self):
+        # clearing the older results, because they are invalid afterwards
         self.modelingResultData = []
+        # clearing the mount model and wait 4 seconds for the mount computer to recover (I don't know why, but Per Frejfal did it)
         self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)
 
@@ -209,39 +216,44 @@ class ModelingRunner:
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         return settlingTime, directory
 
-    def slewMountDome(self, az, alt):
-        self.app.mountCommandQueue.put('Sz{0:03d}*{1:02d}'.format(int(az), int((az - int(az)) * 60 + 0.5)))
-        self.app.mountCommandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(alt), int((alt - int(alt)) * 60 + 0.5)))
+    def slewMountDome(self, azimuth, altitude, domeIsConnected):
+        # limit azimuth and altitude
+        if azimuth >= 360:
+            azimuth = 359.9
+        elif azimuth < 0.0:
+            azimuth = 0.0
+        # setting the coordinates for the mount
+        self.app.mountCommandQueue.put('Sz{0:03d}*{1:02d}'.format(int(azimuth), int((azimuth - int(azimuth)) * 60 + 0.5)))
+        self.app.mountCommandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
         self.app.mountCommandQueue.put('MS')
-        self.logger.info('Ascom Dome Thread running: {0}'.format(self.app.workerAscomDome.isRunning))
-        break_counter = 0
-        while not self.app.mount.data['Slewing']:
-            time.sleep(0.1)
-            break_counter += 1
-            if break_counter == 30:
-                break
-        if self.app.workerAscomDome.isRunning:
-            if az >= 360:
-                az = 359.9
-            elif az < 0.0:
-                az = 0.0
-            self.app.domeCommandQueue.put(('SlewAzimuth', az))
+        # if there is a dome connected, we have to start slewing it, too
+        if domeIsConnected:
+            self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
+            # now we wait for both start slewing
             while not self.app.mount.data['Slewing'] and not self.app.workerDome.data['Slewing']:
                 if self.cancel:
-                    self.logger.info('Modeling cancelled after mount slewing')
+                    self.logger.info('Modeling cancelled in loop mount and dome wait while for start slewing')
                     break
-                time.sleep(0.1)
+                time.sleep(0.2)
+            # and waiting for both to stop slewing
             while self.app.mount.data['Slewing'] or self.app.workerAscomDome.data['Slewing']:
                 if self.cancel:
-                    self.logger.info('Modeling cancelled after dome slewing')
+                    self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
-                time.sleep(0.1)
+                time.sleep(0.2)
         else:
+            # if there is no dome, we wait for the mount start slewing
+            while not self.app.mount.data['Slewing']:
+                if self.cancel:
+                    self.logger.info('Modeling cancelled in loop mount wait while for start slewing')
+                    break
+                time.sleep(0.2)
+            # and the mount stop slewing
             while self.app.mount.data['Slewing']:
                 if self.app.workerModelingDispatcher.modelingRunner.cancel:
-                    self.logger.info('Modeling cancelled after mount slewing')
+                    self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
-                time.sleep(0.1)
+                time.sleep(0.2)
 
     def checkModelingAvailable(self):
         if not self.app.mount.mountHandler.connected or not self.imagingApps.imagingWorkerAppHandler.isRunning:
@@ -362,6 +374,7 @@ class ModelingRunner:
     def runModel(self, modeltype, runPoints, modelData, settlingTime, simulation=False, keepImages=False):
         # start clearing the data
         results = []
+        domeIsConnected = self.app.workerAscomDome.isRunning
         # preparing the gui outputs
         self.app.messageQueue.put('status-- of --')
         self.app.messageQueue.put('percent0')
@@ -379,7 +392,7 @@ class ModelingRunner:
         timeStart = time.time()
         # here starts the real model running cycle
         for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):
-            self.app.workerModelingDispatcher.modelingRunner.modelRun = True
+            self.modelRun = True
             modelData['Azimuth'] = p_az
             modelData['Altitude'] = p_alt
             if p_item.isVisible():
@@ -400,10 +413,10 @@ class ModelingRunner:
                 if modeltype in ['TimeChange']:
                     # in time change there is only slew for the first time, than only track during imaging
                     if i == 0:
-                        self.slewMountDome(p_az, p_alt)
+                        self.slewMountDome(p_az, p_alt, domeIsConnected)
                         self.app.mountCommandQueue.put('RT9')
                 else:
-                    self.slewMountDome(p_az, p_alt)
+                    self.slewMountDome(p_az, p_alt, domeIsConnected)
                 self.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec'.format(self.timeStamp(), settlingTime))
                 timeCounter = settlingTime
                 while timeCounter > 0:
@@ -460,7 +473,7 @@ class ModelingRunner:
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
         self.app.messageQueue.put('#BW{0} - {1} Model run finished. Number of modeled points: {2:3d}\n'.format(self.timeStamp(), modeltype, numCheckPoints))
-        self.app.workerModelingDispatcher.modelingRunner.modelRun = False
+        self.modelRun = False
         return results
 
     def runBaseModel(self):
