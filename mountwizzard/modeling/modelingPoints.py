@@ -29,6 +29,31 @@ class ModelPoints:
         self.BasePoints = []
         self.RefinementPoints = []
 
+    def initConfig(self):
+        try:
+            if 'HorizonPointsFileName' in self.app.config:
+                self.app.ui.le_horizonPointsFileName.setText(self.app.config['HorizonPointsFileName'])
+            if 'CheckUseMinimumHorizonLine' in self.app.config:
+                self.app.ui.checkUseMinimumHorizonLine.setChecked(self.app.config['CheckUseMinimumHorizonLine'])
+            if 'CheckUseFileHorizonLine' in self.app.config:
+                self.app.ui.checkUseFileHorizonLine.setChecked(self.app.config['CheckUseFileHorizonLine'])
+            if 'AltitudeMinimumHorizon' in self.app.config:
+                self.app.ui.altitudeMinimumHorizon.setValue(self.app.config['AltitudeMinimumHorizon'])
+            self.loadHorizonPoints(self.app.config['HorizonPointsFileName'],
+                                   self.app.config['CheckUseMinimumHorizonLine'],
+                                   self.app.config['CheckUseFileHorizonLine'],
+                                   self.app.config['AltitudeMinimumHorizon'])
+        except Exception as e:
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
+
+    def storeConfig(self):
+        self.app.config['HorizonPointsFileName'] = self.app.ui.le_horizonPointsFileName.text()
+        self.app.config['CheckUseMinimumHorizonLine'] = self.app.ui.checkUseMinimumHorizonLine.isChecked()
+        self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
+        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
+
     def loadModelPoints(self, modelPointsFileName, modeltype):
         p = []
         number = 0
@@ -87,7 +112,7 @@ class ModelPoints:
             self.RefinementPoints = eastSide + westSide
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def loadHorizonPoints(self, horizonPointsFileName, horizonByFile, horizonByAltitude, altitudeLimit):
+    def loadHorizonPoints(self, horizonPointsFileName, horizonByFile, horizonByAltitude, altitudeMinimumHorizon):
         self.horizonPoints = []
         if not (horizonByFile or horizonByAltitude):
             return
@@ -120,7 +145,7 @@ class ModelPoints:
                     return msg
             hp = sorted(hp, key=operator.itemgetter(0))
         if horizonByAltitude:
-            minAlt = int(altitudeLimit)
+            minAlt = int(altitudeMinimumHorizon)
             if len(hp) == 0:
                 hp = [(0, minAlt), (359, minAlt)]
         # is there is the mask not until 360, we do it

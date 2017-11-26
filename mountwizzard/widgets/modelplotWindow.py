@@ -77,19 +77,15 @@ class ModelPlotWindow(widget.MwWidget):
                 self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
             if 'CoordinatePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
-            if 'HorizonPointsFileName' in self.app.config:
-                self.app.ui.le_horizonPointsFileName.setText(self.app.config['HorizonPointsFileName'])
-            if 'CheckUseMinimumHorizonLine' in self.app.config:
-                self.app.ui.checkUseMinimumHorizonLine.setChecked(self.app.config['CheckUseMinimumHorizonLine'])
-            if 'CheckUseFileHorizonLine' in self.app.config:
-                self.app.ui.checkUseFileHorizonLine.setChecked(self.app.config['CheckUseFileHorizonLine'])
-            if 'AltitudeMinimumHorizon' in self.app.config:
-                self.app.ui.altitudeMinimumHorizon.setValue(self.app.config['AltitudeMinimumHorizon'])
-
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+
+    def storeConfig(self):
+        self.app.config['CoordinatePopupWindowPositionX'] = self.pos().x()
+        self.app.config['CoordinatePopupWindowPositionY'] = self.pos().y()
+        self.app.config['CoordinatePopupWindowShowStatus'] = self.showStatus
 
     def showWindow(self):
         self.showStatus = True
@@ -117,15 +113,6 @@ class ModelPlotWindow(widget.MwWidget):
             self.selectHorizonPointsMode()
             self.app.ui.checkUseMinimumHorizonLine.setChecked(False)
             self.redrawModelingWindow()
-
-    def storeConfig(self):
-        self.app.config['CoordinatePopupWindowPositionX'] = self.pos().x()
-        self.app.config['CoordinatePopupWindowPositionY'] = self.pos().y()
-        self.app.config['CoordinatePopupWindowShowStatus'] = self.showStatus
-        self.app.config['HorizonPointsFileName'] = self.app.ui.le_horizonPointsFileName.text()
-        self.app.config['CheckUseMinimumHorizonLine'] = self.app.ui.checkUseMinimumHorizonLine.isChecked()
-        self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
-        self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
 
     def setAzAltPointer(self, az, alt):
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)

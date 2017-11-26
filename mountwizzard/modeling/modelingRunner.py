@@ -196,9 +196,11 @@ class ModelingRunner:
 
     def initConfig(self):
         self.imagingApps.initConfig()
+        self.modelPoints.initConfig()
 
     def storeConfig(self):
         self.imagingApps.storeConfig()
+        self.modelPoints.storeConfig()
 
     @staticmethod
     def timeStamp():
@@ -207,7 +209,7 @@ class ModelingRunner:
     def clearAlignmentModel(self):
         # clearing the older results, because they are invalid afterwards
         self.modelingResultData = []
-        # clearing the mount model and wait 4 seconds for the mount computer to recover (I don't know why, but Per Frejfal did it)
+        # clearing the mount model and wait 4 seconds for the mount computer to recover (I don't know why, but Per Frejval did it)
         self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)
 

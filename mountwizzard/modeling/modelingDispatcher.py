@@ -324,4 +324,5 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         # 2: Imaging app Task is running
         # 3: Application is ready for Imaging
         if self.isRunning:
+            time.sleep(0.2)
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)

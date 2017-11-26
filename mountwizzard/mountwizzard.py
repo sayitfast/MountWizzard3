@@ -129,7 +129,6 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAscomEnvironment.started.connect(self.workerAscomEnvironment.run)
             self.workerAscomEnvironment.finished.connect(self.workerAscomEnvironmentStop)
             self.workerAscomEnvironment.signalAscomEnvironmentConnected.connect(self.setEnvironmentStatus)
-            # self.threadAscomEnvironment.start()
         # threading for ascom dome data
         if platform.system() == 'Windows':
             self.workerAscomDome = ascomDome.AscomDome(self)
@@ -140,7 +139,6 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAscomDome.started.connect(self.workerAscomDome.run)
             self.workerAscomDome.finished.connect(self.workerAscomDomeStop)
             self.workerAscomDome.signalAscomDomeConnected.connect(self.setDomeStatus)
-            # self.threadAscomDome.start()
         # threading for remote shutdown
         self.workerRemote = remoteThread.Remote(self)
         self.threadRemote = PyQt5.QtCore.QThread()
@@ -171,25 +169,25 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
         self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
         self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
-        # thread start will be done when enabled
-        self.threadModelingDispatcher.start()
+
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
         self.messageWindow = messageWindow.MessageWindow(self)
+
+        # loading config data - will be config.cfg
+        self.loadConfigData()
+        # init config starts necessary threads
+        self.initConfig()
         # starting the threads
+        self.threadModelingDispatcher.start()
         self.mount.start()
         if platform.system() == 'Windows':
             self.checkASCOM()
         self.enableDisableRemoteAccess()
         self.enableDisableINDI()
-
         # map all the button to functions for gui
         self.mappingFunctions()
-        # loading config data - will be config.cfg
-        self.loadConfigData()
-        # init config starts necessary threads
-        self.initConfig()
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
@@ -601,10 +599,10 @@ class MountWizzardApp(widget.MwWidget):
 
         # make windows visible, if they were on the desktop depending on their show status
         if self.modelWindow.showStatus:
-            self.modelWindow.redrawModelingWindow()
             self.modelWindow.showWindow()
+            self.modelWindow.redrawModelingWindow()
         else:
-            self.messageWindow.setVisible(False)
+            self.modelWindow.setVisible(False)
         if self.imageWindow.showStatus:
             self.imageWindow.showWindow()
         else:
@@ -720,11 +718,11 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no config file selected')
 
     def saveConfig(self):
-        filepath = os.getcwd() + '/config' + self.ui.le_configName.text()
+        filepath = os.getcwd() + '\\config\\' + self.ui.le_configName.text()
         self.saveConfigData(filepath)
 
     def saveConfigQuit(self):
-        filepath = os.getcwd() + '/config' + self.ui.le_configName.text()
+        filepath = os.getcwd() + '\\config\\' + self.ui.le_configName.text()
         self.saveConfigData(filepath)
         # noinspection PyArgumentList
         PyQt5.QtCore.QCoreApplication.instance().quit()
