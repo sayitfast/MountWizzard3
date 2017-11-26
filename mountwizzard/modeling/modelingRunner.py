@@ -229,11 +229,14 @@ class ModelingRunner:
         self.app.mountCommandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
         self.app.mountCommandQueue.put('MS')
         # if there is a dome connected, we have to start slewing it, too
+        counterMaxWait = 0
         if domeIsConnected:
             self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
             # now we wait for both start slewing
             while not self.app.mount.data['Slewing'] and not self.app.workerDome.data['Slewing']:
-                if self.cancel:
+                counterMaxWait += 1
+                # there might be the situation that no slew is needed or slew time is short
+                if self.cancel or counterMaxWait == 5:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for start slewing')
                     break
                 time.sleep(0.2)
@@ -246,7 +249,9 @@ class ModelingRunner:
         else:
             # if there is no dome, we wait for the mount start slewing
             while not self.app.mount.data['Slewing']:
-                if self.cancel:
+                counterMaxWait += 1
+                # there might be the situation that no slew is needed or slew time is short
+                if self.cancel or counterMaxWait == 5:
                     self.logger.info('Modeling cancelled in loop mount wait while for start slewing')
                     break
                 time.sleep(0.2)

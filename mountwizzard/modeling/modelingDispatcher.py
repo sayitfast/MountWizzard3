@@ -299,6 +299,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     work['Button'].setStyleSheet(self.DEFAULT)
                 if 'Cancel' in work:
                     work['Cancel'].setStyleSheet(self.DEFAULT)
+                    self.modelingRunner.cancel = False
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     # cancel modeling is defined outside command Dispatcher, because when running commands, there is no chance to interrupt this process

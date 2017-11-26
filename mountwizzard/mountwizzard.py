@@ -169,12 +169,11 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
         self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
         self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
-
+        # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
         self.messageWindow = messageWindow.MessageWindow(self)
-
         # loading config data - will be config.cfg
         self.loadConfigData()
         # init config starts necessary threads
