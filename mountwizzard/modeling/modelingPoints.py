@@ -87,14 +87,14 @@ class ModelPoints:
             self.RefinementPoints = eastSide + westSide
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def loadHorizonPoints(self, horizonPointsFileName, file_check, line_check, line_value):
+    def loadHorizonPoints(self, horizonPointsFileName, horizonByFile, horizonByAltitude, altitudeLimit):
         self.horizonPoints = []
-        if not (file_check or line_check):
+        if not (horizonByFile or horizonByAltitude):
             return
         hp = []
         msg = None
         minAlt = 0
-        if file_check:
+        if horizonByFile:
             if horizonPointsFileName == '':
                 msg = 'No horizon points filename given !'
                 return msg
@@ -119,8 +119,8 @@ class ModelPoints:
                     self.logger.error('Error loading horizon points: {0}'.format(e))
                     return msg
             hp = sorted(hp, key=operator.itemgetter(0))
-        if line_check:
-            minAlt = int(line_value)
+        if horizonByAltitude:
+            minAlt = int(altitudeLimit)
             if len(hp) == 0:
                 hp = [(0, minAlt), (359, minAlt)]
         # is there is the mask not until 360, we do it
@@ -134,7 +134,7 @@ class ModelPoints:
             if az_act > az_last:
                 incline = (alt_act - alt_last) / (az_act - az_last)
                 for j in range(az_last, az_act):
-                    if line_check:
+                    if horizonByAltitude:
                         point = (j, max(int(alt_last + incline * (j - az_last)), minAlt))
                     else:
                         point = (j, int(alt_last + incline * (j - az_last)))
@@ -172,30 +172,31 @@ class ModelPoints:
         self.BasePoints, msg = self.loadModelPoints(filename, 'Base')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def loadRefinementPoints(self, filename, horizonMask, sortPoints):
+    def loadRefinementPoints(self, filename, limitByHorizonMask, doSortingPoints):
         self.RefinementPoints, msg = self.loadModelPoints(filename, 'Refinement')
-        if horizonMask:
+        if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if sortPoints:
+        if doSortingPoints:
             self.sortPoints('Refinement')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def generateDSOPoints(self, horizonMask, hours, numPoints, hoursPrev):
+    def generateDSOPoints(self, limitByHorizonMask, hoursPathLength, numberOfPathPoints, hoursPathLengthPreview):
+        # we have no position of the mount -> therefore we can't calculate the path
         if 'RaJNow' not in self.app.mount.data:
             return
         self.RefinementPoints = []
         ra = copy.copy(self.app.mount.data['RaJNow'])
         dec = copy.copy(self.app.mount.data['DecJNow'])
-        for i in range(0, numPoints):
-            ra = ra - float(i) * hours / numPoints - hoursPrev
+        for i in range(0, numberOfPathPoints):
+            ra = ra - float(i) * hoursPathLength / numberOfPathPoints - hoursPathLengthPreview
             az, alt = self.transform.transformERFA(ra, dec, 1)
             if alt > 0:
                 self.RefinementPoints.append((az, alt))
-        if horizonMask:
+        if limitByHorizonMask:
             self.deleteBelowHorizonLine()
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def generateMaxPoints(self, horizonMask, sortPoints):
+    def generateMaxPoints(self, limitByHorizonMask, doSortingPoints):
         west = []
         east = []
         for dec in range(-10, 90, 10):
@@ -213,13 +214,13 @@ class ModelPoints:
                     else:
                         west.append((az, alt))
         self.RefinementPoints = west + east
-        if horizonMask:
+        if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if sortPoints:
+        if doSortingPoints:
             self.sortPoints('Refinement')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def generateNormalPoints(self, horizonMask, sortPoints):
+    def generateNormalPoints(self, limitByHorizonMask, doSortingPoints):
         west = []
         east = []
         for dec in range(-15, 90, 15):
@@ -235,29 +236,29 @@ class ModelPoints:
                     else:
                         west.append((az, alt))
         self.RefinementPoints = west + east
-        if horizonMask:
+        if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if sortPoints:
+        if doSortingPoints:
             self.sortPoints('Refinement')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def generateGridPoints(self, horizonMask, sortPoints, row, col, altMin, altMax):
+    def generateGridPoints(self, limitByHorizonMask, doSortingPoints, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
         self.RefinementPoints = []
-        for az in range(5, 360, int(360 / col)):
-            for alt in range(altMin, altMax + 1, int((altMax - altMin) / (row - 1))):
+        for az in range(5, 360, int(360 / numberOfColumns)):
+            for alt in range(altitudeMin, altitudeMax + 1, int((altitudeMax - altitudeMin) / (numberOfRows - 1))):
                 self.RefinementPoints.append((az, alt))
-        if horizonMask:
+        if limitByHorizonMask:
             self.deleteBelowHorizonLine()
-        if sortPoints:
+        if doSortingPoints:
             self.sortPoints('Refinement')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def generateBasePoints(self, az, alt):
+    def generateBasePoints(self, azimuth, altitude):
         self.BasePoints = []
         for i in range(0, 3):
-            azp = i * 120 + az
+            azp = i * 120 + azimuth
             if azp > 360:
                 azp -= 360
-            point = (azp, alt)
+            point = (azp, altitude)
             self.BasePoints.append(point)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
