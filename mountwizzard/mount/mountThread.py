@@ -17,8 +17,6 @@ import math
 import platform
 import threading
 import time
-# for the sorting
-from operator import itemgetter
 # import PyQT5 for threading purpose
 import PyQt5
 if platform.system() == 'Windows':
@@ -30,6 +28,8 @@ if platform.system() == 'Windows':
 from mount import ipdirect
 # astrometry
 from astrometry import transform
+from mount import mountModelHandling
+from analyse import analysedata
 
 
 class Mount(PyQt5.QtCore.QThread):
@@ -45,10 +45,12 @@ class Mount(PyQt5.QtCore.QThread):
         self.app = app
         self.data = {}
         if platform.system() == 'Windows':
-            self.MountAscom = ascommount.MountAscom(app)
-        self.MountIpDirect = ipdirect.MountIpDirect(app)
+            self.MountAscom = ascommount.MountAscom(self.app)
+        self.MountIpDirect = ipdirect.MountIpDirect(self.app)
         self.mountHandler = self.MountIpDirect
-        self.transform = transform.Transform(app)
+        self.mountModelHandling = mountModelHandling.MountModelHandling(self, self.app.messageQueue)
+        self.analyse = analysedata.Analyse(self.app)
+        self.transform = transform.Transform(self.app)
         self.statusReference = {'0': 'Tracking',
                                 '1': 'Stopped after STOP',
                                 '2': 'Slewing to park position',
@@ -121,7 +123,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.chooseMountConn()
         self.counter = 0
 
-        self.loadActualModel()
+        self.mountModelHandling.loadActualModel()
         alignModel = self.getAlignmentModel()
         if not self.app.workerModelingDispatcher.modelingRunner.modelData and alignModel['RMS'] > 0:
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data\n')
@@ -169,51 +171,51 @@ class Mount(PyQt5.QtCore.QThread):
                             self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveBackupModel':
                         self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.BLUE)
-                        self.saveBackupModel()
+                        self.mountModelHandling.saveBackupModel()
                         self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadBackupModel':
                         self.app.ui.btn_loadBackupModel.setStyleSheet(self.app.BLUE)
-                        self.loadBackupModel()
+                        self.mountModelHandling.loadBackupModel()
                         self.app.ui.btn_loadBackupModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadBaseModel':
                         self.app.ui.btn_loadBaseModel.setStyleSheet(self.app.BLUE)
-                        self.loadBaseModel()
+                        self.mountModelHandling.loadBaseModel()
                         self.app.ui.btn_loadBaseModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveBaseModel':
                         self.app.ui.btn_saveBaseModel.setStyleSheet(self.app.BLUE)
-                        self.saveBaseModel()
+                        self.mountModelHandling.saveBaseModel()
                         self.app.ui.btn_saveBaseModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadRefinementModel':
                         self.app.ui.btn_loadRefinementModel.setStyleSheet(self.app.BLUE)
-                        self.loadRefinementModel()
+                        self.mountModelHandling.loadRefinementModel()
                         self.app.ui.btn_loadRefinementModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveRefinementModel':
                         self.app.ui.btn_saveRefinementModel.setStyleSheet(self.app.BLUE)
-                        self.saveRefinementModel()
+                        self.mountModelHandling.saveRefinementModel()
                         self.app.ui.btn_saveRefinementModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadSimpleModel':
                         self.app.ui.btn_loadSimpleModel.setStyleSheet(self.app.BLUE)
-                        self.loadSimpleModel()
+                        self.mountModelHandling.loadSimpleModel()
                         self.app.ui.btn_loadSimpleModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveSimpleModel':
                         self.app.ui.btn_saveSimpleModel.setStyleSheet(self.app.BLUE)
-                        self.saveSimpleModel()
+                        self.mountModelHandling.saveSimpleModel()
                         self.app.ui.btn_saveSimpleModel.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadDSO1Model':
                         self.app.ui.btn_loadDSO1Model.setStyleSheet(self.app.BLUE)
-                        self.loadDSO1Model()
+                        self.mountModelHandling.loadDSO1Model()
                         self.app.ui.btn_loadDSO1Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveDSO1Model':
                         self.app.ui.btn_saveDSO1Model.setStyleSheet(self.app.BLUE)
-                        self.saveDSO1Model()
+                        self.mountModelHandling.saveDSO1Model()
                         self.app.ui.btn_saveDSO1Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'LoadDSO2Model':
                         self.app.ui.btn_loadDSO2Model.setStyleSheet(self.app.BLUE)
-                        self.loadDSO2Model()
+                        self.mountModelHandling.loadDSO2Model()
                         self.app.ui.btn_loadDSO2Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveDSO2Model':
                         self.app.ui.btn_saveDSO2Model.setStyleSheet(self.app.BLUE)
-                        self.saveDSO2Model()
+                        self.mountModelHandling.saveDSO2Model()
                         self.app.ui.btn_saveDSO2Model.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SetRefractionParameter':
                         self.setRefractionParam()
@@ -417,11 +419,10 @@ class Mount(PyQt5.QtCore.QThread):
         if num == len(data):
             alignModel = self.getAlignmentModel()
             self.showAlignmentModel(alignModel)
-            # todo has to be rewritten due to structure
             for i in range(0, alignModel['Number']):
-                data[i]['ModelError'] = float(alignModel['Points'][i][5])
-                data[i]['RaError'] = data[i]['ModelError'] * math.sin(math.radians(alignModel['Points'][i][6]))
-                data[i]['DecError'] = data[i]['ModelError'] * math.cos(math.radians(alignModel['Points'][i][6]))
+                data[i]['ModelError'] = alignModel['ModelError'][i]
+                data[i]['RaError'] = data[i]['ModelError'] * math.sin(math.radians(alignModel['ModelErrorAngle'][i]))
+                data[i]['DecError'] = data[i]['ModelError'] * math.cos(math.radians(alignModel['ModelErrorAngle'][i]))
             self.app.messageQueue.put('Mount Model and Model Data synced\n')
         else:
             self.logger.warning('Size of mount data {0} and modeling data {1} do not fit !'.format(num, len(data)))
@@ -468,143 +469,28 @@ class Mount(PyQt5.QtCore.QThread):
         self.deleteWorstPointRaw(alignModel)
 
     def deleteWorstPointRaw(self, alignModel):
+        # if there are less than 4 point, optimization can't take place
         if alignModel['Number'] < 4:
             return
-        if alignModel['Number'] > 3:
-            # index 0 is the worst star, index starts with 0
-            a = sorted(alignModel['Points'], key=itemgetter(5), reverse=True)
-            index = a[0][0]
-            # numbering in mount starts with 1
-            reply = self.mountHandler.sendCommand('delalst{0:d}'.format(index + 1))
-            if reply == '1':
-                alignModel = self.getAlignmentModel()
-                self.app.workerModelingDispatcher.modelingRunner.modelData.pop(index)
-                for i in range(0, alignModel['Number']):
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = float(alignModel['Points'][i][5])
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(math.radians(float(alignModel['Points'][i][6])))
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(math.radians(float(alignModel['Points'][i][6])))
-                self.showAlignmentModel(alignModel)
-            else:
-                self.logger.warning('Point {0} could not be deleted').format(index)
+        # find worst point
+        maxError = 0
+        worstPointIndex = 0
+        for i in range(0, alignModel['Number']):
+            if alignModel['ModelError'][i] > maxError:
+                worstPointIndex = i
+                maxError = alignModel['ModelError'][i]
+        reply = self.mountHandler.sendCommand('delalst{0:d}'.format(worstPointIndex + 1))
+        if reply == '1':
+            alignModel = self.getAlignmentModel()
+            self.modelData.pop(worstPointIndex)
+            for i in range(0, alignModel['Number']):
+                self.modelData[i]['ModelError'] = alignModel['ModelError'][i]
+                self.modelData[i]['RaError'] = self.modelData[i]['ModelError'] * math.sin(math.radians(alignModel['ModelErrorAngle'][i]))
+                self.modelData[i]['DecError'] = self.modelData[i]['ModelError'] * math.cos(math.radians(alignModel['ModelErrorAngle'][i]))
+            self.showAlignmentModel(alignModel)
+        else:
+            self.logger.warning('Point {0} could not be deleted').format(worstPointIndex)
         return alignModel
-
-    def saveModel(self, target):
-        num = self.numberModelStars()
-        if num == -1:
-            self.app.messageQueue.put('#BWSave Model not available in simulation\n')
-            return False
-        self.mountHandler.sendCommand('modeldel0' + target)
-        reply = self.mountHandler.sendCommand('modelsv0' + target)
-        if reply == '1':
-            self.app.messageQueue.put('Actual Mount Model saved to file {0}\n'.format(target))
-            return True
-        else:
-            self.logger.warning('Model {0} could not be saved'.format(target))
-            return False
-
-    def loadModel(self, target):
-        num = self.numberModelStars()
-        if num == -1:
-            self.app.messageQueue.put('#BWLoad Model not available in simulation\n')
-            return False
-        reply = self.mountHandler.sendCommand('modelld0' + target)
-        if reply == '1':
-            self.app.messageQueue.put('Mount Model loaded from file {0}\n'.format(target))
-            return True
-        else:
-            self.app.messageQueue.put('#BRThere is no modeling named {0} or error while loading\n'.format(target))
-            self.logger.warning('Model {0} could not be loaded'.format(target))
-            return False
-
-    def saveBackupModel(self):
-        if self.saveModel('BACKUP'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'backup.dat')
-
-    def loadBackupModel(self):
-        if self.loadModel('BACKUP'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('backup.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for BACKUP\n')
-
-    def saveBaseModel(self):
-        if self.saveModel('BASE'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'base.dat')
-            else:
-                self.app.messageQueue.put('#BRNo data for BASE\n')
-
-    def loadBaseModel(self):
-        if self.loadModel('BASE'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('base.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for BASE\n')
-
-    def saveRefinementModel(self):
-        if self.saveModel('REFINE'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'refine.dat')
-            else:
-                self.app.messageQueue.put('#BRNo data for REFINE\n')
-
-    def loadRefinementModel(self):
-        if self.loadModel('REFINE'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('refine.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for REFINE\n')
-
-    def saveActualModel(self):
-        if self.saveModel('ACTUAL'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                if 'Index' in self.app.workerModelingDispatcher.modelingRunner.modelData[0].keys():
-                    self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'actual.dat')
-            else:
-                self.app.messageQueue.put('#BRNo data for ACTUAL\n')
-
-    def loadActualModel(self):
-        if self.loadModel('ACTUAL'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('actual.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for ACTUAL\n')
-
-    def saveSimpleModel(self):
-        if self.saveModel('SIMPLE'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'simple.dat')
-            else:
-                self.app.messageQueue.put('#BRNo data file for SIMPLE\n')
-
-    def loadSimpleModel(self):
-        if self.loadModel('SIMPLE'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('simple.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for SIMPLE\n')
-
-    def saveDSO1Model(self):
-        if self.saveModel('DSO1'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'DSO1.dat')
-            else:
-                self.app.messageQueue.put('#BRNo data file for DSO1\n')
-
-    def loadDSO1Model(self):
-        if self.loadModel('DSO1'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('DSO1.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for DSO1\n')
-
-    def saveDSO2Model(self):
-        if self.saveModel('DSO2'):
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.analyseWindow.analyse.saveData(self.app.workerModelingDispatcher.modelingRunner.modelData, 'DSO2.dat')
-            else:
-                self.app.messageQueue.put('#BRNo data file for DSO2\n')
-
-    def loadDSO2Model(self):
-        if self.loadModel('DSO2'):
-            self.app.workerModelingDispatcher.modelingRunner.modelData = self.app.analyseWindow.analyse.loadDataRaw('dso2.dat')
-            if not self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.messageQueue.put('#BRNo data file for DSO2\n')
 
     def setRefractionParam(self):
         if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:

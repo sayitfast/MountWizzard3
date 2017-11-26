@@ -742,7 +742,7 @@ class MountWizzardApp(widget.MwWidget):
             self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
             self.logger.error('Item in config.cfg not saved error {0}'.format(e))
             return
-        self.mount.saveActualModel()
+        self.mount.mountModelHandling.saveActualModel()
 
     def saveConfigAs(self):
         dlg = PyQt5.QtWidgets.QFileDialog()
