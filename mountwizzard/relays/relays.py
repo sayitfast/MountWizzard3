@@ -27,8 +27,8 @@ class Relays:
         self.username = ''
         self.password = ''
         self.relayIP = ''
+        self.connected = False
         self.checkIP = checkParamIP.CheckIP()
-        self.initConfig()
         self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
         self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
         self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))
@@ -46,7 +46,6 @@ class Relays:
         self.app.ui.relay7Text.textChanged.connect(lambda: self.app.ui.btn_relay7.setText(self.app.ui.relay7Text.text()))
         self.app.ui.relay8Text.textChanged.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
         self.app.ui.le_relayIP.textChanged.connect(self.setIP)
-        self.connected = self.checkAppStatus()
 
     def initConfig(self):                                                                                                   # index 0 is first entry etc.
         self.app.ui.relay1Function.addItem('Switch - Toggle')
@@ -116,6 +115,7 @@ class Relays:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             self.setIP()
+            self.connected = self.checkAppStatus()
 
     def storeConfig(self):
         self.app.config['RelayIP'] = self.relayIP
