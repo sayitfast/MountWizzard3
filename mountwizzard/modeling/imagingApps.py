@@ -13,6 +13,7 @@
 ############################################################
 import logging
 import os
+import time
 import platform
 import threading
 import datetime
@@ -159,10 +160,11 @@ class ImagingApps:
         self.imagingThreadAppHandler.start()
         self.chooserLock.release()
 
-    def prepareImaging(self, directory):
+    def prepareImaging(self):
         modelData = {}
+        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        modelData['Directory'] = directory
         camData = self.imagingWorkerAppHandler.data
-        print(camData)
         if camData['CanSubframe']:
             self.logger.info('camera props: {0}, {1}, {2}'.format(camData['CameraXSize'], camData['CameraYSize'], camData['CanSubframe']))
         else:
