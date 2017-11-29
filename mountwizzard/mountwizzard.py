@@ -1079,7 +1079,7 @@ class MountWizzardApp(widget.MwWidget):
             if self.imageWindow.showStatus:
                 self.imageWindow.showFitsImage(filename)
         # noinspection PyCallByClass,PyTypeChecker
-        PyQt5.QtCore.QTimer.singleShot(500, self.mainLoop)
+        PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
 
 
 if __name__ == "__main__":

@@ -30,8 +30,8 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
-    CYCLESTATUSSLOW = 3000
-    CYCLESTATUSMEDIUM = 1000
+    CYCLESTATUSSLOW = 10000
+    CYCLESTATUSMEDIUM = 3000
     CYCLESTATUSFAST = 200
 
     def __init__(self, parent, app):
@@ -46,16 +46,15 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         self.mountIpDirect.initConfig()
+        self.mountIpDirect.mountPort = 3490
 
     def storeConfig(self):
-        self.mountIpDirect.storeConfig()
+        pass
 
     def run(self):
         if not self.isRunning:
             self.isRunning = True
         self.mountIpDirect.connect()
-        # TODO: it's not Model Connected, but imaging app connected
-        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         self.getStatusOnce()
         self.getStatusFast()
         self.getStatusMedium()
@@ -88,12 +87,12 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
         reply = self.mountIpDirect.sendCommand('GS')
         if len(reply) > 0:
             self.parent.data['LocalSiderealTime'] = reply.strip('#')
-        reply = self.mountIpDirect.sendCommand('GR')
-        if len(reply) > 0:
-            self.parent.data['RaJNow'] = self.transform.degStringToDecimal(reply)
-        reply = self.mountIpDirect.sendCommand('GD')
-        if len(reply) > 0:
-            self.parent.data['DecJNow'] = self.transform.degStringToDecimal(reply)
+        # reply = self.mountIpDirect.sendCommand('GR')
+        # if len(reply) > 0:
+        #     self.parent.data['RaJNow'] = self.transform.degStringToDecimal(reply)
+        # reply = self.mountIpDirect.sendCommand('GD')
+        # if len(reply) > 0:
+        #     self.parent.data['DecJNow'] = self.transform.degStringToDecimal(reply)
         reply = self.mountIpDirect.sendCommand('Ginfo')
         if len(reply) > 0:
             try:
@@ -127,27 +126,31 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
                 self.parent.signalMountAzAltPointer.emit(self.parent.data['Az'], self.parent.data['Alt'])
             else:
                 self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(reply))
-            self.parent.data['TimeToFlip'] = int(float(self.mountIpDirect.sendCommand('Gmte')))
-            self.parent.data['MeridianLimitTrack'] = int(float(self.mountIpDirect.sendCommand('Glmt')))
-            self.parent.data['MeridianLimitSlew'] = int(float(self.mountIpDirect.sendCommand('Glms')))
-            self.parent.data['TimeToMeridian'] = int(self.parent.data['TimeToFlip'] - self.parent.data['MeridianLimitTrack'] / 360 * 24 * 60)
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def getStatusMedium(self):
         print('Medium')
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
             # if there is no tracking, than updating is good
-            if self.parent.data['Status'] != 0:
-                self.setRefractionParam()
+            if 'Status' in self.parent.data:
+                if self.parent.data['Status'] != 0:
+                    self.setRefractionParam()
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
-            if self.app.workerModelingDispatcher.modelingRunner.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:
+            if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] in ['READY - IDLE', 'DOWNLOADING']:
                 self.setRefractionParam()
         self.parent.data['SlewRate'] = self.mountIpDirect.sendCommand('GMs')
+        self.parent.data['TimeToFlip'] = int(float(self.mountIpDirect.sendCommand('Gmte')))
+        self.parent.data['MeridianLimitTrack'] = int(float(self.mountIpDirect.sendCommand('Glmt')))
+        self.parent.data['MeridianLimitSlew'] = int(float(self.mountIpDirect.sendCommand('Glms')))
+        self.parent.data['TimeToMeridian'] = int(self.parent.data['TimeToFlip'] - self.parent.data['MeridianLimitTrack'] / 360 * 24 * 60)
+
         self.parent.signalMountTrackPreview.emit()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSMEDIUM, self.getStatusMedium)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def getStatusSlow(self):
         print('Slow')
@@ -176,6 +179,7 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
             pass
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSSLOW, self.getStatusSlow)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def getStatusOnce(self):
         # Set high precision mode
@@ -205,3 +209,4 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
         self.logger.info('Site Lon:{0}'.format(self.parent.site_lon))
         self.logger.info('Site Lat:{0}'.format(self.parent.site_lat))
         self.logger.info('Site Height:{0}'.format(self.parent.site_height))
+
