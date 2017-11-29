@@ -14,18 +14,11 @@
 import logging
 import math
 # import basic stuff
-import platform
-import threading
 import time
 # import PyQT5 for threading purpose
 import PyQt5
-if platform.system() == 'Windows':
-    # win32com
-    import pythoncom
-#  mount driver classes
-if platform.system() == 'Windows':
-    from mount import ascommount
 from mount import ipdirect
+from mount import mountStatusRunner
 # astrometry
 from astrometry import transform
 from mount import mountModelHandling
@@ -39,52 +32,50 @@ class Mount(PyQt5.QtCore.QThread):
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
+    statusReference = {
+        '0': 'Tracking',
+        '1': 'Stopped after STOP',
+        '2': 'Slewing to park position',
+        '3': 'Unparking',
+        '4': 'Slewing to home position',
+        '5': 'Parked',
+        '6': 'Slewing or going to stop',
+        '7': 'Tracking Off no move',
+        '8': 'Motor low temperature',
+        '9': 'Tracking outside limits',
+        '10': 'Following Satellite',
+        '11': 'User OK Needed',
+        '98': 'Unknown Status',
+        '99': 'Error'
+    }
 
     def __init__(self, app):
         super().__init__()
         self.app = app
-        self.data = {}
-        if platform.system() == 'Windows':
-            self.MountAscom = ascommount.MountAscom(self.app)
-        self.MountIpDirect = ipdirect.MountIpDirect(self.app)
-        self.mountHandler = self.MountIpDirect
+
+        self.mountIpDirect = ipdirect.MountIpDirect(self.app)
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
-        self.statusReference = {'0': 'Tracking',
-                                '1': 'Stopped after STOP',
-                                '2': 'Slewing to park position',
-                                '3': 'Unparking',
-                                '4': 'Slewing to home position',
-                                '5': 'Parked',
-                                '6': 'Slewing or going to stop',
-                                '7': 'Tracking Off no move',
-                                '8': 'Motor low temperature',
-                                '9': 'Tracking outside limits',
-                                '10': 'Following Satellite',
-                                '11': 'User OK Needed',
-                                '98': 'Unknown Status',
-                                '99': 'Error'
-                                }
+
+        self.workerMountStatusRunner = mountStatusRunner.MountStatusRunner(self, self.app)
+        self.threadMountStatusRunner = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunner.setObjectName("MountStatusRunner")
+        self.workerMountStatusRunner.moveToThread(self.threadMountStatusRunner)
+        # noinspection PyUnresolvedReferences
+        self.threadMountStatusRunner.started.connect(self.workerMountStatusRunner.run)
+        self.workerMountStatusRunner.finished.connect(self.workerMountStatusRunnerStop)
+
+        self.data = {}
         self.site_lat = '49'
         self.site_lon = '0'
         self.site_height = '0'
         self.sidereal_time = ''
         self.counter = 0
         self.cancelTargetRMS = False
-        self.chooserLock = threading.Lock()
 
     def initConfig(self):
-        self.app.ui.pd_chooseMount.clear()
-        self.app.ui.pd_chooseMount.addItem('IP Direct Connection')
-        if platform.system() == 'Windows':
-            self.app.ui.pd_chooseMount.addItem('ASCOM Driver Connection')
         try:
-            if platform.system() == 'Windows':
-                if 'ASCOMTelescopeDriverName' in self.app.config:
-                    self.MountAscom.driverName = self.app.config['ASCOMTelescopeDriverName']
-            if 'MountConnection' in self.app.config:
-                self.app.ui.pd_chooseMount.setCurrentIndex(int(self.app.config['MountConnection']))
             if 'CheckAutoRefractionCamera' in self.app.config:
                 self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
@@ -93,39 +84,25 @@ class Mount(PyQt5.QtCore.QThread):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.app.ui.pd_chooseMount.currentIndexChanged.connect(self.chooseMountConn)
-        self.MountIpDirect.initConfig()
+        self.mountIpDirect.initConfig()
+        self.workerMountStatusRunner.initConfig()
 
     def storeConfig(self):
-        if platform.system() == 'Windows':
-            self.app.config['ASCOMTelescopeDriverName'] = self.MountAscom.driverName
-        self.app.config['MountConnection'] = self.app.ui.pd_chooseMount.currentIndex()
         self.app.config['CheckAutoRefractionCamera'] = self.app.ui.checkAutoRefractionCamera.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
-        self.MountIpDirect.storeConfig()
+        self.mountIpDirect.storeConfig()
+        self.workerMountStatusRunner.storeConfig()
 
-    def chooseMountConn(self):
-        self.chooserLock.acquire()
-        if self.mountHandler.connected:
-            self.mountHandler.connected = False
-            self.mountHandler.disconnect()
-        if self.app.ui.pd_chooseMount.currentText().startswith('IP Direct Connection'):
-            self.mountHandler = self.MountIpDirect
-            self.logger.info('actual driver is IpDirect, IP is: {0}'.format(self.MountIpDirect.mountIP))
-        if self.app.ui.pd_chooseMount.currentText().startswith('ASCOM Driver Connection'):
-            self.mountHandler = self.MountAscom
-            self.logger.info('actual driver is ASCOM')
-        self.chooserLock.release()
+    def workerMountStatusRunnerStop(self):
+        self.threadMountStatusRunner.quit()
+        self.threadMountStatusRunner.wait()
 
     def run(self):
-        if platform.system() == 'Windows':
-            pythoncom.CoInitialize()
-        self.chooseMountConn()
         self.counter = 0
-
+        self.threadMountStatusRunner.start()
         while True:
-            self.signalMountConnected.emit(self.mountHandler.connected)
-            if self.mountHandler.connected:
+            self.signalMountConnected.emit(self.mountIpDirect.connected)
+            if self.mountIpDirect.connected:
                 if not self.app.mountCommandQueue.empty():
                     command = self.app.mountCommandQueue.get()
                     if command == 'ShowAlignmentModel':
@@ -140,7 +117,7 @@ class Mount(PyQt5.QtCore.QThread):
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('#BRClear Align not available in simulation mode\n')
                         else:
-                            self.mountHandler.sendCommand('delalig')
+                            self.mountIpDirect.sendCommand('delalig')
                     elif command == 'RunTargetRMSAlignment':
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('#BRRun Optimize not available in simulation mode\n')
@@ -213,53 +190,45 @@ class Mount(PyQt5.QtCore.QThread):
                     elif command == 'Shutdown':
                         self.mountShutdown()
                     else:
-                        self.mountHandler.sendCommand(command)
+                        self.mountIpDirect.sendCommand(command)
                     self.app.mountCommandQueue.task_done()
                 else:
                     if self.counter == 0:
-                        self.getStatusOnce()
-                    if self.counter % 2 == 0:
-                        self.getStatusFast()
-                    if self.counter % 15 == 0:
-                        self.getStatusMedium()
-                    if self.counter % 150 == 0:
-                        self.getStatusSlow()
+                        self.setupAlignmentModel()
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
                 self.counter += 1
             else:
-                self.mountHandler.connect()
+                self.mountIpDirect.connect()
                 self.counter = 0
                 time.sleep(1)
-        self.mountHandler.disconnect()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
+        self.mountIpDirect.disconnect()
 
     def mountShutdown(self):
-        reply = self.mountHandler.sendCommand('shutdown')
+        reply = self.mountIpDirect.sendCommand('shutdown')
         if reply != '1':
             self.logger.error('error: {0}'.format(reply))
             self.app.messageQueue.put('#BRError in mount shutdown\n')
         else:
-            self.mountHandler.connected = False
+            self.mountIpDirect.connected = False
             time.sleep(1)
-            self.mountHandler.disconnect()
+            self.mountIpDirect.disconnect()
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !')
 
     def flipMount(self):
-        reply = self.mountHandler.sendCommand('FLIP').rstrip('#').strip()
+        reply = self.mountIpDirect.sendCommand('FLIP').rstrip('#').strip()
         if reply == '0':
             self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
             self.logger.error('error: {0}'.format(reply))
 
     def syncMountModel(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.mountHandler.sendCommand('Sr{0}'.format(ra))
-        self.mountHandler.sendCommand('Sd{0}'.format(dec))
-        self.mountHandler.sendCommand('CMCFG0')
+        self.mountIpDirect.sendCommand('Sr{0}'.format(ra))
+        self.mountIpDirect.sendCommand('Sd{0}'.format(dec))
+        self.mountIpDirect.sendCommand('CMCFG0')
         # send sync command
-        reply = self.mountHandler.sendCommand('CM')
+        reply = self.mountIpDirect.sendCommand('CM')
         if reply[:5] == 'Coord':
             self.logger.info('mount modeling synced')
             return True
@@ -269,10 +238,10 @@ class Mount(PyQt5.QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.mountHandler.sendCommand('Sr{0}'.format(ra))
-        self.mountHandler.sendCommand('Sd{0}'.format(dec))
+        self.mountIpDirect.sendCommand('Sr{0}'.format(ra))
+        self.mountIpDirect.sendCommand('Sd{0}'.format(dec))
         starNumber = self.numberModelStars()
-        reply = self.mountHandler.sendCommand('CMS')
+        reply = self.mountIpDirect.sendCommand('CMS')
         starAdded = self.numberModelStars() - starNumber
         if reply == 'E':
             # 'E' says star could not be added
@@ -288,7 +257,7 @@ class Mount(PyQt5.QtCore.QThread):
 
     def programBatchData(self, data):
         self.saveBackupModel()
-        self.mountHandler.sendCommand('newalig')
+        self.mountIpDirect.sendCommand('newalig')
         for i in range(0, len(data['Index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
                                                               self.transform.decimalToDegree(data['DecJNow'][i], True, False),
@@ -299,20 +268,20 @@ class Mount(PyQt5.QtCore.QThread):
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
-        reply = self.mountHandler.sendCommand('endalig')
+        reply = self.mountIpDirect.sendCommand('endalig')
         if reply == 'V':
             self.logger.info('Model successful finished!')
         else:
             self.logger.warning('Model could not be calculated with current data!')
 
     def numberModelStars(self):
-        return int(self.mountHandler.sendCommand('getalst'))
+        return int(self.mountIpDirect.sendCommand('getalst'))
 
     def getAlignmentModelStatus(self, alignModel):
         if self.data['FW'] < 21500:
             return alignModel
         try:
-            reply = self.mountHandler.sendCommand('getain')
+            reply = self.mountIpDirect.sendCommand('getain')
             # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
             if reply:
                 # if a single 'E' returns, there is a problem, not further parameter will follow
@@ -382,7 +351,7 @@ class Mount(PyQt5.QtCore.QThread):
         alignModel = self.getAlignmentModelStatus(alignModel)
         self.app.messageQueue.put('Downloading Alignment Model from Mount\n')
         for i in range(1, numberStars + 1):
-            reply = self.mountHandler.sendCommand('getalp{0:d}'.format(i)).split(',')
+            reply = self.mountIpDirect.sendCommand('getalp{0:d}'.format(i)).split(',')
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             ErrorRMS = float(reply[2].strip())
@@ -465,7 +434,7 @@ class Mount(PyQt5.QtCore.QThread):
             if alignModel['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = alignModel['ModelError'][i]
-        reply = self.mountHandler.sendCommand('delalst{0:d}'.format(worstPointIndex + 1))
+        reply = self.mountIpDirect.sendCommand('delalst{0:d}'.format(worstPointIndex + 1))
         if reply == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Point {0} deleted'.format(worstPointIndex))
@@ -484,21 +453,6 @@ class Mount(PyQt5.QtCore.QThread):
             self.logger.warning('Point {0} could not be deleted').format(worstPointIndex)
         return alignModel
 
-    def setRefractionParam(self):
-        if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
-            pressure = self.app.workerAscomEnvironment.data['Pressure']
-            temperature = self.app.workerAscomEnvironment.data['Temperature']
-            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
-                self.mountHandler.sendCommand('SRPRS{0:04.1f}'.format(pressure))
-                if temperature > 0:
-                    self.mountHandler.sendCommand('SRTMP+{0:03.1f}'.format(temperature))
-                else:
-                    self.mountHandler.sendCommand('SRTMP-{0:3.1f}'.format(-temperature))
-                self.data['RefractionTemperature'] = self.mountHandler.sendCommand('GRTMP')
-                self.data['RefractionPressure'] = self.mountHandler.sendCommand('GRPRS')
-            else:
-                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
-
     def setupAlignmentModel(self):
         # first try to load the actual model, which was used the last time MW was run
         self.mountModelHandling.loadActualModel()
@@ -515,116 +469,3 @@ class Mount(PyQt5.QtCore.QThread):
                                                                                    'Altitude': float(alignModel['Points'][i][4])})
         self.showAlignmentModel(alignModel)
 
-    def getStatusFast(self):
-        reply = self.mountHandler.sendCommand('GS')
-        if reply:
-            self.data['LocalSiderealTime'] = reply.strip('#')
-        reply = self.mountHandler.sendCommand('GR')
-        if reply:
-            self.data['RaJNow'] = self.transform.degStringToDecimal(reply)
-        reply = self.mountHandler.sendCommand('GD')
-        if reply:
-            self.data['DecJNow'] = self.transform.degStringToDecimal(reply)
-        reply = self.mountHandler.sendCommand('Ginfo')
-        if reply:
-            try:
-                reply = reply.rstrip('#').strip().split(',')
-            except Exception as e:
-                self.logger.error('receive error Ginfo command: {0} reply:{1}'.format(e, reply))
-            finally:
-                pass
-            if len(reply) == 8:
-                self.data['RaJNow'] = float(reply[0])
-                self.data['DecJNow'] = float(reply[1])
-                self.data['Pierside'] = reply[2]
-                self.data['Az'] = float(reply[3])
-                self.data['Alt'] = float(reply[4])
-                # needed for 2.14. firmware
-                self.data['JulianDate'] = reply[5].rstrip('#')
-                self.data['Status'] = int(reply[6])
-                self.data['Slewing'] = (reply[7] == '1')
-            else:
-                self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(reply))
-            self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
-            self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
-            self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))
-            self.data['TelescopeAltitude'] = '{0:03.2f}'.format(self.data['Alt'])
-            self.data['TelescopeAzimuth'] = '{0:03.2f}'.format(self.data['Az'])
-            self.data['MountStatus'] = '{0}'.format(self.data['Status'])
-            self.data['JulianDate'] = '{0}'.format(self.data['JulianDate'][:13])
-            if self.data['Pierside'] == str('W'):
-                self.data['TelescopePierSide'] = 'WEST'
-            else:
-                self.data['TelescopePierSide'] = 'EAST'
-            self.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
-            self.data['TimeToFlip'] = int(float(self.mountHandler.sendCommand('Gmte')))
-            self.data['MeridianLimitTrack'] = int(float(self.mountHandler.sendCommand('Glmt')))
-            self.data['MeridianLimitSlew'] = int(float(self.mountHandler.sendCommand('Glms')))
-            self.data['TimeToMeridian'] = int(self.data['TimeToFlip'] - self.data['MeridianLimitTrack'] / 360 * 24 * 60)
-
-    def getStatusMedium(self):
-        if self.app.ui.checkAutoRefractionNotTracking.isChecked():
-            # if there is no tracking, than updating is good
-            if self.data['Status'] != 0:
-                self.setRefractionParam()
-        if self.app.ui.checkAutoRefractionCamera.isChecked():
-            # the same is good if the camera is not in integrating
-            if self.app.workerModelingDispatcher.modelingRunner.imagingHandler.cameraStatus in ['READY - IDLE', 'DOWNLOADING']:
-                self.setRefractionParam()
-        self.data['SlewRate'] = self.mountHandler.sendCommand('GMs')
-        self.signalMountTrackPreview.emit()
-
-    def getStatusSlow(self):
-        self.data['TimeToTrackingLimit'] = self.mountHandler.sendCommand('Gmte')
-        self.data['RefractionTemperature'] = self.mountHandler.sendCommand('GRTMP')
-        self.data['RefractionPressure'] = self.mountHandler.sendCommand('GRPRS')
-        self.data['TelescopeTempDEC'] = self.mountHandler.sendCommand('GTMP1')
-        self.data['RefractionStatus'] = self.mountHandler.sendCommand('GREF')
-        self.data['UnattendedFlip'] = self.mountHandler.sendCommand('Guaf')
-        self.data['MeridianLimitTrack'] = self.mountHandler.sendCommand('Glmt')
-        self.data['MeridianLimitSlew'] = self.mountHandler.sendCommand('Glms')
-        self.data['DualAxisTracking'] = self.mountHandler.sendCommand('Gdat')
-        self.data['CurrentHorizonLimitHigh'] = self.mountHandler.sendCommand('Gh')
-        self.data['CurrentHorizonLimitLow'] = self.mountHandler.sendCommand('Go')
-        try:
-            if self.data['FW'] < 21500:
-                return
-            reply = self.mountHandler.sendCommand('GDUTV')
-            if reply:
-                valid, expirationDate = reply.split(',')
-                self.data['UTCDataValid'] = valid
-                self.data['UTCDataExpirationDate'] = expirationDate
-        except Exception as e:
-            self.logger.error('receive error GDUTV command: {0}'.format(e))
-        finally:
-            pass
-
-    def getStatusOnce(self):
-        # Set high precision mode
-        self.mountHandler.sendCommand('U2')
-        self.site_height = self.mountHandler.sendCommand('Gev')
-        lon1 = self.mountHandler.sendCommand('Gg')
-        # due to compatibility to LX200 protocol east is negative
-        if lon1[0] == '-':
-            self.site_lon = lon1.replace('-', '+')
-        else:
-            self.site_lon = lon1.replace('+', '-')
-        self.site_lat = self.mountHandler.sendCommand('Gt')
-        self.data['CurrentSiteElevation'] = self.site_height
-        self.data['CurrentSiteLongitude'] = lon1
-        self.data['CurrentSiteLatitude'] = self.site_lat
-        self.data['FirmwareDate'] = self.mountHandler.sendCommand('GVD')
-        self.data['FirmwareNumber'] = self.mountHandler.sendCommand('GVN')
-        fw = self.data['FirmwareNumber'].split('.')
-        if len(fw) == 3:
-            self.data['FW'] = int(float(fw[0]) * 10000 + float(fw[1]) * 100 + float(fw[2]))
-        else:
-            self.data['FW'] = 0
-        self.data['FirmwareProductName'] = self.mountHandler.sendCommand('GVP')
-        self.data['FirmwareTime'] = self.mountHandler.sendCommand('GVT')
-        self.data['HardwareVersion'] = self.mountHandler.sendCommand('GVZ')
-        self.logger.info('FW: {0} Number: {1}'.format(self.mountHandler.sendCommand('GVN'), self.data['FW']))
-        self.logger.info('Site Lon:{0}'.format(self.site_lon))
-        self.logger.info('Site Lat:{0}'.format(self.site_lat))
-        self.logger.info('Site Height:{0}'.format(self.site_height))
-        self.setupAlignmentModel()

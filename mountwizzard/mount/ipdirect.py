@@ -19,7 +19,6 @@ from baseclasses import checkParamIP
 
 class MountIpDirect:
     logger = logging.getLogger(__name__)
-    PORT = 3492
 
     def __init__(self, app):
         self.app = app
@@ -220,11 +219,3 @@ class MountIpDirect:
                 value = '0'
         self.sendCommandLock.release()
         return value
-
-
-if __name__ == "__main__":
-
-    a = MountIpDirect(None)
-    a.connect()
-    b = a.commandString('Guaf')
-    a.disconnect()

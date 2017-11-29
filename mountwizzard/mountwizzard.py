@@ -43,7 +43,7 @@ from gui import wizzard_main_ui
 # modeling
 from modeling import modelingDispatcher
 # import mount functions classes
-from mount import mountThread
+from mount import mountDispatcher
 from relays import relays
 from remote import remoteThread
 from dome import ascomDome
@@ -167,7 +167,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
         self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
         # mount class
-        self.mount = mountThread.Mount(self)
+        self.mount = mountDispatcher.Mount(self)
         self.mount.setObjectName("Mount")
         self.mount.signalMountConnected.connect(self.setMountStatus)
         # gui for additional windows
@@ -317,7 +317,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
         if platform.system() == 'Windows':
-            self.ui.btn_setupMountDriver.clicked.connect(self.mount.MountAscom.setupDriver)
             self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
             self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
         self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.mountCommandQueue.put('SetRefractionParameter'))

@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -9058,45 +9058,6 @@ color: rgb(255,255,255);</string>
       <attribute name="title">
        <string>Choose Driver</string>
       </attribute>
-      <widget class="Line" name="line_21">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>30</y>
-         <width>331</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_138">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>201</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Mount Connection</string>
-       </property>
-      </widget>
       <widget class="Line" name="line_56">
        <property name="geometry">
         <rect>
@@ -9113,21 +9074,11 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Vertical</enum>
        </property>
       </widget>
-      <widget class="QComboBox" name="pd_chooseMount">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>50</y>
-         <width>331</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_139">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>180</y>
+         <y>100</y>
          <width>201</width>
          <height>21</height>
         </rect>
@@ -9145,7 +9096,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
+         <y>110</y>
          <width>331</width>
          <height>21</height>
         </rect>
@@ -9166,7 +9117,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>210</y>
+         <y>130</y>
          <width>331</width>
          <height>31</height>
         </rect>
@@ -9176,7 +9127,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>260</y>
+         <y>180</y>
          <width>201</width>
          <height>21</height>
         </rect>
@@ -9194,7 +9145,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>270</y>
+         <y>190</y>
          <width>331</width>
          <height>21</height>
         </rect>
@@ -9215,7 +9166,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>290</y>
+         <y>210</y>
          <width>331</width>
          <height>31</height>
         </rect>
@@ -9225,7 +9176,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>130</y>
+         <y>50</y>
          <width>331</width>
          <height>31</height>
         </rect>
@@ -9235,7 +9186,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>100</y>
+         <y>20</y>
          <width>241</width>
          <height>21</height>
         </rect>
@@ -9253,7 +9204,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
+         <y>30</y>
          <width>331</width>
          <height>21</height>
         </rect>
@@ -9279,7 +9230,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>160</y>
+         <y>50</y>
          <width>101</width>
          <height>31</height>
         </rect>
@@ -9312,32 +9263,11 @@ color: rgb(255,255,255);</string>
         <enum>Qt::Vertical</enum>
        </property>
       </widget>
-      <widget class="Line" name="line_75">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>30</y>
-         <width>331</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
       <widget class="QLabel" name="label_258">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>240</y>
+         <y>130</y>
          <width>231</width>
          <height>21</height>
         </rect>
@@ -9355,7 +9285,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>270</y>
+         <y>160</y>
          <width>101</width>
          <height>31</height>
         </rect>
@@ -9376,7 +9306,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>130</y>
+         <y>20</y>
          <width>231</width>
          <height>21</height>
         </rect>
@@ -9390,52 +9320,7 @@ color: rgb(255,255,255);</string>
         <string>ASCOM Dome Driver Setup</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_setupMountDriver">
-       <property name="geometry">
-        <rect>
-         <x>250</x>
-         <y>50</y>
-         <width>101</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select ASCOM driver for mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="text">
-        <string>Setup</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_260">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>231</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>ASCOM Mount Driver</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_ascomMountDriverName">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+      <widget class="QLineEdit" name="le_ascomDomeDriverName">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -9474,7 +9359,7 @@ color: rgb(255,255,255);</string>
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label_262">
+      <widget class="QLabel" name="label_263">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -9492,7 +9377,7 @@ color: rgb(255,255,255);</string>
         <string>Driver Name</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_ascomDomeDriverName">
+      <widget class="QLineEdit" name="le_ascomEnvironmentDriverName">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -9531,7 +9416,7 @@ color: rgb(255,255,255);</string>
         <bool>true</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label_263">
+      <widget class="QLabel" name="label_264">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -9549,68 +9434,11 @@ color: rgb(255,255,255);</string>
         <string>Driver Name</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_ascomEnvironmentDriverName">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>310</y>
-         <width>331</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>---</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_264">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>290</y>
-         <width>81</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Driver Name</string>
-       </property>
-      </widget>
       <widget class="Line" name="line_81">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
+         <y>30</y>
          <width>331</width>
          <height>21</height>
         </rect>
@@ -9631,7 +9459,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>250</y>
+         <y>140</y>
          <width>331</width>
          <height>21</height>
         </rect>
