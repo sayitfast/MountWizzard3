@@ -83,7 +83,6 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
                 self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
     def getStatusFast(self):
-        print('Fast')
         reply = self.mountIpDirect.sendCommand('GS')
         if len(reply) > 0:
             self.parent.data['LocalSiderealTime'] = reply.strip('#')
@@ -131,7 +130,6 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def getStatusMedium(self):
-        print('Medium')
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
             # if there is no tracking, than updating is good
             if 'Status' in self.parent.data:
@@ -153,7 +151,6 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def getStatusSlow(self):
-        print('Slow')
         self.parent.data['TimeToTrackingLimit'] = self.mountIpDirect.sendCommand('Gmte')
         self.parent.data['RefractionTemperature'] = self.mountIpDirect.sendCommand('GRTMP')
         self.parent.data['RefractionPressure'] = self.mountIpDirect.sendCommand('GRPRS')
