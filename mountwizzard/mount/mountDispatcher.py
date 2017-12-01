@@ -193,7 +193,8 @@ class Mount(PyQt5.QtCore.QThread):
                     self.app.mountCommandQueue.task_done()
                 else:
                     if self.counter == 0:
-                        self.setupAlignmentModel()
+                        pass
+                        # self.setupAlignmentModel()
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
                 self.counter += 1
@@ -277,8 +278,9 @@ class Mount(PyQt5.QtCore.QThread):
         return int(self.mountIpDirect.sendCommand(':getalst#'))
 
     def getAlignmentModelStatus(self, alignModel):
-        if self.data['FW'] < 21500:
-            return alignModel
+        if 'FW' in self.data:
+            if self.data['FW'] < 21500:
+                return alignModel
         try:
             reply = self.mountIpDirect.sendCommand(':getain#')
             # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"

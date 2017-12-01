@@ -15,6 +15,7 @@ import logging
 # import PyQT5 for threading purpose
 import PyQt5
 from mount import ipdirect
+from mount import ipdirectNew
 from astrometry import transform
 
 
@@ -41,33 +42,46 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
         # make main sources available
         self.app = app
         self.parent = parent
+        self.data = parent
         self.transform = transform.Transform(self.app)
         self.mountIpDirect = ipdirect.MountIpDirect(self.app)
 
+        self.worker1Mount = ipdirectNew.MountIpDirect(self.app, self.data)
+        self.thread1Mount = PyQt5.QtCore.QThread()
+        self.thread1Mount.setObjectName("Mount1")
+        self.worker1Mount.moveToThread(self.thread1Mount)
+        # noinspection PyUnresolvedReferences
+        self.thread1Mount.started.connect(self.worker1Mount.run)
+        self.worker1Mount.finished.connect(self.thread1MountStop)
+
     def initConfig(self):
         self.mountIpDirect.initConfig()
+        self.worker1Mount.initConfig()
 
     def storeConfig(self):
+        # pass because there is another store in place
         pass
 
-    def mountIpDirectStop(self):
-        self.threadMountIPDirect.quit()
-        self.threadMountIPDirect.wait()
+    def thread1MountStop(self):
+        self.thread1Mount.quit()
+        self.thread1Mount.wait()
 
     def run(self):
         if not self.isRunning:
             self.isRunning = True
         self.mountIpDirect.connect()
-        self.getStatusOnce()
+        self.thread1Mount.start()
         self.getStatusFast()
         self.getStatusMedium()
         self.getStatusSlow()
+        self.getStatusOnce()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
         self.mountIpDirect.disconnect()
+        self.worker1Mount.stop()
         self.finished.emit()
 
     def setRefractionParam(self):
@@ -86,6 +100,7 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
                 self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
 
     def getStatusFast(self):
+        # self.worker1Mount.sendCommandQueue.put((':GS#:Ginfo#:GS#:Ginfo#:GS#', ("self.data['LocalSiderealTime']", '2', '3', '4', '5')))
         reply = self.mountIpDirect.sendCommand(':GS#')
         if len(reply) > 0:
             self.parent.data['LocalSiderealTime'] = reply.strip('#')
@@ -178,6 +193,12 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSSLOW, self.getStatusSlow)
 
     def getStatusOnce(self):
+        command = ''
+        target = list()
+        for i in range(1, 80):
+            command += (':getalp{0:d}#'.format(i))
+            target.append('{0:02d}'.format(i))
+        self.worker1Mount.sendCommandQueue.put((command, target))
         # Set high precision mode
         self.mountIpDirect.sendCommand(':U2#')
         self.parent.site_height = self.mountIpDirect.sendCommand(':Gev#')

@@ -12,73 +12,43 @@
 #
 ############################################################
 import logging
-import threading
 import PyQt5
-from baseclasses import checkParamIP
+import time
+from queue import Queue
 
 
 class MountIpDirect(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    BLIND_COMMANDS = [':AP#', ':hP#', ':PO#', ':RT0#', ':RT1#', ':RT2#', ':RT9#', ':STOP#', ':U2#']
+    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
-    def __init__(self, app):
+    def __init__(self, app, data):
         super().__init__()
 
         self.app = app
+        self.data = data
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
-        self.checkIP = checkParamIP.CheckIP()
         self.socket = None
         self.message_string = ''
         self.mountIP = ''
         self.mountMAC = ''
         self.mountPort = 0
-        self.value_azimuth = 0
-        self.value_altitude = 0
-        self.sendCommandLock = threading.Lock()
-        self.initConfig()
-        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
-        self.app.ui.le_mountPort.textChanged.connect(self.setPort)
-        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
+        self.sendCommandQueue = Queue()
+        self.parseQueue = Queue()
 
     def initConfig(self):
         try:
             if 'MountIP' in self.app.config:
-                self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
+                self.mountIP = self.app.config['MountIP']
             if 'MountPort' in self.app.config:
-                self.app.ui.le_mountPort.setText(self.app.config['MountPort'])
-            if 'MountMAC' in self.app.config:
-                self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
-
+                self.mountPort = int(float(self.app.config['MountPort']))
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            self.setIP()
-            self.setPort()
-            self.setMAC()
-
-    def storeConfig(self):
-        self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
-        self.app.config['MountPort'] = self.app.ui.le_mountPort.text()
-        self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
-
-    def setPort(self):
-        valid, value = self.checkIP.checkPort(self.app.ui.le_mountPort)
-        if valid:
-            self.mountPort = value
-
-    def setIP(self):
-        valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-        if valid:
-            self.mountIP = value
-
-    def setMAC(self):
-        valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-        if valid:
-            self.mountMAC = value
+            pass
 
     def run(self):
         if not self.isRunning:
@@ -90,11 +60,19 @@ class MountIpDirect(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
-        self.socket.connectToHost(self.mountIP, self.mountPort)
+        self.socket.connectToHost(self.mountIP, self.mountPort, )
         while self.isRunning:
-            if not self.app.INDISendCommandQueue.empty():
-                indi_command = self.app.INDISendCommandQueue.get()
-                self.sendMessage(indi_command)
+            if not self.sendCommandQueue.empty():
+                (commandSet, targetSetList) = self.sendCommandQueue.get()
+                self.sendCommand(commandSet)
+                # split commands
+                commandSetList = commandSet.strip('#').split('#')
+                i = 0
+                for command in commandSetList:
+                    if command.strip(':') not in self.BLIND_COMMANDS:
+                        self.parseQueue.put((command.strip(':'), targetSetList[i]))
+                    i += 1
+            time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
@@ -120,7 +98,6 @@ class MountIpDirect(PyQt5.QtCore.QObject):
 
     def handleStateChanged(self):
         self.logger.info('Mount connection has state: {0}'.format(self.socket.state()))
-        self.status.emit(self.socket.state())
 
     def handleDisconnect(self):
         self.logger.info('Mount connection is disconnected from host')
@@ -132,17 +109,20 @@ class MountIpDirect(PyQt5.QtCore.QObject):
 
         # Get message from socket.
         while self.socket.bytesAvailable():
-            # print(self.socket.bytesAvailable())
             tmp = str(self.socket.read(1000), "ascii")
             self.message_string += tmp
 
         # Try and parse the message.
-        return self.message_string
+        values = self.message_string.strip('#').split('#')
+        for ret in values:
+            (command, target) = self.parseQueue.get()
+            print('command ->', command, '   target -> ', target, '   value ->', ret)
+        # print(self.message_string)
 
     def sendCommand(self, command):
-        if self.connected:
+        if self.connected and self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                self.socket.write(command)
+                self.socket.write(bytes(command + '\r', encoding='ascii'))
             else:
                 self.logger.warning('Socket not connected')
 
