@@ -25,8 +25,8 @@ class MountModelHandling:
         if num == -1:
             self.app.messageQueue.put('#BWSave Model not available in simulation\n')
             return False
-        self.app.mount.mountIpDirect.sendCommand('modeldel0' + target)
-        reply = self.app.mount.mountIpDirect.sendCommand('modelsv0' + target)
+        self.app.mount.mountIpDirect.sendCommand(':modeldel0{0}#'.format(target))
+        reply = self.app.mount.mountIpDirect.sendCommand(':modelsv0{0}#'.format(target))
         if reply == '1':
             self.app.messageQueue.put('Actual Mount Model saved to file {0}\n'.format(target))
             return True
@@ -39,7 +39,7 @@ class MountModelHandling:
         if num == -1:
             self.app.messageQueue.put('#BWLoad Model not available in simulation\n')
             return False
-        reply = self.app.mount.mountIpDirect.sendCommand('modelld0' + target)
+        reply = self.app.mount.mountIpDirect.sendCommand(':modelld0{0}#'.format(target))
         if reply == '1':
             self.app.messageQueue.put('Mount Model loaded from file {0}\n'.format(target))
             return True

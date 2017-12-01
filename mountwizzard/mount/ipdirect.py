@@ -20,6 +20,8 @@ from baseclasses import checkParamIP
 class MountIpDirect:
     logger = logging.getLogger(__name__)
 
+    BLIND_COMMANDS = [':AP#', ':hP#', ':PO#', ':RT0#', ':RT1#', ':RT2#', ':RT9#', ':STOP#', ':U2#']
+
     def __init__(self, app):
         self.app = app
         self.connected = False
@@ -117,7 +119,7 @@ class MountIpDirect:
 
     def commandBlind(self, command):
         totalSent = 0
-        command = (':' + command + '#').encode()
+        command = command.encode()
         try:
             while totalSent < len(command):
                 sent = self.socket.send(command[totalSent:])
@@ -159,7 +161,7 @@ class MountIpDirect:
         if self.connected:
             try:
                 # these are the commands, which do not expect a return value
-                if command in self.app.mount.BLIND_COMMANDS:
+                if command in self.BLIND_COMMANDS:
                     self.commandBlind(command)
                 else:
                     reply = self.commandString(command)
@@ -172,48 +174,48 @@ class MountIpDirect:
                     if command == 'CMS':
                         self.logger.info('Return Value Add Model Point: {0}'.format(reply))
                 else:
-                    if command in self.app.mount.BLIND_COMMANDS:
+                    if command in self.BLIND_COMMANDS:
                         value = ''
                     else:
                         value = '0'
         else:
-            if command == 'Gev':
+            if command == ':Gev#':
                 value = '01234.1'
-            elif command == 'Gmte':
+            elif command == ':Gmte#':
                 value = '0125'
-            elif command == 'Gt':
+            elif command == ':Gt#':
                 value = '00:00:00'
-            elif command == 'Gg':
+            elif command == ':Gg#':
                 value = '00:00:00'
-            elif command == 'GS':
+            elif command == ':GS#':
                 value = '00:00:00'
-            elif command == 'GRTMP':
+            elif command == ':GRTMP#':
                 value = '10.0'
-            elif command == 'Ginfo':
+            elif command == ':Ginfo#':
                 value = '0, 0, E, 0, 0, 0, 0'
-            elif command == 'GTMP1':
+            elif command == ':GTMP1#':
                 value = '10.0'
-            elif command == 'GRPRS':
+            elif command == ':GRPRS#':
                 value = '990.0'
-            elif command == 'Guaf':
+            elif command == ':Guaf#':
                 value = '0'
-            elif command == 'GMs':
+            elif command == ':GMs#':
                 value = '15'
-            elif command == 'Gh':
+            elif command == ':Gh#':
                 value = '90'
-            elif command == 'Go':
+            elif command == ':Go#':
                 value = '00'
-            elif command == 'Gdat':
+            elif command == ':Gdat#':
                 value = '0'
-            elif command in ['GVD', 'GVN', 'GVP', 'GVT', 'GVZ']:
+            elif command in [':GVD#', ':GVN#', ':GVP#', ':GVT#', ':GVZ#']:
                 value = 'Simulation'
-            elif command == 'GREF':
+            elif command == ':GREF#':
                 value = '1'
-            elif command == 'CMS':
+            elif command == ':CMS#':
                 value = 'V'
-            elif command == 'getalst':
+            elif command == ':getalst#':
                 value = '-1'
-            elif command == 'GDUTV':
+            elif command == ':GDUTV#':
                 value = '1,1'
             else:
                 value = '0'

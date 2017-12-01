@@ -31,7 +31,6 @@ class Mount(PyQt5.QtCore.QThread):
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
-    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
     statusReference = {
         '0': 'Tracking',
         '1': 'Stopped after STOP',
@@ -117,7 +116,7 @@ class Mount(PyQt5.QtCore.QThread):
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('#BRClear Align not available in simulation mode\n')
                         else:
-                            self.mountIpDirect.sendCommand('delalig')
+                            self.mountIpDirect.sendCommand(':delalig#')
                     elif command == 'RunTargetRMSAlignment':
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('#BRRun Optimize not available in simulation mode\n')
@@ -205,7 +204,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.mountIpDirect.disconnect()
 
     def mountShutdown(self):
-        reply = self.mountIpDirect.sendCommand('shutdown')
+        reply = self.mountIpDirect.sendCommand(':shutdown#')
         if reply != '1':
             self.logger.error('error: {0}'.format(reply))
             self.app.messageQueue.put('#BRError in mount shutdown\n')
@@ -217,18 +216,18 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.messageQueue.put('Shutting mount down !')
 
     def flipMount(self):
-        reply = self.mountIpDirect.sendCommand('FLIP').rstrip('#').strip()
+        reply = self.mountIpDirect.sendCommand(':FLIP#').rstrip('#').strip()
         if reply == '0':
             self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
             self.logger.error('error: {0}'.format(reply))
 
     def syncMountModel(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.mountIpDirect.sendCommand('Sr{0}'.format(ra))
-        self.mountIpDirect.sendCommand('Sd{0}'.format(dec))
-        self.mountIpDirect.sendCommand('CMCFG0')
+        self.mountIpDirect.sendCommand(':Sr{0}#'.format(ra))
+        self.mountIpDirect.sendCommand(':Sd{0}#'.format(dec))
+        self.mountIpDirect.sendCommand(':CMCFG0#')
         # send sync command
-        reply = self.mountIpDirect.sendCommand('CM')
+        reply = self.mountIpDirect.sendCommand(':CM#')
         if reply[:5] == 'Coord':
             self.logger.info('mount modeling synced')
             return True
@@ -238,10 +237,10 @@ class Mount(PyQt5.QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.mountIpDirect.sendCommand('Sr{0}'.format(ra))
-        self.mountIpDirect.sendCommand('Sd{0}'.format(dec))
+        self.mountIpDirect.sendCommand(':Sr{0}#'.format(ra))
+        self.mountIpDirect.sendCommand(':Sd{0}#'.format(dec))
         starNumber = self.numberModelStars()
-        reply = self.mountIpDirect.sendCommand('CMS')
+        reply = self.mountIpDirect.sendCommand(':CMS#')
         starAdded = self.numberModelStars() - starNumber
         if reply == 'E':
             # 'E' says star could not be added
@@ -257,7 +256,7 @@ class Mount(PyQt5.QtCore.QThread):
 
     def programBatchData(self, data):
         self.saveBackupModel()
-        self.mountIpDirect.sendCommand('newalig')
+        self.mountIpDirect.sendCommand(':newalig#')
         for i in range(0, len(data['Index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
                                                               self.transform.decimalToDegree(data['DecJNow'][i], True, False),
@@ -268,20 +267,20 @@ class Mount(PyQt5.QtCore.QThread):
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
-        reply = self.mountIpDirect.sendCommand('endalig')
+        reply = self.mountIpDirect.sendCommand(':endalig#')
         if reply == 'V':
             self.logger.info('Model successful finished!')
         else:
             self.logger.warning('Model could not be calculated with current data!')
 
     def numberModelStars(self):
-        return int(self.mountIpDirect.sendCommand('getalst'))
+        return int(self.mountIpDirect.sendCommand(':getalst#'))
 
     def getAlignmentModelStatus(self, alignModel):
         if self.data['FW'] < 21500:
             return alignModel
         try:
-            reply = self.mountIpDirect.sendCommand('getain')
+            reply = self.mountIpDirect.sendCommand(':getain#')
             # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
             if reply:
                 # if a single 'E' returns, there is a problem, not further parameter will follow
@@ -351,7 +350,7 @@ class Mount(PyQt5.QtCore.QThread):
         alignModel = self.getAlignmentModelStatus(alignModel)
         self.app.messageQueue.put('Downloading Alignment Model from Mount\n')
         for i in range(1, numberStars + 1):
-            reply = self.mountIpDirect.sendCommand('getalp{0:d}'.format(i)).split(',')
+            reply = self.mountIpDirect.sendCommand(':getalp{0:d}#'.format(i)).split(',')
             ha = reply[0].strip().split('.')[0]
             dec = reply[1].strip().split('.')[0]
             ErrorRMS = float(reply[2].strip())
@@ -434,7 +433,7 @@ class Mount(PyQt5.QtCore.QThread):
             if alignModel['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = alignModel['ModelError'][i]
-        reply = self.mountIpDirect.sendCommand('delalst{0:d}'.format(worstPointIndex + 1))
+        reply = self.mountIpDirect.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
         if reply == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Point {0} deleted'.format(worstPointIndex))
