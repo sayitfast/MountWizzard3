@@ -194,6 +194,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                     else:
                         self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
             self.data['NumberAlignmentStars'] = len(valueList)
+            self.data['Number'] = len(valueList)
             self.data['ModelIndex'] = list()
             self.data['ModelAzimuth'] = list()
             self.data['ModelAltitude'] = list()

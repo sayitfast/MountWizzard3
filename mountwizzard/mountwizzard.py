@@ -332,7 +332,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.le_analyseFileName.doubleClicked.connect(self.selectAnalyseFileName)
-        self.ui.btn_showActualModel.clicked.connect(lambda: self.mountCommandQueue.put('ShowAlignmentModel'))
         self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
         self.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.mountCommandQueue.put('RunTargetRMSAlignment'))
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.mount.cancelRunTargetRMS)

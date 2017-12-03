@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -6028,22 +6028,6 @@ color: rgb(255,255,255);</string>
     <attribute name="title">
      <string>Manage Model</string>
     </attribute>
-    <widget class="QPushButton" name="btn_showActualModel">
-     <property name="geometry">
-      <rect>
-       <x>460</x>
-       <y>50</y>
-       <width>141</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Download actual model from mount</string>
-     </property>
-     <property name="text">
-      <string>Show Model</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
@@ -6183,7 +6167,7 @@ color: rgb(255,255,255);</string>
     <widget class="QPushButton" name="btn_deleteWorstPoint">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>460</x>
        <y>50</y>
        <width>141</width>
        <height>31</height>
@@ -12524,7 +12508,6 @@ color: rgb(255,255,255);</string>
   <tabstop>btn_cancelAnalyseModel</tabstop>
   <tabstop>le_analyseFileName</tabstop>
   <tabstop>btn_openAnalyseWindow</tabstop>
-  <tabstop>btn_showActualModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
   <tabstop>targetRMS</tabstop>

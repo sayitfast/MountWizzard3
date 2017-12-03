@@ -106,6 +106,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.workerMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModelStop)
 
         self.counter = 0
+        self.cancelTargetRMS = False
 
     def initConfig(self):
         try:
@@ -185,34 +186,20 @@ class Mount(PyQt5.QtCore.QThread):
             if self.mountIpDirect.connected:
                 if not self.app.mountCommandQueue.empty():
                     command = self.app.mountCommandQueue.get()
-                    if command == 'ShowAlignmentModel':
-                        num = self.numberModelStars()
-                        if num == -1:
-                            self.app.messageQueue.put('#BRShow Model not available in simulation mode\n')
-                        else:
-                            self.app.ui.btn_showActualModel.setStyleSheet(self.app.BLUE)
-                            self.showAlignmentModel(self.getAlignmentModel())
-                            self.app.ui.btn_showActualModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'ClearAlign':
+                    if command == 'ClearAlign':
                         if self.numberModelStars() == -1:
                             self.app.messageQueue.put('#BRClear Align not available in simulation mode\n')
                         else:
                             self.mountIpDirect.sendCommand(':delalig#')
                     elif command == 'RunTargetRMSAlignment':
-                        if self.numberModelStars() == -1:
-                            self.app.messageQueue.put('#BRRun Optimize not available in simulation mode\n')
-                        else:
-                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.BLUE)
-                            self.runTargetRMSAlignment()
-                            self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
+                        self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.BLUE)
+                        self.runTargetRMSAlignment()
+                        self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
                         self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
                     elif command == 'DeleteWorstPoint':
-                        if self.numberModelStars() == -1:
-                            self.app.messageQueue.put('#BRDelete worst point not available in simulation mode\n')
-                        else:
-                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.BLUE)
-                            self.deleteWorstPoint()
-                            self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.DEFAULT)
+                        self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.BLUE)
+                        self.deleteWorstPoint()
+                        self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.DEFAULT)
                     elif command == 'SaveBackupModel':
                         self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.BLUE)
                         self.mountModelHandling.saveBackupModel()
@@ -355,107 +342,8 @@ class Mount(PyQt5.QtCore.QThread):
         else:
             self.logger.warning('Model could not be calculated with current data!')
 
-    def numberModelStars(self):
-        return int(self.mountIpDirect.sendCommand(':getalst#'))
-
-    def getAlignmentModelStatus(self, alignModel):
-        if 'FW' in self.data:
-            if self.data['FW'] < 21500:
-                return alignModel
-        try:
-            reply = self.mountIpDirect.sendCommand(':getain#')
-            # there should be a reply, format string is "ZZZ.ZZZZ,+AA.AAAA,EE.EEEE,PPP.PP,+OO.OOOO,+aa.aa, +bb.bb,NN,RRRRR.R#"
-            if reply:
-                # if a single 'E' returns, there is a problem, not further parameter will follow
-                if reply != 'E':
-                    a1, a2, a3, a4, a5, a6, a7, a8, a9 = reply.split(',')
-                    # 'E' could be sent if not calculable or no value available
-                    if a1 != 'E':
-                        alignModel['ModelErrorAzimuth'] = float(a1)
-                    else:
-                        alignModel['ModelErrorAzimuth'] = 0
-                    if a2 != 'E':
-                        alignModel['ModelErrorAltitude'] = float(a2)
-                    else:
-                        alignModel['ModelErrorAltitude'] = 0
-                    if a3 != 'E':
-                        alignModel['PolarError'] = float(a3)
-                    else:
-                        alignModel['PolarError'] = 0
-                    if a4 != 'E':
-                        alignModel['PosAngle'] = float(a4)
-                    else:
-                        alignModel['PosAngle'] = 0
-                    if a5 != 'E':
-                        alignModel['OrthoError'] = float(a5)
-                    else:
-                        alignModel['OrthoError'] = 0
-                    if a6 != 'E':
-                        alignModel['AzimuthKnobs'] = float(a6)
-                    else:
-                        alignModel['AzimuthKnobs'] = 0
-                    if a7 != 'E':
-                        alignModel['AltitudeKnobs'] = float(a7)
-                    else:
-                        alignModel['AltitudeKnobs'] = 0
-                    if a8 != 'E':
-                        alignModel['Terms'] = int(float(a8))
-                    else:
-                        alignModel['Terms'] = 0
-                    if a9 != 'E':
-                        alignModel['RMS'] = float(a9)
-                    else:
-                        alignModel['RMS'] = 0
-        except Exception as e:
-            self.logger.error('Receive error getain command: {0}'.format(e))
-        finally:
-            return alignModel
-
-    def getAlignmentModel(self):
-        alignModel = {
-            'ModelErrorAzimuth': 0.0,
-            'ModelErrorAltitude': 0.0,
-            'PolarError': 0.0,
-            'PosAngle': 0.0,
-            'OrthoError': 0.0,
-            'AzimuthKnobs': 0.0,
-            'AltitudeKnobs': 0.0,
-            'Terms': 0,
-            'RMS': 0.0,
-            'Index': [],
-            'Azimuth': [],
-            'Altitude': [],
-            'ModelError': [],
-            'ModelErrorAngle': []
-        }
-        numberStars = self.numberModelStars()
-        alignModel['Number'] = numberStars
-        if numberStars < 1:
-            return alignModel
-        alignModel = self.getAlignmentModelStatus(alignModel)
-        self.app.messageQueue.put('Downloading Alignment Model from Mount\n')
-        for i in range(1, numberStars + 1):
-            reply = self.mountIpDirect.sendCommand(':getalp{0:d}#'.format(i)).split(',')
-            ha = reply[0].strip().split('.')[0]
-            dec = reply[1].strip().split('.')[0]
-            ErrorRMS = float(reply[2].strip())
-            ErrorAngle = float(reply[3].strip().rstrip('#'))
-            dec = dec.replace('*', ':')
-            RaJNow = self.transform.degStringToDecimal(ha)
-            DecJNow = self.transform.degStringToDecimal(dec)
-            az, alt = self.transform.ra_dec_lst_to_az_alt(RaJNow, DecJNow)
-            # index should start with 0, but numbering in mount starts with 1
-            alignModel['Index'].append(i - 1)
-            alignModel['Azimuth'].append(az)
-            alignModel['Altitude'].append(alt)
-            alignModel['ModelError'].append(ErrorRMS)
-            alignModel['ModelErrorAngle'].append(ErrorAngle)
-            self.app.messageQueue.put('#{0:02d}   AZ: {1:3f}   Alt: {2:3f}   Err: {3:4.1f}\x22   PA: {4:3.0f}\xb0\n'.format(i, az, alt, ErrorRMS, ErrorAngle))
-        self.app.messageQueue.put('Alignment Model from Mount downloaded\n')
-        return alignModel
-
     def retrofitMountData(self, data):
-        num = self.numberModelStars()
+        num = self.data['Number']
         if num == len(data):
             alignModel = self.getAlignmentModel()
             self.showAlignmentModel(alignModel)
@@ -470,74 +358,52 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.messageQueue.put('#BRMount Data and Model Data mismatch\n')
         return data
 
-    def showAlignmentModel(self, alignModel):
-        self.data['NumberAlignmentStars'] = alignModel['Number']
-        self.data['ModelRMSError'] = '{0:3.1f}'.format(alignModel['RMS'])
-        self.data['ModelErrorPosAngle'] = '{0:3.1f}'.format(alignModel['PosAngle'])
-        self.data['ModelPolarError'] = '{0}'.format(self.transform.decimalToDegree(alignModel['PolarError']))
-        self.data['ModelOrthoError'] = '{0}'.format(self.transform.decimalToDegree(alignModel['OrthoError']))
-        self.data['ModelErrorAz'] = '{0}'.format(self.transform.decimalToDegree(alignModel['ModelErrorAzimuth']))
-        self.data['ModelErrorAlt'] = '{0}'.format(self.transform.decimalToDegree(alignModel['ModelErrorAltitude']))
-        self.data['ModelTerms'] = '{0:2d}'.format(alignModel['Terms'])
-        if alignModel['AzimuthKnobs'] > 0:
-            value = '{0:2.2f} left'.format(abs(alignModel['AzimuthKnobs']))
-        else:
-            value = '{0:2.2f} right'.format(abs(alignModel['AzimuthKnobs']))
-        self.data['ModelKnobTurnAz'] = '{0}'.format(value)
-        if alignModel['AltitudeKnobs'] > 0:
-            value = '{0:2.2f} down'.format(abs(alignModel['AltitudeKnobs']))
-        else:
-            value = '{0:2.2f} up'.format(abs(alignModel['AltitudeKnobs']))
-        self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
-        self.app.showModelErrorPolar(alignModel)
-
     def runTargetRMSAlignment(self):
         self.cancelTargetRMS = False
-        alignModel = self.getAlignmentModel()
-        if alignModel['Number'] < 4:
+        if self.data['Number'] < 4:
             return
-        while alignModel['RMS'] > float(self.app.ui.targetRMS.value()) and alignModel['Number'] > 3 and not self.cancelTargetRMS:
-            alignModel = self.deleteWorstPointRaw(alignModel)
+        while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and self.data['Number'] > 3 and not self.cancelTargetRMS:
+            self.deleteWorstPointRaw()
 
     def cancelRunTargetRMS(self):
         self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.RED)
         self.cancelTargetRMS = True
 
     def deleteWorstPoint(self):
-        alignModel = self.getAlignmentModel()
-        self.deleteWorstPointRaw(alignModel)
+        self.deleteWorstPointRaw()
 
-    def deleteWorstPointRaw(self, alignModel):
+    def deleteWorstPointRaw(self):
         # if there are less than 4 point, optimization can't take place
-        if alignModel['Number'] < 4:
+        if self.data['Number'] < 4:
             return
         # find worst point
         maxError = 0
         worstPointIndex = 0
-        for i in range(0, alignModel['Number']):
-            if alignModel['ModelError'][i] > maxError:
+        for i in range(0, self.data['Number']):
+            if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
-                maxError = alignModel['ModelError'][i]
+                maxError = self.data['ModelError'][i]
         reply = self.mountIpDirect.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
         if reply == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Point {0} deleted'.format(worstPointIndex))
             # get new calculated alignment model from mount
-            alignModel = self.getAlignmentModel()
+            old_number = self.data['Number']
+            self.workerMountGetAlignmentModel.getAlignmentModel()
+            # wait form alignment model to be downloaded
+            while self.data['Number'] == old_number:
+                time.sleep(0.2)
             # if data set is there, than delete this point as well
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.workerModelingDispatcher.modelingRunner.modelData.pop(worstPointIndex)
                 # update the rest of point with the new error vectors
-                for i in range(0, alignModel['Number']):
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = alignModel['ModelError'][i]
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(
-                        math.radians(alignModel['ModelErrorAngle'][i]))
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(
-                        math.radians(alignModel['ModelErrorAngle'][i]))
-            self.showAlignmentModel(alignModel)
+                for i in range(0, self.data['Number']):
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = self.data['ModelError'][i]
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(math.radians(self.data['ModelErrorAngle'][i]))
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(math.radians(self.data['ModelErrorAngle'][i]))
         else:
             self.logger.warning('Point {0} could not be deleted').format(worstPointIndex)
-        return alignModel
+        return
 
     def setupAlignmentModel(self):
         # first try to load the actual model, which was used the last time MW was run
