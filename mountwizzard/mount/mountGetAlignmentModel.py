@@ -18,19 +18,18 @@ from queue import Queue
 from astrometry import transform
 
 
-class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
+class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_STATUS_MEDIUM = 2000
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
-    def __init__(self, app, data, signalMountTrackPreview):
+    def __init__(self, app, data, signalMountShowAlignmentModel):
         super().__init__()
 
         self.app = app
         self.data = data
-        self.signalMountTrackPreview = signalMountTrackPreview
+        self.signalMountShowAlignmentModel = signalMountShowAlignmentModel
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -74,7 +73,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
-        self.getStatusMedium()
+        self.getAlignmentModel()
         self.logger.info('Mount connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
@@ -94,41 +93,63 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('Socket not connected')
 
-    def getStatusMedium(self):
-        self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#')
+    def getAlignmentModel(self):
+        command = ''
+        # asking for 100 points data
+        for i in range(1, 102):
+            command += (':getalp{0:d}#'.format(i))
+        self.sendCommandQueue.put(command)
 
     def handleReadyRead(self):
-        messageToProcess = ''
         # Get message from socket.
         while self.socket.bytesAvailable():
-            tmp = str(self.socket.read(1000), "ascii")
+            tmp = str(self.socket.read(4000), "ascii")
             self.messageString += tmp
-        if len(self.messageString) < 14:
+        # if the last characters are not E#, there are more points to receive
+        if self.messageString[-2:] != 'E#':
             return
         else:
-            messageToProcess = self.messageString[:14]
-            self.messageString = self.messageString[14:]
+            # if the start is E#, than we got all points, the rest is invalid, we copy to process an start over
+            if self.messageString[:2] != 'E#':
+                messageToProcess = self.messageString
+                self.messageString = ''
+            else:
+                # if we start with E# it's the rest of an closed transfer, we just delete it
+                self.messageString = ''
+                messageToProcess = ''
         # Try and parse the message.
+        # clear up trailing E#
+        while messageToProcess[-2:] == 'E#':
+            messageToProcess = messageToProcess.strip('E#')
+        # now transfer the model data
         try:
             if len(messageToProcess) == 0 or 'FW' not in self.data:
                 return
             valueList = messageToProcess.strip('#').split('#')
-            # all parameters are delivered
-            if len(valueList) == 4:
-                if len(valueList[0]) > 0:
-                    self.data['SlewRate'] = valueList[0].strip('#')
-                if len(valueList[1]) > 0:
-                    self.data['TimeToFlip'] = int(float(valueList[1].strip('#')))
-                if len(valueList[2]) > 0:
-                    self.data['MeridianLimitTrack'] = int(float(valueList[2].strip('#')))
-                if len(valueList[3]) > 0:
-                    self.data['MeridianLimitSlew'] = int(float(valueList[3].strip('#')))
-                self.data['TimeToMeridian'] = int(self.data['TimeToFlip'] - self.data['MeridianLimitTrack'] / 360 * 24 * 60)
-                self.signalMountTrackPreview.emit()
-            else:
-                self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
+            self.data['Number'] = len(valueList)
+            self.data['ModelIndex'] = list()
+            self.data['ModelAzimuth'] = list()
+            self.data['ModelAltitude'] = list()
+            self.data['ModelError'] = list()
+            self.data['ModelErrorAngle'] = list()
+            for i in range(0, len(valueList)):
+                values = valueList[i].split(',')
+                ha = values[0]
+                dec = values[1]
+                ErrorRMS = float(values[2])
+                ErrorAngle = float(values[3])
+                dec = dec.replace('*', ':')
+                RaJNow = self.transform.degStringToDecimal(ha)
+                DecJNow = self.transform.degStringToDecimal(dec)
+                az, alt = self.transform.ra_dec_lst_to_az_alt(RaJNow, DecJNow)
+                # index should start with 0, but numbering in mount starts with 1
+                self.data['ModelIndex'].append(i - 1)
+                self.data['ModelAzimuth'].append(az)
+                self.data['ModelAltitude'].append(alt)
+                self.data['ModelError'].append(ErrorRMS)
+                self.data['ModelErrorAngle'].append(ErrorAngle)
+            self.signalMountShowAlignmentModel.emit()
         except Exception as e:
-            self.logger.error('Parsing Status Medium combined command got error:{0}'.format(e))
+            self.logger.error('Parsing Get Align Model got error:{0}'.format(e))
         finally:
-            if self.isRunning:
-                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_MEDIUM, self.getStatusMedium)
+            pass

@@ -356,6 +356,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
+        self.mount.signalMountShowAlignmentModel.connect(self.showModelErrorPolar)
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
@@ -374,8 +375,8 @@ class MountWizzardApp(widget.MwWidget):
     def mountShutdown(self):
         self.mountCommandQueue.put('Shutdown')
 
-    def showModelErrorPolar(self, alignModel):
-        if len(alignModel['Index']) == 0:
+    def showModelErrorPolar(self):
+        if len(self.mount.data['ModelIndex']) == 0:
             return
         self.modelWidget.fig.clf()
         self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
@@ -389,12 +390,12 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget.axes.set_yticks(range(0, 90, 10))
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.modelWidget.axes.set_yticklabels(yLabel, color='white')
-        azimuth = numpy.asarray(alignModel['Azimuth'])
-        altitude = numpy.asarray(alignModel['Altitude'])
+        azimuth = numpy.asarray(self.mount.data['ModelAzimuth'])
+        altitude = numpy.asarray(self.mount.data['ModelAltitude'])
         cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
-        colors = numpy.asarray(alignModel['ModelError'])
+        colors = numpy.asarray(self.mount.data['ModelError'])
         scaleError = int(max(colors) / 4 + 1) * 4
-        area = [125 if x >= max(colors) else 50 for x in alignModel['ModelError']]
+        area = [125 if x >= max(colors) else 50 for x in self.mount.data['ModelError']]
         theta = azimuth / 180.0 * math.pi
         r = 90 - altitude
         scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)

@@ -21,6 +21,7 @@ from mount import ipdirect
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
 from mount import mountStatusRunnerSlow
+from mount import mountGetAlignmentModel
 # astrometry
 from astrometry import transform
 from mount import mountModelHandling
@@ -30,9 +31,10 @@ from baseclasses import checkParamIP
 
 class Mount(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)
-    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')
-    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='AzAltPointer')
-    signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
+    signalMountConnected = PyQt5.QtCore.pyqtSignal([bool])
+    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
+    signalMountTrackPreview = PyQt5.QtCore.pyqtSignal()
+    signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
 
     statusReference = {
         '0': 'Tracking',
@@ -95,6 +97,13 @@ class Mount(PyQt5.QtCore.QThread):
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
         self.workerMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlowStop)
+        # get alignment model
+        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.data, self.signalMountShowAlignmentModel)
+        self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
+        self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
+        self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
+        self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
+        self.workerMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModelStop)
 
         self.counter = 0
 
@@ -125,6 +134,7 @@ class Mount(PyQt5.QtCore.QThread):
     def changedMountConnectionSettings(self):
         # stopping all interaction
         self.mountIpDirect.disconnect()
+        self.workerGetAlignmentModel.stop()
         self.workerMountStatusRunnerSlow.stop()
         self.workerMountStatusRunnerMedium.stop()
         self.workerMountStatusRunnerFast.stop()
@@ -133,6 +143,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.setMAC()
         # starting new communication
         self.mountIpDirect.connect()
+        self.threadGetAlignmentModel.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
@@ -159,12 +170,13 @@ class Mount(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.quit()
         self.threadMountStatusRunnerSlow.wait()
 
-    def workerMountGetAlignModelStop(self):
-        self.threadMountGetAlignModel.quit()
-        self.threadMountGetAlignModel.wait()
+    def workerMountGetAlignmentModelStop(self):
+        self.threadMountGetAlignmentModel.quit()
+        self.threadMountGetAlignmentModel.wait()
 
     def run(self):
         self.counter = 0
+        self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()

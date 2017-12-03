@@ -106,18 +106,18 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
-            if self.data['FW'] < 21500:
-                if len(self.messageString) < 32:
-                    return
-                else:
-                    messageToProcess = self.messageString[:32]
-                    self.messageString = self.messageString[32:]
+        if self.data['FW'] < 21500:
+            if len(self.messageString) < 32:
+                return
             else:
-                if len(self.messageString) < 45:
-                    return
-                else:
-                    messageToProcess = self.messageString[:45]
-                    self.messageString = self.messageString[45:]
+                messageToProcess = self.messageString[:32]
+                self.messageString = self.messageString[32:]
+        else:
+            if len(self.messageString) < 45:
+                return
+            else:
+                messageToProcess = self.messageString[:45]
+                self.messageString = self.messageString[45:]
         # Try and parse the message.
         try:
             if len(messageToProcess) == 0 or 'FW' not in self.data:

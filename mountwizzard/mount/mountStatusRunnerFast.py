@@ -103,11 +103,11 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
-            if len(self.messageString) < 71:
-                return
-            else:
-                messageToProcess = self.messageString[:71]
-                self.messageString = self.messageString[71:]
+        if len(self.messageString) < 71:
+            return
+        else:
+            messageToProcess = self.messageString[:71]
+            self.messageString = self.messageString[71:]
         # Try and parse the message. In Fast we ask for GS and Ginfo so we expect 2
         try:
             if len(messageToProcess) == 0:
