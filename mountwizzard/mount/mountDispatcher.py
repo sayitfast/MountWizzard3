@@ -18,17 +18,18 @@ import time
 # import PyQT5 for threading purpose
 import PyQt5
 from mount import ipdirect
-from mount import mountStatusRunner
+from mount import mountStatusRunnerFast
 # astrometry
 from astrometry import transform
 from mount import mountModelHandling
 from analyse import analysedata
+from baseclasses import checkParamIP
 
 
 class Mount(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)
     signalMountConnected = PyQt5.QtCore.pyqtSignal([bool], name='mountConnected')
-    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='mountAzAltPointer')
+    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float], name='AzAltPointer')
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal(name='mountTrackPreview')
 
     statusReference = {
@@ -52,29 +53,40 @@ class Mount(PyQt5.QtCore.QThread):
         super().__init__()
         self.app = app
 
-        self.mountIpDirect = ipdirect.MountIpDirect(self.app)
+        self.data = {
+            'SiteLatitude': '49',
+            'SiteLongitude': '0',
+            'SiteHeight': '0',
+            'MountIP': '',
+            'MountMAC': '',
+            'MountPort': 3490,
+            'LocalSiderealTime': ''
+        }
+
+        # getting all supporting classes assigned
+        self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data['MountIP'])
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
+        self.checkIP = checkParamIP.CheckIP()
 
-        self.workerMountStatusRunner = mountStatusRunner.MountStatusRunner(self, self.app)
-        self.threadMountStatusRunner = PyQt5.QtCore.QThread()
-        self.threadMountStatusRunner.setObjectName("MountStatusRunner")
-        self.workerMountStatusRunner.moveToThread(self.threadMountStatusRunner)
+        # getting all threads setup
+        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.data, self.signalMountAzAltPointer)
+        self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
+        self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         # noinspection PyUnresolvedReferences
-        self.threadMountStatusRunner.started.connect(self.workerMountStatusRunner.run)
-        self.workerMountStatusRunner.finished.connect(self.workerMountStatusRunnerStop)
+        self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
+        self.workerMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFastStop)
 
-        self.data = {}
-        self.site_lat = '49'
-        self.site_lon = '0'
-        self.site_height = '0'
-        self.sidereal_time = ''
         self.counter = 0
-        self.cancelTargetRMS = False
 
     def initConfig(self):
         try:
+            if 'MountIP' in self.app.config:
+                self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
+            if 'MountMAC' in self.app.config:
+                self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
             if 'CheckAutoRefractionCamera' in self.app.config:
                 self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
@@ -82,23 +94,57 @@ class Mount(PyQt5.QtCore.QThread):
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            pass
-        self.mountIpDirect.initConfig()
-        self.workerMountStatusRunner.initConfig()
+            self.app.ui.le_mountIP.textChanged.connect(self.changedMountConnectionSettings)
+            self.app.ui.le_mountMAC.textChanged.connect(self.changedMountConnectionSettings)
+            self.setIP()
+            self.setMAC()
 
     def storeConfig(self):
+        self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
+        self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
         self.app.config['CheckAutoRefractionCamera'] = self.app.ui.checkAutoRefractionCamera.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
-        self.mountIpDirect.storeConfig()
-        self.workerMountStatusRunner.storeConfig()
 
-    def workerMountStatusRunnerStop(self):
-        self.threadMountStatusRunner.quit()
-        self.threadMountStatusRunner.wait()
+    def changedMountConnectionSettings(self):
+        # stopping all interaction
+        self.mountIpDirect.disconnect()
+        self.workerMountStatusRunnerFast.stop()
+        # setting new values
+        self.setIP()
+        self.setMAC()
+        # starting new communication
+        self.mountIpDirect.connect()
+        self.threadMountStatusRunnerFast.start()
+
+    def setIP(self):
+        valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+        if valid:
+            self.data['MountIP'] = value
+
+    def setMAC(self):
+        valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
+        if valid:
+            self.data['mountMAC'] = value
+
+    def workerMountStatusRunnerFastStop(self):
+        self.threadMountStatusRunnerFast.quit()
+        self.threadMountStatusRunnerFast.wait()
+
+    def workerMountStatusRunnerMediumStop(self):
+        self.threadMountStatusRunnerMedium.quit()
+        self.threadMountStatusRunnerMedium.wait()
+
+    def workerMountStatusRunnerSlowStop(self):
+        self.threadMountStatusRunnerSlow.quit()
+        self.threadMountStatusRunnerSlow.wait()
+
+    def workerMountGetAlignModelStop(self):
+        self.threadMountGetAlignModel.quit()
+        self.threadMountGetAlignModel.wait()
 
     def run(self):
         self.counter = 0
-        self.threadMountStatusRunner.start()
+        self.threadMountStatusRunnerFast.start()
         while True:
             self.signalMountConnected.emit(self.mountIpDirect.connected)
             if self.mountIpDirect.connected:
@@ -331,20 +377,22 @@ class Mount(PyQt5.QtCore.QThread):
             return alignModel
 
     def getAlignmentModel(self):
-        alignModel = {'ModelErrorAzimuth': 0.0,
-                      'ModelErrorAltitude': 0.0,
-                      'PolarError': 0.0,
-                      'PosAngle': 0.0,
-                      'OrthoError': 0.0,
-                      'AzimuthKnobs': 0.0,
-                      'AltitudeKnobs': 0.0,
-                      'Terms': 0,
-                      'RMS': 0.0,
-                      'Index': [],
-                      'Azimuth': [],
-                      'Altitude': [],
-                      'ModelError': [],
-                      'ModelErrorAngle': []}
+        alignModel = {
+            'ModelErrorAzimuth': 0.0,
+            'ModelErrorAltitude': 0.0,
+            'PolarError': 0.0,
+            'PosAngle': 0.0,
+            'OrthoError': 0.0,
+            'AzimuthKnobs': 0.0,
+            'AltitudeKnobs': 0.0,
+            'Terms': 0,
+            'RMS': 0.0,
+            'Index': [],
+            'Azimuth': [],
+            'Altitude': [],
+            'ModelError': [],
+            'ModelErrorAngle': []
+        }
         numberStars = self.numberModelStars()
         alignModel['Number'] = numberStars
         if numberStars < 1:
@@ -447,8 +495,10 @@ class Mount(PyQt5.QtCore.QThread):
                 # update the rest of point with the new error vectors
                 for i in range(0, alignModel['Number']):
                     self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = alignModel['ModelError'][i]
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(math.radians(alignModel['ModelErrorAngle'][i]))
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(math.radians(alignModel['ModelErrorAngle'][i]))
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(
+                        math.radians(alignModel['ModelErrorAngle'][i]))
+                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(
+                        math.radians(alignModel['ModelErrorAngle'][i]))
             self.showAlignmentModel(alignModel)
         else:
             self.logger.warning('Point {0} could not be deleted').format(worstPointIndex)
@@ -463,10 +513,11 @@ class Mount(PyQt5.QtCore.QThread):
             self.app.messageQueue.put('Model Data will be reconstructed from Mount Data\n')
             self.app.workerModeling.modelData = []
             for i in range(0, alignModel['Number']):
-                self.app.workerModelingDispatcher.modelingRunner.modelData.append({'ModelError': float(alignModel['Points'][i][5]),
-                                                                                   'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
-                                                                                   'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
-                                                                                   'Azimuth': float(alignModel['Points'][i][3]),
-                                                                                   'Altitude': float(alignModel['Points'][i][4])})
+                self.app.workerModelingDispatcher.modelingRunner.modelData.append({
+                                                                                      'ModelError': float(alignModel['Points'][i][5]),
+                                                                                      'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
+                                                                                      'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
+                                                                                      'Azimuth': float(alignModel['Points'][i][3]),
+                                                                                      'Altitude': float(alignModel['Points'][i][4])
+                                                                                  })
         self.showAlignmentModel(alignModel)
-

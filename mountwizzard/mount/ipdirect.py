@@ -14,66 +14,24 @@
 import logging
 import threading
 import socket
-from baseclasses import checkParamIP
 
 
 class MountIpDirect:
     logger = logging.getLogger(__name__)
 
     BLIND_COMMANDS = [':AP#', ':hP#', ':PO#', ':RT0#', ':RT1#', ':RT2#', ':RT9#', ':STOP#', ':U2#']
+    mountPort = 3490
 
-    def __init__(self, app):
+    def __init__(self, app, mountIP):
         self.app = app
+        self.mountIP = mountIP
         self.connected = False
         self.socket = None
-        self.checkIP = checkParamIP.CheckIP()
-        self.mountIP = ''
-        self.mountMAC = ''
-        self.mountPort = 0
+
         self.value_azimuth = 0
         self.value_altitude = 0
         self.tryConnectionCounter = 0
         self.sendCommandLock = threading.Lock()
-        self.initConfig()
-        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
-        self.app.ui.le_mountPort.textChanged.connect(self.setPort)
-        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
-
-    def initConfig(self):
-        try:
-            if 'MountIP' in self.app.config:
-                self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
-            if 'MountPort' in self.app.config:
-                self.app.ui.le_mountPort.setText(self.app.config['MountPort'])
-            if 'MountMAC' in self.app.config:
-                self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
-
-        except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
-        finally:
-            self.setIP()
-            self.setPort()
-            self.setMAC()
-
-    def storeConfig(self):
-        self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
-        self.app.config['MountPort'] = self.app.ui.le_mountPort.text()
-        self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
-
-    def setPort(self):
-        valid, value = self.checkIP.checkPort(self.app.ui.le_mountPort)
-        if valid:
-            self.mountPort = value
-
-    def setIP(self):
-        valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-        if valid:
-            self.mountIP = value
-
-    def setMAC(self):
-        valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-        if valid:
-            self.mountMAC = value
 
     def connect(self):
         try:

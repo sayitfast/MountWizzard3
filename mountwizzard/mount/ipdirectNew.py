@@ -76,7 +76,7 @@ class MountIpDirect(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
-                self.socket.connectToHost(self.INDIServerIP, self.INDIServerPort)
+                self.socket.connectToHost(self.mountIP, self.mountPort)
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
 

@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>7</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7851,7 +7851,7 @@ color: rgb(255,255,255);</string>
       <string notr="true"/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab_13">
       <attribute name="title">
@@ -9485,7 +9485,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
+         <y>80</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -9563,7 +9563,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>200</x>
-         <y>110</y>
+         <y>80</y>
          <width>151</width>
          <height>21</height>
         </rect>
@@ -9910,69 +9910,6 @@ color: rgb(255,255,255);</string>
         <string>Enable Remote Access</string>
        </property>
        <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_mountIP_4">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>80</y>
-         <width>161</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Port Number</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_mountPort">
-       <property name="geometry">
-        <rect>
-         <x>290</x>
-         <y>80</y>
-         <width>61</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="inputMask">
-        <string>99999</string>
-       </property>
-       <property name="text">
-        <string>3492</string>
-       </property>
-       <property name="maxLength">
-        <number>5</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
         <bool>false</bool>
        </property>
       </widget>

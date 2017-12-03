@@ -28,7 +28,7 @@ class Transform:
         self.conversionLock = threading.Lock()
 
     def ra_dec_lst_to_az_alt(self, ra, dec):
-        LAT = self.degStringToDecimal(self.app.mount.site_lat)
+        LAT = self.degStringToDecimal(self.app.mount.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
         ra = math.radians(ra)
@@ -65,7 +65,8 @@ class Transform:
             pass
         return returnValue
 
-    def decimalToDegree(self, value, with_sign=True, with_decimal=False, spl=':'):
+    @staticmethod
+    def decimalToDegree(value, with_sign=True, with_decimal=False, spl=':'):
         if value >= 0:
             sign = '+'
         else:
@@ -84,15 +85,14 @@ class Transform:
             returnValue = '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
         return returnValue
 
-    # ---------------------------------------------------------------------------
-    # implementation ascom.transform to erfa.py
-    # ---------------------------------------------------------------------------
-
     def transformERFA(self, ra, dec, transform=1):
+        # ---------------------------------------------------------------------------
+        # implementation ascom.transform to erfa.py
+        # ---------------------------------------------------------------------------
         self.transformationLockERFA.acquire()
-        SiteElevation = float(self.app.mount.site_height)
-        SiteLatitude = self.degStringToDecimal(self.app.mount.site_lat)
-        SiteLongitude = self.degStringToDecimal(self.app.mount.site_lon)
+        SiteElevation = float(self.app.mount.data['SiteHeight'])
+        SiteLatitude = self.degStringToDecimal(self.app.mount.data['SiteLatitude'])
+        SiteLongitude = self.degStringToDecimal(self.app.mount.data['SiteLongitude'])
         if SiteLatitude == 0 or SiteLongitude == 0 or SiteElevation == 0:
             self.logger.error('not site parameters set')
             return 0, 0

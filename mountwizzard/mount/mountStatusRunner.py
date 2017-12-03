@@ -54,14 +54,6 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
         self.thread1Mount.started.connect(self.worker1Mount.run)
         self.worker1Mount.finished.connect(self.thread1MountStop)
 
-    def initConfig(self):
-        self.mountIpDirect.initConfig()
-        self.worker1Mount.initConfig()
-
-    def storeConfig(self):
-        # pass because there is another store in place
-        pass
-
     def thread1MountStop(self):
         self.thread1Mount.quit()
         self.thread1Mount.wait()
@@ -98,53 +90,6 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
                 self.parent.data['RefractionPressure'] = self.mountIpDirect.sendCommand(':GRPRS#')
             else:
                 self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
-
-    def getStatusFast(self):
-        # self.worker1Mount.sendCommandQueue.put((':GS#:Ginfo#:GS#:Ginfo#:GS#', ("self.data['LocalSiderealTime']", '2', '3', '4', '5')))
-        reply = self.mountIpDirect.sendCommand(':GS#')
-        if len(reply) > 0:
-            self.parent.data['LocalSiderealTime'] = reply.strip('#')
-        # reply = self.mountIpDirect.sendCommand(':GR#')
-        # if len(reply) > 0:
-        #     self.parent.data['RaJNow'] = self.transform.degStringToDecimal(reply)
-        # reply = self.mountIpDirect.sendCommand(':GD#')
-        # if len(reply) > 0:
-        #     self.parent.data['DecJNow'] = self.transform.degStringToDecimal(reply)
-        reply = self.mountIpDirect.sendCommand(':Ginfo#')
-        if len(reply) > 0:
-            try:
-                reply = reply.rstrip('#').strip().split(',')
-            except Exception as e:
-                self.logger.error('receive error Ginfo command: {0} reply:{1}'.format(e, reply))
-            finally:
-                pass
-            if len(reply) == 8:
-                self.parent.data['RaJNow'] = float(reply[0])
-                self.parent.data['DecJNow'] = float(reply[1])
-                self.parent.data['Pierside'] = reply[2]
-                self.parent.data['Az'] = float(reply[3])
-                self.parent.data['Alt'] = float(reply[4])
-                # needed for 2.14. firmware
-                self.parent.data['JulianDate'] = reply[5].rstrip('#')
-                self.parent.data['Status'] = int(reply[6])
-                self.parent.data['Slewing'] = (reply[7] == '1')
-
-                self.parent.data['RaJ2000'], self.parent.data['DecJ2000'] = self.transform.transformERFA(self.parent.data['RaJNow'], self.parent.data['DecJNow'], 2)
-                self.parent.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.parent.data['RaJ2000'], False, False))
-                self.parent.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.parent.data['DecJ2000'], True, False))
-                self.parent.data['TelescopeAltitude'] = '{0:03.2f}'.format(self.parent.data['Alt'])
-                self.parent.data['TelescopeAzimuth'] = '{0:03.2f}'.format(self.parent.data['Az'])
-                self.parent.data['MountStatus'] = '{0}'.format(self.parent.data['Status'])
-                self.parent.data['JulianDate'] = '{0}'.format(self.parent.data['JulianDate'][:13])
-                if self.parent.data['Pierside'] == str('W'):
-                    self.parent.data['TelescopePierSide'] = 'WEST'
-                else:
-                    self.parent.data['TelescopePierSide'] = 'EAST'
-                self.parent.signalMountAzAltPointer.emit(self.parent.data['Az'], self.parent.data['Alt'])
-            else:
-                self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(reply))
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUSFAST, self.getStatusFast)
 
     def getStatusMedium(self):
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
