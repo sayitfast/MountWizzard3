@@ -94,7 +94,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket not connected')
 
     def getAlignmentModel(self):
-        command = ''
+        if 'FW' in self.data:
+            if self.data['FW'] < 21500:
+                command = ''
+            else:
+                command = ':getain#'
         # asking for 100 points data
         for i in range(1, 102):
             command += (':getalp{0:d}#'.format(i))
@@ -126,12 +130,76 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             if len(messageToProcess) == 0 or 'FW' not in self.data:
                 return
             valueList = messageToProcess.strip('#').split('#')
-            self.data['Number'] = len(valueList)
+            if 'FW' in self.data:
+                if self.data['FW'] > 21500:
+                    # here we have more data in
+                    if len(valueList[0]) > 3:
+                        a1, a2, a3, a4, a5, a6, a7, a8, a9 = valueList[0].split(',')
+                        # 'E' could be sent if not calculable or no value available
+                        if a1 != 'E':
+                            self.data['ModelErrorAzimuth'] = float(a1)
+                        else:
+                            self.data['ModelErrorAzimuth'] = 0
+                        if a2 != 'E':
+                            self.data['ModelErrorAltitude'] = float(a2)
+                        else:
+                            self.data['ModelErrorAltitude'] = 0
+                        if a3 != 'E':
+                            self.data['PolarError'] = float(a3)
+                        else:
+                            self.data['PolarError'] = 0
+                        if a4 != 'E':
+                            self.data['PosAngle'] = float(a4)
+                        else:
+                            self.data['PosAngle'] = 0
+                        if a5 != 'E':
+                            self.data['OrthoError'] = float(a5)
+                        else:
+                            self.data['OrthoError'] = 0
+                        if a6 != 'E':
+                            self.data['AzimuthKnobs'] = float(a6)
+                        else:
+                            self.data['AzimuthKnobs'] = 0
+                        if a7 != 'E':
+                            self.data['AltitudeKnobs'] = float(a7)
+                        else:
+                            self.data['AltitudeKnobs'] = 0
+                        if a8 != 'E':
+                            self.data['Terms'] = int(float(a8))
+                        else:
+                            self.data['Terms'] = 0
+                        if a9 != 'E':
+                            self.data['RMS'] = float(a9)
+                        else:
+                            self.data['RMS'] = 0
+                        # remove the first element in list
+                        del valueList[0]
+                        self.data['ModelRMSError'] = '{0:3.1f}'.format(self.data['RMS'])
+                        self.data['ModelErrorPosAngle'] = '{0:3.1f}'.format(self.data['PosAngle'])
+                        self.data['ModelPolarError'] = '{0}'.format(self.transform.decimalToDegree(self.data['PolarError']))
+                        self.data['ModelOrthoError'] = '{0}'.format(self.transform.decimalToDegree(self.data['OrthoError']))
+                        self.data['ModelErrorAz'] = '{0}'.format(self.transform.decimalToDegree(self.data['ModelErrorAzimuth']))
+                        self.data['ModelErrorAlt'] = '{0}'.format(self.transform.decimalToDegree(self.data['ModelErrorAltitude']))
+                        self.data['ModelTerms'] = '{0:2d}'.format(self.data['Terms'])
+                        if self.data['AzimuthKnobs'] > 0:
+                            value = '{0:2.2f} left'.format(abs(self.data['AzimuthKnobs']))
+                        else:
+                            value = '{0:2.2f} right'.format(abs(self.data['AzimuthKnobs']))
+                        self.data['ModelKnobTurnAz'] = '{0}'.format(value)
+                        if self.data['AltitudeKnobs'] > 0:
+                            value = '{0:2.2f} down'.format(abs(self.data['AltitudeKnobs']))
+                        else:
+                            value = '{0:2.2f} up'.format(abs(self.data['AltitudeKnobs']))
+                        self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
+                    else:
+                        self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
+            self.data['NumberAlignmentStars'] = len(valueList)
             self.data['ModelIndex'] = list()
             self.data['ModelAzimuth'] = list()
             self.data['ModelAltitude'] = list()
             self.data['ModelError'] = list()
             self.data['ModelErrorAngle'] = list()
+            # we start every time with index 0, because if the first parsing took place, the first list element will be deleted
             for i in range(0, len(valueList)):
                 values = valueList[i].split(',')
                 ha = values[0]
