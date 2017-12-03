@@ -70,7 +70,7 @@ class Mount(PyQt5.QtCore.QThread):
 
         # getting all supporting classes assigned
         self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data)
-        self.mountModelHandling = mountModelHandling.MountModelHandling(self.app)
+        self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.checkIP = checkParamIP.CheckIP()
@@ -362,7 +362,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.cancelTargetRMS = False
         if self.data['Number'] < 4:
             return
-        while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and self.data['Number'] > 3 and not self.cancelTargetRMS:
+        while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelTargetRMS:
             self.deleteWorstPointRaw()
 
     def cancelRunTargetRMS(self):
@@ -375,6 +375,7 @@ class Mount(PyQt5.QtCore.QThread):
     def deleteWorstPointRaw(self):
         # if there are less than 4 point, optimization can't take place
         if self.data['Number'] < 4:
+            self.cancelTargetRMS = True
             return
         # find worst point
         maxError = 0
@@ -383,16 +384,17 @@ class Mount(PyQt5.QtCore.QThread):
             if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]
+        self.app.messageQueue.put('Deleting Point {0:02d}  with Error: {1} ...'.format(worstPointIndex + 1, maxError))
         reply = self.mountIpDirect.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
         if reply == '1':
             # point could be deleted, feedback from mount ok
-            self.logger.info('Point {0} deleted'.format(worstPointIndex))
+            self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
             # get new calculated alignment model from mount
-            old_number = self.data['Number']
             self.workerMountGetAlignmentModel.getAlignmentModel()
             # wait form alignment model to be downloaded
-            while self.data['Number'] == old_number:
+            while self.data['ModelLoading']:
                 time.sleep(0.2)
+            self.app.messageQueue.put(' Point deleted \n')
             # if data set is there, than delete this point as well
             if self.app.workerModelingDispatcher.modelingRunner.modelData:
                 self.app.workerModelingDispatcher.modelingRunner.modelData.pop(worstPointIndex)

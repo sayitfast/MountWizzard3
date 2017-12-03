@@ -98,7 +98,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
 
     def handleReadyRead(self):
-        messageToProcess = ''
         # Get message from socket.
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")

@@ -94,6 +94,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket not connected')
 
     def getAlignmentModel(self):
+        self.data['ModelLoading'] = True
         if 'FW' in self.data:
             if self.data['FW'] < 21500:
                 command = ''
@@ -110,21 +111,15 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             tmp = str(self.socket.read(4000), "ascii")
             self.messageString += tmp
         # if the last characters are not E#, there are more points to receive
-        if self.messageString[-2:] != 'E#':
+        if not self.messageString.endswith('E#'):
             return
         else:
-            # if the start is E#, than we got all points, the rest is invalid, we copy to process an start over
-            if self.messageString[:2] != 'E#':
-                messageToProcess = self.messageString
-                self.messageString = ''
-            else:
-                # if we start with E# it's the rest of an closed transfer, we just delete it
-                self.messageString = ''
-                messageToProcess = ''
-        # Try and parse the message.
-        # clear up trailing E#
-        while messageToProcess[-2:] == 'E#':
-            messageToProcess = messageToProcess.strip('E#')
+            messageToProcess = self.messageString
+            self.messageString = ''
+        while messageToProcess.startswith('E#'):
+            messageToProcess = messageToProcess.lstrip('E#')
+        while messageToProcess.endswith('E#'):
+            messageToProcess = messageToProcess.rstrip('E#')
         # now transfer the model data
         try:
             if len(messageToProcess) == 0 or 'FW' not in self.data:
@@ -212,12 +207,13 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 DecJNow = self.transform.degStringToDecimal(dec)
                 az, alt = self.transform.ra_dec_lst_to_az_alt(RaJNow, DecJNow)
                 # index should start with 0, but numbering in mount starts with 1
-                self.data['ModelIndex'].append(i - 1)
+                self.data['ModelIndex'].append(i)
                 self.data['ModelAzimuth'].append(az)
                 self.data['ModelAltitude'].append(alt)
                 self.data['ModelError'].append(ErrorRMS)
                 self.data['ModelErrorAngle'].append(ErrorAngle)
             self.signalMountShowAlignmentModel.emit()
+            self.data['ModelLoading'] = False
         except Exception as e:
             self.logger.error('Parsing Get Align Model got error:{0}'.format(e))
         finally:

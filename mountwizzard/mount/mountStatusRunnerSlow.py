@@ -22,7 +22,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_STATUS_SLOW = 1000
+    CYCLE_STATUS_SLOW = 10000
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
     def __init__(self, app, data):
@@ -101,7 +101,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
 
     def handleReadyRead(self):
-        messageToProcess = ''
         # Get message from socket.
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
@@ -127,18 +126,18 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             # all parameters are delivered
             if 4 < len(valueList) < 7:
                 if len(valueList[0]) > 0:
-                    self.data['RefractionTemperature'] = valueList[0].strip('#')
+                    self.data['RefractionTemperature'] = valueList[0]
                 if len(valueList[1]) > 0:
-                    self.data['RefractionPressure'] = valueList[1].strip('#')
+                    self.data['RefractionPressure'] = valueList[1]
                 if len(valueList[2]) > 0:
-                    self.data['TelescopeTempDEC'] = valueList[2].strip('#')
+                    self.data['TelescopeTempDEC'] = valueList[2]
                 if len(valueList[3]) > 0:
-                    self.data['RefractionStatus'] = valueList[3].strip('#')[0]
-                    self.data['UnattendedFlip'] = valueList[3].strip('#')[1]
-                    self.data['DualAxisTracking'] = valueList[3].strip('#')[2]
-                    self.data['CurrentHorizonLimitHigh'] = valueList[3].strip('#')[3:]
+                    self.data['RefractionStatus'] = valueList[3][0]
+                    self.data['UnattendedFlip'] = valueList[3][1]
+                    self.data['DualAxisTracking'] = valueList[3][2]
+                    self.data['CurrentHorizonLimitHigh'] = valueList[3][3:]
                 if len(valueList[4]) > 0:
-                    self.data['CurrentHorizonLimitLow'] = valueList[4].strip('#')
+                    self.data['CurrentHorizonLimitLow'] = valueList[4]
                 if self.data['FW'] > 21500 and len(valueList[5]) > 0:
                     valid, expirationDate = valueList[5].split(',')
                     self.data['UTCDataValid'] = valid

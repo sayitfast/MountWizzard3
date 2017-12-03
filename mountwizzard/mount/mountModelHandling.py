@@ -12,13 +12,15 @@
 #
 ############################################################
 import logging
+import time
 
 
 class MountModelHandling:
     logger = logging.getLogger(__name__)
 
-    def __init__(self, app):
+    def __init__(self, app, data):
         self.app = app
+        self.data = data
 
     def saveModel(self, target):
         self.app.mount.mountIpDirect.sendCommand(':modeldel0{0}#'.format(target))
@@ -35,6 +37,8 @@ class MountModelHandling:
         if reply == '1':
             self.app.messageQueue.put('Mount Model loaded from file {0}\n'.format(target))
             self.app.mount.workerMountGetAlignmentModel.getAlignmentModel()
+            while self.data['ModelLoading']:
+                time.sleep(0.2)
             return True
         else:
             self.app.messageQueue.put('#BRThere is no modeling named {0} or error while loading\n'.format(target))
