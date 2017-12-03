@@ -20,11 +20,10 @@ class MountIpDirect:
     logger = logging.getLogger(__name__)
 
     BLIND_COMMANDS = [':AP#', ':hP#', ':PO#', ':RT0#', ':RT1#', ':RT2#', ':RT9#', ':STOP#', ':U2#']
-    mountPort = 3490
 
-    def __init__(self, app, mountIP):
+    def __init__(self, app, data):
         self.app = app
-        self.mountIP = mountIP
+        self.data = data
         self.connected = False
         self.socket = None
 
@@ -38,7 +37,7 @@ class MountIpDirect:
             if self.socket is None:
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.settimeout(60)
-            self.socket.connect((self.mountIP, self.mountPort))
+            self.socket.connect((self.data['MountIP'], self.data['MountPort']))
             self.connected = True
             self.tryConnectionCounter = 0
         except ConnectionRefusedError:
@@ -48,7 +47,7 @@ class MountIpDirect:
         except Exception as e:
             self.tryConnectionCounter += 1
             if self.tryConnectionCounter < 3:
-                self.logger.warning('Direct mount connection is broken to Host:{0}:{1}'.format(self.mountIP, self.mountPort))
+                self.logger.warning('Direct mount connection is broken to Host:{0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
             elif self.tryConnectionCounter == 3:
                 self.logger.error('No connection to Mount possible - stop logging this connection error')
             else:

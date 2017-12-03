@@ -18,19 +18,19 @@ from queue import Queue
 from astrometry import transform
 
 
-class MountStatusRunnerFast(PyQt5.QtCore.QObject):
+class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_STATUS_FAST = 100
+    CYCLE_STATUS_MEDIUM = 2000
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
-    def __init__(self, app, data, signalMountAzAltPointer):
+    def __init__(self, app, data, signalMountTrackPreview):
         super().__init__()
 
         self.app = app
         self.data = data
-        self.signalMountAzAltPointer = signalMountAzAltPointer
+        self.signalMountTrackPreview = signalMountTrackPreview
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -74,7 +74,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
-        self.getStatusFast()
+        self.getStatusMedium()
         self.logger.info('Mount connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
@@ -94,8 +94,8 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('Socket not connected')
 
-    def getStatusFast(self):
-        self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
+    def getStatusMedium(self):
+        self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#')
 
     def handleReadyRead(self):
         messageToProcess = ''
@@ -103,56 +103,32 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
-            if len(self.messageString) < 71:
+            if len(self.messageString) < 14:
                 return
             else:
-                messageToProcess = self.messageString[:71]
-                self.messageString = self.messageString[71:]
-        # Try and parse the message. In Fast we ask for GS and Ginfo so we expect 2
+                messageToProcess = self.messageString[:14]
+                self.messageString = self.messageString[14:]
+        # Try and parse the message.
         try:
-            if len(messageToProcess) == 0:
+            if len(messageToProcess) == 0 or 'FW' not in self.data:
                 return
             valueList = messageToProcess.strip('#').split('#')
-            # first the GS command
-            if len(valueList) == 2:
+            # all parameters are delivered
+            if len(valueList) == 4:
                 if len(valueList[0]) > 0:
-                    self.data['LocalSiderealTime'] = valueList[0].strip('#')
-                # second the Ginfo
+                    self.data['SlewRate'] = valueList[0].strip('#')
                 if len(valueList[1]) > 0:
-                    value = ''
-                    try:
-                        value = valueList[1].rstrip('#').strip().split(',')
-                        if len(value) == 8:
-                            self.data['RaJNow'] = float(value[0])
-                            self.data['DecJNow'] = float(value[1])
-                            self.data['Pierside'] = value[2]
-                            self.data['Az'] = float(value[3])
-                            self.data['Alt'] = float(value[4])
-                            self.data['JulianDate'] = value[5]
-                            self.data['Status'] = int(value[6])
-                            self.data['Slewing'] = (value[7] == '1')
-                            self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
-                            self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
-                            self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))
-                            self.data['TelescopeAltitude'] = '{0:03.2f}'.format(self.data['Alt'])
-                            self.data['TelescopeAzimuth'] = '{0:03.2f}'.format(self.data['Az'])
-                            self.data['MountStatus'] = '{0}'.format(self.data['Status'])
-                            if self.data['Pierside'] == str('W'):
-                                self.data['TelescopePierSide'] = 'WEST'
-                            else:
-                                self.data['TelescopePierSide'] = 'EAST'
-                            self.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
-                        else:
-                            self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(value))
-                    except Exception as e:
-                        self.logger.error('Receive error Ginfo command: {0} reply:{1}'.format(e, value))
-                    finally:
-                        pass
+                    self.data['TimeToFlip'] = int(float(valueList[1].strip('#')))
+                if len(valueList[2]) > 0:
+                    self.data['MeridianLimitTrack'] = int(float(valueList[2].strip('#')))
+                if len(valueList[3]) > 0:
+                    self.data['MeridianLimitSlew'] = int(float(valueList[3].strip('#')))
+                self.data['TimeToMeridian'] = int(self.data['TimeToFlip'] - self.data['MeridianLimitTrack'] / 360 * 24 * 60)
+                self.signalMountTrackPreview.emit()
             else:
-                self.logger.warning('Parsing GS-Ginfo combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
+                self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
-            self.logger.error('Parsing GS-Ginfo combined command got error:{0}'.format(e))
+            self.logger.error('Parsing Status Medium combined command got error:{0}'.format(e))
         finally:
             if self.isRunning:
-                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_FAST, self.getStatusFast)
-
+                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_MEDIUM, self.getStatusMedium)

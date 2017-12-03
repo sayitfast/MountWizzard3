@@ -19,6 +19,8 @@ import time
 import PyQt5
 from mount import ipdirect
 from mount import mountStatusRunnerFast
+from mount import mountStatusRunnerMedium
+from mount import mountStatusRunnerSlow
 # astrometry
 from astrometry import transform
 from mount import mountModelHandling
@@ -54,30 +56,45 @@ class Mount(PyQt5.QtCore.QThread):
         self.app = app
 
         self.data = {
-            'SiteLatitude': '49',
-            'SiteLongitude': '0',
-            'SiteHeight': '0',
+            'SiteLatitude': '49:00:00',
+            'SiteLongitude': '01:00:00',
+            'SiteHeight': '1',
             'MountIP': '',
             'MountMAC': '',
             'MountPort': 3490,
-            'LocalSiderealTime': ''
+            'LocalSiderealTime': '',
+            'FW': 21501
         }
 
         # getting all supporting classes assigned
-        self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data['MountIP'])
+        self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data)
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.checkIP = checkParamIP.CheckIP()
 
         # getting all threads setup
+        # fast status thread
         self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.data, self.signalMountAzAltPointer)
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
-        # noinspection PyUnresolvedReferences
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
         self.workerMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFastStop)
+        # medium status thread
+        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.data, self.signalMountTrackPreview)
+        self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
+        self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
+        self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
+        self.workerMountStatusRunnerMedium.finished.connect(self.workerMountStatusRunnerMediumStop)
+        # slow status thread
+        self.workerMountStatusRunnerSlow = mountStatusRunnerSlow.MountStatusRunnerSlow(self.app, self.data)
+        self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
+        self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
+        self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
+        self.workerMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlowStop)
 
         self.counter = 0
 
@@ -108,12 +125,16 @@ class Mount(PyQt5.QtCore.QThread):
     def changedMountConnectionSettings(self):
         # stopping all interaction
         self.mountIpDirect.disconnect()
+        self.workerMountStatusRunnerSlow.stop()
+        self.workerMountStatusRunnerMedium.stop()
         self.workerMountStatusRunnerFast.stop()
         # setting new values
         self.setIP()
         self.setMAC()
         # starting new communication
         self.mountIpDirect.connect()
+        self.threadMountStatusRunnerSlow.start()
+        self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
 
     def setIP(self):
@@ -144,6 +165,8 @@ class Mount(PyQt5.QtCore.QThread):
 
     def run(self):
         self.counter = 0
+        self.threadMountStatusRunnerSlow.start()
+        self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
         while True:
             self.signalMountConnected.emit(self.mountIpDirect.connected)

@@ -138,7 +138,7 @@ class ModelPlotWindow(widget.MwWidget):
             self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):
-        if not self.ui.checkRunTrackingWidget.isChecked():
+        if not self.ui.checkRunTrackingWidget.isChecked() or 'RaJ2000' not in self.app.mount.data:
             return
         raCopy = copy.copy(self.app.mount.data['RaJ2000'])
         decCopy = copy.copy(self.app.mount.data['DecJ2000'])

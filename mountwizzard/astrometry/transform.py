@@ -51,6 +51,9 @@ class Transform:
             sign = -1
         elif '+' in value:
             value = value.replace('+', '')
+        else:
+            # just for formal understanding
+            pass
         try:
             if len(value.split(splitter)) == 3:
                 hour, minute, second = value.split(splitter)
@@ -59,7 +62,7 @@ class Transform:
                 hour, minute = value.split(splitter)
                 returnValue = (float(hour) + float(minute) / 60) * sign
         except Exception as e:
-            self.logger.error('error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
+            self.logger.error('Error in conversion of:{0} with splitter:{1}, e:{2}'.format(value, splitter, e))
             returnValue = 0
         finally:
             pass
@@ -94,7 +97,7 @@ class Transform:
         SiteLatitude = self.degStringToDecimal(self.app.mount.data['SiteLatitude'])
         SiteLongitude = self.degStringToDecimal(self.app.mount.data['SiteLongitude'])
         if SiteLatitude == 0 or SiteLongitude == 0 or SiteElevation == 0:
-            self.logger.error('not site parameters set')
+            self.logger.error('No site parameters set')
             return 0, 0
         ts = datetime.datetime.utcnow()
         suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)

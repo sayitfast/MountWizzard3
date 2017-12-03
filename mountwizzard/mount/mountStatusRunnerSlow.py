@@ -18,19 +18,18 @@ from queue import Queue
 from astrometry import transform
 
 
-class MountStatusRunnerFast(PyQt5.QtCore.QObject):
+class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_STATUS_FAST = 100
+    CYCLE_STATUS_SLOW = 1000
     BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
-    def __init__(self, app, data, signalMountAzAltPointer):
+    def __init__(self, app, data):
         super().__init__()
 
         self.app = app
         self.data = data
-        self.signalMountAzAltPointer = signalMountAzAltPointer
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -74,7 +73,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
-        self.getStatusFast()
+        self.getStatusSlow()
         self.logger.info('Mount connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
@@ -94,8 +93,12 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('Socket not connected')
 
-    def getStatusFast(self):
-        self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
+    def getStatusSlow(self):
+        if 'FW' in self.data:
+            if self.data['FW'] < 21500:
+                self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
+            else:
+                self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
 
     def handleReadyRead(self):
         messageToProcess = ''
@@ -103,56 +106,47 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
-            if len(self.messageString) < 71:
-                return
+            if self.data['FW'] < 21500:
+                if len(self.messageString) < 32:
+                    return
+                else:
+                    messageToProcess = self.messageString[:32]
+                    self.messageString = self.messageString[32:]
             else:
-                messageToProcess = self.messageString[:71]
-                self.messageString = self.messageString[71:]
-        # Try and parse the message. In Fast we ask for GS and Ginfo so we expect 2
+                if len(self.messageString) < 45:
+                    return
+                else:
+                    messageToProcess = self.messageString[:45]
+                    self.messageString = self.messageString[45:]
+        # Try and parse the message.
         try:
-            if len(messageToProcess) == 0:
+            if len(messageToProcess) == 0 or 'FW' not in self.data:
                 return
             valueList = messageToProcess.strip('#').split('#')
-            # first the GS command
-            if len(valueList) == 2:
+            # +000.0# 0950.0# +029.8# 1 0 1 +90# +00# V,2018-03-24#
+            # all parameters are delivered
+            if 4 < len(valueList) < 7:
                 if len(valueList[0]) > 0:
-                    self.data['LocalSiderealTime'] = valueList[0].strip('#')
-                # second the Ginfo
+                    self.data['RefractionTemperature'] = valueList[0].strip('#')
                 if len(valueList[1]) > 0:
-                    value = ''
-                    try:
-                        value = valueList[1].rstrip('#').strip().split(',')
-                        if len(value) == 8:
-                            self.data['RaJNow'] = float(value[0])
-                            self.data['DecJNow'] = float(value[1])
-                            self.data['Pierside'] = value[2]
-                            self.data['Az'] = float(value[3])
-                            self.data['Alt'] = float(value[4])
-                            self.data['JulianDate'] = value[5]
-                            self.data['Status'] = int(value[6])
-                            self.data['Slewing'] = (value[7] == '1')
-                            self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
-                            self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
-                            self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))
-                            self.data['TelescopeAltitude'] = '{0:03.2f}'.format(self.data['Alt'])
-                            self.data['TelescopeAzimuth'] = '{0:03.2f}'.format(self.data['Az'])
-                            self.data['MountStatus'] = '{0}'.format(self.data['Status'])
-                            if self.data['Pierside'] == str('W'):
-                                self.data['TelescopePierSide'] = 'WEST'
-                            else:
-                                self.data['TelescopePierSide'] = 'EAST'
-                            self.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
-                        else:
-                            self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(value))
-                    except Exception as e:
-                        self.logger.error('Receive error Ginfo command: {0} reply:{1}'.format(e, value))
-                    finally:
-                        pass
+                    self.data['RefractionPressure'] = valueList[1].strip('#')
+                if len(valueList[2]) > 0:
+                    self.data['TelescopeTempDEC'] = valueList[2].strip('#')
+                if len(valueList[3]) > 0:
+                    self.data['RefractionStatus'] = valueList[3].strip('#')[0]
+                    self.data['UnattendedFlip'] = valueList[3].strip('#')[1]
+                    self.data['DualAxisTracking'] = valueList[3].strip('#')[2]
+                    self.data['CurrentHorizonLimitHigh'] = valueList[3].strip('#')[3:]
+                if len(valueList[4]) > 0:
+                    self.data['CurrentHorizonLimitLow'] = valueList[4].strip('#')
+                if self.data['FW'] > 21500 and len(valueList[5]) > 0:
+                    valid, expirationDate = valueList[5].split(',')
+                    self.data['UTCDataValid'] = valid
+                    self.data['UTCDataExpirationDate'] = expirationDate
             else:
-                self.logger.warning('Parsing GS-Ginfo combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
+                self.logger.warning('Parsing Status Slow combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
-            self.logger.error('Parsing GS-Ginfo combined command got error:{0}'.format(e))
+            self.logger.error('Parsing Status Slow combined command got error:{0}'.format(e))
         finally:
             if self.isRunning:
-                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_FAST, self.getStatusFast)
-
+                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_SLOW, self.getStatusSlow)
