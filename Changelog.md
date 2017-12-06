@@ -4,7 +4,7 @@
 - bugfix keep refinement
 - added boost mode for modeling
 - multiple bugfixes
-- refactoring for reactive design of threads from qthreads and event loops
+- refactoring for reactive design of threads from threads and event loops
 - reduced load -> improved performance
 
 2.5.26

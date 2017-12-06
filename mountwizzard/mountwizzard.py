@@ -941,11 +941,11 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_horizonLimitLow.setText(str(self.mount.data[valueName]))
             if valueName == 'CurrentHorizonLimitHigh':
                 self.ui.le_horizonLimitHigh.setText(str(self.mount.data[valueName]))
-            if valueName == 'CurrentSiteLongitude':
+            if valueName == 'SiteLongitude':
                 self.ui.le_siteLongitude.setText(str(self.mount.data[valueName]))
-            if valueName == 'CurrentSiteLatitude':
+            if valueName == 'SiteLatitude':
                 self.ui.le_siteLatitude.setText(str(self.mount.data[valueName]))
-            if valueName == 'CurrentSiteElevation':
+            if valueName == 'SiteHeight':
                 self.ui.le_siteElevation.setText(str(self.mount.data[valueName]))
             if valueName == 'JulianDate':
                 self.ui.le_JulianDate.setText(str(self.mount.data[valueName]))
