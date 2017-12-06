@@ -23,6 +23,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 from baseclasses import widget
+from astrometry import transform
 from gui import coordinate_dialog_ui
 
 
@@ -49,7 +50,7 @@ class ModelPlotWindow(widget.MwWidget):
     def __init__(self, app):
         super(ModelPlotWindow, self).__init__()
         self.app = app
-        self.transform = self.app.mount.transform
+        self.transform = transform.Transform(self.app)
         self.pointerAzAlt = QGraphicsItemGroup()                                                                            # object placeholder for AzAlt Pointer
         self.pointerTrack = QGraphicsItemGroup()                                                                            # same for tracking widget
         self.pointerTrackLine = []                                                                                          # same for Track line
@@ -62,8 +63,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.initUI()                                                                                                       # adaptions to ui setup
         self.initConfig()
         self.selectHorizonPointsMode()
-        self.app.mount.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
-        self.app.mount.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
+        self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
+        self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)                                  # signal for redrawing the window content
         self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)                                              # signal for redrawing the dome

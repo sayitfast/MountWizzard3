@@ -30,12 +30,17 @@ from analyse import analysedata
 from baseclasses import checkParamIP
 
 
-class Mount(PyQt5.QtCore.QThread):
+class MountDispatcher(PyQt5.QtCore.QThread):
+    finished = PyQt5.QtCore.pyqtSignal()
     logger = logging.getLogger(__name__)
     signalMountConnected = PyQt5.QtCore.pyqtSignal([bool])
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal()
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
+
+    BLUE = 'background-color: rgb(42, 130, 218)'
+    RED = 'background-color: red;'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
     statusReference = {
         '0': 'Tracking',
@@ -54,22 +59,29 @@ class Mount(PyQt5.QtCore.QThread):
         '99': 'Error'
     }
 
+    data = {
+        'SiteLatitude': '49:00:00',
+        'SiteLongitude': '01:00:00',
+        'SiteHeight': '1',
+        'MountIP': '',
+        'MountMAC': '',
+        'MountPort': 3490,
+        'LocalSiderealTime': '',
+        'FW': 21501
+    }
+
     def __init__(self, app):
         super().__init__()
         self.app = app
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
 
-        self.data = {
-            'SiteLatitude': '49:00:00',
-            'SiteLongitude': '01:00:00',
-            'SiteHeight': '1',
-            'MountIP': '',
-            'MountMAC': '',
-            'MountPort': 3490,
-            'LocalSiderealTime': '',
-            'FW': 21501
-        }
+        # getting all supporting classes assigned
+        self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data)
+        self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
+        self.analyse = analysedata.Analyse(self.app)
+        self.transform = transform.Transform(self.app)
+        self.checkIP = checkParamIP.CheckIP()
 
         self.commandDispatch = {
             'RunTargetRMSAlignment':
@@ -91,7 +103,7 @@ class Mount(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'RunTargetRMSAlignment':
+            'DeleteWorstPoint':
                 {
                     'Worker': [
                         {
@@ -208,6 +220,7 @@ class Mount(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
+            '''
             'SetRefractionParameter':
                 {
                     'Worker': [
@@ -217,6 +230,7 @@ class Mount(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
+            '''
             'FLIP':
                 {
                     'Worker': [
@@ -236,13 +250,6 @@ class Mount(PyQt5.QtCore.QThread):
                     ]
                 }
         }
-
-        # getting all supporting classes assigned
-        self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data)
-        self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
-        self.analyse = analysedata.Analyse(self.app)
-        self.transform = transform.Transform(self.app)
-        self.checkIP = checkParamIP.CheckIP()
 
         # getting all threads setup
         # fast status thread
@@ -357,101 +364,6 @@ class Mount(PyQt5.QtCore.QThread):
         self.threadMountGetAlignmentModel.quit()
         self.threadMountGetAlignmentModel.wait()
 
-    def run_old(self):
-        self.counter = 0
-        self.threadMountGetAlignmentModel.start()
-        self.threadMountStatusRunnerOnce.start()
-        self.threadMountStatusRunnerSlow.start()
-        self.threadMountStatusRunnerMedium.start()
-        self.threadMountStatusRunnerFast.start()
-        while True:
-            self.signalMountConnected.emit(self.mountIpDirect.connected)
-            if self.mountIpDirect.connected:
-                if not self.app.mountCommandQueue.empty():
-                    command = self.app.mountCommandQueue.get()
-                    if command == 'ClearAlign':
-                        self.mountIpDirect.sendCommand(':delalig#')
-                    elif command == 'RunTargetRMSAlignment':
-                        self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.BLUE)
-                        self.runTargetRMSAlignment()
-                        self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
-                        self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'DeleteWorstPoint':
-                        self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.BLUE)
-                        self.deleteWorstPoint()
-                        self.app.ui.btn_deleteWorstPoint.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SaveBackupModel':
-                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.saveBackupModel()
-                        self.app.ui.btn_saveBackupModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'LoadBackupModel':
-                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.loadBackupModel()
-                        self.app.ui.btn_loadBackupModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'LoadBaseModel':
-                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.loadBaseModel()
-                        self.app.ui.btn_loadBaseModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SaveBaseModel':
-                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.saveBaseModel()
-                        self.app.ui.btn_saveBaseModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'LoadRefinementModel':
-                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.loadRefinementModel()
-                        self.app.ui.btn_loadRefinementModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SaveRefinementModel':
-                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.saveRefinementModel()
-                        self.app.ui.btn_saveRefinementModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'LoadSimpleModel':
-                        self.app.ui.btn_loadSimpleModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.loadSimpleModel()
-                        self.app.ui.btn_loadSimpleModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SaveSimpleModel':
-                        self.app.ui.btn_saveSimpleModel.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.saveSimpleModel()
-                        self.app.ui.btn_saveSimpleModel.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'LoadDSO1Model':
-                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.loadDSO1Model()
-                        self.app.ui.btn_loadDSO1Model.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SaveDSO1Model':
-                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.saveDSO1Model()
-                        self.app.ui.btn_saveDSO1Model.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'LoadDSO2Model':
-                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.loadDSO2Model()
-                        self.app.ui.btn_loadDSO2Model.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SaveDSO2Model':
-                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.app.BLUE)
-                        self.mountModelHandling.saveDSO2Model()
-                        self.app.ui.btn_saveDSO2Model.setStyleSheet(self.app.DEFAULT)
-                    elif command == 'SetRefractionParameter':
-                        self.setRefractionParam()
-                    elif command == 'FLIP':
-                        self.flipMount()
-                    elif command == 'SetupAscomDriver':
-                        self.MountAscom.setupDriver()
-                    elif command == 'Shutdown':
-                        self.mountShutdown()
-                    else:
-                        self.mountIpDirect.sendCommand(command)
-                    self.app.mountCommandQueue.task_done()
-                else:
-                    if self.counter == 0:
-                        pass
-                        # self.setupAlignmentModel()
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
-                self.counter += 1
-            else:
-                self.mountIpDirect.connect()
-                self.counter = 0
-                time.sleep(1)
-        self.mountIpDirect.disconnect()
-
     def run(self):
         if not self.isRunning:
             self.isRunning = True
@@ -460,14 +372,31 @@ class Mount(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
-
-        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        self.getStatus()
+        self.mountIpDirect.connect()
+        # self.app.ui.btn_setRefractionCorrection.clicked.connect(self.commandDispatcher('SetRefractionParameter'))
+        self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcher('RunTargetRMSAlignment'))
+        self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcher('DeleteWorstPoint'))
+        self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcher('FLIP'))
+        self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcher('SaveBackupModel'))
+        self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcher('LoadBackupModel'))
+        self.app.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandDispatcher('SaveSimpleModel'))
+        self.app.ui.btn_loadSimpleModel.clicked.connect(lambda: self.commandDispatcher('LoadSimpleModel'))
+        self.app.ui.btn_saveRefinementModel.clicked.connect(lambda: self.commandDispatcher('SaveRefinementModel'))
+        self.app.ui.btn_loadRefinementModel.clicked.connect(lambda: self.commandDispatcher('LoadRefinementModel'))
+        self.app.ui.btn_saveBaseModel.clicked.connect(lambda: self.commandDispatcher('SaveBaseModel'))
+        self.app.ui.btn_loadBaseModel.clicked.connect(lambda: self.commandDispatcher('LoadBaseModel'))
+        self.app.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO1Model'))
+        self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO1Model'))
+        self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO2Model'))
+        self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
+        self.signalMountConnected.emit(self.mountIpDirect.connected)
+        self.workerMountGetAlignmentModel.getAlignmentModel()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.mountIpDirect.disconnect()
         self.finished.emit()
 
     def commandDispatcher(self, command):
@@ -485,12 +414,11 @@ class Mount(PyQt5.QtCore.QThread):
                     work['Method'](*parameter)
                 else:
                     work['Method']()
-                time.sleep(1)
+                time.sleep(0.2)
                 if 'Button' in work:
                     work['Button'].setStyleSheet(self.DEFAULT)
                 if 'Cancel' in work:
                     work['Cancel'].setStyleSheet(self.DEFAULT)
-                    self.modelingRunner.cancel = False
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):

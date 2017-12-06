@@ -28,7 +28,7 @@ class Transform:
         self.conversionLock = threading.Lock()
 
     def ra_dec_lst_to_az_alt(self, ra, dec):
-        LAT = self.degStringToDecimal(self.app.mount.data['SiteLatitude'])
+        LAT = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
         ra = math.radians(ra)
@@ -93,9 +93,9 @@ class Transform:
         # implementation ascom.transform to erfa.py
         # ---------------------------------------------------------------------------
         self.transformationLockERFA.acquire()
-        SiteElevation = float(self.app.mount.data['SiteHeight'])
-        SiteLatitude = self.degStringToDecimal(self.app.mount.data['SiteLatitude'])
-        SiteLongitude = self.degStringToDecimal(self.app.mount.data['SiteLongitude'])
+        SiteElevation = float(self.app.workerMountDispatcher.data['SiteHeight'])
+        SiteLatitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
+        SiteLongitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLongitude'])
         if SiteLatitude == 0 or SiteLongitude == 0 or SiteElevation == 0:
             self.logger.error('No site parameters set')
             return 0, 0
@@ -104,7 +104,7 @@ class Transform:
         if suc != 0:
             self.logger.error('error result : {0} in eraDat year: {1}, month: {2}, day: {3}'.format(suc, ts.year, ts.month, ts.day))
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
-        jd = float(self.app.mount.data['JulianDate'])
+        jd = float(self.app.workerMountDispatcher.data['JulianDate'])
         suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
         if suc != 0:
             self.logger.error('error result : {0} in eraUtctai jd: {1}'.format(suc, jd))
