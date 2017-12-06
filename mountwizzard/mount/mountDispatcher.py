@@ -57,6 +57,8 @@ class Mount(PyQt5.QtCore.QThread):
     def __init__(self, app):
         super().__init__()
         self.app = app
+        self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
 
         self.data = {
             'SiteLatitude': '49:00:00',
@@ -67,6 +69,172 @@ class Mount(PyQt5.QtCore.QThread):
             'MountPort': 3490,
             'LocalSiderealTime': '',
             'FW': 21501
+        }
+
+        self.commandDispatch = {
+            'RunTargetRMSAlignment':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runTargetRMSAlignment,
+                            'Method': self.runTargetRMSAlignment,
+                            'Cancel': self.app.ui.btn_cancelRunTargetRMSAlignment
+                        }
+                    ]
+                },
+            'ClearAlign':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_clearAlignmentModel,
+                            'Method': self.clearAlign
+                        }
+                    ]
+                },
+            'RunTargetRMSAlignment':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_deleteWorstPoint,
+                            'Method': self.deleteWorstPoint,
+                        }
+                    ]
+                },
+            'SaveBackupModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_saveBackupModel,
+                            'Method': self.mountModelHandling.saveBackupModel,
+                        }
+                    ]
+                },
+            'LoadBackupModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadBackupModel,
+                            'Method': self.mountModelHandling.loadBackupModel,
+                        }
+                    ]
+                },
+            'LoadBaseModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadBaseModel,
+                            'Method': self.mountModelHandling.loadBaseModel,
+                        }
+                    ]
+                },
+            'SaveBaseModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_saveBaseModel,
+                            'Method': self.mountModelHandling.saveBaseModel,
+                        }
+                    ]
+                },
+            'LoadRefinementModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadRefinementModel,
+                            'Method': self.mountModelHandling.loadRefinementModel,
+                        }
+                    ]
+                },
+            'SaveRefinementModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_saveRefinementModel,
+                            'Method': self.mountModelHandling.saveRefinementModel,
+                        }
+                    ]
+                },
+            'LoadSimpleModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadSimpleModel,
+                            'Method': self.mountModelHandling.loadSimpleModel,
+                        }
+                    ]
+                },
+            'SaveSimpleModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_saveSimpleModel,
+                            'Method': self.mountModelHandling.saveSimpleModel,
+                        }
+                    ]
+                },
+            'LoadDSO1Model':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadDSO1Model,
+                            'Method': self.mountModelHandling.loadDSO1Model,
+                        }
+                    ]
+                },
+            'SaveDSO1Model':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_saveDSO1Model,
+                            'Method': self.mountModelHandling.saveDSO1Model,
+                        }
+                    ]
+                },
+            'LoadDSO2Model':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_loadDSO2Model,
+                            'Method': self.mountModelHandling.loadDSO2Model,
+                        }
+                    ]
+                },
+            'SaveDSO2Model':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_saveDSO2Model,
+                            'Method': self.mountModelHandling.saveDSO2Model,
+                        }
+                    ]
+                },
+            'SetRefractionParameter':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_setRefractionParameters,
+                            'Method': self.setRefractionParam,
+                        }
+                    ]
+                },
+            'FLIP':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_flipMount,
+                            'Method': self.flipMount,
+                        }
+                    ]
+                },
+            'Shutdown':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_mountShutdown,
+                            'Method': self.mountShutdown,
+                        }
+                    ]
+                }
         }
 
         # getting all supporting classes assigned
@@ -189,7 +357,7 @@ class Mount(PyQt5.QtCore.QThread):
         self.threadMountGetAlignmentModel.quit()
         self.threadMountGetAlignmentModel.wait()
 
-    def run(self):
+    def run_old(self):
         self.counter = 0
         self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
@@ -202,10 +370,7 @@ class Mount(PyQt5.QtCore.QThread):
                 if not self.app.mountCommandQueue.empty():
                     command = self.app.mountCommandQueue.get()
                     if command == 'ClearAlign':
-                        if self.numberModelStars() == -1:
-                            self.app.messageQueue.put('#BRClear Align not available in simulation mode\n')
-                        else:
-                            self.mountIpDirect.sendCommand(':delalig#')
+                        self.mountIpDirect.sendCommand(':delalig#')
                     elif command == 'RunTargetRMSAlignment':
                         self.app.ui.btn_runTargetRMSAlignment.setStyleSheet(self.app.BLUE)
                         self.runTargetRMSAlignment()
@@ -287,6 +452,47 @@ class Mount(PyQt5.QtCore.QThread):
                 time.sleep(1)
         self.mountIpDirect.disconnect()
 
+    def run(self):
+        if not self.isRunning:
+            self.isRunning = True
+        self.threadMountGetAlignmentModel.start()
+        self.threadMountStatusRunnerOnce.start()
+        self.threadMountStatusRunnerSlow.start()
+        self.threadMountStatusRunnerMedium.start()
+        self.threadMountStatusRunnerFast.start()
+
+        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        self.getStatus()
+
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
+        self.finished.emit()
+
+    def commandDispatcher(self, command):
+        # if we have a command in dispatcher
+        if command in self.commandDispatch:
+            # running through all necessary commands
+            for work in self.commandDispatch[command]['Worker']:
+                # if we want to color a button, which one
+                if 'Button' in work:
+                    work['Button'].setStyleSheet(self.BLUE)
+                if 'Parameter' in work:
+                    parameter = []
+                    for p in work['Parameter']:
+                        parameter.append(eval(p))
+                    work['Method'](*parameter)
+                else:
+                    work['Method']()
+                time.sleep(1)
+                if 'Button' in work:
+                    work['Button'].setStyleSheet(self.DEFAULT)
+                if 'Cancel' in work:
+                    work['Cancel'].setStyleSheet(self.DEFAULT)
+                    self.modelingRunner.cancel = False
+                PyQt5.QtWidgets.QApplication.processEvents()
+
     def mountShutdown(self):
         reply = self.mountIpDirect.sendCommand(':shutdown#')
         if reply != '1':
@@ -298,6 +504,9 @@ class Mount(PyQt5.QtCore.QThread):
             self.mountIpDirect.disconnect()
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !')
+
+    def clearAlign(self):
+        self.mountIpDirect.sendCommand(':delalig#')
 
     def flipMount(self):
         reply = self.mountIpDirect.sendCommand(':FLIP#').rstrip('#').strip()

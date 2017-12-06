@@ -134,10 +134,10 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                     self.data['FirmwareTime'] = valueList[6]
                 if len(valueList[7]) > 0:
                     self.data['HardwareVersion'] = valueList[7]
-            self.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
-            self.info('Site Lon:{0}'.format(self.data['SiteLongitude']))
-            self.info('Site Lat:{0}'.format(self.data['SiteLatitude']))
-            self.info('Site Height:{0}'.format(self.data['SiteHeight']))
+            self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
+            self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
+            self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
+            self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
         except Exception as e:
             pass
         finally:
