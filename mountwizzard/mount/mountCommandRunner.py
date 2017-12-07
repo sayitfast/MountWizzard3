@@ -23,12 +23,11 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     BLIND_COMMANDS = [':AP#', ':hP#', ':PO#', ':RT0#', ':RT1#', ':RT2#', ':RT9#', ':STOP#', ':U2#']
 
-    def __init__(self, app, data, signalMountConnected):
+    def __init__(self, app, data):
         super().__init__()
 
         self.app = app
         self.data = data
-        self.signalMountConnected = signalMountConnected
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -67,35 +66,20 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
-        self.signalMountConnected.emit(True)
-        self.logger.info('Mount connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount CommandRunner connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
-        self.logger.error('Mount connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
+        self.logger.error('Mount connection CommandRunner fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
-        self.logger.info('Mount connection has state: {0}'.format(self.socket.state()))
+        self.logger.info('Mount connection CommandRunner has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
-        self.logger.info('Mount connection is disconnected from host')
+        self.logger.info('Mount connection CommandRunner is disconnected from host')
         self.connected = False
-        self.signalMountConnected.emit(False)
 
     def handleReadyRead(self):
-        # Add starting tag if this is new message.
-        self.message_string = ''
-
-        # Get message from socket.
-        while self.socket.bytesAvailable():
-            tmp = str(self.socket.read(1000), "ascii")
-            self.message_string += tmp
-
-        # Try and parse the message.
-        values = self.message_string.strip('#').split('#')
-        for ret in values:
-            (command, target) = self.parseQueue.get()
-            print('command ->', command, '   target -> ', target, '   value ->', ret)
-        # print(self.message_string)
+        pass
 
     def sendCommand(self, command):
         if self.connected and self.isRunning:
@@ -110,6 +94,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                             self.message_string += tmp
                         return self.message_string.strip('#')
             else:
-                self.logger.warning('Socket not connected')
+                self.logger.warning('Socket CommandRunner not connected')
 
 

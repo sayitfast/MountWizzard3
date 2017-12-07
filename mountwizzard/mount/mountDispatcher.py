@@ -75,21 +75,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app = app
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
-
         # getting all supporting classes assigned
-        # fast status thread
-        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data, self.signalMountConnected)
-        self.threadMountCommandRunner = PyQt5.QtCore.QThread()
-        self.threadMountCommandRunner.setObjectName("MountCommandRunner")
-        self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
-        self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
-        self.workerMountCommandRunner.finished.connect(self.workerMountCommandRunnerStop)
-
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.checkIP = checkParamIP.CheckIP()
-
         self.commandDispatch = {
             'RunTargetRMSAlignment':
                 {
@@ -257,8 +247,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     ]
                 }
         }
-
         # getting all threads setup
+        # commands sending thread
+        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data)
+        self.threadMountCommandRunner = PyQt5.QtCore.QThread()
+        self.threadMountCommandRunner.setObjectName("MountCommandRunner")
+        self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
+        self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
+        self.workerMountCommandRunner.finished.connect(self.workerMountCommandRunnerStop)
         # fast status thread
         self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.data, self.signalMountAzAltPointer)
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
@@ -323,9 +319,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
 
     def changedMountConnectionSettings(self):
+        return
         # stopping all interaction
         self.workerMountCommandRunner.stop()
-        self.workerGetAlignmentModel.stop()
+        self.workerMountGetAlignmentModel.stop()
         self.workerMountStatusRunnerOnce.stop()
         self.workerMountStatusRunnerSlow.stop()
         self.workerMountStatusRunnerMedium.stop()
@@ -335,7 +332,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.setMAC()
         # starting new communication
         self.threadMountCommandRunner.start()
-        self.threadGetAlignmentModel.start()
+        self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
@@ -378,6 +375,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def run(self):
         if not self.isRunning:
             self.isRunning = True
+        self.signalMountConnected.emit(False)
         self.threadMountGetAlignmentModel.start()
         self.threadMountCommandRunner.start()
         self.threadMountStatusRunnerOnce.start()
@@ -402,6 +400,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO2Model'))
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
         self.workerMountGetAlignmentModel.getAlignmentModel()
+        while self.isRunning:
+            self.signalMountConnected.emit(self.workerMountStatusRunnerFast.connected)
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self._mutex.lock()
