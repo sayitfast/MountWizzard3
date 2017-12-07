@@ -22,8 +22,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
-
     def __init__(self, app, data, signalMountShowAlignmentModel):
         super().__init__()
 
@@ -215,6 +213,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.signalMountShowAlignmentModel.emit()
             self.data['ModelLoading'] = False
         except Exception as e:
-            self.logger.error('Parsing Get Align Model got error:{0}'.format(e))
+            self.logger.error('Parsing Get Align Model got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
             pass

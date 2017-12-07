@@ -23,7 +23,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     finished = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_STATUS_MEDIUM = 3000
-    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
     def __init__(self, app, data, signalMountTrackPreview):
         super().__init__()

@@ -22,8 +22,6 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
-
     def __init__(self, app, data):
         super().__init__()
 

@@ -14,8 +14,8 @@
 import logging
 # import PyQT5 for threading purpose
 import PyQt5
-from mount import ipdirect
-from mount import ipdirectNew
+from snippets import ipdirect
+from mount import mountCommandRunner
 from astrometry import transform
 
 
@@ -46,7 +46,7 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
         self.mountIpDirect = ipdirect.MountIpDirect(self.app)
 
-        self.worker1Mount = ipdirectNew.MountIpDirect(self.app, self.data)
+        self.worker1Mount = mountCommandRunner.MountIpDirect(self.app, self.data)
         self.thread1Mount = PyQt5.QtCore.QThread()
         self.thread1Mount.setObjectName("Mount1")
         self.worker1Mount.moveToThread(self.thread1Mount)

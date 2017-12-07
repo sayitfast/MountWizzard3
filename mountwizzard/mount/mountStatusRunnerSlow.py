@@ -23,7 +23,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
     finished = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_STATUS_SLOW = 10000
-    BLIND_COMMANDS = ['AP', 'hP', 'PO', 'RT0', 'RT1', 'RT2', 'RT9', 'STOP', 'U2']
 
     def __init__(self, app, data):
         super().__init__()

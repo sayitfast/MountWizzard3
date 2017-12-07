@@ -17,7 +17,7 @@ import math
 import time
 # import PyQT5 for threading purpose
 import PyQt5
-from mount import ipdirect
+from mount import mountCommandRunner
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
 from mount import mountStatusRunnerSlow
@@ -77,7 +77,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self._mutex = PyQt5.QtCore.QMutex()
 
         # getting all supporting classes assigned
-        self.mountIpDirect = ipdirect.MountIpDirect(self.app, self.data)
+        # fast status thread
+        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data, self.signalMountConnected)
+        self.threadMountCommandRunner = PyQt5.QtCore.QThread()
+        self.threadMountCommandRunner.setObjectName("MountCommandRunner")
+        self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
+        self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
+        self.workerMountCommandRunner.finished.connect(self.workerMountCommandRunnerStop)
+
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
@@ -317,7 +324,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def changedMountConnectionSettings(self):
         # stopping all interaction
-        self.mountIpDirect.disconnect()
+        self.workerMountCommandRunner.stop()
         self.workerGetAlignmentModel.stop()
         self.workerMountStatusRunnerOnce.stop()
         self.workerMountStatusRunnerSlow.stop()
@@ -327,7 +334,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.setIP()
         self.setMAC()
         # starting new communication
-        self.mountIpDirect.connect()
+        self.threadMountCommandRunner.start()
         self.threadGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
@@ -360,6 +367,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerOnce.quit()
         self.threadMountStatusRunnerOnce.wait()
 
+    def workerMountCommandRunnerStop(self):
+        self.threadMountCommandRunner.quit()
+        self.threadMountCommandRunner.wait()
+
     def workerMountGetAlignmentModelStop(self):
         self.threadMountGetAlignmentModel.quit()
         self.threadMountGetAlignmentModel.wait()
@@ -368,11 +379,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if not self.isRunning:
             self.isRunning = True
         self.threadMountGetAlignmentModel.start()
+        self.threadMountCommandRunner.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
-        self.mountIpDirect.connect()
+
         # self.app.ui.btn_setRefractionCorrection.clicked.connect(self.commandDispatcher('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcher('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcher('DeleteWorstPoint'))
@@ -389,14 +401,19 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO1Model'))
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO2Model'))
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
-        self.signalMountConnected.emit(self.mountIpDirect.connected)
         self.workerMountGetAlignmentModel.getAlignmentModel()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.mountIpDirect.disconnect()
+        # stopping all interaction
+        self.workerMountCommandRunner.stop()
+        self.workerGetAlignmentModel.stop()
+        self.workerMountStatusRunnerOnce.stop()
+        self.workerMountStatusRunnerSlow.stop()
+        self.workerMountStatusRunnerMedium.stop()
+        self.workerMountStatusRunnerFast.stop()
         self.finished.emit()
 
     def commandDispatcher(self, command):
@@ -422,33 +439,33 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):
-        reply = self.mountIpDirect.sendCommand(':shutdown#')
+        reply = self.workerMountCommandRunner.sendCommand(':shutdown#')
         if reply != '1':
             self.logger.error('error: {0}'.format(reply))
             self.app.messageQueue.put('#BRError in mount shutdown\n')
         else:
-            self.mountIpDirect.connected = False
+            self.workerMountCommandRunner.connected = False
             time.sleep(1)
-            self.mountIpDirect.disconnect()
+            self.workerMountCommandRunner.disconnect()
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !')
 
     def clearAlign(self):
-        self.mountIpDirect.sendCommand(':delalig#')
+        self.workerMountCommandRunner.sendCommand(':delalig#')
 
     def flipMount(self):
-        reply = self.mountIpDirect.sendCommand(':FLIP#').rstrip('#').strip()
+        reply = self.workerMountCommandRunner.sendCommand(':FLIP#').rstrip('#').strip()
         if reply == '0':
             self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
             self.logger.error('error: {0}'.format(reply))
 
     def syncMountModel(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.mountIpDirect.sendCommand(':Sr{0}#'.format(ra))
-        self.mountIpDirect.sendCommand(':Sd{0}#'.format(dec))
-        self.mountIpDirect.sendCommand(':CMCFG0#')
+        self.workerMountCommandRunner.sendCommand(':Sr{0}#'.format(ra))
+        self.workerMountCommandRunner.sendCommand(':Sd{0}#'.format(dec))
+        self.workerMountCommandRunner.sendCommand(':CMCFG0#')
         # send sync command
-        reply = self.mountIpDirect.sendCommand(':CM#')
+        reply = self.workerMountCommandRunner.sendCommand(':CM#')
         if reply[:5] == 'Coord':
             self.logger.info('mount modeling synced')
             return True
@@ -458,10 +475,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.mountIpDirect.sendCommand(':Sr{0}#'.format(ra))
-        self.mountIpDirect.sendCommand(':Sd{0}#'.format(dec))
+        self.workerMountCommandRunner.sendCommand(':Sr{0}#'.format(ra))
+        self.workerMountCommandRunner.sendCommand(':Sd{0}#'.format(dec))
         starNumber = self.numberModelStars()
-        reply = self.mountIpDirect.sendCommand(':CMS#')
+        reply = self.workerMountCommandRunner.sendCommand(':CMS#')
         starAdded = self.numberModelStars() - starNumber
         if reply == 'E':
             # 'E' says star could not be added
@@ -477,7 +494,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def programBatchData(self, data):
         self.saveBackupModel()
-        self.mountIpDirect.sendCommand(':newalig#')
+        self.workerMountCommandRunner.sendCommand(':newalig#')
         for i in range(0, len(data['Index'])):
             command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
                                                               self.transform.decimalToDegree(data['DecJNow'][i], True, False),
@@ -488,7 +505,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             reply = self.app.mount.mountHandler.sendCommand(command)
             if reply == 'E':
                 self.logger.warning('point {0} could not be added'.format(reply))
-        reply = self.mountIpDirect.sendCommand(':endalig#')
+        reply = self.workerMountCommandRunner.sendCommand(':endalig#')
         if reply == 'V':
             self.logger.info('Model successful finished!')
         else:
@@ -537,7 +554,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]
         self.app.messageQueue.put('Deleting Point {0:02d}  with Error: {1} ...'.format(worstPointIndex + 1, maxError))
-        reply = self.mountIpDirect.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
+        reply = self.workerMountCommandRunner.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
         if reply == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))

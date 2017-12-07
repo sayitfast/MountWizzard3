@@ -23,8 +23,8 @@ class MountModelHandling:
         self.data = data
 
     def saveModel(self, target):
-        self.app.workerMountDispatcher.mountIpDirect.sendCommand(':modeldel0{0}#'.format(target))
-        reply = self.app.workerMountDispatcher.mountIpDirect.sendCommand(':modelsv0{0}#'.format(target))
+        self.app.workerMountDispatcher.workerMountCommandRunner.sendCommand(':modeldel0{0}#'.format(target))
+        reply = self.app.workerMountDispatcher.workerMountCommandRunner.sendCommand(':modelsv0{0}#'.format(target))
         if reply == '1':
             self.app.messageQueue.put('Actual Mount Model saved to file {0}\n'.format(target))
             return True
@@ -33,7 +33,7 @@ class MountModelHandling:
             return False
 
     def loadModel(self, target):
-        reply = self.app.workerMountDispatcher.mountIpDirect.sendCommand(':modelld0{0}#'.format(target))
+        reply = self.app.workerMountDispatcher.workerMountCommandRunner.sendCommand(':modelld0{0}#'.format(target))
         if reply == '1':
             self.app.messageQueue.put('Mount Model loaded from file {0}\n'.format(target))
             self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
