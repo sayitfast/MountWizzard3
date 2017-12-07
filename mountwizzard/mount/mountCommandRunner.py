@@ -72,7 +72,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.logger.error('Mount connection CommandRunner fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
-        self.logger.info('Mount connection CommandRunner has state: {0}'.format(self.socket.state()))
+        pass
+        # self.logger.info('Mount connection CommandRunner has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('Mount connection CommandRunner is disconnected from host')

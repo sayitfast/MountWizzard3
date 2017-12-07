@@ -66,7 +66,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.finished.emit()
 
     def handleHostFound(self):
-        self.logger.info('Mount RunnerOnce found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        pass
+        # self.logger.info('Mount RunnerOnce found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
         self.connected = True
@@ -77,7 +78,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.logger.error('Mount RunnerOnce connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
-        self.logger.info('Mount RunnerOnce connection has state: {0}'.format(self.socket.state()))
+        pass
+        # self.logger.info('Mount RunnerOnce connection has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerOnce connection is disconnected from host')
