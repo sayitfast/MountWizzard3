@@ -17,6 +17,7 @@ import math
 import time
 # import PyQT5 for threading purpose
 import PyQt5
+import threading
 from mount import mountCommandRunner
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
@@ -75,6 +76,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app = app
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
+        self.ipChangeLock = threading.Lock()
         # getting all supporting classes assigned
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
@@ -319,8 +321,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
 
     def changedMountConnectionSettings(self):
+        # todo: change of IP address in the run with reconnect
         return
         # stopping all interaction
+        self.ipChangeLock.acquire()
         self.workerMountCommandRunner.stop()
         self.workerMountGetAlignmentModel.stop()
         self.workerMountStatusRunnerOnce.stop()
@@ -337,6 +341,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
+        self.ipChangeLock.release()
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
@@ -399,6 +404,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO1Model'))
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO2Model'))
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
+        self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcher('Shutdown'))
         self.workerMountGetAlignmentModel.getAlignmentModel()
         while self.isRunning:
             self.signalMountConnected.emit(self.workerMountStatusRunnerFast.connected)
@@ -448,9 +454,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         else:
             self.workerMountCommandRunner.connected = False
             time.sleep(1)
-            self.workerMountCommandRunner.disconnect()
             self.logger.info('Shutdown mount manually')
-            self.app.messageQueue.put('Shutting mount down !')
+            self.app.messageQueue.put('Shutting mount down !\n')
 
     def clearAlign(self):
         self.workerMountCommandRunner.sendCommand(':delalig#')
