@@ -141,10 +141,10 @@ class ModelPlotWindow(widget.MwWidget):
             self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):
-        if not self.ui.checkRunTrackingWidget.isChecked() or 'RaJ2000' not in self.app.mount.data:
+        if not self.ui.checkRunTrackingWidget.isChecked() or 'RaJ2000' not in self.app.workerMountDispatcher.data:
             return
-        raCopy = copy.copy(self.app.mount.data['RaJ2000'])
-        decCopy = copy.copy(self.app.mount.data['DecJ2000'])
+        raCopy = copy.copy(self.app.workerMountDispatcher.data['RaJ2000'])
+        decCopy = copy.copy(self.app.workerMountDispatcher.data['DecJ2000'])
         width = self.ui.modelPointsPlot.width()
         height = self.ui.modelPointsPlot.height()
         self.pointerTrack.setVisible(True)
@@ -157,10 +157,10 @@ class ModelPlotWindow(widget.MwWidget):
                 self.pointerTrackLine[i].setVisible(True)
             else:
                 self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.transform.transformERFA(self.app.mount.data['RaJ2000'] - float(self.app.mount.data['TimeToFlip']) / 60, decCopy, 1)
+        az, alt = self.transform.transformERFA(self.app.workerMountDispatcher.data['RaJ2000'] - float(self.app.workerMountDispatcher.data['TimeToFlip']) / 60, decCopy, 1)
         x, y = getXY(az, alt, height, width, BORDER_VIEW)
         self.itemFlipTime.setPos(x, y)
-        delta = float(self.app.mount.data['TimeToFlip'])
+        delta = float(self.app.workerMountDispatcher.data['TimeToFlip'])
         fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
         self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:3.0f} min'.format(fliptime, delta))
         self.pointerTrack.update()

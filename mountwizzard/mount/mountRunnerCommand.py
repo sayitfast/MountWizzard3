@@ -17,7 +17,7 @@ import time
 from queue import Queue
 
 
-class MountCommandRunner(PyQt5.QtCore.QObject):
+class MountRunnerCommand(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
@@ -66,17 +66,17 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
-        self.logger.info('Mount CommandRunner connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount RunnerCommand connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
-        self.logger.error('Mount connection CommandRunner fault: {0}'.format(self.socket.errorString()))
+        self.logger.error('Mount RunnerCommand connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
         pass
         # self.logger.info('Mount connection CommandRunner has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
-        self.logger.info('Mount connection CommandRunner is disconnected from host')
+        self.logger.info('Mount RunnerCommand connection is disconnected from host')
         self.connected = False
 
     def handleReadyRead(self):
@@ -95,6 +95,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                             self.message_string += tmp
                         return self.message_string.strip('#')
             else:
-                self.logger.warning('Socket CommandRunner not connected')
+                self.logger.warning('Socket RunnerCommand not connected')
 
 

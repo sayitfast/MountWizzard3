@@ -18,7 +18,7 @@ import time
 # import PyQT5 for threading purpose
 import PyQt5
 import threading
-from mount import mountCommandRunner
+from mount import mountRunnerCommand
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
 from mount import mountStatusRunnerSlow
@@ -251,7 +251,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         }
         # getting all threads setup
         # commands sending thread
-        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data)
+        self.workerMountCommandRunner = mountRunnerCommand.MountRunnerCommand(self.app, self.data)
         self.threadMountCommandRunner = PyQt5.QtCore.QThread()
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
