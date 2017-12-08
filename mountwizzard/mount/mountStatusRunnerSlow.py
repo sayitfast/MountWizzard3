@@ -100,9 +100,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         if 'FW' not in self.data:
             self.data['FW'] = 0
         if self.data['FW'] < 21500:
-            self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
+            self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
         else:
-            self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+            self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
 
     def handleReadyRead(self):
         # Get message from socket.
@@ -110,17 +110,17 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
         if self.data['FW'] < 21500:
-            if len(self.messageString) < 32:
+            if len(self.messageString) < 18:
                 return
             else:
-                messageToProcess = self.messageString[:32]
-                self.messageString = self.messageString[32:]
+                messageToProcess = self.messageString[:18]
+                self.messageString = self.messageString[18:]
         else:
-            if len(self.messageString) < 45:
+            if len(self.messageString) < 31:
                 return
             else:
-                messageToProcess = self.messageString[:45]
-                self.messageString = self.messageString[45:]
+                messageToProcess = self.messageString[:31]
+                self.messageString = self.messageString[31:]
         # Try and parse the message.
         try:
             if 'FW' not in self.data:
@@ -128,24 +128,20 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             if len(messageToProcess) == 0:
                 return
             valueList = messageToProcess.strip('#').split('#')
-            # +000.0# 0950.0# +029.8# 1 0 1 +90# +00# V,2018-03-24#
+            #  +029.8# 1 0 1 +90# +00# V,2018-03-24#
             # all parameters are delivered
-            if 4 < len(valueList) < 7:
+            if 2 < len(valueList) < 5:
                 if len(valueList[0]) > 0:
-                    self.data['RefractionTemperature'] = valueList[0]
+                    self.data['TelescopeTempDEC'] = valueList[0]
                 if len(valueList[1]) > 0:
-                    self.data['RefractionPressure'] = valueList[1]
+                    self.data['RefractionStatus'] = valueList[1][0]
+                    self.data['UnattendedFlip'] = valueList[1][1]
+                    self.data['DualAxisTracking'] = valueList[1][2]
+                    self.data['CurrentHorizonLimitHigh'] = valueList[1][3:]
                 if len(valueList[2]) > 0:
-                    self.data['TelescopeTempDEC'] = valueList[2]
-                if len(valueList[3]) > 0:
-                    self.data['RefractionStatus'] = valueList[3][0]
-                    self.data['UnattendedFlip'] = valueList[3][1]
-                    self.data['DualAxisTracking'] = valueList[3][2]
-                    self.data['CurrentHorizonLimitHigh'] = valueList[3][3:]
-                if len(valueList[4]) > 0:
-                    self.data['CurrentHorizonLimitLow'] = valueList[4]
-                if self.data['FW'] > 21500 and len(valueList[5]) > 0:
-                    valid, expirationDate = valueList[5].split(',')
+                    self.data['CurrentHorizonLimitLow'] = valueList[2]
+                if self.data['FW'] > 21500 and len(valueList[3]) > 0:
+                    valid, expirationDate = valueList[3].split(',')
                     self.data['UTCDataValid'] = valid
                     self.data['UTCDataExpirationDate'] = expirationDate
             else:

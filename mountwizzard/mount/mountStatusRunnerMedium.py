@@ -98,18 +98,40 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket RunnerMedium not connected')
 
     def getStatusMedium(self):
-        self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#')
+        if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
+            command = ''
+            pressure = self.app.workerAscomEnvironment.data['Pressure']
+            temperature = self.app.workerAscomEnvironment.data['Temperature']
+            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
+                command = ':SRPRS{0:04.1f}#'.format(pressure)
+                if temperature > 0:
+                    command += ':SRTMP+{0:03.1f}#'.format(temperature)
+                else:
+                    command += ':SRTMP-{0:3.1f}#'.format(-temperature)
+            else:
+                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
+            if self.app.ui.checkAutoRefractionNotTracking.isChecked():
+                # if there is no tracking, than updating is good
+                if 'Status' in self.data:
+                    if self.data['Status'] != '0':
+                        self.app.mountCommandQueue.put(command)
+            if self.app.ui.checkAutoRefractionCamera.isChecked():
+                # the same is good if the camera is not in integrating
+                if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] not in ['READY - IDLE', 'DOWNLOADING']:
+                    self.app.mountCommandQueue.put(command)
+        self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
 
     def handleReadyRead(self):
         # Get message from socket.
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
-        if len(self.messageString) < 14:
+            # print(self.messageString)
+        if len(self.messageString) < 28:
             return
         else:
-            messageToProcess = self.messageString[:14]
-            self.messageString = self.messageString[14:]
+            messageToProcess = self.messageString[:28]
+            self.messageString = self.messageString[28:]
         # Try and parse the message.
         try:
             if 'FW' not in self.data:
@@ -117,8 +139,9 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             if len(messageToProcess) == 0:
                 return
             valueList = messageToProcess.strip('#').split('#')
+            # print(valueList)
             # all parameters are delivered
-            if len(valueList) == 4:
+            if len(valueList) >= 4:
                 if len(valueList[0]) > 0:
                     self.data['SlewRate'] = valueList[0]
                 if len(valueList[1]) > 0:
@@ -128,6 +151,10 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 if len(valueList[3]) > 0:
                     self.data['MeridianLimitSlew'] = int(float(valueList[3]))
                 self.data['TimeToMeridian'] = int(self.data['TimeToFlip'] - self.data['MeridianLimitTrack'] / 360 * 24 * 60)
+                if len(valueList[4]) > 0:
+                    self.data['RefractionTemperature'] = valueList[4]
+                if len(valueList[5]) > 0:
+                    self.data['RefractionPressure'] = valueList[5]
                 self.signalMountTrackPreview.emit()
             else:
                 self.logger.warning('Parsing Status Medium combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))

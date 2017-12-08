@@ -42,6 +42,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
 
+    CYCLE_AUTO_UPDATE = 3000
+
     statusReference = {
         '0': 'Tracking',
         '1': 'Stopped after STOP',
@@ -81,6 +83,51 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.checkIP = checkParamIP.CheckIP()
+
+        # getting all threads setup
+        # commands sending thread
+        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data)
+        self.threadMountCommandRunner = PyQt5.QtCore.QThread()
+        self.threadMountCommandRunner.setObjectName("MountCommandRunner")
+        self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
+        self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
+        self.workerMountCommandRunner.finished.connect(self.workerMountCommandRunnerStop)
+        # fast status thread
+        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.data, self.signalMountAzAltPointer)
+        self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
+        self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
+        self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
+        self.workerMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFastStop)
+        # medium status thread
+        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.data, self.signalMountTrackPreview)
+        self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
+        self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
+        self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
+        self.workerMountStatusRunnerMedium.finished.connect(self.workerMountStatusRunnerMediumStop)
+        # slow status thread
+        self.workerMountStatusRunnerSlow = mountStatusRunnerSlow.MountStatusRunnerSlow(self.app, self.data)
+        self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
+        self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
+        self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
+        self.workerMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlowStop)
+        # once status thread
+        self.workerMountStatusRunnerOnce = mountStatusRunnerOnce.MountStatusRunnerOnce(self.app, self.data)
+        self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
+        self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
+        self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
+        self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
+        self.workerMountStatusRunnerOnce.finished.connect(self.workerMountStatusRunnerOnceStop)
+        # get alignment model
+        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.data, self.signalMountShowAlignmentModel)
+        self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
+        self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
+        self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
+        self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
+        self.workerMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModelStop)
+
         self.commandDispatch = {
             'RunTargetRMSAlignment':
                 {
@@ -235,7 +282,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_setRefractionParameters,
-                            'Method': self.setRefractionParam,
+                            'Method': self.workerMountStatusRunnerMedium.getStatusMedium,
                         }
                     ]
                 },
@@ -258,49 +305,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     ]
                 }
         }
-        # getting all threads setup
-        # commands sending thread
-        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data)
-        self.threadMountCommandRunner = PyQt5.QtCore.QThread()
-        self.threadMountCommandRunner.setObjectName("MountCommandRunner")
-        self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
-        self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
-        self.workerMountCommandRunner.finished.connect(self.workerMountCommandRunnerStop)
-        # fast status thread
-        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.data, self.signalMountAzAltPointer)
-        self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
-        self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
-        self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
-        self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
-        self.workerMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFastStop)
-        # medium status thread
-        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.data, self.signalMountTrackPreview)
-        self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
-        self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
-        self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
-        self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
-        self.workerMountStatusRunnerMedium.finished.connect(self.workerMountStatusRunnerMediumStop)
-        # slow status thread
-        self.workerMountStatusRunnerSlow = mountStatusRunnerSlow.MountStatusRunnerSlow(self.app, self.data)
-        self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
-        self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
-        self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
-        self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
-        self.workerMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlowStop)
-        # once status thread
-        self.workerMountStatusRunnerOnce = mountStatusRunnerOnce.MountStatusRunnerOnce(self.app, self.data)
-        self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
-        self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
-        self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
-        self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
-        self.workerMountStatusRunnerOnce.finished.connect(self.workerMountStatusRunnerOnceStop)
-        # get alignment model
-        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.data, self.signalMountShowAlignmentModel)
-        self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
-        self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
-        self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
-        self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
-        self.workerMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModelStop)
 
         self.counter = 0
         self.cancelTargetRMS = False
@@ -455,32 +459,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 if 'Cancel' in work:
                     work['Cancel'].setStyleSheet(self.DEFAULT)
                 PyQt5.QtWidgets.QApplication.processEvents()
-
-    def setRefractionParam(self):
-        if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
-            pressure = self.app.workerAscomEnvironment.data['Pressure']
-            temperature = self.app.workerAscomEnvironment.data['Temperature']
-            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
-                self.workerMountCommandRunner.sendCommand(':SRPRS{0:04.1f}#'.format(pressure))
-                if temperature > 0:
-                    self.workerMountCommandRunner.sendCommand(':SRTMP+{0:03.1f}#'.format(temperature))
-                else:
-                    self.workerMountCommandRunner.sendCommand(':SRTMP-{0:3.1f}#'.format(-temperature))
-                self.data['RefractionTemperature'] = self.workerMountCommandRunner.sendCommand(':GRTMP#')
-                self.data['RefractionPressure'] = self.workerMountCommandRunner.sendCommand(':GRPRS#')
-            else:
-                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
-
-    def getStatusMedium(self):
-        if self.app.ui.checkAutoRefractionNotTracking.isChecked():
-            # if there is no tracking, than updating is good
-            if 'Status' in self.parent.data:
-                if self.parent.data['Status'] != 0:
-                    self.setRefractionParam()
-        if self.app.ui.checkAutoRefractionCamera.isChecked():
-            # the same is good if the camera is not in integrating
-            if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] in ['READY - IDLE', 'DOWNLOADING']:
-                self.setRefractionParam()
 
     def mountShutdown(self):
         reply = self.workerMountCommandRunner.sendCommand(':shutdown#')
