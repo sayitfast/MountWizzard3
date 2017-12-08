@@ -38,10 +38,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountTrackPreview = PyQt5.QtCore.pyqtSignal()
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
 
-    BLUE = 'background-color: rgb(42, 130, 218)'
-    RED = 'background-color: red;'
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
-
     CYCLE_AUTO_UPDATE = 3000
 
     statusReference = {
@@ -445,7 +441,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.BLUE)
+                    work['Button'].setStyleSheet(self.app.BLUE)
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -455,9 +451,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     work['Method']()
                 time.sleep(0.2)
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.DEFAULT)
+                    work['Button'].setStyleSheet(self.app.DEFAULT)
                 if 'Cancel' in work:
-                    work['Cancel'].setStyleSheet(self.DEFAULT)
+                    work['Cancel'].setStyleSheet(self.app.DEFAULT)
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):

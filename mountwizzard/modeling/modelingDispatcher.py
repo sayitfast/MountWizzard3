@@ -26,10 +26,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     signalStatusSolver = PyQt5.QtCore.pyqtSignal(int)
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal(bool)
 
-    BLUE = 'background-color: rgb(42, 130, 218)'
-    RED = 'background-color: red;'
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
-
     CYCLESTATUS = 5000
 
     def __init__(self, app):
@@ -286,7 +282,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.BLUE)
+                    work['Button'].setStyleSheet(self.app.BLUE)
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -296,9 +292,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     work['Method']()
                 time.sleep(1)
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.DEFAULT)
+                    work['Button'].setStyleSheet(self.app.DEFAULT)
                 if 'Cancel' in work:
-                    work['Cancel'].setStyleSheet(self.DEFAULT)
+                    work['Cancel'].setStyleSheet(self.app.DEFAULT)
                     self.modelingRunner.cancel = False
                 PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -307,14 +303,14 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     # processes should be modal. Therefore cancelModeling and cancelAnalyseModeling is connected to main app with it's separate event queue.
     def cancelModeling(self):
         if self.modelingRunner.modelRun:
-            self.app.ui.btn_cancelModel1.setStyleSheet(self.RED)
-            self.app.ui.btn_cancelModel2.setStyleSheet(self.RED)
+            self.app.ui.btn_cancelModel1.setStyleSheet(self.app.RED)
+            self.app.ui.btn_cancelModel2.setStyleSheet(self.app.RED)
             self.logger.info('User canceled modeling with cancel any model run')
             self.modelingRunner.cancel = True
 
     def cancelAnalyseModeling(self):
         if self.modelingRunner.modelRun:
-            self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.RED)
+            self.app.ui.btn_cancelAnalyseModel.setStyleSheet(self.app.RED)
             self.logger.info('User canceled modeling with cancel analyse run')
             self.modelingRunner.cancel = True
 

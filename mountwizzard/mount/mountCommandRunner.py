@@ -15,6 +15,7 @@ import logging
 import PyQt5
 import time
 from queue import Queue
+import threading
 
 
 class MountCommandRunner(PyQt5.QtCore.QObject):
@@ -32,9 +33,10 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.isRunning = True
         self.connected = False
         self.socket = None
-        self.message_string = ''
+        self.messageString = ''
         self.sendCommandQueue = Queue()
         self.parseQueue = Queue()
+        self.sendLock = threading.Lock()
 
     def run(self):
         if not self.isRunning:
@@ -87,20 +89,26 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         pass
 
     def sendCommand(self, command):
+        self.sendLock.acquire()
+        messageToProcess = ''
         if self.connected and self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
-                self.message_string = ''
+                self.messageString = ''
                 if command not in self.BLIND_COMMANDS:
                     if self.socket.waitForReadyRead(3000):
                         # now we got some data
                         while self.socket.bytesAvailable():
                             tmp = str(self.socket.read(1000), "ascii")
-                            self.message_string += tmp
-                        return self.message_string.strip('#')
+                            self.messageString += tmp
+                        messageToProcess = self.messageString.strip('#')
+                        self.messageString = ''
                 else:
-                    return
+                    self.messageString = ''
+                    messageToProcess = ''
             else:
                 self.logger.warning('Socket RunnerCommand not connected')
+        self.sendLock.release()
+        return messageToProcess
 
 

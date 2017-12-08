@@ -98,8 +98,16 @@ class MountWizzardApp(widget.MwWidget):
         self.initUI()
         self.checkPlatformDependableMenus()
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
-        # show icon in main gui
-        pixmap = PyQt5.QtGui.QPixmap(self.bundle_dir + '\\mw.ico')
+        # show icon in main gui and add some icons for push buttons
+        self.ui.btn_openMessageWindow.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\Window-Message.ico'))
+        self.ui.btn_openMessageWindow.setIconSize(PyQt5.QtCore.QSize(20, 20))
+        self.ui.btn_openAnalyseWindow.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\Window-Analyse.ico'))
+        self.ui.btn_openAnalyseWindow.setIconSize(PyQt5.QtCore.QSize(20, 20))
+        self.ui.btn_openImageWindow.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\Window-Image.ico'))
+        self.ui.btn_openImageWindow.setIconSize(PyQt5.QtCore.QSize(20, 20))
+        self.ui.btn_openModelingPlotWindow.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\Window-Model.ico'))
+        self.ui.btn_openModelingPlotWindow.setIconSize(PyQt5.QtCore.QSize(20, 20))
+        pixmap = PyQt5.QtGui.QPixmap(self.bundle_dir + '\\icons\\mw.ico')
         pixmap = pixmap.scaled(99, 99)
         self.ui.mainicon.setPixmap(pixmap)
         self.ui.mainBackgound.setStyleSheet(self.DEFAULT_TITLE)

@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -5033,7 +5033,9 @@
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);</string>
+color: rgb(255,255,255);
+text-align:left;
+padding-left:10px;</string>
      </property>
      <property name="text">
       <string>Open Image Window</string>
@@ -5174,7 +5176,9 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);</string>
+color: rgb(255,255,255);
+text-align:left;
+padding-left:10px;</string>
      </property>
      <property name="text">
       <string>Open Modeling Plot Window</string>
@@ -7138,7 +7142,9 @@ color: rgb(255,255,255);</string>
      </property>
      <property name="styleSheet">
       <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);</string>
+color: rgb(255,255,255);
+text-align:left;
+padding-left:10px;</string>
      </property>
      <property name="text">
       <string>Open Analyse Window</string>
@@ -12412,10 +12418,12 @@ color: rgb(255,255,255);</string>
    </property>
    <property name="styleSheet">
     <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);</string>
+color: rgb(255,255,255);
+text-align:left;
+padding-left:10px;</string>
    </property>
    <property name="text">
-    <string>Show Message Window</string>
+    <string>Show Messages</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_solverConnected">
@@ -12596,9 +12604,9 @@ color: rgb(255,255,255);</string>
   <widget class="Line" name="line_9">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>0</x>
      <y>130</y>
-     <width>771</width>
+     <width>791</width>
      <height>21</height>
     </rect>
    </property>
@@ -12607,8 +12615,14 @@ color: rgb(255,255,255);</string>
      <pointsize>10</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(32, 144, 192);</string>
+   </property>
    <property name="frameShadow">
     <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>2</number>
    </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>

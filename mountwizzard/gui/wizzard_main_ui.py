@@ -1721,7 +1721,9 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow = QtWidgets.QPushButton(self.tab_15)
         self.btn_openImageWindow.setGeometry(QtCore.QRect(510, 140, 241, 31))
         self.btn_openImageWindow.setStyleSheet("background-color: rgb(16, 72, 124);\n"
-"color: rgb(255,255,255);")
+"color: rgb(255,255,255);\n"
+"text-align:left;\n"
+"padding-left:10px;")
         self.btn_openImageWindow.setObjectName("btn_openImageWindow")
         self.checkClearModelFirst = QtWidgets.QCheckBox(self.tab_15)
         self.checkClearModelFirst.setGeometry(QtCore.QRect(520, 350, 231, 20))
@@ -1760,7 +1762,9 @@ class Ui_MainWindow(object):
         self.btn_openModelingPlotWindow = QtWidgets.QPushButton(self.tab_15)
         self.btn_openModelingPlotWindow.setGeometry(QtCore.QRect(510, 50, 241, 31))
         self.btn_openModelingPlotWindow.setStyleSheet("background-color: rgb(16, 72, 124);\n"
-"color: rgb(255,255,255);")
+"color: rgb(255,255,255);\n"
+"text-align:left;\n"
+"padding-left:10px;")
         self.btn_openModelingPlotWindow.setObjectName("btn_openModelingPlotWindow")
         self.line_41 = QtWidgets.QFrame(self.tab_15)
         self.line_41.setGeometry(QtCore.QRect(510, 30, 241, 21))
@@ -2384,7 +2388,9 @@ class Ui_MainWindow(object):
         self.btn_openAnalyseWindow = QtWidgets.QPushButton(self.tab_5)
         self.btn_openAnalyseWindow.setGeometry(QtCore.QRect(400, 30, 341, 31))
         self.btn_openAnalyseWindow.setStyleSheet("background-color: rgb(16, 72, 124);\n"
-"color: rgb(255,255,255);")
+"color: rgb(255,255,255);\n"
+"text-align:left;\n"
+"padding-left:10px;")
         self.btn_openAnalyseWindow.setObjectName("btn_openAnalyseWindow")
         self.label_99 = QtWidgets.QLabel(self.tab_5)
         self.label_99.setGeometry(QtCore.QRect(400, 70, 191, 21))
@@ -4177,7 +4183,9 @@ class Ui_MainWindow(object):
         self.btn_openMessageWindow = QtWidgets.QPushButton(MainWindow)
         self.btn_openMessageWindow.setGeometry(QtCore.QRect(20, 90, 131, 31))
         self.btn_openMessageWindow.setStyleSheet("background-color: rgb(16, 72, 124);\n"
-"color: rgb(255,255,255);")
+"color: rgb(255,255,255);\n"
+"text-align:left;\n"
+"padding-left:10px;")
         self.btn_openMessageWindow.setObjectName("btn_openMessageWindow")
         self.btn_solverConnected = QtWidgets.QPushButton(MainWindow)
         self.btn_solverConnected.setGeometry(QtCore.QRect(260, 20, 71, 31))
@@ -4233,11 +4241,13 @@ class Ui_MainWindow(object):
         self.btn_mountBoot.setFont(font)
         self.btn_mountBoot.setObjectName("btn_mountBoot")
         self.line_9 = QtWidgets.QFrame(MainWindow)
-        self.line_9.setGeometry(QtCore.QRect(10, 130, 771, 21))
+        self.line_9.setGeometry(QtCore.QRect(0, 130, 791, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.line_9.setFont(font)
+        self.line_9.setStyleSheet("color: rgb(32, 144, 192);")
         self.line_9.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.line_9.setLineWidth(2)
         self.line_9.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_9.setObjectName("line_9")
         self.mainBackgound = QtWidgets.QLabel(MainWindow)
@@ -4265,7 +4275,7 @@ class Ui_MainWindow(object):
         self.line_9.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(0)
+        self.mainTabWidget.setCurrentIndex(2)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.mainTabWidget, self.le_slewRate)
@@ -5038,7 +5048,7 @@ class Ui_MainWindow(object):
         self.btn_environmentConnected.setToolTip(_translate("MainWindow", "<html><head/><body><p>Status of Camera: green = available and connected</p></body></html>"))
         self.btn_environmentConnected.setText(_translate("MainWindow", "Environ"))
         self.btn_openMessageWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the coordinate an model points popup window</p></body></html>"))
-        self.btn_openMessageWindow.setText(_translate("MainWindow", "Show Message Window"))
+        self.btn_openMessageWindow.setText(_translate("MainWindow", "Show Messages"))
         self.btn_solverConnected.setToolTip(_translate("MainWindow", "<html><head/><body><p>Status of Camera: green = available and connected</p></body></html>"))
         self.btn_solverConnected.setText(_translate("MainWindow", "Solver"))
         self.btn_loadFrom.setToolTip(_translate("MainWindow", "<html><head/><body><p>Saves the settings data in config.cfg</p></body></html>"))

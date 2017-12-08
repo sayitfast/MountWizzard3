@@ -42,5 +42,5 @@ class MountModelHandling:
             return True
         else:
             self.app.messageQueue.put('#BRMount Model {0} could not be loaded\n'.format(target))
-            self.logger.warning('Model {0} could not be loaded'.format(target))
+            self.logger.warning('Model {0} could not be loaded. Error code: {1}'.format(target, reply))
             return False
