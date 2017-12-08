@@ -333,7 +333,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelModel1.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
-        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.workerMountDispatcher.cancelRunTargetRMS)
+        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMS())
         self.ui.le_horizonPointsFileName.doubleClicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -522,8 +522,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.modelWindow.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
             if 'CheckClearModelFirst' in self.config:
                 self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
-            if 'CheckKeepRefinement' in self.config:
-                self.ui.checkKeepRefinement.setChecked(self.config['CheckKeepRefinement'])
             if 'AltitudeBase' in self.config:
                 self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
             if 'AzimuthBase' in self.config:
@@ -665,7 +663,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
-        self.config['CheckKeepRefinement'] = self.ui.checkKeepRefinement.isChecked()
         self.config['ConfigName'] = self.ui.le_configName.text()
 
         # store config in all submodules

@@ -207,11 +207,11 @@ class ModelPoints:
 
     def generateDSOPoints(self, limitByHorizonMask, hoursPathLength, numberOfPathPoints, hoursPathLengthPreview):
         # we have no position of the mount -> therefore we can't calculate the path
-        if 'RaJNow' not in self.app.mount.data:
+        if 'RaJNow' not in self.app.workerMountDispatcher.data:
             return
         self.RefinementPoints = []
-        ra = copy.copy(self.app.mount.data['RaJNow'])
-        dec = copy.copy(self.app.mount.data['DecJNow'])
+        ra = copy.copy(self.app.workerMountDispatcher.data['RaJNow'])
+        dec = copy.copy(self.app.workerMountDispatcher.data['DecJNow'])
         for i in range(0, numberOfPathPoints):
             ra = ra - float(i) * hoursPathLength / numberOfPathPoints - hoursPathLengthPreview
             az, alt = self.transform.transformERFA(ra, dec, 1)

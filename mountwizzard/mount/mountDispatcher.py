@@ -307,6 +307,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
         self.counter = 0
         self.cancelTargetRMS = False
+        self.runTargetRMS = False
 
     def initConfig(self):
         try:
@@ -530,32 +531,21 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         else:
             self.logger.warning('Model could not be calculated with current data!')
 
-    def retrofitMountData(self, data):
-        num = self.data['Number']
-        if num == len(data):
-            alignModel = self.getAlignmentModel()
-            self.showAlignmentModel(alignModel)
-            for i in range(0, alignModel['Number']):
-                data[i]['ModelError'] = alignModel['ModelError'][i]
-                data[i]['RaError'] = data[i]['ModelError'] * math.sin(math.radians(alignModel['ModelErrorAngle'][i]))
-                data[i]['DecError'] = data[i]['ModelError'] * math.cos(math.radians(alignModel['ModelErrorAngle'][i]))
-            self.app.messageQueue.put('Mount Model and Model Data synced\n')
-        else:
-            self.logger.warning('Size of mount data {0} and modeling data {1} do not fit !'.format(num, len(data)))
-            self.app.messageQueue.put('Mount Data and Model Data could not be synced\n')
-            self.app.messageQueue.put('#BRMount Data and Model Data mismatch\n')
-        return data
-
     def runTargetRMSAlignment(self):
+        self.runTargetRMS = True
         self.cancelTargetRMS = False
         if self.data['Number'] < 4:
             return
         while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelTargetRMS:
             self.deleteWorstPointRaw()
+        if self.cancelRunTargetRMS:
+            self.app.messageQueue.put('Target RMS Run canceled\n')
+        self.runTargetRMS = False
 
     def cancelRunTargetRMS(self):
-        self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.RED)
-        self.cancelTargetRMS = True
+        if self.runTargetRMS:
+            self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.RED)
+            self.cancelTargetRMS = True
 
     def deleteWorstPoint(self):
         self.deleteWorstPointRaw()
@@ -583,32 +573,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             while self.data['ModelLoading']:
                 time.sleep(0.2)
             self.app.messageQueue.put(' Point deleted \n')
-            # if data set is there, than delete this point as well
-            if self.app.workerModelingDispatcher.modelingRunner.modelData:
-                self.app.workerModelingDispatcher.modelingRunner.modelData.pop(worstPointIndex)
-                # update the rest of point with the new error vectors
-                for i in range(0, self.data['Number']):
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] = self.data['ModelError'][i]
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['RaError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.sin(math.radians(self.data['ModelErrorAngle'][i]))
-                    self.app.workerModelingDispatcher.modelingRunner.modelData[i]['DecError'] = self.app.workerModelingDispatcher.modelingRunner.modelData[i]['ModelError'] * math.cos(math.radians(self.data['ModelErrorAngle'][i]))
         else:
-            self.logger.warning('Point {0} could not be deleted').format(worstPointIndex)
+            self.app.messageQueue.put(' Point could not be deleted \n')
+            self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
         return
-
-    def setupAlignmentModel(self):
-        # first try to load the actual model, which was used the last time MW was run
-        self.mountModelHandling.loadActualModel()
-        alignModel = self.getAlignmentModel()
-        # if there was no data set stored, i try to reconstruct the data from the model stored in mount
-        if not self.app.workerModelingDispatcher.modelingRunner.modelData and alignModel['Number'] > 0:
-            self.app.messageQueue.put('Model Data will be reconstructed from Mount Data\n')
-            self.app.workerModeling.modelData = []
-            for i in range(0, alignModel['Number']):
-                self.app.workerModelingDispatcher.modelingRunner.modelData.append({
-                                                                                      'ModelError': float(alignModel['Points'][i][5]),
-                                                                                      'RaError': float(alignModel['Points'][i][5]) * math.sin(math.radians(alignModel['Points'][i][6])),
-                                                                                      'DecError': float(alignModel['Points'][i][5]) * math.cos(math.radians(alignModel['Points'][i][6])),
-                                                                                      'Azimuth': float(alignModel['Points'][i][3]),
-                                                                                      'Altitude': float(alignModel['Points'][i][4])
-                                                                                  })
-        self.showAlignmentModel(alignModel)
