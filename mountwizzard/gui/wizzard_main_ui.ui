@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -7820,7 +7820,7 @@ color: rgb(255,255,255);</string>
        <x>10</x>
        <y>10</y>
        <width>741</width>
-       <height>441</height>
+       <height>431</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7864,7 +7864,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>380</y>
+         <y>370</y>
          <width>331</width>
          <height>20</height>
         </rect>
@@ -8176,7 +8176,7 @@ color: rgb(255,255,255);</string>
          <x>360</x>
          <y>10</y>
          <width>21</width>
-         <height>391</height>
+         <height>381</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -9085,7 +9085,7 @@ color: rgb(255,255,255);</string>
          <x>360</x>
          <y>10</y>
          <width>21</width>
-         <height>391</height>
+         <height>381</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -9274,7 +9274,7 @@ color: rgb(255,255,255);</string>
          <x>360</x>
          <y>10</y>
          <width>21</width>
-         <height>391</height>
+         <height>381</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -9940,7 +9940,7 @@ color: rgb(255,255,255);</string>
          <x>360</x>
          <y>10</y>
          <width>21</width>
-         <height>391</height>
+         <height>381</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -11791,7 +11791,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>370</y>
+         <y>360</y>
          <width>311</width>
          <height>31</height>
         </rect>
@@ -11812,7 +11812,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>370</y>
+         <y>360</y>
          <width>341</width>
          <height>31</height>
         </rect>
@@ -11835,7 +11835,7 @@ color: rgb(255,255,255);</string>
          <x>370</x>
          <y>0</y>
          <width>21</width>
-         <height>401</height>
+         <height>391</height>
         </rect>
        </property>
        <property name="frameShadow">
@@ -12088,7 +12088,7 @@ color: rgb(255,255,255);</string>
        <property name="geometry">
         <rect>
          <x>370</x>
-         <y>380</y>
+         <y>370</y>
          <width>361</width>
          <height>21</height>
         </rect>
@@ -12275,9 +12275,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_saveConfigQuit">
    <property name="geometry">
     <rect>
-     <x>650</x>
+     <x>660</x>
      <y>20</y>
-     <width>121</width>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -12296,9 +12296,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_saveConfig">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>540</x>
      <y>90</y>
-     <width>121</width>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -12442,9 +12442,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_loadFrom">
    <property name="geometry">
     <rect>
-     <x>520</x>
+     <x>540</x>
      <y>20</y>
-     <width>121</width>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -12463,9 +12463,9 @@ color: rgb(255,255,255);</string>
   <widget class="QPushButton" name="btn_saveConfigAs">
    <property name="geometry">
     <rect>
-     <x>650</x>
+     <x>660</x>
      <y>90</y>
-     <width>121</width>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -12484,9 +12484,9 @@ color: rgb(255,255,255);</string>
   <widget class="QLineEdit" name="le_configName">
    <property name="geometry">
     <rect>
-     <x>580</x>
+     <x>600</x>
      <y>60</y>
-     <width>181</width>
+     <width>161</width>
      <height>21</height>
     </rect>
    </property>
@@ -12523,10 +12523,10 @@ color: rgb(255,255,255);</string>
   <widget class="QLabel" name="mainicon">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>40</y>
-     <width>65</width>
-     <height>65</height>
+     <x>425</x>
+     <y>20</y>
+     <width>100</width>
+     <height>100</height>
     </rect>
    </property>
    <property name="text">
@@ -12536,7 +12536,7 @@ color: rgb(255,255,255);</string>
   <widget class="QLabel" name="label_102">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>550</x>
      <y>60</y>
      <width>51</width>
      <height>21</height>
@@ -12614,6 +12614,38 @@ color: rgb(255,255,255);</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
+  <widget class="QLabel" name="mainBackgound">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>791</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>mainBackgound</zorder>
+  <zorder>le_mountStatus</zorder>
+  <zorder>mainTabWidget</zorder>
+  <zorder>btn_saveConfigQuit</zorder>
+  <zorder>btn_saveConfig</zorder>
+  <zorder>btn_cameraConnected</zorder>
+  <zorder>btn_domeConnected</zorder>
+  <zorder>btn_driverMountConnected</zorder>
+  <zorder>btn_environmentConnected</zorder>
+  <zorder>btn_openMessageWindow</zorder>
+  <zorder>btn_solverConnected</zorder>
+  <zorder>btn_loadFrom</zorder>
+  <zorder>btn_saveConfigAs</zorder>
+  <zorder>le_configName</zorder>
+  <zorder>mainicon</zorder>
+  <zorder>label_102</zorder>
+  <zorder>btn_mountShutdown</zorder>
+  <zorder>btn_mountBoot</zorder>
+  <zorder>line_9</zorder>
  </widget>
  <customwidgets>
   <customwidget>

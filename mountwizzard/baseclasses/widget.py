@@ -31,6 +31,7 @@ class MwWidget(QWidget):
     BLUE = 'background-color: rgb(42, 130, 218);'
     RED = 'background-color: red;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
+    DEFAULT_TITLE = 'background-color: rgb(8,36,48); color: rgb(192,192,192)'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
     COLOR_YELLOW = QColor(192, 192, 0)

@@ -100,8 +100,9 @@ class MountWizzardApp(widget.MwWidget):
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
         # show icon in main gui
         pixmap = PyQt5.QtGui.QPixmap(self.bundle_dir + '\\mw.ico')
-        pixmap = pixmap.scaled(65, 65)
+        pixmap = pixmap.scaled(99, 99)
         self.ui.mainicon.setPixmap(pixmap)
+        self.ui.mainBackgound.setStyleSheet(self.DEFAULT_TITLE)
         # enable a matplotlib figure in main gui
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.model)
         helper.setContentsMargins(0, 0, 0, 0)
