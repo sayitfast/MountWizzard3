@@ -89,6 +89,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     def sendCommand(self, command):
         if self.connected and self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.message_string = ''
                 if command not in self.BLIND_COMMANDS:
                     if self.socket.waitForReadyRead(3000):
