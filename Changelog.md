@@ -6,6 +6,8 @@
 - multiple bugfixes
 - refactoring for reactive design of threads from threads and event loops
 - reduced load -> improved performance
+- complete refactoring of mount communication
+- complete new setup for mount model saving
 
 2.5.26
 - extended pixel size entry 25 um

@@ -35,6 +35,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 # import the UI part, which is done via QT Designer and exported
 from baseclasses import widget
+from baseclasses import fileDialogue
 from widgets import modelplotWindow
 from widgets import imageWindow
 from widgets import analyseWindow
@@ -685,12 +686,8 @@ class MountWizzardApp(widget.MwWidget):
             self.config = {}
 
     def loadConfigDataFrom(self):
-        dlg = PyQt5.QtWidgets.QFileDialog()
-        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
-        dlg.setNameFilter("Config files (*.cfg)")
-        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
-        # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Config files (*.cfg)')
+        dlg = fileDialogue.MwFileDialogue(self)
+        a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/config', 'Config files (*.cfg)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
             try:
@@ -732,12 +729,8 @@ class MountWizzardApp(widget.MwWidget):
             return
 
     def saveConfigAs(self):
-        dlg = PyQt5.QtWidgets.QFileDialog()
-        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
-        dlg.setNameFilter("Config files (*.cfg)")
-        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
-        # noinspection PyArgumentList
-        a = dlg.getSaveFileName(self, 'Save file', os.getcwd() + '/config', 'Config files (*.cfg)')
+        dlg = fileDialogue.MwFileDialogue(self)
+        a = dlg.getSaveFileName(dlg, 'Save file', os.getcwd() + '/config', 'Config files (*.cfg)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
             self.saveConfigData(a[0])
@@ -745,24 +738,17 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('No config file selected')
 
     def selectModelPointsFileName(self):
-        dlg = PyQt5.QtWidgets.QFileDialog()
-        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
-        dlg.setNameFilter("Text files (*.txt)")
-        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
-        # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
+        dlg = fileDialogue.MwFileDialogue(self)
+        a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
         else:
             self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
-        dlg = PyQt5.QtWidgets.QFileDialog()
-        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
-        dlg.setNameFilter("Data Files (*.dat)")
-        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.AnyFile)
+        dlg = fileDialogue.MwFileDialogue(self)
         # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)')
+        a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
         else:
