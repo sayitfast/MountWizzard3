@@ -52,6 +52,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 command = self.sendCommandQueue.get()
                 self.sendCommand(command)
             time.sleep(0.2)
+            self.socket.state()
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)

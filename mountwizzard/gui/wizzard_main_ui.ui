@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -5010,7 +5010,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 96);
+      <string notr="true">background-color: rgb(32, 144, 192);
 color: rgb(255,255,255);</string>
      </property>
      <property name="text">
@@ -5151,7 +5151,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 96);
+      <string notr="true">background-color: rgb(32, 144, 192);
 color: rgb(255,255,255);</string>
      </property>
      <property name="text">
@@ -7048,7 +7048,7 @@ color: rgb(255,255,255);</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the analyse Popup Window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 96);
+      <string notr="true">background-color: rgb(32, 144, 192);
 color: rgb(255,255,255);</string>
      </property>
      <property name="text">
@@ -12238,7 +12238,7 @@ color: rgb(255,255,255);</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(16, 72, 96);
+    <string notr="true">background-color: rgb(32, 144, 192);
 color: rgb(255,255,255);</string>
    </property>
    <property name="text">

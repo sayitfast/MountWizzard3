@@ -65,10 +65,10 @@ class ModelPlotWindow(widget.MwWidget):
         self.initUI()                                                                                                       # adaptions to ui setup
         self.initConfig()
         self.selectHorizonPointsMode()
-        self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)                                                # connect signal for AzAlt pointer
-        self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)                                               # same for track preview
+        self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)                                # connect signal for AzAlt pointer
+        self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)                               # same for track preview
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)                                  # signal for redrawing the window content
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)                        # signal for redrawing the window content
         self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)                                              # signal for redrawing the dome
         self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
         # self.show()                                                                                                       # construct the window
@@ -284,7 +284,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome.setOpacity(0.5)
         scene = self.constructModelGrid(height, width, BORDER_VIEW, TEXTHEIGHT_VIEW, scene)
         scene = self.constructHorizon(scene, self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints, height, width, BORDER_VIEW)
-        for i, p in enumerate(self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints):                                                    # show the points
+        for i, p in enumerate(self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints):                     # show the points
             pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -296,8 +296,8 @@ class ModelPlotWindow(widget.MwWidget):
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints[i] = (p[0], p[1], item, True)                                          # storing the objects in the list
-        for i, p in enumerate(self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints):                                              # show the points
+            self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints[i] = (p[0], p[1], item, True)           # storing the objects in the list
+        for i, p in enumerate(self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints):               # show the points
             pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
             x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
             scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
@@ -309,7 +309,7 @@ class ModelPlotWindow(widget.MwWidget):
             text_item.setDefaultTextColor(self.COLOR_WHITE)
             text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
             scene.addItem(text_item)
-            self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints[i] = (p[0], p[1], item, True)                                    # storing the objects in the list
+            self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints[i] = (p[0], p[1], item, True)     # storing the objects in the list
         self.pointerAzAlt = self.constructAzAltPointer(ELLIPSE_VIEW)
         self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(ELLIPSE_VIEW)
         scene.addItem(self.pointerAzAlt)

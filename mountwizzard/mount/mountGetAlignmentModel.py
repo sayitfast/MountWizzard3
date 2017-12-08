@@ -52,6 +52,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             if not self.sendCommandQueue.empty() and self.connected:
                 command = self.sendCommandQueue.get()
                 self.sendCommand(command)
+            self.socket.state()
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:

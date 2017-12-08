@@ -116,7 +116,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_saveBackupModel,
-                            'Method': self.mountModelHandling.saveBackupModel,
+                            'Parameter': ['BACKUP'],
+                            'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
@@ -125,7 +126,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadBackupModel,
-                            'Method': self.mountModelHandling.loadBackupModel,
+                            'Parameter': ['BACKUP'],
+                            'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
@@ -134,7 +136,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadBaseModel,
-                            'Method': self.mountModelHandling.loadBaseModel,
+                            'Parameter': ['BASE'],
+                            'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
@@ -143,7 +146,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_saveBaseModel,
-                            'Method': self.mountModelHandling.saveBaseModel,
+                            'Parameter': ['BASE'],
+                            'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
@@ -152,7 +156,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadRefinementModel,
-                            'Method': self.mountModelHandling.loadRefinementModel,
+                            'Parameter': ['REFINE'],
+                            'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
@@ -161,7 +166,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_saveRefinementModel,
-                            'Method': self.mountModelHandling.saveRefinementModel,
+                            'Parameter': ['REFINE'],
+                            'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
@@ -170,7 +176,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadSimpleModel,
-                            'Method': self.mountModelHandling.loadSimpleModel,
+                            'Parameter': ['SIMPLE'],
+                            'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
@@ -179,7 +186,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_saveSimpleModel,
-                            'Method': self.mountModelHandling.saveSimpleModel,
+                            'Parameter': ['SIMPLE'],
+                            'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
@@ -188,7 +196,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadDSO1Model,
-                            'Method': self.mountModelHandling.loadDSO1Model,
+                            'Parameter': ['DSO1'],
+                            'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
@@ -197,7 +206,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_saveDSO1Model,
-                            'Method': self.mountModelHandling.saveDSO1Model,
+                            'Parameter': ['DSO1'],
+                            'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
@@ -206,7 +216,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_loadDSO2Model,
-                            'Method': self.mountModelHandling.loadDSO2Model,
+                            'Parameter': ['DSO2'],
+                            'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
@@ -215,7 +226,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_saveDSO2Model,
-                            'Method': self.mountModelHandling.saveDSO2Model,
+                            'Parameter': ['DSO2'],
+                            'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
@@ -435,7 +447,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
-                        parameter.append(eval(p))
+                        parameter.append(p)
                     work['Method'](*parameter)
                 else:
                     work['Method']()
