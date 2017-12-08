@@ -112,7 +112,9 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             self.messageString = self.messageString[14:]
         # Try and parse the message.
         try:
-            if len(messageToProcess) == 0 or 'FW' not in self.data:
+            if 'FW' not in self.data:
+                self.data['FW'] = 0
+            if len(messageToProcess) == 0:
                 return
             valueList = messageToProcess.strip('#').split('#')
             # all parameters are delivered

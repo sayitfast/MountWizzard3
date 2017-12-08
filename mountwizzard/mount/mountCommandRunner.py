@@ -17,7 +17,7 @@ import time
 from queue import Queue
 
 
-class MountRunnerCommand(PyQt5.QtCore.QObject):
+class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
@@ -47,6 +47,9 @@ class MountRunnerCommand(PyQt5.QtCore.QObject):
         self.socket.error.connect(self.handleError)
         # self.socket.readyRead.connect(self.handleReadyRead)
         while self.isRunning:
+            if not self.app.mountCommandQueue.empty():
+                command = self.app.mountCommandQueue.get()
+                self.sendCommand(command)
             time.sleep(0.2)
             self.socket.state()
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -86,7 +89,6 @@ class MountRunnerCommand(PyQt5.QtCore.QObject):
     def sendCommand(self, command):
         if self.connected and self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.message_string = ''
                 if command not in self.BLIND_COMMANDS:
                     if self.socket.waitForReadyRead(3000):
@@ -95,6 +97,8 @@ class MountRunnerCommand(PyQt5.QtCore.QObject):
                             tmp = str(self.socket.read(1000), "ascii")
                             self.message_string += tmp
                         return self.message_string.strip('#')
+                else:
+                    return
             else:
                 self.logger.warning('Socket RunnerCommand not connected')
 

@@ -12,13 +12,12 @@
 #
 ############################################################
 import logging
-import math
 # import basic stuff
 import time
 # import PyQT5 for threading purpose
 import PyQt5
 import threading
-from mount import mountRunnerCommand
+from mount import mountCommandRunner
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
 from mount import mountStatusRunnerSlow
@@ -231,7 +230,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            '''
             'SetRefractionParameter':
                 {
                     'Worker': [
@@ -241,7 +239,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            '''
             'FLIP':
                 {
                     'Worker': [
@@ -263,7 +260,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         }
         # getting all threads setup
         # commands sending thread
-        self.workerMountCommandRunner = mountRunnerCommand.MountRunnerCommand(self.app, self.data)
+        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data)
         self.threadMountCommandRunner = PyQt5.QtCore.QThread()
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
@@ -394,14 +391,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if not self.isRunning:
             self.isRunning = True
         self.signalMountConnected.emit(False)
-        self.threadMountGetAlignmentModel.start()
-        self.threadMountCommandRunner.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
+        self.threadMountCommandRunner.start()
+        self.threadMountGetAlignmentModel.start()
 
-        # self.app.ui.btn_setRefractionCorrection.clicked.connect(self.commandDispatcher('SetRefractionParameter'))
+        self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcher('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcher('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcher('DeleteWorstPoint'))
         self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcher('FLIP'))
@@ -458,6 +455,32 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 if 'Cancel' in work:
                     work['Cancel'].setStyleSheet(self.DEFAULT)
                 PyQt5.QtWidgets.QApplication.processEvents()
+
+    def setRefractionParam(self):
+        if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
+            pressure = self.app.workerAscomEnvironment.data['Pressure']
+            temperature = self.app.workerAscomEnvironment.data['Temperature']
+            if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
+                self.workerMountCommandRunner.sendCommand(':SRPRS{0:04.1f}#'.format(pressure))
+                if temperature > 0:
+                    self.workerMountCommandRunner.sendCommand(':SRTMP+{0:03.1f}#'.format(temperature))
+                else:
+                    self.workerMountCommandRunner.sendCommand(':SRTMP-{0:3.1f}#'.format(-temperature))
+                self.data['RefractionTemperature'] = self.workerMountCommandRunner.sendCommand(':GRTMP#')
+                self.data['RefractionPressure'] = self.workerMountCommandRunner.sendCommand(':GRPRS#')
+            else:
+                self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
+
+    def getStatusMedium(self):
+        if self.app.ui.checkAutoRefractionNotTracking.isChecked():
+            # if there is no tracking, than updating is good
+            if 'Status' in self.parent.data:
+                if self.parent.data['Status'] != 0:
+                    self.setRefractionParam()
+        if self.app.ui.checkAutoRefractionCamera.isChecked():
+            # the same is good if the camera is not in integrating
+            if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] in ['READY - IDLE', 'DOWNLOADING']:
+                self.setRefractionParam()
 
     def mountShutdown(self):
         reply = self.workerMountCommandRunner.sendCommand(':shutdown#')

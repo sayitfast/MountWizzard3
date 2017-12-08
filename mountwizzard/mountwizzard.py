@@ -297,15 +297,15 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
         self.ui.btn_loadFrom.clicked.connect(self.loadConfigDataFrom)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
-        self.ui.btn_mountShutdown.clicked.connect(self.mountShutdown)
-        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put('hP'))
-        self.ui.btn_mountUnpark.clicked.connect(lambda: self.mountCommandQueue.put('PO'))
-        self.ui.btn_startTracking.clicked.connect(lambda: self.mountCommandQueue.put('AP'))
-        self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put('RT9'))
-        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.mountCommandQueue.put('RT0'))
-        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.mountCommandQueue.put('RT1'))
-        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.mountCommandQueue.put('RT2'))
-        self.ui.btn_stop.clicked.connect(lambda: self.mountCommandQueue.put('STOP'))
+        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put(':hP#'))
+        self.ui.btn_mountUnpark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#'))
+        self.ui.btn_startTracking.clicked.connect(lambda: self.mountCommandQueue.put(':AP#'))
+        self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put(':RT9#'))
+        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.mountCommandQueue.put(':RT0#'))
+        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.mountCommandQueue.put(':RT1#'))
+        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.mountCommandQueue.put(':RT2#'))
+        self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
+        self.ui.btn_stop.clicked.connect(lambda: self.mountCommandQueue.put(':STOP#'))
         self.ui.btn_mountPos1.clicked.connect(self.mountPosition1)
         self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
         self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
@@ -326,7 +326,6 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() == 'Windows':
             self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
             self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
-        self.ui.btn_setRefractionParameters.clicked.connect(lambda: self.mountCommandQueue.put('SetRefractionParameter'))
         # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
         # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
         # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
@@ -365,9 +364,6 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')
         self.ui.btn_mountBoot.setStyleSheet(self.DEFAULT)
-
-    def mountShutdown(self):
-        self.mountCommandQueue.put('Shutdown')
 
     def showModelErrorPolar(self):
         if len(self.workerMountDispatcher.data['ModelIndex']) == 0:
@@ -778,7 +774,7 @@ class MountWizzardApp(widget.MwWidget):
             _value = 0
         elif _value > 90:
             _value = 90
-        self.mountCommandQueue.put('Sh+{0:02d}'.format(_value))
+        self.mountCommandQueue.put(':Sh+{0:02d}#'.format(_value))
 
     def setHorizonLimitLow(self):
         _value = int(self.ui.le_horizonLimitLow.text())
@@ -786,7 +782,7 @@ class MountWizzardApp(widget.MwWidget):
             _value = 0
         elif _value > 90:
             _value = 90
-        self.mountCommandQueue.put('So+{0:02d}'.format(_value))
+        self.mountCommandQueue.put(':So+{0:02d}#'.format(_value))
 
     def setDualTracking(self):
         _value = self.ui.le_telescopeDualTrack.text()
@@ -796,7 +792,7 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_telescopeDualTrack.setText('ON')
-        self.mountCommandQueue.put('Sdat{0:01d}'.format(_value))
+        self.mountCommandQueue.put(':Sdat{0:01d}#'.format(_value))
 
     def setUnattendedFlip(self):
         _value = self.ui.le_telescopeUnattendedFlip.text()
@@ -806,7 +802,7 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_telescopeUnattendedFlip.setText('ON')
-        self.mountCommandQueue.put('Suaf{0: 01d}'.format(_value))
+        self.mountCommandQueue.put(':Suaf{0: 01d}#'.format(_value))
 
     def setSlewRate(self):
         _value = int(self.ui.le_slewRate.text())
@@ -814,7 +810,7 @@ class MountWizzardApp(widget.MwWidget):
             _value = 1
         elif _value > 15:
             _value = 15
-        self.mountCommandQueue.put('Sw{0:02d}'.format(_value))
+        self.mountCommandQueue.put(':Sw{0:02d}#'.format(_value))
 
     def setRefractionCorrection(self):
         _value = self.ui.le_refractionStatus.text()
@@ -824,43 +820,43 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_refractionStatus.setText('ON')
-        self.mountCommandQueue.put('SREF{0: 01d}'.format(_value))
+        self.mountCommandQueue.put(':SREF{0: 01d}#'.format(_value))
 
     def mountPosition1(self):
-        self.mountCommandQueue.put('PO')                                                                                         # unpark first
-        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
-        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos1.text())))                                   # set alt
-        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos1.text())))                                   # set alt
+        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
 
     def mountPosition2(self):
-        self.mountCommandQueue.put('PO')                                                                                         # unpark first
-        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos2.text())))                                     # set az
-        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos2.text())))                                   # set alt
-        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos2.text())))                                     # set az
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos2.text())))                                   # set alt
+        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
 
     def mountPosition3(self):
-        self.mountCommandQueue.put('PO')                                                                                         # unpark first
-        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos3.text())))                                     # set az
-        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos3.text())))                                   # set alt
-        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos3.text())))                                     # set az
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos3.text())))                                   # set alt
+        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
 
     def mountPosition4(self):
-        self.mountCommandQueue.put('PO')                                                                                         # unpark first
-        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
-        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
-        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
+        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
 
     def mountPosition5(self):
-        self.mountCommandQueue.put('PO')                                                                                         # unpark first
-        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
-        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
-        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
+        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
 
     def mountPosition6(self):
-        self.mountCommandQueue.put('PO')                                                                                         # unpark first
-        self.mountCommandQueue.put('Sz{0:03d}*00'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
-        self.mountCommandQueue.put('Sa+{0:02d}*00'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
-        self.mountCommandQueue.put('MA')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
+        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
 
     @PyQt5.QtCore.Slot(int)
     def setINDIStatus(self, status):

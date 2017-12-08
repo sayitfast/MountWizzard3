@@ -97,11 +97,12 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket RunnerSlow not connected')
 
     def getStatusSlow(self):
-        if 'FW' in self.data:
-            if self.data['FW'] < 21500:
-                self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
-            else:
-                self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+        if 'FW' not in self.data:
+            self.data['FW'] = 0
+        if self.data['FW'] < 21500:
+            self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
+        else:
+            self.sendCommandQueue.put(':U2#:GRTMP#:GRPRS#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
 
     def handleReadyRead(self):
         # Get message from socket.
@@ -122,7 +123,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.messageString = self.messageString[45:]
         # Try and parse the message.
         try:
-            if len(messageToProcess) == 0 or 'FW' not in self.data:
+            if 'FW' not in self.data:
+                self.data['FW'] = 0
+            if len(messageToProcess) == 0:
                 return
             valueList = messageToProcess.strip('#').split('#')
             # +000.0# 0950.0# +029.8# 1 0 1 +90# +00# V,2018-03-24#
