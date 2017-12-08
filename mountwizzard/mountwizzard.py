@@ -909,8 +909,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_alignErrorAz.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'ModelErrorAlt':
                 self.ui.le_alignErrorAlt.setText(str(self.workerMountDispatcher.data[valueName]))
-            if valueName == 'ModelStarError':
-                self.ui.alignErrorStars.setText(self.workerMountDispatcher.data[valueName])
             if valueName == 'CurrentHorizonLimitLow':
                 self.ui.le_horizonLimitLow.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'CurrentHorizonLimitHigh':
