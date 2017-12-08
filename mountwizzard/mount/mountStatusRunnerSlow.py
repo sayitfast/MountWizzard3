@@ -50,7 +50,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         while self.isRunning:
-            if not self.sendCommandQueue.empty():
+            if not self.sendCommandQueue.empty() and self.connected:
                 command = self.sendCommandQueue.get()
                 self.sendCommand(command)
             time.sleep(0.2)
@@ -58,7 +58,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.sendCommandQueue.clear()
+                self.sendCommandQueue.queue.clear()
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
 

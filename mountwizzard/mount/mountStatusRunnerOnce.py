@@ -48,7 +48,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         while self.isRunning:
-            if not self.sendCommandQueue.empty():
+            if not self.sendCommandQueue.empty() and self.connected:
                 command = self.sendCommandQueue.get()
                 self.sendCommand(command)
             time.sleep(0.2)
@@ -56,7 +56,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.sendCommandQueue.clear()
+                self.sendCommandQueue.queue.clear()
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
 
@@ -97,15 +97,19 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.sendCommandQueue.put(':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#')
 
     def handleReadyRead(self):
+        messageToProcess = ''
         # Get message from socket.
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(4000), "ascii")
             self.messageString += tmp
             if len(self.messageString.strip('#').split('#')) != 8:
                 return
+            else:
+                messageToProcess = self.messageString
+                self.messageString = ''
         # now transfer the model data
         try:
-            valueList = self.messageString.strip('#').split('#')
+            valueList = messageToProcess.strip('#').split('#')
             # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
             if len(valueList) == 8:
@@ -135,10 +139,12 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                     self.data['FirmwareTime'] = valueList[6]
                 if len(valueList[7]) > 0:
                     self.data['HardwareVersion'] = valueList[7]
-            self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
-            self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
-            self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
-            self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
+                self.logger.info('FW: {0} Number: {1}'.format(self.data['FirmwareNumber'], self.data['FW']))
+                self.logger.info('Site Lon:    {0}'.format(self.data['SiteLongitude']))
+                self.logger.info('Site Lat:    {0}'.format(self.data['SiteLatitude']))
+                self.logger.info('Site Height: {0}'.format(self.data['SiteHeight']))
+            else:
+                self.logger.warning('Parsing Status Once combined command valueList is not OK: length:{0} content:{1}'.format(len(valueList), valueList))
         except Exception as e:
             pass
         finally:

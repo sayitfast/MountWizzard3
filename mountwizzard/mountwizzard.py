@@ -18,6 +18,7 @@ import datetime
 import json
 import logging
 import logging.handlers
+import time
 # numerics
 import math
 import numpy
@@ -357,9 +358,12 @@ class MountWizzardApp(widget.MwWidget):
             self.INDIthread.wait()
 
     def mountBoot(self):
+        self.ui.btn_mountBoot.setStyleSheet(self.BLUE)
         wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
+        time.sleep(1)
         self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')
+        self.ui.btn_mountBoot.setStyleSheet(self.DEFAULT)
 
     def mountShutdown(self):
         self.mountCommandQueue.put('Shutdown')
