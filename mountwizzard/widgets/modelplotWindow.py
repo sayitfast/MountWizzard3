@@ -18,6 +18,7 @@ import logging
 import os
 
 # import for the PyQt5 Framework
+import PyQt5
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -39,8 +40,9 @@ def getXY(az, alt, height, width, border):                                      
     return int(x + 0.5), int(y + 0.5)
 
 
-BORDER_VIEW = 20                                                                                                            # 20 point from graphics border
-TEXTHEIGHT_VIEW = 10                                                                                                        # text size for drawing
+BORDER_VIEW = 30                                                                                                            # 20 point from graphics border
+TEXTHEIGHT_VIEW = 15                                                                                                        # text size for drawing
+TEXTHEIGHT = 10
 ELLIPSE_VIEW = 12                                                                                                           # size of the circles of points
 
 
@@ -232,17 +234,20 @@ class ModelPlotWindow(widget.MwWidget):
         scene.addRect(border, border, width - 2*border, height - 2*border, pen)                                             # set frame around graphics
         for i in range(0, 361, 30):                                                                                         # now the texts at the plot x
             text_item = QGraphicsTextItem('{0:03d}'.format(i), None)                                                        # set labels
+            text_item.setFont(PyQt5.QtGui.QFont('ARIAL', TEXTHEIGHT))
             text_item.setDefaultTextColor(self.COLOR_ASTRO)                                                                 # coloring of label
             text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)                        # placing the text
             scene.addItem(text_item)                                                                                        # adding item to scene to be shown
         for i in range(10, 91, 10):                                                                                         # now the texts at the plot y
             text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(width - border, height - border - textheight - int(i * (height - 2 * border) / 90))
+            text_item.setPos(width - border + TEXTHEIGHT / 2, height - border - textheight - int(i * (height - 2 * border) / 90))
+            text_item.setFont(PyQt5.QtGui.QFont('ARIAL', TEXTHEIGHT))
             scene.addItem(text_item)
             text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
             text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(0, height - border - textheight - int(i * (height - 2 * border) / 90))
+            text_item.setPos(TEXTHEIGHT / 2, height - border - textheight - int(i * (height - 2 * border) / 90))
+            text_item.setFont(PyQt5.QtGui.QFont('ARIAL', TEXTHEIGHT))
             scene.addItem(text_item)
         return scene
 

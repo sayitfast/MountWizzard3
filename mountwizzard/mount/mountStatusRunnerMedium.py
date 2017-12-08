@@ -59,6 +59,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+                self.sendCommandQueue.clear()
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
 
