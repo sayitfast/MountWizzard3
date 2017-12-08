@@ -77,14 +77,14 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.logger.info('Mount AlignModel connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
-        self.logger.error('Mount connection AlignModel fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
+        self.logger.error('Mount AlignModel connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
         pass
         # self.logger.info('Mount connection AlignModel has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
-        self.logger.info('Mount connection AlignModel is disconnected from host')
+        self.logger.info('Mount AlignModel connection is disconnected from host')
         self.connected = False
 
     def sendCommand(self, command):

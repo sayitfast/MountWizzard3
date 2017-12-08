@@ -359,6 +359,7 @@ class MountWizzardApp(widget.MwWidget):
 
     def mountBoot(self):
         self.ui.btn_mountBoot.setStyleSheet(self.BLUE)
+        PyQt5.QtWidgets.QApplication.processEvents()
         wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
         time.sleep(1)
         self.messageQueue.put('Send WOL and boot mount\n')

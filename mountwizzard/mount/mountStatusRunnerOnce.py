@@ -109,6 +109,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
                 self.messageString = ''
         # now transfer the model data
         try:
+            if len(messageToProcess) == 0:
+                return
             valueList = messageToProcess.strip('#').split('#')
             # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
