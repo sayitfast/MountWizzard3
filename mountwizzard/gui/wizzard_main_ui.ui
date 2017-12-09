@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -5024,7 +5024,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Clear Points in Modeling Plot Window</string>
+      <string>Clear Modeling Plot Window</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_openImageWindow">
@@ -5035,6 +5035,12 @@
        <width>241</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5175,6 +5181,12 @@
        <width>241</width>
        <height>31</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+      </font>
      </property>
      <property name="toolTip">
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -5461,7 +5473,7 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>370</y>
+       <y>350</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -5509,7 +5521,7 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>410</y>
+       <y>390</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6644,7 +6656,7 @@
       <string>Deletes worst point of actual model until error is below target RMS</string>
      </property>
      <property name="text">
-      <string>Cancel Optimise Run</string>
+      <string>Cancel Optimise</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignErrorRMS2">
@@ -6750,7 +6762,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>410</y>
+       <y>400</y>
        <width>351</width>
        <height>31</height>
       </rect>

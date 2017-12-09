@@ -215,7 +215,7 @@ class ModelingRunner:
 
     def checkModelingAvailable(self):
         # modeling is available when mount connected and imaging is running
-        return self.app.mount.mountIpDirect.connected and self.imagingApps.imagingWorkerAppHandler.isRunning
+        return self.app.workerMountDispatcher.workerMountStatusRunnerFast.connected and self.imagingApps.imagingWorkerAppHandler.isRunning
 
     def slewMountDome(self, azimuth, altitude, domeIsConnected):
         # limit azimuth and altitude
