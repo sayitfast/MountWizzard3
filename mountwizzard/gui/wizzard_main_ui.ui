@@ -80,8 +80,8 @@
     <font>
      <family>Arial</family>
      <pointsize>10</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -1765,8 +1765,14 @@
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -3426,8 +3432,14 @@
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -4842,8 +4854,14 @@
        <height>211</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -4964,8 +4982,14 @@
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -5032,10 +5056,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);
-text-align:left;
-padding-left:10px;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Open Image Window</string>
@@ -5175,10 +5196,7 @@ padding-left:10px;</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);
-text-align:left;
-padding-left:10px;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Open Modeling Plot Window</string>
@@ -5595,8 +5613,14 @@ padding-left:10px;</string>
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -6576,8 +6600,14 @@ padding-left:10px;</string>
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -7141,10 +7171,7 @@ padding-left:10px;</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the analyse Popup Window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);
-text-align:left;
-padding-left:10px;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Open Analyse Window / Update Analyse Window</string>
@@ -7625,8 +7652,14 @@ padding-left:10px;</string>
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -7808,8 +7841,14 @@ padding-left:10px;</string>
        <height>431</height>
       </rect>
      </property>
+     <property name="styleSheet">
+      <string notr="true">color: rgb(32, 144, 192);</string>
+     </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -8185,8 +8224,14 @@ padding-left:10px;</string>
          <height>381</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(32, 144, 192);</string>
+       </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -9094,8 +9139,14 @@ padding-left:10px;</string>
          <height>381</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(32, 144, 192);</string>
+       </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -9283,8 +9334,14 @@ padding-left:10px;</string>
          <height>381</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(32, 144, 192);</string>
+       </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -9949,8 +10006,14 @@ padding-left:10px;</string>
          <height>381</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(32, 144, 192);</string>
+       </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -10489,8 +10552,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_altParkPos3">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>110</y>
+         <x>310</x>
+         <y>130</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -10528,8 +10591,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_parkPos3Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>110</y>
+         <x>80</x>
+         <y>130</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -10567,8 +10630,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_parkPos1Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>50</y>
+         <x>80</x>
+         <y>70</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -10603,8 +10666,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_19">
        <property name="geometry">
         <rect>
-         <x>260</x>
-         <y>50</y>
+         <x>220</x>
+         <y>70</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -10621,8 +10684,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_43">
        <property name="geometry">
         <rect>
-         <x>260</x>
-         <y>80</y>
+         <x>220</x>
+         <y>100</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -10657,8 +10720,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_azParkPos3">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>110</y>
+         <x>240</x>
+         <y>130</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -10696,8 +10759,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_parkPos2Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>80</y>
+         <x>80</x>
+         <y>100</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -10735,8 +10798,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_azParkPos1">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>50</y>
+         <x>240</x>
+         <y>70</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -10774,8 +10837,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_45">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>80</y>
+         <x>290</x>
+         <y>100</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -10792,8 +10855,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_altParkPos4">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>140</y>
+         <x>310</x>
+         <y>160</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -10831,8 +10894,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_altParkPos1">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>50</y>
+         <x>310</x>
+         <y>70</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -10871,8 +10934,8 @@ padding-left:10px;</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>50</y>
-         <width>121</width>
+         <y>70</y>
+         <width>61</width>
          <height>21</height>
         </rect>
        </property>
@@ -10882,14 +10945,14 @@ padding-left:10px;</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 1    Text</string>
+        <string>Button 1</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_altParkPos2">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>80</y>
+         <x>310</x>
+         <y>100</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -10927,8 +10990,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_51">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>140</y>
+         <x>290</x>
+         <y>160</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -10946,8 +11009,8 @@ padding-left:10px;</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
-         <width>121</width>
+         <y>160</y>
+         <width>61</width>
          <height>21</height>
         </rect>
        </property>
@@ -10957,15 +11020,15 @@ padding-left:10px;</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 4    Text</string>
+        <string>Button 4</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_44">
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>80</y>
-         <width>121</width>
+         <y>100</y>
+         <width>61</width>
          <height>21</height>
         </rect>
        </property>
@@ -10975,14 +11038,14 @@ padding-left:10px;</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 2    Text</string>
+        <string>Button 2</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_azParkPos2">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>80</y>
+         <x>240</x>
+         <y>100</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -11020,8 +11083,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_49">
        <property name="geometry">
         <rect>
-         <x>260</x>
-         <y>140</y>
+         <x>220</x>
+         <y>160</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11038,8 +11101,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_3">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>50</y>
+         <x>290</x>
+         <y>70</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11058,7 +11121,7 @@ padding-left:10px;</string>
         <rect>
          <x>20</x>
          <y>30</y>
-         <width>371</width>
+         <width>331</width>
          <height>21</height>
         </rect>
        </property>
@@ -11077,8 +11140,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_azParkPos4">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>140</y>
+         <x>240</x>
+         <y>160</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -11116,8 +11179,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_46">
        <property name="geometry">
         <rect>
-         <x>260</x>
-         <y>110</y>
+         <x>220</x>
+         <y>130</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11134,8 +11197,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_48">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>110</y>
+         <x>290</x>
+         <y>130</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11152,8 +11215,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_parkPos4Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>140</y>
+         <x>80</x>
+         <y>160</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -11192,8 +11255,8 @@ padding-left:10px;</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
-         <width>121</width>
+         <y>130</y>
+         <width>61</width>
          <height>21</height>
         </rect>
        </property>
@@ -11203,14 +11266,14 @@ padding-left:10px;</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 3    Text</string>
+        <string>Button 3</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_azParkPos5">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>170</y>
+         <x>240</x>
+         <y>190</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -11249,8 +11312,8 @@ padding-left:10px;</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>200</y>
-         <width>121</width>
+         <y>220</y>
+         <width>51</width>
          <height>21</height>
         </rect>
        </property>
@@ -11260,14 +11323,14 @@ padding-left:10px;</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 6    Text</string>
+        <string>Button 6</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_altParkPos6">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>200</y>
+         <x>310</x>
+         <y>220</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -11305,8 +11368,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_93">
        <property name="geometry">
         <rect>
-         <x>260</x>
-         <y>170</y>
+         <x>220</x>
+         <y>190</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11323,8 +11386,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_94">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>170</y>
+         <x>290</x>
+         <y>190</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11342,8 +11405,8 @@ padding-left:10px;</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>170</y>
-         <width>121</width>
+         <y>190</y>
+         <width>61</width>
          <height>21</height>
         </rect>
        </property>
@@ -11353,14 +11416,14 @@ padding-left:10px;</string>
         </font>
        </property>
        <property name="text">
-        <string>Button 5    Text</string>
+        <string>Button 5</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="le_altParkPos5">
        <property name="geometry">
         <rect>
-         <x>350</x>
-         <y>170</y>
+         <x>310</x>
+         <y>190</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -11398,8 +11461,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_parkPos6Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>200</y>
+         <x>80</x>
+         <y>220</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -11437,8 +11500,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_parkPos5Text">
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>170</y>
+         <x>80</x>
+         <y>190</y>
          <width>121</width>
          <height>21</height>
         </rect>
@@ -11476,8 +11539,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_131">
        <property name="geometry">
         <rect>
-         <x>260</x>
-         <y>200</y>
+         <x>220</x>
+         <y>220</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11494,8 +11557,8 @@ padding-left:10px;</string>
       <widget class="QLabel" name="label_132">
        <property name="geometry">
         <rect>
-         <x>330</x>
-         <y>200</y>
+         <x>290</x>
+         <y>220</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11512,8 +11575,8 @@ padding-left:10px;</string>
       <widget class="QLineEdit" name="le_azParkPos6">
        <property name="geometry">
         <rect>
-         <x>280</x>
-         <y>200</y>
+         <x>240</x>
+         <y>220</y>
          <width>41</width>
          <height>21</height>
         </rect>
@@ -11546,6 +11609,46 @@ padding-left:10px;</string>
        </property>
        <property name="readOnly">
         <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="Line" name="line_83">
+       <property name="geometry">
+        <rect>
+         <x>360</x>
+         <y>10</y>
+         <width>21</width>
+         <height>381</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(32, 144, 192);</string>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_97">
+       <property name="geometry">
+        <rect>
+         <x>80</x>
+         <y>40</y>
+         <width>51</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Text</string>
        </property>
       </widget>
      </widget>
@@ -11844,8 +11947,14 @@ padding-left:10px;</string>
          <height>391</height>
         </rect>
        </property>
+       <property name="styleSheet">
+        <string notr="true">color: rgb(32, 144, 192);</string>
+       </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
@@ -12295,6 +12404,9 @@ padding-left:10px;</string>
    <property name="toolTip">
     <string>Quits the tool and saves the settings data in config.cfg</string>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>Save / Quit</string>
    </property>
@@ -12316,8 +12428,11 @@ padding-left:10px;</string>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
-    <string>Save Config</string>
+    <string>Save</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_cameraConnected">
@@ -12413,17 +12528,20 @@ padding-left:10px;</string>
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color: rgb(16, 72, 124);
-color: rgb(255,255,255);
-text-align:left;
-padding-left:10px;</string>
+    <string notr="true"/>
    </property>
    <property name="text">
-    <string>Show Messages</string>
+    <string>Show Log</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_solverConnected">
@@ -12464,8 +12582,11 @@ padding-left:10px;</string>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
-    <string>Load Config From</string>
+    <string>Load From</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_saveConfigAs">
@@ -12485,8 +12606,11 @@ padding-left:10px;</string>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
-    <string>Save Config As</string>
+    <string>Save As</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_configName">
@@ -12502,8 +12626,8 @@ padding-left:10px;</string>
     <font>
      <family>Arial</family>
      <pointsize>10</pointsize>
-     <weight>50</weight>
-     <bold>false</bold>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -12577,7 +12701,7 @@ padding-left:10px;</string>
     <string>Send shutdown command to the mount and quit the tool</string>
    </property>
    <property name="text">
-    <string>Shutdown Mount</string>
+    <string>Shutdown</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_mountBoot">
@@ -12598,7 +12722,7 @@ padding-left:10px;</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Boot Mount WOL</string>
+    <string>Boot WOL</string>
    </property>
   </widget>
   <widget class="Line" name="line_9">
