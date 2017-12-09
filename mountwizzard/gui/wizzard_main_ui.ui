@@ -130,7 +130,7 @@
     <string>Tab section</string>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
@@ -3760,7 +3760,7 @@
        <x>200</x>
        <y>140</y>
        <width>21</width>
-       <height>20</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -3916,9 +3916,9 @@
      <property name="geometry">
       <rect>
        <x>200</x>
-       <y>170</y>
+       <y>180</y>
        <width>21</width>
-       <height>20</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="font">
@@ -5011,22 +5011,6 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_clearAlignmentModel">
-     <property name="geometry">
-      <rect>
-       <x>510</x>
-       <y>230</y>
-       <width>241</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Clear the model in mount. Can't be revised.</string>
-     </property>
-     <property name="text">
-      <string>Clear Pointing Model in Mount</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_deletePoints">
      <property name="geometry">
       <rect>
@@ -5066,7 +5050,7 @@
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>350</y>
+       <y>360</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -5090,7 +5074,7 @@
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>290</y>
+       <y>300</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -5127,7 +5111,7 @@
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>380</y>
+       <y>390</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -5148,7 +5132,7 @@
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>320</y>
+       <y>330</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -5222,7 +5206,7 @@
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>260</y>
+       <y>280</y>
        <width>241</width>
        <height>21</height>
       </rect>
@@ -5238,7 +5222,7 @@
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>410</y>
+       <y>420</y>
        <width>231</width>
        <height>20</height>
       </rect>
@@ -5253,6 +5237,24 @@
      </property>
      <property name="text">
       <string>Run in simulation mode</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_205">
+     <property name="geometry">
+      <rect>
+       <x>510</x>
+       <y>270</y>
+       <width>241</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Modeling settings</string>
      </property>
     </widget>
    </widget>
@@ -6703,6 +6705,22 @@
      </property>
      <property name="text">
       <string>Actual RMS</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_clearAlignmentModel">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>50</y>
+       <width>131</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>Clear the model in mount. Can't be revised.</string>
+     </property>
+     <property name="text">
+      <string>Clear Model</string>
      </property>
     </widget>
    </widget>

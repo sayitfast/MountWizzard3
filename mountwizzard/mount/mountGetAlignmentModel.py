@@ -128,7 +128,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             if 'FW' not in self.data:
                 self.data['FW'] = 0
             if len(messageToProcess) == 0:
-                self.data['ModelLoading'] = False
                 return
             valueList = messageToProcess.strip('#').split('#')
             # now the first part of the command cluster

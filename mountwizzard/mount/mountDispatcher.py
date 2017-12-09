@@ -303,7 +303,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         }
 
         self.counter = 0
-        self.cancelTargetRMS = False
+        self.cancelRunTargetRMS = False
         self.runTargetRMS = False
 
     def initConfig(self):
@@ -528,28 +528,27 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def runTargetRMSAlignment(self):
         self.runTargetRMS = True
-        self.cancelTargetRMS = False
+        self.cancelRunTargetRMS = False
         if self.data['Number'] < 4:
             return
-        while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelTargetRMS:
-            self.deleteWorstPointRaw()
+        while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelRunTargetRMS:
+            if self.deleteWorstPoint():
+                break
         if self.cancelRunTargetRMS:
-            self.app.messageQueue.put('Target RMS Run canceled\n')
+            self.app.messageQueue.put('#BRTarget RMS Run canceled\n')
+        else:
+            self.app.messageQueue.put('#BWTarget RMS Run finished\n')
         self.runTargetRMS = False
 
-    def cancelRunTargetRMS(self):
+    def cancelRunTargetRMSFunction(self):
         if self.runTargetRMS:
             self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.RED)
-            self.cancelTargetRMS = True
+            self.cancelRunTargetRMS = True
 
     def deleteWorstPoint(self):
-        self.deleteWorstPointRaw()
-
-    def deleteWorstPointRaw(self):
         # if there are less than 4 point, optimization can't take place
         if self.data['Number'] < 4:
-            self.cancelTargetRMS = True
-            return
+            return True
         # find worst point
         maxError = 0
         worstPointIndex = 0
@@ -557,8 +556,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]
-        self.app.messageQueue.put('Deleting Point {0:02d}  with Error: {1} ...'.format(worstPointIndex + 1, maxError))
+        self.app.messageQueue.put('Deleting Point {0:02d}  -> Az: {1:05.1f}  Alt: {2:04.1f}  Err: {3:05.1f} ...'.format(worstPointIndex + 1,
+                                                                                                                        self.data['ModelAzimuth'][worstPointIndex],
+                                                                                                                        self.data['ModelAltitude'][worstPointIndex],
+                                                                                                                        maxError))
         reply = self.workerMountCommandRunner.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
+        time.sleep(0.2)
         if reply == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
@@ -567,8 +570,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             # wait form alignment model to be downloaded
             while self.data['ModelLoading']:
                 time.sleep(0.2)
-            self.app.messageQueue.put(' Point deleted \n')
+            self.app.messageQueue.put('\n')
         else:
             self.app.messageQueue.put(' Point could not be deleted \n')
             self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
-        return
+        return False

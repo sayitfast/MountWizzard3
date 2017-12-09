@@ -30,6 +30,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.app = app
         self.data = data
         self._mutex = PyQt5.QtCore.QMutex()
+        self._mutexSend = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
         self.socket = None
@@ -89,7 +90,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         pass
 
     def sendCommand(self, command):
-        self.sendLock.acquire()
+        self._mutexSend.lock()
         # print(command)
         messageToProcess = ''
         if self.connected and self.isRunning:
@@ -104,14 +105,14 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                             self.messageString += tmp
                         messageToProcess = self.messageString.strip('#')
                 else:
-                    if self.socket.waitForReadyRead(500):
+                    if self.socket.waitForReadyRead(3000):
                         # now we got some data
                         while self.socket.bytesAvailable():
                             self.socket.read(1000)
                     messageToProcess = ''
             else:
                 self.logger.warning('Socket RunnerCommand not connected')
-        self.sendLock.release()
+        self._mutexSend.unlock()
         return messageToProcess
 
 

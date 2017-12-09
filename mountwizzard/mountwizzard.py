@@ -367,7 +367,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelModel1.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
-        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMS())
+        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
         self.ui.le_horizonPointsFileName.doubleClicked.connect(self.modelWindow.selectHorizonPointsFileName)
         self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
