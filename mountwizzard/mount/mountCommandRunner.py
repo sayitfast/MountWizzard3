@@ -90,6 +90,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     def sendCommand(self, command):
         self.sendLock.acquire()
+        # print(command)
         messageToProcess = ''
         if self.connected and self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
@@ -102,9 +103,11 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                             tmp = str(self.socket.read(1000), "ascii")
                             self.messageString += tmp
                         messageToProcess = self.messageString.strip('#')
-                        self.messageString = ''
                 else:
-                    self.messageString = ''
+                    if self.socket.waitForReadyRead(500):
+                        # now we got some data
+                        while self.socket.bytesAvailable():
+                            self.socket.read(1000)
                     messageToProcess = ''
             else:
                 self.logger.warning('Socket RunnerCommand not connected')

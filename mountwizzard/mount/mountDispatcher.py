@@ -140,7 +140,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_clearAlignmentModel,
-                            'Method': self.clearAlign
+                            'Method': self.mountModelHandling.clearAlign
                         }
                     ]
                 },
@@ -415,7 +415,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO2Model'))
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcher('Shutdown'))
-        self.workerMountGetAlignmentModel.getAlignmentModel()
+        self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlign'))
+
         while self.isRunning:
             self.signalMountConnected.emit(self.workerMountStatusRunnerFast.connected)
             time.sleep(0.2)
@@ -458,17 +459,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def mountShutdown(self):
         reply = self.workerMountCommandRunner.sendCommand(':shutdown#')
-        if reply != '1':
-            self.logger.error('error: {0}'.format(reply))
-            self.app.messageQueue.put('#BRError in mount shutdown\n')
-        else:
+        if reply.endswith('1'):
             self.workerMountCommandRunner.connected = False
             time.sleep(1)
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !\n')
-
-    def clearAlign(self):
-        self.workerMountCommandRunner.sendCommand(':delalig#')
+        else:
+            self.logger.error('error: {0}'.format(reply))
+            self.app.messageQueue.put('#BRError in mount shutdown\n')
 
     def flipMount(self):
         reply = self.workerMountCommandRunner.sendCommand(':FLIP#').rstrip('#').strip()

@@ -376,8 +376,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountBoot.setStyleSheet(self.DEFAULT)
 
     def showModelErrorPolar(self):
-        if len(self.workerMountDispatcher.data['ModelIndex']) == 0:
-            return
         self.modelWidget.fig.clf()
         self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
         self.modelWidget.axes.grid(True, color='gray')
@@ -390,19 +388,20 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget.axes.set_yticks(range(0, 90, 10))
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
         self.modelWidget.axes.set_yticklabels(yLabel, color='white')
-        azimuth = numpy.asarray(self.workerMountDispatcher.data['ModelAzimuth'])
-        altitude = numpy.asarray(self.workerMountDispatcher.data['ModelAltitude'])
-        cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
-        colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
-        scaleError = int(max(colors) / 4 + 1) * 4
-        area = [125 if x >= max(colors) else 50 for x in self.workerMountDispatcher.data['ModelError']]
-        theta = azimuth / 180.0 * math.pi
-        r = 90 - altitude
-        scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
-        scatter.set_alpha(0.75)
-        colorbar = self.modelWidget.fig.colorbar(scatter, pad=0.1)
-        colorbar.set_label('Error [arcsec]', color='white')
-        matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
+        if len(self.workerMountDispatcher.data['ModelIndex']) != 0:
+            azimuth = numpy.asarray(self.workerMountDispatcher.data['ModelAzimuth'])
+            altitude = numpy.asarray(self.workerMountDispatcher.data['ModelAltitude'])
+            cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
+            colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
+            scaleError = int(max(colors) / 4 + 1) * 4
+            area = [125 if x >= max(colors) else 50 for x in self.workerMountDispatcher.data['ModelError']]
+            theta = azimuth / 180.0 * math.pi
+            r = 90 - altitude
+            scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
+            scatter.set_alpha(0.75)
+            colorbar = self.modelWidget.fig.colorbar(scatter, pad=0.1)
+            colorbar.set_label('Error [arcsec]', color='white')
+            matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
         self.modelWidget.axes.set_rmax(90)
         self.modelWidget.axes.set_rmin(0)
         self.modelWidget.draw()

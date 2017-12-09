@@ -107,16 +107,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'ClearAlignmentModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_clearAlignmentModel,
-                            'Method': self.modelingRunner.clearAlignmentModel,
-                            'Cancel': self.app.ui.btn_cancelAnalyseModel
-                        }
-                    ]
-                },
             'GenerateDSOPoints':
                 {
                     'Worker': [
@@ -261,7 +251,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.btn_runRefinementModel.clicked.connect(lambda: self.commandDispatcher('RunRefinementModel'))
         self.app.ui.btn_runBoostModel.clicked.connect(lambda: self.commandDispatcher('RunBoostModel'))
         self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcher('RunBatchModel'))
-        self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlignmentModel'))
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
         # TODO: it's not Model Connected, but imaging app connected
         self.signalStatusCamera.emit(0)

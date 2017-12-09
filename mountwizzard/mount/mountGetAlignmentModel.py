@@ -100,9 +100,9 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         if 'FW' not in self.data:
             self.data['FW'] = 0
         if self.data['FW'] < 21500:
-            command = ''
+            command = ':getalst#'
         else:
-            command = ':getain#'
+            command = ':getalst#:getain#'
         # asking for 100 points data
         for i in range(1, 102):
             command += (':getalp{0:d}#'.format(i))
@@ -119,18 +119,29 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        while messageToProcess.startswith('E#'):
-            messageToProcess = messageToProcess.lstrip('E#')
         while messageToProcess.endswith('E#'):
             messageToProcess = messageToProcess.rstrip('E#')
+        while messageToProcess.startswith('E#'):
+            messageToProcess = messageToProcess.lstrip('E#')
         # now transfer the model data
         try:
             if 'FW' not in self.data:
                 self.data['FW'] = 0
             if len(messageToProcess) == 0:
+                self.data['ModelLoading'] = False
                 return
             valueList = messageToProcess.strip('#').split('#')
+            # now the first part of the command cluster
+            numberStars = int(float(valueList[0]))
+            self.data['NumberAlignmentStars'] = numberStars
+            self.data['Number'] = numberStars
+            del valueList[0]
+            if numberStars < 4:
+                valueList = ['E,E,E,E,E,E,E,E,E']
+            # now the second part of the command cluster. it is related to firmware feature
             if self.data['FW'] > 21500:
+                if numberStars < 4:
+                    valueList = ['E,E,E,E,E,E,E,E,E']
                 # here we have more data in
                 if len(valueList[0]) > 3:
                     a1, a2, a3, a4, a5, a6, a7, a8, a9 = valueList[0].split(',')
@@ -171,8 +182,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                         self.data['RMS'] = float(a9)
                     else:
                         self.data['RMS'] = 0
-                    # remove the first element in list
-                    del valueList[0]
                     self.data['ModelRMSError'] = '{0:3.1f}'.format(self.data['RMS'])
                     self.data['ModelErrorPosAngle'] = '{0:3.1f}'.format(self.data['PosAngle'])
                     self.data['ModelPolarError'] = '{0}'.format(self.transform.decimalToDegree(self.data['PolarError']))
@@ -192,8 +201,9 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                     self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
                 else:
                     self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
-            self.data['NumberAlignmentStars'] = len(valueList)
-            self.data['Number'] = len(valueList)
+                # remove the first remaining element in list if it was there
+                del valueList[0]
+            # now the third part of the command cluster
             self.data['ModelIndex'] = list()
             self.data['ModelAzimuth'] = list()
             self.data['ModelAltitude'] = list()
