@@ -562,16 +562,16 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                                                                                                                         maxError))
         reply = self.workerMountCommandRunner.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
         time.sleep(0.2)
-        if reply == '1':
+        if reply.endswith('1'):
             # point could be deleted, feedback from mount ok
             self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
             # get new calculated alignment model from mount
-            self.workerMountGetAlignmentModel.getAlignmentModel()
-            # wait form alignment model to be downloaded
-            while self.data['ModelLoading']:
-                time.sleep(0.2)
             self.app.messageQueue.put('\n')
         else:
             self.app.messageQueue.put(' Point could not be deleted \n')
             self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
+        self.workerMountGetAlignmentModel.getAlignmentModel()
+        # wait form alignment model to be downloaded
+        while self.data['ModelLoading']:
+            time.sleep(0.2)
         return False

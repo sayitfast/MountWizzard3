@@ -15,7 +15,6 @@ import logging
 import PyQt5
 import time
 from queue import Queue
-import threading
 
 
 class MountCommandRunner(PyQt5.QtCore.QObject):
@@ -30,14 +29,12 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.app = app
         self.data = data
         self._mutex = PyQt5.QtCore.QMutex()
-        self._mutexSend = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
         self.socket = None
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.parseQueue = Queue()
-        self.sendLock = threading.Lock()
 
     def run(self):
         if not self.isRunning:
@@ -90,7 +87,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         pass
 
     def sendCommand(self, command):
-        self._mutexSend.lock()
         # print(command)
         messageToProcess = ''
         if self.connected and self.isRunning:
@@ -109,10 +105,10 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                         # now we got some data
                         while self.socket.bytesAvailable():
                             self.socket.read(1000)
+                    self.messageString = ''
                     messageToProcess = ''
             else:
                 self.logger.warning('Socket RunnerCommand not connected')
-        self._mutexSend.unlock()
         return messageToProcess
 
 
