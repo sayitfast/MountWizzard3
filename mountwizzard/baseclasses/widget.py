@@ -31,8 +31,7 @@ class MwWidget(QWidget):
     BLUE = 'background-color: rgb(16, 72, 124); color: rgb(192,192,192);text-align: left; padding-left: 5px;;font-size: 10pt;'
     RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);text-align: left; padding-left: 5px;;font-size: 10pt;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192);'
-    DEFAULT_ICON = 'background-color: rgb(32,32,32); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
-    # DEFAULT_TITLE = 'background-color: rgb(10,48,64); color: rgb(192,192,192);'
+    # DEFAULT_ICON = 'background-color: rgb(32,32,32); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
     DEFAULT_TITLE = 'background-color: rgb(8,36,48); color: rgb(192,192,192);'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)

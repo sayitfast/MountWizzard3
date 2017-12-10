@@ -467,7 +467,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def mountShutdown(self):
         reply = self.workerMountCommandRunner.sendCommand(':shutdown#')
-        if reply.endswith('1'):
+        if reply == '1':
             self.workerMountCommandRunner.connected = False
             time.sleep(1)
             self.logger.info('Shutdown mount manually')

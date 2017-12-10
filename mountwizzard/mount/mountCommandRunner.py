@@ -21,7 +21,10 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    # define the number of bytes for the return
+    # define the number of bytes for the return bytes in case of not having them in bulk mode
+    # this is needed, because the mount computer  doesn't support a transaction base like number of
+    # bytes to be expected. it's just plain data and i have to find out myself how much it is.
+    # due to the fact i'm doing multi threading with multi connections some of the commands run in parallel
     COMMAND_RETURN = {':AP#': 0,
                       ':hP#': 0,
                       ':PO#': 0,
@@ -40,8 +43,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':SRTMP': 1,
                       ':Sz': 1,
                       ':Sa': 1,
-                      ':MA#': 1
-
+                      ':MA#': 1,
+                      ':shutdown#': 1
     }
 
     def __init__(self, app, data, signalConnected):
