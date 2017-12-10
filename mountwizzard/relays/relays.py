@@ -180,37 +180,37 @@ class Relays:
             self.stat[8] = (lines[9][8] == '1')
             self.logger.debug('status: {0}'.format(self.stat))
         if self.stat[1]:
-            self.app.ui.btn_relay1.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay1.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay1.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay1.setStyleSheet(self.app.DEFAULT)
         if self.stat[2]:
-            self.app.ui.btn_relay2.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay2.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay2.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay2.setStyleSheet(self.app.DEFAULT)
         if self.stat[3]:
-            self.app.ui.btn_relay3.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay3.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay3.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay3.setStyleSheet(self.app.DEFAULT)
         if self.stat[4]:
-            self.app.ui.btn_relay4.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay4.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay4.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay4.setStyleSheet(self.app.DEFAULT)
         if self.stat[5]:
-            self.app.ui.btn_relay5.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay5.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay5.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay5.setStyleSheet(self.app.DEFAULT)
         if self.stat[6]:
-            self.app.ui.btn_relay6.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay6.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay6.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay6.setStyleSheet(self.app.DEFAULT)
         if self.stat[7]:
-            self.app.ui.btn_relay7.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay7.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay7.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay7.setStyleSheet(self.app.DEFAULT)
         if self.stat[8]:
-            self.app.ui.btn_relay8.setStyleSheet('background-color: rgb(42, 130, 218)')
+            self.app.ui.btn_relay8.setStyleSheet(self.app.BLUE)
         else:
-            self.app.ui.btn_relay8.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+            self.app.ui.btn_relay8.setStyleSheet(self.app.DEFAULT)
 
     def runRelay(self, relayNumber):
         if relayNumber == 1:
