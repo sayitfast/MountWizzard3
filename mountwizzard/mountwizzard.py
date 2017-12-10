@@ -985,7 +985,6 @@ class MountWizzardApp(widget.MwWidget):
     def setMountStatus(self, status):
         for key in status:
             self.workerMountDispatcher.mountStatus[key] = status[key]
-        print(self.workerMountDispatcher.mountStatus)
         stat = 0
         for key in self.workerMountDispatcher.mountStatus:
             if self.workerMountDispatcher.mountStatus[key]:
