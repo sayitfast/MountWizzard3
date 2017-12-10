@@ -8,9 +8,11 @@ DISTPATH = '../dist'
 WORKPATH = '../build'
 
 a = Analysis(['mountwizzard\\mountwizzard.py'],
-             pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\mountwizzard\\mountwizzard'],
+             pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
              binaries=[],
-             datas=[('mountwizzard\\model001.fit','.')],
+             datas=[('mountwizzard\\model001.fit','.'),
+             ('mountwizzard\\icons\\*.ico','.\\icons'),
+             ],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
@@ -31,7 +33,7 @@ exe = EXE(pyz,
           strip=False,
           upx=False,
           console=False,
-          icon='mountwizzard/mw.ico')
+          icon='mountwizzard\\icons\\mw.ico')
 
 
 #######################################

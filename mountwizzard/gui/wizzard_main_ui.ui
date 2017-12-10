@@ -5473,7 +5473,7 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>350</y>
+       <y>320</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -5521,7 +5521,7 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>390</y>
+       <y>360</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -7914,9 +7914,9 @@
       <widget class="QCheckBox" name="checkFastDownload">
        <property name="geometry">
         <rect>
-         <x>40</x>
-         <y>130</y>
-         <width>311</width>
+         <x>30</x>
+         <y>110</y>
+         <width>241</width>
          <height>20</height>
         </rect>
        </property>
@@ -7939,9 +7939,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>370</y>
+         <y>360</y>
          <width>331</width>
-         <height>20</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -7966,7 +7966,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>200</y>
+         <y>180</y>
          <width>191</width>
          <height>31</height>
         </rect>
@@ -7984,7 +7984,7 @@
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>340</y>
+         <y>310</y>
          <width>16</width>
          <height>31</height>
         </rect>
@@ -8056,7 +8056,7 @@
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>340</y>
+         <y>310</y>
          <width>71</width>
          <height>31</height>
         </rect>
@@ -8112,7 +8112,7 @@
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>160</y>
+         <y>140</y>
          <width>71</width>
          <height>31</height>
         </rect>
@@ -8150,9 +8150,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>340</y>
+         <y>310</y>
          <width>231</width>
-         <height>21</height>
+         <height>31</height>
         </rect>
        </property>
        <property name="font">
@@ -8195,7 +8195,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>160</y>
+         <y>140</y>
          <width>181</width>
          <height>31</height>
         </rect>
@@ -8213,7 +8213,7 @@
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>240</y>
+         <y>220</y>
          <width>21</width>
          <height>31</height>
         </rect>
@@ -8231,7 +8231,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>280</y>
+         <y>260</y>
          <width>181</width>
          <height>21</height>
         </rect>
@@ -8289,7 +8289,7 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>240</y>
+         <y>220</y>
          <width>171</width>
          <height>31</height>
         </rect>
@@ -8325,7 +8325,7 @@
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>240</y>
+         <y>220</y>
          <width>71</width>
          <height>31</height>
         </rect>
@@ -8361,7 +8361,7 @@
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>280</y>
+         <y>260</y>
          <width>21</width>
          <height>31</height>
         </rect>
@@ -8379,7 +8379,7 @@
        <property name="geometry">
         <rect>
          <x>250</x>
-         <y>280</y>
+         <y>260</y>
          <width>71</width>
          <height>31</height>
         </rect>
@@ -8414,7 +8414,7 @@
        <property name="geometry">
         <rect>
          <x>330</x>
-         <y>200</y>
+         <y>180</y>
          <width>16</width>
          <height>31</height>
         </rect>
@@ -8468,7 +8468,7 @@
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>200</y>
+         <y>180</y>
          <width>51</width>
          <height>31</height>
         </rect>
@@ -9131,9 +9131,9 @@
       <widget class="QCheckBox" name="checkUseFITSHeaders">
        <property name="geometry">
         <rect>
-         <x>50</x>
-         <y>310</y>
-         <width>301</width>
+         <x>40</x>
+         <y>280</y>
+         <width>201</width>
          <height>20</height>
         </rect>
        </property>

@@ -20,7 +20,6 @@ import PyQt5
 
 
 class MwFileDialogue(PyQt5.QtWidgets.QFileDialog):
-
     logger = logging.getLogger(__name__)
 
     def __init__(self, window):
@@ -33,7 +32,7 @@ class MwFileDialogue(PyQt5.QtWidgets.QFileDialog):
             # we are running in a normal Python environment
             bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
         self.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-        self.setWindowIcon(PyQt5.QtGui.QIcon(bundle_dir + '\\mw.ico'))
+        self.setWindowIcon(PyQt5.QtGui.QIcon(bundle_dir + '\\icons\\mw.ico'))
         ph = window.geometry().height()
         px = window.geometry().x()
         py = window.geometry().y()

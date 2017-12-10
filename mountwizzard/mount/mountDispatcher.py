@@ -65,6 +65,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         'MountMAC': '',
         'MountPort': 3490,
         'LocalSiderealTime': '',
+        'JulianDate': '2458096.5',
         'FW': 21501
     }
 

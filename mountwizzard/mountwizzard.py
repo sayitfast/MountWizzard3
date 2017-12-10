@@ -35,7 +35,7 @@ import matplotlib
 matplotlib.use('Qt5Agg')
 # import the UI part, which is done via QT Designer and exported
 from baseclasses import widget
-from baseclasses import fileDialogue
+from baseclasses import fileLoadSave
 from widgets import modelplotWindow
 from widgets import imageWindow
 from widgets import analyseWindow
@@ -189,7 +189,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelAnalyseModel.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\stop.ico'))
         self.ui.btn_cancelAnalyseModel.setStyleSheet('background-color: rgb(25,25,25);color: rgb(192,192,192);text-align: left; padding-left: 5px;')
         self.ui.btn_cancelAnalyseModel.setIconSize(PyQt5.QtCore.QSize(16, 16))
-
 
         self.ui.btn_runCheckModel.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\play.ico'))
         self.ui.btn_runCheckModel.setStyleSheet('background-color: rgb(25,25,25);color: rgb(192,192,192);text-align: left; padding-left: 5px;')
@@ -792,7 +791,7 @@ class MountWizzardApp(widget.MwWidget):
             self.config = {}
 
     def loadConfigDataFrom(self):
-        dlg = fileDialogue.MwFileDialogue(self)
+        dlg = fileLoadSave.MwFileDialogue(self)
         a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/config', 'Config files (*.cfg)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
@@ -835,7 +834,7 @@ class MountWizzardApp(widget.MwWidget):
             return
 
     def saveConfigAs(self):
-        dlg = fileDialogue.MwFileDialogue(self)
+        dlg = fileLoadSave.MwFileDialogue(self)
         a = dlg.getSaveFileName(dlg, 'Save file', os.getcwd() + '/config', 'Config files (*.cfg)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
@@ -844,7 +843,7 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('No config file selected')
 
     def selectModelPointsFileName(self):
-        dlg = fileDialogue.MwFileDialogue(self)
+        dlg = fileLoadSave.MwFileDialogue(self)
         a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
@@ -852,7 +851,7 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
-        dlg = fileDialogue.MwFileDialogue(self)
+        dlg = fileLoadSave.MwFileDialogue(self)
         # noinspection PyArgumentList
         a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
