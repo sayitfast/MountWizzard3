@@ -28,10 +28,12 @@ class MwWidget(QWidget):
     TEXT_COLOR_BLUE = 'background-color: rgb(25, 25, 25); color: rgb(32, 144, 192);'
     TEXT_COLOR_RED = 'background-color: rgb(25, 25, 25); color: rgb(255, 0, 0);'
     TEXT_COLOR_DEFAULT = 'background-color: rgb(25, 25, 25); color: rgb(192, 192, 192);'
-    BLUE = 'background-color: rgb(16, 72, 124); color: rgb(192,192,192);text-align: left; padding-left: 5px;;font-size: 10pt;'
-    RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);text-align: left; padding-left: 5px;;font-size: 10pt;'
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192);'
-    # DEFAULT_ICON = 'background-color: rgb(32,32,32); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
+    # BLUE = 'background-color: rgb(16, 72, 124); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
+    # RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
+    # DEFAULT= 'background-color: rgb(32,32,32); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
+    BLUE = 'background-color: rgb(16, 72, 124); color: rgb(192,192,192);font-size: 10pt;'
+    RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);font-size: 10pt;'
+    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192);font-size: 10pt;'
     DEFAULT_TITLE = 'background-color: rgb(8,36,48); color: rgb(192,192,192);'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
