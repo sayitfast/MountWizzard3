@@ -23,11 +23,12 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     BLIND_COMMANDS = [':AP#', ':hP#', ':PO#', ':RT0#', ':RT1#', ':RT2#', ':RT9#', ':STOP#', ':U2#']
 
-    def __init__(self, app, data):
+    def __init__(self, app, data, signalConnected):
         super().__init__()
 
         self.app = app
         self.data = data
+        self.signalConnected = signalConnected
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -70,6 +71,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
+        self.signalConnected.emit({'Command': True})
         self.logger.info('Mount RunnerCommand connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
@@ -81,6 +83,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerCommand connection is disconnected from host')
+        self.signalConnected.emit({'Command': False})
         self.connected = False
 
     def handleReadyRead(self):

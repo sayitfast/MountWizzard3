@@ -24,11 +24,12 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     CYCLE_STATUS_SLOW = 10000
 
-    def __init__(self, app, data):
+    def __init__(self, app, data, signalConnected):
         super().__init__()
 
         self.app = app
         self.data = data
+        self.signalConnected = signalConnected
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -75,6 +76,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
+        self.signalConnected.emit({'Slow': True})
         self.getStatusSlow()
         self.logger.info('Mount RunnerSlow connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
@@ -87,6 +89,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerSlow connection is disconnected from host')
+        self.signalConnected.emit({'Slow': False})
         self.connected = False
 
     def sendCommand(self, command):

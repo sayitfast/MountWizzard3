@@ -279,7 +279,13 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
         self.workerMountDispatcher.finished.connect(self.workerMountDispatcherStop)
-        self.workerMountDispatcher.signalMountConnected.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedFast.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedAlign.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
+        self.setMountStatus({})
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.modelWindow = modelplotWindow.ModelPlotWindow(self)
@@ -975,12 +981,21 @@ class MountWizzardApp(widget.MwWidget):
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
-    @PyQt5.QtCore.Slot(bool)
+    @PyQt5.QtCore.Slot(dict)
     def setMountStatus(self, status):
-        if status:
+        for key in status:
+            self.workerMountDispatcher.mountStatus[key] = status[key]
+        print(self.workerMountDispatcher.mountStatus)
+        stat = 0
+        for key in self.workerMountDispatcher.mountStatus:
+            if self.workerMountDispatcher.mountStatus[key]:
+                stat += 1
+        if stat == 0:
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
+        elif stat == 6:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green;}')
         else:
-            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow;}')
 
     @PyQt5.QtCore.Slot(dict)
     def fillMountData(self):

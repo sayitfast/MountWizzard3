@@ -24,11 +24,12 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
 
     CYCLE_STATUS_FAST = 100
 
-    def __init__(self, app, data, signalMountAzAltPointer):
+    def __init__(self, app, data, signalConnected, signalMountAzAltPointer):
         super().__init__()
 
         self.app = app
         self.data = data
+        self.signalConnected = signalConnected
         self.signalMountAzAltPointer = signalMountAzAltPointer
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
@@ -76,6 +77,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
+        self.signalConnected.emit({'Fast': True})
         self.getStatusFast()
         self.logger.info('Mount RunnerFast connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
@@ -88,6 +90,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerFast connection is disconnected from host')
+        self.signalConnected.emit({'Fast': False})
         self.connected = False
 
     def sendCommand(self, command):

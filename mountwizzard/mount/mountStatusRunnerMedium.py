@@ -24,11 +24,12 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     CYCLE_STATUS_MEDIUM = 3000
 
-    def __init__(self, app, data, signalMountTrackPreview):
+    def __init__(self, app, data, signalConnected, signalMountTrackPreview):
         super().__init__()
 
         self.app = app
         self.data = data
+        self.signalConnected = signalConnected
         self.signalMountTrackPreview = signalMountTrackPreview
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
@@ -76,6 +77,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
+        self.signalConnected.emit({'Medium': True})
         self.getStatusMedium()
         self.logger.info('Mount RunnerMedium connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
@@ -88,6 +90,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerMedium connection is disconnected from host')
+        self.signalConnected.emit({'Medium': False})
         self.connected = False
 
     def sendCommand(self, command):

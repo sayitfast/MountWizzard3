@@ -22,11 +22,12 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    def __init__(self, app, data, signalMountShowAlignmentModel):
+    def __init__(self, app, data, signalConnected, signalMountShowAlignmentModel):
         super().__init__()
 
         self.app = app
         self.data = data
+        self.signalConnected = signalConnected
         self.signalMountShowAlignmentModel = signalMountShowAlignmentModel
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
@@ -74,6 +75,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
+        self.signalConnected.emit({'Align': True})
         self.getAlignmentModel()
         self.logger.info('Mount AlignModel connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
@@ -86,6 +88,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount AlignModel connection is disconnected from host')
+        self.signalConnected.emit({'Align': False})
         self.connected = False
 
     def sendCommand(self, command):

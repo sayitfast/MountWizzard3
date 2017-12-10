@@ -22,11 +22,12 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    def __init__(self, app, data):
+    def __init__(self, app, data, signalConnected):
         super().__init__()
 
         self.app = app
         self.data = data
+        self.signalConnected = signalConnected
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
@@ -73,6 +74,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
+        self.signalConnected.emit({'Once': True})
         self.getStatusOnce()
         self.logger.info('Mount RunnerOnce connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
@@ -85,6 +87,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerOnce connection is disconnected from host')
+        self.signalConnected.emit({'Once': False})
         self.connected = False
 
     def sendCommand(self, command):
