@@ -885,20 +885,16 @@ class MountWizzardApp(widget.MwWidget):
         _value = self.ui.le_telescopeDualTrack.text()
         if _value == 'ON':
             _value = 0
-            self.ui.le_telescopeDualTrack.setText('OFF')
         else:
             _value = 1
-            self.ui.le_telescopeDualTrack.setText('ON')
         self.mountCommandQueue.put(':Sdat{0:01d}#'.format(_value))
 
     def setUnattendedFlip(self):
         _value = self.ui.le_telescopeUnattendedFlip.text()
         if _value == 'ON':
             _value = 0
-            self.ui.le_telescopeUnattendedFlip.setText('OFF')
         else:
             _value = 1
-            self.ui.le_telescopeUnattendedFlip.setText('ON')
         self.mountCommandQueue.put(':Suaf{0:1d}#'.format(_value))
 
     def setSlewRate(self):
@@ -913,11 +909,9 @@ class MountWizzardApp(widget.MwWidget):
         _value = self.ui.le_refractionStatus.text()
         if _value == 'ON':
             _value = 0
-            self.ui.le_refractionStatus.setText('OFF')
         else:
             _value = 1
-            self.ui.le_refractionStatus.setText('ON')
-        self.mountCommandQueue.put(':SREF{0: 01d}#'.format(_value))
+        self.mountCommandQueue.put(':SREF{0:1d}#'.format(_value))
 
     def mountPosition1(self):
         self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
