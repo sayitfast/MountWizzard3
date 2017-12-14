@@ -14,8 +14,8 @@
 import logging
 import math
 import datetime
-from astrometry.erfa import ERFA
 import threading
+from astropy import _erfa as erfa_astro
 
 
 class Transform:
@@ -23,7 +23,7 @@ class Transform:
 
     def __init__(self, app):
         self.app = app
-        self.ERFA = ERFA()
+        self.ERFA = erfa_astro
         self.transformationLockERFA = threading.Lock()
         self.conversionLock = threading.Lock()
 
@@ -89,9 +89,6 @@ class Transform:
         return returnValue
 
     def transformERFA(self, ra, dec, transform=1):
-        # ---------------------------------------------------------------------------
-        # implementation ascom.transform to erfa.py
-        # ---------------------------------------------------------------------------
         self.transformationLockERFA.acquire()
         SiteElevation = float(self.app.workerMountDispatcher.data['SiteHeight'])
         SiteLatitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
@@ -100,61 +97,59 @@ class Transform:
             self.logger.error('No site parameters set')
             return 0, 0
         ts = datetime.datetime.utcnow()
-        suc, dut1_prev = self.ERFA.eraDat(ts.year, ts.month, ts.day, 0)
-        if suc != 0:
-            self.logger.error('error result : {0} in eraDat year: {1}, month: {2}, day: {3}'.format(suc, ts.year, ts.month, ts.day))
+        dut1_prev = self.ERFA.dat(ts.year, ts.month, ts.day, 0)
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
         jd = float(self.app.workerMountDispatcher.data['JulianDate'])
-        suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
-        if suc != 0:
-            self.logger.error('error result : {0} in eraUtctai jd: {1}'.format(suc, jd))
-        tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
+        # suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
+        tai1, tai2 = self.ERFA.utctai(jd, 0)
+        # tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
+        tt1, tt2 = self.ERFA.taitt(tai1, tai2)
         jdtt = tt1 + tt2
         date1 = jd
         date2 = 0
 
         if transform == 1:  # J2000 to Topo Az /Alt
             ra = ra % 24                                                                                                    # mount has hours
-            suc, aob, zob, hob, dob, rob, eo = self.ERFA.eraAtco13(ra * self.ERFA.ERFA_D2PI / 24,
-                                                                   dec * self.ERFA.ERFA_D2PI / 360,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   date1 + date2,
-                                                                   0.0,
-                                                                   dut1,
-                                                                   SiteLongitude * self.ERFA.ERFA_DD2R,
-                                                                   SiteLatitude * self.ERFA.ERFA_DD2R,
-                                                                   SiteElevation,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   0.0,
-                                                                   0.0)
-            val1 = aob * 360 / self.ERFA.ERFA_D2PI
-            val2 = 90.0 - zob * 360 / self.ERFA.ERFA_D2PI
+            aob, zob, hob, dob, rob, eo = self.ERFA.atco13(ra * self.ERFA.D2PI / 24,
+                                                           dec * self.ERFA.D2PI / 360,
+                                                           0.0,
+                                                           0.0,
+                                                           0.0,
+                                                           0.0,
+                                                           date1 + date2,
+                                                           0.0,
+                                                           dut1,
+                                                           SiteLongitude * self.ERFA.DD2R,
+                                                           SiteLatitude * self.ERFA.DD2R,
+                                                           SiteElevation,
+                                                           0.0,
+                                                           0.0,
+                                                           0.0,
+                                                           0.0,
+                                                           0.0,
+                                                           0.0)
+            val1 = aob * 360 / self.ERFA.D2PI
+            val2 = 90.0 - zob * 360 / self.ERFA.D2PI
 
         elif transform == 2:                                                                                                # Topo to J2000
-            rc, dc, eo = self.ERFA.eraAtic13(self.ERFA.eraAnp(ra * self.ERFA.ERFA_D2PI / 24 + self.ERFA.eraEo06a(jdtt, 0.0)),
-                                             dec * self.ERFA.ERFA_D2PI / 360,
-                                             date1 + date2,
-                                             0.0)
-            val1 = rc * 24.0 / self.ERFA.ERFA_D2PI
-            val2 = dc * self.ERFA.ERFA_DR2D
+            rc, dc, eo = self.ERFA.atic13(self.ERFA.anp(ra * self.ERFA.D2PI / 24 + self.ERFA.eo06a(jdtt, 0.0)),
+                                          dec * self.ERFA.D2PI / 360,
+                                          date1 + date2,
+                                          0.0)
+            val1 = rc * 24.0 / self.ERFA.D2PI
+            val2 = dc * self.ERFA.DR2D
 
         elif transform == 3:                                                                                                # J2000 to Topo
-            ri, di, eo = self.ERFA.eraAtci13(ra * self.ERFA.ERFA_D2PI / 24,
-                                             dec * self.ERFA.ERFA_D2PI / 360,
-                                             0,
-                                             0,
-                                             0,
-                                             0,
-                                             date1 + date2,
-                                             0)
-            val1 = self.ERFA.eraAnp(ri - eo) * 24 / self.ERFA.ERFA_D2PI
-            val2 = di * 360 / self.ERFA.ERFA_D2PI
+            ri, di, eo = self.ERFA.atci13(ra * self.ERFA.D2PI / 24,
+                                          dec * self.ERFA.D2PI / 360,
+                                          0,
+                                          0,
+                                          0,
+                                          0,
+                                          date1 + date2,
+                                          0)
+            val1 = self.ERFA.anp(ri - eo) * 24 / self.ERFA.D2PI
+            val2 = di * 360 / self.ERFA.D2PI
         else:
             val1 = ra
             val2 = dec

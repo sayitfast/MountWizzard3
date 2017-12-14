@@ -1225,4 +1225,5 @@ if __name__ == "__main__":
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
     mountApp = MountWizzardApp()
     mountApp.show()
+
     sys.exit(app.exec_())

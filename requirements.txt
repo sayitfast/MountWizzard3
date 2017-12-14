@@ -6,4 +6,5 @@ wakeonlan>=0.2.2
 pywinauto>=0.6.3
 numpy
 requests
+astropy
 
