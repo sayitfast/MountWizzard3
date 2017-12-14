@@ -482,7 +482,7 @@ class MountWizzardApp(widget.MwWidget):
         self.modelWidget.fig.clf()
         self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
         self.modelWidget.axes.grid(True, color='gray')
-        self.modelWidget.fig.subplots_adjust(left=0.025, right=0.975, bottom=0.075, top=0.925)
+        self.modelWidget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
         self.modelWidget.axes.set_facecolor((32/256, 32/256, 32/256))
         self.modelWidget.axes.tick_params(axis='x', colors='white')
         self.modelWidget.axes.tick_params(axis='y', colors='white')
