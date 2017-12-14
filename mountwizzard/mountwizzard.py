@@ -899,7 +899,7 @@ class MountWizzardApp(widget.MwWidget):
         else:
             _value = 1
             self.ui.le_telescopeUnattendedFlip.setText('ON')
-        self.mountCommandQueue.put(':Suaf{0: 01d}#'.format(_value))
+        self.mountCommandQueue.put(':Suaf{0:1d}#'.format(_value))
 
     def setSlewRate(self):
         _value = int(self.ui.le_slewRate.text())

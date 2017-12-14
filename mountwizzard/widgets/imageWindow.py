@@ -90,7 +90,6 @@ class ImagesWindow(widget.MwWidget):
         self.ui.cross3.setVisible(False)
         self.ui.cross4.setVisible(False)
 
-
     def initConfig(self):
         try:
             if 'ImagePopupWindowPositionX' in self.app.config:
