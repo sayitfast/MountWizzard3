@@ -14,7 +14,6 @@
 import logging
 import os
 import copy
-from astrometry import transform
 # for the sorting
 import operator
 
@@ -24,7 +23,7 @@ class ModelPoints:
 
     def __init__(self, app):
         self.app = app
-        self.transform = transform.Transform(app)
+        self.transform = self.app.transform
         self.horizonPoints = []
         self.BasePoints = []
         self.RefinementPoints = []

@@ -52,6 +52,8 @@ from dome import ascomDome
 from indi import indi_client
 from environment import ascomEnvironment
 
+from astrometry import transform
+
 if platform.system() == 'Windows':
     from automation import upload
 # to be able to boot the system via wol
@@ -145,6 +147,7 @@ class MountWizzardApp(widget.MwWidget):
         helper.addWidget(self.modelWidget)
 
         # instantiating all subclasses and connecting thread signals
+        self.transform = transform.Transform(self)
         self.relays = relays.Relays(self)
         self.INDIworker = indi_client.INDIClient(self)
         self.INDIthread = PyQt5.QtCore.QThread()

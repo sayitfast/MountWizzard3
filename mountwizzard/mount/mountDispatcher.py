@@ -23,8 +23,6 @@ from mount import mountStatusRunnerMedium
 from mount import mountStatusRunnerSlow
 from mount import mountStatusRunnerOnce
 from mount import mountGetAlignmentModel
-# astrometry
-from astrometry import transform
 from mount import mountModelHandling
 from analyse import analysedata
 from baseclasses import checkParamIP
@@ -83,7 +81,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # getting all supporting classes assigned
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
-        self.transform = transform.Transform(self.app)
+        self.transform = self.app.transform
         self.checkIP = checkParamIP.CheckIP()
 
         # getting all threads setup

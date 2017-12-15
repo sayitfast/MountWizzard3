@@ -23,8 +23,6 @@ from modeling import imagingApps
 from analyse import analysedata
 # modelPoints
 from modeling import modelingPoints
-# transformations
-from astrometry import transform
 from queue import Queue
 
 
@@ -165,7 +163,7 @@ class ModelingRunner:
 
         # assign support classes
         self.analyseData = analysedata.Analyse(self.app)
-        self.transform = transform.Transform(self.app)
+        self.transform = self.app.transform
         self.modelPoints = modelingPoints.ModelPoints(self.app)
         self.imagingApps = imagingApps.ImagingApps(self.app)
 

@@ -15,7 +15,6 @@ import logging
 import PyQt5
 import time
 from queue import Queue
-from astrometry import transform
 
 
 class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
@@ -37,7 +36,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.sendCommandQueue = Queue()
         self.parseQueue = Queue()
 
-        self.transform = transform.Transform(self.app)
+        self.transform = self.app.transform
 
     def run(self):
         if not self.isRunning:
