@@ -87,7 +87,8 @@ class MwWidget(QWidget):
     QPushButton[cancel='false']{
         background-color: #181818;
         color: #C0C0C0;
-        } 
+        }
+
     """
 
     PUSH_BUTTON_ICON = """
@@ -118,7 +119,12 @@ class MwWidget(QWidget):
     QPushButton[cancel='false']{
         background-color: #181818;
         color: #C0C0C0;
-        }      
+        }    QComboBox {
+        border: 1px solid gray;
+        border-radius: 3px;
+        padding: 1px 18px 1px 3px;
+        min-width: 6em;
+    }
     """
 
     TAB_MAIN = """
