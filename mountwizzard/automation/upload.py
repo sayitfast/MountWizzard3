@@ -48,9 +48,6 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
     SATBRIGHTEST_FILE = 'satbrightest.tle'
     UTC_1_FILE = 'finals.data'
     UTC_2_FILE = 'tai-utc.dat'
-    BLUE = 'background-color: rgb(42, 130, 218)'
-    RED = 'background-color: red;'
-    DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192)'
     OPENDIALOG = 'Dialog'
 
     def __init__(self, app):
@@ -278,7 +275,9 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.BLUE)
+                    work['Button'].setProperty('running', True)
+                    work['Button'].style().unpolish(work['Button'])
+                    work['Button'].style().polish(work['Button'])
                 PyQt5.QtWidgets.QApplication.processEvents()
                 if 'Parameter' in work:
                     parameter = []
@@ -290,7 +289,9 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                 if 'Checkbox' in work:
                     work['Checkbox'].setChecked(True)
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.DEFAULT)
+                    work['Button'].setProperty('running', False)
+                    work['Button'].style().unpolish(work['Button'])
+                    work['Button'].style().polish(work['Button'])
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def filterFileMPC(self, directory, filename, expression, start, end):
