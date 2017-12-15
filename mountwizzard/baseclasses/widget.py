@@ -20,6 +20,7 @@ import sys
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
+import PyQt5
 
 
 class MwWidget(QWidget):
@@ -67,6 +68,11 @@ class MwWidget(QWidget):
     def closeEvent(self, closeEvent):
         self.showStatus = False
 
+    def widgetIcon(self, gui, icon):
+        gui.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\' + icon))
+        gui.setStyleSheet('background-color: rgb(25,25,25);color: rgb(192,192,192);')
+        gui.setIconSize(PyQt5.QtCore.QSize(16, 16))
+
     def initUI(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
@@ -98,3 +104,4 @@ class MwWidget(QWidget):
             # we are running in a normal Python environment
             self.bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
         self.setWindowIcon(QIcon(self.bundle_dir + '\\icons\\mw.ico'))
+
