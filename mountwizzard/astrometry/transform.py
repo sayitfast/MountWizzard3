@@ -28,6 +28,7 @@ class Transform:
         self.conversionLock = threading.Lock()
 
     def ra_dec_lst_to_az_alt(self, ra, dec):
+        self.conversionLock.acquire()
         LAT = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
@@ -41,6 +42,7 @@ class Transform:
             az = 360.0 - A
         else:
             az = A
+        self.conversionLock.release()
         return az, alt
 
     def degStringToDecimal(self, value, splitter=':'):

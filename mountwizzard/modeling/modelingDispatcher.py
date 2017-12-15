@@ -281,7 +281,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     work['Method'](*parameter)
                 else:
                     work['Method']()
-                time.sleep(1)
+                time.sleep(0.2)
                 if 'Button' in work:
                     work['Button'].setProperty('running', False)
                     work['Button'].style().unpolish(work['Button'])

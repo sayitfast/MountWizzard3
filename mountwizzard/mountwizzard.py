@@ -153,7 +153,6 @@ class MountWizzardApp(widget.MwWidget):
         self.INDIthread = PyQt5.QtCore.QThread()
         self.INDIthread.setObjectName("INDI")
         self.INDIworker.moveToThread(self.INDIthread)
-        # noinspection PyUnresolvedReferences
         self.INDIthread.started.connect(self.INDIworker.run)
         self.INDIworker.status.connect(self.setINDIStatus)
         # threading for ascom environment data
@@ -331,7 +330,6 @@ class MountWizzardApp(widget.MwWidget):
             if self.workerRemote.isRunning:
                 self.workerRemote.stop()
 
-    # noinspection PyArgumentList
     def mappingFunctions(self):
         self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
