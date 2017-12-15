@@ -36,6 +36,7 @@ class MwWidget(QWidget):
     RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);font-size: 10pt;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192);font-size: 10pt;'
     DEFAULT_TITLE = 'background-color: rgb(8,36,48); color: rgb(192,192,192);'
+    TABBAR = 'background-color: rgb(6, 72, 124); color: rgb(192,192,192);'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
     COLOR_YELLOW = QColor(192, 192, 0)
@@ -56,6 +57,53 @@ class MwWidget(QWidget):
     COLOR_BASE_MAIN = QColor(16, 72, 96)
     COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
     COLOR_HIGHLIGHT = QColor(42, 130, 218)
+
+    TAB_MAIN = """
+    QTabBar::tab {
+        background: gray;
+        color: #101010;
+        border: 3px solid #104450;
+        border-bottom-color: #104450;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-style: outset;
+        min-width: 12ex;
+        padding: 4px;
+        padding-left: 4px;
+        padding-right: 4px;
+        margin-left: 1;
+        margin-right: 1;
+    }
+    QTabBar::tab:selected {background: #2088C0;}
+    QTabBar::tab:!selected {margin-top: 4px;}
+    QTabBar::tab:selected {margin-left: 1px; margin-right: 1px;}
+    QTabBar::tab:first:selected {margin-left: 2;}
+    QTabBar::tab:last:selected {margin-right: 2;}
+    QTabBar::tab:only-one {margin: 1;}
+    """
+    TAB_SETTING = """
+    QTabBar::tab {
+        background: gray;
+        color: #101010;
+        border: 2px solid #006325;
+        border-bottom-color: #006325;
+        border-top-left-radius: 3px;
+        border-top-right-radius: 3px;
+        border-style: outset;
+        min-width: 12ex;
+        padding: 4px;
+        padding-left: 4px;
+        padding-right: 4px;
+        margin-left: 1;
+        margin-right: 1;
+    }
+    QTabBar::tab:selected {background: #80c342; margin-bottom: 0px;}
+    QTabBar::tab:!selected {margin-bottom: 4px;}
+    QTabBar::tab:selected {margin-left: 1px; margin-right: 1px;}
+    QTabBar::tab:first:selected {margin-left: 2;}
+    QTabBar::tab:last:selected {margin-right: 2;}
+    QTabBar::tab:only-one {margin: 1;}
+    """
 
     def __init__(self):
         # noinspection PyArgumentList
