@@ -180,37 +180,69 @@ class Relays:
             self.stat[8] = (lines[9][8] == '1')
             self.logger.debug('status: {0}'.format(self.stat))
         if self.stat[1]:
-            self.app.ui.btn_relay1.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay1.setProperty('running', True)
+            self.app.ui.btn_relay1.style().unpolish(self.app.ui.btn_relay1)
+            self.app.ui.btn_relay1.style().polish(self.app.ui.btn_relay1)
         else:
-            self.app.ui.btn_relay1.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay1.setProperty('running', False)
+            self.app.ui.btn_relay1.style().unpolish(self.app.ui.btn_relay1)
+            self.app.ui.btn_relay1.style().polish(self.app.ui.btn_relay1)
         if self.stat[2]:
-            self.app.ui.btn_relay2.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay2.setProperty('running', True)
+            self.app.ui.btn_relay2.style().unpolish(self.app.ui.btn_relay2)
+            self.app.ui.btn_relay2.style().polish(self.app.ui.btn_relay2)
         else:
-            self.app.ui.btn_relay2.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay2.setProperty('running', False)
+            self.app.ui.btn_relay2.style().unpolish(self.app.ui.btn_relay2)
+            self.app.ui.btn_relay2.style().polish(self.app.ui.btn_relay2)
         if self.stat[3]:
-            self.app.ui.btn_relay3.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay3.setProperty('running', True)
+            self.app.ui.btn_relay3.style().unpolish(self.app.ui.btn_relay3)
+            self.app.ui.btn_relay3.style().polish(self.app.ui.btn_relay3)
         else:
-            self.app.ui.btn_relay3.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay3.setProperty('running', False)
+            self.app.ui.btn_relay3.style().unpolish(self.app.ui.btn_relay3)
+            self.app.ui.btn_relay3.style().polish(self.app.ui.btn_relay3)
         if self.stat[4]:
-            self.app.ui.btn_relay4.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay4.setProperty('running', True)
+            self.app.ui.btn_relay4.style().unpolish(self.app.ui.btn_relay4)
+            self.app.ui.btn_relay4.style().polish(self.app.ui.btn_relay4)
         else:
-            self.app.ui.btn_relay4.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay4.setProperty('running', False)
+            self.app.ui.btn_relay4.style().unpolish(self.app.ui.btn_relay4)
+            self.app.ui.btn_relay4.style().polish(self.app.ui.btn_relay4)
         if self.stat[5]:
-            self.app.ui.btn_relay5.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay5.setProperty('running', True)
+            self.app.ui.btn_relay5.style().unpolish(self.app.ui.btn_relay5)
+            self.app.ui.btn_relay5.style().polish(self.app.ui.btn_relay5)
         else:
-            self.app.ui.btn_relay5.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay5.setProperty('running', False)
+            self.app.ui.btn_relay5.style().unpolish(self.app.ui.btn_relay5)
+            self.app.ui.btn_relay5.style().polish(self.app.ui.btn_relay5)
         if self.stat[6]:
-            self.app.ui.btn_relay6.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay6.setProperty('running', True)
+            self.app.ui.btn_relay6.style().unpolish(self.app.ui.btn_relay6)
+            self.app.ui.btn_relay6.style().polish(self.app.ui.btn_relay6)
         else:
-            self.app.ui.btn_relay6.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay6.setProperty('running', False)
+            self.app.ui.btn_relay6.style().unpolish(self.app.ui.btn_relay6)
+            self.app.ui.btn_relay6.style().polish(self.app.ui.btn_relay6)
         if self.stat[7]:
-            self.app.ui.btn_relay7.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay7.setProperty('running', True)
+            self.app.ui.btn_relay7.style().unpolish(self.app.ui.btn_relay7)
+            self.app.ui.btn_relay7.style().polish(self.app.ui.btn_relay7)
         else:
-            self.app.ui.btn_relay7.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay7.setProperty('running', False)
+            self.app.ui.btn_relay7.style().unpolish(self.app.ui.btn_relay7)
+            self.app.ui.btn_relay7.style().polish(self.app.ui.btn_relay7)
         if self.stat[8]:
-            self.app.ui.btn_relay8.setStyleSheet(self.app.BLUE)
+            self.app.ui.btn_relay8.setProperty('running', True)
+            self.app.ui.btn_relay8.style().unpolish(self.app.ui.btn_relay8)
+            self.app.ui.btn_relay8.style().polish(self.app.ui.btn_relay8)
         else:
-            self.app.ui.btn_relay8.setStyleSheet(self.app.DEFAULT)
+            self.app.ui.btn_relay8.setProperty('running', False)
+            self.app.ui.btn_relay8.style().unpolish(self.app.ui.btn_relay8)
+            self.app.ui.btn_relay8.style().polish(self.app.ui.btn_relay8)
 
     def runRelay(self, relayNumber):
         if relayNumber == 1:
