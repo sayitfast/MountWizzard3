@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -793,7 +793,7 @@
       <rect>
        <x>10</x>
        <y>210</y>
-       <width>211</width>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -843,7 +843,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>161</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -945,7 +945,7 @@
       <rect>
        <x>460</x>
        <y>20</y>
-       <width>171</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -963,7 +963,7 @@
       <rect>
        <x>460</x>
        <y>180</y>
-       <width>171</width>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -1020,7 +1020,7 @@
       <rect>
        <x>460</x>
        <y>300</y>
-       <width>171</width>
+       <width>51</width>
        <height>21</height>
       </rect>
      </property>
@@ -1796,6 +1796,73 @@
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
+    <zorder>line_15</zorder>
+    <zorder>line_16</zorder>
+    <zorder>line_14</zorder>
+    <zorder>line_12</zorder>
+    <zorder>line_13</zorder>
+    <zorder>line_51</zorder>
+    <zorder>le_telescopeRA</zorder>
+    <zorder>le_telescopeAzimut</zorder>
+    <zorder>le_telescopeDEC</zorder>
+    <zorder>le_telescopeAltitude</zorder>
+    <zorder>label_9</zorder>
+    <zorder>label_10</zorder>
+    <zorder>label_8</zorder>
+    <zorder>label_11</zorder>
+    <zorder>label_17</zorder>
+    <zorder>le_meridianLimitTrack</zorder>
+    <zorder>le_telescopePierSide</zorder>
+    <zorder>label_18</zorder>
+    <zorder>label_21</zorder>
+    <zorder>le_telescopeDualTrack</zorder>
+    <zorder>btn_setDualTracking</zorder>
+    <zorder>label_52</zorder>
+    <zorder>le_timeToFlip</zorder>
+    <zorder>btn_setUnattendedFlip</zorder>
+    <zorder>le_telescopeUnattendedFlip</zorder>
+    <zorder>label_23</zorder>
+    <zorder>label_61</zorder>
+    <zorder>label_62</zorder>
+    <zorder>label_80</zorder>
+    <zorder>label_81</zorder>
+    <zorder>btn_startTracking</zorder>
+    <zorder>btn_mountPark</zorder>
+    <zorder>btn_mountUnpark</zorder>
+    <zorder>label_83</zorder>
+    <zorder>label_84</zorder>
+    <zorder>btn_mountPos4</zorder>
+    <zorder>label_85</zorder>
+    <zorder>btn_mountPos2</zorder>
+    <zorder>btn_mountPos3</zorder>
+    <zorder>btn_mountPos1</zorder>
+    <zorder>btn_stopTracking</zorder>
+    <zorder>btn_stop</zorder>
+    <zorder>btn_flipMount</zorder>
+    <zorder>btn_setTrackingLunar</zorder>
+    <zorder>btn_setTrackingSolar</zorder>
+    <zorder>btn_setTrackingSideral</zorder>
+    <zorder>label_100</zorder>
+    <zorder>label_34</zorder>
+    <zorder>label_65</zorder>
+    <zorder>le_meridianLimitSlew</zorder>
+    <zorder>label_88</zorder>
+    <zorder>label_89</zorder>
+    <zorder>le_slewRate</zorder>
+    <zorder>label_90</zorder>
+    <zorder>le_timeToMeridian</zorder>
+    <zorder>label_91</zorder>
+    <zorder>btn_mountPos6</zorder>
+    <zorder>btn_mountPos5</zorder>
+    <zorder>btn_setSlewRate</zorder>
+    <zorder>label_20</zorder>
+    <zorder>le_horizonLimitHigh</zorder>
+    <zorder>label_4</zorder>
+    <zorder>btn_setHorizonLimitLow</zorder>
+    <zorder>label_60</zorder>
+    <zorder>le_horizonLimitLow</zorder>
+    <zorder>label_42</zorder>
+    <zorder>btn_setHorizonLimitHigh</zorder>
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">
@@ -2043,7 +2110,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>181</width>
+       <width>141</width>
        <height>21</height>
       </rect>
      </property>
@@ -2060,9 +2127,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>40</y>
        <width>301</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -2159,9 +2226,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>220</y>
+       <y>230</y>
        <width>301</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -2198,9 +2265,9 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>30</y>
+       <y>40</y>
        <width>401</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -2887,7 +2954,7 @@
       <rect>
        <x>350</x>
        <y>20</y>
-       <width>161</width>
+       <width>141</width>
        <height>21</height>
       </rect>
      </property>
@@ -2904,9 +2971,9 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>260</y>
+       <y>270</y>
        <width>401</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -3119,7 +3186,7 @@
       <rect>
        <x>650</x>
        <y>20</y>
-       <width>91</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -3263,7 +3330,7 @@
       <rect>
        <x>350</x>
        <y>250</y>
-       <width>221</width>
+       <width>181</width>
        <height>21</height>
       </rect>
      </property>
@@ -3668,9 +3735,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>290</y>
+       <y>300</y>
        <width>301</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -3690,7 +3757,7 @@
       <rect>
        <x>10</x>
        <y>280</y>
-       <width>191</width>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -3735,7 +3802,7 @@
       <rect>
        <x>350</x>
        <y>310</y>
-       <width>221</width>
+       <width>181</width>
        <height>21</height>
       </rect>
      </property>
@@ -3755,9 +3822,9 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>320</y>
+       <y>330</y>
        <width>401</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -3767,6 +3834,77 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
+    <zorder>line_10</zorder>
+    <zorder>line_76</zorder>
+    <zorder>line_7</zorder>
+    <zorder>line_8</zorder>
+    <zorder>line_5</zorder>
+    <zorder>line_77</zorder>
+    <zorder>le_siteElevation</zorder>
+    <zorder>label_5</zorder>
+    <zorder>le_siteLongitude</zorder>
+    <zorder>label_6</zorder>
+    <zorder>le_localSiderealTime</zorder>
+    <zorder>label_7</zorder>
+    <zorder>le_siteLatitude</zorder>
+    <zorder>label_12</zorder>
+    <zorder>label_58</zorder>
+    <zorder>label_16</zorder>
+    <zorder>le_telescopeTempDECMotor</zorder>
+    <zorder>label_55</zorder>
+    <zorder>label_64</zorder>
+    <zorder>le_windSpeed</zorder>
+    <zorder>label_32</zorder>
+    <zorder>label_73</zorder>
+    <zorder>le_temperature</zorder>
+    <zorder>label_25</zorder>
+    <zorder>label_31</zorder>
+    <zorder>label_70</zorder>
+    <zorder>label_68</zorder>
+    <zorder>label_26</zorder>
+    <zorder>le_refractionTemperature</zorder>
+    <zorder>le_humidity</zorder>
+    <zorder>le_cloudCover</zorder>
+    <zorder>label_67</zorder>
+    <zorder>btn_setRefractionParameters</zorder>
+    <zorder>le_dewPoint</zorder>
+    <zorder>label_71</zorder>
+    <zorder>le_windDirection</zorder>
+    <zorder>label_33</zorder>
+    <zorder>label_30</zorder>
+    <zorder>label_24</zorder>
+    <zorder>label_22</zorder>
+    <zorder>label_27</zorder>
+    <zorder>label_57</zorder>
+    <zorder>le_refractionPressure</zorder>
+    <zorder>le_rainRate</zorder>
+    <zorder>label_66</zorder>
+    <zorder>le_pressure</zorder>
+    <zorder>le_refractionStatus</zorder>
+    <zorder>label_13</zorder>
+    <zorder>label_72</zorder>
+    <zorder>label_69</zorder>
+    <zorder>label_78</zorder>
+    <zorder>label_82</zorder>
+    <zorder>checkAutoRefractionCamera</zorder>
+    <zorder>label_86</zorder>
+    <zorder>btn_setRefractionCorrection</zorder>
+    <zorder>label_105</zorder>
+    <zorder>label_106</zorder>
+    <zorder>label_79</zorder>
+    <zorder>label_142</zorder>
+    <zorder>le_SQR</zorder>
+    <zorder>line_53</zorder>
+    <zorder>label_87</zorder>
+    <zorder>label_63</zorder>
+    <zorder>le_JulianDate</zorder>
+    <zorder>label_151</zorder>
+    <zorder>le_UTCDataExpirationDate</zorder>
+    <zorder>label_152</zorder>
+    <zorder>le_UTCDataValid</zorder>
+    <zorder>label_74</zorder>
+    <zorder>checkAutoRefractionNotTracking</zorder>
+    <zorder>label_135</zorder>
    </widget>
    <widget class="QWidget" name="tab_15">
     <attribute name="title">
@@ -3801,7 +3939,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>211</width>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -3854,9 +3992,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>90</y>
        <width>211</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -3918,9 +4056,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>40</y>
        <width>211</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -4645,9 +4783,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>290</y>
        <width>461</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -4786,9 +4924,9 @@
      <property name="geometry">
       <rect>
        <x>260</x>
-       <y>30</y>
+       <y>40</y>
        <width>211</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -4979,9 +5117,9 @@
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>120</y>
+       <y>130</y>
        <width>241</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5017,9 +5155,9 @@
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>170</y>
+       <y>180</y>
        <width>241</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5178,7 +5316,7 @@
       <rect>
        <x>510</x>
        <y>20</y>
-       <width>161</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -5220,9 +5358,9 @@
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>30</y>
+       <y>40</y>
        <width>241</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5236,9 +5374,9 @@
      <property name="geometry">
       <rect>
        <x>510</x>
-       <y>280</y>
+       <y>290</y>
        <width>241</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5274,7 +5412,7 @@
       <rect>
        <x>510</x>
        <y>270</y>
-       <width>241</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -5287,6 +5425,69 @@
       <string>Modeling settings</string>
      </property>
     </widget>
+    <zorder>line_45</zorder>
+    <zorder>label_147</zorder>
+    <zorder>line_54</zorder>
+    <zorder>line_41</zorder>
+    <zorder>line_27</zorder>
+    <zorder>line_62</zorder>
+    <zorder>line_35</zorder>
+    <zorder>line_30</zorder>
+    <zorder>line_58</zorder>
+    <zorder>label_109</zorder>
+    <zorder>label_116</zorder>
+    <zorder>label_171</zorder>
+    <zorder>label_170</zorder>
+    <zorder>azimuthBase</zorder>
+    <zorder>btn_runBaseModel</zorder>
+    <zorder>label_110</zorder>
+    <zorder>btn_generateBasePoints</zorder>
+    <zorder>altitudeBase</zorder>
+    <zorder>btn_loadBasePoints</zorder>
+    <zorder>btn_cancelModel1</zorder>
+    <zorder>label</zorder>
+    <zorder>le_alignErrorAz</zorder>
+    <zorder>le_alignErrorPosAngle</zorder>
+    <zorder>le_alignKnobTurnAz</zorder>
+    <zorder>le_alignErrorPolar</zorder>
+    <zorder>label_14</zorder>
+    <zorder>label_153</zorder>
+    <zorder>le_alignNumberTerms</zorder>
+    <zorder>le_alignKnobTurnAlt</zorder>
+    <zorder>label_156</zorder>
+    <zorder>label_158</zorder>
+    <zorder>le_alignNumberStars</zorder>
+    <zorder>le_alignErrorRMS</zorder>
+    <zorder>label_155</zorder>
+    <zorder>le_alignErrorOrtho</zorder>
+    <zorder>label_159</zorder>
+    <zorder>label_15</zorder>
+    <zorder>le_alignErrorAlt</zorder>
+    <zorder>label_154</zorder>
+    <zorder>label_157</zorder>
+    <zorder>label_160</zorder>
+    <zorder>label_122</zorder>
+    <zorder>checkUseFileHorizonLine</zorder>
+    <zorder>altitudeMinimumHorizon</zorder>
+    <zorder>line_57</zorder>
+    <zorder>checkUseMinimumHorizonLine</zorder>
+    <zorder>label_194</zorder>
+    <zorder>line_63</zorder>
+    <zorder>label_201</zorder>
+    <zorder>le_modelPointsFileName</zorder>
+    <zorder>le_horizonPointsFileName</zorder>
+    <zorder>line_39</zorder>
+    <zorder>btn_deletePoints</zorder>
+    <zorder>btn_openImageWindow</zorder>
+    <zorder>checkClearModelFirst</zorder>
+    <zorder>checkDeletePointsHorizonMask</zorder>
+    <zorder>btn_plateSolveSync</zorder>
+    <zorder>checkUseBlindSolve</zorder>
+    <zorder>checkSortPoints</zorder>
+    <zorder>label_113</zorder>
+    <zorder>btn_openModelingPlotWindow</zorder>
+    <zorder>checkSimulation</zorder>
+    <zorder>label_205</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
@@ -5313,7 +5514,7 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>351</width>
+       <width>171</width>
        <height>21</height>
       </rect>
      </property>
@@ -5436,9 +5637,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>40</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5507,9 +5708,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>300</y>
+       <y>310</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5592,9 +5793,9 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>130</y>
+       <y>140</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5608,9 +5809,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>80</y>
+       <y>90</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5662,9 +5863,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>210</y>
+       <y>220</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -5975,9 +6176,9 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>30</y>
+       <y>40</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -6135,6 +6336,45 @@
       <string>h</string>
      </property>
     </widget>
+    <zorder>line_42</zorder>
+    <zorder>line_28</zorder>
+    <zorder>line_34</zorder>
+    <zorder>line_26</zorder>
+    <zorder>line_32</zorder>
+    <zorder>line_36</zorder>
+    <zorder>btn_generateGridPoints</zorder>
+    <zorder>label_108</zorder>
+    <zorder>label_179</zorder>
+    <zorder>label_178</zorder>
+    <zorder>btn_generateNormalPoints</zorder>
+    <zorder>btn_generateMaxPoints</zorder>
+    <zorder>numberGridPointsRow</zorder>
+    <zorder>numberGridPointsCol</zorder>
+    <zorder>btn_runRefinementModel</zorder>
+    <zorder>btn_loadRefinementPoints</zorder>
+    <zorder>btn_cancelModel2</zorder>
+    <zorder>btn_runCheckModel</zorder>
+    <zorder>label_98</zorder>
+    <zorder>btn_generateDSOPoints</zorder>
+    <zorder>line_40</zorder>
+    <zorder>numberHoursDSO</zorder>
+    <zorder>label_181</zorder>
+    <zorder>label_188</zorder>
+    <zorder>numberPointsDSO</zorder>
+    <zorder>label_189</zorder>
+    <zorder>numberHoursPreview</zorder>
+    <zorder>label_180</zorder>
+    <zorder>altitudeMax</zorder>
+    <zorder>altitudeMin</zorder>
+    <zorder>label_190</zorder>
+    <zorder>btn_runBoostModel</zorder>
+    <zorder>label_136</zorder>
+    <zorder>label_137</zorder>
+    <zorder>label_144</zorder>
+    <zorder>label_202</zorder>
+    <zorder>label_203</zorder>
+    <zorder>btn_generateMinPoints</zorder>
+    <zorder>label_204</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
@@ -6239,9 +6479,9 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>190</y>
+       <y>200</y>
        <width>291</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -6303,10 +6543,13 @@
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>30</y>
+       <y>40</y>
        <width>291</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
+     </property>
+     <property name="autoFillBackground">
+      <bool>false</bool>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -6753,6 +6996,38 @@
       <string>Clear Model</string>
      </property>
     </widget>
+    <zorder>line_18</zorder>
+    <zorder>line_44</zorder>
+    <zorder>label_37</zorder>
+    <zorder>btn_runTargetRMSAlignment</zorder>
+    <zorder>targetRMS</zorder>
+    <zorder>btn_saveBackupModel</zorder>
+    <zorder>btn_loadBackupModel</zorder>
+    <zorder>btn_loadSimpleModel</zorder>
+    <zorder>btn_saveSimpleModel</zorder>
+    <zorder>btn_deleteWorstPoint</zorder>
+    <zorder>label_124</zorder>
+    <zorder>label_125</zorder>
+    <zorder>btn_loadBaseModel</zorder>
+    <zorder>btn_saveBaseModel</zorder>
+    <zorder>label_126</zorder>
+    <zorder>label_127</zorder>
+    <zorder>label_128</zorder>
+    <zorder>btn_saveDSO1Model</zorder>
+    <zorder>btn_loadDSO1Model</zorder>
+    <zorder>btn_saveDSO2Model</zorder>
+    <zorder>btn_loadDSO2Model</zorder>
+    <zorder>label_129</zorder>
+    <zorder>label_130</zorder>
+    <zorder>btn_saveRefinementModel</zorder>
+    <zorder>label_133</zorder>
+    <zorder>btn_loadRefinementModel</zorder>
+    <zorder>line_46</zorder>
+    <zorder>model</zorder>
+    <zorder>btn_cancelRunTargetRMSAlignment</zorder>
+    <zorder>le_alignErrorRMS2</zorder>
+    <zorder>label_75</zorder>
+    <zorder>btn_clearAlignmentModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
@@ -6812,9 +7087,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>40</y>
        <width>351</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -7112,7 +7387,7 @@
       <rect>
        <x>10</x>
        <y>180</y>
-       <width>351</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
@@ -7129,9 +7404,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>200</y>
        <width>291</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -7194,9 +7469,9 @@
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>80</y>
+       <y>90</y>
        <width>341</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -7713,6 +7988,47 @@
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
+    <zorder>line_33</zorder>
+    <zorder>line_43</zorder>
+    <zorder>line_29</zorder>
+    <zorder>label_99</zorder>
+    <zorder>line_52</zorder>
+    <zorder>label_107</zorder>
+    <zorder>btn_cancelAnalyseModel</zorder>
+    <zorder>btn_runTimeChangeModel</zorder>
+    <zorder>label_174</zorder>
+    <zorder>azimuthTimeChange</zorder>
+    <zorder>label_175</zorder>
+    <zorder>altitudeTimeChange</zorder>
+    <zorder>label_176</zorder>
+    <zorder>numberRunsTimeChange</zorder>
+    <zorder>label_111</zorder>
+    <zorder>label_112</zorder>
+    <zorder>label_177</zorder>
+    <zorder>delayTimeTimeChange</zorder>
+    <zorder>label_115</zorder>
+    <zorder>label_118</zorder>
+    <zorder>line_37</zorder>
+    <zorder>btn_runHystereseModel</zorder>
+    <zorder>le_analyseFileName</zorder>
+    <zorder>btn_openAnalyseWindow</zorder>
+    <zorder>label_182</zorder>
+    <zorder>numberRunsHysterese</zorder>
+    <zorder>label_183</zorder>
+    <zorder>label_184</zorder>
+    <zorder>delayTimeHysterese</zorder>
+    <zorder>azimuthHysterese2</zorder>
+    <zorder>label_117</zorder>
+    <zorder>label_114</zorder>
+    <zorder>altitudeHysterese2</zorder>
+    <zorder>label_119</zorder>
+    <zorder>label_185</zorder>
+    <zorder>label_120</zorder>
+    <zorder>label_121</zorder>
+    <zorder>azimuthHysterese1</zorder>
+    <zorder>altitudeHysterese1</zorder>
+    <zorder>label_186</zorder>
+    <zorder>label_187</zorder>
    </widget>
    <widget class="QWidget" name="tab_9">
     <attribute name="title">
@@ -7722,9 +8038,9 @@
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>30</y>
+       <y>40</y>
        <width>341</width>
-       <height>21</height>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -7944,7 +8260,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -8219,9 +8535,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>30</y>
+         <y>40</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9072,9 +9388,9 @@
        <property name="geometry">
         <rect>
          <x>390</x>
-         <y>30</y>
+         <y>40</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9249,9 +9565,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>110</y>
+         <y>120</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9298,9 +9614,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>190</y>
+         <y>200</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9357,9 +9673,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>30</y>
+         <y>40</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9597,9 +9913,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>30</y>
+         <y>40</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9618,9 +9934,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>140</y>
+         <y>150</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -9902,9 +10218,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>130</y>
+         <y>140</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -10031,9 +10347,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>300</y>
+         <y>310</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -10116,9 +10432,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>20</y>
+         <y>30</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -10482,9 +10798,9 @@
        <property name="geometry">
         <rect>
          <x>390</x>
-         <y>20</y>
+         <y>30</y>
          <width>351</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -11195,9 +11511,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>30</y>
+         <y>40</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -11774,9 +12090,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>20</y>
+         <y>30</y>
          <width>341</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -12057,9 +12373,9 @@
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>20</y>
+         <y>30</y>
          <width>311</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -12194,6 +12510,27 @@
         <string>Downl. Asteroids PHA</string>
        </property>
       </widget>
+      <zorder>line_17</zorder>
+      <zorder>line_19</zorder>
+      <zorder>btn_downloadEarthrotation</zorder>
+      <zorder>label_123</zorder>
+      <zorder>btn_downloadSpacestations</zorder>
+      <zorder>btn_downloadSatbrighest</zorder>
+      <zorder>btn_downloadAsteroidsMPC5000</zorder>
+      <zorder>btn_downloadComets</zorder>
+      <zorder>checkEarthrotation</zorder>
+      <zorder>checkTLE</zorder>
+      <zorder>checkAsteroids</zorder>
+      <zorder>checkComets</zorder>
+      <zorder>btn_uploadMount</zorder>
+      <zorder>btn_downloadAll</zorder>
+      <zorder>line_47</zorder>
+      <zorder>label_134</zorder>
+      <zorder>checkFilterMPC</zorder>
+      <zorder>le_filterExpressionMPC</zorder>
+      <zorder>btn_downloadAsteroidsNEA</zorder>
+      <zorder>btn_downloadAsteroidsTNO</zorder>
+      <zorder>btn_downloadAsteroidsPHA</zorder>
      </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -12371,9 +12708,9 @@
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>30</y>
+         <y>40</y>
          <width>331</width>
-         <height>21</height>
+         <height>1</height>
         </rect>
        </property>
        <property name="font">
@@ -12605,7 +12942,6 @@
    </property>
    <property name="font">
     <font>
-     <family>Arial</family>
      <pointsize>10</pointsize>
     </font>
    </property>

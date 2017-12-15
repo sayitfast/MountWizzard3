@@ -450,7 +450,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.app.BLUE)
+                    work['Button'].setProperty('running', True)
+                    work['Button'].style().unpolish(work['Button'])
+                    work['Button'].style().polish(work['Button'])
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -460,9 +462,13 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     work['Method']()
                 time.sleep(0.2)
                 if 'Button' in work:
-                    work['Button'].setStyleSheet(self.app.DEFAULT)
+                    work['Button'].setProperty('running', False)
+                    work['Button'].style().unpolish(work['Button'])
+                    work['Button'].style().polish(work['Button'])
                 if 'Cancel' in work:
-                    work['Cancel'].setStyleSheet(self.app.DEFAULT)
+                    work['Cancel'].setProperty('cancel', False)
+                    work['Cancel'].style().unpolish(work['Cancel'])
+                    work['Cancel'].style().polish(work['Cancel'])
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):
@@ -537,6 +543,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def runTargetRMSAlignment(self):
         self.runTargetRMS = True
         self.cancelRunTargetRMS = False
+        if 'Number' not in self.data:
+            return
         if self.data['Number'] < 4:
             return
         while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelRunTargetRMS:
@@ -550,7 +558,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def cancelRunTargetRMSFunction(self):
         if self.runTargetRMS:
-            self.app.ui.btn_cancelRunTargetRMSAlignment.setStyleSheet(self.app.RED)
+            self.app.ui.btn_cancelRunTargetRMSAlignment.setProperty('cancel', True)
+            self.app.ui.btn_cancelRunTargetRMSAlignment.style().unpolish(self.app.ui.btn_cancelRunTargetRMSAlignment)
+            self.app.ui.btn_cancelRunTargetRMSAlignment.style().polish(self.app.ui.btn_cancelRunTargetRMSAlignment)
             self.cancelRunTargetRMS = True
 
     def deleteWorstPoint(self):

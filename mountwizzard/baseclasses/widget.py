@@ -29,9 +29,6 @@ class MwWidget(QWidget):
     TEXT_COLOR_BLUE = 'background-color: rgb(25, 25, 25); color: rgb(32, 144, 192);'
     TEXT_COLOR_RED = 'background-color: rgb(25, 25, 25); color: rgb(255, 0, 0);'
     TEXT_COLOR_DEFAULT = 'background-color: rgb(25, 25, 25); color: rgb(192, 192, 192);'
-    # BLUE = 'background-color: rgb(16, 72, 124); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
-    # RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
-    # DEFAULT= 'background-color: rgb(32,32,32); color: rgb(192,192,192);text-align: left; padding-left: 5px;font-size: 10pt;'
     BLUE = 'background-color: rgb(16, 72, 124); color: rgb(192,192,192);font-size: 10pt;'
     RED = 'background-color: rgb(96,0, 0); color: rgb(192,192,192);font-size: 10pt;'
     DEFAULT = 'background-color: rgb(32,32,32); color: rgb(192,192,192);font-size: 10pt;'
@@ -58,6 +55,76 @@ class MwWidget(QWidget):
     COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
     COLOR_HIGHLIGHT = QColor(42, 130, 218)
 
+    BASIC_STYLE = """
+    QWidget {
+        background-color: #181818;
+        color: #C0C0C0;
+        }
+    QLabel{
+        background-color: transparent;
+    }
+    QLineEdit {
+        background-color: #101010;
+        color: rgb(32, 144, 192);
+        }
+    QPushButton{
+        background - color: #181818;
+        border - style: outset;
+        border - width: 2px;   
+        border - radius: 10px;
+        border - color: gray;
+        font: 10pt;
+        min - width: 10em;
+        }
+    QPushButton[running='true']{
+        background-color: rgb(16, 72, 124);
+        color: #101010;
+        } 
+    QPushButton[running='false']{
+        background-color: #181818;
+        color: #C0C0C0;
+        }     
+    QPushButton[cancel='true']{
+        background-color: rgb(96,0, 0);
+        color: #101010;
+        } 
+    QPushButton[cancel='false']{
+        background-color: #181818;
+        color: #C0C0C0;
+        } 
+    """
+
+    PUSH_BUTTON_ICON = """
+    QPushButton {
+        background-color: #181818;
+        color: #C0C0C0;
+        border - style: outset;
+        border - width: 2px;   
+        border - radius: 10px;
+        border - color: gray;
+        text-align: left;
+        font: 10pt;
+        min - width: 10em;
+        padding-left: 6 px;
+        }
+    QPushButton[running='true']{
+        background-color: rgb(16, 72, 124);
+        color: #101010;
+        } 
+    QPushButton[running='false']{
+        background-color: #181818;
+        color: #C0C0C0;
+        }     
+    QPushButton[cancel='true']{
+        background-color: rgb(96,0, 0);
+        color: #101010;
+        } 
+    QPushButton[cancel='false']{
+        background-color: #181818;
+        color: #C0C0C0;
+        }      
+    """
+
     TAB_MAIN = """
     QTabBar::tab {
         background: gray;
@@ -81,6 +148,7 @@ class MwWidget(QWidget):
     QTabBar::tab:last:selected {margin-right: 2;}
     QTabBar::tab:only-one {margin: 1;}
     """
+
     TAB_SETTING = """
     QTabBar::tab {
         background: gray;
@@ -118,30 +186,14 @@ class MwWidget(QWidget):
 
     def widgetIcon(self, gui, icon):
         gui.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\' + icon))
-        gui.setStyleSheet('background-color: rgb(25,25,25);color: rgb(192,192,192);')
+        gui.setStyleSheet(self.PUSH_BUTTON_ICON)
         gui.setIconSize(PyQt5.QtCore.QSize(16, 16))
 
     def initUI(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
         self.setMouseTracking(True)
-        if platform.system() == 'Windows' or platform.system() == 'Linux':
-            darkPalette = QPalette()
-            darkPalette.setColor(QPalette.Window, self.COLOR_WINDOW)
-            darkPalette.setColor(QPalette.WindowText, self.COLOR_WINDOW_TEXT)
-            darkPalette.setColor(QPalette.Base, self.COLOR_BASE)
-            darkPalette.setColor(QPalette.AlternateBase, self.COLOR_ALTERNATE_BASE)
-            darkPalette.setColor(QPalette.ToolTipBase, self.COLOR_WHITE)
-            darkPalette.setColor(QPalette.ToolTipText, self.COLOR_WHITE)
-            darkPalette.setColor(QPalette.Text, self.COLOR_ASTRO)
-            darkPalette.setColor(QPalette.Button, self.COLOR_BASE)
-            darkPalette.setColor(QPalette.ButtonText, self.COLOR_WINDOW_TEXT)
-            darkPalette.setColor(QPalette.BrightText, self.COLOR_RED)
-            darkPalette.setColor(QPalette.Highlight, self.COLOR_HIGHLIGHT)
-            darkPalette.setColor(QPalette.HighlightedText, self.COLOR_BLACK)
-            self.setPalette(darkPalette)
-            self.palette.setColor(QPalette.Foreground, self.COLOR_ASTRO)
-            self.palette.setColor(QPalette.Background, self.COLOR_BACKGROUND)
+
         # sizing in gui should be fixed, because I have a static layout
         self.setFixedSize(790, 640)
         # set app icon
@@ -152,4 +204,6 @@ class MwWidget(QWidget):
             # we are running in a normal Python environment
             self.bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
         self.setWindowIcon(QIcon(self.bundle_dir + '\\icons\\mw.ico'))
+        self.setStyleSheet(self.BASIC_STYLE)
+
 

@@ -399,13 +399,17 @@ class MountWizzardApp(widget.MwWidget):
             self.INDIthread.wait()
 
     def mountBoot(self):
-        self.ui.btn_mountBoot.setStyleSheet(self.BLUE)
+        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(True))
+        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
+        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
         PyQt5.QtWidgets.QApplication.processEvents()
         wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
         time.sleep(1)
         self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')
-        self.ui.btn_mountBoot.setStyleSheet(self.DEFAULT)
+        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(False))
+        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
+        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
 
     def showModelErrorPolar(self):
         self.modelWidget.fig.clf()
