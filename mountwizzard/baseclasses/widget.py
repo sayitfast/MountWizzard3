@@ -88,43 +88,10 @@ class MwWidget(QWidget):
         background-color: #181818;
         color: #C0C0C0;
         }
-
-    """
-
-    PUSH_BUTTON_ICON = """
-    QPushButton {
-        background-color: #181818;
-        color: #C0C0C0;
-        border - style: outset;
-        border - width: 2px;   
-        border - radius: 10px;
-        border - color: gray;
+    QPushButton[iconset='true'] {
         text-align: left;
-        font: 10pt;
-        min - width: 10em;
-        padding-left: 6 px;
+        padding-left: 6px;
         }
-    QPushButton[running='true']{
-        background-color: rgb(16, 72, 124);
-        color: #101010;
-        } 
-    QPushButton[running='false']{
-        background-color: #181818;
-        color: #C0C0C0;
-        }     
-    QPushButton[cancel='true']{
-        background-color: rgb(96,0, 0);
-        color: #101010;
-        } 
-    QPushButton[cancel='false']{
-        background-color: #181818;
-        color: #C0C0C0;
-        }    QComboBox {
-        border: 1px solid gray;
-        border-radius: 3px;
-        padding: 1px 18px 1px 3px;
-        min-width: 6em;
-    }
     """
 
     TAB_MAIN = """
@@ -188,7 +155,9 @@ class MwWidget(QWidget):
 
     def widgetIcon(self, gui, icon):
         gui.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\' + icon))
-        gui.setStyleSheet(self.PUSH_BUTTON_ICON)
+        gui.setProperty('iconset', True)
+        gui.style().unpolish(gui)
+        gui.style().polish(gui)
         gui.setIconSize(PyQt5.QtCore.QSize(16, 16))
 
     def initUI(self):

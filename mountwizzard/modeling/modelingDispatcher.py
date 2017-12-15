@@ -270,6 +270,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             # running through all necessary commands
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
+
                 if 'Button' in work:
                     work['Button'].setProperty('running', True)
                     work['Button'].style().unpolish(work['Button'])
