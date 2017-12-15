@@ -254,15 +254,13 @@ class MountWizzardApp(widget.MwWidget):
 
     def setEnvironmentStatus(self, status):
         if status == 0:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
         elif status == 1:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
         elif status == 2:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
         elif status == 3:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green;}')
-        else:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: black;}')
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
     def fillEnvironmentData(self):
         for valueName in self.workerAscomEnvironment.data:
@@ -300,15 +298,13 @@ class MountWizzardApp(widget.MwWidget):
 
     def setDomeStatus(self, status):
         if status == 0:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
         elif status == 1:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;color: black;}')
         elif status == 2:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: yellow;color: black;}')
         elif status == 3:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;}')
-        else:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: black;}')
+            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;color: black;}')
 
     def workerRemoteStop(self):
         self.threadRemote.quit()
@@ -931,11 +927,11 @@ class MountWizzardApp(widget.MwWidget):
             if self.workerMountDispatcher.mountStatus[key]:
                 stat += 1
         if stat == 0:
-            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
         elif stat == 6:
-            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color:black;}')
         else:
-            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
 
     @PyQt5.QtCore.Slot(dict)
     def fillMountData(self):
@@ -1045,24 +1041,24 @@ class MountWizzardApp(widget.MwWidget):
     @PyQt5.QtCore.Slot(int)
     def setStatusCamera(self, status):
         if status == 3:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
         elif status == 2:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
         elif status == 1:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
         else:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     @PyQt5.QtCore.Slot(int)
     def setStatusSolver(self, status):
         if status == 3:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: green;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: green;color: black;}')
         elif status == 2:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: yellow;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: yellow;color: black;}')
         elif status == 1:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: red;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: red;color: black;}')
         else:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;}')
+            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def mainLoop(self):
         self.fillMountData()
