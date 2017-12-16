@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'wizzard_main_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.9
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -152,7 +152,7 @@ class Ui_MainWindow(object):
         self.label_11.setFont(font)
         self.label_11.setObjectName("label_11")
         self.label_17 = QtWidgets.QLabel(self.tab_2)
-        self.label_17.setGeometry(QtCore.QRect(10, 240, 121, 21))
+        self.label_17.setGeometry(QtCore.QRect(10, 240, 101, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_17.setFont(font)
@@ -194,7 +194,7 @@ class Ui_MainWindow(object):
         self.label_18.setFont(font)
         self.label_18.setObjectName("label_18")
         self.label_21 = QtWidgets.QLabel(self.tab_2)
-        self.label_21.setGeometry(QtCore.QRect(10, 270, 121, 21))
+        self.label_21.setGeometry(QtCore.QRect(10, 270, 101, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_21.setFont(font)
@@ -264,7 +264,7 @@ class Ui_MainWindow(object):
         self.le_telescopeUnattendedFlip.setReadOnly(True)
         self.le_telescopeUnattendedFlip.setObjectName("le_telescopeUnattendedFlip")
         self.label_23 = QtWidgets.QLabel(self.tab_2)
-        self.label_23.setGeometry(QtCore.QRect(10, 300, 121, 21))
+        self.label_23.setGeometry(QtCore.QRect(10, 300, 101, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_23.setFont(font)
@@ -436,7 +436,7 @@ class Ui_MainWindow(object):
         self.label_100.setWordWrap(False)
         self.label_100.setObjectName("label_100")
         self.label_34 = QtWidgets.QLabel(self.tab_2)
-        self.label_34.setGeometry(QtCore.QRect(10, 330, 141, 21))
+        self.label_34.setGeometry(QtCore.QRect(10, 330, 121, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_34.setFont(font)
@@ -4678,8 +4678,8 @@ class Ui_MainWindow(object):
         self.line_9.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(0)
-        self.settingsTabWidget.setCurrentIndex(0)
+        self.mainTabWidget.setCurrentIndex(7)
+        self.settingsTabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.mainTabWidget, self.le_slewRate)
         MainWindow.setTabOrder(self.le_slewRate, self.btn_setSlewRate)

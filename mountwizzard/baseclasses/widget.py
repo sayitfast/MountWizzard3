@@ -56,19 +56,36 @@ class MwWidget(QWidget):
         background-color: #181818;
         color: #C0C0C0;
         }
-    QLabel{
-        background-color: transparent;
-    }
     QLineEdit {
         background-color: #101010;
         color: rgb(32, 144, 192);
+        text-align: right;
+        border - style: outset;
+        border - radius: 2px;
+        }
+    QLabel{
+        background-color: transparent;
+        }
+    QCheckBox::indicator{
+        border: 1px solid #404040;
+        background-color: #101010;
+        }
+    QCheckBox::indicator:checked {
+        background-color: rgb(32, 144, 192);
+    }
+    QDoubleSpinBox{
+        background-color: #101010;
+        color: rgb(32, 144, 192);
+        text-align: right;
+        border - style: outset;
+        border - radius: 2px;
+        font: 10pt;
+        padding: 2 px;
         }
     QPushButton{
         background - color: #181818;
         border - style: outset;
-        border - width: 2px;   
-        border - radius: 10px;
-        border - color: gray;
+        border - radius: 2px;
         font: 10pt;
         min - width: 10em;
         }
@@ -92,6 +109,64 @@ class MwWidget(QWidget):
         text-align: left;
         padding-left: 6px;
         }
+    QComboBox /* is the box itself */
+    {  
+        border-color: red;
+        border-width: 5px;
+        border-radius: 3px;
+        border-style: solid;
+        padding: 1px 0px 1px 3px;
+    }
+    QComboBox QListView /* is the list of popup */
+    {   border-style: solid;
+        border-color: #404040;
+        border-width: 1px;
+        border-radius: 3px;
+        background-color: #181818;
+    }
+    QComboBox::drop-down /* is only the drop-down arrow surface */
+    {   width: 20px;
+        border: 1px;
+        border-radius:3px;
+        border-color: #404040;
+        border-left-style:solid;
+        border-top-style: none;
+        border-bottom-style: none;
+        border-right-style: none;
+    }
+    QComboBox::down-arrow /* is the arrow itself */
+    {
+        image: url(:/ArrowImages/images/whitearrowdown16.png);
+        width: 16px;
+        height: 16px;
+    }
+
+    """
+    """
+
+
+    QComboBox {
+        background-color: #181818;
+        border:1px solid #404040;
+        border-radius:5px;
+        padding:5px;
+    }
+    QComboBox::drop-down {
+        width: 25px;
+    }
+    QComboBox QListView {
+        border: 2px solid #404040;
+        border - style: outset;
+    QComboBox QAbstractItemView QListView::item:selected {
+        background-color: red;
+    }
+    """
+    """
+    QComboBox::down-arrow, QSpinBox::down-arrow, QTimeEdit::down-arrow, QDateEdit::down-arrow{   
+        image: url(:/icons/down_arrow.png);
+        width: 7px;
+        height: 5px;
+    }
     """
 
     TAB_MAIN = """
