@@ -59,7 +59,7 @@
    <enum>Qt::PreventContextMenu</enum>
   </property>
   <property name="windowTitle">
-   <string>Mount Command Window (C) MW 2016,2017</string>
+   <string>MountWizzard3 (C) MW 2016-18</string>
   </property>
   <property name="toolTipDuration">
    <number>6</number>
@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5386,27 +5386,6 @@
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkSimulation">
-     <property name="geometry">
-      <rect>
-       <x>520</x>
-       <y>420</y>
-       <width>231</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Run in simulation mode</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_205">
      <property name="geometry">
       <rect>
@@ -5486,7 +5465,6 @@
     <zorder>checkSortPoints</zorder>
     <zorder>label_113</zorder>
     <zorder>btn_openModelingPlotWindow</zorder>
-    <zorder>checkSimulation</zorder>
     <zorder>label_205</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
@@ -8260,7 +8238,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -12627,7 +12605,7 @@
         </font>
        </property>
        <property name="text">
-        <string>MountWizzard 3 (C) 2016, 2017, 2018 MWORION</string>
+        <string>MountWizzard3 (C) 2016, 2017, 2018 MWORION</string>
        </property>
       </widget>
       <widget class="QLabel" name="firmwareProductName_6">
@@ -12795,6 +12773,27 @@
         <string>Make Mount Model from Analyse Data</string>
        </property>
       </widget>
+      <widget class="QCheckBox" name="checkSimulation">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>220</y>
+         <width>231</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>If checked, a blind solve would be made (needs internet connection)</string>
+       </property>
+       <property name="text">
+        <string>Run in simulation mode</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -12848,6 +12847,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="btn_cameraConnected">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>180</x>
@@ -12869,6 +12871,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="btn_domeConnected">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>100</x>
@@ -12890,6 +12895,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="btn_driverMountConnected">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -12909,8 +12917,14 @@
    <property name="text">
     <string>Mount</string>
    </property>
+   <property name="flat">
+    <bool>false</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btn_environmentConnected">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>340</x>
@@ -12956,6 +12970,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="btn_solverConnected">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -13204,19 +13221,24 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mainTabWidget</tabstop>
+  <tabstop>btn_openMessageWindow</tabstop>
+  <tabstop>btn_mountBoot</tabstop>
+  <tabstop>btn_mountShutdown</tabstop>
+  <tabstop>btn_loadFrom</tabstop>
+  <tabstop>btn_saveConfigQuit</tabstop>
+  <tabstop>btn_saveConfigAs</tabstop>
+  <tabstop>btn_saveConfig</tabstop>
   <tabstop>le_slewRate</tabstop>
   <tabstop>btn_setSlewRate</tabstop>
   <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>btn_setDualTracking</tabstop>
-  <tabstop>btn_saveConfigQuit</tabstop>
   <tabstop>le_telescopeUnattendedFlip</tabstop>
   <tabstop>btn_setUnattendedFlip</tabstop>
   <tabstop>le_meridianLimitTrack</tabstop>
   <tabstop>le_meridianLimitSlew</tabstop>
-  <tabstop>btn_flipMount</tabstop>
   <tabstop>le_horizonLimitLow</tabstop>
   <tabstop>btn_setHorizonLimitLow</tabstop>
+  <tabstop>btn_flipMount</tabstop>
   <tabstop>le_horizonLimitHigh</tabstop>
   <tabstop>btn_setHorizonLimitHigh</tabstop>
   <tabstop>btn_mountPos1</tabstop>
@@ -13233,36 +13255,52 @@
   <tabstop>btn_mountPark</tabstop>
   <tabstop>btn_mountUnpark</tabstop>
   <tabstop>btn_stop</tabstop>
+  <tabstop>le_UTCDataValid</tabstop>
+  <tabstop>le_UTCDataExpirationDate</tabstop>
+  <tabstop>btn_setRefractionCorrection</tabstop>
+  <tabstop>checkAutoRefractionCamera</tabstop>
+  <tabstop>checkAutoRefractionNotTracking</tabstop>
+  <tabstop>btn_setRefractionParameters</tabstop>
+  <tabstop>btn_loadBasePoints</tabstop>
+  <tabstop>btn_generateBasePoints</tabstop>
+  <tabstop>altitudeBase</tabstop>
+  <tabstop>azimuthBase</tabstop>
+  <tabstop>btn_runBaseModel</tabstop>
+  <tabstop>le_modelPointsFileName</tabstop>
+  <tabstop>le_horizonPointsFileName</tabstop>
+  <tabstop>checkUseFileHorizonLine</tabstop>
+  <tabstop>checkUseMinimumHorizonLine</tabstop>
+  <tabstop>altitudeMinimumHorizon</tabstop>
+  <tabstop>btn_cancelModel1</tabstop>
+  <tabstop>btn_openModelingPlotWindow</tabstop>
+  <tabstop>btn_deletePoints</tabstop>
+  <tabstop>btn_openImageWindow</tabstop>
+  <tabstop>btn_plateSolveSync</tabstop>
+  <tabstop>checkDeletePointsHorizonMask</tabstop>
+  <tabstop>checkSortPoints</tabstop>
+  <tabstop>checkClearModelFirst</tabstop>
+  <tabstop>checkUseBlindSolve</tabstop>
   <tabstop>btn_loadRefinementPoints</tabstop>
   <tabstop>btn_generateGridPoints</tabstop>
   <tabstop>numberGridPointsRow</tabstop>
+  <tabstop>altitudeMin</tabstop>
   <tabstop>numberGridPointsCol</tabstop>
+  <tabstop>altitudeMax</tabstop>
   <tabstop>btn_generateMaxPoints</tabstop>
   <tabstop>btn_generateNormalPoints</tabstop>
+  <tabstop>btn_generateMinPoints</tabstop>
   <tabstop>btn_generateDSOPoints</tabstop>
   <tabstop>numberHoursDSO</tabstop>
-  <tabstop>numberHoursPreview</tabstop>
   <tabstop>numberPointsDSO</tabstop>
-  <tabstop>btn_runRefinementModel</tabstop>
+  <tabstop>numberHoursPreview</tabstop>
+  <tabstop>btn_runBoostModel</tabstop>
   <tabstop>btn_runCheckModel</tabstop>
+  <tabstop>btn_runRefinementModel</tabstop>
   <tabstop>btn_cancelModel2</tabstop>
-  <tabstop>altitudeTimeChange</tabstop>
-  <tabstop>azimuthTimeChange</tabstop>
-  <tabstop>numberRunsTimeChange</tabstop>
-  <tabstop>delayTimeTimeChange</tabstop>
-  <tabstop>btn_runTimeChangeModel</tabstop>
-  <tabstop>altitudeHysterese1</tabstop>
-  <tabstop>azimuthHysterese1</tabstop>
-  <tabstop>altitudeHysterese2</tabstop>
-  <tabstop>azimuthHysterese2</tabstop>
-  <tabstop>numberRunsHysterese</tabstop>
-  <tabstop>delayTimeHysterese</tabstop>
-  <tabstop>btn_runHystereseModel</tabstop>
-  <tabstop>btn_cancelAnalyseModel</tabstop>
-  <tabstop>le_analyseFileName</tabstop>
-  <tabstop>btn_openAnalyseWindow</tabstop>
-  <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
+  <tabstop>btn_runTargetRMSAlignment</tabstop>
+  <tabstop>btn_cancelRunTargetRMSAlignment</tabstop>
+  <tabstop>btn_clearAlignmentModel</tabstop>
   <tabstop>targetRMS</tabstop>
   <tabstop>btn_saveBackupModel</tabstop>
   <tabstop>btn_loadBackupModel</tabstop>
@@ -13276,9 +13314,81 @@
   <tabstop>btn_loadDSO1Model</tabstop>
   <tabstop>btn_saveDSO2Model</tabstop>
   <tabstop>btn_loadDSO2Model</tabstop>
-  <tabstop>btn_setRefractionCorrection</tabstop>
-  <tabstop>checkAutoRefractionCamera</tabstop>
-  <tabstop>btn_setRefractionParameters</tabstop>
+  <tabstop>altitudeTimeChange</tabstop>
+  <tabstop>azimuthTimeChange</tabstop>
+  <tabstop>numberRunsTimeChange</tabstop>
+  <tabstop>delayTimeTimeChange</tabstop>
+  <tabstop>btn_runTimeChangeModel</tabstop>
+  <tabstop>altitudeHysterese1</tabstop>
+  <tabstop>azimuthHysterese1</tabstop>
+  <tabstop>altitudeHysterese2</tabstop>
+  <tabstop>azimuthHysterese2</tabstop>
+  <tabstop>numberRunsHysterese</tabstop>
+  <tabstop>delayTimeHysterese</tabstop>
+  <tabstop>btn_runHystereseModel</tabstop>
+  <tabstop>btn_cancelAnalyseModel</tabstop>
+  <tabstop>btn_openAnalyseWindow</tabstop>
+  <tabstop>le_analyseFileName</tabstop>
+  <tabstop>btn_relay1</tabstop>
+  <tabstop>btn_relay2</tabstop>
+  <tabstop>btn_relay3</tabstop>
+  <tabstop>btn_relay4</tabstop>
+  <tabstop>btn_relay5</tabstop>
+  <tabstop>btn_relay6</tabstop>
+  <tabstop>btn_relay7</tabstop>
+  <tabstop>btn_relay8</tabstop>
+  <tabstop>settingsTabWidget</tabstop>
+  <tabstop>checkSimulation</tabstop>
+  <tabstop>btn_runBatchModel</tabstop>
+  <tabstop>cameraBin</tabstop>
+  <tabstop>cameraExposure</tabstop>
+  <tabstop>checkFastDownload</tabstop>
+  <tabstop>isoSetting</tabstop>
+  <tabstop>settlingTime</tabstop>
+  <tabstop>pixelSize</tabstop>
+  <tabstop>focalLength</tabstop>
+  <tabstop>checkUseFITSHeaders</tabstop>
+  <tabstop>checkDoSubframe</tabstop>
+  <tabstop>scaleSubframe</tabstop>
+  <tabstop>checkKeepImages</tabstop>
+  <tabstop>relay1Text</tabstop>
+  <tabstop>relay1Function</tabstop>
+  <tabstop>relay2Text</tabstop>
+  <tabstop>relay2Function</tabstop>
+  <tabstop>relay3Text</tabstop>
+  <tabstop>relay3Function</tabstop>
+  <tabstop>relay4Text</tabstop>
+  <tabstop>relay4Function</tabstop>
+  <tabstop>relay5Text</tabstop>
+  <tabstop>relay5Function</tabstop>
+  <tabstop>relay6Text</tabstop>
+  <tabstop>relay6Function</tabstop>
+  <tabstop>relay7Text</tabstop>
+  <tabstop>relay7Function</tabstop>
+  <tabstop>relay8Text</tabstop>
+  <tabstop>relay8Function</tabstop>
+  <tabstop>pd_chooseImaging</tabstop>
+  <tabstop>pd_chooseEnvironment</tabstop>
+  <tabstop>pd_chooseDome</tabstop>
+  <tabstop>btn_setupDomeDriver</tabstop>
+  <tabstop>le_ascomDomeDriverName</tabstop>
+  <tabstop>btn_setupAscomEnvironmentDriver</tabstop>
+  <tabstop>le_ascomEnvironmentDriverName</tabstop>
+  <tabstop>le_mountIP</tabstop>
+  <tabstop>le_mountMAC</tabstop>
+  <tabstop>checkEnableRelay</tabstop>
+  <tabstop>le_relayIP</tabstop>
+  <tabstop>le_relayUsername</tabstop>
+  <tabstop>le_relayPassword</tabstop>
+  <tabstop>checkEnableRemoteAccess</tabstop>
+  <tabstop>le_remotePort</tabstop>
+  <tabstop>checkEnableINDI</tabstop>
+  <tabstop>le_INDIServerIP</tabstop>
+  <tabstop>le_INDIServerPort</tabstop>
+  <tabstop>le_INDIStatus</tabstop>
+  <tabstop>le_INDITelescope</tabstop>
+  <tabstop>le_INDICCD</tabstop>
+  <tabstop>le_INDIWeather</tabstop>
   <tabstop>le_parkPos1Text</tabstop>
   <tabstop>le_azParkPos1</tabstop>
   <tabstop>le_altParkPos1</tabstop>
@@ -13300,44 +13410,25 @@
   <tabstop>btn_downloadEarthrotation</tabstop>
   <tabstop>btn_downloadSpacestations</tabstop>
   <tabstop>btn_downloadSatbrighest</tabstop>
-  <tabstop>btn_downloadAsteroidsMPC5000</tabstop>
   <tabstop>btn_downloadComets</tabstop>
+  <tabstop>btn_downloadAsteroidsMPC5000</tabstop>
+  <tabstop>btn_downloadAsteroidsNEA</tabstop>
+  <tabstop>btn_downloadAsteroidsPHA</tabstop>
+  <tabstop>btn_downloadAsteroidsTNO</tabstop>
   <tabstop>btn_downloadAll</tabstop>
   <tabstop>checkEarthrotation</tabstop>
   <tabstop>checkTLE</tabstop>
-  <tabstop>checkAsteroids</tabstop>
   <tabstop>checkComets</tabstop>
+  <tabstop>checkAsteroids</tabstop>
+  <tabstop>checkFilterMPC</tabstop>
+  <tabstop>le_filterExpressionMPC</tabstop>
   <tabstop>btn_uploadMount</tabstop>
+  <tabstop>mainTabWidget</tabstop>
   <tabstop>btn_driverMountConnected</tabstop>
   <tabstop>btn_domeConnected</tabstop>
   <tabstop>btn_cameraConnected</tabstop>
-  <tabstop>settingsTabWidget</tabstop>
-  <tabstop>btn_relay3</tabstop>
-  <tabstop>btn_relay2</tabstop>
-  <tabstop>btn_relay1</tabstop>
-  <tabstop>altitudeMax</tabstop>
-  <tabstop>altitudeMin</tabstop>
-  <tabstop>checkFastDownload</tabstop>
-  <tabstop>checkKeepImages</tabstop>
-  <tabstop>cameraBin</tabstop>
-  <tabstop>scaleSubframe</tabstop>
-  <tabstop>isoSetting</tabstop>
-  <tabstop>checkDoSubframe</tabstop>
-  <tabstop>pixelSize</tabstop>
-  <tabstop>focalLength</tabstop>
-  <tabstop>cameraExposure</tabstop>
-  <tabstop>settlingTime</tabstop>
-  <tabstop>checkFilterMPC</tabstop>
-  <tabstop>le_filterExpressionMPC</tabstop>
-  <tabstop>btn_downloadAsteroidsNEA</tabstop>
-  <tabstop>btn_downloadAsteroidsTNO</tabstop>
-  <tabstop>btn_downloadAsteroidsPHA</tabstop>
-  <tabstop>btn_saveConfig</tabstop>
-  <tabstop>btn_relay5</tabstop>
-  <tabstop>btn_relay4</tabstop>
-  <tabstop>btn_relay6</tabstop>
-  <tabstop>btn_relay7</tabstop>
-  <tabstop>btn_relay8</tabstop>
+  <tabstop>btn_solverConnected</tabstop>
+  <tabstop>btn_environmentConnected</tabstop>
  </tabstops>
  <resources/>
  <connections/>
