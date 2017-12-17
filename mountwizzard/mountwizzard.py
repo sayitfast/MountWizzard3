@@ -325,6 +325,10 @@ class MountWizzardApp(widget.MwWidget):
         if self.ui.checkEnableRemoteAccess.isChecked():
             self.messageQueue.put('Remote Access enabled\n')
             self.threadRemote.start()
+            # waiting to tcp server to start otherwise no setup for remote
+            while not self.workerRemote.tcpServer:
+                time.sleep(0.2)
+                PyQt5.QtWidgets.QApplication.processEvents()
         else:
             self.messageQueue.put('Remote Access disabled\n')
             if self.workerRemote.isRunning:

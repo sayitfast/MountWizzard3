@@ -23,47 +23,62 @@ class CheckIP(widget.MwWidget):
     def __init__(self):
         pass
 
-    def checkPort(self, uiPort):
-        cursorPosition = uiPort.cursorPosition()
-        if uiPort.text().strip() != '':
-            port = int(uiPort.text())
+    @staticmethod
+    def checkPort(ui):
+        cursorPosition = ui.cursorPosition()
+        if ui.text().strip() != '':
+            port = int(ui.text())
         else:
             port = 0
         if 1 < port < 64535:
             valid = True
-            uiPort.setStyleSheet(self.TEXT_COLOR_BLUE)
+            ui.setProperty('check', True)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
         else:
             valid = False
-            uiPort.setStyleSheet(self.TEXT_COLOR_RED)
-        uiPort.setText('{0}'.format(port))
-        uiPort.setCursorPosition(cursorPosition)
+            ui.setProperty('check', False)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
+        ui.setText('{0}'.format(port))
+        ui.setCursorPosition(cursorPosition)
         return valid, port
 
-    def checkIP(self, uiIp):
-        cursorPosition = uiIp.cursorPosition()
-        IP = uiIp.text().strip()
+    @staticmethod
+    def checkIP(ui):
+        cursorPosition = ui.cursorPosition()
+        IP = ui.text().strip()
         try:
             ipaddress.ip_address(IP)
             valid = True
-            uiIp.setStyleSheet(self.TEXT_COLOR_BLUE)
+            ui.setProperty('check', True)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
         except Exception as e:
             valid = False
-            uiIp.setStyleSheet(self.TEXT_COLOR_RED)
+            ui.setProperty('check', False)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
         finally:
             pass
-        uiIp.setText('{0}'.format(IP))
-        uiIp.setCursorPosition(cursorPosition)
+        ui.setText('{0}'.format(IP))
+        ui.setCursorPosition(cursorPosition)
         return valid, IP
 
-    def checkMAC(self, uiMac):
-        mac = uiMac.text()
+    @staticmethod
+    def checkMAC(ui):
+        mac = ui.text()
         mac = re.sub('[.:-]', '', mac).lower()
         mac = ''.join(mac.split())
         if len(mac) != 12 or not mac.isalnum():
             valid = False
-            uiMac.setStyleSheet(self.TEXT_COLOR_RED)
+            ui.setProperty('check', False)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
         else:
             valid = True
-            uiMac.setStyleSheet(self.TEXT_COLOR_BLUE)
+            ui.setProperty('check', True)
+            ui.style().unpolish(ui)
+            ui.style().polish(ui)
             mac = ":".join(["%s" % (mac[i:i + 2]) for i in range(0, 12, 2)])
         return valid, mac

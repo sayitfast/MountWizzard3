@@ -113,7 +113,7 @@ class Remote(PyQt5.QtCore.QObject):
                 self.signalRemoteShutdown.emit(True)
 
     def removeConnection(self):
-        pass
+        self.logger.info('Connection to MountWizzard from {0} removed'.format(self.clientConnection.peerAddress().toString()))
 
     def socketError(self):
-        pass
+        self.logger.error('Connection to MountWizzard from {0} failed'.format(self.clientConnection.peerAddress().toString()))

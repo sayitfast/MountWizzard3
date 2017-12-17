@@ -26,9 +26,6 @@ import PyQt5
 class MwWidget(QWidget):
 
     logger = logging.getLogger(__name__)
-    TEXT_COLOR_BLUE = 'background-color: rgb(25, 25, 25); color: rgb(32, 144, 192);'
-    TEXT_COLOR_RED = 'background-color: rgb(25, 25, 25); color: rgb(255, 0, 0);'
-    TEXT_COLOR_DEFAULT = 'background-color: rgb(25, 25, 25); color: rgb(192, 192, 192);'
     DEFAULT_TITLE = 'background-color: rgb(8,36,48); color: rgb(192,192,192);'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
@@ -51,6 +48,7 @@ class MwWidget(QWidget):
     COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
     COLOR_HIGHLIGHT = QColor(42, 130, 218)
 
+    # define the basic style of the mountwizzard theme
     BASIC_STYLE = """
     QWidget {
         background-color: #181818;
@@ -63,17 +61,31 @@ class MwWidget(QWidget):
         border - style: outset;
         border - radius: 2px;
         }
+    QLineEdit[check='false'] {
+        background-color: #101010;
+        color: rgb(255, 0, 0);
+        text-align: right;
+        border - style: outset;
+        border - radius: 2px;
+        }
+    QLineEdit[check='true'] {
+        background-color: #101010;
+        color: rgb(32, 144, 192);
+        text-align: right;
+        border - style: outset;
+        border - radius: 2px;
+        }    
     QLabel{
         background-color: transparent;
         }
-    QCheckBox::indicator{
+    QCheckBox::indicator {
         border: 1px solid #404040;
         background-color: #101010;
         }
     QCheckBox::indicator:checked {
         background-color: rgb(32, 144, 192);
     }
-    QDoubleSpinBox{
+    QDoubleSpinBox {
         background-color: #101010;
         color: rgb(32, 144, 192);
         text-align: right;
@@ -82,26 +94,26 @@ class MwWidget(QWidget):
         font: 10pt;
         padding: 2 px;
         }
-    QPushButton{
+    QPushButton {
         background - color: #181818;
         border - style: outset;
         border - radius: 2px;
         font: 10pt;
         min - width: 10em;
         }
-    QPushButton[running='true']{
+    QPushButton[running='true'] {
         background-color: rgb(16, 72, 124);
         color: #101010;
         } 
-    QPushButton[running='false']{
+    QPushButton[running='false'] {
         background-color: #181818;
         color: #C0C0C0;
         }     
-    QPushButton[cancel='true']{
+    QPushButton[cancel='true'] {
         background-color: rgb(96,0, 0);
         color: #101010;
         } 
-    QPushButton[cancel='false']{
+    QPushButton[cancel='false'] {
         background-color: #181818;
         color: #C0C0C0;
         }
@@ -168,7 +180,7 @@ class MwWidget(QWidget):
         height: 5px;
     }
     """
-
+    # define the tabbar main widget
     TAB_MAIN = """
     QTabBar::tab {
         background: gray;
@@ -192,30 +204,8 @@ class MwWidget(QWidget):
     QTabBar::tab:last:selected {margin-right: 2;}
     QTabBar::tab:only-one {margin: 1;}
     """
-
-    TAB_SETTING = """
-    QTabBar::tab {
-        background: gray;
-        color: #101010;
-        border: 2px solid #006325;
-        border-bottom-color: #006325;
-        border-top-left-radius: 3px;
-        border-top-right-radius: 3px;
-        border-style: outset;
-        min-width: 12ex;
-        padding: 4px;
-        padding-left: 4px;
-        padding-right: 4px;
-        margin-left: 1;
-        margin-right: 1;
-    }
-    QTabBar::tab:selected {background: #80c342; margin-bottom: 0px;}
-    QTabBar::tab:!selected {margin-bottom: 4px;}
-    QTabBar::tab:selected {margin-left: 1px; margin-right: 1px;}
-    QTabBar::tab:first:selected {margin-left: 2;}
-    QTabBar::tab:last:selected {margin-right: 2;}
-    QTabBar::tab:only-one {margin: 1;}
-    """
+    # make the settings tabbar the same look than the tabbar main
+    TAB_SETTING = TAB_MAIN
 
     def __init__(self):
         # noinspection PyArgumentList
