@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-import platform
 import logging
 import os
 import sys
@@ -52,50 +51,91 @@ class MwWidget(QWidget):
     BASIC_STYLE = """
     QWidget {
         background-color: #181818;
+    }
+    QWidget QLabel {
+        background-color: transparent;
         color: #C0C0C0;
-        }
-    QLineEdit {
+    }
+    QWidget QLineEdit {
         background-color: #101010;
         color: rgb(32, 144, 192);
         text-align: right;
-        border - style: outset;
-        border - radius: 2px;
-        }
-    QLineEdit[check='false'] {
+        border-width: 1px;
+        border-color: #404040;
+        border-style: outset;
+        border-radius: 2px;
+    }
+    QWidget QLineEdit[check='false'] {
         background-color: #101010;
         color: rgb(255, 0, 0);
-        text-align: right;
-        border - style: outset;
-        border - radius: 2px;
-        }
-    QLineEdit[check='true'] {
+    }
+    QWidget QLineEdit[check='true'] {
         background-color: #101010;
         color: rgb(32, 144, 192);
-        text-align: right;
-        border - style: outset;
-        border - radius: 2px;
-        }    
-    QLabel{
-        background-color: transparent;
         }
-    QCheckBox::indicator {
-        border: 1px solid #404040;
+
+    /* Checkboxes */
+    QWidget QCheckBox {
+        color: #C0C0C0;
+    }
+    QWidget QCheckBox::indicator {
+        border-width: 1px;
+        border-color: #404040;
         background-color: #101010;
-        }
-    QCheckBox::indicator:checked {
+        border-style: outset;
+        border-radius: 2px;
+    }
+    QWidget QCheckBox::indicator:checked {
         background-color: rgb(32, 144, 192);
     }
-    QDoubleSpinBox {
+    /* Spin Boxes */
+    QWidget QDoubleSpinBox {
         background-color: #101010;
         color: rgb(32, 144, 192);
         text-align: right;
-        border - style: outset;
-        border - radius: 2px;
-        font: 10pt;
-        padding: 2 px;
-        }
+        border-color: #404040;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 2px;
+        padding-right: 2px;
+    }
+    QWidget QDoubleSpinBox::up-button {
+        subcontrol-origin: border;
+        subcontrol-position: top right; /* position at the top right corner */
+        width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+        border-width: 1px;
+        border-radius: 2px;
+        border-color: #404040;
+        border-radius: 1px;
+        border-style: outset;
+        background-color: #181818;
+    }
+    QWidget QDoubleSpinBox::up-arrow {
+        image: url(mountwizzard/icons/arrow-up.ico);
+        width: 16px;
+        height: 16px;
+    }
+    QWidget QDoubleSpinBox::down-button {
+        subcontrol-origin: border;
+        subcontrol-position: bottom right; /* position at the top right corner */
+        width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 2px;
+        border-color: #404040;
+        border-radius: 1px;
+        background-color: #181818;
+    }
+    QWidget QDoubleSpinBox::down-arrow {
+        image: url(mountwizzard/icons/arrow-down.ico);
+        width: 16px;
+        height: 16px;
+    }
+    /* Push Buttons */
     QPushButton {
         background - color: #181818;
+        color: #C0C0C0;
+        border-color: #404040;
         border - style: outset;
         border - radius: 2px;
         font: 10pt;
@@ -121,65 +161,53 @@ class MwWidget(QWidget):
         text-align: left;
         padding-left: 6px;
         }
-    QComboBox /* is the box itself */
-    {  
-        border-color: red;
-        border-width: 5px;
-        border-radius: 3px;
-        border-style: solid;
-        padding: 1px 0px 1px 3px;
     }
-    QComboBox QListView /* is the list of popup */
-    {   border-style: solid;
+    /* Combo Boxes */
+    QWidget QComboBox {
+        background-color: #101010;
+        text-align: right;
         border-color: #404040;
         border-width: 1px;
+        border-style: outset;
+        border-radius: 3px;
+        padding-left: 5px;
+        background-color: #181818;
+    }
+    QWidget QComboBox::drop-down {
+        subcontrol-origin: border;
+        subcontrol-position: right; /* position at the top right corner */
+        width: 20px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+        border-color: #404040;
+        border-width: 1px;
+        border-style: outset;
         border-radius: 3px;
         background-color: #181818;
     }
-    QComboBox::drop-down /* is only the drop-down arrow surface */
-    {   width: 20px;
-        border: 1px;
-        border-radius:3px;
-        border-color: #404040;
-        border-left-style:solid;
-        border-top-style: none;
-        border-bottom-style: none;
-        border-right-style: none;
+    QWidget QComboBox::down-arrow {
+        image: url(mountwizzard/icons/arrow-down.ico);
+        width: 20px;
+        height: 32px;
     }
-    QComboBox::down-arrow /* is the arrow itself */
-    {
-        image: url(:/ArrowImages/images/whitearrowdown16.png);
-        width: 16px;
-        height: 16px;
-    }
-
-    """
-    """
-
-
-    QComboBox {
+    QWidget QComboBox:!editable {
+        color: #C0C0C0;
         background-color: #181818;
-        border:1px solid #404040;
-        border-radius:5px;
-        padding:5px;
     }
-    QComboBox::drop-down {
-        width: 25px;
-    }
-    QComboBox QListView {
-        border: 2px solid #404040;
-        border - style: outset;
-    QComboBox QAbstractItemView QListView::item:selected {
+    QWidget QComboCox QAbstractItemView {
+        border-width: 3px;
+        border-style: outset;
+        border-color: #404040;
         background-color: red;
+        selection-background-color: rgb(16, 72, 124);
+    }
+    /* lines */
+    QFrame[frameShape="4"] {/* horizontal lines */
+        color: #C0C0C0;
+    }
+    QFrame[frameShape="5"] {/* vertical lines */
+        color: rgb(32, 144, 192);
     }
     """
-    """
-    QComboBox::down-arrow, QSpinBox::down-arrow, QTimeEdit::down-arrow, QDateEdit::down-arrow{   
-        image: url(:/icons/down_arrow.png);
-        width: 7px;
-        height: 5px;
-    }
-    """
+
     # define the tabbar main widget
     TAB_MAIN = """
     QTabBar::tab {
@@ -225,6 +253,7 @@ class MwWidget(QWidget):
         gui.style().polish(gui)
         gui.setIconSize(PyQt5.QtCore.QSize(16, 16))
 
+    # noinspection PyProtectedMember
     def initUI(self):
         # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
@@ -241,5 +270,3 @@ class MwWidget(QWidget):
             self.bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
         self.setWindowIcon(QIcon(self.bundle_dir + '\\icons\\mw.ico'))
         self.setStyleSheet(self.BASIC_STYLE)
-
-

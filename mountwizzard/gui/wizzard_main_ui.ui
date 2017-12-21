@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>7</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -2159,7 +2159,7 @@
       </font>
      </property>
      <property name="text">
-      <string>measurement is on both axes same</string>
+      <string>measurement (for both axes)</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_telescopeTempDECMotor">
@@ -4194,7 +4194,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Number of Stars</string>
+      <string>Number Stars</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignErrorAz">
@@ -4758,7 +4758,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Number of Terms</string>
+      <string>Number Terms</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_157">
@@ -4977,7 +4977,7 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use minimum altitude for horizon mask in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Use Minumum Altitude as Horizon Mask</string>
+      <string>Use Minumum Altitude</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -8238,7 +8238,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -8355,42 +8355,6 @@
         <string>Exposure Time of Camera</string>
        </property>
       </widget>
-      <widget class="QSpinBox" name="cameraBin">
-       <property name="geometry">
-        <rect>
-         <x>270</x>
-         <y>50</y>
-         <width>51</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::ActionsContextMenu</enum>
-       </property>
-       <property name="toolTip">
-        <string>sets the camera bin</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>3</number>
-       </property>
-       <property name="value">
-        <number>1</number>
-       </property>
-      </widget>
       <widget class="QDoubleSpinBox" name="scaleSubframe">
        <property name="geometry">
         <rect>
@@ -8490,7 +8454,7 @@
         <rect>
          <x>20</x>
          <y>310</y>
-         <width>231</width>
+         <width>221</width>
          <height>31</height>
         </rect>
        </property>
@@ -8765,42 +8729,6 @@
        </property>
        <property name="text">
         <string>s</string>
-       </property>
-      </widget>
-      <widget class="QSpinBox" name="cameraExposure">
-       <property name="geometry">
-        <rect>
-         <x>270</x>
-         <y>90</y>
-         <width>51</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="contextMenuPolicy">
-        <enum>Qt::ActionsContextMenu</enum>
-       </property>
-       <property name="toolTip">
-        <string>sets the exposure time</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="minimum">
-        <number>1</number>
-       </property>
-       <property name="maximum">
-        <number>10</number>
-       </property>
-       <property name="value">
-        <number>1</number>
        </property>
       </widget>
       <widget class="QDoubleSpinBox" name="settlingTime">
@@ -9492,6 +9420,82 @@
        </property>
        <property name="checked">
         <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="cameraBin">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>50</y>
+         <width>51</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Sets the time to wait after mount stop before imaging</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="decimals">
+        <number>0</number>
+       </property>
+       <property name="minimum">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>3.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+      <widget class="QDoubleSpinBox" name="cameraExposure">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>90</y>
+         <width>51</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>Sets the time to wait after mount stop before imaging</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="decimals">
+        <number>0</number>
+       </property>
+       <property name="minimum">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>10.000000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>1.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
        </property>
       </widget>
      </widget>
@@ -13340,8 +13344,6 @@
   <tabstop>settingsTabWidget</tabstop>
   <tabstop>checkSimulation</tabstop>
   <tabstop>btn_runBatchModel</tabstop>
-  <tabstop>cameraBin</tabstop>
-  <tabstop>cameraExposure</tabstop>
   <tabstop>checkFastDownload</tabstop>
   <tabstop>isoSetting</tabstop>
   <tabstop>settlingTime</tabstop>
