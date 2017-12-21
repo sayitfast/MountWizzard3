@@ -166,6 +166,7 @@ class MwWidget(QWidget):
     QWidget QComboBox {
         background-color: #101010;
         text-align: right;
+        color: #C0C0C0;
         border-color: #404040;
         border-width: 1px;
         border-style: outset;
@@ -188,16 +189,19 @@ class MwWidget(QWidget):
         width: 20px;
         height: 32px;
     }
-    QWidget QComboBox:!editable {
-        color: #C0C0C0;
-        background-color: #181818;
+    QWidget QComboBox:item {
+        padding-left: 20px;  /* move text right to make room for tick mark */
+        height: 30px;
     }
-    QWidget QComboCox QAbstractItemView {
+    QWidget QComboBox:item:selected {
+        padding-left: 20px;
+        background-color: rgb(32, 144, 192);
+    }
+    QComboCox QAbstractItemView {
         border-width: 3px;
         border-style: outset;
         border-color: #404040;
-        background-color: red;
-        selection-background-color: rgb(16, 72, 124);
+        background-color: #181818;
     }
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
@@ -213,8 +217,7 @@ class MwWidget(QWidget):
     QTabBar::tab {
         background: gray;
         color: #101010;
-        border: 3px solid #104450;
-        border-bottom-color: #104450;
+        border: 3px solid rgb(16, 72, 124);
         border-top-left-radius: 3px;
         border-top-right-radius: 3px;
         border-style: outset;
@@ -225,7 +228,7 @@ class MwWidget(QWidget):
         margin-left: 1;
         margin-right: 1;
     }
-    QTabBar::tab:selected {background: #2088C0;}
+    QTabBar::tab:selected {background: rgb(32, 144, 192);}
     QTabBar::tab:!selected {margin-top: 4px;}
     QTabBar::tab:selected {margin-left: 1px; margin-right: 1px;}
     QTabBar::tab:first:selected {margin-left: 2;}
