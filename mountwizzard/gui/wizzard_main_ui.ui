@@ -1784,7 +1784,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -3518,7 +3518,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -5011,7 +5011,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -5139,7 +5139,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -5825,7 +5825,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -6854,7 +6854,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -7954,7 +7954,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -8184,7 +8184,7 @@
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: rgb(32, 144, 192);</string>
+      <string notr="true"/>
      </property>
      <property name="frameShadow">
       <enum>QFrame::Plain</enum>
@@ -8238,7 +8238,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -8558,7 +8558,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(32, 144, 192);</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -9513,7 +9513,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(32, 144, 192);</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -9708,7 +9708,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(32, 144, 192);</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -10380,7 +10380,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(32, 144, 192);</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -11994,7 +11994,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(32, 144, 192);</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -12321,7 +12321,7 @@
         </rect>
        </property>
        <property name="styleSheet">
-        <string notr="true">color: rgb(32, 144, 192);</string>
+        <string notr="true"/>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -13157,33 +13157,6 @@
     <string>Boot WOL</string>
    </property>
   </widget>
-  <widget class="Line" name="line_9">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>130</y>
-     <width>791</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">color: rgb(32, 144, 192);</string>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <property name="lineWidth">
-    <number>2</number>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-  </widget>
   <widget class="QLabel" name="mainBackgound">
    <property name="geometry">
     <rect>
@@ -13215,7 +13188,6 @@
   <zorder>label_102</zorder>
   <zorder>btn_mountShutdown</zorder>
   <zorder>btn_mountBoot</zorder>
-  <zorder>line_9</zorder>
  </widget>
  <customwidgets>
   <customwidget>

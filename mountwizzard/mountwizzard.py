@@ -489,8 +489,6 @@ class MountWizzardApp(widget.MwWidget):
         if platform.system() != 'Windows':
             self.ui.settingsTabWidget.removeTab(5)
             self.ui.settingsTabWidget.removeTab(2)
-        self.ui.mainTabWidget.tabBar().setStyleSheet(self.TAB_MAIN)
-        self.ui.settingsTabWidget.tabBar().setStyleSheet(self.TAB_SETTING)
 
     def initConfig(self):
         try:
