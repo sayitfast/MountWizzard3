@@ -21,6 +21,8 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import PyQt5
 
+from icons import resources
+
 
 class MwWidget(QWidget):
 
@@ -85,6 +87,7 @@ class MwWidget(QWidget):
     /* Checkboxes */
     QCheckBox {
         color: #C0C0C0;
+        spacing: 8px;
     }
     QCheckBox::indicator {
         border-width: 1px;
@@ -92,9 +95,12 @@ class MwWidget(QWidget):
         background-color: #101010;
         border-style: outset;
         border-radius: 2px;
+        width: 13px;
+        height: 13px;
     }
     QCheckBox::indicator:checked {
         background-color: rgb(32, 144, 192);
+        image: url(:/checkmark.ico);
     }
     
     /* Spin Boxes */
@@ -123,7 +129,7 @@ class MwWidget(QWidget):
         background-color: #181818;
     }
     QDoubleSpinBox::up-arrow {
-        image: url(mountwizzard/icons/arrow-up.ico);
+        image: url(:/arrow-up.ico);
         width: 12px;
         height: 16px;
     }
@@ -138,7 +144,7 @@ class MwWidget(QWidget):
         background-color: #181818;
     }
     QDoubleSpinBox::down-arrow {
-        image: url(mountwizzard/icons/arrow-down.ico);
+        image: url(:/arrow-down.ico);
         width: 12px;
         height: 16px;
     }
@@ -205,7 +211,7 @@ class MwWidget(QWidget):
         background-color: #202020;
     }
     QComboBox::down-arrow {
-        image: url(mountwizzard/icons/arrow-down.ico);
+        image: url(:/arrow-down.ico);
         width: 20px;
         height: 32px;
     }
