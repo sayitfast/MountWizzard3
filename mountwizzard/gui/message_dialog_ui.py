@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'message_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.9
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -24,7 +24,7 @@ class Ui_MessageDialog(object):
         self.messages.setSizePolicy(sizePolicy)
         self.messages.setMinimumSize(QtCore.QSize(0, 100))
         font = QtGui.QFont()
-        font.setFamily("Courier")
+        font.setFamily("Arial")
         font.setPointSize(10)
         font.setBold(True)
         font.setWeight(75)
@@ -44,6 +44,6 @@ class Ui_MessageDialog(object):
         self.messages.setHtml(_translate("MessageDialog", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Courier\'; font-size:10pt; font-weight:600; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:\'Arial\'; font-size:10pt; font-weight:600; font-style:normal;\">\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:\'MS Shell Dlg 2\'; font-size:8pt; font-weight:400;\"><br /></p></body></html>"))
 

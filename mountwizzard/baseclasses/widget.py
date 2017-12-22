@@ -25,7 +25,6 @@ import PyQt5
 class MwWidget(QWidget):
 
     logger = logging.getLogger(__name__)
-    DEFAULT_TITLE = 'background-color: rgb(8,36,48); color: rgb(192,192,192);'
     COLOR_ASTRO = QColor(32, 144, 192)  # blue astro color
     COLOR_BLUE = QColor(0, 0, 255)
     COLOR_YELLOW = QColor(192, 192, 0)
@@ -56,6 +55,15 @@ class MwWidget(QWidget):
         background-color: transparent;
         color: #C0C0C0;
     }
+    QLabel#mainBackgound {
+        border-width: 3px;
+        border-color: rgb(16, 72, 96);
+        border-style: outset;
+        border-radius: 2px;
+        background-color: rgb(8, 36, 48);
+    }
+    
+    /* QLine Edit*/
     QLineEdit {
         background-color: #101010;
         color: rgb(32, 144, 192);
@@ -88,11 +96,16 @@ class MwWidget(QWidget):
     QCheckBox::indicator:checked {
         background-color: rgb(32, 144, 192);
     }
+    
     /* Spin Boxes */
     QDoubleSpinBox {
         background-color: #101010;
         color: rgb(32, 144, 192);
         text-align: right;
+        font-family: Arial;
+        font-style: normal;
+        font-size: 10pt;
+        font-weight: bold;
         border-color: #404040;
         border-width: 1px;
         border-style: outset;
@@ -102,76 +115,84 @@ class MwWidget(QWidget):
     QDoubleSpinBox::up-button {
         subcontrol-origin: border;
         subcontrol-position: top right; /* position at the top right corner */
-        width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+        width: 12px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
         border-width: 1px;
         border-radius: 2px;
         border-color: #404040;
-        border-radius: 1px;
         border-style: outset;
         background-color: #181818;
     }
     QDoubleSpinBox::up-arrow {
         image: url(mountwizzard/icons/arrow-up.ico);
-        width: 16px;
+        width: 12px;
         height: 16px;
     }
     QDoubleSpinBox::down-button {
         subcontrol-origin: border;
         subcontrol-position: bottom right; /* position at the top right corner */
-        width: 16px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
+        width: 12px; /* 16 + 2*1px border-width = 15px padding + 3px parent border */
         border-width: 1px;
         border-style: outset;
         border-radius: 2px;
         border-color: #404040;
-        border-radius: 1px;
         background-color: #181818;
     }
     QDoubleSpinBox::down-arrow {
         image: url(mountwizzard/icons/arrow-down.ico);
-        width: 16px;
+        width: 12px;
         height: 16px;
     }
+    
     /* Push Buttons */
     QPushButton {
-        background - color: #181818;
+        background-color: #202020;
         color: #C0C0C0;
         border-color: #404040;
-        border - style: outset;
-        border - radius: 2px;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 2px;
         font: 10pt;
         min - width: 10em;
     }
+    QPushButton:pressed {
+        background-color: #181818;
+        color: #C0C0C0;
+        border-color: #404040;
+        border-width: 2px;
+        border-style: inset;
+        border-radius: 2px;
+    }
     QPushButton[running='true'] {
         background-color: rgb(16, 72, 96);
-        color: #101010;
+        color: #C0C0C0;
     } 
     QPushButton[running='false'] {
-        background-color: #181818;
+        background-color: #202020;
         color: #C0C0C0;
     }     
     QPushButton[cancel='true'] {
         background-color: rgb(96,0, 0);
-        color: #101010;
+        color: #000000;
     } 
     QPushButton[cancel='false'] {
-        background-color: #181818;
+        background-color: #202020;
         color: #C0C0C0;
     }
     QPushButton[iconset='true'] {
         text-align: left;
         padding-left: 6px;
     }
+    
     /* Combo Boxes */
     QComboBox {
-        background-color: #101010;
         text-align: right;
         color: #C0C0C0;
         border-color: #404040;
         border-width: 1px;
         border-style: outset;
-        border-radius: 3px;
+        border-radius: 2px;
         padding-left: 5px;
-        background-color: #181818;
+        background-color: #202020;
     }
     QComboBox::drop-down {
         subcontrol-origin: border;
@@ -180,8 +201,8 @@ class MwWidget(QWidget):
         border-color: #404040;
         border-width: 1px;
         border-style: outset;
-        border-radius: 3px;
-        background-color: #181818;
+        border-radius: 2px;
+        background-color: #202020;
     }
     QComboBox::down-arrow {
         image: url(mountwizzard/icons/arrow-down.ico);
@@ -191,16 +212,15 @@ class MwWidget(QWidget):
     QComboBox:item {
         padding-left: 20px;  /* move text right to make room for tick mark */
         height: 30px;
+        background-color: #202020;
     }
     QComboBox:item:selected {
         padding-left: 20px;
-        background-color: rgb(32, 144, 192);
-    }
-    QComboCox QAbstractItemView {
-        border-width: 3px;
+        border-width: 2px;
+        border-radius: 2px;
         border-style: outset;
-        border-color: #404040;
-        background-color: #181818;
+        border-color: rgb(16, 72, 96);
+        background-color: rgb(32, 144, 192);
     }
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
@@ -209,10 +229,16 @@ class MwWidget(QWidget):
     QFrame[frameShape="5"] {/* vertical lines */
         color: rgb(16, 72, 96);
     }
+    QTabWidget:pane {
+        border-width: 2px;
+        border-color: #404040;
+        border-radius: 2px;
+        border-style: outset;
+    }
     QTabBar::tab {
         background-color: #202020;
         color: #C0C0C0;
-        border-width: 1px;
+        border-width: 2px;
         border-color: rgb(16, 72, 96);
         border-radius: 2px;
         border-style: outset;
@@ -220,24 +246,13 @@ class MwWidget(QWidget):
         padding: 4px;
         padding-left: 4px;
         padding-right: 4px;
-        margin-left: 1;
-        margin-right: 1;
     }
     QTabBar::tab:selected {
+        color: #000000;
         background: rgb(32, 144, 192);
     }
     QTabBar::tab:!selected {
         margin-top: 4px;
-    }
-    QTabBar::tab:selected {
-        margin-left: 1px; 
-        margin-right: 1px;
-    }
-    QTabBar::tab:first:selected {
-        margin-left: 2;
-    }
-    QTabBar::tab:last:selected {
-        margin-right: 2;
     }
     QTabBar::tab:only-one {
         margin: 1;

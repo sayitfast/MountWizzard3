@@ -78,12 +78,12 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.error.connect(self.handleError)
         # self.socket.readyRead.connect(self.handleReadyRead)
         while self.isRunning:
-            if not self.app.mountCommandQueue.empty():
+            PyQt5.QtWidgets.QApplication.processEvents()
+            while not self.app.mountCommandQueue.empty():
                 command = self.app.mountCommandQueue.get()
                 self.sendCommand(command)
-            time.sleep(0.2)
+            time.sleep(0.1)
             self.socket.state()
-            PyQt5.QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
@@ -130,7 +130,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                         numberBytesToReceive = self.COMMAND_RETURN[key]
                 if numberBytesToReceive > -1:
                     self.socket.write(bytes(command + '\r', encoding='ascii'))
-                    if self.socket.waitForReadyRead(3000):
+                    if self.socket.bytesAvailable():
                         # now we got some data
                         while self.socket.bytesAvailable():
                             tmp = str(self.socket.read(1000), "ascii")

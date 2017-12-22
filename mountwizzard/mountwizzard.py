@@ -106,7 +106,6 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_openAnalyseWindow, 'chart.ico')
         self.widgetIcon(self.ui.btn_openImageWindow, 'image.ico')
         self.widgetIcon(self.ui.btn_openModelingPlotWindow, 'processes.ico')
-        # buttons for the configuration
         self.widgetIcon(self.ui.btn_saveConfigAs, 'database_down.ico')
         self.widgetIcon(self.ui.btn_loadFrom, 'database_up.ico')
         self.widgetIcon(self.ui.btn_saveConfig, 'floppy_disc.ico')
@@ -137,8 +136,6 @@ class MountWizzardApp(widget.MwWidget):
         pixmap = PyQt5.QtGui.QPixmap(self.bundle_dir + '\\icons\\mw.ico')
         pixmap = pixmap.scaled(99, 99)
         self.ui.mainicon.setPixmap(pixmap)
-        # now the header part on top
-        self.ui.mainBackgound.setStyleSheet(self.DEFAULT_TITLE)
         # enable a matplotlib figure in main gui
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.model)
         helper.setContentsMargins(0, 0, 0, 0)

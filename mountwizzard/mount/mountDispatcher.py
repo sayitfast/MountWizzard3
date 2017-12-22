@@ -425,7 +425,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcher('Shutdown'))
         self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlign'))
         while self.isRunning:
-            time.sleep(0.2)
+            time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):

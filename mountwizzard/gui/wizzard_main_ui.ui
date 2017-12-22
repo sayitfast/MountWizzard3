@@ -70,9 +70,9 @@
   <widget class="QLineEdit" name="le_mountStatus">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>20</x>
      <y>60</y>
-     <width>371</width>
+     <width>391</width>
      <height>21</height>
     </rect>
    </property>
@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -165,8 +165,8 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>24</pointsize>
+       <family>Arial</family>
+       <pointsize>28</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -207,8 +207,8 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>24</pointsize>
+       <family>Arial</family>
+       <pointsize>28</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -249,8 +249,8 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>24</pointsize>
+       <family>Arial</family>
+       <pointsize>28</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -291,8 +291,8 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>24</pointsize>
+       <family>Arial</family>
+       <pointsize>28</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -13048,9 +13048,9 @@
   <widget class="QLineEdit" name="le_configName">
    <property name="geometry">
     <rect>
-     <x>600</x>
+     <x>590</x>
      <y>60</y>
-     <width>161</width>
+     <width>181</width>
      <height>21</height>
     </rect>
    </property>
@@ -13100,9 +13100,9 @@
   <widget class="QLabel" name="label_102">
    <property name="geometry">
     <rect>
-     <x>550</x>
+     <x>540</x>
      <y>60</y>
-     <width>51</width>
+     <width>41</width>
      <height>21</height>
     </rect>
    </property>
