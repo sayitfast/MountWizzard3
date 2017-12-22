@@ -44,7 +44,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':Sz': 1,
                       ':Sa': 1,
                       ':MA#': 1,
-                      ':shutdown#': 1,
+                      ':shutdown': 1,
                       ':Sw': 1,
                       ':Sdat': 1,
                       ':Suaf': 1,
@@ -130,16 +130,22 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                         numberBytesToReceive = self.COMMAND_RETURN[key]
                 if numberBytesToReceive > -1:
                     self.socket.write(bytes(command + '\r', encoding='ascii'))
-                    if self.socket.bytesAvailable():
+                    self.socket.flush()
+                    PyQt5.QtWidgets.QApplication.processEvents()
+                    counter = 0
+                    while self.socket.bytesAvailable() < numberBytesToReceive:
+                        time.sleep(0.1)
+                        PyQt5.QtWidgets.QApplication.processEvents()
+                        counter += 1
+                        if counter == 50:
+                            break
                         # now we got some data
-                        while self.socket.bytesAvailable():
-                            tmp = str(self.socket.read(1000), "ascii")
-                            self.messageString += tmp
-                        messageToProcess = self.messageString[:numberBytesToReceive].rstrip('#')
-                        self.messageString = self.messageString[numberBytesToReceive:]
-                        # print('Command: {0}, return value: {1}'.format(command, messageToProcess))
-                    else:
-                        self.messageString = ''
+                    while self.socket.bytesAvailable():
+                        tmp = str(self.socket.read(1000), "ascii")
+                        self.messageString += tmp
+                    messageToProcess = self.messageString[:numberBytesToReceive].rstrip('#')
+                    self.messageString = self.messageString[numberBytesToReceive:]
+                    # print('Command: {0}, return value: {1}'.format(command, messageToProcess))
                 else:
                     print('Command: ->{0}<- not known'.format(command))
             else:
