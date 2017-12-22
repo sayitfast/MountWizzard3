@@ -235,8 +235,6 @@ class MountWizzardApp(widget.MwWidget):
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
-        for i in range(1, 10):
-            self.messageQueue.put('test\n')
 
     def workerAscomEnvironmentStop(self):
         self.threadAscomEnvironment.quit()
