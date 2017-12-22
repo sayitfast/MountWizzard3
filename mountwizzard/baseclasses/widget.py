@@ -263,6 +263,39 @@ class MwWidget(QWidget):
     QTabBar::tab:only-one {
         margin: 1;
     }
+    
+    /* scroll bar */
+    QScrollBar:vertical {
+        background-color: #202020;
+        width: 20px;
+        border-width: 1px;
+        border-color: #404040;
+        border-radius: 2px;
+        border-style: solid;
+    }
+    QScrollBar::handle:vertical {
+        border-width: 1px;
+        border-color: #404040;
+        border-radius: 3px;
+        border-style: solid;
+        background-color: rgb(32, 144, 192);
+        min-height: 15px;
+        margin: 21px 0px 21px 0px;
+    }
+    QScrollBar:up-arrow:vertical {
+        image: url(:/arrow-up.ico);
+        border-width: 1px;
+        border-color: #404040;
+        border-radius: 2px;
+        border-type: outset;
+    }
+    QScrollBar::down-arrow:vertical {
+        image: url(:/arrow-down.ico);
+        border-width: 1px;
+        border-color: #404040;
+        border-radius: 2px;
+        border-type: outset;
+    }
     """
 
     def __init__(self):
@@ -277,7 +310,7 @@ class MwWidget(QWidget):
         self.showStatus = False
 
     def widgetIcon(self, gui, icon):
-        gui.setIcon(PyQt5.QtGui.QIcon(self.bundle_dir + '\\icons\\' + icon))
+        gui.setIcon(PyQt5.QtGui.QIcon(icon))
         gui.setProperty('iconset', True)
         gui.style().unpolish(gui)
         gui.style().polish(gui)

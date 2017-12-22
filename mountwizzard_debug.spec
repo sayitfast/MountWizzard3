@@ -14,7 +14,7 @@ a = Analysis(['mountwizzard\\mountwizzard.py'],
              datas=[
              ('mountwizzard\\model001.fit','.'),
              ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy', '.\\astropy'),
-             ('mountwizzard\\icons\\*.ico','.\\icons'),
+             ('mountwizzard\\icons\\mw.ico','.\\icons'),
              ],
              hiddenimports=['numpy.lib.recfunctions','xml.dom'],
              hookspath=[],
