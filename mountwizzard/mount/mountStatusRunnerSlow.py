@@ -95,6 +95,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         if self.connected and self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
+                self.socket.flush()
             else:
                 self.logger.warning('Socket RunnerSlow not connected')
 
