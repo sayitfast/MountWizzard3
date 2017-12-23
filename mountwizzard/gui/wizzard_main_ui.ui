@@ -458,9 +458,9 @@
     <widget class="QLineEdit" name="le_telescopePierSide">
      <property name="geometry">
       <rect>
-       <x>350</x>
+       <x>360</x>
        <y>250</y>
-       <width>61</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -512,7 +512,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Pier side</string>
+      <string>Pier side is</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_21">
@@ -620,7 +620,7 @@
     <widget class="QLineEdit" name="le_timeToFlip">
      <property name="geometry">
       <rect>
-       <x>370</x>
+       <x>360</x>
        <y>340</y>
        <width>41</width>
        <height>21</height>
@@ -743,7 +743,7 @@
     <widget class="QLabel" name="label_61">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>400</x>
        <y>340</y>
        <width>41</width>
        <height>21</height>
@@ -1164,7 +1164,7 @@
       <rect>
        <x>250</x>
        <y>280</y>
-       <width>161</width>
+       <width>191</width>
        <height>51</height>
       </rect>
      </property>
@@ -1435,7 +1435,7 @@
     <widget class="QLineEdit" name="le_timeToMeridian">
      <property name="geometry">
       <rect>
-       <x>370</x>
+       <x>360</x>
        <y>370</y>
        <width>41</width>
        <height>21</height>
@@ -1477,7 +1477,7 @@
     <widget class="QLabel" name="label_91">
      <property name="geometry">
       <rect>
-       <x>410</x>
+       <x>400</x>
        <y>370</y>
        <width>41</width>
        <height>21</height>
@@ -1534,27 +1534,6 @@
       <string>Park Pos5</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_setSlewRate">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>250</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Sets the horion limit low</string>
-     </property>
-     <property name="text">
-      <string>Set</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_20">
      <property name="geometry">
       <rect>
@@ -1576,7 +1555,7 @@
     <widget class="QLineEdit" name="le_horizonLimitHigh">
      <property name="geometry">
       <rect>
-       <x>370</x>
+       <x>360</x>
        <y>400</y>
        <width>41</width>
        <height>21</height>
@@ -1603,13 +1582,13 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="inputMask">
-      <string>#99</string>
+      <string>99</string>
      </property>
      <property name="text">
-      <string>+00</string>
+      <string>00</string>
      </property>
      <property name="cursorPosition">
-      <number>3</number>
+      <number>0</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1634,27 +1613,6 @@
      </property>
      <property name="text">
       <string>Horion Lim low</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_setHorizonLimitLow">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>400</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Sets the horion limit low</string>
-     </property>
-     <property name="text">
-      <string>Set</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_60">
@@ -1705,13 +1663,13 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="inputMask">
-      <string>#99</string>
+      <string>99</string>
      </property>
      <property name="text">
-      <string>+00</string>
+      <string>0</string>
      </property>
      <property name="maxLength">
-      <number>3</number>
+      <number>2</number>
      </property>
      <property name="frame">
       <bool>true</bool>
@@ -1742,27 +1700,6 @@
      </property>
      <property name="text">
       <string>°</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_setHorizonLimitHigh">
-     <property name="geometry">
-      <rect>
-       <x>420</x>
-       <y>400</y>
-       <width>31</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Sets the horizon limit high</string>
-     </property>
-     <property name="text">
-      <string>Set</string>
      </property>
     </widget>
     <widget class="Line" name="line_51">
@@ -1844,15 +1781,12 @@
     <zorder>label_91</zorder>
     <zorder>btn_mountPos6</zorder>
     <zorder>btn_mountPos5</zorder>
-    <zorder>btn_setSlewRate</zorder>
     <zorder>label_20</zorder>
     <zorder>le_horizonLimitHigh</zorder>
     <zorder>label_4</zorder>
-    <zorder>btn_setHorizonLimitLow</zorder>
     <zorder>label_60</zorder>
     <zorder>le_horizonLimitLow</zorder>
     <zorder>label_42</zorder>
-    <zorder>btn_setHorizonLimitHigh</zorder>
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">
@@ -13561,7 +13495,6 @@ Window</string>
   <tabstop>btn_saveConfigAs</tabstop>
   <tabstop>btn_saveConfig</tabstop>
   <tabstop>le_slewRate</tabstop>
-  <tabstop>btn_setSlewRate</tabstop>
   <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>btn_setDualTracking</tabstop>
   <tabstop>le_telescopeUnattendedFlip</tabstop>
@@ -13569,10 +13502,8 @@ Window</string>
   <tabstop>le_meridianLimitTrack</tabstop>
   <tabstop>le_meridianLimitSlew</tabstop>
   <tabstop>le_horizonLimitLow</tabstop>
-  <tabstop>btn_setHorizonLimitLow</tabstop>
   <tabstop>btn_flipMount</tabstop>
   <tabstop>le_horizonLimitHigh</tabstop>
-  <tabstop>btn_setHorizonLimitHigh</tabstop>
   <tabstop>btn_mountPos1</tabstop>
   <tabstop>btn_mountPos2</tabstop>
   <tabstop>btn_mountPos3</tabstop>

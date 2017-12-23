@@ -369,9 +369,9 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.le_parkPos4Text.textChanged.connect(lambda: self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text()))
         self.ui.le_parkPos5Text.textChanged.connect(lambda: self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text()))
         self.ui.le_parkPos6Text.textChanged.connect(lambda: self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text()))
-        self.ui.btn_setHorizonLimitHigh.clicked.connect(self.setHorizonLimitHigh)
-        self.ui.btn_setHorizonLimitLow.clicked.connect(self.setHorizonLimitLow)
-        self.ui.btn_setSlewRate.clicked.connect(self.setSlewRate)
+        self.ui.le_horizonLimitHigh.textChanged.connect(self.setHorizonLimitHigh)
+        self.ui.le_horizonLimitLow.textChanged.connect(self.setHorizonLimitLow)
+        self.ui.le_slewRate.textChanged.connect(self.setSlewRate)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
         if platform.system() == 'Windows':
@@ -816,20 +816,37 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no file selected')
 
     def setHorizonLimitHigh(self):
-        _value = int(self.ui.le_horizonLimitHigh.text())
-        if _value < 0:
-            _value = 0
-        elif _value > 90:
-            _value = 90
-        self.mountCommandQueue.put(':Sh+{0:02d}#'.format(_value))
+        _text = self.ui.le_horizonLimitHigh.text()
+        if len(_text) > 0:
+            _value = int(_text)
+            if _value < 0:
+                _value = 0
+            elif _value > 90:
+                _value = 90
+            self.mountCommandQueue.put(':Sh+{0:02d}#'.format(_value))
+            self.workerMountDispatcher.data['CurrentHorizonLimitHigh'] = _value
 
     def setHorizonLimitLow(self):
-        _value = int(self.ui.le_horizonLimitLow.text())
-        if _value < 0:
-            _value = 0
-        elif _value > 90:
-            _value = 90
-        self.mountCommandQueue.put(':So+{0:02d}#'.format(_value))
+        _text = self.ui.le_horizonLimitLow.text()
+        if len(_text) > 0:
+            _value = int(_text)
+            if _value < 0:
+                _value = 0
+            elif _value > 90:
+                _value = 90
+            self.mountCommandQueue.put(':So+{0:02d}#'.format(_value))
+            self.workerMountDispatcher.data['CurrentHorizonLimitLow'] = _value
+
+    def setSlewRate(self):
+        _text = self.ui.le_slewRate.text()
+        if len(_text) > 0:
+            _value = int(_text)
+            if _value < 1:
+                _value = 1
+            elif _value > 15:
+                _value = 15
+            self.mountCommandQueue.put(':Sw{0:02d}#'.format(_value))
+            self.workerMountDispatcher.data['SlewRate'] = _value
 
     def setDualTracking(self):
         _value = self.ui.le_telescopeDualTrack.text()
@@ -852,14 +869,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_telescopeUnattendedFlip.setText('ON')
         self.mountCommandQueue.put(':Suaf{0:1d}#'.format(_value))
         self.workerMountDispatcher.data['UnattendedFlip'] = _value
-
-    def setSlewRate(self):
-        _value = int(self.ui.le_slewRate.text())
-        if _value < 1:
-            _value = 1
-        elif _value > 15:
-            _value = 15
-        self.mountCommandQueue.put(':Sw{0:02d}#'.format(_value))
 
     def setRefractionCorrection(self):
         _value = self.ui.le_refractionStatus.text()
@@ -983,9 +992,11 @@ class MountWizzardApp(widget.MwWidget):
             if valueName == 'ModelErrorAlt':
                 self.ui.le_alignErrorAlt.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'CurrentHorizonLimitLow':
-                self.ui.le_horizonLimitLow.setText(str(self.workerMountDispatcher.data[valueName]))
+                if not self.ui.le_horizonLimitLow.hasFocus():
+                    self.ui.le_horizonLimitLow.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'CurrentHorizonLimitHigh':
-                self.ui.le_horizonLimitHigh.setText(str(self.workerMountDispatcher.data[valueName]))
+                if not self.ui.le_horizonLimitLow.hasFocus():
+                    self.ui.le_horizonLimitHigh.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'SiteLongitude':
                 self.ui.le_siteLongitude.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'SiteLatitude':
@@ -1020,7 +1031,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_telescopeAzimut.setText(str(self.workerMountDispatcher.data[valueName]))
                 self.modelWindow.ui.le_telescopeAzimut.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'SlewRate':
-                self.ui.le_slewRate.setText(str(self.workerMountDispatcher.data[valueName]))
+                if not self.ui.le_horizonLimitLow.hasFocus():
+                    self.ui.le_slewRate.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'MeridianLimitTrack':
                 self.ui.le_meridianLimitTrack.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'MeridianLimitSlew':
