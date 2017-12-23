@@ -973,6 +973,7 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_alignErrorOrtho.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'ModelTerms':
                 self.ui.le_alignNumberTerms.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignNumberTerms2.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'ModelKnobTurnAz':
                 self.ui.le_alignKnobTurnAz.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'ModelKnobTurnAlt':

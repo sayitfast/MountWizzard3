@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5508,7 +5508,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -7201,7 +7201,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>90</y>
+       <y>50</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -7235,7 +7235,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>91</y>
+       <y>51</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -7243,8 +7243,8 @@ Window</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>50</weight>
-       <bold>false</bold>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="alignment">
@@ -7745,7 +7745,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>130</y>
+       <y>90</y>
        <width>36</width>
        <height>31</height>
       </rect>
@@ -7754,8 +7754,8 @@ Window</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -7787,7 +7787,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>130</y>
+       <y>90</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -7804,9 +7804,9 @@ Window</string>
     <widget class="QPushButton" name="btn_clearAlignmentModel">
      <property name="geometry">
       <rect>
-       <x>610</x>
-       <y>50</y>
-       <width>141</width>
+       <x>460</x>
+       <y>170</y>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -7821,7 +7821,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>170</y>
+       <y>130</y>
        <width>36</width>
        <height>31</height>
       </rect>
@@ -7830,8 +7830,8 @@ Window</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>50</weight>
-       <bold>false</bold>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -7863,7 +7863,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>170</y>
+       <y>130</y>
        <width>81</width>
        <height>31</height>
       </rect>
@@ -7875,6 +7875,66 @@ Window</string>
      </property>
      <property name="text">
       <string>Number Stars</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignNumberTerms2">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>170</y>
+       <width>36</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of Terms in actual used pointing model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_209">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>175</y>
+       <width>86</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Number Terms</string>
      </property>
     </widget>
     <zorder>line_18</zorder>
@@ -7911,6 +7971,8 @@ Window</string>
     <zorder>btn_clearAlignmentModel</zorder>
     <zorder>le_alignNumberStars2</zorder>
     <zorder>label_76</zorder>
+    <zorder>le_alignNumberTerms2</zorder>
+    <zorder>label_209</zorder>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
