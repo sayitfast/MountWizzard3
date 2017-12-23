@@ -175,16 +175,16 @@ class MwWidget(QWidget):
         border-radius: 2px;
     }
     QPushButton[running='true'] {
-        background-color: rgb(16, 72, 96);
-        color: #C0C0C0;
+        background-color: rgb(32, 144, 192);
+        color: #000000;
     } 
     QPushButton[running='false'] {
         background-color: #202020;
         color: #C0C0C0;
     }     
     QPushButton[cancel='true'] {
-        background-color: rgb(96,0, 0);
-        color: #000000;
+        background-color: rgb(192,0, 0);
+        color: #C0C0C0;
     } 
     QPushButton[cancel='false'] {
         background-color: #202020;
