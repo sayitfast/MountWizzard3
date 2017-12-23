@@ -244,7 +244,6 @@ class MountWizzardApp(widget.MwWidget):
         self.counter = 0
         self.mainLoop()
 
-
     def workerAscomEnvironmentStop(self):
         self.threadAscomEnvironment.quit()
         self.threadAscomEnvironment.wait()

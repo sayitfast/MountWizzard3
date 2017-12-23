@@ -38,6 +38,7 @@ class MwWidget(QWidget):
     COLOR_ORANGE = QColor(192, 96, 96)
     COLOR_BLACK = QColor(0, 0, 0)
     COLOR_POINTER = QColor(255, 0, 255)
+    COLOR_POINTER1 = QColor(32, 144, 192)
     COLOR_TRACKWIDGETTEXT = QColor(255, 255, 255)
     COLOR_TRACKWIDGETPOINTS = QColor(128, 128, 128)
     COLOR_WINDOW = QColor(32, 32, 32)

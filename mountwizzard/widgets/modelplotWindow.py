@@ -254,11 +254,17 @@ class ModelPlotWindow(widget.MwWidget):
     def constructAzAltPointer(self, esize):
         group = QGraphicsItemGroup()
         group.setVisible(False)
-        pen = QPen(self.COLOR_POINTER, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        pen = QPen(self.COLOR_POINTER, 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         item = QGraphicsEllipseItem(-esize, -esize, 2 * esize, 2 * esize)
         item.setPen(pen)
         group.addToGroup(item)
-        pen = QPen(self.COLOR_POINTER, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+
+        pen = QPen(self.COLOR_POINTER1, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
+        item = QGraphicsEllipseItem(-esize - 2, -esize - 2, 2 * (esize + 2), 2 * (esize + 2))
+        item.setPen(pen)
+        group.addToGroup(item)
+
+        pen = QPen(self.COLOR_POINTER1, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
         item = QGraphicsLineItem(-esize, 0, -esize / 2, 0)
         item.setPen(pen)
         group.addToGroup(item)
