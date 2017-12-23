@@ -348,7 +348,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
         self.ui.btn_loadFrom.clicked.connect(self.loadConfigDataFrom)
         self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
-        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put(':hP#'))
+        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#:hP#'))
         self.ui.btn_mountUnpark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#'))
         self.ui.btn_startTracking.clicked.connect(lambda: self.mountCommandQueue.put(':AP#'))
         self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put(':RT9#'))
@@ -1137,7 +1137,7 @@ if __name__ == "__main__":
         logging.error(traceback.format_exception(typeException, valueException, tbackException))
         sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
 
-    BUILD_NO = '2.7.1 beta'
+    BUILD_NO = '3.0.0 beta'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
