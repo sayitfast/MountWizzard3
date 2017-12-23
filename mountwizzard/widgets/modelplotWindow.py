@@ -16,6 +16,7 @@ import copy
 import datetime
 import logging
 import os
+import platform
 
 # import for the PyQt5 Framework
 import PyQt5
@@ -69,7 +70,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)                               # same for track preview
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)                        # signal for redrawing the window content
-        self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)                                              # signal for redrawing the dome
+        if platform.system() == 'Windows':
+            self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)                                          # signal for redrawing the dome
         self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
         # self.show()                                                                                                       # construct the window
         self.setVisible(False)                                                                                              # but hide it first

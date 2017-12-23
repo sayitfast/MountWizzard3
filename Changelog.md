@@ -1,4 +1,16 @@
 # Changelog
+3.0
+- analyse window error by scaling: changed from polar
+- put color in az alt format
+- image window rework
+- target rms and actual rms different
+- put number of model points in actual window of optimisation
+- environment on indi
+- dome on indi
+
+
+
+
 2.7.1
 - multiple threads for modeling
 - bugfix keep refinement

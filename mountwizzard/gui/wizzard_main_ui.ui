@@ -109,9 +109,9 @@
   <widget class="QTabWidget" name="mainTabWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>5</x>
      <y>150</y>
-     <width>771</width>
+     <width>776</width>
      <height>481</height>
     </rect>
    </property>
@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>1</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -424,7 +424,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -466,7 +466,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -544,7 +544,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -628,7 +628,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -691,7 +691,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1290,7 +1290,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1380,7 +1380,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1443,7 +1443,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1584,7 +1584,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1686,7 +1686,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1861,15 +1861,15 @@
     <widget class="QLineEdit" name="le_siteElevation">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>160</x>
        <y>110</y>
-       <width>111</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1918,15 +1918,15 @@
     <widget class="QLineEdit" name="le_siteLongitude">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>160</x>
        <y>50</y>
-       <width>111</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -1984,15 +1984,15 @@
     <widget class="QLineEdit" name="le_localSiderealTime">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>160</x>
        <y>140</y>
-       <width>111</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2041,15 +2041,15 @@
     <widget class="QLineEdit" name="le_siteLatitude">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>160</x>
        <y>80</y>
-       <width>111</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2165,7 +2165,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2282,7 +2282,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2375,7 +2375,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2540,7 +2540,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2560,6 +2560,9 @@
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="maxLength">
       <number>8</number>
@@ -2582,7 +2585,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2627,7 +2630,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2720,7 +2723,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -2789,7 +2792,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3011,6 +3014,9 @@
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
      </property>
+     <property name="text">
+      <string>---</string>
+     </property>
      <property name="maxLength">
       <number>8</number>
      </property>
@@ -3032,7 +3038,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3101,7 +3107,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3146,7 +3152,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3472,7 +3478,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3573,15 +3579,15 @@
     <widget class="QLineEdit" name="le_JulianDate">
      <property name="geometry">
       <rect>
-       <x>140</x>
+       <x>160</x>
        <y>170</y>
-       <width>141</width>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3638,7 +3644,7 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -3698,10 +3704,10 @@
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -4282,7 +4288,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4377,7 +4383,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4612,7 +4618,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4650,7 +4656,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4688,7 +4694,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4780,8 +4786,6 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4816,7 +4820,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -4872,7 +4876,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -5107,7 +5111,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -5211,7 +5215,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5294,13 +5298,13 @@ Window</string>
       <rect>
        <x>130</x>
        <y>410</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5336,13 +5340,13 @@ Window</string>
       <rect>
        <x>380</x>
        <y>350</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5384,7 +5388,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5420,13 +5424,13 @@ Window</string>
       <rect>
        <x>130</x>
        <y>380</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5498,7 +5502,7 @@ Window</string>
       <rect>
        <x>380</x>
        <y>320</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
@@ -5546,7 +5550,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5618,13 +5622,13 @@ Window</string>
       <rect>
        <x>130</x>
        <y>320</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5660,13 +5664,13 @@ Window</string>
       <rect>
        <x>130</x>
        <y>350</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5722,13 +5726,13 @@ Window</string>
       <rect>
        <x>380</x>
        <y>380</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5800,13 +5804,13 @@ Window</string>
       <rect>
        <x>380</x>
        <y>410</y>
-       <width>111</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -5974,7 +5978,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6379,7 +6383,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6433,8 +6437,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6661,8 +6664,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6736,7 +6738,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6792,7 +6794,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6848,7 +6850,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -6886,7 +6888,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -7198,7 +7200,7 @@ Window</string>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>610</x>
        <y>90</y>
        <width>71</width>
        <height>31</height>
@@ -7218,7 +7220,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>90</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -7240,9 +7242,9 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <family>Arial</family>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -7262,9 +7264,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>210</y>
+       <y>240</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7278,9 +7280,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>210</y>
+       <y>240</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7294,7 +7296,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>200</y>
+       <y>230</y>
        <width>291</width>
        <height>1</height>
       </rect>
@@ -7310,9 +7312,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>330</y>
+       <y>345</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7326,9 +7328,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>330</y>
+       <y>345</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7343,7 +7345,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>50</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -7397,7 +7399,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>180</y>
+       <y>210</y>
        <width>251</width>
        <height>21</height>
       </rect>
@@ -7417,9 +7419,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>250</y>
+       <y>275</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7433,9 +7435,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>250</y>
+       <y>275</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7449,9 +7451,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>210</y>
+       <y>240</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7473,9 +7475,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>250</y>
+       <y>275</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7497,9 +7499,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>330</y>
+       <y>345</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7521,9 +7523,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>370</y>
+       <y>380</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7537,9 +7539,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>370</y>
+       <y>380</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7553,9 +7555,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>410</y>
+       <y>415</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7569,9 +7571,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>410</y>
+       <y>415</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7585,9 +7587,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>370</y>
+       <y>380</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7609,9 +7611,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>410</y>
+       <y>415</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7633,9 +7635,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>290</y>
+       <y>310</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7649,9 +7651,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>550</x>
-       <y>290</y>
+       <y>310</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7673,9 +7675,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>670</x>
-       <y>290</y>
+       <y>310</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7728,7 +7730,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>130</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -7744,16 +7746,16 @@ Window</string>
       <rect>
        <x>700</x>
        <y>130</y>
-       <width>51</width>
+       <width>36</width>
        <height>31</height>
       </rect>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -7772,7 +7774,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN.N</string>
+      <string>0,0</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -7784,7 +7786,7 @@ Window</string>
     <widget class="QLabel" name="label_75">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>610</x>
        <y>130</y>
        <width>71</width>
        <height>31</height>
@@ -7802,9 +7804,9 @@ Window</string>
     <widget class="QPushButton" name="btn_clearAlignmentModel">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>610</x>
        <y>50</y>
-       <width>131</width>
+       <width>141</width>
        <height>31</height>
       </rect>
      </property>
@@ -7813,6 +7815,66 @@ Window</string>
      </property>
      <property name="text">
       <string>Clear Model</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_alignNumberStars2">
+     <property name="geometry">
+      <rect>
+       <x>700</x>
+       <y>170</y>
+       <width>36</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>Number of alignment stars in actual used pointing model</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_76">
+     <property name="geometry">
+      <rect>
+       <x>610</x>
+       <y>170</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Number Stars</string>
      </property>
     </widget>
     <zorder>line_18</zorder>
@@ -7847,6 +7909,8 @@ Window</string>
     <zorder>le_alignErrorRMS2</zorder>
     <zorder>label_75</zorder>
     <zorder>btn_clearAlignmentModel</zorder>
+    <zorder>le_alignNumberStars2</zorder>
+    <zorder>label_76</zorder>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
@@ -7949,7 +8013,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -7999,7 +8064,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -8053,7 +8118,7 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
        <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
@@ -8155,7 +8220,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -8372,7 +8438,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -8443,7 +8510,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -8478,7 +8546,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -8558,7 +8627,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -8683,7 +8753,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -8715,7 +8786,8 @@ Window</string>
      </property>
      <property name="font">
       <font>
-       <family>Courier</family>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
        <weight>75</weight>
        <bold>true</bold>
       </font>
@@ -9053,9 +9125,9 @@ Window</string>
     <widget class="QTabWidget" name="settingsTabWidget">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>5</x>
        <y>10</y>
-       <width>741</width>
+       <width>761</width>
        <height>431</height>
       </rect>
      </property>
@@ -9087,7 +9159,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -11018,7 +11090,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11057,7 +11129,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11096,7 +11168,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11186,7 +11258,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11225,7 +11297,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11264,7 +11336,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11321,7 +11393,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11360,7 +11432,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11417,7 +11489,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11510,7 +11582,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11606,7 +11678,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11681,7 +11753,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11738,7 +11810,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11795,7 +11867,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11888,7 +11960,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11927,7 +11999,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -11966,7 +12038,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12041,7 +12113,7 @@ Window</string>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12113,14 +12185,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>110</y>
+         <y>100</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12152,9 +12224,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>110</y>
+         <y>100</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12162,9 +12234,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>310</y>
+         <y>250</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12172,9 +12244,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>350</y>
+         <y>280</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12192,12 +12264,12 @@ Window</string>
          <x>440</x>
          <y>70</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12226,9 +12298,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>270</y>
+         <y>220</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12262,14 +12334,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>270</y>
+         <y>220</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12303,7 +12375,7 @@ Window</string>
          <x>560</x>
          <y>70</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12311,9 +12383,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>270</y>
+         <y>220</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12321,9 +12393,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>230</y>
+         <y>190</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12331,14 +12403,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>190</y>
+         <y>160</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12390,7 +12462,7 @@ Window</string>
          <x>400</x>
          <y>70</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12406,9 +12478,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>190</y>
+         <y>160</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12416,9 +12488,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>150</y>
+         <y>130</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -12426,9 +12498,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>310</y>
+         <y>250</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12465,14 +12537,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>350</y>
+         <y>280</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12504,14 +12576,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>150</y>
+         <y>130</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12543,9 +12615,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>190</y>
+         <y>160</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12561,9 +12633,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>110</y>
+         <y>100</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12597,14 +12669,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>310</y>
+         <y>250</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12636,9 +12708,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>150</y>
+         <y>130</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12654,9 +12726,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>230</y>
+         <y>190</y>
          <width>31</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12672,14 +12744,14 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>440</x>
-         <y>230</y>
+         <y>190</y>
          <width>111</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
-         <family>Courier</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>75</weight>
          <bold>true</bold>
@@ -12711,9 +12783,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>560</x>
-         <y>350</y>
+         <y>280</y>
          <width>161</width>
-         <height>31</height>
+         <height>21</height>
         </rect>
        </property>
       </widget>
@@ -13590,4 +13662,21 @@ Window</string>
  </tabstops>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>

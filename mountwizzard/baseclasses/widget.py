@@ -20,7 +20,6 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import PyQt5
-
 from icons import resources
 
 
@@ -76,6 +75,9 @@ class MwWidget(QWidget):
         background-color: #101010;
         color: rgb(32, 144, 192);
         text-align: right;
+        font-family: Arial;
+        font-style: normal;
+        font-weight: bold;
         border-width: 1px;
         border-color: #404040;
         border-style: outset;
@@ -289,17 +291,9 @@ class MwWidget(QWidget):
     }
     QScrollBar:up-arrow:vertical {
         image: url(:/arrow-up.ico);
-        border-width: 1px;
-        border-color: #404040;
-        border-radius: 2px;
-        border-style: outset;
     }
     QScrollBar::down-arrow:vertical {
         image: url(:/arrow-down.ico);
-        border-width: 1px;
-        border-color: #404040;
-        border-radius: 2px;
-        border-style: outset;
     }
     
     /* progress bar */

@@ -8,6 +8,7 @@ setup(
     packages=[
         'mountwizzard',
         'mountwizzard.analyse',
+        'mountwizzard.ascom',
         'mountwizzard.astrometry',
         'mountwizzard.automation',
         'mountwizzard.baseclasses',
@@ -15,6 +16,7 @@ setup(
         'mountwizzard.dome',
         'mountwizzard.environment',
         'mountwizzard.gui',
+        'mountwizzard.icons',
         'mountwizzard.indi',
         'mountwizzard.modeling',
         'mountwizzard.mount',
@@ -29,7 +31,8 @@ setup(
         # 'pypiwin32>=219',             # not useful for linux
         'pyfits>=3.4',
         'wakeonlan>=0.2.2',
-        'requests'
+        'requests',
+        'astropy'
     ]
     + (['PyQt5>=5.6'] if "Darwin" == platform.system() else [])
     + (['PyQt5>=5.6'] if "Windows" == platform.system() else [])

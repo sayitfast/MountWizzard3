@@ -48,9 +48,11 @@ from modeling import modelingDispatcher
 from mount import mountDispatcher
 from relays import relays
 from remote import remoteThread
-from dome import ascomDome
+if platform.system() == 'Windows':
+    from dome import ascomDome
+    from environment import ascomEnvironment
 from indi import indi_client
-from environment import ascomEnvironment
+
 
 from astrometry import transform
 
@@ -266,6 +268,8 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
     def fillEnvironmentData(self):
+        if platform.system() != 'Windows':
+            return
         for valueName in self.workerAscomEnvironment.data:
             if valueName == 'DewPoint':
                 self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
@@ -957,6 +961,7 @@ class MountWizzardApp(widget.MwWidget):
                     self.ui.le_telescopeDualTrack.setText('OFF')
             if valueName == 'NumberAlignmentStars':
                 self.ui.le_alignNumberStars.setText(str(self.workerMountDispatcher.data[valueName]))
+                self.ui.le_alignNumberStars2.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'ModelRMSError':
                 self.ui.le_alignErrorRMS.setText(str(self.workerMountDispatcher.data[valueName]))
                 self.ui.le_alignErrorRMS2.setText(str(self.workerMountDispatcher.data[valueName]))
