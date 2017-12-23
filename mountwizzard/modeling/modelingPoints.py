@@ -266,6 +266,28 @@ class ModelPoints:
             self.sortPoints('Refinement')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
+    def generateMinPoints(self, limitByHorizonMask, doSortingPoints):
+        west = []
+        east = []
+        for dec in range(-15, 90, 15):
+            if dec < 60:
+                step = -15
+            else:
+                step = -30
+            for ha in range(120, -120, step):
+                az, alt = self.transform.transformERFA(ha / 10, dec, 1)
+                if alt > 0:
+                    if az > 180:
+                        east.append((az, alt))
+                    else:
+                        west.append((az, alt))
+        self.RefinementPoints = west + east
+        if limitByHorizonMask:
+            self.deleteBelowHorizonLine()
+        if doSortingPoints:
+            self.sortPoints('Refinement')
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+
     def generateGridPoints(self, limitByHorizonMask, doSortingPoints, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
         self.RefinementPoints = []
         for az in range(5, 360, int(360 / numberOfColumns)):
@@ -277,12 +299,13 @@ class ModelPoints:
             self.sortPoints('Refinement')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
-    def generateBasePoints(self, azimuth, altitude):
+    def generateBasePoints(self, azimuth, altitude, numberOfPoints):
         self.BasePoints = []
-        for i in range(0, 3):
-            azp = i * 120 + azimuth
+        for i in range(0, numberOfPoints):
+            azp = i * 360 / numberOfPoints + azimuth
             if azp > 360:
                 azp -= 360
+            azp = int(azp)
             point = (azp, altitude)
             self.BasePoints.append(point)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'coordinate_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.9
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -220,9 +220,9 @@ class Ui_CoordinateDialog(object):
         self.label_87.setText(_translate("CoordinateDialog", "mpas"))
         self.label_11.setText(_translate("CoordinateDialog", "Points modeled:"))
         self.le_modelingStatus.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_modelingStatus.setText(_translate("CoordinateDialog", "-- of --"))
+        self.le_modelingStatus.setText(_translate("CoordinateDialog", "00 of 00"))
         self.le_modelingStatusTime.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_modelingStatusTime.setText(_translate("CoordinateDialog", "--:--"))
+        self.le_modelingStatusTime.setText(_translate("CoordinateDialog", "00:00"))
         self.label_12.setText(_translate("CoordinateDialog", "Estimated Finish in "))
         self.label_13.setText(_translate("CoordinateDialog", "Minutes"))
         self.checkRunTrackingWidget.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p>Checked if you would like to see the tracking line and flip time in the window</p></body></html>"))

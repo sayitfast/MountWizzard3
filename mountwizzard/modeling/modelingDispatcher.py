@@ -145,6 +145,18 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
+            'GenerateMinPoints':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_generateMinPoints,
+                            'Method': self.modelingRunner.modelPoints.generateMinPoints,
+                            'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
+                                          'self.app.ui.checkSortPoints.isChecked()'
+                                          ]
+                        }
+                    ]
+                },
             'LoadBasePoints':
                 {
                     'Worker': [
@@ -189,7 +201,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_generateBasePoints,
                             'Method': self.modelingRunner.modelPoints.generateBasePoints,
                             'Parameter': ['float(self.app.ui.azimuthBase.value())',
-                                          'float(self.app.ui.altitudeBase.value())']
+                                          'float(self.app.ui.altitudeBase.value())',
+                                          'int(float(self.app.ui.numberBase.value()))']
                         }
                     ]
                 },
@@ -238,6 +251,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
         self.app.ui.btn_generateMaxPoints.clicked.connect(lambda: self.commandDispatcher('GenerateMaxPoints'))
         self.app.ui.btn_generateNormalPoints.clicked.connect(lambda: self.commandDispatcher('GenerateNormalPoints'))
+        self.app.ui.btn_generateMinPoints.clicked.connect(lambda: self.commandDispatcher('GenerateMinPoints'))
         self.app.ui.btn_generateGridPoints.clicked.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
         self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
         self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
