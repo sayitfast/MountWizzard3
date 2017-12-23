@@ -11,28 +11,19 @@
 # Licence APL2.0
 #
 ############################################################
-# standard solutions
+
 import logging
 import os
 import time
-
-# import for the PyQt5 Framework
 import PyQt5.QtWidgets
-# numpy
 import numpy
-# FIT file handling
-import pyfits
-# matplotlib
+import astropy.io.fits as pyfits
 from matplotlib import use
-
 from baseclasses import widget
 from gui import image_dialog_ui
-
 use('Qt5Agg')
-# when using multiple embedded plots in different windows you should use figure instead of pyplot, because the state
-# machine from pyplot mixed multiple instances up.
 from matplotlib import figure as figure
-from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
+# from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 
@@ -265,4 +256,3 @@ class ImagesWindow(widget.MwWidget):
 
     def exposeContinuous(self):
         pass
-

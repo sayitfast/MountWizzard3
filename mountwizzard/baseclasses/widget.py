@@ -255,7 +255,6 @@ class MwWidget(QWidget):
         border-color: rgb(16, 72, 96);
         border-radius: 2px;
         border-style: outset;
-        min-width: 12ex;
         padding: 4px;
         padding-left: 4px;
         padding-right: 4px;

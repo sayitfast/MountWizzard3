@@ -22,7 +22,7 @@ from xml.etree import ElementTree
 import PyQt5
 from PyQt5 import QtCore, QtNetwork, QtWidgets
 import indi.indi_xml as indiXML
-import pyfits
+import astropy.io.fits as pyfits
 from baseclasses import checkParamIP
 
 

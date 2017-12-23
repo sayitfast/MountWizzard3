@@ -11,15 +11,11 @@
 # Licence APL2.0
 #
 ############################################################
-
-# import basic stuff
 import logging
-import time
-
 import numpy
-import pyfits
-# import .NET / COM Handling
+import astropy.io.fits as pyfits
 from win32com.client.dynamic import Dispatch
+
 
 class AscomCamera:
     logger = logging.getLogger(__name__)

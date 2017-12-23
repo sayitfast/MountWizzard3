@@ -4,4 +4,3 @@
 - image window rework
 - environment on indi
 - dome on indi
-- replace pyfits with astropy library

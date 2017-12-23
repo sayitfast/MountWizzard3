@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5230,9 +5230,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorAz">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>140</x>
        <y>410</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5272,9 +5272,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorPosAngle">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>410</x>
        <y>350</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5314,9 +5314,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignKnobTurnAz">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>650</x>
        <y>50</y>
-       <width>131</width>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -5356,9 +5356,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorPolar">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>140</x>
        <y>380</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5416,7 +5416,7 @@ Window</string>
     <widget class="QLabel" name="label_153">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>290</x>
        <y>380</y>
        <width>101</width>
        <height>21</height>
@@ -5434,9 +5434,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignNumberTerms">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>410</x>
        <y>320</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5476,9 +5476,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignKnobTurnAlt">
      <property name="geometry">
       <rect>
-       <x>620</x>
+       <x>650</x>
        <y>260</y>
-       <width>131</width>
+       <width>91</width>
        <height>21</height>
       </rect>
      </property>
@@ -5518,7 +5518,7 @@ Window</string>
     <widget class="QLabel" name="label_156">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>540</x>
        <y>50</y>
        <width>91</width>
        <height>21</height>
@@ -5554,9 +5554,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignNumberStars">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>140</x>
        <y>320</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5596,9 +5596,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorRMS">
      <property name="geometry">
       <rect>
-       <x>130</x>
+       <x>140</x>
        <y>350</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5658,9 +5658,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorOrtho">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>410</x>
        <y>380</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5700,7 +5700,7 @@ Window</string>
     <widget class="QLabel" name="label_159">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>290</x>
        <y>410</y>
        <width>91</width>
        <height>21</height>
@@ -5736,9 +5736,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorAlt">
      <property name="geometry">
       <rect>
-       <x>380</x>
+       <x>410</x>
        <y>410</y>
-       <width>71</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -5778,7 +5778,7 @@ Window</string>
     <widget class="QLabel" name="label_154">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>290</x>
        <y>320</y>
        <width>101</width>
        <height>21</height>
@@ -5796,7 +5796,7 @@ Window</string>
     <widget class="QLabel" name="label_157">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>540</x>
        <y>260</y>
        <width>91</width>
        <height>21</height>
@@ -5830,7 +5830,7 @@ Window</string>
     <widget class="QLabel" name="label_160">
      <property name="geometry">
       <rect>
-       <x>270</x>
+       <x>290</x>
        <y>350</y>
        <width>71</width>
        <height>21</height>

@@ -18,7 +18,7 @@ import time
 import PyQt5
 
 import numpy
-import pyfits
+import astropy.io.fits as pyfits
 # import .NET / COM Handling
 from win32com.client import Dispatch
 import pythoncom

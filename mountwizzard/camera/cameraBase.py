@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-
 import logging
 import socket
 import errno

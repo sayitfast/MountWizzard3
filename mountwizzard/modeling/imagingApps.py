@@ -23,9 +23,7 @@ import shutil
 import sys
 import PyQt5
 from astrometry import transform
-# library for fits file handling
-import pyfits
-# cameras
+import astropy.io.fits as pyfits
 from camera import none
 from camera import indicamera
 if platform.system() == 'Windows':

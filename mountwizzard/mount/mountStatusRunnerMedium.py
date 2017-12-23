@@ -14,6 +14,7 @@
 import logging
 import PyQt5
 import time
+import platform
 from queue import Queue
 
 
@@ -111,7 +112,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             # the same is good if the camera is not in integrating
             if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] not in ['READY - IDLE', 'DOWNLOADING']:
                 doRefractionUpdate = True
-        if doRefractionUpdate:
+        if doRefractionUpdate and platform.system() == 'Windows':
             if 'Temperature' in self.app.workerAscomEnvironment.data and 'Pressure' in self.app.workerAscomEnvironment.data and self.app.workerAscomEnvironment.isRunning:
                 pressure = self.app.workerAscomEnvironment.data['Pressure']
                 temperature = self.app.workerAscomEnvironment.data['Temperature']

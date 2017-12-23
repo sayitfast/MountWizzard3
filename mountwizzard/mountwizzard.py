@@ -19,21 +19,14 @@ import json
 import logging
 import logging.handlers
 import time
-# numerics
 import math
 import numpy
-# i want to have multi platform, therefore there will be some specific features happening
 if platform.system() == 'Windows':
-    # application handling
     from winreg import *
-# queues are used for inter thread communication
 from queue import Queue
-# import for the PyQt5 Framework
 import PyQt5
-# matplotlib framework
 import matplotlib
 matplotlib.use('Qt5Agg')
-# import the UI part, which is done via QT Designer and exported
 from baseclasses import widget
 from baseclasses import fileLoadSave
 from widgets import modelplotWindow
@@ -41,10 +34,7 @@ from widgets import imageWindow
 from widgets import analyseWindow
 from widgets import messageWindow
 from gui import wizzard_main_ui
-
-# modeling
 from modeling import modelingDispatcher
-# import mount functions classes
 from mount import mountDispatcher
 from relays import relays
 from remote import remoteThread
@@ -52,13 +42,9 @@ if platform.system() == 'Windows':
     from dome import ascomDome
     from environment import ascomEnvironment
 from indi import indi_client
-
-
 from astrometry import transform
-
 if platform.system() == 'Windows':
     from automation import upload
-# to be able to boot the system via wol
 from wakeonlan import wol
 
 
@@ -139,10 +125,8 @@ class MountWizzardApp(widget.MwWidget):
         pixmap = pixmap.scaled(99, 99)
         self.ui.mainicon.setPixmap(pixmap)
         pixmap = PyQt5.QtGui.QPixmap(':/azimuth1.png')
-        pixmap = pixmap.scaled(140, 140)
         self.ui.picAZ.setPixmap(pixmap)
         pixmap = PyQt5.QtGui.QPixmap(':/altitude1.png')
-        pixmap = pixmap.scaled(140, 140)
         self.ui.picALT.setPixmap(pixmap)
 
         # enable a matplotlib figure in main gui
