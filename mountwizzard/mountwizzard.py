@@ -241,7 +241,6 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
-        self.counter = 0
         self.mainLoop()
 
     def workerAscomEnvironmentStop(self):
@@ -1074,8 +1073,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def mainLoop(self):
-        self.counter += 1
-        self.modelWindow.ui.bar_modelingStatusPercent.setValue(int(self.counter))
         self.fillMountData()
         self.fillEnvironmentData()
         while not self.INDIDataQueue.empty():
