@@ -186,9 +186,8 @@ class MwWidget(QWidget):
     }
     QPushButton[iconset='true'] {
         text-align: left;
-        padding-left: 6px;
-    }
-    
+        padding-left: 10px;
+    }   
     /* Combo Boxes */
     QComboBox {
         text-align: right;
@@ -287,14 +286,32 @@ class MwWidget(QWidget):
         border-width: 1px;
         border-color: #404040;
         border-radius: 2px;
-        border-type: outset;
+        border-style: outset;
     }
     QScrollBar::down-arrow:vertical {
         image: url(:/arrow-down.ico);
         border-width: 1px;
         border-color: #404040;
         border-radius: 2px;
-        border-type: outset;
+        border-style: outset;
+    }
+    
+    /* progress bar */
+    QProgressBar {
+        background-color: #101010;
+        border-radius: 2px;
+        border-width: 1px;
+        border-color: #404040;
+        border-style: outset;
+    }
+    QProgressBar::chunk {
+        background-color: rgb(32, 144, 192);
+        width: 8px;
+        margin: 1px;
+        border-width: 2px;
+        border-color: #404040;
+        border-radius: 2px;
+        border-style: outset;
     }
     """
 
@@ -314,7 +331,7 @@ class MwWidget(QWidget):
         gui.setProperty('iconset', True)
         gui.style().unpolish(gui)
         gui.style().polish(gui)
-        gui.setIconSize(PyQt5.QtCore.QSize(16, 16))
+        gui.setIconSize(PyQt5.QtCore.QSize(32, 16))
 
     # noinspection PyProtectedMember
     def initUI(self):

@@ -234,7 +234,9 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
+        self.counter = 0
         self.mainLoop()
+
 
     def workerAscomEnvironmentStop(self):
         self.threadAscomEnvironment.quit()
@@ -1058,6 +1060,8 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def mainLoop(self):
+        self.counter += 1
+        self.modelWindow.ui.bar_modelingStatusPercent.setValue(int(self.counter))
         self.fillMountData()
         self.fillEnvironmentData()
         while not self.INDIDataQueue.empty():
@@ -1070,7 +1074,8 @@ class MountWizzardApp(widget.MwWidget):
             elif text.startswith('status'):
                 self.modelWindow.ui.le_modelingStatus.setText(text[6:])
             elif text.startswith('percent'):
-                self.modelWindow.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
+                pass
+                # self.modelWindow.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):
                 self.modelWindow.ui.le_modelingStatusTime.setText(text[8:])
             elif text.startswith('#BW'):
