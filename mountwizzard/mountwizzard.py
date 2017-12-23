@@ -808,6 +808,7 @@ class MountWizzardApp(widget.MwWidget):
         a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
+            self.analyseWindow.showWindow()
         else:
             self.logger.warning('no file selected')
 
