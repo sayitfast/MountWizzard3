@@ -605,6 +605,10 @@ class MountWizzardApp(widget.MwWidget):
                 self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
             if 'ConfigName' in self.config:
                 self.ui.le_configName.setText(self.config['ConfigName'])
+            if 'MainTabPosition' in self.config:
+                self.ui.mainTabWidget.setCurrentIndex(self.config['MainTabPosition'])
+            if 'SettingTabPosition' in self.config:
+                self.ui.settingsTabWidget.setCurrentIndex(self.config['SettingTabPosition'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -705,6 +709,8 @@ class MountWizzardApp(widget.MwWidget):
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
         self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['ConfigName'] = self.ui.le_configName.text()
+        self.config['MainTabPosition'] = self.ui.mainTabWidget.currentIndex()
+        self.config['SettingTabPosition'] = self.ui.settingsTabWidget.currentIndex()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()

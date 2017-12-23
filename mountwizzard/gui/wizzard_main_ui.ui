@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -157,9 +157,9 @@
     <widget class="QLineEdit" name="le_telescopeRA">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>140</y>
-       <width>191</width>
+       <x>20</x>
+       <y>150</y>
+       <width>201</width>
        <height>41</height>
       </rect>
      </property>
@@ -199,9 +199,9 @@
     <widget class="QLineEdit" name="le_telescopeAzimut">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>70</y>
-       <width>191</width>
+       <x>20</x>
+       <y>80</y>
+       <width>201</width>
        <height>41</height>
       </rect>
      </property>
@@ -241,9 +241,9 @@
     <widget class="QLineEdit" name="le_telescopeDEC">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>140</y>
-       <width>191</width>
+       <x>240</x>
+       <y>150</y>
+       <width>201</width>
        <height>41</height>
       </rect>
      </property>
@@ -283,9 +283,9 @@
     <widget class="QLineEdit" name="le_telescopeAltitude">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>70</y>
-       <width>191</width>
+       <x>240</x>
+       <y>80</y>
+       <width>201</width>
        <height>41</height>
       </rect>
      </property>
@@ -325,8 +325,8 @@
     <widget class="QLabel" name="label_9">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>50</y>
+       <x>20</x>
+       <y>60</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -343,8 +343,8 @@
     <widget class="QLabel" name="label_10">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>120</y>
+       <x>240</x>
+       <y>130</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -361,8 +361,8 @@
     <widget class="QLabel" name="label_8">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>50</y>
+       <x>240</x>
+       <y>60</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -380,8 +380,8 @@
     <widget class="QLabel" name="label_11">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>120</y>
+       <x>20</x>
+       <y>130</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -398,8 +398,8 @@
     <widget class="QLabel" name="label_17">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>240</y>
+       <x>20</x>
+       <y>250</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -416,8 +416,8 @@
     <widget class="QLineEdit" name="le_meridianLimitTrack">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>330</y>
+       <x>140</x>
+       <y>340</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -458,8 +458,8 @@
     <widget class="QLineEdit" name="le_telescopePierSide">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>240</y>
+       <x>350</x>
+       <y>250</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -500,8 +500,8 @@
     <widget class="QLabel" name="label_18">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>240</y>
+       <x>250</x>
+       <y>250</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -518,8 +518,8 @@
     <widget class="QLabel" name="label_21">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>270</y>
+       <x>20</x>
+       <y>280</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -536,8 +536,8 @@
     <widget class="QLineEdit" name="le_telescopeDualTrack">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>270</y>
+       <x>140</x>
+       <y>280</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -578,8 +578,8 @@
     <widget class="QPushButton" name="btn_setDualTracking">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>270</y>
+       <x>190</x>
+       <y>280</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -599,8 +599,8 @@
     <widget class="QLabel" name="label_52">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>330</y>
+       <x>250</x>
+       <y>340</y>
        <width>91</width>
        <height>20</height>
       </rect>
@@ -620,8 +620,8 @@
     <widget class="QLineEdit" name="le_timeToFlip">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>330</y>
+       <x>370</x>
+       <y>340</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -662,8 +662,8 @@
     <widget class="QPushButton" name="btn_setUnattendedFlip">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>300</y>
+       <x>190</x>
+       <y>310</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -683,8 +683,8 @@
     <widget class="QLineEdit" name="le_telescopeUnattendedFlip">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>300</y>
+       <x>140</x>
+       <y>310</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -725,8 +725,8 @@
     <widget class="QLabel" name="label_23">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>300</y>
+       <x>20</x>
+       <y>310</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -743,8 +743,8 @@
     <widget class="QLabel" name="label_61">
      <property name="geometry">
       <rect>
-       <x>390</x>
-       <y>330</y>
+       <x>410</x>
+       <y>340</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -767,8 +767,8 @@
     <widget class="QLabel" name="label_62">
      <property name="geometry">
       <rect>
-       <x>80</x>
-       <y>240</y>
+       <x>90</x>
+       <y>250</y>
        <width>31</width>
        <height>20</height>
       </rect>
@@ -791,8 +791,8 @@
     <widget class="QLabel" name="label_80">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>210</y>
+       <x>20</x>
+       <y>220</y>
        <width>51</width>
        <height>21</height>
       </rect>
@@ -809,10 +809,10 @@
     <widget class="Line" name="line_12">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>220</y>
-       <width>411</width>
-       <height>21</height>
+       <x>20</x>
+       <y>240</y>
+       <width>421</width>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -825,10 +825,10 @@
     <widget class="Line" name="line_13">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>411</width>
-       <height>21</height>
+       <x>20</x>
+       <y>40</y>
+       <width>421</width>
+       <height>1</height>
       </rect>
      </property>
      <property name="frameShadow">
@@ -841,7 +841,7 @@
     <widget class="QLabel" name="label_81">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>20</y>
        <width>121</width>
        <height>21</height>
@@ -859,9 +859,9 @@
     <widget class="QPushButton" name="btn_startTracking">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>210</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -880,9 +880,9 @@
     <widget class="QPushButton" name="btn_mountPark">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>330</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -901,9 +901,9 @@
     <widget class="QPushButton" name="btn_mountUnpark">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>620</x>
        <y>330</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -922,10 +922,10 @@
     <widget class="Line" name="line_16">
      <property name="geometry">
       <rect>
-       <x>460</x>
-       <y>310</y>
-       <width>291</width>
-       <height>21</height>
+       <x>480</x>
+       <y>320</y>
+       <width>271</width>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -943,7 +943,7 @@
     <widget class="QLabel" name="label_83">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>20</y>
        <width>101</width>
        <height>21</height>
@@ -961,7 +961,7 @@
     <widget class="QLabel" name="label_84">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>180</y>
        <width>51</width>
        <height>21</height>
@@ -979,9 +979,9 @@
     <widget class="QPushButton" name="btn_mountPos4">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>620</x>
        <y>90</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -997,10 +997,10 @@
     <widget class="Line" name="line_15">
      <property name="geometry">
       <rect>
-       <x>460</x>
-       <y>190</y>
-       <width>291</width>
-       <height>21</height>
+       <x>480</x>
+       <y>200</y>
+       <width>271</width>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -1018,7 +1018,7 @@
     <widget class="QLabel" name="label_85">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>300</y>
        <width>51</width>
        <height>21</height>
@@ -1036,9 +1036,9 @@
     <widget class="QPushButton" name="btn_mountPos2">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>620</x>
        <y>50</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -1054,9 +1054,9 @@
     <widget class="QPushButton" name="btn_mountPos3">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>90</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -1072,9 +1072,9 @@
     <widget class="QPushButton" name="btn_mountPos1">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>50</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -1090,9 +1090,9 @@
     <widget class="QPushButton" name="btn_stopTracking">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>620</x>
        <y>210</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -1111,10 +1111,10 @@
     <widget class="Line" name="line_14">
      <property name="geometry">
       <rect>
-       <x>460</x>
-       <y>30</y>
-       <width>291</width>
-       <height>21</height>
+       <x>480</x>
+       <y>40</y>
+       <width>271</width>
+       <height>1</height>
       </rect>
      </property>
      <property name="font">
@@ -1132,9 +1132,9 @@
     <widget class="QPushButton" name="btn_stop">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>370</y>
-       <width>291</width>
+       <width>271</width>
        <height>31</height>
       </rect>
      </property>
@@ -1153,8 +1153,8 @@
     <widget class="QPushButton" name="btn_flipMount">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>270</y>
+       <x>250</x>
+       <y>280</y>
        <width>161</width>
        <height>51</height>
       </rect>
@@ -1174,7 +1174,7 @@
     <widget class="QPushButton" name="btn_setTrackingLunar">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>250</y>
        <width>91</width>
        <height>31</height>
@@ -1195,9 +1195,9 @@
     <widget class="QPushButton" name="btn_setTrackingSolar">
      <property name="geometry">
       <rect>
-       <x>560</x>
+       <x>580</x>
        <y>250</y>
-       <width>91</width>
+       <width>81</width>
        <height>31</height>
       </rect>
      </property>
@@ -1216,9 +1216,9 @@
     <widget class="QPushButton" name="btn_setTrackingSideral">
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>670</x>
        <y>250</y>
-       <width>91</width>
+       <width>81</width>
        <height>31</height>
       </rect>
      </property>
@@ -1237,8 +1237,8 @@
     <widget class="QLabel" name="label_34">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>330</y>
+       <x>20</x>
+       <y>340</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -1255,8 +1255,8 @@
     <widget class="QLabel" name="label_65">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>360</y>
+       <x>20</x>
+       <y>370</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -1273,8 +1273,8 @@
     <widget class="QLineEdit" name="le_meridianLimitSlew">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>360</y>
+       <x>140</x>
+       <y>370</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -1315,8 +1315,8 @@
     <widget class="QLabel" name="label_88">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>330</y>
+       <x>180</x>
+       <y>340</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -1339,8 +1339,8 @@
     <widget class="QLabel" name="label_89">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>360</y>
+       <x>180</x>
+       <y>370</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -1363,8 +1363,8 @@
     <widget class="QLineEdit" name="le_slewRate">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>240</y>
+       <x>140</x>
+       <y>250</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -1405,8 +1405,8 @@
     <widget class="QLabel" name="label_90">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>360</y>
+       <x>250</x>
+       <y>370</y>
        <width>101</width>
        <height>20</height>
       </rect>
@@ -1426,8 +1426,8 @@
     <widget class="QLineEdit" name="le_timeToMeridian">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>360</y>
+       <x>370</x>
+       <y>370</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -1468,8 +1468,8 @@
     <widget class="QLabel" name="label_91">
      <property name="geometry">
       <rect>
-       <x>390</x>
-       <y>360</y>
+       <x>410</x>
+       <y>370</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -1492,9 +1492,9 @@
     <widget class="QPushButton" name="btn_mountPos6">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>620</x>
        <y>130</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -1510,9 +1510,9 @@
     <widget class="QPushButton" name="btn_mountPos5">
      <property name="geometry">
       <rect>
-       <x>460</x>
+       <x>480</x>
        <y>130</y>
-       <width>141</width>
+       <width>131</width>
        <height>31</height>
       </rect>
      </property>
@@ -1528,8 +1528,8 @@
     <widget class="QPushButton" name="btn_setSlewRate">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>240</y>
+       <x>190</x>
+       <y>250</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -1549,8 +1549,8 @@
     <widget class="QLabel" name="label_20">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>390</y>
+       <x>250</x>
+       <y>400</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -1567,8 +1567,8 @@
     <widget class="QLineEdit" name="le_horizonLimitHigh">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>390</y>
+       <x>370</x>
+       <y>400</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -1612,8 +1612,8 @@
     <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>390</y>
+       <x>20</x>
+       <y>400</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -1630,8 +1630,8 @@
     <widget class="QPushButton" name="btn_setHorizonLimitLow">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>390</y>
+       <x>190</x>
+       <y>400</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -1651,8 +1651,8 @@
     <widget class="QLabel" name="label_60">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>390</y>
+       <x>350</x>
+       <y>400</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -1669,8 +1669,8 @@
     <widget class="QLineEdit" name="le_horizonLimitLow">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>390</y>
+       <x>140</x>
+       <y>400</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -1720,8 +1720,8 @@
     <widget class="QLabel" name="label_42">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>390</y>
+       <x>110</x>
+       <y>400</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -1738,8 +1738,8 @@
     <widget class="QPushButton" name="btn_setHorizonLimitHigh">
      <property name="geometry">
       <rect>
-       <x>400</x>
-       <y>390</y>
+       <x>420</x>
+       <y>400</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -1759,7 +1759,7 @@
     <widget class="Line" name="line_51">
      <property name="geometry">
       <rect>
-       <x>430</x>
+       <x>450</x>
        <y>10</y>
        <width>21</width>
        <height>431</height>
@@ -2676,7 +2676,7 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>410</y>
+       <y>400</y>
        <width>401</width>
        <height>31</height>
       </rect>
@@ -3284,7 +3284,7 @@
       <rect>
        <x>390</x>
        <y>340</y>
-       <width>161</width>
+       <width>191</width>
        <height>20</height>
       </rect>
      </property>
@@ -3300,7 +3300,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Camera is IDLE</string>
+      <string>When camera is IDLE</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -3595,9 +3595,9 @@
     <widget class="QLabel" name="label_151">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>30</x>
        <y>310</y>
-       <width>161</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -3607,15 +3607,15 @@
       </font>
      </property>
      <property name="text">
-      <string>UTC UpdaterAuto is</string>
+      <string>UTC update is</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_UTCDataExpirationDate">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>150</x>
        <y>340</y>
-       <width>101</width>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -3655,9 +3655,9 @@
     <widget class="QLabel" name="label_152">
      <property name="geometry">
       <rect>
-       <x>80</x>
+       <x>30</x>
        <y>340</y>
-       <width>91</width>
+       <width>101</width>
        <height>21</height>
       </rect>
      </property>
@@ -3673,9 +3673,9 @@
     <widget class="QLineEdit" name="le_UTCDataValid">
      <property name="geometry">
       <rect>
-       <x>180</x>
+       <x>150</x>
        <y>310</y>
-       <width>101</width>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -3738,7 +3738,7 @@
       <rect>
        <x>10</x>
        <y>280</y>
-       <width>131</width>
+       <width>251</width>
        <height>21</height>
       </rect>
      </property>
@@ -3748,7 +3748,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Actuality of Time Data</string>
+      <string>Actuality of Time Data in Mount Computer</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkAutoRefractionNotTracking">
@@ -3756,7 +3756,7 @@
       <rect>
        <x>390</x>
        <y>370</y>
-       <width>171</width>
+       <width>191</width>
        <height>20</height>
       </rect>
      </property>
@@ -3772,7 +3772,7 @@
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Mount is not tracking</string>
+      <string>When mount is not tracking</string>
      </property>
      <property name="checked">
       <bool>true</bool>
@@ -3894,9 +3894,9 @@
     <widget class="Line" name="line_45">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>40</y>
-       <width>221</width>
+       <width>231</width>
        <height>1</height>
       </rect>
      </property>
@@ -3910,7 +3910,7 @@
     <widget class="QCheckBox" name="checkSortPoints">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>80</y>
        <width>211</width>
        <height>20</height>
@@ -3976,7 +3976,7 @@ Window</string>
     <widget class="QCheckBox" name="checkClearModelFirst">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>110</y>
        <width>211</width>
        <height>20</height>
@@ -4027,7 +4027,7 @@ Window</string>
     <widget class="QLabel" name="label_205">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>20</y>
        <width>111</width>
        <height>21</height>
@@ -4045,7 +4045,7 @@ Window</string>
     <widget class="QCheckBox" name="checkUseBlindSolve">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>140</y>
        <width>211</width>
        <height>20</height>
@@ -4066,7 +4066,7 @@ Window</string>
     <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>50</y>
        <width>211</width>
        <height>20</height>
@@ -4109,7 +4109,7 @@ Window</string>
     <widget class="QLabel" name="label_122">
      <property name="geometry">
       <rect>
-       <x>710</x>
+       <x>700</x>
        <y>370</y>
        <width>21</width>
        <height>31</height>
@@ -4133,7 +4133,7 @@ Window</string>
     <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>530</x>
        <y>340</y>
        <width>211</width>
        <height>21</height>
@@ -4157,7 +4157,7 @@ Window</string>
     <widget class="QCheckBox" name="checkUseFileHorizonLine">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>530</x>
        <y>310</y>
        <width>211</width>
        <height>21</height>
@@ -4181,7 +4181,7 @@ Window</string>
     <widget class="ClickableLineEdit" name="le_modelPointsFileName">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>220</y>
        <width>211</width>
        <height>21</height>
@@ -4217,7 +4217,7 @@ Window</string>
     <widget class="ClickableLineEdit" name="le_horizonPointsFileName">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>280</y>
        <width>211</width>
        <height>21</height>
@@ -4253,7 +4253,7 @@ Window</string>
     <widget class="Line" name="line_58">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>270</y>
        <width>211</width>
        <height>1</height>
@@ -4274,9 +4274,9 @@ Window</string>
     <widget class="QLabel" name="label_201">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>530</x>
        <y>370</y>
-       <width>51</width>
+       <width>111</width>
        <height>31</height>
       </rect>
      </property>
@@ -4286,13 +4286,13 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Altitude</string>
+      <string>Altitude minimum</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_147">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>190</y>
        <width>211</width>
        <height>21</height>
@@ -4304,15 +4304,15 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Model Points File (Base &amp; Refine) </string>
+      <string>Model Points File</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_194">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>250</y>
-       <width>81</width>
+       <width>111</width>
        <height>21</height>
       </rect>
      </property>
@@ -4322,13 +4322,13 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Horizon Mask</string>
+      <string>Horizon Mask File</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>650</x>
        <y>370</y>
        <width>51</width>
        <height>31</height>
@@ -4366,7 +4366,7 @@ Window</string>
     <widget class="Line" name="line_57">
      <property name="geometry">
       <rect>
-       <x>530</x>
+       <x>520</x>
        <y>210</y>
        <width>211</width>
        <height>1</height>
@@ -5014,7 +5014,7 @@ Window</string>
     <widget class="QLabel" name="label_109">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>210</x>
        <y>140</y>
        <width>21</width>
        <height>31</height>
@@ -5056,7 +5056,7 @@ Window</string>
     <widget class="QLabel" name="label_171">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>180</y>
        <width>51</width>
        <height>31</height>
@@ -5074,7 +5074,7 @@ Window</string>
     <widget class="QLabel" name="label_170">
      <property name="geometry">
       <rect>
-       <x>10</x>
+       <x>20</x>
        <y>140</y>
        <width>51</width>
        <height>31</height>
@@ -5094,7 +5094,7 @@ Window</string>
       <rect>
        <x>10</x>
        <y>90</y>
-       <width>211</width>
+       <width>221</width>
        <height>1</height>
       </rect>
      </property>
@@ -5108,7 +5108,7 @@ Window</string>
     <widget class="QDoubleSpinBox" name="azimuthBase">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>160</x>
        <y>180</y>
        <width>51</width>
        <height>31</height>
@@ -5134,14 +5134,14 @@ Window</string>
       <double>1.000000000000000</double>
      </property>
      <property name="value">
-      <double>120.000000000000000</double>
+      <double>50.000000000000000</double>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runBaseModel">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>230</y>
+       <x>270</x>
+       <y>50</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -5158,7 +5158,7 @@ Window</string>
       <rect>
        <x>10</x>
        <y>40</y>
-       <width>211</width>
+       <width>221</width>
        <height>1</height>
       </rect>
      </property>
@@ -5172,7 +5172,7 @@ Window</string>
     <widget class="QLabel" name="label_110">
      <property name="geometry">
       <rect>
-       <x>200</x>
+       <x>210</x>
        <y>180</y>
        <width>21</width>
        <height>31</height>
@@ -5198,7 +5198,7 @@ Window</string>
       <rect>
        <x>10</x>
        <y>100</y>
-       <width>211</width>
+       <width>221</width>
        <height>31</height>
       </rect>
      </property>
@@ -5212,7 +5212,7 @@ Window</string>
     <widget class="QDoubleSpinBox" name="altitudeBase">
      <property name="geometry">
       <rect>
-       <x>150</x>
+       <x>160</x>
        <y>140</y>
        <width>51</width>
        <height>31</height>
@@ -5242,7 +5242,7 @@ Window</string>
       <double>1.000000000000000</double>
      </property>
      <property name="value">
-      <double>70.000000000000000</double>
+      <double>50.000000000000000</double>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_loadBasePoints">
@@ -5250,7 +5250,7 @@ Window</string>
       <rect>
        <x>10</x>
        <y>50</y>
-       <width>211</width>
+       <width>221</width>
        <height>31</height>
       </rect>
      </property>
@@ -5264,8 +5264,8 @@ Window</string>
     <widget class="QPushButton" name="btn_cancelModel1">
      <property name="geometry">
       <rect>
-       <x>250</x>
-       <y>230</y>
+       <x>270</x>
+       <y>90</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -5283,8 +5283,8 @@ Window</string>
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>300</y>
+       <x>20</x>
+       <y>320</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -5301,8 +5301,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorAz">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>390</y>
+       <x>130</x>
+       <y>410</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5331,7 +5331,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>HH:MM:SS</string>
+      <string>--:--:--</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5343,8 +5343,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorPosAngle">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>330</y>
+       <x>380</x>
+       <y>350</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5373,7 +5373,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN.N</string>
+      <string>--.-</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5385,9 +5385,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignKnobTurnAz">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>420</y>
-       <width>111</width>
+       <x>620</x>
+       <y>50</y>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -5415,7 +5415,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN.NN</string>
+      <string>--- left/right</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5427,8 +5427,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorPolar">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>360</y>
+       <x>130</x>
+       <y>380</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5457,7 +5457,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>HH:MM:SS</string>
+      <string>--:--:--</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5469,8 +5469,8 @@ Window</string>
     <widget class="QLabel" name="label_14">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>330</y>
+       <x>20</x>
+       <y>350</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -5487,8 +5487,8 @@ Window</string>
     <widget class="QLabel" name="label_153">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>360</y>
+       <x>270</x>
+       <y>380</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -5505,8 +5505,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignNumberTerms">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>300</y>
+       <x>380</x>
+       <y>320</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5535,7 +5535,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN</string>
+      <string>0</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5547,9 +5547,9 @@ Window</string>
     <widget class="QLineEdit" name="le_alignKnobTurnAlt">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>420</y>
-       <width>111</width>
+       <x>620</x>
+       <y>250</y>
+       <width>131</width>
        <height>21</height>
       </rect>
      </property>
@@ -5577,7 +5577,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN.NN</string>
+      <string>--- left/right</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5589,8 +5589,8 @@ Window</string>
     <widget class="QLabel" name="label_156">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>420</y>
+       <x>530</x>
+       <y>50</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -5607,8 +5607,8 @@ Window</string>
     <widget class="QLabel" name="label_158">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>390</y>
+       <x>20</x>
+       <y>410</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -5625,8 +5625,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignNumberStars">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>300</y>
+       <x>130</x>
+       <y>320</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5655,7 +5655,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN</string>
+      <string>0</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5667,8 +5667,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorRMS">
      <property name="geometry">
       <rect>
-       <x>110</x>
-       <y>330</y>
+       <x>130</x>
+       <y>350</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5697,7 +5697,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>NN.N</string>
+      <string>--.-</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5709,8 +5709,8 @@ Window</string>
     <widget class="QLabel" name="label_155">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>270</y>
+       <x>20</x>
+       <y>280</y>
        <width>291</width>
        <height>21</height>
       </rect>
@@ -5727,8 +5727,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorOrtho">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>360</y>
+       <x>380</x>
+       <y>380</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5757,7 +5757,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>HH:MM:SS</string>
+      <string>--:--:--</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5769,8 +5769,8 @@ Window</string>
     <widget class="QLabel" name="label_159">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>390</y>
+       <x>270</x>
+       <y>410</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -5787,8 +5787,8 @@ Window</string>
     <widget class="QLabel" name="label_15">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>360</y>
+       <x>20</x>
+       <y>380</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -5805,8 +5805,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorAlt">
      <property name="geometry">
       <rect>
-       <x>360</x>
-       <y>390</y>
+       <x>380</x>
+       <y>410</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -5835,7 +5835,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>HH:MM:SS</string>
+      <string>--:--:--</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5847,8 +5847,8 @@ Window</string>
     <widget class="QLabel" name="label_154">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>300</y>
+       <x>270</x>
+       <y>320</y>
        <width>101</width>
        <height>21</height>
       </rect>
@@ -5865,8 +5865,8 @@ Window</string>
     <widget class="QLabel" name="label_157">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>420</y>
+       <x>530</x>
+       <y>250</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -5877,15 +5877,15 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Turn Knob Alt</string>
+      <string>Turn Knob ALT</string>
      </property>
     </widget>
     <widget class="Line" name="line_54">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>290</y>
-       <width>461</width>
+       <x>20</x>
+       <y>300</y>
+       <width>471</width>
        <height>1</height>
       </rect>
      </property>
@@ -5899,8 +5899,8 @@ Window</string>
     <widget class="QLabel" name="label_160">
      <property name="geometry">
       <rect>
-       <x>260</x>
-       <y>330</y>
+       <x>270</x>
+       <y>350</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -5917,10 +5917,10 @@ Window</string>
     <widget class="Line" name="line_63">
      <property name="geometry">
       <rect>
-       <x>230</x>
+       <x>240</x>
        <y>10</y>
        <width>21</width>
-       <height>211</height>
+       <height>251</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -5939,9 +5939,9 @@ Window</string>
     <widget class="QPushButton" name="btn_plateSolveSync">
      <property name="geometry">
       <rect>
-       <x>510</x>
-       <y>170</y>
-       <width>211</width>
+       <x>270</x>
+       <y>130</y>
+       <width>221</width>
        <height>31</height>
       </rect>
      </property>
@@ -5950,6 +5950,175 @@ Window</string>
      </property>
      <property name="text">
       <string>Plate Solve and Sync Model</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_206">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>220</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Number</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="numberBase">
+     <property name="geometry">
+      <rect>
+       <x>160</x>
+       <y>220</y>
+       <width>51</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>3.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>10.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>3.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="Line" name="line_64">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>10</y>
+       <width>21</width>
+       <height>431</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>2</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="picAZ">
+     <property name="geometry">
+      <rect>
+       <x>560</x>
+       <y>80</y>
+       <width>160</width>
+       <height>160</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_62">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>40</y>
+       <width>221</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_145">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Generate Setup Points</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_65">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>40</y>
+       <width>221</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_207">
+     <property name="geometry">
+      <rect>
+       <x>530</x>
+       <y>20</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Generate Setup Points</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="picALT">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>280</y>
+       <width>160</width>
+       <height>160</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
      </property>
     </widget>
     <zorder>line_54</zorder>
@@ -5989,6 +6158,15 @@ Window</string>
     <zorder>label_160</zorder>
     <zorder>line_63</zorder>
     <zorder>btn_plateSolveSync</zorder>
+    <zorder>label_206</zorder>
+    <zorder>numberBase</zorder>
+    <zorder>line_64</zorder>
+    <zorder>picAZ</zorder>
+    <zorder>line_62</zorder>
+    <zorder>label_145</zorder>
+    <zorder>line_65</zorder>
+    <zorder>label_207</zorder>
+    <zorder>picALT</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
@@ -7957,7 +8135,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>350</y>
+       <y>330</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -8791,7 +8969,7 @@ Window</string>
       <string notr="true"/>
      </property>
      <property name="tabPosition">
-      <enum>QTabWidget::South</enum>
+      <enum>QTabWidget::North</enum>
      </property>
      <property name="tabShape">
       <enum>QTabWidget::Rounded</enum>
@@ -8805,659 +8983,6 @@ Window</string>
      <property name="usesScrollButtons">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="tab_13">
-      <attribute name="title">
-       <string>Image / Relay</string>
-      </attribute>
-      <widget class="Line" name="line_55">
-       <property name="geometry">
-        <rect>
-         <x>360</x>
-         <y>10</y>
-         <width>21</width>
-         <height>381</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="lineWidth">
-        <number>2</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay8Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>350</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_162">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>110</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>2</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay1Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>70</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay6Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>270</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_148">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>230</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>5</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay4Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>190</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay1Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>70</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_150">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>190</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>4</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_161">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>270</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>6</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_101">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>150</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>3</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay3Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>150</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay7Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>310</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_191">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>310</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>7</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_103">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>20</y>
-         <width>331</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay Button Text Setup</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay5Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>230</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_192">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>350</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>8</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay5Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>230</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay3Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>150</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay7Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>310</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_41">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>50</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Text</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="relay2Text">
-       <property name="geometry">
-        <rect>
-         <x>440</x>
-         <y>110</y>
-         <width>111</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>free</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay6Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>270</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="Line" name="line_22">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>40</y>
-         <width>331</width>
-         <height>1</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay2Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>110</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay8Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>350</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_36">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>70</y>
-         <width>31</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>1</string>
-       </property>
-      </widget>
-      <widget class="QComboBox" name="relay4Function">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>190</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_195">
-       <property name="geometry">
-        <rect>
-         <x>560</x>
-         <y>50</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Function</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_53">
-       <property name="geometry">
-        <rect>
-         <x>390</x>
-         <y>50</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Relay</string>
-       </property>
-      </widget>
-     </widget>
      <widget class="QWidget" name="tab_12">
       <attribute name="title">
        <string>Choose Driver</string>
@@ -10877,9 +10402,498 @@ Window</string>
        </property>
       </widget>
      </widget>
+     <widget class="QWidget" name="tab_7">
+      <attribute name="title">
+       <string>Uploads</string>
+      </attribute>
+      <widget class="QPushButton" name="btn_downloadEarthrotation">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download earth rotation data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Download Earth Rotation and UTC files</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_123">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>10</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Webservices for space data</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_17">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>30</y>
+         <width>341</width>
+         <height>1</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadSpacestations">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>110</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download space stations TLE (please note: alternatively to Satellite)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Download Space Stations TLE Elements</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadSatbrighest">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>150</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download Satellite TLE (please note: alternatively to space stations)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Download Brightest Satellite TLE Elements</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsMPC5000">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>270</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids MPC5000</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadComets">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>210</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download comets MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Download Comets MPC File</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkEarthrotation">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>40</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload earth rotation and UTC data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Upload  Earth Rotation and UTC files</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkTLE">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>130</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload TLE elements&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Upload TLE Elements</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkAsteroids">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>270</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload asteroids data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Upload Asteroids MPC File</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkComets">
+       <property name="geometry">
+        <rect>
+         <x>410</x>
+         <y>210</y>
+         <width>301</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload comets data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Upload Comets MPC File</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_uploadMount">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>360</y>
+         <width>311</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start upload with 10micron updater&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Upload to Mount</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAll">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>360</y>
+         <width>341</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download all files (please note satellite and space stations work alternatively)  &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Download All Files</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_47">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>0</y>
+         <width>21</width>
+         <height>391</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_134">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>10</y>
+         <width>171</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Mount Uploads</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_19">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>30</y>
+         <width>311</width>
+         <height>1</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkFilterMPC">
+       <property name="geometry">
+        <rect>
+         <x>430</x>
+         <y>300</y>
+         <width>271</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check to filter Comets and Asteroids MPC File&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Filter MPC Files with expression(s):</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_filterExpressionMPC">
+       <property name="geometry">
+        <rect>
+         <x>430</x>
+         <y>330</y>
+         <width>281</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;serach expression, separated with ','&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsNEA">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>270</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids NEA</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsTNO">
+       <property name="geometry">
+        <rect>
+         <x>200</x>
+         <y>310</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids TNO</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="btn_downloadAsteroidsPHA">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>310</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Downl. Asteroids PHA</string>
+       </property>
+      </widget>
+      <zorder>line_17</zorder>
+      <zorder>line_19</zorder>
+      <zorder>btn_downloadEarthrotation</zorder>
+      <zorder>label_123</zorder>
+      <zorder>btn_downloadSpacestations</zorder>
+      <zorder>btn_downloadSatbrighest</zorder>
+      <zorder>btn_downloadAsteroidsMPC5000</zorder>
+      <zorder>btn_downloadComets</zorder>
+      <zorder>checkEarthrotation</zorder>
+      <zorder>checkTLE</zorder>
+      <zorder>checkAsteroids</zorder>
+      <zorder>checkComets</zorder>
+      <zorder>btn_uploadMount</zorder>
+      <zorder>btn_downloadAll</zorder>
+      <zorder>line_47</zorder>
+      <zorder>label_134</zorder>
+      <zorder>checkFilterMPC</zorder>
+      <zorder>le_filterExpressionMPC</zorder>
+      <zorder>btn_downloadAsteroidsNEA</zorder>
+      <zorder>btn_downloadAsteroidsTNO</zorder>
+      <zorder>btn_downloadAsteroidsPHA</zorder>
+     </widget>
      <widget class="QWidget" name="tab_10">
       <attribute name="title">
-       <string>Park Positions</string>
+       <string>Position / Relay</string>
       </attribute>
       <widget class="QLineEdit" name="le_altParkPos3">
        <property name="geometry">
@@ -11983,385 +11997,13 @@ Window</string>
         <string>Text</string>
        </property>
       </widget>
-     </widget>
-     <widget class="QWidget" name="tab_7">
-      <attribute name="title">
-       <string>Uploads</string>
-      </attribute>
-      <widget class="QPushButton" name="btn_downloadEarthrotation">
+      <widget class="QLineEdit" name="relay2Text">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>40</y>
-         <width>341</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download earth rotation data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Download Earth Rotation and UTC files</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_123">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>10</y>
-         <width>171</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Webservices for space data</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_17">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>30</y>
-         <width>341</width>
-         <height>1</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_downloadSpacestations">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
+         <x>440</x>
          <y>110</y>
-         <width>341</width>
+         <width>111</width>
          <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download space stations TLE (please note: alternatively to Satellite)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Download Space Stations TLE Elements</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_downloadSatbrighest">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>150</y>
-         <width>341</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download Satellite TLE (please note: alternatively to space stations)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Download Brightest Satellite TLE Elements</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_downloadAsteroidsMPC5000">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>270</y>
-         <width>161</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Downl. Asteroids MPC5000</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_downloadComets">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>210</y>
-         <width>341</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download comets MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Download Comets MPC File</string>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkEarthrotation">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>40</y>
-         <width>301</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload earth rotation and UTC data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Upload  Earth Rotation and UTC files</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkTLE">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>130</y>
-         <width>301</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload TLE elements&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Upload TLE Elements</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkAsteroids">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>270</y>
-         <width>301</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload asteroids data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Upload Asteroids MPC File</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkComets">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>210</y>
-         <width>301</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Upload comets data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Upload Comets MPC File</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_uploadMount">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>360</y>
-         <width>311</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Start upload with 10micron updater&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Upload to Mount</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="btn_downloadAll">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>360</y>
-         <width>341</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download all files (please note satellite and space stations work alternatively)  &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Download All Files</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_47">
-       <property name="geometry">
-        <rect>
-         <x>370</x>
-         <y>0</y>
-         <width>21</width>
-         <height>391</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="lineWidth">
-        <number>2</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_134">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>10</y>
-         <width>171</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Mount Uploads</string>
-       </property>
-      </widget>
-      <widget class="Line" name="line_19">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>30</y>
-         <width>311</width>
-         <height>1</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkFilterMPC">
-       <property name="geometry">
-        <rect>
-         <x>430</x>
-         <y>300</y>
-         <width>271</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Check to filter Comets and Asteroids MPC File&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Filter MPC Files with expression(s):</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_filterExpressionMPC">
-       <property name="geometry">
-        <rect>
-         <x>430</x>
-         <y>330</y>
-         <width>281</width>
-         <height>21</height>
         </rect>
        </property>
        <property name="font">
@@ -12379,42 +12021,263 @@ Window</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;serach expression, separated with ','&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
        <property name="readOnly">
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_downloadAsteroidsNEA">
+      <widget class="QComboBox" name="relay2Function">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>560</x>
+         <y>110</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay7Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>310</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_192">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>350</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>8</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay1Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>70</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_161">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>270</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>6</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_195">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Function</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay6Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>270</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay1Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>70</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay6Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
          <y>270</y>
          <width>161</width>
          <height>31</height>
         </rect>
        </property>
+      </widget>
+      <widget class="QComboBox" name="relay5Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>230</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay4Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>190</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_53">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
        <property name="text">
-        <string>Downl. Asteroids NEA</string>
+        <string>Relay</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_downloadAsteroidsTNO">
+      <widget class="QLabel" name="label_36">
        <property name="geometry">
         <rect>
-         <x>200</x>
-         <y>310</y>
-         <width>161</width>
+         <x>400</x>
+         <y>70</y>
+         <width>31</width>
          <height>31</height>
         </rect>
        </property>
@@ -12423,19 +12286,36 @@ Window</string>
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
        <property name="text">
-        <string>Downl. Asteroids TNO</string>
+        <string>1</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_downloadAsteroidsPHA">
+      <widget class="QComboBox" name="relay4Function">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>310</y>
+         <x>560</x>
+         <y>190</y>
          <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay3Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>150</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_191">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>310</y>
+         <width>31</width>
          <height>31</height>
         </rect>
        </property>
@@ -12444,34 +12324,305 @@ Window</string>
          <pointsize>10</pointsize>
         </font>
        </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Download asteroids MPC file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
        <property name="text">
-        <string>Downl. Asteroids PHA</string>
+        <string>7</string>
        </property>
       </widget>
-      <zorder>line_17</zorder>
-      <zorder>line_19</zorder>
-      <zorder>btn_downloadEarthrotation</zorder>
-      <zorder>label_123</zorder>
-      <zorder>btn_downloadSpacestations</zorder>
-      <zorder>btn_downloadSatbrighest</zorder>
-      <zorder>btn_downloadAsteroidsMPC5000</zorder>
-      <zorder>btn_downloadComets</zorder>
-      <zorder>checkEarthrotation</zorder>
-      <zorder>checkTLE</zorder>
-      <zorder>checkAsteroids</zorder>
-      <zorder>checkComets</zorder>
-      <zorder>btn_uploadMount</zorder>
-      <zorder>btn_downloadAll</zorder>
-      <zorder>line_47</zorder>
-      <zorder>label_134</zorder>
-      <zorder>checkFilterMPC</zorder>
-      <zorder>le_filterExpressionMPC</zorder>
-      <zorder>btn_downloadAsteroidsNEA</zorder>
-      <zorder>btn_downloadAsteroidsTNO</zorder>
-      <zorder>btn_downloadAsteroidsPHA</zorder>
+      <widget class="Line" name="line_22">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>40</y>
+         <width>331</width>
+         <height>1</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay8Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>350</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay3Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>150</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_150">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>190</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>4</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_162">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>110</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>2</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_41">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>50</y>
+         <width>51</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Text</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay7Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>310</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_101">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>150</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>3</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_148">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>230</y>
+         <width>31</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>5</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="relay5Text">
+       <property name="geometry">
+        <rect>
+         <x>440</x>
+         <y>230</y>
+         <width>111</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Button text for relay&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>free</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="relay8Function">
+       <property name="geometry">
+        <rect>
+         <x>560</x>
+         <y>350</y>
+         <width>161</width>
+         <height>31</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_103">
+       <property name="geometry">
+        <rect>
+         <x>390</x>
+         <y>20</y>
+         <width>331</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Relay Button Text Setup</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -13262,22 +13413,6 @@ Window</string>
   <tabstop>settingsTabWidget</tabstop>
   <tabstop>checkSimulation</tabstop>
   <tabstop>btn_runBatchModel</tabstop>
-  <tabstop>relay1Text</tabstop>
-  <tabstop>relay1Function</tabstop>
-  <tabstop>relay2Text</tabstop>
-  <tabstop>relay2Function</tabstop>
-  <tabstop>relay3Text</tabstop>
-  <tabstop>relay3Function</tabstop>
-  <tabstop>relay4Text</tabstop>
-  <tabstop>relay4Function</tabstop>
-  <tabstop>relay5Text</tabstop>
-  <tabstop>relay5Function</tabstop>
-  <tabstop>relay6Text</tabstop>
-  <tabstop>relay6Function</tabstop>
-  <tabstop>relay7Text</tabstop>
-  <tabstop>relay7Function</tabstop>
-  <tabstop>relay8Text</tabstop>
-  <tabstop>relay8Function</tabstop>
   <tabstop>pd_chooseImaging</tabstop>
   <tabstop>pd_chooseEnvironment</tabstop>
   <tabstop>pd_chooseDome</tabstop>
