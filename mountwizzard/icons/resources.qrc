@@ -23,5 +23,7 @@
     <file>process_add.ico</file>
     <file>processes.ico</file>
     <file>stop.ico</file>
+    <file>altitude1.png</file>
+    <file>azimuth1.png</file>
 </qresource>
 </RCC>

@@ -64,7 +64,12 @@ class MwWidget(QWidget):
         border-radius: 2px;
         background-color: rgb(8, 36, 48);
     }
-    
+    QLabel#picALT, QLabel#picAZ {
+        border-width: 2px;
+        border-color: #404040;
+        border-style: outset;
+        border-radius: 2px;
+    }    
     /* QLine Edit*/
     QLineEdit {
         background-color: #101010;

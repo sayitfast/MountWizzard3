@@ -132,10 +132,17 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_runHystereseModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
 
-        # the icon in the middle
+        # the icon picture in gui
         pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
         pixmap = pixmap.scaled(99, 99)
         self.ui.mainicon.setPixmap(pixmap)
+        pixmap = PyQt5.QtGui.QPixmap(':/azimuth1.png')
+        pixmap = pixmap.scaled(140, 140)
+        self.ui.picAZ.setPixmap(pixmap)
+        pixmap = PyQt5.QtGui.QPixmap(':/altitude1.png')
+        pixmap = pixmap.scaled(140, 140)
+        self.ui.picALT.setPixmap(pixmap)
+
         # enable a matplotlib figure in main gui
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.model)
         helper.setContentsMargins(0, 0, 0, 0)

@@ -3973,30 +3973,6 @@ Modeling Plot
 Window</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkClearModelFirst">
-     <property name="geometry">
-      <rect>
-       <x>520</x>
-       <y>110</y>
-       <width>211</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Clear model before start BASE</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_openModelingPlotWindow">
      <property name="geometry">
       <rect>
@@ -4040,27 +4016,6 @@ Window</string>
      </property>
      <property name="text">
       <string>Modeling settings</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkUseBlindSolve">
-     <property name="geometry">
-      <rect>
-       <x>520</x>
-       <y>140</y>
-       <width>211</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Use blind solver for Base points</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
@@ -4110,7 +4065,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>370</y>
+       <y>330</y>
        <width>21</width>
        <height>31</height>
       </rect>
@@ -4134,7 +4089,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>340</y>
+       <y>300</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4158,7 +4113,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>310</y>
+       <y>270</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4182,7 +4137,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>220</y>
+       <y>160</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4218,7 +4173,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>280</y>
+       <y>240</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4254,7 +4209,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>270</y>
+       <y>230</y>
        <width>211</width>
        <height>1</height>
       </rect>
@@ -4275,7 +4230,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>370</y>
+       <y>330</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4293,7 +4248,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>190</y>
+       <y>130</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4311,7 +4266,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>250</y>
+       <y>210</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -4329,7 +4284,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>370</y>
+       <y>330</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -4367,7 +4322,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>210</y>
+       <y>150</y>
        <width>211</width>
        <height>1</height>
       </rect>
@@ -5265,7 +5220,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>90</y>
+       <y>150</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -5548,7 +5503,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>620</x>
-       <y>250</y>
+       <y>260</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -5866,7 +5821,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>250</y>
+       <y>260</y>
        <width>91</width>
        <height>21</height>
       </rect>
@@ -5940,7 +5895,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>130</y>
+       <y>220</y>
        <width>221</width>
        <height>31</height>
       </rect>
@@ -6030,11 +5985,17 @@ Window</string>
     <widget class="QLabel" name="picAZ">
      <property name="geometry">
       <rect>
-       <x>560</x>
+       <x>570</x>
        <y>80</y>
-       <width>160</width>
-       <height>160</height>
+       <width>140</width>
+       <height>140</height>
       </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
      <property name="text">
       <string>TextLabel</string>
@@ -6071,7 +6032,7 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Generate Setup Points</string>
+      <string>Align Model</string>
      </property>
     </widget>
     <widget class="Line" name="line_65">
@@ -6105,20 +6066,105 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Generate Setup Points</string>
+      <string>Adjust Polar Alignment</string>
      </property>
     </widget>
     <widget class="QLabel" name="picALT">
      <property name="geometry">
       <rect>
        <x>570</x>
-       <y>280</y>
-       <width>160</width>
-       <height>160</height>
+       <y>290</y>
+       <width>140</width>
+       <height>140</height>
       </rect>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Raised</enum>
      </property>
      <property name="text">
       <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkClearModelFirst">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>90</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Clear model first</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseBlindSolve">
+     <property name="geometry">
+      <rect>
+       <x>290</x>
+       <y>120</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Use blind solver</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_66">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>210</y>
+       <width>221</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_208">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>190</y>
+       <width>131</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Fast Align</string>
      </property>
     </widget>
     <zorder>line_54</zorder>
@@ -6167,10 +6213,14 @@ Window</string>
     <zorder>line_65</zorder>
     <zorder>label_207</zorder>
     <zorder>picALT</zorder>
+    <zorder>checkClearModelFirst</zorder>
+    <zorder>checkUseBlindSolve</zorder>
+    <zorder>line_66</zorder>
+    <zorder>label_208</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
-     <string>Build Model</string>
+     <string>Full Model</string>
     </attribute>
     <widget class="QPushButton" name="btn_generateGridPoints">
      <property name="geometry">
@@ -6185,7 +6235,7 @@ Window</string>
       <string>Generates a regular pattern with 100 stars</string>
      </property>
      <property name="text">
-      <string>Generate a Grid of Points</string>
+      <string>Generate a Grid of Model Points</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_108">
@@ -6380,7 +6430,7 @@ Window</string>
       <string>Run refinment model</string>
      </property>
      <property name="text">
-      <string>Run Build Model</string>
+      <string>Run Full Model</string>
      </property>
     </widget>
     <widget class="Line" name="line_26">
@@ -6513,7 +6563,7 @@ Window</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a given number of refinement points along DSO track for a give time&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Generate DSO Track</string>
+      <string>Generate DSO Track for Model Points</string>
      </property>
     </widget>
     <widget class="Line" name="line_40">
@@ -13080,7 +13130,7 @@ Window</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Show Log</string>
+    <string>Show Messages</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_solverConnected">
