@@ -38,8 +38,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.counter = 0
         self.messageString = ''
         self.sendCommandQueue = Queue()
-        self.parseQueue = Queue()
-
         self.transform = self.app.transform
 
     def run(self):

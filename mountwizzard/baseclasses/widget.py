@@ -168,6 +168,7 @@ class MwWidget(QWidget):
         font: 10pt;
         min - width: 10em;
     }
+    /*
     QPushButton:pressed {
         background-color: #181818;
         color: #C0C0C0;
@@ -176,6 +177,7 @@ class MwWidget(QWidget):
         border-style: inset;
         border-radius: 2px;
     }
+    */
     QPushButton[running='true'] {
         background-color: rgb(32, 144, 192);
         color: #000000;
