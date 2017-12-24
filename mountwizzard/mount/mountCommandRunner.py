@@ -51,7 +51,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':FLIP': 1,
                       ':So': 1,
                       ':Sh': 1,
-                      ':SREF': 1
+                      ':SREF': 1,
+                      ':CM#': 27,
+                      ':CMS#': 1
     }
 
     def __init__(self, app, data, signalConnected):
@@ -152,7 +154,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                         tmp = str(self.socket.read(1000), "ascii")
                         self.messageString += tmp
                     messageToProcess = self.messageString[:numberBytesToReceive].rstrip('#')
-                    self.messageString = self.messageString[numberBytesToReceive:]
+                    # reset it, no storage of additional data
+                    self.messageString = ''
+                    # self.messageString = self.messageString[numberBytesToReceive:]
                     # print('Command: {0}, return value: {1}'.format(command, messageToProcess))
                 else:
                     print('Command: ->{0}<- not known'.format(command))
