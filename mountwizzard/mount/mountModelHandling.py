@@ -24,19 +24,36 @@ class MountModelHandling:
 
     def saveModel(self, target):
         self.app.mountCommandQueue.put(':modeldel0{0}#'.format(target))
-        self.app.mountCommandQueue.put(':modelsv0{0}#'.format(target))
-        self.app.messageQueue.put('Mount Model {0} saved\n'.format(target))
+        commandSet = {'command': ':modelsv0{0}#'.format(target), 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'].endswith('1'):
+            self.app.messageQueue.put('Mount Model {0} saved\n'.format(target))
+            return True
+        else:
+            self.logger.warning('Mount Model {0} could not be saved. Error code: {1}'.format(target, commandSet['reply']))
+            return False
 
     def loadModel(self, target):
-        self.app.mountCommandQueue.put(':modelld0{0}#'.format(target))
-        self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
-        while self.data['ModelLoading']:
-            time.sleep(0.2)
-        self.app.messageQueue.put('Mount Model {0} loaded\n'.format(target))
+        commandSet = {'command': ':modelld0{0}#'.format(target), 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'].endswith('1'):
+            self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
+            while self.data['ModelLoading']:
+                time.sleep(0.2)
+            self.app.messageQueue.put('Mount Model {0} loaded\n'.format(target))
+            return True
+        else:
+            self.app.messageQueue.put('#BRMount Model {0} could not be loaded\n'.format(target))
+            self.logger.warning('Mount Model {0} could not be loaded. Error code: {1}'.format(target, commandSet['reply']))
+            return False
 
     def clearAlign(self):
         self.app.mountCommandQueue.put(':delalig#')
-        self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
+        self.app.workerMountGetAlignmentModel.getAlignmentModel()
         while self.data['ModelLoading']:
             time.sleep(0.2)
         self.app.messageQueue.put('Mount Model cleared\n')

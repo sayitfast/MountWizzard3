@@ -80,8 +80,16 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         while self.isRunning:
             PyQt5.QtWidgets.QApplication.processEvents()
             while not self.app.mountCommandQueue.empty():
-                command = self.app.mountCommandQueue.get()
-                self.sendCommand(command)
+                commandSet = self.app.mountCommandQueue.get()
+                if isinstance(commandSet, str):
+                    # only a single command without return needed
+                    self.sendCommand(commandSet)
+                elif isinstance(commandSet, dict):
+                    command = commandSet['command']
+                    reply = self.sendCommand(command).rstrip('#')
+                    commandSet['reply'] = reply
+                else:
+                    self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
             time.sleep(0.1)
             self.socket.state()
             if not self.connected and self.socket.state() == 0:
@@ -102,7 +110,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     def handleConnected(self):
         self.connected = True
         self.signalConnected.emit({'Command': True})
-        self.logger.info('Mount RunnerCommand connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount RunnerCommand connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
         self.logger.error('Mount RunnerCommand connection fault: {0}'.format(self.socket.errorString()))

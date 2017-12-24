@@ -75,7 +75,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.connected = True
         self.signalConnected.emit({'Slow': True})
         self.getStatusSlow()
-        self.logger.info('Mount RunnerSlow connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount RunnerSlow connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
         self.logger.error('Mount RunnerSlow connection fault: {0}'.format(self.socket.errorString()))

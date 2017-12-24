@@ -77,7 +77,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.connected = True
         self.signalConnected.emit({'Medium': True})
         self.getStatusMedium()
-        self.logger.info('Mount RunnerMedium connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount RunnerMedium connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
         self.logger.error('Mount RunnerMedium connection fault: {0}'.format(self.socket.errorString()))

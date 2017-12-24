@@ -470,30 +470,39 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):
-        reply = self.workerMountCommandRunner.sendCommand(':shutdown#')
-        if reply == '1':
+        commandSet = {'command': ':shutdown#', 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'] == '1':
             self.workerMountCommandRunner.connected = False
             time.sleep(1)
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !\n')
         else:
-            self.logger.error('error: {0}'.format(reply))
+            self.logger.error('error: {0}'.format(commandSet['reply']))
             self.app.messageQueue.put('#BRError in mount shutdown\n')
 
     def flipMount(self):
-        reply = self.workerMountCommandRunner.sendCommand(':FLIP#').rstrip('#').strip()
-        if reply == '0':
+        commandSet = {'command': ':FLIP#', 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'] == '0':
             self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
-            self.logger.error('error: {0}'.format(reply))
+            self.logger.error('error: {0}'.format(commandSet['reply']))
 
     def syncMountModel(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.workerMountCommandRunner.sendCommand(':Sr{0}#'.format(ra))
-        self.workerMountCommandRunner.sendCommand(':Sd{0}#'.format(dec))
-        self.workerMountCommandRunner.sendCommand(':CMCFG0#')
+        self.app.mountCommandQueue.put(':Sr{0}#'.format(ra))
+        self.app.mountCommandQueue.put(':Sd{0}#'.format(dec))
+        self.app.mountCommandQueue.put(':CMCFG0#')
         # send sync command
-        reply = self.workerMountCommandRunner.sendCommand(':CM#')
-        if reply[:5] == 'Coord':
+        commandSet = {'command': ':CM#', 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'][:5] == 'Coord':
             self.logger.info('mount modeling synced')
             return True
         else:
@@ -502,12 +511,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def addRefinementStar(self, ra, dec):
         self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.workerMountCommandRunner.sendCommand(':Sr{0}#'.format(ra))
-        self.workerMountCommandRunner.sendCommand(':Sd{0}#'.format(dec))
+        self.app.mountCommandQueue.put(':Sr{0}#'.format(ra))
+        self.app.mountCommandQueue.put(':Sd{0}#'.format(dec))
         starNumber = self.numberModelStars()
-        reply = self.workerMountCommandRunner.sendCommand(':CMS#')
+        commandSet = {'command': ':CMS#', 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
         starAdded = self.numberModelStars() - starNumber
-        if reply == 'E':
+        if commandSet['reply'] == 'E':
             # 'E' says star could not be added
             if starAdded == 1:
                 self.logger.error('star added, but return value was E')
@@ -523,17 +535,23 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.saveBackupModel()
         self.workerMountCommandRunner.sendCommand(':newalig#')
         for i in range(0, len(data['Index'])):
-            command = 'newalpt{0},{1},{2},{3},{4},{5}'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
-                                                              self.transform.decimalToDegree(data['DecJNow'][i], True, False),
-                                                              data['Pierside'][i],
-                                                              self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
-                                                              self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
-                                                              self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
-            reply = self.app.mount.mountHandler.sendCommand(command)
-            if reply == 'E':
-                self.logger.warning('point {0} could not be added'.format(reply))
-        reply = self.workerMountCommandRunner.sendCommand(':endalig#')
-        if reply == 'V':
+            command = ':newalpt{0},{1},{2},{3},{4},{5}#'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
+                                                                self.transform.decimalToDegree(data['DecJNow'][i], True, False),
+                                                                data['Pierside'][i],
+                                                                self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
+                                                                self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
+                                                                self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
+            commandSet = {'command': command, 'reply': ''}
+            self.app.mountCommandQueue.put(commandSet)
+            while len(commandSet['reply']) == 0:
+                time.sleep(0.1)
+            if commandSet['reply'] == 'E':
+                self.logger.warning('point {0} could not be added'.format(commandSet['reply']))
+        commandSet = {'command': ':endalig#', 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
+        if commandSet['reply'] == 'V':
             self.logger.info('Model successful finished!')
         else:
             self.logger.warning('Model could not be calculated with current data!')
@@ -576,9 +594,13 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                                                                                                                         self.data['ModelAzimuth'][worstPointIndex],
                                                                                                                         self.data['ModelAltitude'][worstPointIndex],
                                                                                                                         maxError))
-        reply = self.workerMountCommandRunner.sendCommand(':delalst{0:d}#'.format(worstPointIndex + 1))
+
+        commandSet = {'command': ':delalst{0:d}#'.format(worstPointIndex + 1), 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
+        while len(commandSet['reply']) == 0:
+            time.sleep(0.1)
         time.sleep(0.2)
-        if reply == '1':
+        if commandSet['reply'] == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
             # get new calculated alignment model from mount

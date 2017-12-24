@@ -74,7 +74,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.connected = True
         self.signalConnected.emit({'Align': True})
         self.getAlignmentModel()
-        self.logger.info('Mount AlignModel connected at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount AlignModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
         self.logger.error('Mount AlignModel connection fault: {0}'.format(self.socket.errorString()))
