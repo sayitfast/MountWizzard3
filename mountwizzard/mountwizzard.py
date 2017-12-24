@@ -439,7 +439,7 @@ class MountWizzardApp(widget.MwWidget):
             colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
             scaleErrorMax = max(colors)
             scaleErrorMin = min(colors)
-            area = [150 if x >= max(colors) else 50 for x in self.workerMountDispatcher.data['ModelError']]
+            area = [150 if x >= max(colors) else 40 for x in self.workerMountDispatcher.data['ModelError']]
             theta = azimuth / 180.0 * math.pi
             r = 90 - altitude
             scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm)
