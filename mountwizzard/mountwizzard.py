@@ -129,12 +129,21 @@ class MountWizzardApp(widget.MwWidget):
         pixmap = PyQt5.QtGui.QPixmap(':/altitude1.png')
         self.ui.picALT.setPixmap(pixmap)
 
-        # enable a matplotlib figure in main gui
+        # enable a matplotlib figure polar plot in main gui
         helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.model)
         helper.setContentsMargins(0, 0, 0, 0)
         self.modelWidget = ShowModel(self.ui.model)
-        # noinspection PyArgumentList
         helper.addWidget(self.modelWidget)
+        # left measurement pane
+        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.measure1)
+        helper.setContentsMargins(0, 0, 0, 0)
+        self.measure1Widget = ShowModel(self.ui.measure1)
+        helper.addWidget(self.measure1Widget)
+        # right measurement pane
+        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.measure2)
+        helper.setContentsMargins(0, 0, 0, 0)
+        self.measure2Widget = ShowModel(self.ui.measure2)
+        helper.addWidget(self.measure2Widget)
 
         # instantiating all subclasses and connecting thread signals
         self.transform = transform.Transform(self)
@@ -380,7 +389,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
-        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(self.showModelErrorPolar)
+        # self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
+        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.test(self.modelWidget))
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
@@ -404,36 +414,42 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
         self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
 
-    def showModelErrorPolar(self):
-        self.modelWidget.fig.clf()
-        self.modelWidget.axes = self.modelWidget.fig.add_subplot(1, 1, 1, polar=True)
-        self.modelWidget.axes.grid(True, color='gray')
-        self.modelWidget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
-        self.modelWidget.axes.set_facecolor((32/256, 32/256, 32/256))
-        self.modelWidget.axes.tick_params(axis='x', colors='white')
-        self.modelWidget.axes.tick_params(axis='y', colors='white')
-        self.modelWidget.axes.set_theta_zero_location('N')
-        self.modelWidget.axes.set_theta_direction(-1)
-        self.modelWidget.axes.set_yticks(range(0, 90, 10))
+    def test(self, widget):
+        self.showModelErrorPolar(widget)
+        self.showModelErrorPolar(self.measure1Widget)
+        self.showModelErrorPolar(self.measure2Widget)
+
+    def showModelErrorPolar(self, widget):
+        widget.fig.clf()
+        widget.axes = widget.fig.add_subplot(1, 1, 1, polar=True)
+        widget.axes.grid(True, color='gray')
+        widget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
+        widget.axes.set_facecolor((32/256, 32/256, 32/256))
+        widget.axes.tick_params(axis='x', colors='white')
+        widget.axes.tick_params(axis='y', colors='white')
+        widget.axes.set_theta_zero_location('N')
+        widget.axes.set_theta_direction(-1)
+        widget.axes.set_yticks(range(0, 90, 10))
         yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
-        self.modelWidget.axes.set_yticklabels(yLabel, color='white')
+        widget.axes.set_yticklabels(yLabel, color='white')
         if len(self.workerMountDispatcher.data['ModelIndex']) != 0:
             azimuth = numpy.asarray(self.workerMountDispatcher.data['ModelAzimuth'])
             altitude = numpy.asarray(self.workerMountDispatcher.data['ModelAltitude'])
             cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
             colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
-            scaleError = int(max(colors) / 4 + 1) * 4
-            area = [125 if x >= max(colors) else 50 for x in self.workerMountDispatcher.data['ModelError']]
+            scaleErrorMax = max(colors)
+            scaleErrorMin = min(colors)
+            area = [150 if x >= max(colors) else 50 for x in self.workerMountDispatcher.data['ModelError']]
             theta = azimuth / 180.0 * math.pi
             r = 90 - altitude
-            scatter = self.modelWidget.axes.scatter(theta, r, c=colors, vmin=0, vmax=scaleError, s=area, cmap=cm)
+            scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm)
             scatter.set_alpha(0.75)
-            colorbar = self.modelWidget.fig.colorbar(scatter, pad=0.1)
+            colorbar = widget.fig.colorbar(scatter, pad=0.1)
             colorbar.set_label('Error [arcsec]', color='white')
             matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
-        self.modelWidget.axes.set_rmax(90)
-        self.modelWidget.axes.set_rmin(0)
-        self.modelWidget.draw()
+        widget.axes.set_rmax(90)
+        widget.axes.set_rmin(0)
+        widget.draw()
 
     def checkASCOM(self):
         appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
