@@ -217,10 +217,10 @@ class ModelPlotWindow(widget.MwWidget):
         self.hemisphereMatplotlib.axes.cla()
         self.hemisphereMatplotlib.axes.grid(True, color='gray')
         self.hemisphereMatplotlib.axes.set_facecolor((32 / 256, 32 / 256, 32 / 256))
-        self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='white')
+        self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='white', labelsize=12)
         self.hemisphereMatplotlib.axes.set_xlim(0, 360)
         self.hemisphereMatplotlib.axes.set_ylim(0, 90)
-        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white', which='both', labelleft='on', labelright='on')
+        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white', which='both', labelleft='on', labelright='on', labelsize=12)
         # horizon
         horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
         if len(horizon) > 0:
