@@ -77,16 +77,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'RunCheckModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_runCheckModel,
-                            'Method': self.modelingRunner.runCheckModel,
-                            'Cancel': self.app.ui.btn_cancelModel2
-                        }
-                    ]
-                },
             'RunTimeChangeModel':
                 {
                     'Worker': [
@@ -258,12 +248,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
         self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
         self.app.ui.btn_generateBasePoints.clicked.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
-        self.app.ui.btn_runCheckModel.clicked.connect(lambda: self.commandDispatcher('RunCheckModel'))
         self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcher('RunTimeChangeModel'))
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcher('RunHystereseModel'))
-        self.app.ui.btn_runCheckModel.clicked.connect(lambda: self.commandDispatcher('RunCheckModel'))
         self.app.ui.btn_runRefinementModel.clicked.connect(lambda: self.commandDispatcher('RunRefinementModel'))
-        self.app.ui.btn_runBoostModel.clicked.connect(lambda: self.commandDispatcher('RunBoostModel'))
         self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcher('RunBatchModel'))
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
         # TODO: it's not Model Connected, but imaging app connected

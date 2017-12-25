@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -6402,7 +6402,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>120</y>
+       <y>50</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6450,7 +6450,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>360</y>
+       <y>115</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6463,58 +6463,6 @@ Window</string>
      </property>
      <property name="text">
       <string>Cancel Model Run</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_runCheckModel">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>200</y>
-       <width>351</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs a analyse cycle without updating the mount model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Run Model Check (Simulation)</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_98">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>170</y>
-       <width>351</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Model Check Run - (Base &amp; Refine Points)</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_32">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>190</y>
-       <width>351</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <widget class="Line" name="line_28">
@@ -6867,58 +6815,6 @@ Window</string>
       <string>Altitude Min</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runBoostModel">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>50</y>
-       <width>351</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>Run refinment model</string>
-     </property>
-     <property name="text">
-      <string>Run Boost Model</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_36">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>40</y>
-       <width>351</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_136">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>20</y>
-       <width>341</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Boost Model (parallel processing)</string>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_137">
      <property name="geometry">
       <rect>
@@ -7053,7 +6949,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>110</y>
+       <y>40</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7069,7 +6965,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>90</y>
+       <y>20</y>
        <width>341</width>
        <height>21</height>
       </rect>
@@ -7085,12 +6981,200 @@ Window</string>
       <string>Full Model</string>
      </property>
     </widget>
+    <widget class="QProgressBar" name="bar_modelingStatusPercent">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>415</y>
+       <width>351</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_modelingStatus">
+     <property name="geometry">
+      <rect>
+       <x>505</x>
+       <y>360</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>00 of 00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_28">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>360</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Points modeled:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_modelingStatusTime">
+     <property name="geometry">
+      <rect>
+       <x>525</x>
+       <y>385</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>00:00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_29">
+     <property name="geometry">
+      <rect>
+       <x>575</x>
+       <y>385</y>
+       <width>51</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Minutes</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_35">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>385</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Estimated Finish in </string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkNoUpdateModel">
+     <property name="geometry">
+      <rect>
+       <x>430</x>
+       <y>90</y>
+       <width>261</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Simulation - no update of model in mount</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
     <zorder>line_42</zorder>
     <zorder>line_28</zorder>
     <zorder>line_34</zorder>
     <zorder>line_26</zorder>
-    <zorder>line_32</zorder>
-    <zorder>line_36</zorder>
     <zorder>btn_generateGridPoints</zorder>
     <zorder>label_108</zorder>
     <zorder>label_179</zorder>
@@ -7102,8 +7186,6 @@ Window</string>
     <zorder>btn_runRefinementModel</zorder>
     <zorder>btn_loadRefinementPoints</zorder>
     <zorder>btn_cancelModel2</zorder>
-    <zorder>btn_runCheckModel</zorder>
-    <zorder>label_98</zorder>
     <zorder>btn_generateDSOPoints</zorder>
     <zorder>line_40</zorder>
     <zorder>numberHoursDSO</zorder>
@@ -7116,8 +7198,6 @@ Window</string>
     <zorder>altitudeMax</zorder>
     <zorder>altitudeMin</zorder>
     <zorder>label_190</zorder>
-    <zorder>btn_runBoostModel</zorder>
-    <zorder>label_136</zorder>
     <zorder>label_137</zorder>
     <zorder>label_144</zorder>
     <zorder>label_202</zorder>
@@ -7126,6 +7206,13 @@ Window</string>
     <zorder>label_204</zorder>
     <zorder>line_38</zorder>
     <zorder>label_138</zorder>
+    <zorder>bar_modelingStatusPercent</zorder>
+    <zorder>le_modelingStatus</zorder>
+    <zorder>label_28</zorder>
+    <zorder>le_modelingStatusTime</zorder>
+    <zorder>label_29</zorder>
+    <zorder>label_35</zorder>
+    <zorder>checkNoUpdateModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
@@ -13602,8 +13689,6 @@ Window</string>
   <tabstop>numberHoursDSO</tabstop>
   <tabstop>numberPointsDSO</tabstop>
   <tabstop>numberHoursPreview</tabstop>
-  <tabstop>btn_runBoostModel</tabstop>
-  <tabstop>btn_runCheckModel</tabstop>
   <tabstop>btn_runRefinementModel</tabstop>
   <tabstop>btn_cancelModel2</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>

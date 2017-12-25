@@ -48,16 +48,6 @@ if platform.system() == 'Windows':
 from wakeonlan import wol
 
 
-# class for embed the matplotlib in pyqt5 framework
-class ShowModel(matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg):
-
-    def __init__(self, parent=None):
-        self.fig = matplotlib.figure.Figure(dpi=75, facecolor=(25/256, 25/256, 25/256))
-        matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg.__init__(self, self.fig)
-        self.setParent(parent)
-        matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg.updateGeometry(self)
-
-
 class MountWizzardApp(widget.MwWidget):
     logger = logging.getLogger(__name__)
 
@@ -114,8 +104,6 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_generateNormalPoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_generateMinPoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_generateDSOPoints, ':/favorite_add.ico')
-        self.widgetIcon(self.ui.btn_runCheckModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_runBoostModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_runTimeChangeModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_runHystereseModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
@@ -130,20 +118,9 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.picALT.setPixmap(pixmap)
 
         # enable a matplotlib figure polar plot in main gui
-        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.model)
-        helper.setContentsMargins(0, 0, 0, 0)
-        self.modelWidget = ShowModel(self.ui.model)
-        helper.addWidget(self.modelWidget)
-        # left measurement pane
-        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.measure1)
-        helper.setContentsMargins(0, 0, 0, 0)
-        self.measure1Widget = ShowModel(self.ui.measure1)
-        helper.addWidget(self.measure1Widget)
-        # right measurement pane
-        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.measure2)
-        helper.setContentsMargins(0, 0, 0, 0)
-        self.measure2Widget = ShowModel(self.ui.measure2)
-        helper.addWidget(self.measure2Widget)
+        self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
+        self.measure1Widget = widget.IntegrateMatplotlib(self.ui.measure1)
+        self.measure2Widget = widget.IntegrateMatplotlib(self.ui.measure2)
 
         # instantiating all subclasses and connecting thread signals
         self.transform = transform.Transform(self)
@@ -1101,12 +1078,11 @@ class MountWizzardApp(widget.MwWidget):
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
             elif text.startswith('status'):
-                self.modelWindow.ui.le_modelingStatus.setText(text[6:])
+                self.ui.le_modelingStatus.setText(text[6:])
             elif text.startswith('percent'):
-                pass
-                # self.modelWindow.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
+                self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):
-                self.modelWindow.ui.le_modelingStatusTime.setText(text[8:])
+                self.ui.le_modelingStatusTime.setText(text[8:])
             elif text.startswith('#BW'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_WHITE)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)

@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-
 import logging
 import os
 import time
@@ -24,17 +23,6 @@ from gui import image_dialog_ui
 use('Qt5Agg')
 from matplotlib import figure as figure
 # from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
-
-class ShowImageData(FigureCanvas):
-
-    def __init__(self, parent=None):
-        self.fig = figure.Figure(dpi=75, frameon=True, facecolor=(25/256, 25/256, 25/256))
-        self.axes = self.fig.add_axes([0., 0., 1., 1.])
-        FigureCanvas.__init__(self, self.fig)
-        self.setParent(parent)
-        FigureCanvas.updateGeometry(self)
 
 
 class ImagesWindow(widget.MwWidget):
@@ -58,11 +46,12 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_colorGrey.setChecked(True)
         self.initUI()                                                                                                       # adaptions to ui setup
         self.initConfig()
-        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.image)
-        self.imageWidget = ShowImageData(self.ui.image)
-        helper.addWidget(self.imageWidget)
+
+        self.imageWidget = widget.IntegrateMatplotlib(self.ui.image)
+        self.imageWidget.axes = self.imageWidget.fig.add_axes([0., 0., 1., 1.])
         self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
         self.imageWidget.axes.set_axis_off()
+
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)

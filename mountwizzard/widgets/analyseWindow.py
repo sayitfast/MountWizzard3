@@ -11,38 +11,16 @@
 # Licence APL2.0
 #
 ############################################################
-from logging import getLogger
-
-# import for the PyQt5 Framework
+import logging
 import PyQt5.QtWidgets
-# numerics
 import numpy
-# matplotlib
-from matplotlib import use
-
 from analyse import analysedata
-from baseclasses.widget import MwWidget
+from baseclasses import widget
 from gui import analyse_dialog_ui
-
-use('Qt5Agg')
+# matplotlib
+import matplotlib
+matplotlib.use('Qt5Agg')
 from matplotlib import pyplot as plt
-from matplotlib import figure as figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
-
-class ShowAnalyseData(FigureCanvas):
-
-    def __init__(self, parent=None):
-        self.fig = figure.Figure(dpi=75, facecolor=(25/256, 25/256, 25/256))
-        # self.axes = self.fig.add_axes([0.1, 0.1, 0.8, 0.8])
-        self.axes = self.fig.add_subplot(111)
-        self.axes.grid(True, color='white')
-        self.axes.set_facecolor((32/256, 32/256, 32/256))
-        self.axes.tick_params(axis='x', colors='white')
-        self.axes.tick_params(axis='y', colors='white')
-        FigureCanvas.__init__(self, self.fig)
-        self.setParent(parent)
-        FigureCanvas.updateGeometry(self)
 
 
 # noinspection PyTypeChecker
@@ -56,8 +34,8 @@ def calculateTimeConstant(x_time, y_value):
 
 
 # noinspection PyUnresolvedReferences
-class AnalyseWindow(MwWidget):
-    logger = getLogger(__name__)
+class AnalyseWindow(widget.MwWidget):
+    logger = logging.getLogger(__name__)
 
     def __init__(self, app):
         super(AnalyseWindow, self).__init__()
@@ -84,9 +62,11 @@ class AnalyseWindow(MwWidget):
         self.ui.btn_selectRaErrorAzimuth.clicked.connect(self.showRaErrorAzimuth)
         self.ui.btn_selectModelPointPolar.clicked.connect(self.showModelPointPolar)
         self.ui.btn_selectModelPointErrorPolar.clicked.connect(self.showModelPointErrorPolar)
-        helper = PyQt5.QtWidgets.QVBoxLayout(self.ui.plot)
-        self.plotWidget = ShowAnalyseData(self.ui.plot)
-        helper.addWidget(self.plotWidget)
+        self.plotWidget = widget.IntegrateMatplotlib(self.ui.plot)
+        self.plotWidget.axes.grid(True, color='white')
+        self.plotWidget.axes.set_facecolor((32/256, 32/256, 32/256))
+        self.plotWidget.axes.tick_params(axis='x', colors='white')
+        self.plotWidget.axes.tick_params(axis='y', colors='white')
         self.initConfig()
         # self.show()
         self.setVisible(False)

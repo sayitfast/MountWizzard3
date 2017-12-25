@@ -11,19 +11,15 @@
 # Licence APL2.0
 #
 ############################################################
-# standard solutions
 import copy
 import datetime
 import logging
 import os
 import platform
-
-# import for the PyQt5 Framework
 import PyQt5
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-
 from baseclasses import widget
 from astrometry import transform
 from gui import coordinate_dialog_ui

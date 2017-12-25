@@ -20,6 +20,9 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 import PyQt5
+import matplotlib
+matplotlib.use('Qt5Agg')
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from icons import resources
 
 
@@ -327,7 +330,8 @@ class MwWidget(QWidget):
     def closeEvent(self, closeEvent):
         self.showStatus = False
 
-    def widgetIcon(self, gui, icon):
+    @staticmethod
+    def widgetIcon(gui, icon):
         gui.setIcon(PyQt5.QtGui.QIcon(icon))
         gui.setProperty('iconset', True)
         gui.style().unpolish(gui)
@@ -351,3 +355,17 @@ class MwWidget(QWidget):
             self.bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
         self.setWindowIcon(QIcon(self.bundle_dir + '\\icons\\mw.ico'))
         self.setStyleSheet(self.BASIC_STYLE)
+
+
+# class for embed the matplotlib in pyqt5 framework
+class IntegrateMatplotlib(FigureCanvasQTAgg):
+
+    def __init__(self, parent=None):
+        helper = PyQt5.QtWidgets.QVBoxLayout(parent)
+        self.fig = matplotlib.figure.Figure(dpi=75, facecolor=(25 / 256, 25 / 256, 25 / 256))
+        FigureCanvasQTAgg.__init__(self, self.fig)
+        self.axes = self.fig.add_subplot(111)
+        helper.setContentsMargins(0, 0, 0, 0)
+        self.setParent(parent)
+        FigureCanvasQTAgg.updateGeometry(self)
+        helper.addWidget(self)
