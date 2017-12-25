@@ -624,7 +624,6 @@ class MountWizzardApp(widget.MwWidget):
         # make windows visible, if they were on the desktop depending on their show status
         if self.modelWindow.showStatus:
             self.modelWindow.showWindow()
-            # self.modelWindow.redrawModelingWindow()
             self.modelWindow.drawHemisphere()
         else:
             self.modelWindow.setVisible(False)

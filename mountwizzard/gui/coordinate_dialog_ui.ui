@@ -18,39 +18,6 @@
   <property name="windowTitle">
    <string>Modeling Plot</string>
   </property>
-  <widget class="QGraphicsView" name="modelPointsPlot">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>40</y>
-     <width>771</width>
-     <height>511</height>
-    </rect>
-   </property>
-   <property name="cursor" stdset="0">
-    <cursorShape>ArrowCursor</cursorShape>
-   </property>
-   <property name="acceptDrops">
-    <bool>false</bool>
-   </property>
-   <property name="autoFillBackground">
-    <bool>true</bool>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Plain</enum>
-   </property>
-   <property name="interactive">
-    <bool>false</bool>
-   </property>
-   <property name="sceneRect">
-    <rectf>
-     <x>0.000000000000000</x>
-     <y>0.000000000000000</y>
-     <width>769.000000000000000</width>
-     <height>509.000000000000000</height>
-    </rectf>
-   </property>
-  </widget>
   <widget class="QLineEdit" name="le_telescopeAzimut">
    <property name="geometry">
     <rect>
@@ -358,7 +325,7 @@
      <x>10</x>
      <y>40</y>
      <width>771</width>
-     <height>601</height>
+     <height>591</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -368,7 +335,6 @@
     <string notr="true"/>
    </property>
   </widget>
-  <zorder>modelPointsPlot</zorder>
   <zorder>hemisphere</zorder>
   <zorder>le_telescopeAzimut</zorder>
   <zorder>le_telescopeAltitude</zorder>

@@ -16,7 +16,6 @@ import datetime
 import logging
 import os
 import platform
-import PyQt5
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
@@ -62,7 +61,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui.setupUi(self)
 
         self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)
-        # self.ui.hemisphere.setVisible(False)
+        self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
+        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
 
         self.initUI()
         self.initConfig()
@@ -212,94 +212,21 @@ class ModelPlotWindow(widget.MwWidget):
         group.addToGroup(groupFlipTime)
         return group, groupFlipTime, itemText, track
 
-    def constructAzAltPointer(self, esize):
-        group = QGraphicsItemGroup()
-        group.setVisible(False)
-        pen = QPen(self.COLOR_POINTER, 3, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        item = QGraphicsEllipseItem(-esize, -esize, 2 * esize, 2 * esize)
-        item.setPen(pen)
-        group.addToGroup(item)
-
-        pen = QPen(self.COLOR_POINTER1, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        item = QGraphicsEllipseItem(-esize - 2, -esize - 2, 2 * (esize + 2), 2 * (esize + 2))
-        item.setPen(pen)
-        group.addToGroup(item)
-
-        pen = QPen(self.COLOR_POINTER1, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        item = QGraphicsLineItem(-esize, 0, -esize / 2, 0)
-        item.setPen(pen)
-        group.addToGroup(item)
-        item = QGraphicsLineItem(0, -esize, 0, -esize / 2)
-        item.setPen(pen)
-        group.addToGroup(item)
-        item = QGraphicsLineItem(esize / 2, 0, esize, 0)
-        item.setPen(pen)
-        group.addToGroup(item)
-        item = QGraphicsLineItem(0, esize / 2, 0, esize)
-        item.setPen(pen)
-        group.addToGroup(item)
-        return group
-
     def drawHemisphere(self):
-        self.hemisphereMatplotlib.fig.clf()
-        self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
+
+        self.hemisphereMatplotlib.axes.cla()
         self.hemisphereMatplotlib.axes.grid(True, color='gray')
-        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
         self.hemisphereMatplotlib.axes.set_facecolor((32 / 256, 32 / 256, 32 / 256))
         self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='white')
         self.hemisphereMatplotlib.axes.set_xlim(0, 360)
         self.hemisphereMatplotlib.axes.set_ylim(0, 90)
         self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white')
+        self.hemisphereMatplotlib.axes.yaxis.set_ticks_position('both')
+        self.hemisphereMatplotlib.axes.yaxis.set_ticks_position('both')
         # horizon
         horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
         if len(horizon) > 0:
             horizon.insert(0, (0, 0))
-            horizon.append((360, horizon[359][1]))
             horizon.append((360, 0))
             self.hemisphereMatplotlib.axes.fill(horizon, color='green')
-            self.hemisphereMatplotlib.show()
-
-
-    def redrawModelingWindow(self):
-        height = self.ui.modelPointsPlot.height()
-        width = self.ui.modelPointsPlot.width()
-        scene = QGraphicsScene(0, 0, width-2, height-2)                                                                     # set the size of the scene to to not scrolled
-        pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                            # outer circle is white
-        brush = QBrush(self.COLOR_BACKGROUND)
-        self.pointerDome = scene.addRect(0, 0, int((width - 2 * BORDER_VIEW) * 30 / 360), int(height - 2 * BORDER_VIEW), pen, brush)
-        self.pointerDome.setVisible(False)
-        self.pointerDome.setOpacity(0.5)
-        scene = self.constructModelGrid(height, width, BORDER_VIEW, TEXTHEIGHT_VIEW, scene)
-        scene = self.constructHorizon(scene, self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints, height, width, BORDER_VIEW)
-        for i, p in enumerate(self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints):                     # show the points
-            pen = QPen(self.COLOR_RED, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                          # outer circle is white
-            x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
-            scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
-            pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # inner circle -> after modelling green or red
-            x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
-            item = scene.addEllipse(-ELLIPSE_VIEW / 4, -ELLIPSE_VIEW / 4, ELLIPSE_VIEW/2, ELLIPSE_VIEW/2, pen)
-            item.setPos(x, y)
-            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
-            scene.addItem(text_item)
-            self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints[i] = (p[0], p[1], item, True)           # storing the objects in the list
-        for i, p in enumerate(self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints):               # show the points
-            pen = QPen(self.COLOR_GREEN, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                        # outer circle is white
-            x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
-            scene.addEllipse(x - ELLIPSE_VIEW / 2, y - ELLIPSE_VIEW / 2, ELLIPSE_VIEW, ELLIPSE_VIEW, pen)
-            pen = QPen(self.COLOR_YELLOW, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # inner circle -> after modelling green or red
-            x, y = getXY(p[0], p[1], height, width, BORDER_VIEW)
-            item = scene.addEllipse(-ELLIPSE_VIEW/4, -ELLIPSE_VIEW/4, ELLIPSE_VIEW/2, ELLIPSE_VIEW/2, pen)
-            item.setPos(x, y)
-            text_item = QGraphicsTextItem('{0:02d}'.format(i+1), None)                                                      # put the enumerating number to the circle
-            text_item.setDefaultTextColor(self.COLOR_WHITE)
-            text_item.setPos(x - ELLIPSE_VIEW / 8, y - ELLIPSE_VIEW / 8)
-            scene.addItem(text_item)
-            self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints[i] = (p[0], p[1], item, True)     # storing the objects in the list
-        self.pointerAzAlt = self.constructAzAltPointer(ELLIPSE_VIEW)
-        self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(ELLIPSE_VIEW)
-        scene.addItem(self.pointerAzAlt)
-        scene.addItem(self.pointerTrack)
-        self.ui.modelPointsPlot.setStyleSheet('background: transparent')
-        self.ui.modelPointsPlot.setScene(scene)
+        self.hemisphereMatplotlib.draw()

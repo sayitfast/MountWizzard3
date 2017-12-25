@@ -117,7 +117,6 @@ class ModelPoints:
             return
         hp = []
         msg = None
-        minAlt = 0
         if horizonByFile:
             if horizonPointsFileName == '':
                 msg = 'No horizon points filename given !'
@@ -143,12 +142,12 @@ class ModelPoints:
                     self.logger.error('Error loading horizon points: {0}'.format(e))
                     return msg
             hp = sorted(hp, key=operator.itemgetter(0))
-        if horizonByAltitude:
-            minAlt = int(altitudeMinimumHorizon)
-            if len(hp) == 0:
-                hp = [(0, minAlt), (360, minAlt)]
         x = range(0, 361)
+        if len(hp) == 0:
+            hp = ((0, 0), (360, 0))
         y = numpy.interp(x, [i[0] for i in hp], [i[1] for i in hp], left=None, right=None, period=None)
+        if horizonByAltitude:
+            y = numpy.clip(y, altitudeMinimumHorizon, None)
         self.horizonPoints = [list(a) for a in zip(x, y)]
         return msg
 
