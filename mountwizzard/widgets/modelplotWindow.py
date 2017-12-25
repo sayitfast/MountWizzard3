@@ -227,5 +227,12 @@ class ModelPlotWindow(widget.MwWidget):
             horizon.insert(0, (0, 0))
             horizon.append((360, 0))
             self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#004000')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', lw=3)
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', lw=2)
+        # model points
+        refinement = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
+        if len(refinement) > 0:
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refinement], [i[1] for i in refinement], 'o')
+        base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
+        if len(base) > 0:
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], '*')
         self.hemisphereMatplotlib.draw()
