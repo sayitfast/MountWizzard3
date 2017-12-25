@@ -364,7 +364,6 @@ class IntegrateMatplotlib(FigureCanvasQTAgg):
         helper = PyQt5.QtWidgets.QVBoxLayout(parent)
         self.fig = matplotlib.figure.Figure(dpi=75, facecolor=(25 / 256, 25 / 256, 25 / 256))
         FigureCanvasQTAgg.__init__(self, self.fig)
-        self.axes = self.fig.add_subplot(111)
         helper.setContentsMargins(0, 0, 0, 0)
         self.setParent(parent)
         FigureCanvasQTAgg.updateGeometry(self)

@@ -14,14 +14,12 @@
 import logging
 import os
 import time
-import PyQt5.QtWidgets
 import numpy
 import astropy.io.fits as pyfits
 from matplotlib import use
 from baseclasses import widget
 from gui import image_dialog_ui
 use('Qt5Agg')
-from matplotlib import figure as figure
 # from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
 
 
@@ -47,10 +45,10 @@ class ImagesWindow(widget.MwWidget):
         self.initUI()                                                                                                       # adaptions to ui setup
         self.initConfig()
 
-        self.imageWidget = widget.IntegrateMatplotlib(self.ui.image)
-        self.imageWidget.axes = self.imageWidget.fig.add_axes([0., 0., 1., 1.])
-        self.imageWidget.axes.set_facecolor((25/256, 25/256, 25/256))
-        self.imageWidget.axes.set_axis_off()
+        self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
+        self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_axes([0., 0., 1., 1.])
+        self.imageMatplotlib.axes.set_facecolor((25/256, 25/256, 25/256))
+        self.imageMatplotlib.axes.set_axis_off()
 
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
@@ -121,22 +119,22 @@ class ImagesWindow(widget.MwWidget):
         image_new = self.loggray(self.image)
         self.imageVmin = numpy.min(image_new)
         self.imageVmax = numpy.max(image_new)
-        self.imageWidget.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
-        self.imageWidget.draw()
+        self.imageMatplotlib.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
+        self.imageMatplotlib.draw()
 
     def strechMid(self):
         image_new = self.loggray(self.image, a=numpy.min(self.image) * 1.25, b=numpy.max(self.image) * 0.8)
         self.imageVmin = numpy.min(image_new)
         self.imageVmax = numpy.max(image_new)
-        self.imageWidget.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
-        self.imageWidget.draw()
+        self.imageMatplotlib.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
+        self.imageMatplotlib.draw()
 
     def strechHigh(self):
         image_new = self.loggray(self.image, a=numpy.min(self.image) * 1.5, b=numpy.max(self.image) * 0.66)
         self.imageVmin = numpy.min(image_new)
         self.imageVmax = numpy.max(image_new)
-        self.imageWidget.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
-        self.imageWidget.draw()
+        self.imageMatplotlib.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
+        self.imageMatplotlib.draw()
 
     def loggray(self, x, a=None, b=None):
         """
@@ -164,9 +162,9 @@ class ImagesWindow(widget.MwWidget):
             maxx = minx + int(self.sizeX / 4)
             miny = int(self.sizeY * 3 / 8)
             maxy = miny + int(self.sizeY / 4)
-            self.imageWidget.axes.set_xlim(xmin=minx, xmax=maxx)
-            self.imageWidget.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageWidget.draw()
+            self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
+            self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
+            self.imageMatplotlib.draw()
 
     def zoom50(self):
         if self.sizeX:
@@ -174,9 +172,9 @@ class ImagesWindow(widget.MwWidget):
             maxx = minx + int(self.sizeX / 2)
             miny = int(self.sizeY / 4)
             maxy = miny + int(self.sizeY / 2)
-            self.imageWidget.axes.set_xlim(xmin=minx, xmax=maxx)
-            self.imageWidget.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageWidget.draw()
+            self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
+            self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
+            self.imageMatplotlib.draw()
 
     def zoom100(self):
         if self.sizeX:
@@ -184,9 +182,9 @@ class ImagesWindow(widget.MwWidget):
             maxx = self.sizeX
             miny = 0
             maxy = self.sizeY
-            self.imageWidget.axes.set_xlim(xmin=minx, xmax=maxx)
-            self.imageWidget.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageWidget.draw()
+            self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
+            self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
+            self.imageMatplotlib.draw()
 
     def showFitsImage(self, filename):
         hdulist = pyfits.open(filename)

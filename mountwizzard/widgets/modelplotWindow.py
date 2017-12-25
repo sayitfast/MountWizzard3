@@ -22,6 +22,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
+import matplotlib
 from gui import coordinate_dialog_ui
 
 
@@ -50,27 +51,32 @@ class ModelPlotWindow(widget.MwWidget):
         super(ModelPlotWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
-        self.pointerAzAlt = QGraphicsItemGroup()                                                                            # object placeholder for AzAlt Pointer
-        self.pointerTrack = QGraphicsItemGroup()                                                                            # same for tracking widget
-        self.pointerTrackLine = []                                                                                          # same for Track line
-        self.itemFlipTime = QGraphicsItemGroup()                                                                            # same for flip indicator
-        self.itemFlipTimeText = QGraphicsTextItem('')                                                                       # and the flip time
-        self.pointerDome = QGraphicsRectItem(0, 0, 0, 0)                                                                    # shape for the Dome
-        self.showStatus = False                                                                                             # show coordinate window
-        self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()                                                                # PyQt5 dialog ui
-        self.ui.setupUi(self)                                                                                               # setup the ui
-        self.initUI()                                                                                                       # adaptions to ui setup
+        self.pointerAzAlt = QGraphicsItemGroup()
+        self.pointerTrack = QGraphicsItemGroup()
+        self.pointerTrackLine = []
+        self.itemFlipTime = QGraphicsItemGroup()
+        self.itemFlipTimeText = QGraphicsTextItem('')
+        self.pointerDome = QGraphicsRectItem(0, 0, 0, 0)
+        self.showStatus = False
+        self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()
+        self.ui.setupUi(self)
+
+        self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)
+        # self.ui.hemisphere.setVisible(False)
+
+        self.initUI()
         self.initConfig()
-        self.selectHorizonPointsMode()
-        self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)                                # connect signal for AzAlt pointer
-        self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)                               # same for track preview
-        self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)                                     # if tracking widget is switched on / off, here is the signal for it
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)                        # signal for redrawing the window content
+        self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
+        self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)
+        self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)
+        # self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
+
         if platform.system() == 'Windows':
-            self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)                                          # signal for redrawing the dome
-        self.redrawModelingWindow()                                                                                         # at the beginning, initialize the content
-        # self.show()                                                                                                       # construct the window
-        self.setVisible(False)                                                                                              # but hide it first
+            self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)
+        # self.redrawModelingWindow()
+        self.drawHemisphere()
+        self.setVisible(False)
 
     def initConfig(self):
         try:
@@ -100,7 +106,8 @@ class ModelPlotWindow(widget.MwWidget):
                                                                                              self.app.ui.altitudeMinimumHorizon.value())
         if msg:
             self.app.messageQueue.put(msg + '\n')
-        self.redrawModelingWindow()
+        # self.redrawModelingWindow()
+        self.drawHemisphere()
 
     def selectHorizonPointsFileName(self):
         dlg = QFileDialog()
@@ -113,9 +120,10 @@ class ModelPlotWindow(widget.MwWidget):
             self.app.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
             self.selectHorizonPointsMode()
             self.app.ui.checkUseMinimumHorizonLine.setChecked(False)
-            self.redrawModelingWindow()
+            # self.redrawModelingWindow()
 
     def setAzAltPointer(self, az, alt):
+        return
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)
         self.pointerAzAlt.setPos(x, y)
         self.pointerAzAlt.setVisible(True)
@@ -124,6 +132,7 @@ class ModelPlotWindow(widget.MwWidget):
         QApplication.processEvents()
 
     def setDomePointer(self, az):
+        return
         width = self.ui.modelPointsPlot.width()
         x, y = getXYRectangle(az, width, BORDER_VIEW)
         self.pointerDome.setPos(x, y)
@@ -133,12 +142,14 @@ class ModelPlotWindow(widget.MwWidget):
         QApplication.processEvents()
 
     def changeStatusTrackingWidget(self):
+        return
         if self.ui.checkRunTrackingWidget.isChecked():
             self.drawTrackPreview()
         else:
             self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):
+        return
         if not self.ui.checkRunTrackingWidget.isChecked() or 'RaJ2000' not in self.app.workerMountDispatcher.data:
             return
         raCopy = copy.copy(self.app.workerMountDispatcher.data['RaJ2000'])
@@ -201,54 +212,6 @@ class ModelPlotWindow(widget.MwWidget):
         group.addToGroup(groupFlipTime)
         return group, groupFlipTime, itemText, track
 
-    def constructHorizon(self, scene, horizon, height, width, border):
-        if len(horizon) == 0:
-            return scene
-        pen = QPen(self.COLOR_GREEN_HORIZON, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                      # define the pen style thickness 3
-        poly = QPolygonF()
-        x, y = getXY(0, 0, height, width, border)
-        poly.append(QPointF(x, y))
-        x, y = getXY(0, horizon[0][1], height, width, border)
-        poly.append(QPointF(x, y))
-        for i, p in enumerate(horizon):
-            x, y = getXY(horizon[i][0], horizon[i][1], height, width, border)
-            poly.append(QPointF(x, y))
-        x, y = getXY(360, horizon[len(horizon)-1][1], height, width, border)
-        poly.append(QPointF(x, y))
-        x, y = getXY(360, 0, height, width, border)
-        poly.append(QPointF(x, y))
-        scene.addPolygon(poly, pen, self.COLOR_GREEN_HORIZON_DARK)
-        return scene
-
-    def constructModelGrid(self, height, width, border, textheight, scene):                                                 # adding the plot area
-        scene.setBackgroundBrush(self.COLOR_WINDOW)                                                                         # background color
-        pen = QPen(self.COLOR_BACKGROUND, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)                                       # building the grid of the plot and the axes
-        for i in range(0, 361, 30):                                                                                         # set az ticks
-            scene.addLine(border + int(i / 360 * (width - 2 * border)), height - border,
-                          border + int(i / 360 * (width - 2 * border)), border, pen)
-        for i in range(0, 91, 10):                                                                                          # set alt ticks
-            scene.addLine(border, height - border - int(i * (height - 2 * border) / 90),
-                          width - border, height - border - int(i * (height - 2*border) / 90), pen)
-        scene.addRect(border, border, width - 2*border, height - 2*border, pen)                                             # set frame around graphics
-        for i in range(0, 361, 30):                                                                                         # now the texts at the plot x
-            text_item = QGraphicsTextItem('{0:03d}'.format(i), None)                                                        # set labels
-            text_item.setFont(PyQt5.QtGui.QFont('ARIAL', TEXTHEIGHT))
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)                                                                 # coloring of label
-            text_item.setPos(int(border / 2) + int(i / 360 * (width - 2 * border)), height - border)                        # placing the text
-            scene.addItem(text_item)                                                                                        # adding item to scene to be shown
-        for i in range(10, 91, 10):                                                                                         # now the texts at the plot y
-            text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(width - border + TEXTHEIGHT / 2, height - border - textheight - int(i * (height - 2 * border) / 90))
-            text_item.setFont(PyQt5.QtGui.QFont('ARIAL', TEXTHEIGHT))
-            scene.addItem(text_item)
-            text_item = QGraphicsTextItem('{0:02d}'.format(i), None)
-            text_item.setDefaultTextColor(self.COLOR_ASTRO)
-            text_item.setPos(TEXTHEIGHT / 2, height - border - textheight - int(i * (height - 2 * border) / 90))
-            text_item.setFont(PyQt5.QtGui.QFont('ARIAL', TEXTHEIGHT))
-            scene.addItem(text_item)
-        return scene
-
     def constructAzAltPointer(self, esize):
         group = QGraphicsItemGroup()
         group.setVisible(False)
@@ -276,6 +239,26 @@ class ModelPlotWindow(widget.MwWidget):
         item.setPen(pen)
         group.addToGroup(item)
         return group
+
+    def drawHemisphere(self):
+        self.hemisphereMatplotlib.fig.clf()
+        self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
+        self.hemisphereMatplotlib.axes.grid(True, color='gray')
+        self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
+        self.hemisphereMatplotlib.axes.set_facecolor((32 / 256, 32 / 256, 32 / 256))
+        self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='white')
+        self.hemisphereMatplotlib.axes.set_xlim(0, 360)
+        self.hemisphereMatplotlib.axes.set_ylim(0, 90)
+        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white')
+        # horizon
+        horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
+        if len(horizon) > 0:
+            horizon.insert(0, (0, 0))
+            horizon.append((360, horizon[359][1]))
+            horizon.append((360, 0))
+            self.hemisphereMatplotlib.axes.fill(horizon, color='green')
+            self.hemisphereMatplotlib.show()
+
 
     def redrawModelingWindow(self):
         height = self.ui.modelPointsPlot.height()
@@ -318,4 +301,5 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerTrack, self.itemFlipTime, self.itemFlipTimeText, self.pointerTrackLine = self.constructTrackWidget(ELLIPSE_VIEW)
         scene.addItem(self.pointerAzAlt)
         scene.addItem(self.pointerTrack)
+        self.ui.modelPointsPlot.setStyleSheet('background: transparent')
         self.ui.modelPointsPlot.setScene(scene)

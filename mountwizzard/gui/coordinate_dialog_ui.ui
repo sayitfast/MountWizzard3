@@ -349,6 +349,37 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QWidget" name="hemisphere" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>771</width>
+     <height>601</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
+  <zorder>modelPointsPlot</zorder>
+  <zorder>hemisphere</zorder>
+  <zorder>le_telescopeAzimut</zorder>
+  <zorder>le_telescopeAltitude</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>label_109</zorder>
+  <zorder>label_110</zorder>
+  <zorder>label_142</zorder>
+  <zorder>le_SQR</zorder>
+  <zorder>label_87</zorder>
+  <zorder>checkRunTrackingWidget</zorder>
  </widget>
  <resources/>
  <connections/>

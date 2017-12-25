@@ -14,8 +14,8 @@
 import logging
 import os
 import copy
-# for the sorting
 import operator
+import numpy
 
 
 class ModelPoints:
@@ -146,27 +146,10 @@ class ModelPoints:
         if horizonByAltitude:
             minAlt = int(altitudeMinimumHorizon)
             if len(hp) == 0:
-                hp = [(0, minAlt), (359, minAlt)]
-        # is there is the mask not until 360, we do it
-        if hp[len(hp)-1][0] < 360:
-            hp.append((359, hp[len(hp)-1][1]))
-        az_last = 0
-        alt_last = 0
-        for i in range(0, len(hp)):
-            az_act = hp[i][0]
-            alt_act = hp[i][1]
-            if az_act > az_last:
-                incline = (alt_act - alt_last) / (az_act - az_last)
-                for j in range(az_last, az_act):
-                    if horizonByAltitude:
-                        point = (j, max(int(alt_last + incline * (j - az_last)), minAlt))
-                    else:
-                        point = (j, int(alt_last + incline * (j - az_last)))
-                    self.horizonPoints.append(point)
-            else:
-                self.horizonPoints.append(hp[i])
-            az_last = az_act
-            alt_last = alt_act
+                hp = [(0, minAlt), (360, minAlt)]
+        x = range(0, 361)
+        y = numpy.interp(x, [i[0] for i in hp], [i[1] for i in hp], left=None, right=None, period=None)
+        self.horizonPoints = [list(a) for a in zip(x, y)]
         return msg
 
     def isAboveHorizonLine(self, point):
