@@ -220,13 +220,12 @@ class ModelPlotWindow(widget.MwWidget):
         self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='white')
         self.hemisphereMatplotlib.axes.set_xlim(0, 360)
         self.hemisphereMatplotlib.axes.set_ylim(0, 90)
-        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white')
-        self.hemisphereMatplotlib.axes.yaxis.set_ticks_position('both')
-        self.hemisphereMatplotlib.axes.yaxis.set_ticks_position('both')
+        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white', which='both', labelleft='on', labelright='on')
         # horizon
         horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
         if len(horizon) > 0:
             horizon.insert(0, (0, 0))
             horizon.append((360, 0))
-            self.hemisphereMatplotlib.axes.fill(horizon, color='green')
+            self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#004000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', lw=3)
         self.hemisphereMatplotlib.draw()

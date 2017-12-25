@@ -33,8 +33,6 @@ class MwWidget(QWidget):
     COLOR_BLUE = QColor(0, 0, 255)
     COLOR_YELLOW = QColor(192, 192, 0)
     COLOR_GREEN = QColor(0, 255, 0)
-    COLOR_GREEN_HORIZON = QColor(0, 64, 0)
-    COLOR_GREEN_HORIZON_DARK = QColor(0, 32, 0)
     COLOR_WHITE = QColor(255, 255, 255)
     COLOR_RED = QColor(255, 0, 0)
     COLOR_ORANGE = QColor(192, 96, 96)
