@@ -71,6 +71,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)
         # self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
+        self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
 
         if platform.system() == 'Windows':
             self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)

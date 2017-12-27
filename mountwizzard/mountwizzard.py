@@ -367,8 +367,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
         # self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.test(self.modelWidget))
-        self.modelWindow.ui.btn_deletePoints.clicked.connect(lambda: self.workerModelingDispatcher.commandDispatcher('DeletePoints'))
-
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
@@ -785,7 +783,6 @@ class MountWizzardApp(widget.MwWidget):
 
     def selectAnalyseFileName(self):
         dlg = fileLoadSave.MwFileDialogue(self)
-        # noinspection PyArgumentList
         a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
