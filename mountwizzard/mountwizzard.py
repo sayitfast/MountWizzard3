@@ -94,7 +94,6 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_cancelModel1, ':/stop.ico')
         self.widgetIcon(self.ui.btn_runRefinementModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelModel2, ':/stop.ico')
-        self.widgetIcon(self.ui.btn_deletePoints, ':/application_remove.ico')
         self.widgetIcon(self.ui.btn_loadBasePoints, ':/floppy_disc_add.ico')
         self.widgetIcon(self.ui.btn_generateBasePoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_plateSolveSync, ':/calculator_accept.ico')
@@ -368,6 +367,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
         # self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.test(self.modelWidget))
+        self.modelWindow.ui.btn_deletePoints.clicked.connect(lambda: self.workerModelingDispatcher.commandDispatcher('DeletePoints'))
+
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested

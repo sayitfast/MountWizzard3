@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -3897,24 +3897,6 @@
      <property name="text">
       <string>Open
 Image
-Window</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_deletePoints">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>230</y>
-       <width>151</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Clear
-Modeling Plot
 Window</string>
      </property>
     </widget>

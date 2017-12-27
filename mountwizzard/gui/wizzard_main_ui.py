@@ -1447,9 +1447,6 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.setFont(font)
         self.btn_openImageWindow.setStyleSheet("")
         self.btn_openImageWindow.setObjectName("btn_openImageWindow")
-        self.btn_deletePoints = QtWidgets.QPushButton(self.tab)
-        self.btn_deletePoints.setGeometry(QtCore.QRect(330, 230, 151, 71))
-        self.btn_deletePoints.setObjectName("btn_deletePoints")
         self.btn_openModelingPlotWindow = QtWidgets.QPushButton(self.tab)
         self.btn_openModelingPlotWindow.setGeometry(QtCore.QRect(330, 50, 151, 71))
         font = QtGui.QFont()
@@ -4865,7 +4862,7 @@ class Ui_MainWindow(object):
         self.btn_mountBoot.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(4)
+        self.mainTabWidget.setCurrentIndex(2)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -5209,10 +5206,6 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the coordinate an model points popup window</p></body></html>"))
         self.btn_openImageWindow.setText(_translate("MainWindow", "Open\n"
 "Image\n"
-"Window"))
-        self.btn_deletePoints.setToolTip(_translate("MainWindow", "<html><head/><body><p>Delete all points on coordinate window including Base / Model</p></body></html>"))
-        self.btn_deletePoints.setText(_translate("MainWindow", "Clear\n"
-"Modeling Plot\n"
 "Window"))
         self.btn_openModelingPlotWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the coordinate an model points popup window</p></body></html>"))
         self.btn_openModelingPlotWindow.setText(_translate("MainWindow", "Open\n"

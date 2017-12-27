@@ -24,7 +24,7 @@
      <x>50</x>
      <y>10</y>
      <width>81</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -63,7 +63,7 @@
      <x>210</x>
      <y>10</y>
      <width>81</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -102,7 +102,7 @@
      <x>20</x>
      <y>10</y>
      <width>31</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -123,7 +123,7 @@
      <x>170</x>
      <y>10</y>
      <width>41</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -198,7 +198,7 @@
      <x>620</x>
      <y>10</y>
      <width>41</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -225,7 +225,7 @@
      <x>660</x>
      <y>10</y>
      <width>81</width>
-     <height>21</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -270,7 +270,7 @@
      <x>740</x>
      <y>10</y>
      <width>41</width>
-     <height>20</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -295,7 +295,7 @@
      <x>340</x>
      <y>10</y>
      <width>101</width>
-     <height>20</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -323,9 +323,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>60</y>
      <width>771</width>
-     <height>591</height>
+     <height>571</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -333,6 +333,27 @@
    </property>
    <property name="styleSheet">
     <string notr="true"/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_deletePoints">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>10</y>
+     <width>151</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Clear Points</string>
    </property>
   </widget>
   <zorder>hemisphere</zorder>
@@ -346,6 +367,7 @@
   <zorder>le_SQR</zorder>
   <zorder>label_87</zorder>
   <zorder>checkRunTrackingWidget</zorder>
+  <zorder>btn_deletePoints</zorder>
  </widget>
  <resources/>
  <connections/>

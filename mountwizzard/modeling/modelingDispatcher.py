@@ -200,7 +200,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_deletePoints,
                             'Method': self.modelingRunner.modelPoints.deletePoints
                         }
                     ]
@@ -232,7 +231,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcher('PlateSolveSync'))
-        self.app.ui.btn_deletePoints.clicked.connect(lambda: self.commandDispatcher('DeletePoints'))
         self.app.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.commandDispatcher('LoadRefinementPoints'))
         self.app.ui.btn_loadBasePoints.clicked.connect(lambda: self.commandDispatcher('LoadBasePoints'))
         self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
