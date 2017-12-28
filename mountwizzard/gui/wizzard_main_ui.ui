@@ -3856,7 +3856,7 @@
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>290</y>
+       <y>340</y>
        <width>211</width>
        <height>20</height>
       </rect>
@@ -3931,7 +3931,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>260</y>
+       <y>310</y>
        <width>211</width>
        <height>20</height>
       </rect>
@@ -3974,7 +3974,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>220</y>
+       <y>270</y>
        <width>21</width>
        <height>31</height>
       </rect>
@@ -3998,7 +3998,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>190</y>
+       <y>240</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4022,7 +4022,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>160</y>
+       <y>210</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4047,7 +4047,7 @@ Window</string>
       <rect>
        <x>520</x>
        <y>50</y>
-       <width>211</width>
+       <width>231</width>
        <height>21</height>
       </rect>
      </property>
@@ -4082,8 +4082,8 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>130</y>
-       <width>211</width>
+       <y>140</y>
+       <width>231</width>
        <height>21</height>
       </rect>
      </property>
@@ -4118,8 +4118,8 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>120</y>
-       <width>211</width>
+       <y>130</y>
+       <width>231</width>
        <height>1</height>
       </rect>
      </property>
@@ -4139,7 +4139,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>530</x>
-       <y>220</y>
+       <y>270</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4177,7 +4177,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>100</y>
+       <y>110</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -4197,7 +4197,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>220</y>
+       <y>270</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -4236,7 +4236,7 @@ Window</string>
       <rect>
        <x>520</x>
        <y>40</y>
-       <width>211</width>
+       <width>231</width>
        <height>1</height>
       </rect>
      </property>
@@ -4913,6 +4913,162 @@ Window</string>
      </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_saveConfigAs_2">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>680</x>
+       <y>75</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Save as</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_loadModelPoints">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>75</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_saveModelPoints">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>75</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Save</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_saveHorizonMaskAs">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>680</x>
+       <y>165</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Save as</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_loadHorizonMask">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>165</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_saveHorizonMask">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>165</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Save</string>
      </property>
     </widget>
    </widget>
@@ -13460,7 +13616,7 @@ Window</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Save As</string>
+    <string>Save as</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_configName">

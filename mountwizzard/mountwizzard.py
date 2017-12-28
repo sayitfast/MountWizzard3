@@ -318,8 +318,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
-        self.ui.le_horizonPointsFileName.doubleClicked.connect(self.selectHorizonPointsFileName)
-        self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
+        self.ui.btn_loadHorizonMask.clicked.connect(self.selectHorizonPointsFileName)
+        self.ui.btn_loadModelPoints.clicked.connect(self.selectModelPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -686,21 +686,6 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
             self.config = {}
 
-    def loadConfigDataFrom(self):
-        a = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)')
-        if a[0] != '':
-            self.ui.le_configName.setText(os.path.basename(a[0]))
-            try:
-                with open(a[0], 'r') as data_file:
-                    self.config = json.load(data_file)
-                    self.initConfig()
-            except Exception as e:
-                self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
-                self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
-                self.config = {}
-        else:
-            self.logger.warning('no config file selected')
-
     def saveConfig(self):
         filepath = os.getcwd() + '\\config\\' + self.ui.le_configName.text()
         self.saveConfigData(filepath)
@@ -728,33 +713,48 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.error('Item in config.cfg not saved error {0}'.format(e))
             return
 
+    def loadConfigDataFrom(self):
+        value, _ = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)', True)
+        if value != '':
+            self.ui.le_configName.setText(os.path.basename(value))
+            try:
+                with open(value, 'r') as data_file:
+                    self.config = json.load(data_file)
+                    self.initConfig()
+            except Exception as e:
+                self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
+                self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))
+                self.config = {}
+        else:
+            self.logger.warning('no config file selected')
+
     def saveConfigAs(self):
-        a = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)')
-        if a[0] != '':
-            self.ui.le_configName.setText(os.path.basename(a[0]))
-            self.saveConfigData(a[0])
+        value, _ = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)', False)
+        if value != '':
+            self.ui.le_configName.setText(os.path.basename(value))
+            self.saveConfigData(value)
         else:
             self.logger.warning('No config file selected')
 
     def selectModelPointsFileName(self):
-        a = self.selectFile(self, 'Open model points file', '/config', 'Model points files (*.txt)')
-        if a[0] != '':
-            self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
+        value, _ = self.selectFile(self, 'Open model points file', '/config', 'Model points files (*.txt)', True)
+        if value != '':
+            self.ui.le_modelPointsFileName.setText(os.path.basename(value))
         else:
             self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
-        a = self.selectFile(self, 'Open analyse file', '/config', 'Analyse files (*.dat)')
-        if a[0] != '':
-            self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
+        value, _ = self.selectFile(self, 'Open analyse file', '/config', 'Analyse files (*.dat)', True)
+        if value != '':
+            self.ui.le_analyseFileName.setText(os.path.basename(value))
             self.analyseWindow.showWindow()
         else:
             self.logger.warning('no file selected')
 
     def selectHorizonPointsFileName(self):
-        a = self.selectFile(self, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)')
-        if a[0] != '':
-            self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
+        value, _ = self.selectFile(self, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)', True)
+        if value != '':
+            self.ui.le_horizonPointsFileName.setText(os.path.basename(value))
             self.modelWindow.selectHorizonPointsMode()
             self.modelWindow.drawHemisphere()
 

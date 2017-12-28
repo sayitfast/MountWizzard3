@@ -166,16 +166,20 @@ class MwWidget(QWidget):
         font: 10pt;
         min - width: 10em;
     }
-    /*
     QPushButton:pressed {
-        background-color: #181818;
-        color: #C0C0C0;
         border-color: #404040;
         border-width: 2px;
         border-style: inset;
         border-radius: 2px;
     }
-    */
+    QPushButton:disabled {
+        background-color: #101010;
+        color: #404040;
+        border-color: #202020;
+        border-width: 2px;
+        border-style: outset;
+        border-radius: 2px;
+    }
     QPushButton[running='true'] {
         background-color: rgb(32, 144, 192);
         color: #000000;
@@ -346,22 +350,28 @@ class MwWidget(QWidget):
         self.setStyleSheet(self.BASIC_STYLE)
 
     @staticmethod
-    def selectFile(window, title, folder, filterSet):
+    def selectFile(window, title, folder, filterSet, openFile=True):
         dlg = PyQt5.QtWidgets.QFileDialog()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
         dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
         # dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
         # dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.AnyFile)
         dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
+        dlg.setNameFilter(filterSet)
+
+        # dialog.setDefaultSuffix("mex")
+        dlg.setModal(True)
+
         ph = window.geometry().height()
         px = window.geometry().x()
         py = window.geometry().y()
         dw = window.width()
         dh = window.height()
         dlg.setGeometry(px, py + ph - dh, dw, dh)
-        dlg.setNameFilter(filterSet)
-        value = dlg.getOpenFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
-        dlg = None
+        if openFile:
+            value = dlg.getOpenFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        else:
+            value = dlg.getSaveFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         return value
 
 
