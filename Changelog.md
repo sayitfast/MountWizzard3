@@ -4,3 +4,12 @@
 - image window rework
 - environment on indi
 - dome on indi
+- enable / disable relais box
+- hemisphere window rework
+- loading horizon mask split load and kepp
+- edit model points (no real split between base and refine)
+- edit horizon mask
+- save model points
+- replace model plot with hemisphere
+- replace refinement model with full model
+- replace base model with alignment

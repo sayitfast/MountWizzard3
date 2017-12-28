@@ -71,7 +71,13 @@ class ImagesWindow(widget.MwWidget):
     def initConfig(self):
         try:
             if 'ImagePopupWindowPositionX' in self.app.config:
-                self.move(self.app.config['ImagePopupWindowPositionX'], self.app.config['ImagePopupWindowPositionY'])
+                x = self.config['ImagePopupWindowPositionX']
+                y = self.config['ImagePopupWindowPositionY']
+                if x > self.screenSizeX:
+                    x = 0
+                if y > self.screenSizeY:
+                    y = 0
+                self.move(x, y)
             if 'ImagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['ImagePopupWindowShowStatus']
         except Exception as e:

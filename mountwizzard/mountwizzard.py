@@ -211,6 +211,7 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
+        self.counter = 0
         self.mainLoop()
 
     def workerAscomEnvironmentStop(self):
@@ -323,7 +324,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
-        self.ui.le_analyseFileName.doubleClicked.connect(self.selectAnalyseFileName)
+        self.ui.btn_loadAnalyseData.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showWindow)
         self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showWindow)
@@ -510,8 +511,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
             if 'CheckKeepImages' in self.config:
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
-            if 'CheckRunTrackingWidget' in self.config:
-                self.modelWindow.ui.checkRunTrackingWidget.setChecked(self.config['CheckRunTrackingWidget'])
             if 'CheckClearModelFirst' in self.config:
                 self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
             if 'AltitudeBase' in self.config:
@@ -553,7 +552,13 @@ class MountWizzardApp(widget.MwWidget):
             if 'DelayTimeHysterese' in self.config:
                 self.ui.delayTimeHysterese.setValue(self.config['DelayTimeHysterese'])
             if 'WindowPositionX' in self.config:
-                self.move(self.config['WindowPositionX'], self.config['WindowPositionY'])
+                x = self.config['WindowPositionX']
+                y = self.config['WindowPositionY']
+                if x > self.screenSizeX:
+                    x = 0
+                if y > self.screenSizeY:
+                    y = 0
+                self.move(x, y)
             if 'ConfigName' in self.config:
                 self.ui.le_configName.setText(self.config['ConfigName'])
             if 'MainTabPosition' in self.config:
@@ -636,7 +641,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ScaleSubframe'] = self.ui.scaleSubframe.value()
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
-        self.config['CheckRunTrackingWidget'] = self.modelWindow.ui.checkRunTrackingWidget.isChecked()
         self.config['AltitudeBase'] = self.ui.altitudeBase.value()
         self.config['AzimuthBase'] = self.ui.azimuthBase.value()
         self.config['NumberGridPointsRow'] = self.ui.numberGridPointsRow.value()
@@ -1065,6 +1069,10 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def mainLoop(self):
+        self.counter += 5
+        # self.workerMountDispatcher.signalMountAzAltPointer.emit(self.counter, 45)
+        if self.counter > 370:
+            self.counter = -10
         self.fillMountData()
         self.fillEnvironmentData()
         while not self.INDIDataQueue.empty():
@@ -1109,7 +1117,6 @@ class MountWizzardApp(widget.MwWidget):
             filename = self.imageQueue.get()
             if self.imageWindow.showStatus:
                 self.imageWindow.showFitsImage(filename)
-        # noinspection PyCallByClass,PyTypeChecker
         PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
 
 
@@ -1148,6 +1155,7 @@ if __name__ == "__main__":
     logging.info('Version: ' + platform.version())
     logging.info('Machine: ' + platform.machine())
 
+    # generating the necessary folders
     logging.info('working directory: {0}'.format(os.getcwd()))
     if not os.access(os.getcwd(), os.W_OK):
         logging.error('no write access to workdir')
@@ -1161,10 +1169,9 @@ if __name__ == "__main__":
     # and finally starting the application
     app = PyQt5.QtWidgets.QApplication(sys.argv)
     sys.excepthook = except_hook
-    # noinspection PyCallByClass,PyTypeChecker,PyArgumentList
-    app.setStyle(PyQt5.QtWidgets.QStyleFactory.create('Fusion'))
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
     mountApp = MountWizzardApp()
+    logging.info('Screensize: {0} x {1}'.format(mountApp.screenSizeX, mountApp.screenSizeY))
     mountApp.show()
 
     sys.exit(app.exec_())

@@ -82,7 +82,13 @@ class AnalyseWindow(widget.MwWidget):
             if 'ScalePlotError' in self.app.config:
                 self.ui.scalePlotError.setValue(self.app.config['ScalePlotError'])
             if 'AnalysePopupWindowPositionX' in self.app.config:
-                self.move(self.app.config['AnalysePopupWindowPositionX'], self.app.config['AnalysePopupWindowPositionY'])
+                x = self.config['AnalysePopupWindowPositionX']
+                y = self.config['AnalysePopupWindowPositionY']
+                if x > self.screenSizeX:
+                    x = 0
+                if y > self.screenSizeY:
+                    y = 0
+                self.move(x, y)
             if 'AnalysePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
         except Exception as e:

@@ -89,7 +89,6 @@ class MwWidget(QWidget):
         background-color: #101010;
         color: rgb(32, 144, 192);
     }
-
     /* Checkboxes */
     QCheckBox {
         color: #C0C0C0;
@@ -108,7 +107,6 @@ class MwWidget(QWidget):
         background-color: rgb(32, 144, 192);
         image: url(:/checkmark.ico);
     }
-    
     /* Spin Boxes */
     QDoubleSpinBox {
         background-color: #101010;
@@ -174,9 +172,9 @@ class MwWidget(QWidget):
     }
     QPushButton:disabled {
         background-color: #101010;
-        color: #404040;
+        color: #202020;
         border-color: #202020;
-        border-width: 2px;
+        border-width: 1px;
         border-style: outset;
         border-radius: 2px;
     }
@@ -316,6 +314,14 @@ class MwWidget(QWidget):
         border-radius: 2px;
         border-style: outset;
     }
+    QTextBrowser {
+        background-color: #101010;
+        border-radius: 2px;
+        border-width: 2px;
+        border-color: #404040;
+        border-style: outset;
+        margin: -5px;
+    }
     """
 
     def __init__(self):
@@ -325,6 +331,8 @@ class MwWidget(QWidget):
         self.bundle_dir = ''
         self.showStatus = False
         self.initUI()
+        self.screenSizeX = PyQt5.QtWidgets.QDesktopWidget().screenGeometry().width()
+        self.screenSizeY = PyQt5.QtWidgets.QDesktopWidget().screenGeometry().height()
 
     def closeEvent(self, closeEvent):
         self.showStatus = False
@@ -337,15 +345,11 @@ class MwWidget(QWidget):
         gui.style().polish(gui)
         gui.setIconSize(PyQt5.QtCore.QSize(32, 16))
 
-    # noinspection PyProtectedMember
     def initUI(self):
-        # self.setWindowFlags(self.windowFlags() | Qt.FramelessWindowHint)
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)
         self.setMouseTracking(True)
-
         # sizing in gui should be fixed, because I have a static layout
         self.setFixedSize(790, 640)
-        # set app icon
         self.setWindowIcon(QIcon(':/mw.ico'))
         self.setStyleSheet(self.BASIC_STYLE)
 
@@ -354,14 +358,10 @@ class MwWidget(QWidget):
         dlg = PyQt5.QtWidgets.QFileDialog()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
         dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
-        # dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
-        # dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.AnyFile)
+        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
         dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
         dlg.setNameFilter(filterSet)
-
-        # dialog.setDefaultSuffix("mex")
         dlg.setModal(True)
-
         ph = window.geometry().height()
         px = window.geometry().x()
         py = window.geometry().y()

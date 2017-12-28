@@ -11,12 +11,12 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MessageDialog(object):
     def setupUi(self, MessageDialog):
         MessageDialog.setObjectName("MessageDialog")
-        MessageDialog.resize(791, 639)
+        MessageDialog.resize(791, 641)
         font = QtGui.QFont()
         font.setFamily("Arial")
         MessageDialog.setFont(font)
         self.messages = QtWidgets.QTextBrowser(MessageDialog)
-        self.messages.setGeometry(QtCore.QRect(10, 10, 771, 621))
+        self.messages.setGeometry(QtCore.QRect(5, 5, 781, 631))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)

@@ -50,33 +50,31 @@ class ModelPlotWindow(widget.MwWidget):
         super(ModelPlotWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
-        self.pointerAzAlt = QGraphicsItemGroup()
-        self.pointerTrack = QGraphicsItemGroup()
+        self.pointerAzAlt = None
+        self.patchCollection = None
+        self.pointerTrack = None
         self.pointerTrackLine = []
         self.itemFlipTime = QGraphicsItemGroup()
         self.itemFlipTimeText = QGraphicsTextItem('')
         self.pointerDome = QGraphicsRectItem(0, 0, 0, 0)
-        self.showStatus = False
         self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()
         self.ui.setupUi(self)
-
+        self.initUI()
+        self.initConfig()
+        # setup the plot styles
         self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
         self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
-
-        self.initUI()
-        self.initConfig()
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)
         self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)
-        # self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.redrawModelingWindow)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
+        self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
 
         if platform.system() == 'Windows':
             self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)
-        # self.redrawModelingWindow()
-        self.drawHemisphere()
+        self.showStatus = False
         self.setVisible(False)
 
     def initConfig(self):
@@ -85,6 +83,10 @@ class ModelPlotWindow(widget.MwWidget):
                 self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
             if 'CoordinatePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
+            if 'CheckShowNumbers' in self.app.config:
+                self.ui.checkShowNumbers.setChecked(self.app.config['CheckShowNumbers'])
+            if 'CheckRunTrackingWidget' in self.app.config:
+                self.ui.checkRunTrackingWidget.setChecked(self.app.config['CheckRunTrackingWidget'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -94,10 +96,13 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.config['CoordinatePopupWindowPositionX'] = self.pos().x()
         self.app.config['CoordinatePopupWindowPositionY'] = self.pos().y()
         self.app.config['CoordinatePopupWindowShowStatus'] = self.showStatus
+        self.app.config['CheckShowNumbers'] = self.ui.checkShowNumbers.isChecked()
+        self.app.config['CheckRunTrackingWidget'] = self.ui.checkRunTrackingWidget.isChecked()
 
     def showWindow(self):
         self.showStatus = True
         self.setVisible(True)
+        self.drawHemisphere()
         self.show()
 
     def selectHorizonPointsMode(self):
@@ -107,16 +112,12 @@ class ModelPlotWindow(widget.MwWidget):
                                                                                              self.app.ui.altitudeMinimumHorizon.value())
         if msg:
             self.app.messageQueue.put(msg + '\n')
-        # self.redrawModelingWindow()
         self.drawHemisphere()
 
     def setAzAltPointer(self, az, alt):
-        return
-        x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)
-        self.pointerAzAlt.setPos(x, y)
-        self.pointerAzAlt.setVisible(True)
-        self.pointerAzAlt.update()
-        self.ui.modelPointsPlot.viewport().update()
+        self.pointerAzAlt.center = az, alt
+        # matplotlib.collections.UpdatablePatchCollection(self.patchCollection)
+        self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
     def setDomePointer(self, az):
@@ -164,63 +165,49 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui.modelPointsPlot.viewport().update()
         QApplication.processEvents()
 
-    def constructTrackWidget(self, esize):
-        group = QGraphicsItemGroup()
-        groupFlipTime = QGraphicsItemGroup()
-        track = []
-        group.setVisible(False)
-        poly = QPolygonF()
-        poly.append(QPointF(0, 0))
-        poly.append(QPointF(45, 0))
-        poly.append(QPointF(45, 35))
-        poly.append(QPointF(0, 35))
-        poly.append(QPointF(0, 0))
-        item = QGraphicsPolygonItem(poly)
-        pen = QPen(self.COLOR_BACKGROUND, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        item.setPen(pen)
-        item.setBrush(QBrush(self.COLOR_BACKGROUND))
-        item.setOpacity(0.8)
-        groupFlipTime.addToGroup(item)
-        pen = QPen(self.COLOR_TRACKWIDGETPOINTS, 1, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        for i in range(0, 50):
-            item = QGraphicsEllipseItem(-esize / 8, -esize / 8, esize / 4, esize / 4)
-            item.setPen(pen)
-            group.addToGroup(item)
-            track.append(item)
-        itemText = QGraphicsTextItem(' 19:20\n  0 min', None)
-        itemText.setDefaultTextColor(self.COLOR_TRACKWIDGETTEXT)
-        groupFlipTime.addToGroup(itemText)
-        pen = QPen(self.COLOR_WHITE, 2, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
-        item = QGraphicsEllipseItem(- esize / 4, -esize / 4, esize / 2, esize / 2)
-        item.setPen(pen)
-        groupFlipTime.addToGroup(item)
-        item = QGraphicsRectItem(0, -esize, 0, 2 * esize)
-        item.setPen(pen)
-        groupFlipTime.addToGroup(item)
-        group.addToGroup(groupFlipTime)
-        return group, groupFlipTime, itemText, track
-
     def drawHemisphere(self):
-
         self.hemisphereMatplotlib.axes.cla()
         self.hemisphereMatplotlib.axes.grid(True, color='gray')
         self.hemisphereMatplotlib.axes.set_facecolor((32 / 256, 32 / 256, 32 / 256))
-        self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='white', labelsize=12)
+        self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
         self.hemisphereMatplotlib.axes.set_xlim(0, 360)
         self.hemisphereMatplotlib.axes.set_ylim(0, 90)
-        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='white', which='both', labelleft='on', labelright='on', labelsize=12)
+        self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='#2090C0', which='both', labelleft='on', labelright='on', labelsize=12)
+        # get the aspect ratio for circles etc:
+        figW, figH = self.hemisphereMatplotlib.axes.get_figure().get_size_inches()
+        _, _, w, h = self.hemisphereMatplotlib.axes.get_position().bounds
+        displayRatio = (figH * h) / (figW * w)
+        dataRatio = 90 / 360
+        aspectRatio = displayRatio / dataRatio
         # horizon
         horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
         if len(horizon) > 0:
             horizon.insert(0, (0, 0))
             horizon.append((360, 0))
-            self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#004000')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', lw=2)
+            self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#004000', zorder=-10)
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-5, lw=2)
         # model points
-        refinement = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
-        if len(refinement) > 0:
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in refinement], [i[1] for i in refinement], 'o')
+        number = 1
+        offx = 7
+        offy = offx / aspectRatio
         base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
         if len(base) > 0:
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], '*')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=10, color='#FF0000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=4, color='#FFFF00')
+            if self.ui.checkShowNumbers.isChecked():
+                for i in range(0, len(base)):
+                    self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(base[i][0] - offx, base[i][1] - offy), color='#E0E0E0')
+                    number += 1
+        refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
+        if len(refine) > 0:
+            # draw points in two colors
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=10, color='#00FF00')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=4, color='#FFFF00')
+            # add text to points
+            if self.ui.checkShowNumbers.isChecked():
+                for i in range(0, len(refine)):
+                    self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - offx, refine[i][1] - offy), color='#E0E0E0')
+                    number += 1
+        self.pointerAzAlt = matplotlib.patches.Ellipse((180, 45), 5 * aspectRatio, 5, zorder=-2, color='#FF00FF', lw=3, fill=False)
+        self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt)
         self.hemisphereMatplotlib.draw()

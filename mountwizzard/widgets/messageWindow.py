@@ -39,7 +39,13 @@ class MessageWindow(widget.MwWidget):
     def initConfig(self):
         try:
             if 'MessagePopupWindowPositionX' in self.app.config:
-                self.move(self.app.config['MessagePopupWindowPositionX'], self.app.config['MessagePopupWindowPositionY'])
+                x = self.config['MessagePopupWindowPositionX']
+                y = self.config['MessagePopupWindowPositionY']
+                if x > self.screenSizeX:
+                    x = 0
+                if y > self.screenSizeY:
+                    y = 0
+                self.move(x, y)
             if 'MessagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['MessagePopupWindowShowStatus']
             if 'MessagePopupWindowHeight' in self.app.config:

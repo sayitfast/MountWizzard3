@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>791</width>
-    <height>639</height>
+    <height>641</height>
    </rect>
   </property>
   <property name="font">
@@ -21,10 +21,10 @@
   <widget class="QTextBrowser" name="messages">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>771</width>
-     <height>621</height>
+     <x>5</x>
+     <y>5</y>
+     <width>781</width>
+     <height>631</height>
     </rect>
    </property>
    <property name="sizePolicy">
@@ -70,4 +70,21 @@ p, li { white-space: pre-wrap; }
  </widget>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>

@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>6</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -9106,6 +9106,30 @@ Window</string>
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_loadAnalyseData">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>85</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
     <zorder>line_33</zorder>
     <zorder>line_43</zorder>
     <zorder>line_29</zorder>
@@ -9147,6 +9171,7 @@ Window</string>
     <zorder>altitudeHysterese1</zorder>
     <zorder>label_186</zorder>
     <zorder>label_187</zorder>
+    <zorder>btn_loadAnalyseData</zorder>
    </widget>
    <widget class="QWidget" name="tab_9">
     <attribute name="title">
