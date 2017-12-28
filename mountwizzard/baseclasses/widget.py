@@ -55,12 +55,19 @@ class MwWidget(QWidget):
         background-color: transparent;
         color: #C0C0C0;
     }
-    QLabel#mainBackgound {
+    QLabel#mainBackground {
         border-width: 3px;
         border-color: rgb(16, 72, 96);
         border-style: outset;
         border-radius: 2px;
         background-color: rgb(8, 36, 48);
+    }
+    QLabel#hemisphereBackground {
+        border-width: 3px;
+        border-color: rgb(16, 72, 96);
+        border-style: outset;
+        border-radius: 2px;
+        background-color: #181818;
     }
     QLabel#picALT, QLabel#picAZ {
         border-width: 2px;

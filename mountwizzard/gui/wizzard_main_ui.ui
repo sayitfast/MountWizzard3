@@ -13756,7 +13756,7 @@ Window</string>
     <string>Boot WOL</string>
    </property>
   </widget>
-  <widget class="QLabel" name="mainBackgound">
+  <widget class="QLabel" name="mainBackground">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -13769,7 +13769,7 @@ Window</string>
     <string/>
    </property>
   </widget>
-  <zorder>mainBackgound</zorder>
+  <zorder>mainBackground</zorder>
   <zorder>le_mountStatus</zorder>
   <zorder>mainTabWidget</zorder>
   <zorder>btn_saveConfigQuit</zorder>

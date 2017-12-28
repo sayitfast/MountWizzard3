@@ -112,6 +112,20 @@
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="hemisphereBackground">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>791</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>hemisphereBackground</zorder>
   <zorder>hemisphere</zorder>
   <zorder>checkRunTrackingWidget</zorder>
   <zorder>btn_deletePoints</zorder>
