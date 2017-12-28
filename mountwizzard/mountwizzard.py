@@ -28,7 +28,6 @@ import PyQt5
 import matplotlib
 matplotlib.use('Qt5Agg')
 from baseclasses import widget
-from baseclasses import fileLoadSave
 from widgets import modelplotWindow
 from widgets import imageWindow
 from widgets import analyseWindow
@@ -226,40 +225,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.le_ascomEnvironmentDriverName.setText(self.workerAscomEnvironment.driverName)
         self.threadAscomEnvironment.start()
 
-    def setEnvironmentStatus(self, status):
-        if status == 0:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
-        elif status == 1:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        elif status == 2:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
-        elif status == 3:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
-
-    def fillEnvironmentData(self):
-        if platform.system() != 'Windows':
-            return
-        for valueName in self.workerAscomEnvironment.data:
-            if valueName == 'DewPoint':
-                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'Temperature':
-                self.ui.le_temperature.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'Humidity':
-                self.ui.le_humidity.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'Pressure':
-                self.ui.le_pressure.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'CloudCover':
-                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'RainRate':
-                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'WindSpeed':
-                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'WindDirection':
-                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
-            elif valueName == 'SQR':
-                self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
-                self.modelWindow.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
-
     def workerAscomDomeStop(self):
         self.threadAscomDome.quit()
         self.threadAscomDome.wait()
@@ -353,7 +318,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
-        self.ui.le_horizonPointsFileName.doubleClicked.connect(self.modelWindow.selectHorizonPointsFileName)
+        self.ui.le_horizonPointsFileName.doubleClicked.connect(self.selectHorizonPointsFileName)
         self.ui.le_modelPointsFileName.doubleClicked.connect(self.selectModelPointsFileName)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -722,8 +687,7 @@ class MountWizzardApp(widget.MwWidget):
             self.config = {}
 
     def loadConfigDataFrom(self):
-        dlg = fileLoadSave.MwFileDialogue(self)
-        a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/config', 'Config files (*.cfg)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        a = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)')
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
             try:
@@ -765,8 +729,7 @@ class MountWizzardApp(widget.MwWidget):
             return
 
     def saveConfigAs(self):
-        dlg = fileLoadSave.MwFileDialogue(self)
-        a = dlg.getSaveFileName(dlg, 'Save file', os.getcwd() + '/config', 'Config files (*.cfg)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        a = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)')
         if a[0] != '':
             self.ui.le_configName.setText(os.path.basename(a[0]))
             self.saveConfigData(a[0])
@@ -774,21 +737,26 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('No config file selected')
 
     def selectModelPointsFileName(self):
-        dlg = fileLoadSave.MwFileDialogue(self)
-        a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        a = self.selectFile(self, 'Open model points file', '/config', 'Model points files (*.txt)')
         if a[0] != '':
             self.ui.le_modelPointsFileName.setText(os.path.basename(a[0]))
         else:
             self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
-        dlg = fileLoadSave.MwFileDialogue(self)
-        a = dlg.getOpenFileName(dlg, 'Open file', os.getcwd()+'/analysedata', 'Data Files (*.dat)', options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        a = self.selectFile(self, 'Open analyse file', '/config', 'Analyse files (*.dat)')
         if a[0] != '':
             self.ui.le_analyseFileName.setText(os.path.basename(a[0]))
             self.analyseWindow.showWindow()
         else:
             self.logger.warning('no file selected')
+
+    def selectHorizonPointsFileName(self):
+        a = self.selectFile(self, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)')
+        if a[0] != '':
+            self.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
+            self.modelWindow.selectHorizonPointsMode()
+            self.modelWindow.drawHemisphere()
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()
@@ -891,6 +859,39 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
         self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
         self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+
+    def setEnvironmentStatus(self, status):
+        if status == 0:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+        elif status == 1:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
+        elif status == 2:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+        elif status == 3:
+            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
+
+    def fillEnvironmentData(self):
+        if platform.system() != 'Windows':
+            return
+        for valueName in self.workerAscomEnvironment.data:
+            if valueName == 'DewPoint':
+                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'Temperature':
+                self.ui.le_temperature.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'Humidity':
+                self.ui.le_humidity.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'Pressure':
+                self.ui.le_pressure.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'CloudCover':
+                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'RainRate':
+                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'WindSpeed':
+                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'WindDirection':
+                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+            elif valueName == 'SQR':
+                self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
 
     @PyQt5.QtCore.Slot(int)
     def setINDIStatus(self, status):
@@ -1001,10 +1002,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_telescopeRA.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'TelescopeAltitude':
                 self.ui.le_telescopeAltitude.setText(str(self.workerMountDispatcher.data[valueName]))
-                self.modelWindow.ui.le_telescopeAltitude.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'TelescopeAzimuth':
                 self.ui.le_telescopeAzimut.setText(str(self.workerMountDispatcher.data[valueName]))
-                self.modelWindow.ui.le_telescopeAzimut.setText(str(self.workerMountDispatcher.data[valueName]))
             if valueName == 'SlewRate':
                 if not self.ui.le_horizonLimitLow.hasFocus():
                     self.ui.le_slewRate.setText(str(self.workerMountDispatcher.data[valueName]))

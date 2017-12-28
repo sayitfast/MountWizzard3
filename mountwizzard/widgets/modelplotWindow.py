@@ -110,19 +110,6 @@ class ModelPlotWindow(widget.MwWidget):
         # self.redrawModelingWindow()
         self.drawHemisphere()
 
-    def selectHorizonPointsFileName(self):
-        dlg = QFileDialog()
-        dlg.setViewMode(QFileDialog.List)
-        dlg.setNameFilter("Text files (*.txt)")
-        dlg.setFileMode(QFileDialog.ExistingFile)
-        # noinspection PyArgumentList
-        a = dlg.getOpenFileName(self, 'Open file', os.getcwd()+'/config', 'Text files (*.txt)')
-        if a[0] != '':
-            self.app.ui.le_horizonPointsFileName.setText(os.path.basename(a[0]))
-            self.selectHorizonPointsMode()
-            self.app.ui.checkUseMinimumHorizonLine.setChecked(False)
-            # self.redrawModelingWindow()
-
     def setAzAltPointer(self, az, alt):
         return
         x, y = getXY(az, alt, self.ui.modelPointsPlot.height(), self.ui.modelPointsPlot.width(), BORDER_VIEW)

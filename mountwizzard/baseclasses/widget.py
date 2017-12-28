@@ -13,9 +13,6 @@
 ############################################################
 import logging
 import os
-import sys
-
-# import for the PyQt5 Framework
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -345,14 +342,27 @@ class MwWidget(QWidget):
         # sizing in gui should be fixed, because I have a static layout
         self.setFixedSize(790, 640)
         # set app icon
-        if getattr(sys, 'frozen', False):
-            # we are running in a bundle
-            self.bundle_dir = sys._MEIPASS
-        else:
-            # we are running in a normal Python environment
-            self.bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-        self.setWindowIcon(QIcon(self.bundle_dir + '\\icons\\mw.ico'))
+        self.setWindowIcon(QIcon(':/mw.ico'))
         self.setStyleSheet(self.BASIC_STYLE)
+
+    @staticmethod
+    def selectFile(window, title, folder, filterSet):
+        dlg = PyQt5.QtWidgets.QFileDialog()
+        dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
+        dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        # dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
+        # dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.AnyFile)
+        dlg.setFileMode(PyQt5.QtWidgets.QFileDialog.ExistingFile)
+        ph = window.geometry().height()
+        px = window.geometry().x()
+        py = window.geometry().y()
+        dw = window.width()
+        dh = window.height()
+        dlg.setGeometry(px, py + ph - dh, dw, dh)
+        dlg.setNameFilter(filterSet)
+        value = dlg.getOpenFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        dlg = None
+        return value
 
 
 # class for embed the matplotlib in pyqt5 framework
