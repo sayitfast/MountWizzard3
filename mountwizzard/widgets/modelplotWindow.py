@@ -34,9 +34,6 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome1 = None
         self.pointerDome2 = None
         self.pointerTrack = None
-        self.pointerTrackLine = []
-        self.itemFlipTime = QGraphicsItemGroup()
-        self.itemFlipTimeText = QGraphicsTextItem('')
         self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()
         self.ui.setupUi(self)
         self.initUI()
@@ -45,15 +42,15 @@ class ModelPlotWindow(widget.MwWidget):
         self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
         self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+        # signal connections
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)
-        self.ui.checkRunTrackingWidget.toggled.connect(self.changeStatusTrackingWidget)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
-
         if platform.system() == 'Windows':
             self.app.workerAscomDome.signalDomePointer.connect(self.setDomePointer)
+        # from start on invisible
         self.showStatus = False
         self.setVisible(False)
 
@@ -65,8 +62,6 @@ class ModelPlotWindow(widget.MwWidget):
                 self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
             if 'CheckShowNumbers' in self.app.config:
                 self.ui.checkShowNumbers.setChecked(self.app.config['CheckShowNumbers'])
-            if 'CheckRunTrackingWidget' in self.app.config:
-                self.ui.checkRunTrackingWidget.setChecked(self.app.config['CheckRunTrackingWidget'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -77,7 +72,6 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.config['CoordinatePopupWindowPositionY'] = self.pos().y()
         self.app.config['CoordinatePopupWindowShowStatus'] = self.showStatus
         self.app.config['CheckShowNumbers'] = self.ui.checkShowNumbers.isChecked()
-        self.app.config['CheckRunTrackingWidget'] = self.ui.checkRunTrackingWidget.isChecked()
 
     def showWindow(self):
         self.showStatus = True
@@ -105,13 +99,6 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome2.set_xy((az, 1))
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
-
-    def changeStatusTrackingWidget(self):
-        return
-        if self.ui.checkRunTrackingWidget.isChecked():
-            self.drawTrackPreview()
-        else:
-            self.pointerTrack.setVisible(False)
 
     def drawTrackPreview(self):
         return

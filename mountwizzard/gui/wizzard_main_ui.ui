@@ -4042,7 +4042,7 @@ Window</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="ClickableLineEdit" name="le_modelPointsFileName">
+    <widget class="QLineEdit" name="le_modelPointsFileName">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -4078,7 +4078,7 @@ Window</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="ClickableLineEdit" name="le_horizonPointsFileName">
+    <widget class="QLineEdit" name="le_horizonPointsFileName">
      <property name="geometry">
       <rect>
        <x>520</x>
@@ -8542,7 +8542,7 @@ Window</string>
       <string>Run Hysteresis</string>
      </property>
     </widget>
-    <widget class="ClickableLineEdit" name="le_analyseFileName">
+    <widget class="QLineEdit" name="le_analyseFileName">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -8570,6 +8570,9 @@ Window</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
      </property>
      <property name="readOnly">
       <bool>false</bool>
@@ -13788,13 +13791,6 @@ Window</string>
   <zorder>btn_mountShutdown</zorder>
   <zorder>btn_mountBoot</zorder>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ClickableLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>clickablelineedit.h</header>
-  </customwidget>
- </customwidgets>
  <tabstops>
   <tabstop>btn_openMessageWindow</tabstop>
   <tabstop>btn_mountBoot</tabstop>

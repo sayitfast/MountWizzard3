@@ -15,14 +15,6 @@ class Ui_CoordinateDialog(object):
         font = QtGui.QFont()
         font.setFamily("Arial")
         CoordinateDialog.setFont(font)
-        self.checkRunTrackingWidget = QtWidgets.QCheckBox(CoordinateDialog)
-        self.checkRunTrackingWidget.setGeometry(QtCore.QRect(250, 10, 111, 31))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.checkRunTrackingWidget.setFont(font)
-        self.checkRunTrackingWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.checkRunTrackingWidget.setChecked(True)
-        self.checkRunTrackingWidget.setObjectName("checkRunTrackingWidget")
         self.hemisphere = QtWidgets.QWidget(CoordinateDialog)
         self.hemisphere.setEnabled(True)
         self.hemisphere.setGeometry(QtCore.QRect(10, 60, 771, 571))
@@ -49,7 +41,6 @@ class Ui_CoordinateDialog(object):
         self.hemisphereBackground.setObjectName("hemisphereBackground")
         self.hemisphereBackground.raise_()
         self.hemisphere.raise_()
-        self.checkRunTrackingWidget.raise_()
         self.btn_deletePoints.raise_()
         self.checkShowNumbers.raise_()
 
@@ -59,8 +50,6 @@ class Ui_CoordinateDialog(object):
     def retranslateUi(self, CoordinateDialog):
         _translate = QtCore.QCoreApplication.translate
         CoordinateDialog.setWindowTitle(_translate("CoordinateDialog", "Modeling Plot"))
-        self.checkRunTrackingWidget.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p>Checked if you would like to see the tracking line and flip time in the window</p></body></html>"))
-        self.checkRunTrackingWidget.setText(_translate("CoordinateDialog", "Show Track"))
         self.btn_deletePoints.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p>Delete all points on coordinate window including Base / Model</p></body></html>"))
         self.btn_deletePoints.setText(_translate("CoordinateDialog", "Clear Points"))
         self.checkShowNumbers.setToolTip(_translate("CoordinateDialog", "<html><head/><body><p>Checked if you would like to see the tracking line and flip time in the window</p></body></html>"))

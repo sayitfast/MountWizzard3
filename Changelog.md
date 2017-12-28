@@ -4,9 +4,8 @@
 - image window rework
 - environment on indi
 - dome on indi
-- enable / disable relais box
-- hemisphere window rework
-- loading horizon mask split load and kepp
+- enable / disable relay box make it work
+- loading horizon mask split load and keep data in memory
 - edit model points (no real split between base and refine)
 - edit horizon mask
 - save model points

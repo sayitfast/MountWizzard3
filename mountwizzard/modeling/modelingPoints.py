@@ -39,8 +39,8 @@ class ModelPoints:
             if 'AltitudeMinimumHorizon' in self.app.config:
                 self.app.ui.altitudeMinimumHorizon.setValue(self.app.config['AltitudeMinimumHorizon'])
             self.loadHorizonPoints(self.app.config['HorizonPointsFileName'],
-                                   self.app.config['CheckUseMinimumHorizonLine'],
                                    self.app.config['CheckUseFileHorizonLine'],
+                                   self.app.config['CheckUseMinimumHorizonLine'],
                                    self.app.config['AltitudeMinimumHorizon'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
