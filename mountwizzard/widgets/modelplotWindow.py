@@ -14,33 +14,12 @@
 import copy
 import datetime
 import logging
-import os
 import platform
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
 import matplotlib
 from gui import coordinate_dialog_ui
-
-
-def getXYRectangle(az, width, border):
-    x = (az - 15) * (width - 2 * border) / 360 + border
-    y = border
-    return int(x + 0.5), int(y + 0.5)
-
-
-def getXY(az, alt, height, width, border):                                                                                  # calculation of the position
-    x = border + (az / 360 * (width - 2 * border))
-    y = height - border - (alt / 90 * (height - 2 * border))
-    return int(x + 0.5), int(y + 0.5)
-
-
-BORDER_VIEW = 30                                                                                                            # 20 point from graphics border
-TEXTHEIGHT_VIEW = 15                                                                                                        # text size for drawing
-TEXTHEIGHT = 10
-ELLIPSE_VIEW = 12                                                                                                           # size of the circles of points
 
 
 class ModelPlotWindow(widget.MwWidget):
@@ -136,31 +115,6 @@ class ModelPlotWindow(widget.MwWidget):
 
     def drawTrackPreview(self):
         return
-        if not self.ui.checkRunTrackingWidget.isChecked() or 'RaJ2000' not in self.app.workerMountDispatcher.data:
-            return
-        raCopy = copy.copy(self.app.workerMountDispatcher.data['RaJ2000'])
-        decCopy = copy.copy(self.app.workerMountDispatcher.data['DecJ2000'])
-        width = self.ui.modelPointsPlot.width()
-        height = self.ui.modelPointsPlot.height()
-        self.pointerTrack.setVisible(True)
-        for i in range(0, 50):
-            ra = raCopy - float(i) * 10 / 50
-            az, alt = self.transform.transformERFA(ra, decCopy, 1)
-            x, y = getXY(az, alt, height, width, BORDER_VIEW)
-            self.pointerTrackLine[i].setPos(x, y)
-            if alt > 0:
-                self.pointerTrackLine[i].setVisible(True)
-            else:
-                self.pointerTrackLine[i].setVisible(False)
-        az, alt = self.transform.transformERFA(self.app.workerMountDispatcher.data['RaJ2000'] - float(self.app.workerMountDispatcher.data['TimeToFlip']) / 60, decCopy, 1)
-        x, y = getXY(az, alt, height, width, BORDER_VIEW)
-        self.itemFlipTime.setPos(x, y)
-        delta = float(self.app.workerMountDispatcher.data['TimeToFlip'])
-        fliptime = datetime.datetime.now() + datetime.timedelta(minutes=delta)
-        self.itemFlipTimeText.setPlainText(' {0:%H:%M}\n{1:3.0f} min'.format(fliptime, delta))
-        self.pointerTrack.update()
-        self.ui.modelPointsPlot.viewport().update()
-        QApplication.processEvents()
 
     def drawHemisphere(self):
         self.hemisphereMatplotlib.axes.cla()
