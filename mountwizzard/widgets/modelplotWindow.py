@@ -51,12 +51,12 @@ class ModelPlotWindow(widget.MwWidget):
         self.app = app
         self.transform = transform.Transform(self.app)
         self.pointerAzAlt = None
-        self.patchCollection = None
+        self.pointerDome1 = None
+        self.pointerDome2 = None
         self.pointerTrack = None
         self.pointerTrackLine = []
         self.itemFlipTime = QGraphicsItemGroup()
         self.itemFlipTimeText = QGraphicsTextItem('')
-        self.pointerDome = QGraphicsRectItem(0, 0, 0, 0)
         self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()
         self.ui.setupUi(self)
         self.initUI()
@@ -73,7 +73,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
 
         if platform.system() == 'Windows':
-            self.app.workerAscomDome.signalDomPointer.connect(self.setDomePointer)
+            self.app.workerAscomDome.signalDomePointer.connect(self.setDomePointer)
         self.showStatus = False
         self.setVisible(False)
 
@@ -115,19 +115,14 @@ class ModelPlotWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def setAzAltPointer(self, az, alt):
-        self.pointerAzAlt.center = az, alt
-        # matplotlib.collections.UpdatablePatchCollection(self.patchCollection)
+        self.pointerAzAlt.set_xy((az, alt))
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
     def setDomePointer(self, az):
-        return
-        width = self.ui.modelPointsPlot.width()
-        x, y = getXYRectangle(az, width, BORDER_VIEW)
-        self.pointerDome.setPos(x, y)
-        self.pointerDome.setVisible(True)
-        self.pointerDome.update()
-        self.ui.modelPointsPlot.viewport().update()
+        self.pointerDome1.set_xy((az, 1))
+        self.pointerDome2.set_xy((az, 1))
+        self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
     def changeStatusTrackingWidget(self):
@@ -184,8 +179,8 @@ class ModelPlotWindow(widget.MwWidget):
         if len(horizon) > 0:
             horizon.insert(0, (0, 0))
             horizon.append((360, 0))
-            self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#004000', zorder=-10)
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-5, lw=2)
+            self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         # model points
         number = 1
         offx = 7
@@ -209,5 +204,9 @@ class ModelPlotWindow(widget.MwWidget):
                     self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - offx, refine[i][1] - offy), color='#E0E0E0')
                     number += 1
         self.pointerAzAlt = matplotlib.patches.Ellipse((180, 45), 5 * aspectRatio, 5, zorder=-2, color='#FF00FF', lw=3, fill=False)
+        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True)
+        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt)
+        self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
+        self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
         self.hemisphereMatplotlib.draw()

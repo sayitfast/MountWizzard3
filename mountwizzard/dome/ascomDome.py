@@ -24,7 +24,7 @@ class AscomDome(PyQt5.QtCore.QObject):
     finished = PyQt5.QtCore.pyqtSignal()
 
     signalAscomDomeConnected = PyQt5.QtCore.pyqtSignal([int])
-    signalDomPointer = PyQt5.QtCore.pyqtSignal([float])
+    signalDomePointer = PyQt5.QtCore.pyqtSignal([float])
 
     CYCLE_DATA = 500
 

@@ -1070,7 +1070,7 @@ class MountWizzardApp(widget.MwWidget):
 
     def mainLoop(self):
         self.counter += 5
-        # self.workerMountDispatcher.signalMountAzAltPointer.emit(self.counter, 45)
+        self.workerAscomDome.signalDomePointer.emit(self.counter)
         if self.counter > 370:
             self.counter = -10
         self.fillMountData()
