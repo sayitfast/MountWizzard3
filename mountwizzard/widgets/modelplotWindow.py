@@ -50,7 +50,8 @@ class ModelPlotWindow(widget.MwWidget):
         super(ModelPlotWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
-        self.pointerAzAlt = None
+        self.pointerAzAlt1 = None
+        self.pointerAzAlt2 = None
         self.pointerDome1 = None
         self.pointerDome2 = None
         self.pointerTrack = None
@@ -115,7 +116,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def setAzAltPointer(self, az, alt):
-        self.pointerAzAlt.set_xy((az, alt))
+        self.pointerAzAlt1.set_xy((az, alt))
+        self.pointerAzAlt2.set_xy((az, alt))
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
@@ -203,10 +205,15 @@ class ModelPlotWindow(widget.MwWidget):
                 for i in range(0, len(refine)):
                     self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - offx, refine[i][1] - offy), color='#E0E0E0')
                     number += 1
-        self.pointerAzAlt = matplotlib.patches.Ellipse((180, 45), 5 * aspectRatio, 5, zorder=-2, color='#FF00FF', lw=3, fill=False)
+        # adding the pointer of mount
+        self.pointerAzAlt1 = matplotlib.patches.Ellipse((180, 45), 4 * aspectRatio, 4, zorder=-2, color='#FF00FF', lw=2, fill=False)
+        self.pointerAzAlt2 = matplotlib.patches.Ellipse((180, 45), 1.5 * aspectRatio, 1.5, zorder=-2, color='#FF00FF', lw=1, fill=False)
+        # adding pointer of dome
         self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True)
         self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False)
-        self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt)
+        # finishing up
+        self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt1)
+        self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt2)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
         self.hemisphereMatplotlib.draw()
