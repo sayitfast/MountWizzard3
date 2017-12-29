@@ -23,8 +23,9 @@ class AscomDome(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    signalAscomDomeConnected = PyQt5.QtCore.pyqtSignal([int])
-    signalDomePointer = PyQt5.QtCore.pyqtSignal([float])
+    signalAscomDomeConnected = PyQt5.QtCore.pyqtSignal(int)
+    signalDomePointer = PyQt5.QtCore.pyqtSignal(float)
+    signalDomePointerVisibility = PyQt5.QtCore.pyqtSignal(bool)
 
     CYCLE_DATA = 500
 
@@ -62,6 +63,7 @@ class AscomDome(PyQt5.QtCore.QObject):
                 self.ascom = Dispatch(self.driverName)
                 self.ascom.connected = True
                 self.signalAscomDomeConnected.emit(3)
+                self.signalDomePointerVisibility.emit(True)
             except Exception as e:
                 self.logger.error('Could not dispatch driver: {0} and connect it. Stopping thread.'.format(self.driverName))
             finally:
@@ -70,6 +72,7 @@ class AscomDome(PyQt5.QtCore.QObject):
             self.getData()
         else:
             self.signalAscomDomeConnected.emit(0)
+            self.signalDomePointerVisibility.emit(False)
             self.stop()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
 
@@ -103,7 +106,7 @@ class AscomDome(PyQt5.QtCore.QObject):
         finally:
             pass
         if 'Azimuth' in self.data:
-            self.signalDomPointer.emit(self.data['Azimuth'])
+            self.signalDomePointer.emit(self.data['Azimuth'])
         PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
     def setupDriver(self):

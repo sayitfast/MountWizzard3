@@ -205,6 +205,7 @@ class MwWidget(QWidget):
         text-align: left;
         padding-left: 10px;
     }   
+    
     /* Combo Boxes */
     QComboBox {
         text-align: right;
@@ -243,7 +244,8 @@ class MwWidget(QWidget):
         border-style: outset;
         border-color: rgb(16, 72, 96);
         background-color: rgb(32, 144, 192);
-    }
+    } 
+
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
         color: rgb(16, 72, 96);

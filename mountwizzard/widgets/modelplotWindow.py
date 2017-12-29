@@ -12,12 +12,11 @@
 #
 ############################################################
 import copy
-import datetime
 import logging
-import platform
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
+import numpy
 import matplotlib
 from gui import coordinate_dialog_ui
 
@@ -48,8 +47,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
-        if platform.system() == 'Windows':
-            self.app.workerAscomDome.signalDomePointer.connect(self.setDomePointer)
+        self.app.workerAscomDome.signalDomePointer.connect(self.setDomePointer)
+        self.app.workerAscomDome.signalDomePointerVisibility.connect(self.setDomePointerVisibility)
         # from start on invisible
         self.showStatus = False
         self.setVisible(False)
@@ -94,6 +93,10 @@ class ModelPlotWindow(widget.MwWidget):
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
+    def setDomePointerVisibility(self, stat):
+        self.pointerDome1.set_visible(stat)
+        self.pointerDome2.set_visible(stat)
+
     def setDomePointer(self, az):
         self.pointerDome1.set_xy((az, 1))
         self.pointerDome2.set_xy((az, 1))
@@ -105,10 +108,15 @@ class ModelPlotWindow(widget.MwWidget):
 
     def drawHemisphere(self):
         self.hemisphereMatplotlib.axes.cla()
-        self.hemisphereMatplotlib.axes.grid(True, color='gray')
+        self.hemisphereMatplotlib.axes.spines['bottom'].set_color('#2090C0')
+        self.hemisphereMatplotlib.axes.spines['top'].set_color('#2090C0')
+        self.hemisphereMatplotlib.axes.spines['left'].set_color('#2090C0')
+        self.hemisphereMatplotlib.axes.spines['right'].set_color('#2090C0')
+        self.hemisphereMatplotlib.axes.grid(True, color='#404040')
         self.hemisphereMatplotlib.axes.set_facecolor((32 / 256, 32 / 256, 32 / 256))
         self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
         self.hemisphereMatplotlib.axes.set_xlim(0, 360)
+        self.hemisphereMatplotlib.axes.set_xticks(numpy.arange(0, 361, 30))
         self.hemisphereMatplotlib.axes.set_ylim(0, 90)
         self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='#2090C0', which='both', labelleft='on', labelright='on', labelsize=12)
         # get the aspect ratio for circles etc:
@@ -149,12 +157,11 @@ class ModelPlotWindow(widget.MwWidget):
         # adding the pointer of mount
         self.pointerAzAlt1 = matplotlib.patches.Ellipse((180, 45), 4 * aspectRatio, 4, zorder=-2, color='#FF00FF', lw=2, fill=False)
         self.pointerAzAlt2 = matplotlib.patches.Ellipse((180, 45), 1.5 * aspectRatio, 1.5, zorder=-2, color='#FF00FF', lw=1, fill=False)
-        # adding pointer of dome
-        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True)
-        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False)
-        # finishing up
         self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt2)
+        # adding pointer of dome if dome is present
+        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True)
+        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
         self.hemisphereMatplotlib.draw()
