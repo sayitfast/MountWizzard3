@@ -39,8 +39,8 @@ class MessageWindow(widget.MwWidget):
     def initConfig(self):
         try:
             if 'MessagePopupWindowPositionX' in self.app.config:
-                x = self.config['MessagePopupWindowPositionX']
-                y = self.config['MessagePopupWindowPositionY']
+                x = self.app.config['MessagePopupWindowPositionX']
+                y = self.app.config['MessagePopupWindowPositionY']
                 if x > self.screenSizeX:
                     x = 0
                 if y > self.screenSizeY:
@@ -51,7 +51,7 @@ class MessageWindow(widget.MwWidget):
             if 'MessagePopupWindowHeight' in self.app.config:
                 self.resize(791, self.app.config['MessagePopupWindowHeight'])
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg not be initialized for messages window, error:{0}'.format(e))
         finally:
             pass
 

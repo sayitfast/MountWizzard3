@@ -71,8 +71,8 @@ class ImagesWindow(widget.MwWidget):
     def initConfig(self):
         try:
             if 'ImagePopupWindowPositionX' in self.app.config:
-                x = self.config['ImagePopupWindowPositionX']
-                y = self.config['ImagePopupWindowPositionY']
+                x = self.app.config['ImagePopupWindowPositionX']
+                y = self.app.config['ImagePopupWindowPositionY']
                 if x > self.screenSizeX:
                     x = 0
                 if y > self.screenSizeY:
@@ -81,7 +81,7 @@ class ImagesWindow(widget.MwWidget):
             if 'ImagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['ImagePopupWindowShowStatus']
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg not be initialized for image window, error:{0}'.format(e))
         finally:
             pass
 

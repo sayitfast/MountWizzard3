@@ -82,8 +82,8 @@ class AnalyseWindow(widget.MwWidget):
             if 'ScalePlotError' in self.app.config:
                 self.ui.scalePlotError.setValue(self.app.config['ScalePlotError'])
             if 'AnalysePopupWindowPositionX' in self.app.config:
-                x = self.config['AnalysePopupWindowPositionX']
-                y = self.config['AnalysePopupWindowPositionY']
+                x = self.app.config['AnalysePopupWindowPositionX']
+                y = self.app.config['AnalysePopupWindowPositionY']
                 if x > self.screenSizeX:
                     x = 0
                 if y > self.screenSizeY:
@@ -92,7 +92,7 @@ class AnalyseWindow(widget.MwWidget):
             if 'AnalysePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
         except Exception as e:
-            self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg not be initialized for analyse window, error:{0}'.format(e))
         finally:
             pass
 
