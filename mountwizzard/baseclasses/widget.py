@@ -74,7 +74,8 @@ class MwWidget(QWidget):
         border-color: #404040;
         border-style: outset;
         border-radius: 2px;
-    }    
+    }
+    
     /* QLine Edit*/
     QLineEdit {
         background-color: #101010;
@@ -96,6 +97,7 @@ class MwWidget(QWidget):
         background-color: #101010;
         color: rgb(32, 144, 192);
     }
+    
     /* Checkboxes */
     QCheckBox {
         color: #C0C0C0;
@@ -114,6 +116,7 @@ class MwWidget(QWidget):
         background-color: rgb(32, 144, 192);
         image: url(:/checkmark.ico);
     }
+    
     /* Spin Boxes */
     QDoubleSpinBox {
         background-color: #101010;
@@ -230,22 +233,18 @@ class MwWidget(QWidget):
     QComboBox::down-arrow {
         image: url(:/arrow-down.ico);
         width: 20px;
-        height: 32px;
+        height: 31px;
     }
-    QComboBox:item {
-        padding-left: 20px;  /* move text right to make room for tick mark */
-        height: 30px;
-        background-color: #202020;
-    }
-    QComboBox:item:selected {
-        padding-left: 20px;
+    QComboBox QAbstractItemView {
+        padding: 5px;
         border-width: 2px;
-        border-radius: 2px;
         border-style: outset;
-        border-color: rgb(16, 72, 96);
-        background-color: rgb(32, 144, 192);
-    } 
-
+        border-color: #404040;
+        border-radius: 2px;
+        color: #C0C0C0;
+        background-color: #101010;
+        selection-background-color: rgb(32, 144, 192);
+    }
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
         color: rgb(16, 72, 96);
@@ -253,6 +252,8 @@ class MwWidget(QWidget):
     QFrame[frameShape="5"] {/* vertical lines */
         color: rgb(16, 72, 96);
     }
+    
+    /* tab widget */
     QTabWidget:pane {
         border-width: 2px;
         border-color: #404040;

@@ -12,4 +12,3 @@
 - replace model plot with hemisphere
 - replace refinement model with full model
 - replace base model with alignment
-- colors of drop down lists again wrong
