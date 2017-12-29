@@ -95,22 +95,25 @@ class ModelPlotWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def setAzAltPointer(self, az, alt):
-        self.pointerAzAlt1.center = az, alt
-        self.pointerAzAlt2.center = az, alt
-        self.pointerAzAlt1.set_visible(True)
-        self.pointerAzAlt2.set_visible(True)
-        self.hemisphereMatplotlib.fig.canvas.draw()
-        QApplication.processEvents()
+        if self.showStatus:
+            self.pointerAzAlt1.center = az, alt
+            self.pointerAzAlt2.center = az, alt
+            self.pointerAzAlt1.set_visible(True)
+            self.pointerAzAlt2.set_visible(True)
+            self.hemisphereMatplotlib.fig.canvas.draw()
+            QApplication.processEvents()
 
     def setDomePointerVisibility(self, stat):
-        self.pointerDome1.set_visible(stat)
-        self.pointerDome2.set_visible(stat)
+        if self.showStatus:
+            self.pointerDome1.set_visible(stat)
+            self.pointerDome2.set_visible(stat)
 
     def setDomePointer(self, az):
-        self.pointerDome1.set_xy((az, 1))
-        self.pointerDome2.set_xy((az, 1))
-        self.hemisphereMatplotlib.fig.canvas.draw()
-        QApplication.processEvents()
+        if self.showStatus:
+            self.pointerDome1.set_xy((az, 1))
+            self.pointerDome2.set_xy((az, 1))
+            self.hemisphereMatplotlib.fig.canvas.draw()
+            QApplication.processEvents()
 
     def drawHemisphere(self):
         self.hemisphereMatplotlib.axes.cla()
