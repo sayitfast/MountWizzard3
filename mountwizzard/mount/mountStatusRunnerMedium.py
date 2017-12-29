@@ -24,13 +24,12 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     CYCLE_STATUS_MEDIUM = 3000
 
-    def __init__(self, app, data, signalConnected, signalMountTrackPreview):
+    def __init__(self, app, data, signalConnected):
         super().__init__()
 
         self.app = app
         self.data = data
         self.signalConnected = signalConnected
-        self.signalMountTrackPreview = signalMountTrackPreview
         self._mutex = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.connected = False
