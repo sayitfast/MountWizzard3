@@ -38,7 +38,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
-    signalMountTrackPreview = PyQt5.QtCore.pyqtSignal()
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_AUTO_UPDATE = 3000
@@ -100,7 +99,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
         self.workerMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFastStop)
         # medium status thread
-        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.data, self.signalMountConnectedMedium, self.signalMountTrackPreview)
+        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.data, self.signalMountConnectedMedium)
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)

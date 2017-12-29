@@ -43,7 +43,6 @@ class ModelPlotWindow(widget.MwWidget):
         self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
         # signal connections
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
-        self.app.workerMountDispatcher.signalMountTrackPreview.connect(self.drawTrackPreview)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
@@ -104,9 +103,6 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome2.set_xy((az, 1))
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
-
-    def drawTrackPreview(self):
-        return
 
     def drawHemisphere(self):
         self.hemisphereMatplotlib.axes.cla()
