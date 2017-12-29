@@ -90,6 +90,8 @@ class ModelPlotWindow(widget.MwWidget):
     def setAzAltPointer(self, az, alt):
         self.pointerAzAlt1.center = az, alt
         self.pointerAzAlt2.center = az, alt
+        self.pointerAzAlt1.set_visible(True)
+        self.pointerAzAlt2.set_visible(True)
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
@@ -138,7 +140,7 @@ class ModelPlotWindow(widget.MwWidget):
         offy = offx / aspectRatio
         base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
         if len(base) > 0:
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=10, color='#FF0000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=8, color='#FF0000')
             self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=4, color='#FFFF00')
             if self.ui.checkShowNumbers.isChecked():
                 for i in range(0, len(base)):
@@ -147,7 +149,7 @@ class ModelPlotWindow(widget.MwWidget):
         refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
         if len(refine) > 0:
             # draw points in two colors
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=10, color='#00FF00')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=8, color='#00FF00')
             self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=4, color='#FFFF00')
             # add text to points
             if self.ui.checkShowNumbers.isChecked():
@@ -155,13 +157,13 @@ class ModelPlotWindow(widget.MwWidget):
                     self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - offx, refine[i][1] - offy), color='#E0E0E0')
                     number += 1
         # adding the pointer of mount
-        self.pointerAzAlt1 = matplotlib.patches.Ellipse((180, 45), 4 * aspectRatio, 4, zorder=-2, color='#FF00FF', lw=2, fill=False)
-        self.pointerAzAlt2 = matplotlib.patches.Ellipse((180, 45), 1.5 * aspectRatio, 1.5, zorder=-2, color='#FF00FF', lw=1, fill=False)
+        self.pointerAzAlt1 = matplotlib.patches.Ellipse((180, 45), 4 * aspectRatio, 4, zorder=10, color='#FF00FF', lw=2, fill=False, visible=False)
+        self.pointerAzAlt2 = matplotlib.patches.Ellipse((180, 45), 1.5 * aspectRatio, 1.5, zorder=10, color='#FF00FF', lw=1, fill=False, visible=False)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerAzAlt2)
         # adding pointer of dome if dome is present
-        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True)
-        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False)
+        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True, visible=False)
+        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False, visible=False)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
         self.hemisphereMatplotlib.draw()
