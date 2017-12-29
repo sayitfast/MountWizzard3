@@ -343,6 +343,18 @@ class MountWizzardApp(widget.MwWidget):
             self.INDIthread.wait()
 
     def mountBoot(self):
+        import socket
+        host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
+        if len(host) > 1:
+            self.messageQueue.put('Cannot send WOL because there are multiple computer IP addresses configured\n')
+            self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
+            return
+        addressComputer = host[0].split('.')
+        addressMount = self.ui.le_mountIP.text().split('.')
+        if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
+            self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
+            self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
+            return
         self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(True))
         self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
         self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
@@ -1130,6 +1142,7 @@ class MountWizzardApp(widget.MwWidget):
 if __name__ == "__main__":
     import traceback
     import warnings
+    import socket
 
     # setting except hook to get stack traces into the log files
     def except_hook(typeException, valueException, tbackException):
@@ -1166,6 +1179,9 @@ if __name__ == "__main__":
     logging.info('Release: ' + platform.release())
     logging.info('Version: ' + platform.version())
     logging.info('Machine: ' + platform.machine())
+    host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
+    for i in range(0, len(host)):
+        logging.info('Computer IP address: ' + host[i])
 
     # generating the necessary folders
     logging.info('working directory: {0}'.format(os.getcwd()))
