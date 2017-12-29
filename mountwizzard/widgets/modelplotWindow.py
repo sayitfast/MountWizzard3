@@ -88,8 +88,8 @@ class ModelPlotWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def setAzAltPointer(self, az, alt):
-        self.pointerAzAlt1.set_xy((az, alt))
-        self.pointerAzAlt2.set_xy((az, alt))
+        self.pointerAzAlt1.center = az, alt
+        self.pointerAzAlt2.center = az, alt
         self.hemisphereMatplotlib.fig.canvas.draw()
         QApplication.processEvents()
 
