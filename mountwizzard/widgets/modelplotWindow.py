@@ -131,13 +131,13 @@ class ModelPlotWindow(widget.MwWidget):
             self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
             self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         # model points
-        number = 1
-        offx = 7
-        offy = offx / aspectRatio
+        offx = -2
+        offy = 7 / aspectRatio
         base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
         if len(base) > 0:
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=8, color='#FF0000')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=4, color='#FFFF00')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=8, color='#E00000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=4, color='#E0E000')
+            number = 1
             if self.ui.checkShowNumbers.isChecked():
                 for i in range(0, len(base)):
                     self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(base[i][0] - offx, base[i][1] - offy), color='#E0E0E0')
@@ -145,9 +145,10 @@ class ModelPlotWindow(widget.MwWidget):
         refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
         if len(refine) > 0:
             # draw points in two colors
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=8, color='#00FF00')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=4, color='#FFFF00')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=8, color='#00A000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=4, color='#E0E000')
             # add text to points
+            number = 1
             if self.ui.checkShowNumbers.isChecked():
                 for i in range(0, len(refine)):
                     self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - offx, refine[i][1] - offy), color='#E0E0E0')
