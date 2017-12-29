@@ -57,7 +57,13 @@ class ModelPlotWindow(widget.MwWidget):
     def initConfig(self):
         try:
             if 'CoordinatePopupWindowPositionX' in self.app.config:
-                self.move(self.app.config['CoordinatePopupWindowPositionX'], self.app.config['CoordinatePopupWindowPositionY'])
+                x = self.app.config['CoordinatePopupWindowPositionX']
+                y = self.app.config['CoordinatePopupWindowPositionY']
+                if x > self.screenSizeX:
+                    x = 0
+                if y > self.screenSizeY:
+                    y = 0
+                self.move(x, y)
             if 'CoordinatePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
             if 'CheckShowNumbers' in self.app.config:
