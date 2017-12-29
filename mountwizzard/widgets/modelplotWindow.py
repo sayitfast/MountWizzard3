@@ -13,6 +13,7 @@
 ############################################################
 import copy
 import logging
+import platform
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
@@ -46,8 +47,9 @@ class ModelPlotWindow(widget.MwWidget):
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
-        self.app.workerAscomDome.signalDomePointer.connect(self.setDomePointer)
-        self.app.workerAscomDome.signalDomePointerVisibility.connect(self.setDomePointerVisibility)
+        if platform.system() == 'Windows':
+            self.app.workerAscomDome.signalDomePointer.connect(self.setDomePointer)
+            self.app.workerAscomDome.signalDomePointerVisibility.connect(self.setDomePointerVisibility)
         # from start on invisible
         self.showStatus = False
         self.setVisible(False)

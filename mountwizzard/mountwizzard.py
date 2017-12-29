@@ -748,7 +748,7 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
-        value, _ = self.selectFile(self, 'Open analyse file', '/config', 'Analyse files (*.dat)', True)
+        value, _ = self.selectFile(self, 'Open analyse file', '/analyse', 'Analyse files (*.dat)', True)
         if value != '':
             self.ui.le_analyseFileName.setText(os.path.basename(value))
             self.analyseWindow.showWindow()
