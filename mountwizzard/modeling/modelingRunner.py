@@ -204,6 +204,12 @@ class ModelingRunner:
         self.imagingApps.storeConfig()
         self.modelPoints.storeConfig()
 
+    def run(self):
+        pass
+
+    def stop(self):
+        pass
+
     def clearAlignmentModel(self):
         # clearing the older results, because they are invalid afterwards
         self.modelingResultData = []

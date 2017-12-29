@@ -331,8 +331,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
         self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
-        # self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
-        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.test(self.modelWidget))
+        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
 
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
@@ -355,11 +354,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(False))
         self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
         self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
-
-    def test(self, widget):
-        self.showModelErrorPolar(widget)
-        self.showModelErrorPolar(self.measure1Widget)
-        self.showModelErrorPolar(self.measure2Widget)
 
     def showModelErrorPolar(self, widget):
         widget.fig.clf()
@@ -697,7 +691,19 @@ class MountWizzardApp(widget.MwWidget):
     def saveConfigQuit(self):
         filepath = os.getcwd() + '\\config\\' + self.ui.le_configName.text()
         self.saveConfigData(filepath)
-        # noinspection PyArgumentList
+        if self.workerMountDispatcher.isRunning:
+            self.workerMountDispatcher.stop()
+        if platform.system() == 'Windows':
+            if self.workerUpload.isRunning:
+                self.workerUpload.stop()
+            if self.workerAscomDome.isRunning:
+                self.workerAscomDome.stop()
+            if self.workerAscomEnvironment.isRunning:
+                self.workerAscomEnvironment.stop()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
+        if self.workerRemote.isRunning:
+            self.workerRemote.stop()
         PyQt5.QtCore.QCoreApplication.instance().quit()
 
     def saveConfigData(self, filepath=''):
@@ -1126,9 +1132,14 @@ if __name__ == "__main__":
     import warnings
 
     # setting except hook to get stack traces into the log files
-    def except_hook(typeException, valueException, tbackException):                                                         # manage unhandled exception here
-        logging.error(traceback.format_exception(typeException, valueException, tbackException))
-        sys.__excepthook__(typeException, valueException, tbackException)                                                   # then call the default handler
+    def except_hook(typeException, valueException, tbackException):
+        result = traceback.format_exception(typeException, valueException, tbackException)
+        logging.error('-----------------------------------------')
+        logging.error('Logging an uncatched Exception')
+        for i in range(0, len(result)):
+            logging.error(result[i].replace('\n', ''))
+        logging.error('-----------------------------------------')
+        sys.__excepthook__(typeException, valueException, tbackException)
 
     BUILD_NO = '3.0.0 beta'
 

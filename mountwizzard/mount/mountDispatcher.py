@@ -433,7 +433,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self._mutex.unlock()
         # stopping all interaction
         self.workerMountCommandRunner.stop()
-        self.workerGetAlignmentModel.stop()
+        self.workerMountGetAlignmentModel.stop()
         self.workerMountStatusRunnerOnce.stop()
         self.workerMountStatusRunnerSlow.stop()
         self.workerMountStatusRunnerMedium.stop()

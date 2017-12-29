@@ -11,3 +11,4 @@
 - replace model plot with hemisphere
 - replace refinement model with full model
 - replace base model with alignment
+- dome and environment: selector in subroutine, on is ascom other is indi third is none
