@@ -104,10 +104,13 @@ class Environment(PyQt5.QtCore.QObject):
             else:
                 self.data['Connected'] = False
             self.logger.info('Actual environment is INDI')
-        if self.data['Connected']:
-            self.signalEnvironmentConnected.emit(3)
+        if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
+            self.signalEnvironmentConnected.emit(0)
         else:
-            self.signalEnvironmentConnected.emit(1)
+            if self.data['Connected']:
+                self.signalEnvironmentConnected.emit(3)
+            else:
+                self.signalEnvironmentConnected.emit(1)
         self.chooserLock.release()
 
     def run(self):

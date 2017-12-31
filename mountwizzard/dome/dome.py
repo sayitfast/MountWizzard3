@@ -106,10 +106,13 @@ class Dome(PyQt5.QtCore.QObject):
             else:
                 self.data['Connected'] = False
             self.logger.info('Actual dome is INDI')
-        if self.data['Connected']:
-            self.signalDomeConnected.emit(3)
+        if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
+            self.signalDomeConnected.emit(0)
         else:
-            self.signalDomeConnected.emit(1)
+            if self.data['Connected']:
+                self.signalDomeConnected.emit(3)
+            else:
+                self.signalDomeConnected.emit(1)
         self.signalDomePointerVisibility.emit(self.data['Connected'])
         self.chooserLock.release()
 
