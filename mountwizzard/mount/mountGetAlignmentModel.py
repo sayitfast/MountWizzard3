@@ -111,7 +111,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
 
     def handleReadyRead(self):
         # Get message from socket.
-        print('handle')
+        # print('handle')
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(4000), "ascii")
             self.messageString += tmp
