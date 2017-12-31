@@ -120,6 +120,9 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.disconnectFromHost()
 
     def stop(self):
+        if self.socket:
+            self.socket.disconnectFromHost()
+        self.status.emit(-1)
         self.isRunning = False
 
     def handleHostFound(self):

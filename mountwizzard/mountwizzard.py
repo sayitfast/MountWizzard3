@@ -924,6 +924,8 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDIStatus.setText('ConnectedState')
         elif status == 6:
             self.ui.le_INDIStatus.setText('ClosingState')
+        elif status == -1:
+            self.ui.le_INDIStatus.setText('---')
         else:
             self.ui.le_INDIStatus.setText('Error')
 
