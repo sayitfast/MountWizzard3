@@ -99,18 +99,10 @@ class Environment(PyQt5.QtCore.QObject):
             self.logger.info('Actual environment is ASCOM')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
             self.stopAscom()
-            if self.app.workerINDI.isRunning:
-                self.data['Connected'] = True
-            else:
-                self.data['Connected'] = False
+            self.data['Connected'] = self.app.workerINDI.connected
             self.logger.info('Actual environment is INDI')
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
             self.signalEnvironmentConnected.emit(0)
-        else:
-            if self.data['Connected']:
-                self.signalEnvironmentConnected.emit(3)
-            else:
-                self.signalEnvironmentConnected.emit(1)
         self.chooserLock.release()
 
     def run(self):
@@ -122,6 +114,11 @@ class Environment(PyQt5.QtCore.QObject):
         self.chooserEnvironment()
         self.getData()
         while self.isRunning:
+            self.data['Connected'] = self.app.workerINDI.connected
+            if self.data['Connected']:
+                self.signalEnvironmentConnected.emit(3)
+            else:
+                self.signalEnvironmentConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':
