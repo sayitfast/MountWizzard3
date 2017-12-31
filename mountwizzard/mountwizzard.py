@@ -39,7 +39,7 @@ from relays import relays
 from remote import remoteThread
 if platform.system() == 'Windows':
     from dome import ascomDome
-    from environment import ascomEnvironment
+    from environment import environment
 from indi import indi_client
 from astrometry import transform
 if platform.system() == 'Windows':
@@ -123,22 +123,21 @@ class MountWizzardApp(widget.MwWidget):
         # instantiating all subclasses and connecting thread signals
         self.transform = transform.Transform(self)
         self.relays = relays.Relays(self)
-        self.INDIworker = indi_client.INDIClient(self)
-        self.INDIthread = PyQt5.QtCore.QThread()
-        self.INDIthread.setObjectName("INDI")
-        self.INDIworker.moveToThread(self.INDIthread)
-        self.INDIthread.started.connect(self.INDIworker.run)
-        self.INDIworker.status.connect(self.setINDIStatus)
-        # threading for ascom environment data
-        if platform.system() == 'Windows':
-            self.workerAscomEnvironment = ascomEnvironment.AscomEnvironment(self)
-            self.threadAscomEnvironment = PyQt5.QtCore.QThread()
-            self.threadAscomEnvironment.setObjectName("Environ")
-            self.workerAscomEnvironment.moveToThread(self.threadAscomEnvironment)
-            # noinspection PyUnresolvedReferences
-            self.threadAscomEnvironment.started.connect(self.workerAscomEnvironment.run)
-            self.workerAscomEnvironment.finished.connect(self.workerAscomEnvironmentStop)
-            self.workerAscomEnvironment.signalAscomEnvironmentConnected.connect(self.setEnvironmentStatus)
+        self.workerINDI = indi_client.INDIClient(self)
+        self.threadINDI = PyQt5.QtCore.QThread()
+        self.threadINDI.setObjectName("INDI")
+        self.workerINDI.moveToThread(self.threadINDI)
+        self.threadINDI.started.connect(self.workerINDI.run)
+        self.workerINDI.status.connect(self.setINDIStatus)
+        # threading for environment data
+        self.workerEnvironment = environment.Environment(self)
+        self.threadEnvironment = PyQt5.QtCore.QThread()
+        self.threadEnvironment.setObjectName("Environment")
+        self.workerEnvironment.moveToThread(self.threadEnvironment)
+        # noinspection PyUnresolvedReferences
+        self.threadEnvironment.started.connect(self.workerEnvironment.run)
+        self.workerEnvironment.finished.connect(self.workerEnvironmentStop)
+        self.workerEnvironment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
         # threading for ascom dome data
         if platform.system() == 'Windows':
             self.workerAscomDome = ascomDome.AscomDome(self)
@@ -214,17 +213,17 @@ class MountWizzardApp(widget.MwWidget):
         self.counter = 0
         self.mainLoop()
 
-    def workerAscomEnvironmentStop(self):
-        self.threadAscomEnvironment.quit()
-        self.threadAscomEnvironment.wait()
+    def workerEnvironmentStop(self):
+        self.threadEnvironment.quit()
+        self.threadEnvironment.wait()
 
     def workerAscomEnvironmentSetup(self):
         # first stopping the thread for environment, than setting up, than starting the thread
-        if self.workerAscomEnvironment.isRunning:
-            self.workerAscomEnvironment.stop()
-        self.workerAscomEnvironment.setupDriver()
-        self.ui.le_ascomEnvironmentDriverName.setText(self.workerAscomEnvironment.driverName)
-        self.threadAscomEnvironment.start()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        self.workerEnvironment.setupDriver()
+        self.ui.le_ascomEnvironmentDriverName.setText(self.workerEnvironment.ascomDriverName)
+        self.threadEnvironment.start()
 
     def workerAscomDomeStop(self):
         self.threadAscomDome.quit()
@@ -336,11 +335,11 @@ class MountWizzardApp(widget.MwWidget):
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
         if self.ui.checkEnableINDI.isChecked():
-            self.INDIthread.start()
+            self.threadINDI.start()
         else:
-            self.INDIworker.stop()
-            self.INDIthread.quit()
-            self.INDIthread.wait()
+            self.workerINDI.stop()
+            self.threadINDI.quit()
+            self.threadINDI.wait()
 
     def mountBoot(self):
         import socket
@@ -579,11 +578,11 @@ class MountWizzardApp(widget.MwWidget):
         # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
         self.workerMountDispatcher.initConfig()
         self.workerModelingDispatcher.initConfig()
+        self.workerEnvironment.initConfig()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        self.threadEnvironment.start()
         if platform.system() == 'Windows':
-            self.workerAscomEnvironment.initConfig()
-            if self.workerAscomEnvironment.isRunning:
-                self.workerAscomEnvironment.stop()
-            self.threadAscomEnvironment.start()
             self.workerAscomDome.initConfig()
             if self.workerAscomDome.isRunning:
                 self.workerAscomDome.stop()
@@ -594,7 +593,7 @@ class MountWizzardApp(widget.MwWidget):
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
         self.relays.initConfig()
-        self.INDIworker.initConfig()
+        self.workerINDI.initConfig()
 
         # make windows visible, if they were on the desktop depending on their show status
         if self.modelWindow.showStatus:
@@ -676,8 +675,8 @@ class MountWizzardApp(widget.MwWidget):
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()
         self.workerModelingDispatcher.storeConfig()
+        self.workerEnvironment.storeConfig()
         if platform.system() == 'Windows':
-            self.workerAscomEnvironment.storeConfig()
             self.workerAscomDome.storeConfig()
             self.workerUpload.storeConfig()
         self.modelWindow.storeConfig()
@@ -685,7 +684,7 @@ class MountWizzardApp(widget.MwWidget):
         self.analyseWindow.storeConfig()
         self.messageWindow.storeConfig()
         self.relays.storeConfig()
-        self.INDIworker.storeConfig()
+        self.workerINDI.storeConfig()
 
     def loadConfigData(self):
         try:
@@ -705,13 +704,13 @@ class MountWizzardApp(widget.MwWidget):
         self.saveConfigData(filepath)
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
         if platform.system() == 'Windows':
             if self.workerUpload.isRunning:
                 self.workerUpload.stop()
             if self.workerAscomDome.isRunning:
                 self.workerAscomDome.stop()
-            if self.workerAscomEnvironment.isRunning:
-                self.workerAscomEnvironment.stop()
         if self.workerModelingDispatcher.isRunning:
             self.workerModelingDispatcher.stop()
         if self.workerRemote.isRunning:
@@ -893,27 +892,25 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
     def fillEnvironmentData(self):
-        if platform.system() != 'Windows':
-            return
-        for valueName in self.workerAscomEnvironment.data:
+        for valueName in self.workerEnvironment.data:
             if valueName == 'DewPoint':
-                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_dewPoint.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'Temperature':
-                self.ui.le_temperature.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_temperature.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'Humidity':
-                self.ui.le_humidity.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_humidity.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'Pressure':
-                self.ui.le_pressure.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_pressure.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'CloudCover':
-                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_cloudCover.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'RainRate':
-                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_rainRate.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'WindSpeed':
-                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_windSpeed.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'WindDirection':
-                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'SQR':
-                self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerAscomEnvironment.data[valueName]))
+                self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerEnvironment.data[valueName]))
 
     @PyQt5.QtCore.Slot(int)
     def setINDIStatus(self, status):

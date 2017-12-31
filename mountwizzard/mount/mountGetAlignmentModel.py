@@ -74,17 +74,17 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.connected = True
         self.signalConnected.emit({'Align': True})
         self.getAlignmentModel()
-        self.logger.info('Mount AlignModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount GetAlignmentModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
-        self.logger.error('Mount AlignModel connection fault: {0}'.format(self.socket.errorString()))
+        self.logger.error('Mount GetAlignmentModel connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
         pass
         # self.logger.info('Mount connection AlignModel has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
-        self.logger.info('Mount AlignModel connection is disconnected from host')
+        self.logger.info('Mount GetAlignmentModel connection is disconnected from host')
         self.signalConnected.emit({'Align': False})
         self.connected = False
 
@@ -94,7 +94,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
-                self.logger.warning('Socket AlignModel not connected')
+                self.logger.warning('Socket GetAlignmentModel not connected')
 
     def getAlignmentModel(self):
         self.data['ModelLoading'] = True
@@ -111,6 +111,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
 
     def handleReadyRead(self):
         # Get message from socket.
+        print('handle')
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(4000), "ascii")
             self.messageString += tmp
@@ -229,6 +230,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.signalMountShowAlignmentModel.emit()
             self.data['ModelLoading'] = False
         except Exception as e:
-            self.logger.error('Parsing Get Align Model got error:{0}, values:{1}'.format(e, messageToProcess))
+            self.logger.error('Parsing GetAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
             pass
