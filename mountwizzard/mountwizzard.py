@@ -37,9 +37,8 @@ from modeling import modelingDispatcher
 from mount import mountDispatcher
 from relays import relays
 from remote import remoteThread
-if platform.system() == 'Windows':
-    from dome import ascomDome
-    from environment import environment
+from dome import dome
+from environment import environment
 from indi import indi_client
 from astrometry import transform
 if platform.system() == 'Windows':
@@ -139,15 +138,13 @@ class MountWizzardApp(widget.MwWidget):
         self.workerEnvironment.finished.connect(self.workerEnvironmentStop)
         self.workerEnvironment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
         # threading for ascom dome data
-        if platform.system() == 'Windows':
-            self.workerAscomDome = ascomDome.AscomDome(self)
-            self.threadAscomDome = PyQt5.QtCore.QThread()
-            self.threadAscomDome.setObjectName("Dome")
-            self.workerAscomDome.moveToThread(self.threadAscomDome)
-            # noinspection PyUnresolvedReferences
-            self.threadAscomDome.started.connect(self.workerAscomDome.run)
-            self.workerAscomDome.finished.connect(self.workerAscomDomeStop)
-            self.workerAscomDome.signalAscomDomeConnected.connect(self.setDomeStatus)
+        self.workerDome = dome.Dome(self)
+        self.threadDome = PyQt5.QtCore.QThread()
+        self.threadDome.setObjectName("Dome")
+        self.workerDome.moveToThread(self.threadDome)
+        self.threadDome.started.connect(self.workerDome.run)
+        self.workerDome.finished.connect(self.workerDomeStop)
+        self.workerDome.signalDomeConnected.connect(self.setDomeStatus)
         # threading for remote shutdown
         self.workerRemote = remoteThread.Remote(self)
         self.threadRemote = PyQt5.QtCore.QThread()
@@ -225,17 +222,17 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.le_ascomEnvironmentDriverName.setText(self.workerEnvironment.ascomDriverName)
         self.threadEnvironment.start()
 
-    def workerAscomDomeStop(self):
-        self.threadAscomDome.quit()
-        self.threadAscomDome.wait()
+    def workerDomeStop(self):
+        self.threadDome.quit()
+        self.threadDome.wait()
 
     def workerAscomDomeSetup(self):
         # first stopping the thread for environment, than setting up, than starting the thread
-        if self.workerAscomDome.isRunning:
-            self.workerAscomDome.stop()
-        self.workerAscomDome.setupDriver()
-        self.ui.le_ascomDomeDriverName.setText(self.workerAscomDome.driverName)
-        self.threadAscomDome.start()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
+        self.workerDome.setupDriver()
+        self.ui.le_ascomDomeDriverName.setText(self.workerDome.ascomDriverName)
+        self.threadDome.start()
 
     def setDomeStatus(self, status):
         if status == 0:
@@ -582,11 +579,11 @@ class MountWizzardApp(widget.MwWidget):
         if self.workerEnvironment.isRunning:
             self.workerEnvironment.stop()
         self.threadEnvironment.start()
+        self.workerDome.initConfig()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
+        self.threadDome.start()
         if platform.system() == 'Windows':
-            self.workerAscomDome.initConfig()
-            if self.workerAscomDome.isRunning:
-                self.workerAscomDome.stop()
-            self.threadAscomDome.start()
             self.workerUpload.initConfig()
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()
@@ -676,8 +673,8 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.storeConfig()
         self.workerModelingDispatcher.storeConfig()
         self.workerEnvironment.storeConfig()
+        self.workerDome.storeConfig()
         if platform.system() == 'Windows':
-            self.workerAscomDome.storeConfig()
             self.workerUpload.storeConfig()
         self.modelWindow.storeConfig()
         self.imageWindow.storeConfig()
@@ -706,11 +703,11 @@ class MountWizzardApp(widget.MwWidget):
             self.workerMountDispatcher.stop()
         if self.workerEnvironment.isRunning:
             self.workerEnvironment.stop()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
         if platform.system() == 'Windows':
             if self.workerUpload.isRunning:
                 self.workerUpload.stop()
-            if self.workerAscomDome.isRunning:
-                self.workerAscomDome.stop()
         if self.workerModelingDispatcher.isRunning:
             self.workerModelingDispatcher.stop()
         if self.workerRemote.isRunning:

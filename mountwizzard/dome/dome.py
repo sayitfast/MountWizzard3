@@ -20,13 +20,15 @@ from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
-class Environment(PyQt5.QtCore.QObject):
+class Dome(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
+    signalDomeConnected = PyQt5.QtCore.pyqtSignal([int])
+    signalDomePointer = PyQt5.QtCore.pyqtSignal(float)
+    signalDomePointerVisibility = PyQt5.QtCore.pyqtSignal(bool)
 
-    CYCLE_DATA = 2000
+    CYCLE_DATA = 500
 
     def __init__(self, app):
         super().__init__()
@@ -44,28 +46,28 @@ class Environment(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         # first build the pull down menu
-        self.app.ui.pd_chooseEnvironment.clear()
-        self.app.ui.pd_chooseEnvironment.addItem('No Environment')
+        self.app.ui.pd_chooseDome.clear()
+        self.app.ui.pd_chooseDome.addItem('No Dome')
         if platform.system() == 'Windows':
-            self.app.ui.pd_chooseEnvironment.addItem('ASCOM')
-        self.app.ui.pd_chooseEnvironment.addItem('INDI')
+            self.app.ui.pd_chooseDome.addItem('ASCOM')
+        self.app.ui.pd_chooseDome.addItem('INDI')
         # load the config including pull down setup
         try:
-            if 'EnvironmentAscomDriverName' in self.app.config:
-                self.ascomDriverName = self.app.config['EnvironmentAscomDriverName']
-                self.app.ui.le_ascomEnvironmentDriverName.setText(self.app.config['EnvironmentAscomDriverName'])
-            if 'Environment' in self.app.config:
-                self.app.ui.pd_chooseEnvironment.setCurrentIndex(int(self.app.config['Environment']))
+            if 'DomeAscomDriverName' in self.app.config:
+                self.ascomDriverName = self.app.config['DomeAscomDriverName']
+                self.app.ui.pd_chooseDome.setText(self.app.config['DomeAscomDriverName'])
+            if 'Dome' in self.app.config:
+                self.app.ui.pd_chooseDome.setCurrentIndex(int(self.app.config['Dome']))
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # connect change in environment to the subroutine of setting it up
-        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
+        # connect change in dome to the subroutine of setting it up
+        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
 
     def storeConfig(self):
-        self.app.config['EnvironmentAscomDriverName'] = self.ascomDriverName
-        self.app.config['Environment'] = self.app.ui.pd_chooseEnvironment.currentIndex()
+        self.app.config['DomeAscomDriverName'] = self.ascomDriverName
+        self.app.config['Dome'] = self.app.ui.pd_chooseDome.currentIndex()
 
     def startAscom(self):
         if self.ascomDriverName != '' and not self.ascom:
@@ -88,26 +90,27 @@ class Environment(PyQt5.QtCore.QObject):
             self.ascom.connected = False
             self.ascom = None
 
-    def chooserEnvironment(self):
+    def chooserDome(self):
         self.chooserLock.acquire()
-        if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
+        if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.stopAscom()
             self.data['Connected'] = False
-            self.logger.info('Actual environment is None')
-        elif self.app.ui.pd_chooseEnvironment.currentText().startswith('ASCOM'):
+            self.logger.info('Actual dome is None')
+        elif self.app.ui.pd_chooseDome.currentText().startswith('ASCOM'):
             self.startAscom()
-            self.logger.info('Actual environment is ASCOM')
-        elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
+            self.logger.info('Actual dome is ASCOM')
+        elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
             self.stopAscom()
             if self.app.workerINDI.isRunning:
                 self.data['Connected'] = True
             else:
                 self.data['Connected'] = False
-            self.logger.info('Actual environment is INDI')
+            self.logger.info('Actual dome is INDI')
         if self.data['Connected']:
-            self.signalEnvironmentConnected.emit(3)
+            self.signalDomeConnected.emit(3)
         else:
-            self.signalEnvironmentConnected.emit(1)
+            self.signalDomeConnected.emit(1)
+        self.signalDomePointerVisibility.emit(self.data['Connected'])
         self.chooserLock.release()
 
     def run(self):
@@ -116,9 +119,14 @@ class Environment(PyQt5.QtCore.QObject):
             self.isRunning = True
         if platform.system() == 'Windows':
             pythoncom.CoInitialize()
-        self.chooserEnvironment()
+        self.chooserDome()
         self.getData()
         while self.isRunning:
+            if self.data['Connected']:
+                if not self.app.domeCommandQueue.empty():
+                    command, value = self.app.domeCommandQueue.get()
+                    if command == 'SlewAzimuth':
+                        self.ascom.SlewToAzimuth(float(value))
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':
@@ -132,25 +140,21 @@ class Environment(PyQt5.QtCore.QObject):
 
     def getData(self):
         if self.data['Connected']:
-            if self.app.ui.pd_chooseEnvironment.currentText().startswith('ASCOM'):
+            if self.app.ui.pd_chooseDome.currentText().startswith('ASCOM'):
                 if self.ascom:
                     if self.ascom.connected:
                         self.getAscomData()
-            elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
+            elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
                 self.getINDIData()
         else:
             self.data = {
                 'Connected': False,
-                'DewPoint': 0.0,
-                'Temperature': 0.0,
-                'Humidity': 0,
-                'Pressure': 0,
-                'CloudCover': 0,
-                'RainRate': 0,
-                'WindSpeed': 0,
-                'WindDirection': 0,
-                'SQR': 0
+                'Slewing': False,
+                'Azimuth': 0.0,
+                'Altitude': 0.0,
             }
+        if 'Azimuth' in self.data:
+            self.signalDomePointer.emit(self.data['Azimuth'])
         PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
     def getINDIData(self):
@@ -158,55 +162,19 @@ class Environment(PyQt5.QtCore.QObject):
 
     def getAscomData(self):
         try:
-            self.data['DewPoint'] = self.ascom.DewPoint
+            self.data['Slewing'] = self.ascom.Slewing
         except Exception:
             pass
         finally:
             pass
         try:
-            self.data['Temperature'] = self.ascom.Temperature
+            self.data['Azimuth'] = self.ascom.Azimuth
         except Exception:
             pass
         finally:
             pass
         try:
-            self.data['Humidity'] = self.ascom.Humidity
-        except Exception:
-            pass
-        finally:
-            pass
-        try:
-            self.data['Pressure'] = self.ascom.Pressure
-        except Exception:
-            pass
-        finally:
-            pass
-        try:
-            self.data['SQR'] = self.ascom.SkyQuality
-        except Exception:
-            pass
-        finally:
-            pass
-        try:
-            self.data['CloudCover'] = self.ascom.CloudCover
-        except Exception:
-            pass
-        finally:
-            pass
-        try:
-            self.data['RainRate'] = self.ascom.RainRate
-        except Exception:
-            pass
-        finally:
-            pass
-        try:
-            self.data['WindSpeed'] = self.ascom.WindSpeed
-        except Exception:
-            pass
-        finally:
-            pass
-        try:
-            self.data['WindDirection'] = self.ascom.WindDirection
+            self.data['Altitude'] = self.ascom.Altitude
         except Exception:
             pass
         finally:
@@ -215,7 +183,7 @@ class Environment(PyQt5.QtCore.QObject):
     def setupDriver(self):
         try:
             self.ascomChooser = Dispatch('ASCOM.Utilities.Chooser')
-            self.ascomChooser.DeviceType = 'ObservingConditions'
+            self.ascomChooser.DeviceType = 'Dome'
             self.ascomDriverName = self.ascomChooser.Choose(self.ascomDriverName)
             self.app.messageQueue.put('Driver chosen:{0}\n'.format(self.ascomDriverName))
             self.logger.info('Driver chosen:{0}'.format(self.ascomDriverName))
