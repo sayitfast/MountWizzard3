@@ -127,18 +127,17 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def handleConnected(self):
         self.connected = True
-        self.logger.info('INDI Server connected at {}:{}'.format(self.INDIServerIP, self.INDIServerPort))
+        self.logger.info('INDI Server connected at {0}:{1}'.format(self.INDIServerIP, self.INDIServerPort))
         self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
 
     def handleError(self, socketError):
         self.logger.error('INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
-        self.logger.info('INDI connection has state: {0}'.format(self.socket.state()))
         self.status.emit(self.socket.state())
 
     def handleDisconnect(self):
-        self.logger.info('INDI connection is disconnected from host')
+        self.logger.info('INDI client connection is disconnected from host')
         self.driverNameCCD = ''
         self.driverNameTelescope = ''
         self.driverNameWeather = ''
