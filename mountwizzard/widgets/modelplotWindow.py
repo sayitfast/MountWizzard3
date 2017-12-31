@@ -106,6 +106,8 @@ class ModelPlotWindow(widget.MwWidget):
         if self.showStatus:
             self.pointerDome1.set_visible(stat)
             self.pointerDome2.set_visible(stat)
+            self.hemisphereMatplotlib.fig.canvas.draw()
+            QApplication.processEvents()
 
     def setDomePointer(self, az):
         if self.showStatus:
