@@ -135,7 +135,6 @@ class Environment(PyQt5.QtCore.QObject):
             if self.app.ui.pd_chooseEnvironment.currentText().startswith('ASCOM'):
                 if self.ascom:
                     if self.ascom.connected:
-                        print('ping')
                         self.getAscomData()
             elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
                 self.getINDIData()
