@@ -142,9 +142,10 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.driverNameTelescope = ''
         self.driverNameWeather = ''
         self.connected = False
-        self.app.INDIStatusQueue.put({'Name': 'WEATHER', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': '---'})
 
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
@@ -190,9 +191,12 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(message.getElt(3).getValue()) & self.CCD_INTERFACE:
                         self.driverNameCCD = message.getElt(0).getValue()
                         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
+                    elif int(message.getElt(3).getValue()) & self.FILTER_INTERFACE:
+                        self.driverNameCCD = message.getElt(0).getValue()
+                        self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': message.getElt(0).getValue()})
                     elif int(message.getElt(3).getValue()) == self.WEATHER_INTERFACE:
                         self.driverNameWeather = message.getElt(0).getValue()
-                        self.app.INDIStatusQueue.put({'Name': 'WEATHER', 'value': message.getElt(0).getValue()})
+                        self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': message.getElt(0).getValue()})
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.

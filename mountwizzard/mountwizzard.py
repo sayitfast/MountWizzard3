@@ -918,7 +918,9 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDITelescope.setText(data['value'])
         elif data['Name'] == 'CCD':
             self.ui.le_INDICCD.setText(data['value'])
-        elif data['Name'] == 'WEATHER':
+        elif data['Name'] == 'Filter':
+            self.ui.le_INDIFilter.setText(data['value'])
+        elif data['Name'] == 'Weather':
             self.ui.le_INDIWeather.setText(data['value'])
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
