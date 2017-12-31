@@ -118,7 +118,10 @@ class Environment(PyQt5.QtCore.QObject):
             if self.data['Connected']:
                 self.signalEnvironmentConnected.emit(3)
             else:
-                self.signalEnvironmentConnected.emit(1)
+                if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
+                    self.signalEnvironmentConnected.emit(0)
+                else:
+                    self.signalEnvironmentConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':

@@ -125,7 +125,10 @@ class Dome(PyQt5.QtCore.QObject):
                         self.ascom.SlewToAzimuth(float(value))
                     self.signalDomeConnected.emit(3)
             else:
-                self.signalDomeConnected.emit(1)
+                if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
+                    self.signalDomeConnected.emit(0)
+                else:
+                    self.signalDomeConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':
