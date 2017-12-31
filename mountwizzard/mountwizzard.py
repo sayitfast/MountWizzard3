@@ -6,7 +6,7 @@
 # Python  v3.5
 #
 # Michael Würtenberger
-# (c) 2016, 2017
+# (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
@@ -52,32 +52,22 @@ class MountWizzardApp(widget.MwWidget):
     def __init__(self):
         super().__init__()
         self.config = {}
-        # defining name of thread
         self.setObjectName("Main")
-        # setting up communication queues for inter thread communication
         # commands to the mount
         self.mountCommandQueue = Queue()
-        # commands to the dome
         self.domeCommandQueue = Queue()
-        # command to the modeling thread
         self.modelCommandQueue = Queue()
-        # messages back to main gui (message window)
         self.messageQueue = Queue()
-        # commands / images to visualize in images window
         self.imageQueue = Queue()
-        # INDI subsystem
-        self.INDISendCommandQueue = Queue()
-        self.INDIDataQueue = Queue()
-
+        self.INDICommandQueue = Queue()
+        self.INDIStatusQueue = Queue()
         # initializing the gui from file generated from qt creator
         self.ui = wizzard_main_ui.Ui_MainWindow()
         self.ui.setupUi(self)
-        # special setups for gui including box for matplotlib. margins to 0
         self.initUI()
         self.checkPlatformDependableMenus()
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
         # show icon in main gui and add some icons for push buttons
-        # Windows opening
         self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
         self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
         self.widgetIcon(self.ui.btn_openImageWindow, ':/image.ico')
@@ -1090,8 +1080,8 @@ class MountWizzardApp(widget.MwWidget):
             self.counter = -10
         self.fillMountData()
         self.fillEnvironmentData()
-        while not self.INDIDataQueue.empty():
-            data = self.INDIDataQueue.get()
+        while not self.INDIStatusQueue.empty():
+            data = self.INDIStatusQueue.get()
             self.fillINDIData(data)
         while not self.messageQueue.empty():
             text = self.messageQueue.get()

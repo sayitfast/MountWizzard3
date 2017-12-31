@@ -6,7 +6,7 @@
 # Python  v3.5
 #
 # Michael Würtenberger
-# (c) 2016, 2017
+# (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
@@ -22,17 +22,6 @@ matplotlib.use('Qt5Agg')
 from matplotlib import pyplot as plt
 
 
-# noinspection PyTypeChecker
-def calculateTimeConstant(x_time, y_value):
-    timeconstant = 0
-    # print(x_time)
-    # print(y_value)
-    x = 0
-    y = 0
-    return timeconstant, x, y
-
-
-# noinspection PyUnresolvedReferences
 class AnalyseWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
 
@@ -70,7 +59,6 @@ class AnalyseWindow(widget.MwWidget):
         self.plotMatplotlib.axes.tick_params(axis='y', colors='white')
 
         self.initConfig()
-        # self.show()
         self.setVisible(False)
 
     def initConfig(self):

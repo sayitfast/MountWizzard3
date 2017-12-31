@@ -6,7 +6,7 @@
 # Python  v3.5
 #
 # Michael Würtenberger
-# (c) 2016, 2017
+# (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
@@ -109,8 +109,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.connectToHost(self.INDIServerIP, self.INDIServerPort)
         while self.isRunning:
-            if not self.app.INDISendCommandQueue.empty():
-                indi_command = self.app.INDISendCommandQueue.get()
+            if not self.app.INDICommandQueue.empty():
+                indi_command = self.app.INDICommandQueue.get()
                 self.sendMessage(indi_command)
             QtWidgets.QApplication.processEvents()
             if not self.connected and self.socket.state() == 0:
@@ -131,7 +131,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleConnected(self):
         self.connected = True
         self.logger.info('INDI Server connected at {}:{}'.format(self.INDIServerIP, self.INDIServerPort))
-        self.app.INDISendCommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
+        self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
 
     def handleError(self, socketError):
         self.logger.error('INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
@@ -146,9 +146,9 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.driverNameTelescope = ''
         self.driverNameWeather = ''
         self.connected = False
-        self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': '---'})
-        self.app.INDIDataQueue.put({'Name': 'CCD', 'value': '---'})
-        self.app.INDIDataQueue.put({'Name': 'Telescope', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'WEATHER', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
 
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
@@ -190,13 +190,13 @@ class INDIClient(PyQt5.QtCore.QObject):
                 if message.elt_list[3].attr['name'] == 'DRIVER_INTERFACE':
                     if int(message.getElt(3).getValue()) & self.TELESCOPE_INTERFACE:
                         self.driverNameTelescope = message.getElt(0).getValue()
-                        self.app.INDIDataQueue.put({'Name': 'Telescope', 'value': message.getElt(0).getValue()})
+                        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': message.getElt(0).getValue()})
                     elif int(message.getElt(3).getValue()) & self.CCD_INTERFACE:
                         self.driverNameCCD = message.getElt(0).getValue()
-                        self.app.INDIDataQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
+                        self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
                     elif int(message.getElt(3).getValue()) == self.WEATHER_INTERFACE:
                         self.driverNameWeather = message.getElt(0).getValue()
-                        self.app.INDIDataQueue.put({'Name': 'WEATHER', 'value': message.getElt(0).getValue()})
+                        self.app.INDIStatusQueue.put({'Name': 'WEATHER', 'value': message.getElt(0).getValue()})
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
@@ -227,5 +227,6 @@ class INDIClient(PyQt5.QtCore.QObject):
     def sendMessage(self, indi_command):
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.write(indi_command.toXML() + b'\n')
+            self.socket.flush()
         else:
             self.logger.warning('Socket not connected')

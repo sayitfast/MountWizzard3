@@ -6,14 +6,13 @@
 # Python  v3.5
 #
 # Michael Würtenberger
-# (c) 2016, 2017
+# (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
 ############################################################
 import copy
 import logging
-import platform
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
