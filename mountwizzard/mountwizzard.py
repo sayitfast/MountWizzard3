@@ -195,9 +195,7 @@ class MountWizzardApp(widget.MwWidget):
         self.enableDisableINDI()
         # map all the button to functions for gui
         self.mappingFunctions()
-        # print('main app', PyQt5.QtCore.QObject.thread(self), int(PyQt5.QtCore.QThread.currentThreadId()))
         # starting loop for cyclic data to gui from threads
-        self.counter = 0
         self.mainLoop()
 
     def workerEnvironmentStop(self):
@@ -322,11 +320,13 @@ class MountWizzardApp(widget.MwWidget):
     def enableDisableINDI(self):
         # todo: enable INDI Subsystem as soon as INDI is tested
         if self.ui.checkEnableINDI.isChecked():
-            self.threadINDI.start()
+            if not self.workerINDI.isRunning:
+                self.threadINDI.start()
         else:
-            self.workerINDI.stop()
-            self.threadINDI.quit()
-            self.threadINDI.wait()
+            if self.workerINDI.isRunning:
+                self.workerINDI.stop()
+                self.threadINDI.quit()
+                self.threadINDI.wait()
 
     def mountBoot(self):
         import socket
@@ -899,7 +899,6 @@ class MountWizzardApp(widget.MwWidget):
             elif valueName == 'SQR':
                 self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerEnvironment.data[valueName]))
 
-    @PyQt5.QtCore.Slot(int)
     def setINDIStatus(self, status):
         if status == 0:
             self.ui.le_INDIStatus.setText('UnconnectedState')
@@ -911,12 +910,9 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDIStatus.setText('ConnectedState')
         elif status == 6:
             self.ui.le_INDIStatus.setText('ClosingState')
-        elif status == -1:
-            self.ui.le_INDIStatus.setText('---')
         else:
             self.ui.le_INDIStatus.setText('Error')
 
-    @PyQt5.QtCore.Slot(dict)
     def fillINDIData(self, data):
         if data['Name'] == 'Telescope':
             self.ui.le_INDITelescope.setText(data['value'])
@@ -927,7 +923,6 @@ class MountWizzardApp(widget.MwWidget):
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
-    @PyQt5.QtCore.Slot(dict)
     def setMountStatus(self, status):
         for key in status:
             self.workerMountDispatcher.mountStatus[key] = status[key]
@@ -942,7 +937,6 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
 
-    @PyQt5.QtCore.Slot(dict)
     def fillMountData(self):
         for valueName in self.workerMountDispatcher.data:
             if valueName == 'Reply':
@@ -1050,7 +1044,6 @@ class MountWizzardApp(widget.MwWidget):
             if valueName == 'UTCDataExpirationDate':
                 self.ui.le_UTCDataExpirationDate.setText(str(self.workerMountDispatcher.data[valueName]))
 
-    @PyQt5.QtCore.Slot(int)
     def setStatusCamera(self, status):
         if status == 3:
             self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
@@ -1061,7 +1054,6 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
-    @PyQt5.QtCore.Slot(int)
     def setStatusSolver(self, status):
         if status == 3:
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: green;color: black;}')
@@ -1073,11 +1065,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def mainLoop(self):
-        self.counter += 5
-        # self.workerAscomDome.signalDomePointer.emit(self.counter)
-        # self.workerMountDispatcher.signalMountAzAltPointer.emit(self.counter, 45)
-        if self.counter > 370:
-            self.counter = -10
         self.fillMountData()
         self.fillEnvironmentData()
         while not self.INDIStatusQueue.empty():

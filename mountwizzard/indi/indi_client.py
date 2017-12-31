@@ -50,7 +50,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         super().__init__()
 
         self.app = app
-        self.isRunning = True
+        self.isRunning = False
         self.device = {}
         self.message_string = ""
         self.checkIP = checkParamIP.CheckIP()
@@ -120,9 +120,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.disconnectFromHost()
 
     def stop(self):
-        if self.socket:
-            self.socket.disconnectFromHost()
-        self.status.emit(-1)
         self.isRunning = False
 
     def handleHostFound(self):
