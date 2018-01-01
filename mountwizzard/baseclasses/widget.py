@@ -364,7 +364,7 @@ class MwWidget(QWidget):
         self.setStyleSheet(self.BASIC_STYLE)
 
     @staticmethod
-    def selectFile(window, title, folder, filterSet, openFile=True):
+    def selectFile(window, title, folder, filterSet, extension, openFile=True):
         dlg = PyQt5.QtWidgets.QFileDialog()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
         dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
@@ -382,7 +382,10 @@ class MwWidget(QWidget):
             value = dlg.getOpenFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         else:
             value = dlg.getSaveFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
-        return value
+        name = value[0]
+        if not name.endswith(extension):
+            name += extension
+        return name
 
 
 # class for embed the matplotlib in pyqt5 framework
