@@ -9533,7 +9533,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>2</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -13850,7 +13850,7 @@ Window</string>
      <x>425</x>
      <y>20</y>
      <width>100</width>
-     <height>100</height>
+     <height>101</height>
     </rect>
    </property>
    <property name="text">

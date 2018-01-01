@@ -69,7 +69,7 @@ class MwWidget(QWidget):
         border-radius: 2px;
         background-color: #181818;
     }
-    QLabel#picALT, QLabel#picAZ {
+    QLabel#picALT, QLabel#picAZ, QLabel#mainicon {
         border-width: 2px;
         border-color: #404040;
         border-style: outset;

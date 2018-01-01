@@ -4952,7 +4952,7 @@ class Ui_MainWindow(object):
         self.le_configName.setReadOnly(True)
         self.le_configName.setObjectName("le_configName")
         self.mainicon = QtWidgets.QLabel(MainWindow)
-        self.mainicon.setGeometry(QtCore.QRect(425, 20, 100, 100))
+        self.mainicon.setGeometry(QtCore.QRect(425, 20, 100, 101))
         self.mainicon.setObjectName("mainicon")
         self.label_102 = QtWidgets.QLabel(MainWindow)
         self.label_102.setGeometry(QtCore.QRect(540, 60, 41, 21))
@@ -4997,7 +4997,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.mainTabWidget.setCurrentIndex(9)
-        self.settingsTabWidget.setCurrentIndex(5)
+        self.settingsTabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
         MainWindow.setTabOrder(self.btn_mountBoot, self.btn_mountShutdown)
