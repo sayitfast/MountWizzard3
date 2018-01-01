@@ -1134,7 +1134,7 @@ if __name__ == "__main__":
 
     # Create and display the splash screen
     app = PyQt5.QtWidgets.QApplication(sys.argv)
-    splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
+    splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.png')
     splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()

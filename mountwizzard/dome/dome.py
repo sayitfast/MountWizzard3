@@ -16,8 +16,9 @@ import platform
 import threading
 import PyQt5
 import time
-from win32com.client.dynamic import Dispatch
-import pythoncom
+if platform.system() == 'Windows':
+    from win32com.client.dynamic import Dispatch
+    import pythoncom
 
 
 class Dome(PyQt5.QtCore.QObject):
