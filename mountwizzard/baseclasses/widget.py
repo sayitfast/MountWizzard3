@@ -288,20 +288,26 @@ class MwWidget(QWidget):
     /* scroll bar */
     QScrollBar:vertical {
         background-color: #202020;
-        width: 20px;
+        width: 24px;
         border-width: 1px;
         border-color: #404040;
         border-radius: 2px;
         border-style: solid;
+        padding-right: 4px;
     }
     QScrollBar::handle:vertical {
         border-width: 1px;
         border-color: #404040;
         border-radius: 3px;
-        border-style: solid;
+        border-style: inset;
         background-color: rgb(32, 144, 192);
-        min-height: 15px;
-        margin: 21px 0px 21px 0px;
+        min-height: 40px;
+        margin: 28px 0px 28px 0px;
+    }
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
+        background: none;
+        border-style: outset;
+        padding-right: 2px;
     }
     QScrollBar:up-arrow:vertical {
         image: url(:/arrow-up.ico);
@@ -309,7 +315,6 @@ class MwWidget(QWidget):
     QScrollBar::down-arrow:vertical {
         image: url(:/arrow-down.ico);
     }
-    
     /* progress bar */
     QProgressBar {
         background-color: #101010;

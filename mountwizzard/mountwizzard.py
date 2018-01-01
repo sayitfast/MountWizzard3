@@ -192,6 +192,10 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
+        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
+        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
+        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
+        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
 
     def workerEnvironmentStop(self):
         self.threadEnvironment.quit()
