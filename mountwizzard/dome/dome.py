@@ -89,8 +89,13 @@ class Dome(PyQt5.QtCore.QObject):
             self.data['Connected'] = False
 
     def stopAscom(self):
-        if self.ascom:
-            self.ascom.connected = False
+        try:
+            if self.ascom:
+                self.ascom.connected = False
+        except Exception as e:
+            self.logger.error('Could not stop driver: {0} and close it, error: {1}'.format(self.ascomDriverName, e))
+        finally:
+            self.data['Connected'] = False
             self.ascom = None
 
     def chooserDome(self):
