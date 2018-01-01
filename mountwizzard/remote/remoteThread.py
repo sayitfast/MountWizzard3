@@ -40,7 +40,6 @@ class Remote(PyQt5.QtCore.QObject):
         self.remotePort = 0
         self.tcpServer = None
         self.clientConnection = None
-        self.initConfig()
         self.app.ui.le_remotePort.textChanged.connect(self.setPort)
 
     def initConfig(self):
@@ -73,7 +72,7 @@ class Remote(PyQt5.QtCore.QObject):
             if self.app.ui.checkEnableRemoteAccess.isChecked():
                 self.ipChangeLock.acquire()
                 self.stop()
-                time.sleep(1)
+                time.sleep(0.2)
                 self.app.threadRemote.start()
                 self.ipChangeLock.release()
 
@@ -84,14 +83,14 @@ class Remote(PyQt5.QtCore.QObject):
 
     def enableDisableRemoteAccess(self):
         if self.app.ui.checkEnableRemoteAccess.isChecked():
-            self.messageQueue.put('Remote Access enabled\n')
+            self.app.messageQueue.put('Remote Access enabled\n')
             self.app.threadRemote.start()
             # waiting to tcp server to start otherwise no setup for remote
             while not self.tcpServer:
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
         else:
-            self.messageQueue.put('Remote Access disabled\n')
+            self.app.messageQueue.put('Remote Access disabled\n')
             if self.isRunning:
                 self.stop()
 
