@@ -187,8 +187,7 @@ class MountWizzardApp(widget.MwWidget):
         # starting the threads
         self.threadModelingDispatcher.start()
         self.threadMountDispatcher.start()
-        if platform.system() == 'Windows':
-            self.checkASCOM()
+        self.checkASCOM()
         # map all the button to functions for gui
         self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
@@ -199,6 +198,8 @@ class MountWizzardApp(widget.MwWidget):
         self.threadEnvironment.wait()
 
     def workerAscomEnvironmentSetup(self):
+        if platform.system() != 'Windows':
+            return
         # first stopping the thread for environment, than setting up, than starting the thread
         if self.workerEnvironment.isRunning:
             self.workerEnvironment.stop()
@@ -211,6 +212,8 @@ class MountWizzardApp(widget.MwWidget):
         self.threadDome.wait()
 
     def workerAscomDomeSetup(self):
+        if platform.system() != 'Windows':
+            return
         # first stopping the thread for environment, than setting up, than starting the thread
         if self.workerDome.isRunning:
             self.workerDome.stop()
@@ -276,9 +279,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.le_slewRate.textChanged.connect(self.setSlewRate)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        if platform.system() == 'Windows':
-            self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
-            self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
+        self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
+        self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
         # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
         # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
         # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
@@ -360,6 +362,8 @@ class MountWizzardApp(widget.MwWidget):
         widget.draw()
 
     def checkASCOM(self):
+        if platform.system() != 'Windows':
+            return
         appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
         if appAvailable:
             self.messageQueue.put('Found: {0}\n'.format(appName))

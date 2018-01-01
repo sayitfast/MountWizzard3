@@ -9533,7 +9533,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>5</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -9579,6 +9579,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -9628,6 +9630,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -9687,6 +9691,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -9722,10 +9728,10 @@ Window</string>
       <widget class="QPushButton" name="btn_setupDomeDriver">
        <property name="geometry">
         <rect>
-         <x>250</x>
-         <y>50</y>
+         <x>20</x>
+         <y>95</y>
          <width>101</width>
-         <height>31</height>
+         <height>26</height>
         </rect>
        </property>
        <property name="font">
@@ -9766,7 +9772,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>130</y>
+         <y>150</y>
          <width>231</width>
          <height>21</height>
         </rect>
@@ -9774,6 +9780,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -9783,10 +9791,10 @@ Window</string>
       <widget class="QPushButton" name="btn_setupAscomEnvironmentDriver">
        <property name="geometry">
         <rect>
-         <x>250</x>
-         <y>160</y>
+         <x>20</x>
+         <y>225</y>
          <width>101</width>
-         <height>31</height>
+         <height>26</height>
         </rect>
        </property>
        <property name="font">
@@ -9813,6 +9821,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -9823,7 +9833,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>90</y>
+         <y>70</y>
          <width>331</width>
          <height>21</height>
         </rect>
@@ -9862,7 +9872,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>70</y>
+         <y>45</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -9919,7 +9929,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>180</y>
+         <y>175</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -9958,7 +9968,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>150</y>
+         <y>170</y>
          <width>331</width>
          <height>1</height>
         </rect>
@@ -10207,13 +10217,15 @@ Window</string>
         <rect>
          <x>20</x>
          <y>120</y>
-         <width>291</width>
+         <width>306</width>
          <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -10361,6 +10373,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -10445,7 +10459,10 @@ Window</string>
        </property>
        <property name="font">
         <font>
+         <family>Arial</family>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -10763,13 +10780,15 @@ Window</string>
         <rect>
          <x>400</x>
          <y>10</y>
-         <width>201</width>
+         <width>211</width>
          <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -11050,13 +11069,16 @@ Window</string>
         <rect>
          <x>20</x>
          <y>10</y>
-         <width>171</width>
+         <width>201</width>
          <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
+         <family>Arial</family>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -11340,6 +11362,8 @@ Window</string>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -11668,13 +11692,16 @@ Window</string>
         <rect>
          <x>20</x>
          <y>20</y>
-         <width>221</width>
+         <width>256</width>
          <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
+         <family>Arial</family>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -13228,13 +13255,15 @@ Window</string>
         <rect>
          <x>400</x>
          <y>20</y>
-         <width>331</width>
+         <width>161</width>
          <height>21</height>
         </rect>
        </property>
        <property name="font">
         <font>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">
@@ -13369,7 +13398,10 @@ Window</string>
        </property>
        <property name="font">
         <font>
+         <family>Arial</family>
          <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
         </font>
        </property>
        <property name="text">

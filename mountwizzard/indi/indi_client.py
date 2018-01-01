@@ -11,12 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-# """
-#
-# A PyQt5 (client) interface to an INDI server. This will only work
-# in the context of a PyQt application.
-#
-# """
 import logging
 import time
 import threading
@@ -49,6 +43,17 @@ class INDIClient(PyQt5.QtCore.QObject):
     DETECTOR_INTERFACE = (1 << 11)
     AUX_INTERFACE = (1 << 15)
 
+    data = {
+        'ServerIP': '',
+        'ServerPort': 7624,
+        'Connected': False,
+        'DriverNameCCD': '',
+        'DriverNameFilter': '',
+        'DriverNameTelescope': '',
+        'DriverNameWeather': '',
+        'Device': {}
+    }
+
     def __init__(self, app):
         super().__init__()
 
@@ -56,23 +61,13 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.isRunning = False
         self.ipChangeLock = threading.Lock()
         self._mutex = PyQt5.QtCore.QMutex()
-        self.device = {}
-        self.message_string = ""
         self.checkIP = checkParamIP.CheckIP()
-        self.settingsChanged = False
         self.socket = None
-        self.INDIServerIP = ''
-        self.INDIServerPort = 0
-        self.driverNameCCD = ''
-        self.driverNameTelescope = ''
-        self.driverNameWeather = ''
-        self.connected = False
+        self.settingsChanged = False
         self.receivedImage = False
         self.imagePath = ''
+        self.messageString = ''
         self.initConfig()
-        self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
-        self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
-        self.received.connect(self.handleReceived)
 
     def initConfig(self):
         try:
@@ -116,16 +111,16 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-        self.settingsChanged = (self.INDIServerPort != value)
+        self.settingsChanged = (self.data['ServerPort'] != value)
         if valid:
-            self.INDIServerPort = value
+            self.data['ServerPort'] = value
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-        self.settingsChanged = (self.INDIServerIP != value)
-        print('indi', self.INDIServerIP, value)
+        self.settingsChanged = (self.data['ServerIP'] != value)
+        print('indi variable', self.data['ServerIP'], 'indi check', value)
         if valid:
-            self.INDIServerIP = value
+            self.data['ServerIP'] = value
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():
@@ -145,16 +140,17 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
-        self.socket.connectToHost(self.INDIServerIP, self.INDIServerPort)
+        self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+        self.received.connect(self.handleReceived)
         while self.isRunning:
             time.sleep(0.2)
             if not self.app.INDICommandQueue.empty():
                 indi_command = self.app.INDICommandQueue.get()
                 self.sendMessage(indi_command)
             QtWidgets.QApplication.processEvents()
-            if not self.connected and self.socket.state() == 0:
+            if not self.data['Connected'] and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
-                self.socket.connectToHost(self.INDIServerIP, self.INDIServerPort)
+                self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
 
@@ -168,8 +164,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         pass
 
     def handleConnected(self):
-        self.connected = True
-        self.logger.info('INDI Server connected at {0}:{1}'.format(self.INDIServerIP, self.INDIServerPort))
+        self.data['Connected'] = True
+        self.logger.info('INDI Server connected at {0}:{1}'.format(self.data['ServerIP'], self.data['ServerPort']))
         self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
 
     def handleError(self, socketError):
@@ -180,10 +176,11 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
-        self.driverNameCCD = ''
-        self.driverNameTelescope = ''
-        self.driverNameWeather = ''
-        self.connected = False
+        self.data['DriverNameCCD'] = ''
+        self.data['DriverNameFilter'] = ''
+        self.data['DriverNameTelescope'] = ''
+        self.data['DriverNameWeather'] = ''
+        self.data['Connected'] = False
         self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
@@ -194,7 +191,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         # data to mountwizzard
         if isinstance(message, indiXML.SetBLOBVector) or isinstance(message, indiXML.DefBLOBVector):
             device = message.attr['device']
-            if device == self.driverNameCCD:
+            if device == self.data['DriverNameCCD']:
                 name = message.attr['name']
                 if name == 'CCD1':
                     if 'format' in message.getElt(0).attr:
@@ -208,63 +205,63 @@ class INDIClient(PyQt5.QtCore.QObject):
 
         elif isinstance(message, indiXML.DelProperty):
             device = message.attr['device']
-            if device in self.device:
+            if device in self.data['Device']:
                 if 'name' in message.attr:
                     group = message.attr['name']
                     if group in self.device[device]:
-                        del self.device[device][group]
+                        del self.data['Device'][device][group]
         else:
             device = message.attr['device']
-            if device not in self.device:
-                self.device[device] = {}
+            if device not in self.data['Device']:
+                self.data['Device'][device] = {}
             if 'name' in message.attr:
                 group = message.attr['name']
-                if group not in self.device[device]:
-                    self.device[device][group] = {}
+                if group not in self.data['Device'][device]:
+                    self.data['Device'][device][group] = {}
                 for elt in message.elt_list:
-                    self.device[device][group][elt.attr['name']] = elt.getValue()
+                    self.data['Device'][device][group][elt.attr['name']] = elt.getValue()
 
         if 'name' in message.attr:
             if message.attr['name'] == 'DRIVER_INFO':
                 if message.elt_list[3].attr['name'] == 'DRIVER_INTERFACE':
                     if int(message.getElt(3).getValue()) & self.TELESCOPE_INTERFACE:
-                        self.driverNameTelescope = message.getElt(0).getValue()
+                        self.data['DriverNameTelescope'] = message.getElt(0).getValue()
                         self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': message.getElt(0).getValue()})
                     elif int(message.getElt(3).getValue()) & self.CCD_INTERFACE:
-                        self.driverNameCCD = message.getElt(0).getValue()
+                        self.data['DriverNameCCD'] = message.getElt(0).getValue()
                         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
                     elif int(message.getElt(3).getValue()) & self.FILTER_INTERFACE:
-                        self.driverNameCCD = message.getElt(0).getValue()
+                        self.data['DriverNameFilter'] = message.getElt(0).getValue()
                         self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': message.getElt(0).getValue()})
                     elif int(message.getElt(3).getValue()) == self.WEATHER_INTERFACE:
-                        self.driverNameWeather = message.getElt(0).getValue()
+                        self.data['DriverNameWeather'] = message.getElt(0).getValue()
                         self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': message.getElt(0).getValue()})
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
-        if len(self.message_string) == 0:
-            self.message_string = "<data>"
+        if len(self.messageString) == 0:
+            self.messageString = "<data>"
 
         # Get message from socket.
         while self.socket.bytesAvailable():
             # print(self.socket.bytesAvailable())
             tmp = str(self.socket.read(1000000), "ascii")
-            self.message_string += tmp
+            self.messageString += tmp
 
         # Add closing tag.
-        self.message_string += "</data>"
+        self.messageString += "</data>"
 
         # Try and parse the message.
         try:
-            messages = ElementTree.fromstring(self.message_string)
-            self.message_string = ""
+            messages = ElementTree.fromstring(self.messageString)
+            self.messageString = ""
             for message in messages:
                 xml_message = indiXML.parseETree(message)
                 self.handleReceived(xml_message)
 
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
-            self.message_string = self.message_string[:-7]
+            self.messageString = self.messageString[:-7]
 
     def sendMessage(self, indi_command):
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
