@@ -81,7 +81,7 @@ class Dome(PyQt5.QtCore.QObject):
                 # connection made
                 self.data['Connected'] = True
             except Exception as e:
-                self.logger.error('Could not dispatch driver: {0} and connect it'.format(self.ascomDriverName))
+                self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.ascomDriverName, e))
             finally:
                 pass
         else:
@@ -167,6 +167,7 @@ class Dome(PyQt5.QtCore.QObject):
     def getINDIData(self):
         pass
 
+    # noinspection PyBroadException
     def getAscomData(self):
         try:
             self.data['Slewing'] = self.ascom.Slewing

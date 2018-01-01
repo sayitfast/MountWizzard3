@@ -78,7 +78,7 @@ class Environment(PyQt5.QtCore.QObject):
                 # connection made
                 self.data['Connected'] = True
             except Exception as e:
-                self.logger.error('Could not dispatch driver: {0} and connect it'.format(self.ascomDriverName))
+                self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.ascomDriverName, e))
             finally:
                 pass
         else:
@@ -164,11 +164,12 @@ class Environment(PyQt5.QtCore.QObject):
     def getINDIData(self):
         pass
 
+    # noinspection PyBroadException
     def getAscomData(self):
         try:
             self.data['DewPoint'] = self.ascom.DewPoint1
-        except Exception as e:
-            print(e)
+        except Exception:
+            pass
         finally:
             pass
         try:
