@@ -143,6 +143,7 @@ class Dome(PyQt5.QtCore.QObject):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.stopAscom()
 
     def getData(self):
         if self.data['Connected']:

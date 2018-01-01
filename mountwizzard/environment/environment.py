@@ -108,6 +108,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.chooserLock.release()
 
     def run(self):
+        print('start environ')
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
@@ -135,6 +136,7 @@ class Environment(PyQt5.QtCore.QObject):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.stopAscom()
 
     def getData(self):
         if self.data['Connected']:
@@ -163,7 +165,6 @@ class Environment(PyQt5.QtCore.QObject):
         pass
 
     def getAscomData(self):
-        # todo: exeption handling and show and handle disconnection - split connection error and attribute not present error
         try:
             self.data['DewPoint'] = self.ascom.DewPoint1
         except Exception as e:
