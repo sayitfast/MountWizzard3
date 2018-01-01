@@ -111,11 +111,15 @@ class Relays:
                 self.app.ui.le_relayUsername.setText(self.app.config['RelayUsername'])
             if 'RelayPassword' in self.app.config:
                 self.app.ui.le_relayPassword.setText(self.app.config['RelayPassword'])
+            if 'RelayPassword' in self.app.config:
+                self.app.ui.checkEnableRelay.setChecked(self.app.config['CheckEnableRelay'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            self.setIP()
-            self.connected = self.checkAppStatus()
+            pass
+        self.setIP()
+        self.app.ui.checkEnableRelay.stateChanged.connect(lambda: self.enableDisableRelay())
+        self.enableDisableRelay()
 
     def storeConfig(self):
         self.app.config['RelayIP'] = self.relayIP
@@ -137,11 +141,26 @@ class Relays:
         self.app.config['Relay8Text'] = self.app.ui.relay8Text.text()
         self.app.config['RelayUsername'] = self.app.ui.le_relayUsername.text()
         self.app.config['RelayPassword'] = self.app.ui.le_relayPassword.text()
+        self.app.config['CheckEnableRelay'] = self.app.ui.checkEnableRelay.isChecked()
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_relayIP)
         if valid:
             self.relayIP = value
+
+    def enableDisableRelay(self):
+        if self.app.ui.checkEnableRelay.isChecked():
+            self.connected = self.checkAppStatus()
+            self.app.ui.mainTabWidget.setTabEnabled(7, True)
+            self.app.messageQueue.put('Relay enabled\n')
+        else:
+            self.connected = False
+            self.app.ui.mainTabWidget.setTabEnabled(7, False)
+            self.app.messageQueue.put('Relay disabled\n')
+            self.logger.info('Relay is disabled')
+
+        self.app.ui.mainTabWidget.style().unpolish(self.app.ui.mainTabWidget)
+        self.app.ui.mainTabWidget.style().polish(self.app.ui.mainTabWidget)
 
     def checkAppStatus(self):
         connected = False

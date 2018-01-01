@@ -166,7 +166,7 @@ class Environment(PyQt5.QtCore.QObject):
     # noinspection PyBroadException
     def getAscomData(self):
         try:
-            self.data['DewPoint'] = self.ascom.DewPoint1
+            self.data['DewPoint'] = self.ascom.DewPoint
         except Exception:
             pass
         finally:

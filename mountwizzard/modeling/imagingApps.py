@@ -140,24 +140,24 @@ class ImagingApps:
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
             self.imagingWorkerAppHandler = self.workerNoneCam
             self.imagingThreadAppHandler = self.threadNoneCam
-            self.logger.info('actual camera / plate solver is None')
+            self.logger.info('Actual camera / plate solver is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
             self.imagingWorkerAppHandler = self.workerSGPro
             self.imagingThreadAppHandler = self.threadSGPro
-            self.logger.info('actual camera / plate solver is SGPro')
+            self.logger.info('Actual camera / plate solver is SGPro')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
             self.imagingWorkerAppHandler = self.workerMaximDL
             self.imagingThreadAppHandler = self.threadMaximDL
-            self.logger.info('actual camera / plate solver is MaximDL')
+            self.logger.info('Actual camera / plate solver is MaximDL')
         '''
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
             self.imagingWorkerAppHandler = self.workerNoneCam
             self.imagingThreadAppHandler = self.threadNoneCam
-            self.logger.info('actual camera / plate solver is INDI Camera')
+            self.logger.info('Actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
             self.imagingWorkerAppHandler = self.workerNoneCam
             self.imagingThreadAppHandler = self.threadNoneCam
-            self.logger.info('actual camera / plate solver is TheSkyX')
+            self.logger.info('Actual camera / plate solver is TheSkyX')
         '''
         self.imagingThreadAppHandler.start()
         self.chooserLock.release()

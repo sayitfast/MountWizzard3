@@ -281,7 +281,10 @@ class MwWidget(QWidget):
     QTabBar::tab:only-one {
         margin: 1;
     }
-    
+    QTabBar::tab:!enabled {
+        color: #404040;
+        border-color: #202020;
+    }
     /* scroll bar */
     QScrollBar:vertical {
         background-color: #202020;
