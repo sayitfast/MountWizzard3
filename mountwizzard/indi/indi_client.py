@@ -18,6 +18,7 @@
 #
 # """
 import logging
+import time
 from xml.etree import ElementTree
 import PyQt5
 from PyQt5 import QtCore, QtNetwork, QtWidgets
@@ -109,6 +110,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.connectToHost(self.INDIServerIP, self.INDIServerPort)
         while self.isRunning:
+            time.sleep(0.2)
             if not self.app.INDICommandQueue.empty():
                 indi_command = self.app.INDICommandQueue.get()
                 self.sendMessage(indi_command)

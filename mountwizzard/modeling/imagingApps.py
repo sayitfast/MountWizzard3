@@ -81,6 +81,10 @@ class ImagingApps:
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
+        # if there was a receiver established, remove it. if not, we will fire the event by changing the list
+        if self.app.ui.pd_chooseImaging.receivers(self.app.ui.pd_chooseImaging.currentIndexChanged) > 0:
+            self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect()
+        # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
         if self.workerNoneCam.data['AppAvailable']:
             self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['AppName'])
@@ -94,7 +98,7 @@ class ImagingApps:
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
             if self.TheSkyX.appAvailable:
                 self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
-
+        # load the config data
         try:
             if 'ImagingApplication' in self.app.config:
                 self.app.ui.pd_chooseImaging.setCurrentIndex(int(self.app.config['ImagingApplication']))

@@ -44,6 +44,8 @@ class Environment(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         # first build the pull down menu
+        if self.app.ui.pd_chooseEnvironment.receivers(self.app.ui.pd_chooseEnvironment.currentIndexChanged) > 0:
+            self.app.ui.pd_chooseEnvironment.currentIndexChanged.disconnect()
         self.app.ui.pd_chooseEnvironment.clear()
         self.app.ui.pd_chooseEnvironment.addItem('No Environment')
         if platform.system() == 'Windows':
@@ -114,7 +116,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.chooserEnvironment()
         self.getData()
         while self.isRunning:
-            self.data['Connected'] = self.app.workerINDI.connected
+            if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
+                self.data['Connected'] = self.app.workerINDI.connected
             if self.data['Connected']:
                 self.signalEnvironmentConnected.emit(3)
             else:

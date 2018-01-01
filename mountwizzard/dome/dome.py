@@ -45,6 +45,9 @@ class Dome(PyQt5.QtCore.QObject):
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
+        # if there was a receiver established, remove it. if not, we will fire the event by changing the list
+        if self.app.ui.pd_chooseDome.receivers(self.app.ui.pd_chooseDome.currentIndexChanged) > 0:
+            self.app.ui.pd_chooseDome.currentIndexChanged.disconnect()
         # first build the pull down menu
         self.app.ui.pd_chooseDome.clear()
         self.app.ui.pd_chooseDome.addItem('No Dome')
@@ -117,7 +120,8 @@ class Dome(PyQt5.QtCore.QObject):
         self.chooserDome()
         self.getData()
         while self.isRunning:
-            self.data['Connected'] = self.app.workerINDI.connected
+            if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
+                self.data['Connected'] = self.app.workerINDI.connected
             if self.data['Connected']:
                 if not self.app.domeCommandQueue.empty():
                     command, value = self.app.domeCommandQueue.get()
