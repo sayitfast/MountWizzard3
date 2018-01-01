@@ -118,13 +118,13 @@ class MountWizzardApp(widget.MwWidget):
         self.threadINDI.setObjectName("INDI")
         self.workerINDI.moveToThread(self.threadINDI)
         self.threadINDI.started.connect(self.workerINDI.run)
+        self.workerINDI.finished.connect(self.workerINDIStop)
         self.workerINDI.status.connect(self.setINDIStatus)
         # threading for environment data
         self.workerEnvironment = environment.Environment(self)
         self.threadEnvironment = PyQt5.QtCore.QThread()
         self.threadEnvironment.setObjectName("Environment")
         self.workerEnvironment.moveToThread(self.threadEnvironment)
-        # noinspection PyUnresolvedReferences
         self.threadEnvironment.started.connect(self.workerEnvironment.run)
         self.workerEnvironment.finished.connect(self.workerEnvironmentStop)
         self.workerEnvironment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
@@ -141,7 +141,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadRemote = PyQt5.QtCore.QThread()
         self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
-        # noinspection PyUnresolvedReferences
         self.threadRemote.started.connect(self.workerRemote.run)
         self.workerRemote.finished.connect(self.workerRemoteStop)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
@@ -190,8 +189,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.start()
         if platform.system() == 'Windows':
             self.checkASCOM()
-        self.enableDisableRemoteAccess()
-        self.enableDisableINDI()
         # map all the button to functions for gui
         self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
@@ -247,19 +244,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.quit()
         self.threadMountDispatcher.wait()
 
-    def enableDisableRemoteAccess(self):
-        if self.ui.checkEnableRemoteAccess.isChecked():
-            self.messageQueue.put('Remote Access enabled\n')
-            self.threadRemote.start()
-            # waiting to tcp server to start otherwise no setup for remote
-            while not self.workerRemote.tcpServer:
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
-        else:
-            self.messageQueue.put('Remote Access disabled\n')
-            if self.workerRemote.isRunning:
-                self.workerRemote.stop()
-
     def mappingFunctions(self):
         self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
@@ -312,20 +296,11 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
-        self.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
-        self.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
 
-    def enableDisableINDI(self):
-        # todo: enable INDI Subsystem as soon as INDI is tested
-        if self.ui.checkEnableINDI.isChecked():
-            if not self.workerINDI.isRunning:
-                self.threadINDI.start()
-        else:
-            if self.workerINDI.isRunning:
-                self.workerINDI.stop()
-                self.threadINDI.quit()
-                self.threadINDI.wait()
+    def workerINDIStop(self):
+        self.threadINDI.quit()
+        self.threadINDI.wait()
 
     def mountBoot(self):
         import socket
@@ -588,10 +563,17 @@ class MountWizzardApp(widget.MwWidget):
                 self.workerUpload.stop()
             self.threadUpload.start()
 
+        self.workerRemote.initConfig()
+        if self.ui.checkEnableRemoteAccess.isChecked():
+            if self.workerRemote.isRunning:
+                self.workerRemote.stop()
+            self.threadRemote.start()
+
         self.workerINDI.initConfig()
-        if self.workerINDI.isRunning:
-            self.workerINDI.stop()
-        self.threadINDI.start()
+        if self.ui.checkEnableINDI.isChecked():
+            if self.workerINDI.isRunning:
+                self.workerINDI.stop()
+            self.threadINDI.start()
 
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()

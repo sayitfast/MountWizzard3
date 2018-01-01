@@ -13,7 +13,9 @@
 ############################################################
 import logging
 import PyQt5
+import threading
 import socket
+import time
 from baseclasses import checkParamIP
 
 
@@ -30,9 +32,11 @@ class Remote(PyQt5.QtCore.QObject):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
+        self.ipChangeLock = threading.Lock()
 
         self.app = app
         self.checkIP = checkParamIP.CheckIP()
+        self.settingsChanged = False
         self.remotePort = 0
         self.tcpServer = None
         self.clientConnection = None
@@ -48,16 +52,48 @@ class Remote(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            self.setPort()
+            pass
+        self.setPort()
+        self.app.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
+        # setting changes in gui on false, because the set of the config changed them already
+        self.settingsChanged = False
+        self.app.ui.le_remotePort.textChanged.connect(self.setPort)
+        self.app.ui.le_remotePort.editingFinished.connect(self.enableDisableRemoteAccess)
 
     def storeConfig(self):
         self.app.config['RemotePort'] = self.app.ui.le_remotePort.text()
         self.app.config['CheckRemoteAccess'] = self.app.ui.checkEnableRemoteAccess.isChecked()
 
+    def changedRemoteConnectionSettings(self):
+        print('indi restart')
+        if self.settingsChanged:
+            print('changed')
+            self.settingsChanged = False
+            self.app.messageQueue.put('Setting IP address/port for remote access: {0}\n'.format(self.remotePort))
+            if self.app.ui.checkEnableRemoteAccess.isChecked():
+                self.ipChangeLock.acquire()
+                self.stop()
+                time.sleep(1)
+                self.app.threadRemote.start()
+                self.ipChangeLock.release()
+
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)
         if valid:
             self.remotePort = value
+
+    def enableDisableRemoteAccess(self):
+        if self.app.ui.checkEnableRemoteAccess.isChecked():
+            self.messageQueue.put('Remote Access enabled\n')
+            self.app.threadRemote.start()
+            # waiting to tcp server to start otherwise no setup for remote
+            while not self.tcpServer:
+                time.sleep(0.2)
+                PyQt5.QtWidgets.QApplication.processEvents()
+        else:
+            self.messageQueue.put('Remote Access disabled\n')
+            if self.isRunning:
+                self.stop()
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop

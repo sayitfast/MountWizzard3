@@ -19,6 +19,7 @@
 # """
 import logging
 import time
+import threading
 from xml.etree import ElementTree
 import PyQt5
 from PyQt5 import QtCore, QtNetwork, QtWidgets
@@ -28,6 +29,7 @@ from baseclasses import checkParamIP
 
 
 class INDIClient(PyQt5.QtCore.QObject):
+    finished = PyQt5.QtCore.pyqtSignal()
     logger = logging.getLogger(__name__)
     received = QtCore.pyqtSignal(object)
     status = QtCore.pyqtSignal(int)
@@ -52,9 +54,12 @@ class INDIClient(PyQt5.QtCore.QObject):
 
         self.app = app
         self.isRunning = False
+        self.ipChangeLock = threading.Lock()
+        self._mutex = PyQt5.QtCore.QMutex()
         self.device = {}
         self.message_string = ""
         self.checkIP = checkParamIP.CheckIP()
+        self.settingsChanged = False
         self.socket = None
         self.INDIServerIP = ''
         self.INDIServerPort = 0
@@ -80,23 +85,55 @@ class INDIClient(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            self.setIP()
-            self.setPort()
+            pass
+        self.setIP()
+        self.setPort()
+        self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
+        # setting changes in gui on false, because the set of the config changed them already
+        self.settingsChanged = False
+        self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
+        self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
+        self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
+        self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
 
     def storeConfig(self):
         self.app.config['INDIServerPort'] = self.app.ui.le_INDIServerPort.text()
         self.app.config['INDIServerIP'] = self.app.ui.le_INDIServerIP.text()
         self.app.config['CheckEnableINDI'] = self.app.ui.checkEnableINDI.isChecked()
 
+    def changedINDIClientConnectionSettings(self):
+        print('indi restart')
+        if self.settingsChanged:
+            print('changed')
+            self.settingsChanged = False
+            self.app.messageQueue.put('Setting IP address/port for INDI client: {0}:{1}\n'.format(self.INDIServerIP, self.INDIServerPort))
+            if self.app.ui.checkEnableINDI.isChecked():
+                self.ipChangeLock.acquire()
+                self.stop()
+                time.sleep(1)
+                self.app.threadINDI.start()
+                self.ipChangeLock.release()
+
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
+        self.settingsChanged = (self.INDIServerPort != value)
         if valid:
             self.INDIServerPort = value
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+        self.settingsChanged = (self.INDIServerIP != value)
+        print('indi', self.INDIServerIP, value)
         if valid:
             self.INDIServerIP = value
+
+    def enableDisableINDI(self):
+        if self.app.ui.checkEnableINDI.isChecked():
+            if not self.isRunning:
+                self.app.threadINDI.start()
+        else:
+            if self.isRunning:
+                self.stop()
 
     def run(self):
         if not self.isRunning:
@@ -122,7 +159,10 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.disconnectFromHost()
 
     def stop(self):
+        self._mutex.lock()
         self.isRunning = False
+        self._mutex.unlock()
+        self.finished.emit()
 
     def handleHostFound(self):
         pass

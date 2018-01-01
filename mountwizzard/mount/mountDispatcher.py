@@ -82,6 +82,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.analyse = analysedata.Analyse(self.app)
         self.transform = self.app.transform
         self.checkIP = checkParamIP.CheckIP()
+        self.settingsChanged = False
 
         # getting all threads setup
         # commands sending thread
@@ -327,10 +328,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
-            self.app.ui.le_mountIP.textChanged.connect(self.changedMountConnectionSettings)
-            self.app.ui.le_mountMAC.textChanged.connect(self.changedMountConnectionSettings)
-            self.setIP()
-            self.setMAC()
+            pass
+        self.setIP()
+        self.setMAC()
+        # setting changes in gui on false, because the set of the config changed them already
+        self.settingsChanged = False
+        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
+        self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
+        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
 
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
@@ -339,30 +344,31 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
 
     def changedMountConnectionSettings(self):
-        # todo: change of IP address in the run with reconnect
-        return
-        # stopping all interaction
-        self.ipChangeLock.acquire()
-        self.workerMountCommandRunner.stop()
-        self.workerMountGetAlignmentModel.stop()
-        self.workerMountStatusRunnerOnce.stop()
-        self.workerMountStatusRunnerSlow.stop()
-        self.workerMountStatusRunnerMedium.stop()
-        self.workerMountStatusRunnerFast.stop()
-        # setting new values
-        self.setIP()
-        self.setMAC()
-        # starting new communication
-        self.threadMountCommandRunner.start()
-        self.threadMountGetAlignmentModel.start()
-        self.threadMountStatusRunnerOnce.start()
-        self.threadMountStatusRunnerSlow.start()
-        self.threadMountStatusRunnerMedium.start()
-        self.threadMountStatusRunnerFast.start()
-        self.ipChangeLock.release()
+        if self.settingsChanged:
+            self.settingsChanged = False
+            self.app.messageQueue.put('Setting IP address for mount: {0}\n'.format(self.data['MountIP']))
+            self.ipChangeLock.acquire()
+            # stopping all interaction
+            self.workerMountCommandRunner.stop()
+            self.workerMountGetAlignmentModel.stop()
+            self.workerMountStatusRunnerOnce.stop()
+            self.workerMountStatusRunnerSlow.stop()
+            self.workerMountStatusRunnerMedium.stop()
+            self.workerMountStatusRunnerFast.stop()
+            # wait for some time to come down
+            time.sleep(1)
+            # starting new communication
+            self.threadMountCommandRunner.start()
+            self.threadMountGetAlignmentModel.start()
+            self.threadMountStatusRunnerOnce.start()
+            self.threadMountStatusRunnerSlow.start()
+            self.threadMountStatusRunnerMedium.start()
+            self.threadMountStatusRunnerFast.start()
+            self.ipChangeLock.release()
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+        self.settingsChanged = (self.data['MountIP'] != value)
         if valid:
             self.data['MountIP'] = value
 
