@@ -67,7 +67,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.receivedImage = False
         self.imagePath = ''
         self.messageString = ''
-        self.initConfig()
 
     def initConfig(self):
         try:
@@ -83,7 +82,8 @@ class INDIClient(PyQt5.QtCore.QObject):
             pass
         self.setIP()
         self.setPort()
-        self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
+        # have to choose lambda to get the right threading context
+        self.app.ui.checkEnableINDI.stateChanged.connect(lambda: self.enableDisableINDI())
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = False
         self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
@@ -101,7 +101,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         if self.settingsChanged:
             print('changed')
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address/port for INDI client: {0}:{1}\n'.format(self.INDIServerIP, self.INDIServerPort))
+            self.app.messageQueue.put('Setting IP address/port for INDI client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
             if self.app.ui.checkEnableINDI.isChecked():
                 self.ipChangeLock.acquire()
                 self.stop()
@@ -118,11 +118,11 @@ class INDIClient(PyQt5.QtCore.QObject):
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
         self.settingsChanged = (self.data['ServerIP'] != value)
-        print('indi variable', self.data['ServerIP'], 'indi check', value)
         if valid:
             self.data['ServerIP'] = value
 
     def enableDisableINDI(self):
+        print('check')
         if self.app.ui.checkEnableINDI.isChecked():
             if not self.isRunning:
                 self.app.threadINDI.start()

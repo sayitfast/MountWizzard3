@@ -54,7 +54,7 @@ class Remote(PyQt5.QtCore.QObject):
         finally:
             pass
         self.setPort()
-        self.app.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
+        self.app.ui.checkEnableRemoteAccess.stateChanged.connect(lambda: self.enableDisableRemoteAccess())
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = False
         self.app.ui.le_remotePort.textChanged.connect(self.setPort)
