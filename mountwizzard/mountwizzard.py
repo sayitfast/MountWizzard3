@@ -112,6 +112,7 @@ class MountWizzardApp(widget.MwWidget):
         # instantiating all subclasses and connecting thread signals
         self.transform = transform.Transform(self)
         self.relays = relays.Relays(self)
+        # runtime threads
         self.workerINDI = indi_client.INDIClient(self)
         self.threadINDI = PyQt5.QtCore.QThread()
         self.threadINDI.setObjectName("INDI")
@@ -143,8 +144,6 @@ class MountWizzardApp(widget.MwWidget):
         # noinspection PyUnresolvedReferences
         self.threadRemote.started.connect(self.workerRemote.run)
         self.workerRemote.finished.connect(self.workerRemoteStop)
-        # thread start will be done when enabled
-        # self.threadRemote.start()
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for updater automation
         if platform.system() == 'Windows':
@@ -564,23 +563,41 @@ class MountWizzardApp(widget.MwWidget):
 
         # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
         self.workerMountDispatcher.initConfig()
+        if self.workerMountDispatcher.isRunning:
+            self.workerMountDispatcher.stop()
+        self.threadMountDispatcher.start()
+
         self.workerModelingDispatcher.initConfig()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
+        self.threadModelingDispatcher.start()
+
         self.workerEnvironment.initConfig()
         if self.workerEnvironment.isRunning:
             self.workerEnvironment.stop()
         self.threadEnvironment.start()
+
         self.workerDome.initConfig()
         if self.workerDome.isRunning:
             self.workerDome.stop()
         self.threadDome.start()
+
         if platform.system() == 'Windows':
             self.workerUpload.initConfig()
+            if self.workerUpload.isRunning:
+                self.workerUpload.stop()
+            self.threadUpload.start()
+
+        self.workerINDI.initConfig()
+        if self.workerINDI.isRunning:
+            self.workerINDI.stop()
+        self.threadINDI.start()
+
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
         self.relays.initConfig()
-        self.workerINDI.initConfig()
 
         # make windows visible, if they were on the desktop depending on their show status
         if self.modelWindow.showStatus:

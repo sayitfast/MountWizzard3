@@ -108,7 +108,6 @@ class Environment(PyQt5.QtCore.QObject):
         self.chooserLock.release()
 
     def run(self):
-        print('start environ')
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
