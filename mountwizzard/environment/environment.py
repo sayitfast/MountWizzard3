@@ -165,9 +165,9 @@ class Environment(PyQt5.QtCore.QObject):
     def getAscomData(self):
         # todo: exeption handling and show and handle disconnection - split connection error and attribute not present error
         try:
-            self.data['DewPoint'] = self.ascom.DewPoint
-        except Exception:
-            pass
+            self.data['DewPoint'] = self.ascom.DewPoint1
+        except Exception as e:
+            print(e)
         finally:
             pass
         try:

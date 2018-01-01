@@ -58,7 +58,7 @@ class Dome(PyQt5.QtCore.QObject):
         try:
             if 'DomeAscomDriverName' in self.app.config:
                 self.ascomDriverName = self.app.config['DomeAscomDriverName']
-                self.app.ui.pd_chooseDome.setText(self.app.config['DomeAscomDriverName'])
+                self.app.ui.le_ascomDomeDriverName.setText(self.app.config['DomeAscomDriverName'])
             if 'Dome' in self.app.config:
                 self.app.ui.pd_chooseDome.setCurrentIndex(int(self.app.config['Dome']))
         except Exception as e:
