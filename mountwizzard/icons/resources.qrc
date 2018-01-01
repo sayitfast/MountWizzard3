@@ -25,5 +25,6 @@
     <file>stop.ico</file>
     <file>altitude1.png</file>
     <file>azimuth1.png</file>
+    <file>mw3_splash.ico</file>
 </qresource>
 </RCC>

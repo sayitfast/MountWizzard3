@@ -1132,6 +1132,14 @@ if __name__ == "__main__":
         logging.error('-----------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
+    # Create and display the splash screen
+    app = PyQt5.QtWidgets.QApplication(sys.argv)
+    splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
+    splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint)
+    splash.setMask(splash_pix.mask())
+    splash.show()
+    app.processEvents()
+
     BUILD_NO = '3.0.0 beta'
 
     warnings.filterwarnings("ignore")
@@ -1173,11 +1181,11 @@ if __name__ == "__main__":
         logging.error('no write access to /analysedata')
 
     # and finally starting the application
-    app = PyQt5.QtWidgets.QApplication(sys.argv)
     sys.excepthook = except_hook
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
     mountApp = MountWizzardApp()
     logging.info('Screensize: {0} x {1}'.format(mountApp.screenSizeX, mountApp.screenSizeY))
     mountApp.show()
-
+    # end of splash screen
+    splash.finish(mountApp)
     sys.exit(app.exec_())
