@@ -75,12 +75,12 @@ class Environment(PyQt5.QtCore.QObject):
                 self.ascom = Dispatch(self.ascomDriverName)
                 self.ascom.connected = True
                 self.logger.info('Driver chosen:{0}'.format(self.ascomDriverName))
+                # connection made
+                self.data['Connected'] = True
             except Exception as e:
                 self.logger.error('Could not dispatch driver: {0} and connect it'.format(self.ascomDriverName))
             finally:
                 pass
-            # connection made
-            self.data['Connected'] = True
         else:
             # no connection made
             self.data['Connected'] = False
@@ -163,6 +163,7 @@ class Environment(PyQt5.QtCore.QObject):
         pass
 
     def getAscomData(self):
+        # todo: exeption handling and show and handle disconnection - split connection error and attribute not present error
         try:
             self.data['DewPoint'] = self.ascom.DewPoint
         except Exception:

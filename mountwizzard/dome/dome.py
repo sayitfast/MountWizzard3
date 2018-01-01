@@ -78,12 +78,12 @@ class Dome(PyQt5.QtCore.QObject):
                 self.ascom = Dispatch(self.ascomDriverName)
                 self.ascom.connected = True
                 self.logger.info('Driver chosen:{0}'.format(self.ascomDriverName))
+                # connection made
+                self.data['Connected'] = True
             except Exception as e:
                 self.logger.error('Could not dispatch driver: {0} and connect it'.format(self.ascomDriverName))
             finally:
                 pass
-            # connection made
-            self.data['Connected'] = True
         else:
             # no connection made
             self.data['Connected'] = False
