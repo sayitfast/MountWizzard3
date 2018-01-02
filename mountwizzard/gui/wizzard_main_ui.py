@@ -5004,7 +5004,7 @@ class Ui_MainWindow(object):
         self.btn_INDIConnected.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(9)
+        self.mainTabWidget.setCurrentIndex(2)
         self.settingsTabWidget.setCurrentIndex(2)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -5351,7 +5351,7 @@ class Ui_MainWindow(object):
 "Window"))
         self.btn_openModelingPlotWindow.setToolTip(_translate("MainWindow", "<html><head/><body><p>Opens the coordinate an model points popup window</p></body></html>"))
         self.btn_openModelingPlotWindow.setText(_translate("MainWindow", "Open\n"
-"Modeling Plot\n"
+"Hemisphere\n"
 "Window"))
         self.checkDeletePointsHorizonMask.setToolTip(_translate("MainWindow", "If checked, a blind solve would be made (needs internet connection)"))
         self.checkDeletePointsHorizonMask.setText(_translate("MainWindow", "Auto delete points below horizon"))

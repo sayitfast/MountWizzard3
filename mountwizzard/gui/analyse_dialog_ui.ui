@@ -13,13 +13,13 @@
   <property name="windowTitle">
    <string>Analyse</string>
   </property>
-  <widget class="QWidget" name="plot" native="true">
+  <widget class="QWidget" name="analyse" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>130</y>
+     <y>140</y>
      <width>791</width>
-     <height>501</height>
+     <height>491</height>
     </rect>
    </property>
    <property name="font">
@@ -499,6 +499,42 @@
     <string>...</string>
    </property>
   </widget>
+  <widget class="QLabel" name="analyseBackground">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>791</width>
+     <height>131</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>analyseBackground</zorder>
+  <zorder>analyse</zorder>
+  <zorder>btn_selectDecError</zorder>
+  <zorder>btn_selectRaError</zorder>
+  <zorder>btn_selectDecErrorAltitude</zorder>
+  <zorder>btn_selectRaErrorAltitude</zorder>
+  <zorder>btn_selectModelPointPolar</zorder>
+  <zorder>btn_selectDecErrorAzimuth</zorder>
+  <zorder>btn_selectModelPointErrorPolar</zorder>
+  <zorder>btn_selectRaErrorDeviation</zorder>
+  <zorder>btn_selectRaErrorAzimuth</zorder>
+  <zorder>label_93</zorder>
+  <zorder>label_113</zorder>
+  <zorder>scalePlotRA</zorder>
+  <zorder>label_94</zorder>
+  <zorder>scalePlotDEC</zorder>
+  <zorder>label_114</zorder>
+  <zorder>label_95</zorder>
+  <zorder>label_115</zorder>
+  <zorder>scalePlotError</zorder>
+  <zorder>btn_selectDecErrorDeviation</zorder>
+  <zorder>btn_selectAnalyseFileName_11</zorder>
+  <zorder>btn_selectAnalyseFileName_12</zorder>
  </widget>
  <resources/>
  <connections/>

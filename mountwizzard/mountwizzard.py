@@ -28,7 +28,7 @@ import PyQt5
 import matplotlib
 matplotlib.use('Qt5Agg')
 from baseclasses import widget
-from widgets import modelplotWindow
+from widgets import hemisphereWindow
 from widgets import imageWindow
 from widgets import analyseWindow
 from widgets import messageWindow
@@ -177,7 +177,7 @@ class MountWizzardApp(widget.MwWidget):
         self.setMountStatus({})
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
-        self.modelWindow = modelplotWindow.ModelPlotWindow(self)
+        self.modelWindow = hemisphereWindow.HemisphereWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
         self.messageWindow = messageWindow.MessageWindow(self)
         # loading config data - will be config.cfg

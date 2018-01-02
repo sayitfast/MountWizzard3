@@ -34,17 +34,6 @@ class MwWidget(QWidget):
     COLOR_RED = QColor(255, 0, 0)
     COLOR_ORANGE = QColor(192, 96, 96)
     COLOR_BLACK = QColor(0, 0, 0)
-    COLOR_POINTER = QColor(255, 0, 255)
-    COLOR_POINTER1 = QColor(32, 144, 192)
-    COLOR_TRACKWIDGETTEXT = QColor(255, 255, 255)
-    COLOR_TRACKWIDGETPOINTS = QColor(128, 128, 128)
-    COLOR_WINDOW = QColor(32, 32, 32)
-    COLOR_WINDOW_TEXT = QColor(192, 192, 192)
-    COLOR_BACKGROUND = QColor(53, 53, 53)
-    COLOR_BASE = QColor(25, 25, 25)
-    COLOR_BASE_MAIN = QColor(16, 72, 96)
-    COLOR_ALTERNATE_BASE = QColor(53, 53, 53)
-    COLOR_HIGHLIGHT = QColor(42, 130, 218)
 
     # define the basic style of the mountwizzard theme
     BASIC_STYLE = """
@@ -62,7 +51,7 @@ class MwWidget(QWidget):
         border-radius: 2px;
         background-color: rgb(8, 36, 48);
     }
-    QLabel#hemisphereBackground {
+    QLabel#hemisphereBackground, QLabel#analyseBackground {
         border-width: 3px;
         border-color: rgb(16, 72, 96);
         border-style: outset;

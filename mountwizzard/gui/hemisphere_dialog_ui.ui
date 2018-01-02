@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CoordinateDialog</class>
- <widget class="QWidget" name="CoordinateDialog">
+ <class>HemisphereDialog</class>
+ <widget class="QWidget" name="HemisphereDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Modeling Plot</string>
+   <string>Hemisphere</string>
   </property>
   <widget class="QWidget" name="hemisphere" native="true">
    <property name="enabled">

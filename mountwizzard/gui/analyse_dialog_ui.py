@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'analyse_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.8.2
+# Created by: PyQt5 UI code generator 5.9.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -12,12 +12,12 @@ class Ui_AnalyseDialog(object):
     def setupUi(self, AnalyseDialog):
         AnalyseDialog.setObjectName("AnalyseDialog")
         AnalyseDialog.resize(791, 638)
-        self.plot = QtWidgets.QWidget(AnalyseDialog)
-        self.plot.setGeometry(QtCore.QRect(0, 130, 791, 501))
+        self.analyse = QtWidgets.QWidget(AnalyseDialog)
+        self.analyse.setGeometry(QtCore.QRect(0, 140, 791, 491))
         font = QtGui.QFont()
         font.setFamily("Arial")
-        self.plot.setFont(font)
-        self.plot.setObjectName("plot")
+        self.analyse.setFont(font)
+        self.analyse.setObjectName("analyse")
         self.btn_selectDecError = QtWidgets.QPushButton(AnalyseDialog)
         self.btn_selectDecError.setGeometry(QtCore.QRect(10, 10, 121, 31))
         font = QtGui.QFont()
@@ -159,6 +159,33 @@ class Ui_AnalyseDialog(object):
         font.setPointSize(10)
         self.btn_selectAnalyseFileName_12.setFont(font)
         self.btn_selectAnalyseFileName_12.setObjectName("btn_selectAnalyseFileName_12")
+        self.analyseBackground = QtWidgets.QLabel(AnalyseDialog)
+        self.analyseBackground.setGeometry(QtCore.QRect(0, 0, 791, 131))
+        self.analyseBackground.setText("")
+        self.analyseBackground.setObjectName("analyseBackground")
+        self.analyseBackground.raise_()
+        self.analyse.raise_()
+        self.btn_selectDecError.raise_()
+        self.btn_selectRaError.raise_()
+        self.btn_selectDecErrorAltitude.raise_()
+        self.btn_selectRaErrorAltitude.raise_()
+        self.btn_selectModelPointPolar.raise_()
+        self.btn_selectDecErrorAzimuth.raise_()
+        self.btn_selectModelPointErrorPolar.raise_()
+        self.btn_selectRaErrorDeviation.raise_()
+        self.btn_selectRaErrorAzimuth.raise_()
+        self.label_93.raise_()
+        self.label_113.raise_()
+        self.scalePlotRA.raise_()
+        self.label_94.raise_()
+        self.scalePlotDEC.raise_()
+        self.label_114.raise_()
+        self.label_95.raise_()
+        self.label_115.raise_()
+        self.scalePlotError.raise_()
+        self.btn_selectDecErrorDeviation.raise_()
+        self.btn_selectAnalyseFileName_11.raise_()
+        self.btn_selectAnalyseFileName_12.raise_()
 
         self.retranslateUi(AnalyseDialog)
         QtCore.QMetaObject.connectSlotsByName(AnalyseDialog)

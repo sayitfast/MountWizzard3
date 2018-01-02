@@ -18,14 +18,14 @@ from baseclasses import widget
 from astrometry import transform
 import numpy
 import matplotlib
-from gui import coordinate_dialog_ui
+from gui import hemisphere_dialog_ui
 
 
-class ModelPlotWindow(widget.MwWidget):
+class HemisphereWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
-        super(ModelPlotWindow, self).__init__()
+        super(HemisphereWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
         self.pointerAzAlt1 = None
@@ -33,7 +33,7 @@ class ModelPlotWindow(widget.MwWidget):
         self.pointerDome1 = None
         self.pointerDome2 = None
         self.pointerTrack = None
-        self.ui = coordinate_dialog_ui.Ui_CoordinateDialog()
+        self.ui = hemisphere_dialog_ui.Ui_HemisphereDialog()
         self.ui.setupUi(self)
         self.initUI()
         self.initConfig()

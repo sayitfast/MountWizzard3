@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -3924,7 +3924,7 @@ Window</string>
      </property>
      <property name="text">
       <string>Open
-Modeling Plot
+Hemisphere
 Window</string>
      </property>
     </widget>
