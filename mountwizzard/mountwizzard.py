@@ -192,10 +192,6 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
-        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
-        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
-        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
-        self.messageQueue.put('ajdfhja\nlskfhlk\nklfgjashg\najsgfkjfg\nkfgkjshg\ngsdfjksgafjhkg\n')
 
     def workerEnvironmentStop(self):
         self.threadEnvironment.quit()
@@ -909,16 +905,23 @@ class MountWizzardApp(widget.MwWidget):
     def setINDIStatus(self, status):
         if status == 0:
             self.ui.le_INDIStatus.setText('UnconnectedState')
+            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
         elif status == 1:
             self.ui.le_INDIStatus.setText('HostLookupState')
+            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
         elif status == 2:
             self.ui.le_INDIStatus.setText('ConnectingState')
+            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
         elif status == 3:
             self.ui.le_INDIStatus.setText('ConnectedState')
+            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
         elif status == 6:
             self.ui.le_INDIStatus.setText('ClosingState')
+            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
         else:
             self.ui.le_INDIStatus.setText('Error')
+        if not self.ui.checkEnableINDI.isChecked():
+            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def fillINDIData(self, data):
         if data['Name'] == 'Telescope':
