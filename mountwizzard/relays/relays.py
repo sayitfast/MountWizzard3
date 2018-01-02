@@ -142,6 +142,7 @@ class Relays:
         self.app.config['RelayUsername'] = self.app.ui.le_relayUsername.text()
         self.app.config['RelayPassword'] = self.app.ui.le_relayPassword.text()
         self.app.config['CheckEnableRelay'] = self.app.ui.checkEnableRelay.isChecked()
+        self.app.ui.le_relayIP.editingFinished.connect(self.enableDisableRelay)
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_relayIP)

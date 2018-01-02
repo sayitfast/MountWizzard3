@@ -40,7 +40,6 @@ class Remote(PyQt5.QtCore.QObject):
         self.remotePort = 0
         self.tcpServer = None
         self.clientConnection = None
-        self.app.ui.le_remotePort.textChanged.connect(self.setPort)
 
     def initConfig(self):
         try:

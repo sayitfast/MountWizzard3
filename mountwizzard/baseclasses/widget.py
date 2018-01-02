@@ -285,40 +285,67 @@ class MwWidget(QWidget):
         color: #404040;
         border-color: #202020;
     }
+    
     /* scroll bar */
-    QScrollBar:vertical {
-        background-color: #202020;
-        width: 24px;
+    QScrollBar:vertical
+    {   background-color: #202020;
+        width: 20px;
+        margin: 20px 3px 20px 3px;
         border-width: 1px;
         border-color: #404040;
-        border-radius: 2px;
-        border-style: solid;
-        padding-right: 4px;
-    }
-    QScrollBar::handle:vertical {
-        border-width: 1px;
-        border-color: #404040;
-        border-radius: 3px;
-        border-style: inset;
-        background-color: rgb(32, 144, 192);
-        min-height: 40px;
-        margin: 28px 0px 28px 0px;
-    }
-    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
-        background: none;
         border-style: outset;
-        padding-right: 2px;
+        border-radius: 3px;
     }
-    QScrollBar:up-arrow:vertical {
-        image: url(:/arrow-up.ico);
+    QScrollBar::handle:vertical
+    {   background-color:  rgb(32, 144, 192);
+        min-height: 10px;
+        border-radius: 3px;
     }
-    QScrollBar::down-arrow:vertical {
-        image: url(:/arrow-down.ico);
+    QScrollBar::sub-line:vertical
+    {   margin: 3px 0px 3px 0px;
+        border-image: url(:arrow-up.ico);
+        height: 16px;
+        width: 16px;
+        subcontrol-position: top;
+        subcontrol-origin: margin;
     }
+    QScrollBar::add-line:vertical
+    {   margin: 3px 0px 3px 0px;
+        border-image: url(:arrow-down.ico);
+        height: 16px;
+        width: 16px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+    QScrollBar::sub-line:vertical:on
+    {   border-image: url(:arrow-up.png);
+        height: 16px;
+        width: 16px;
+        subcontrol-position: top;
+        subcontrol-origin: margin;
+    }
+    QScrollBar::add-line:vertical:on
+    {   border-image: url(:arrow-down.png);
+        height: 16px;
+        width: 16px;
+        subcontrol-position: bottom;
+        subcontrol-origin: margin;
+    }
+    QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical
+    {   background: none;
+        border-width: 1px;
+        border-color: #404040;
+        border-style: outset;
+        border-radius: 4px;
+    }
+    QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
+    {   background: none;
+    }    
+
     /* progress bar */
     QProgressBar {
         background-color: #101010;
-        border-radius: 2px;
+        border-radius: 3px;
         border-width: 1px;
         border-color: #404040;
         border-style: outset;
@@ -329,12 +356,12 @@ class MwWidget(QWidget):
         margin: 1px;
         border-width: 2px;
         border-color: #404040;
-        border-radius: 2px;
+        border-radius: 3px;
         border-style: outset;
     }
     QTextBrowser {
         background-color: #101010;
-        border-radius: 2px;
+        border-radius: 3px;
         border-width: 2px;
         border-color: #404040;
         border-style: outset;
