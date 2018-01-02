@@ -391,7 +391,7 @@ class MwWidget(QWidget):
         else:
             value = dlg.getSaveFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         name = value[0]
-        if not name.endswith(extension):
+        if not name.endswith(extension) and len(name) > 0:
             name += extension
         return name
 
