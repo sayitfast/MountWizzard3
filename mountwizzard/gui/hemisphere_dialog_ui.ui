@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>791</width>
-    <height>639</height>
+    <height>641</height>
    </rect>
   </property>
   <property name="font">
@@ -25,9 +25,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>60</y>
+     <y>80</y>
      <width>771</width>
-     <height>571</height>
+     <height>551</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -40,8 +40,8 @@
   <widget class="QPushButton" name="btn_deletePoints">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
+     <x>20</x>
+     <y>20</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -61,8 +61,8 @@
   <widget class="QCheckBox" name="checkShowNumbers">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>10</y>
+     <x>140</x>
+     <y>20</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -90,8 +90,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>791</width>
-     <height>51</height>
+     <width>790</width>
+     <height>71</height>
     </rect>
    </property>
    <property name="text">

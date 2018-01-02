@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>791</width>
-    <height>638</height>
+    <height>641</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="analyse" native="true">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>140</y>
-     <width>791</width>
-     <height>491</height>
+     <x>10</x>
+     <y>120</y>
+     <width>771</width>
+     <height>511</height>
     </rect>
    </property>
    <property name="font">
@@ -27,13 +27,16 @@
      <family>Arial</family>
     </font>
    </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="btn_selectDecError">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>121</width>
+     <x>20</x>
+     <y>20</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -53,8 +56,8 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>10</y>
-     <width>121</width>
+     <y>20</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -73,9 +76,9 @@
   <widget class="QPushButton" name="btn_selectDecErrorAltitude">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>10</y>
-     <width>121</width>
+     <x>260</x>
+     <y>20</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -94,9 +97,9 @@
   <widget class="QPushButton" name="btn_selectRaErrorAltitude">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>10</y>
-     <width>121</width>
+     <x>380</x>
+     <y>20</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -115,9 +118,9 @@
   <widget class="QPushButton" name="btn_selectModelPointPolar">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>10</y>
-     <width>121</width>
+     <x>500</x>
+     <y>20</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -136,9 +139,9 @@
   <widget class="QPushButton" name="btn_selectDecErrorAzimuth">
    <property name="geometry">
     <rect>
-     <x>270</x>
-     <y>50</y>
-     <width>121</width>
+     <x>260</x>
+     <y>60</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -157,9 +160,9 @@
   <widget class="QPushButton" name="btn_selectModelPointErrorPolar">
    <property name="geometry">
     <rect>
-     <x>530</x>
-     <y>50</y>
-     <width>121</width>
+     <x>500</x>
+     <y>60</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -179,8 +182,8 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>50</y>
-     <width>121</width>
+     <y>60</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -199,9 +202,9 @@
   <widget class="QPushButton" name="btn_selectRaErrorAzimuth">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>50</y>
-     <width>121</width>
+     <x>380</x>
+     <y>60</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -217,231 +220,12 @@
     <string>Ra Error over Az</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_93">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>100</y>
-     <width>61</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Scale RA</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_113">
-   <property name="geometry">
-    <rect>
-     <x>240</x>
-     <y>100</y>
-     <width>21</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>°</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="wordWrap">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QDoubleSpinBox" name="scalePlotRA">
-   <property name="geometry">
-    <rect>
-     <x>200</x>
-     <y>100</y>
-     <width>41</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>resulting focal length - please think of reducers etc.</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-   <property name="decimals">
-    <number>0</number>
-   </property>
-   <property name="minimum">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="maximum">
-    <double>100.000000000000000</double>
-   </property>
-   <property name="singleStep">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="value">
-    <double>20.000000000000000</double>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_94">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>100</y>
-     <width>71</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Scale DEC</string>
-   </property>
-  </widget>
-  <widget class="QDoubleSpinBox" name="scalePlotDEC">
-   <property name="geometry">
-    <rect>
-     <x>80</x>
-     <y>100</y>
-     <width>41</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>resulting focal length - please think of reducers etc.</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-   <property name="decimals">
-    <number>0</number>
-   </property>
-   <property name="minimum">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="maximum">
-    <double>100.000000000000000</double>
-   </property>
-   <property name="singleStep">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="value">
-    <double>20.000000000000000</double>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_114">
-   <property name="geometry">
-    <rect>
-     <x>120</x>
-     <y>100</y>
-     <width>21</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>°</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="wordWrap">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_95">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>100</y>
-     <width>71</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>Scale Error</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_115">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>100</y>
-     <width>51</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="text">
-    <string>arcsec</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignCenter</set>
-   </property>
-   <property name="wordWrap">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QDoubleSpinBox" name="scalePlotError">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>100</y>
-     <width>41</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>resulting focal length - please think of reducers etc.</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-   </property>
-   <property name="decimals">
-    <number>0</number>
-   </property>
-   <property name="minimum">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="maximum">
-    <double>50.000000000000000</double>
-   </property>
-   <property name="singleStep">
-    <double>5.000000000000000</double>
-   </property>
-   <property name="value">
-    <double>10.000000000000000</double>
-   </property>
-  </widget>
   <widget class="QPushButton" name="btn_selectDecErrorDeviation">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>50</y>
-     <width>121</width>
+     <x>20</x>
+     <y>60</y>
+     <width>111</width>
      <height>31</height>
     </rect>
    </property>
@@ -457,55 +241,13 @@
     <string>DEC Error Flexure</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_11">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>10</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectAnalyseFileName_12">
-   <property name="geometry">
-    <rect>
-     <x>660</x>
-     <y>50</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>Sets dual tracking on / off</string>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="analyseBackground">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>791</width>
-     <height>131</height>
+     <width>790</width>
+     <height>111</height>
     </rect>
    </property>
    <property name="text">
@@ -513,7 +255,6 @@
    </property>
   </widget>
   <zorder>analyseBackground</zorder>
-  <zorder>analyse</zorder>
   <zorder>btn_selectDecError</zorder>
   <zorder>btn_selectRaError</zorder>
   <zorder>btn_selectDecErrorAltitude</zorder>
@@ -523,19 +264,26 @@
   <zorder>btn_selectModelPointErrorPolar</zorder>
   <zorder>btn_selectRaErrorDeviation</zorder>
   <zorder>btn_selectRaErrorAzimuth</zorder>
-  <zorder>label_93</zorder>
-  <zorder>label_113</zorder>
-  <zorder>scalePlotRA</zorder>
-  <zorder>label_94</zorder>
-  <zorder>scalePlotDEC</zorder>
-  <zorder>label_114</zorder>
-  <zorder>label_95</zorder>
-  <zorder>label_115</zorder>
-  <zorder>scalePlotError</zorder>
   <zorder>btn_selectDecErrorDeviation</zorder>
-  <zorder>btn_selectAnalyseFileName_11</zorder>
-  <zorder>btn_selectAnalyseFileName_12</zorder>
+  <zorder>analyse</zorder>
  </widget>
  <resources/>
  <connections/>
+ <designerdata>
+  <property name="gridDeltaX">
+   <number>5</number>
+  </property>
+  <property name="gridDeltaY">
+   <number>5</number>
+  </property>
+  <property name="gridSnapX">
+   <bool>true</bool>
+  </property>
+  <property name="gridSnapY">
+   <bool>true</bool>
+  </property>
+  <property name="gridVisible">
+   <bool>true</bool>
+  </property>
+ </designerdata>
 </ui>

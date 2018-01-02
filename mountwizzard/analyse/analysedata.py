@@ -178,16 +178,6 @@ class Analyse:
         else:
             return {}
 
-    @staticmethod
-    def prepareData(dataProcess, scaleRA, scaleDEC):
-        if len(dataProcess) == 0:                                                                                           # in case no data loaded ->
-            return dataProcess                                                                                              # quit
-        dataProcess['RaError'] = [scaleRA if x > scaleRA else x for x in dataProcess['RaError']]
-        dataProcess['RaError'] = [-scaleRA if x < -scaleRA else x for x in dataProcess['RaError']]
-        dataProcess['DecError'] = [scaleDEC if x > scaleDEC else x for x in dataProcess['DecError']]
-        dataProcess['DecError'] = [-scaleDEC if x < -scaleDEC else x for x in dataProcess['DecError']]
-        return dataProcess
-
 
 if __name__ == "__main__":
     logger = getLogger(__name__)
