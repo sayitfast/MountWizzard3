@@ -16,7 +16,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Image</string>
+   <string>Imaging</string>
   </property>
   <widget class="QWidget" name="image" native="true">
    <property name="geometry">

@@ -155,7 +155,7 @@ class Ui_ImageDialog(object):
 
     def retranslateUi(self, ImageDialog):
         _translate = QtCore.QCoreApplication.translate
-        ImageDialog.setWindowTitle(_translate("ImageDialog", "Image"))
+        ImageDialog.setWindowTitle(_translate("ImageDialog", "Imaging"))
         self.btn_expose.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Single exposure</p></body></html>"))
         self.btn_expose.setText(_translate("ImageDialog", "Expose\n"
 "single\n"
