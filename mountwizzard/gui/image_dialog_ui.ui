@@ -21,10 +21,10 @@
   <widget class="QWidget" name="image" native="true">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>105</y>
-     <width>791</width>
-     <height>531</height>
+     <x>10</x>
+     <y>110</y>
+     <width>771</width>
+     <height>521</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -71,9 +71,9 @@ Shot</string>
    <property name="geometry">
     <rect>
      <x>710</x>
-     <y>5</y>
+     <y>10</y>
      <width>71</width>
-     <height>91</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
@@ -123,9 +123,9 @@ Shot</string>
    <property name="geometry">
     <rect>
      <x>630</x>
-     <y>5</y>
+     <y>10</y>
      <width>71</width>
-     <height>91</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
@@ -193,9 +193,9 @@ Shot</string>
    <property name="geometry">
     <rect>
      <x>540</x>
-     <y>5</y>
+     <y>10</y>
      <width>81</width>
-     <height>91</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
@@ -307,10 +307,10 @@ Exposures</string>
   <widget class="Line" name="line_14">
    <property name="geometry">
     <rect>
-     <x>340</x>
-     <y>5</y>
-     <width>31</width>
-     <height>21</height>
+     <x>330</x>
+     <y>20</y>
+     <width>41</width>
+     <height>1</height>
     </rect>
    </property>
    <property name="frameShadow">
@@ -324,9 +324,9 @@ Exposures</string>
    <property name="geometry">
     <rect>
      <x>395</x>
-     <y>385</y>
+     <y>390</y>
      <width>21</width>
-     <height>241</height>
+     <height>231</height>
     </rect>
    </property>
    <property name="frameShadow">
@@ -340,9 +340,9 @@ Exposures</string>
    <property name="geometry">
     <rect>
      <x>395</x>
-     <y>114</y>
+     <y>120</y>
      <width>21</width>
-     <height>241</height>
+     <height>231</height>
     </rect>
    </property>
    <property name="frameShadow">
@@ -355,9 +355,9 @@ Exposures</string>
   <widget class="Line" name="cross1">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>360</y>
-     <width>381</width>
+     <width>371</width>
      <height>20</height>
     </rect>
    </property>
@@ -378,7 +378,7 @@ Exposures</string>
     <rect>
      <x>420</x>
      <y>360</y>
-     <width>361</width>
+     <width>351</width>
      <height>20</height>
     </rect>
    </property>
@@ -436,6 +436,36 @@ Exposures</string>
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QLabel" name="imageBackground">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>790</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>imageBackground</zorder>
+  <zorder>image</zorder>
+  <zorder>btn_expose</zorder>
+  <zorder>btn_crosshair</zorder>
+  <zorder>groupBox_2</zorder>
+  <zorder>groupBox_3</zorder>
+  <zorder>btn_solve</zorder>
+  <zorder>groupBox_4</zorder>
+  <zorder>btn_startContExposures</zorder>
+  <zorder>btn_stopContExposures</zorder>
+  <zorder>label_82</zorder>
+  <zorder>line_14</zorder>
+  <zorder>cross4</zorder>
+  <zorder>cross2</zorder>
+  <zorder>cross1</zorder>
+  <zorder>cross3</zorder>
+  <zorder>le_INDICameraStatus</zorder>
  </widget>
  <resources/>
  <connections/>

@@ -37,6 +37,20 @@ class MwWidget(QWidget):
 
     # define the basic style of the mountwizzard theme
     BASIC_STYLE = """
+    QToolTip
+    {   border-width: 2px;
+        border-style: outset;
+        border-color: #404040;
+        border-radius: 3px;
+        background-color: rgb(32, 144, 192);
+        color: #101010;
+        font-family: Arial;
+        font-style: normal;
+        font-weight: bold;
+        padding: 5px;
+        opacity: 200;
+    }
+
     QWidget {
         background-color: #181818;
     }
@@ -51,7 +65,7 @@ class MwWidget(QWidget):
         border-radius: 2px;
         background-color: rgb(8, 36, 48);
     }
-    QLabel#hemisphereBackground, QLabel#analyseBackground {
+    QLabel#hemisphereBackground, QLabel#analyseBackground, QLabel#imageBackground {
         border-width: 3px;
         border-color: rgb(16, 72, 96);
         border-style: outset;
@@ -102,6 +116,55 @@ class MwWidget(QWidget):
         height: 13px;
     }
     QCheckBox::indicator:checked {
+        background-color: rgb(32, 144, 192);
+        image: url(:/checkmark.ico);
+    }
+
+    /* Group Box */
+    QGroupBox {
+        background-color: #181818;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 3px;
+        border-color: #404040;
+    }
+    QGroupBox::title {
+        subcontrol-origin: margin;
+        subcontrol-position: top left; /* position at the top center */
+        background-color: #202020;
+        border-width: 1px;
+        border-style: outset;
+        border-radius: 3px;
+        border-color: #404040;
+        padding: 2px 2px 2px 2px;
+        color: #C0C0C0;
+    }
+    QGroupBox::indicator {
+        border-width: 1px;
+        border-color: #404040;
+        background-color: #101010;
+        border-style: outset;
+        border-radius: 2px;
+        width: 13px;
+        height: 13px;
+    }
+    QGroupBox::indicator:checked {
+        background-color: rgb(32, 144, 192);
+    }
+    QRadioButton {
+        color: #C0C0C0;
+        background-color: transparent;
+    }
+    QRadioButton::indicator {
+        border-width: 1px;
+        border-color: #404040;
+        background-color: #101010;
+        border-style: outset;
+        border-radius: 2px;
+        width: 13px;
+        height: 13px;
+    }
+    QRadioButton::indicator:checked {
         background-color: rgb(32, 144, 192);
         image: url(:/checkmark.ico);
     }
@@ -234,6 +297,7 @@ class MwWidget(QWidget):
         background-color: #101010;
         selection-background-color: rgb(32, 144, 192);
     }
+
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
         color: rgb(16, 72, 96);
