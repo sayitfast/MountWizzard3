@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>120</y>
+     <y>80</y>
      <width>771</width>
-     <height>511</height>
+     <height>551</height>
     </rect>
    </property>
    <property name="font">
@@ -31,10 +31,10 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectDecError">
+  <widget class="QPushButton" name="btn_errorTime">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>140</x>
      <y>20</y>
      <width>111</width>
      <height>31</height>
@@ -49,119 +49,14 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Dec Error</string>
+    <string>Error over time</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_selectRaError">
+  <widget class="QPushButton" name="btn_errorOverview">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>20</x>
      <y>20</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Ra Error</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectDecErrorAltitude">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>20</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file over Altitude.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Dec Error over Alt</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectRaErrorAltitude">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>20</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file over Altitude.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Ra Error over Alt</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectModelPointPolar">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>20</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show model points in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Model Points Polar</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectDecErrorAzimuth">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>60</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file over Azimuth.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Dec Error over Az</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectModelPointErrorPolar">
-   <property name="geometry">
-    <rect>
-     <x>500</x>
-     <y>60</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -175,70 +70,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show total error in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Model Error Polar</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectRaErrorDeviation">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>60</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file with respect to the first model point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>RA Error Flexure</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectRaErrorAzimuth">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>60</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Ra Error in arc sec from modeling file over Azimuth.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Ra Error over Az</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="btn_selectDecErrorDeviation">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>60</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file with respect to the first model point.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>DEC Error Flexure</string>
+    <string>Error overview</string>
    </property>
   </widget>
   <widget class="QLabel" name="analyseBackground">
@@ -247,7 +79,7 @@
      <x>0</x>
      <y>0</y>
      <width>790</width>
-     <height>111</height>
+     <height>66</height>
     </rect>
    </property>
    <property name="text">
@@ -255,16 +87,8 @@
    </property>
   </widget>
   <zorder>analyseBackground</zorder>
-  <zorder>btn_selectDecError</zorder>
-  <zorder>btn_selectRaError</zorder>
-  <zorder>btn_selectDecErrorAltitude</zorder>
-  <zorder>btn_selectRaErrorAltitude</zorder>
-  <zorder>btn_selectModelPointPolar</zorder>
-  <zorder>btn_selectDecErrorAzimuth</zorder>
-  <zorder>btn_selectModelPointErrorPolar</zorder>
-  <zorder>btn_selectRaErrorDeviation</zorder>
-  <zorder>btn_selectRaErrorAzimuth</zorder>
-  <zorder>btn_selectDecErrorDeviation</zorder>
+  <zorder>btn_errorTime</zorder>
+  <zorder>btn_errorOverview</zorder>
   <zorder>analyse</zorder>
  </widget>
  <resources/>

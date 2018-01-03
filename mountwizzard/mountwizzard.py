@@ -332,11 +332,11 @@ class MountWizzardApp(widget.MwWidget):
     def showModelErrorPolar(self, widget):
         widget.fig.clf()
         widget.axes = widget.fig.add_subplot(1, 1, 1, polar=True)
-        widget.axes.grid(True, color='gray')
+        widget.axes.grid(True, color='#404040')
         widget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
         widget.axes.set_facecolor((32/256, 32/256, 32/256))
-        widget.axes.tick_params(axis='x', colors='white', labelsize=12)
-        widget.axes.tick_params(axis='y', colors='white', labelsize=12)
+        widget.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
+        widget.axes.tick_params(axis='y', colors='#2090C0', labelsize=12)
         widget.axes.set_theta_zero_location('N')
         widget.axes.set_theta_direction(-1)
         widget.axes.set_yticks(range(0, 90, 10))
@@ -755,7 +755,7 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('No file selected')
 
     def selectAnalyseFileName(self):
-        value = self.selectFile(self, 'Open analyse file', '/analyse', 'Analyse files (*.dat)', '.dat', True)
+        value = self.selectFile(self, 'Open analyse file', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
         if value != '':
             self.ui.le_analyseFileName.setText(os.path.basename(value))
             self.analyseWindow.showWindow()
