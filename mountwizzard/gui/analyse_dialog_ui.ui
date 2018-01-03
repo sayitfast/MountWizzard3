@@ -86,10 +86,32 @@
     <string/>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_errorAzAlt">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>20</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Show Dec Error in arc sec from modeling file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="text">
+    <string>Error over Az/Alt</string>
+   </property>
+  </widget>
   <zorder>analyseBackground</zorder>
   <zorder>btn_errorTime</zorder>
   <zorder>btn_errorOverview</zorder>
   <zorder>analyse</zorder>
+  <zorder>btn_errorAzAlt</zorder>
  </widget>
  <resources/>
  <connections/>
