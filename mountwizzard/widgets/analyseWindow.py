@@ -29,10 +29,9 @@ class AnalyseWindow(widget.MwWidget):
     def __init__(self, app):
         super(AnalyseWindow, self).__init__()
         self.app = app
-        self.scaleRA = 10
-        self.scaleDEC = 10
-        self.scaleError = 10
         self.data = {}
+        self.analyseView = 1
+
         self.analyse = analysedata.Analyse(self.app)
         self.ui = analyse_dialog_ui.Ui_AnalyseDialog()
         self.ui.setupUi(self)
@@ -61,6 +60,8 @@ class AnalyseWindow(widget.MwWidget):
                 self.move(x, y)
             if 'AnalysePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
+            if 'AnalyseView' in self.app.config:
+                self.analyseView = self.app.config['AnalyseView']
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for analyse window, error:{0}'.format(e))
         finally:
@@ -69,12 +70,18 @@ class AnalyseWindow(widget.MwWidget):
     def storeConfig(self):
         self.app.config['AnalysePopupWindowPositionX'] = self.pos().x()
         self.app.config['AnalysePopupWindowPositionY'] = self.pos().y()
+        self.app.config['AnalyseView'] = self.analyseView
         self.app.config['AnalysePopupWindowShowStatus'] = self.showStatus
 
     def showWindow(self):
         self.getData()
         self.setWindowTitle('Analyse:    ' + self.app.ui.le_analyseFileName.text())
-        self.showErrorOverview()
+        if self.analyseView == 1:
+            self.showErrorOverview()
+        elif self.analyseView == 2:
+            self.showErrorTime()
+        elif self.analyseView == 3:
+            self.showErrorAzAlt()
         self.showStatus = True
         self.setVisible(True)
         self.show()
@@ -108,6 +115,7 @@ class AnalyseWindow(widget.MwWidget):
     def showErrorOverview(self):
         if len(self.data) == 0:
             return
+        self.analyseView = 1
         self.analyseMatplotlib.fig.clf()
         axe1 = self.analyseMatplotlib.fig.add_subplot(1, 2, 1)
         self.setStyle(axe1)
@@ -152,6 +160,7 @@ class AnalyseWindow(widget.MwWidget):
     def showErrorTime(self):
         if len(self.data) == 0:
             return
+        self.analyseView = 2
         self.analyseMatplotlib.fig.clf()
         axe1 = self.analyseMatplotlib.fig.add_subplot(2, 1, 1)
         self.setStyle(axe1)
@@ -177,6 +186,8 @@ class AnalyseWindow(widget.MwWidget):
     def showErrorAzAlt(self):
         if len(self.data) == 0:
             return
+        self.analyseView = 3
+
         self.analyseMatplotlib.fig.clf()
         axe1 = self.analyseMatplotlib.fig.add_subplot(2, 2, 1)
         self.setStyle(axe1)
