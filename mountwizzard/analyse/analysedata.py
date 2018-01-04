@@ -21,21 +21,28 @@ from logging import getLogger
 class Analyse:
     logger = getLogger(__name__)
 
+    UPDATE = {'index': 'Index',
+              'azimuth': 'Azimuth',
+              'altitude': 'Altitude',
+              'modelError': 'ModelError',
+              'raError': 'RaError',
+              'decError': 'DecError'}
+
     def __init__(self, app):
         self.filepath = '/analysedata'
         self.app = app
 
-    def saveData(self, dataProcess, name):                                                                                  # saving data from list to file
+    def saveData(self, dataProcess, name):
         if name in ['base.dat', 'refine.dat', 'actual.dat', 'simple.dat', 'dso1.dat', 'dso2.dat']:
             number = self.app.mount.numberModelStars()
-            if number == -1:                                                                                                # if not real mount, than don't save modeling data
+            if number == -1:
                 return
-        filenameData = os.getcwd() + self.filepath + '/' + name                                                             # built the filename
-        try:                                                                                                                # write data to disk
-            outfile = open(filenameData, 'w')                                                                               # open for write
+        filenameData = os.getcwd() + self.filepath + '/' + name
+        try:
+            outfile = open(filenameData, 'w')
             json.dump(dataProcess, outfile)
-            outfile.close()                                                                                                 # close the save file
-        except Exception as e:                                                                                              # Exception handling
+            outfile.close()
+        except Exception as e:
             self.logger.error('analyse data file {0}, Error : {1}'.format(filenameData, e))
             return
 
@@ -138,24 +145,26 @@ class Analyse:
         return resultData
 
     def loadMountWizzardData(self, filename):
-        try:                                                                                                                # try to read the file
+        try:
             infile = open(filename, 'r')
             dataJson = json.load(infile)
-            infile.close()                                                                                                  # close
-        except Exception as e:                                                                                              # exception handling
+            infile.close()
+        except Exception as e:
             self.logger.error('analyse data file {0}, Error : {1}'.format(filename, e))
-            return {}                                                                                                       # loading doesn't work
+            return {}
         resultData = dict()
         for timestepdict in dataJson:
             for (keyData, valueData) in timestepdict.items():
+                if keyData in self.UPDATE:
+                    keyData = self.UPDATE[keyData]
                 if keyData in resultData:
                     resultData[keyData].append(valueData)
                 else:
                     resultData[keyData] = [valueData]
-        return resultData                                                                                                   # successful loading
+        return resultData
 
-    def loadDataRaw(self, filename):                                                                                        # saving data from list to file
-        filenameData = os.getcwd() + self.filepath + '/' + filename                                                         # generate filename
+    def loadDataRaw(self, filename):
+        filenameData = os.getcwd() + self.filepath + '/' + filename + '.dat'
         if os.path.isfile(filenameData):
             infile = open(filenameData, 'r')
             dataJson = json.load(infile)
@@ -164,8 +173,8 @@ class Analyse:
         else:
             return None
 
-    def loadData(self, filename):                                                                                           # loading data
-        filenameData = os.getcwd() + self.filepath + '/' + filename                                                         # generate filename
+    def loadData(self, filename):
+        filenameData = os.getcwd() + self.filepath + '/' + filename + '.dat'
         if os.path.isfile(filenameData):
             infile = open(filenameData, 'r')
             check = infile.read(8)
