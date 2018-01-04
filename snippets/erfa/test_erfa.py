@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from astropy import _erfa as erfa_astro
 
-from astrometry import erfa
+from snippets.erfa import erfa
 
 
 class TestErfa(TestCase):
