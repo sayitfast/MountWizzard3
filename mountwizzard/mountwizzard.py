@@ -686,11 +686,11 @@ class MountWizzardApp(widget.MwWidget):
             self.config = {}
 
     def saveConfig(self):
-        filepath = os.getcwd() + '\\config\\' + self.ui.le_configName.text()
+        filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
         self.saveConfigData(filepath)
 
     def saveConfigQuit(self):
-        filepath = os.getcwd() + '\\config\\' + self.ui.le_configName.text()
+        filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
         self.saveConfigData(filepath)
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
@@ -729,7 +729,7 @@ class MountWizzardApp(widget.MwWidget):
         if value != '':
             self.ui.le_configName.setText(os.path.basename(value))
             try:
-                with open(value, 'r') as data_file:
+                with open(value + '.cfg', 'r') as data_file:
                     self.config = json.load(data_file)
                     self.initConfig()
             except Exception as e:
@@ -743,7 +743,7 @@ class MountWizzardApp(widget.MwWidget):
         value = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)', '.cfg', False)
         if value != '':
             self.ui.le_configName.setText(os.path.basename(value))
-            self.saveConfigData(value)
+            self.saveConfigData(value + '.cfg')
         else:
             self.logger.warning('No config file selected')
 

@@ -220,7 +220,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 dec = dec.replace('*', ':')
                 RaJNow = self.transform.degStringToDecimal(ha)
                 DecJNow = self.transform.degStringToDecimal(dec)
-                az, alt = self.transform.ra_dec_lst_to_az_alt(RaJNow, DecJNow)
+                az, alt = self.transform.topocentricToAzAlt(RaJNow, DecJNow)
                 # index should start with 0, but numbering in mount starts with 1
                 self.data['ModelIndex'].append(i)
                 self.data['ModelAzimuth'].append(az)

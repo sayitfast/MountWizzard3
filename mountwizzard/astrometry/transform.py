@@ -27,7 +27,7 @@ class Transform:
         self.transformationLockERFA = threading.Lock()
         self.conversionLock = threading.Lock()
 
-    def ra_dec_lst_to_az_alt(self, ra, dec):
+    def topocentricToAzAlt(self, ra, dec):
         self.conversionLock.acquire()
         LAT = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0

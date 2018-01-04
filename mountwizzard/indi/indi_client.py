@@ -90,6 +90,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
+        self.status.emit(0)
 
     def storeConfig(self):
         self.app.config['INDIServerPort'] = self.app.ui.le_INDIServerPort.text()
