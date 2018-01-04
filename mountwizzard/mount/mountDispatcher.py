@@ -564,6 +564,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def runTargetRMSAlignment(self):
         self.runTargetRMS = True
         self.cancelRunTargetRMS = False
+        self.app.messageQueue.put('#BWTarget RMS Run started\n')
         if 'Number' not in self.data:
             return
         if self.data['Number'] < 4:
