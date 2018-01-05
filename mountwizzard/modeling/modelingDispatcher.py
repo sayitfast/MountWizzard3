@@ -67,16 +67,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'RunBatchModel':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_runBatchModel,
-                            'Method': self.modelingRunner.runBatchModel,
-                            'Cancel': self.app.ui.btn_cancelModel2
-                        }
-                    ]
-                },
             'RunTimeChangeModel':
                 {
                     'Worker': [
@@ -252,7 +242,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcher('RunTimeChangeModel'))
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcher('RunHystereseModel'))
         self.app.ui.btn_runRefinementModel.clicked.connect(lambda: self.commandDispatcher('RunRefinementModel'))
-        self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcher('RunBatchModel'))
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
         # TODO: it's not Model Connected, but imaging app connected
         self.signalStatusCamera.emit(0)

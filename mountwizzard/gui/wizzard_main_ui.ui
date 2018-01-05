@@ -127,7 +127,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string>Tab section</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="tabPosition">
     <enum>QTabWidget::North</enum>
@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -876,7 +876,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>PArk mount in default position</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Park mount in default position&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Park</string>
@@ -978,6 +978,9 @@
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slew the mount to the defined position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Park Pos4</string>
      </property>
@@ -1037,6 +1040,9 @@
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slew the mount to the defined position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Park Pos2</string>
      </property>
@@ -1055,6 +1061,9 @@
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slew the mount to the defined position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Park Pos3</string>
      </property>
@@ -1072,6 +1081,9 @@
       <font>
        <pointsize>10</pointsize>
       </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slew the mount to the defined position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Park Pos1</string>
@@ -1493,6 +1505,9 @@
        <pointsize>10</pointsize>
       </font>
      </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slew the mount to the defined position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>Park Pos6</string>
      </property>
@@ -1510,6 +1525,9 @@
       <font>
        <pointsize>10</pointsize>
       </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Slew the mount to the defined position.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Park Pos5</string>
@@ -2638,7 +2656,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>Pushes the refraction temp and pressur to mount</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pushes the refraction temperature and pressure to mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Push Parameters to Mount manually</string>
@@ -3250,7 +3268,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>sets the refraction param updates to automatic</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when camera is connected and IDLE.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
@@ -3592,7 +3610,7 @@
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Expiration date of UTC data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Expiration date of UTC data&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -3726,7 +3744,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>sets the refraction param updates to automatic</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when the mount is not tracking.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
@@ -3735,7 +3753,7 @@
       <string>When mount is not tracking</string>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QLabel" name="label_135">
@@ -3868,7 +3886,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sorts the modeling points EAST / WEST side of pier.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Auto sort points East / West</string>
@@ -3943,7 +3961,7 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Removes modeling points, which are below the horizon mask.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Auto delete points below horizon</string>
@@ -4010,13 +4028,13 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use minimum altitude for horizon mask in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use minimum altitude for horizon mask in hemisphere window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Use Minumum Altitude</string>
      </property>
      <property name="checked">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkUseFileHorizonLine">
@@ -4034,7 +4052,7 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use horizon mask file in modeling plot window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Use horizon mask file in hemisphere window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Use Horizon Mask File</string>
@@ -4211,7 +4229,7 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Value for minimum altitude for horizon mask&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5215,7 +5233,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Runs the base model, if ther are any points</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs the base model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Run Setup Model</string>
@@ -5271,7 +5289,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Generates Basepoint based on Altitude and AZ</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates base points based on number, altitude and azimuth settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Generate Setup Points</string>
@@ -5323,7 +5341,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Shows the base points of model point file</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows the base points of model points file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Setup Points from File</string>
@@ -5339,7 +5357,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels model run.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -6016,7 +6034,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image, Platesolve and Sync the model of the mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Image, Platesolve and Sync the alignment model of the mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Plate Solve and Sync Model</string>
@@ -6222,7 +6240,7 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the alignment model in the mount computer first and then starting modeling.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Clear model first</string>
@@ -6351,7 +6369,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Generates a regular pattern with 100 stars</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a regular pattern with the given parameters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Generate a Grid of Model Points</string>
@@ -6423,10 +6441,10 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Generates a pointcloud with greater circles medium number</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a pointcloud with greater circles: medium number of stars.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Pointcloud Norm</string>
+      <string>Pointcloud Medium</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_generateMaxPoints">
@@ -6439,10 +6457,10 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Generates a pointcloud with greater circles high number</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a pointcloud with greater circles: high number of stars.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Pointcloud Max</string>
+      <string>Pointcloud Maximal</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="numberGridPointsRow">
@@ -6547,7 +6565,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Run refinment model</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run full alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Run Full Model</string>
@@ -6579,7 +6597,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Shows the refinment point of the model point file.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows the model points of the given model points file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Model Points from File</string>
@@ -6595,7 +6613,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels any model run in the next cycle (next point)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels model run.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -6630,7 +6648,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a given number of refinement points along DSO track for a give time&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates model points along DSO track for a give time and other parameters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Generate DSO Track for Model Points</string>
@@ -7060,10 +7078,10 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Generates a pointcloud with greater circles medium number</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a pointcloud with greater circles: low number of stars.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Pointcloud Min</string>
+      <string>Pointcloud Minimal</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_204">
@@ -7450,7 +7468,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Deletes worst point of actual model until error is below target RMS</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes worst point of actual alignment model until error is below target RMS.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Run Optimise</string>
@@ -7575,7 +7593,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes worst point of actual model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Deletes worst point of actual alignment model in the mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Delete Worst Point</string>
@@ -7960,7 +7978,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Deletes worst point of actual model until error is below target RMS</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels the optimise run.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Cancel Optimise</string>
@@ -8036,7 +8054,7 @@ Window</string>
       </rect>
      </property>
      <property name="toolTip">
-      <string>Clear the model in mount. Can't be revised.</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the alignment model in mount. Can't be revised.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Clear Model</string>
@@ -9533,7 +9551,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideMiddle</enum>
@@ -10098,7 +10116,7 @@ Window</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>00.c0.08.87.35.db</string>
+        <string>00:00:00:00:00:00</string>
        </property>
        <property name="maxLength">
         <number>18</number>
@@ -13521,22 +13539,6 @@ Window</string>
         <string>Firmware:</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="btn_runBatchModel">
-       <property name="geometry">
-        <rect>
-         <x>410</x>
-         <y>260</y>
-         <width>311</width>
-         <height>31</height>
-        </rect>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates a new pointing model from stored analyse data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Make Mount Model from Analyse Data</string>
-       </property>
-      </widget>
       <widget class="QCheckBox" name="checkSimulation">
        <property name="geometry">
         <rect>
@@ -13601,7 +13603,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the configuration under the current profile&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
@@ -13628,7 +13630,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Camera</string>
@@ -13703,7 +13705,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of environment: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Environ</string>
@@ -13724,7 +13726,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Open the message and log window. The window could be sized in height.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
@@ -13751,7 +13753,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of plate solver: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Solver</string>
@@ -13772,7 +13774,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Load an existing configuration profile.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
@@ -13796,7 +13798,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Save the actual settings under a new profile name.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="styleSheet">
     <string notr="true"/>
@@ -13832,10 +13834,10 @@ Window</string>
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>Status feedback from mount </string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Actual used profile&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Configuration</string>
+    <string>config</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -13890,7 +13892,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>Send shutdown command to the mount and quit the tool</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send shutdown command to the mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Shutdown</string>
@@ -13911,7 +13913,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Saves the settings data in config.cfg&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If the mount is connected via ethernet and is in the same subnet, from firmware 2.15.8 on the mount could be started by sending a WOL packet to the moutn computer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Boot WOL</string>
@@ -13948,7 +13950,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of Camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of INDI subsystem: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>INDI</string>
@@ -14075,7 +14077,6 @@ Window</string>
   <tabstop>btn_relay8</tabstop>
   <tabstop>settingsTabWidget</tabstop>
   <tabstop>checkSimulation</tabstop>
-  <tabstop>btn_runBatchModel</tabstop>
   <tabstop>pd_chooseImaging</tabstop>
   <tabstop>pd_chooseEnvironment</tabstop>
   <tabstop>pd_chooseDome</tabstop>

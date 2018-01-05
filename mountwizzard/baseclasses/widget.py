@@ -37,18 +37,16 @@ class MwWidget(QWidget):
 
     # define the basic style of the mountwizzard theme
     BASIC_STYLE = """
-    QToolTip
+    QWidget QToolTip
     {   border-width: 2px;
         border-style: outset;
         border-color: #404040;
-        border-radius: 3px;
-        background-color: rgb(32, 144, 192);
+        background-color: yellow;
         color: #101010;
         font-family: Arial;
         font-style: normal;
         font-weight: bold;
         padding: 5px;
-        opacity: 200;
     }
 
     QWidget {
