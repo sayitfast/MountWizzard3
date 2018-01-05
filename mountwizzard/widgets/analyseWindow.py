@@ -65,6 +65,10 @@ class AnalyseWindow(widget.MwWidget):
                 self.showStatus = self.app.config['AnalysePopupWindowShowStatus']
             if 'AnalyseView' in self.app.config:
                 self.analyseView = self.app.config['AnalyseView']
+            if 'CheckWinsorized' in self.app.config:
+                self.ui.checkWinsorize.setChecked(self.app.config['CheckWinsorized'])
+            if 'WinsorizedLimit' in self.app.config:
+                self.ui.winsorizeLimit.setValue(self.app.config['WinsorizedLimit'])
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for analyse window, error:{0}'.format(e))
         finally:
@@ -75,6 +79,8 @@ class AnalyseWindow(widget.MwWidget):
         self.app.config['AnalysePopupWindowPositionY'] = self.pos().y()
         self.app.config['AnalyseView'] = self.analyseView
         self.app.config['AnalysePopupWindowShowStatus'] = self.showStatus
+        self.app.config['CheckWinsorized'] = self.ui.checkWinsorize.isChecked()
+        self.app.config['WinsorizedLimit'] = self.ui.winsorizeLimit.value()
 
     def showWindow(self):
         self.getData()
