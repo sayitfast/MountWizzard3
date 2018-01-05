@@ -31,7 +31,8 @@ setup(
         # 'pypiwin32>=219',             # not useful for linux
         'wakeonlan>=0.2.2',
         'requests',
-        'astropy'
+        'astropy',
+        'scipy'
     ]
     + (['PyQt5>=5.6'] if "Darwin" == platform.system() else [])
     + (['PyQt5>=5.6'] if "Windows" == platform.system() else [])

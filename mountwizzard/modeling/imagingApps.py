@@ -218,42 +218,33 @@ class ImagingApps:
         self.logger.info('modelData: {0}'.format(modelData))
         suc, mes, modelData = self.imagingWorkerAppHandler.getImage(modelData)
         if suc:
-            if simulation:
-                if getattr(sys, 'frozen', False):
-                    # we are running in a bundle
-                    bundle_dir = sys._MEIPASS
-                else:
-                    # we are running in a normal Python environment
-                    bundle_dir = os.path.dirname(sys.modules['__main__'].__file__)
-                shutil.copyfile(bundle_dir + self.REF_PICTURE, modelData['ImagePath'])
-            else:
-                self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
-                fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
-                fitsHeader = fitsFileHandle[0].header
-                if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-                    modelData['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
-                fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()
-                fitsHeader['OBJCTRA'] = RaJ2000FitsHeader
-                fitsHeader['OBJCTDEC'] = DecJ2000FitsHeader
-                fitsHeader['CDELT1'] = str(modelData['ScaleHint'])
-                fitsHeader['CDELT2'] = str(modelData['ScaleHint'])
-                fitsHeader['PIXSCALE'] = str(modelData['ScaleHint'])
-                fitsHeader['SCALE'] = str(modelData['ScaleHint'])
-                fitsHeader['MW_MRA'] = RaJNowFitsHeader
-                fitsHeader['MW_MDEC'] = DecJNowFitsHeader
-                fitsHeader['MW_ST'] = LocalSiderealTimeFitsHeader
-                fitsHeader['MW_MSIDE'] = pierside_fits_header
-                fitsHeader['MW_EXP'] = modelData['Exposure']
-                fitsHeader['MW_AZ'] = modelData['Azimuth']
-                fitsHeader['MW_ALT'] = modelData['Altitude']
-                self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT1:{3} MW_MRA:{4} '
-                                 'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
-                                 .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
-                                         fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
-                                         fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
-                                         fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))
-                fitsFileHandle.flush()
-                fitsFileHandle.close()
+            self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
+            fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
+            fitsHeader = fitsFileHandle[0].header
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                modelData['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
+            fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()
+            fitsHeader['OBJCTRA'] = RaJ2000FitsHeader
+            fitsHeader['OBJCTDEC'] = DecJ2000FitsHeader
+            fitsHeader['CDELT1'] = str(modelData['ScaleHint'])
+            fitsHeader['CDELT2'] = str(modelData['ScaleHint'])
+            fitsHeader['PIXSCALE'] = str(modelData['ScaleHint'])
+            fitsHeader['SCALE'] = str(modelData['ScaleHint'])
+            fitsHeader['MW_MRA'] = RaJNowFitsHeader
+            fitsHeader['MW_MDEC'] = DecJNowFitsHeader
+            fitsHeader['MW_ST'] = LocalSiderealTimeFitsHeader
+            fitsHeader['MW_MSIDE'] = pierside_fits_header
+            fitsHeader['MW_EXP'] = modelData['Exposure']
+            fitsHeader['MW_AZ'] = modelData['Azimuth']
+            fitsHeader['MW_ALT'] = modelData['Altitude']
+            self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT1:{3} MW_MRA:{4} '
+                             'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
+                             .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
+                                     fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
+                                     fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
+                                     fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))
+            fitsFileHandle.flush()
+            fitsFileHandle.close()
             self.app.imageQueue.put(modelData['ImagePath'])
             return True, 'OK', modelData
         else:

@@ -12,7 +12,6 @@ a = Analysis(['mountwizzard\\mountwizzard.py'],
              # pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
              binaries=[],
              datas=[
-             ('mountwizzard\\model001.fit','.'),
              ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy', '.\\astropy'),
              ],
              hiddenimports=['numpy.lib.recfunctions','xml.dom'],

@@ -154,9 +154,14 @@ class Dome(PyQt5.QtCore.QObject):
     def getData(self):
         if self.data['Connected']:
             if self.app.ui.pd_chooseDome.currentText().startswith('ASCOM'):
-                if self.ascom:
-                    if self.ascom.connected:
-                        self.getAscomData()
+                try:
+                    if self.ascom:
+                        if self.ascom.connected:
+                            self.getAscomData()
+                except Exception as e:
+                    self.logger.error('Problem accessing ASCOm driver, error: {0}'.format(e))
+                finally:
+                    pass
             elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
                 self.getINDIData()
         else:
