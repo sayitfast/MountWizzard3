@@ -107,11 +107,97 @@
     <string>Error over Az/Alt</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="checkWinsorize">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>10</y>
+     <width>101</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when camera is connected and IDLE.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>Winsorize</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QDoubleSpinBox" name="winsorizeLimit">
+   <property name="geometry">
+    <rect>
+     <x>675</x>
+     <y>35</y>
+     <width>46</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="decimals">
+    <number>0</number>
+   </property>
+   <property name="minimum">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="maximum">
+    <double>30.000000000000000</double>
+   </property>
+   <property name="singleStep">
+    <double>1.000000000000000</double>
+   </property>
+   <property name="value">
+    <double>5.000000000000000</double>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_201">
+   <property name="geometry">
+    <rect>
+     <x>605</x>
+     <y>35</y>
+     <width>61</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Limit in %</string>
+   </property>
+  </widget>
   <zorder>analyseBackground</zorder>
   <zorder>btn_errorTime</zorder>
   <zorder>btn_errorOverview</zorder>
   <zorder>analyse</zorder>
   <zorder>btn_errorAzAlt</zorder>
+  <zorder>checkWinsorize</zorder>
+  <zorder>winsorizeLimit</zorder>
+  <zorder>label_201</zorder>
  </widget>
  <resources/>
  <connections/>

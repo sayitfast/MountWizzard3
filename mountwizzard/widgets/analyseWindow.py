@@ -14,6 +14,7 @@
 import logging
 import math
 import numpy
+from scipy.stats.mstats import winsorize
 from analyse import analysedata
 from baseclasses import widget
 from gui import analyse_dialog_ui
@@ -44,6 +45,8 @@ class AnalyseWindow(widget.MwWidget):
         self.ui.btn_errorOverview.clicked.connect(self.showErrorOverview)
         self.ui.btn_errorTime.clicked.connect(self.showErrorTime)
         self.ui.btn_errorAzAlt.clicked.connect(self.showErrorAzAlt)
+        self.ui.checkWinsorize.stateChanged.connect(self.showView)
+        self.ui.winsorizeLimit.valueChanged.connect(self.showView)
 
         self.setVisible(False)
         self.showStatus = False
@@ -76,15 +79,18 @@ class AnalyseWindow(widget.MwWidget):
     def showWindow(self):
         self.getData()
         self.setWindowTitle('Analyse:    ' + self.app.ui.le_analyseFileName.text())
+        self.showStatus = True
+        self.setVisible(True)
+        self.showView()
+        self.show()
+
+    def showView(self):
         if self.analyseView == 1:
             self.showErrorOverview()
         elif self.analyseView == 2:
             self.showErrorTime()
         elif self.analyseView == 3:
             self.showErrorAzAlt()
-        self.showStatus = True
-        self.setVisible(True)
-        self.show()
 
     def getData(self):
         filename = self.app.ui.le_analyseFileName.text()
@@ -167,19 +173,26 @@ class AnalyseWindow(widget.MwWidget):
         axe2 = self.analyseMatplotlib.fig.add_subplot(2, 1, 2)
         self.setStyle(axe2)
 
+        valueY1 = self.data['DecError']
+        valueY2 = self.data['RaError']
+        if self.ui.checkWinsorize.isChecked():
+            limit = float(self.ui.winsorizeLimit.text()) / 100
+            valueY1 = winsorize(valueY1, limits=limit)
+            valueY2 = winsorize(valueY2, limits=limit)
+
         axe1.set_title('Model error over modeled stars', color='white', fontweight='bold')
         axe1.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
         axe1.set_xlim(1, len(self.data['Index']))
-        axe1.plot(self.data['Index'], self.data['DecError'], color='#181818', zorder=-10)
+        axe1.plot(self.data['Index'], valueY1, color='#181818', zorder=-10)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe1.scatter(self.data['Index'], self.data['DecError'], c=colors, s=30, zorder=10)
+        axe1.scatter(self.data['Index'], valueY1, c=colors, s=30, zorder=10)
 
         axe2.set_xlabel('Number of modeled point', color='white', fontweight='bold')
         axe2.set_ylabel('RA error (arcsec)', color='#C0C0C0')
         axe2.set_xlim(1, len(self.data['Index']))
-        axe2.plot(self.data['Index'], self.data['RaError'], color='#181818', zorder=-10)
+        axe2.plot(self.data['Index'], valueY2, color='#181818', zorder=-10)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe2.scatter(self.data['Index'], self.data['RaError'], c=colors, s=30, zorder=10)
+        axe2.scatter(self.data['Index'], valueY2, c=colors, s=30, zorder=10)
 
         self.analyseMatplotlib.draw()
 
