@@ -217,27 +217,34 @@ class AnalyseWindow(widget.MwWidget):
         axe4 = self.analyseMatplotlib.fig.add_subplot(2, 2, 4)
         self.setStyle(axe4)
 
+        valueY1 = self.data['DecError']
+        valueY2 = self.data['RaError']
+        if self.ui.checkWinsorize.isChecked():
+            limit = float(self.ui.winsorizeLimit.text()) / 100
+            valueY1 = winsorize(valueY1, limits=limit)
+            valueY2 = winsorize(valueY2, limits=limit)
+
         axe1.set_title('Model error over Azimuth', color='white', fontweight='bold')
         axe1.set_ylabel('RA error (arcsec)', color='#C0C0C0')
         axe1.set_xlim(0, 360)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe1.scatter(self.data['Azimuth'], self.data['RaError'], marker='o', c=colors, s=30, zorder=10)
+        axe1.scatter(self.data['Azimuth'], valueY2, marker='o', c=colors, s=30, zorder=10)
 
         axe2.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
         axe2.set_xlabel('Azimuth', color='white', fontweight='bold')
         axe2.set_xlim(0, 360)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe2.scatter(self.data['Azimuth'], self.data['DecError'], marker='D', c=colors, s=30, zorder=10)
+        axe2.scatter(self.data['Azimuth'], valueY1, marker='D', c=colors, s=30, zorder=10)
 
         axe3.set_title('Model error over Altitude', color='white', fontweight='bold')
         axe3.set_ylabel('RA error (arcsec)', color='#C0C0C0')
         axe3.set_xlim(0, 90)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe3.scatter(self.data['Altitude'], self.data['RaError'], marker='o', c=colors, s=30, zorder=10)
+        axe3.scatter(self.data['Altitude'], valueY2, marker='o', c=colors, s=30, zorder=10)
         axe4.set_xlabel('Altitude', color='white', fontweight='bold')
         axe4.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
         axe4.set_xlim(0, 90)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe4.scatter(self.data['Altitude'], self.data['DecError'], marker='D', c=colors, s=30, zorder=10)
+        axe4.scatter(self.data['Altitude'], valueY1, marker='D', c=colors, s=30, zorder=10)
 
         self.analyseMatplotlib.draw()

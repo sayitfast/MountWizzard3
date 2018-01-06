@@ -84,13 +84,13 @@ class Ui_AnalyseDialog(object):
     def retranslateUi(self, AnalyseDialog):
         _translate = QtCore.QCoreApplication.translate
         AnalyseDialog.setWindowTitle(_translate("AnalyseDialog", "Analyse"))
-        self.btn_errorTime.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Show Dec Error in arc sec from modeling file</p></body></html>"))
+        self.btn_errorTime.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Shows the Ra Dec error of the aligment model from data.</p></body></html>"))
         self.btn_errorTime.setText(_translate("AnalyseDialog", "Error over time"))
-        self.btn_errorOverview.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Show total error in colors over altitude and azimuth in polar diagram. blue: points west, green: points east.</p></body></html>"))
+        self.btn_errorOverview.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Shows an overview of the aligment model error from data.</p></body></html>"))
         self.btn_errorOverview.setText(_translate("AnalyseDialog", "Error overview"))
-        self.btn_errorAzAlt.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Show Dec Error in arc sec from modeling file</p></body></html>"))
+        self.btn_errorAzAlt.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Shows the Az Alt error of the aligment model from data.</p></body></html>"))
         self.btn_errorAzAlt.setText(_translate("AnalyseDialog", "Error over Az/Alt"))
-        self.checkWinsorize.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Update the refraction parameters to the mount when camera is connected and IDLE.</p></body></html>"))
+        self.checkWinsorize.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Cuts outlayers by using winsorize method with the given limit.</p></body></html>"))
         self.checkWinsorize.setText(_translate("AnalyseDialog", "Winsorize data,"))
         self.winsorizeLimit.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p><br/></p></body></html>"))
         self.label_201.setText(_translate("AnalyseDialog", "Limit in %"))
