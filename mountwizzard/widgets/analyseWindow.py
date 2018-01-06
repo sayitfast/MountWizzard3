@@ -134,12 +134,21 @@ class AnalyseWindow(widget.MwWidget):
         axe2 = self.analyseMatplotlib.fig.add_subplot(1, 2, 2, polar=True)
         self.setStyle(axe2)
 
+        valueY1 = self.data['DecError']
+        valueY2 = self.data['RaError']
+        valueY3 = self.data['ModelError']
+        if self.ui.checkWinsorize.isChecked():
+            limit = float(self.ui.winsorizeLimit.text()) / 100
+            valueY1 = winsorize(valueY1, limits=limit)
+            valueY2 = winsorize(valueY2, limits=limit)
+            valueY3 = winsorize(valueY3, limits=limit)
+
         axe1.set_title('Model error', color='white', fontweight='bold')
         axe1.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
         axe1.set_xlabel('RA error (arcsec)', color='#C0C0C0')
-        axe1.plot(self.data['RaError'], self.data['DecError'], color='#181818', zorder=-10)
+        axe1.plot(valueY2, valueY1, color='#181818', zorder=-10)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
-        axe1.scatter(self.data['RaError'], self.data['DecError'], c=colors, s=30, zorder=10)
+        axe1.scatter(valueY2, valueY1, c=colors, s=30, zorder=10)
         x0, x1 = axe1.get_xlim()
         y0, y1 = axe1.get_ylim()
         axe1.set_aspect((x1 - x0) / (y1 - y0))
@@ -154,7 +163,7 @@ class AnalyseWindow(widget.MwWidget):
         azimuth = numpy.asarray(self.data['Azimuth'])
         altitude = numpy.asarray(self.data['Altitude'])
         cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
-        colors = numpy.asarray(self.data['ModelError'])
+        colors = numpy.asarray(valueY3)
         scaleErrorMax = max(colors)
         scaleErrorMin = min(colors)
         theta = azimuth / 180.0 * math.pi
