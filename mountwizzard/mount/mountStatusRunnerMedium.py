@@ -118,8 +118,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                         self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
                     else:
                         self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
-                else:
-                    self.logger.warning('parameters out of range ! temperature:{0} pressure:{1}'.format(temperature, pressure))
         self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
 
     def handleReadyRead(self):
