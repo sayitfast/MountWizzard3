@@ -14,7 +14,6 @@
 import logging
 import math
 import numpy
-from scipy.stats.mstats import winsorize
 from analyse import analysedata
 from baseclasses import widget
 from gui import analyse_dialog_ui
@@ -50,6 +49,76 @@ class AnalyseWindow(widget.MwWidget):
 
         self.setVisible(False)
         self.showStatus = False
+
+    @staticmethod
+    def winsorize(value, limits=None, inclusive=(True, True), inplace=False, axis=None):
+        '''
+        Copyright (c) 2001, 2002 Enthought, Inc.
+        All rights reserved.
+
+        Copyright (c) 2003-2012 SciPy Developers.
+        All rights reserved.
+
+        Redistribution and use in source and binary forms, with or without
+        modification, are permitted provided that the following conditions are met:
+
+          a. Redistributions of source code must retain the above copyright notice,
+             this list of conditions and the following disclaimer.
+          b. Redistributions in binary form must reproduce the above copyright
+             notice, this list of conditions and the following disclaimer in the
+             documentation and/or other materials provided with the distribution.
+          c. Neither the name of Enthought nor the names of the SciPy Developers
+             may be used to endorse or promote products derived from this software
+             without specific prior written permission.
+
+
+        THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+        AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+        IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+        ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS
+        BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+        OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+        SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+        INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+        CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+        ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+        THE POSSIBILITY OF SUCH DAMAGE.
+        '''
+        def _winsorize1D(a, low_limit, up_limit, low_include, up_include):
+            n = a.count()
+            idx = a.argsort()
+            if low_limit:
+                if low_include:
+                    lowidx = int(low_limit * n)
+                else:
+                    lowidx = numpy.round(low_limit * n)
+                a[idx[:lowidx]] = a[idx[lowidx]]
+            if up_limit is not None:
+                if up_include:
+                    upidx = n - int(n * up_limit)
+                else:
+                    upidx = n - numpy.round(n * up_limit)
+                a[idx[upidx:]] = a[idx[upidx - 1]]
+            return a
+        a = numpy.ma.array(value, copy=numpy.logical_not(inplace))
+        if limits is None:
+            return a
+        if (not isinstance(limits, tuple)) and isinstance(limits, float):
+            limits = (limits, limits)
+        # Check the limits
+        (lolim, uplim) = limits
+        if lolim is not None:
+            if lolim > 1. or lolim < 0:
+                raise ValueError(errmsg % 'beginning' + "(got %s)" % lolim)
+        if uplim is not None:
+            if uplim > 1. or uplim < 0:
+                raise ValueError(errmsg % 'end' + "(got %s)" % uplim)
+        (loinc, upinc) = inclusive
+        if axis is None:
+            shp = a.shape
+            return _winsorize1D(a.ravel(), lolim, uplim, loinc, upinc).reshape(shp)
+        else:
+            return ma.apply_along_axis(_winsorize1D, axis, a, lolim, uplim, loinc, upinc)
 
     def initConfig(self):
         try:
@@ -138,10 +207,10 @@ class AnalyseWindow(widget.MwWidget):
         valueY2 = self.data['RaError']
         valueY3 = self.data['ModelError']
         if self.ui.checkWinsorize.isChecked():
-            limit = float(self.ui.winsorizeLimit.text()) / 100
-            valueY1 = winsorize(valueY1, limits=limit)
-            valueY2 = winsorize(valueY2, limits=limit)
-            valueY3 = winsorize(valueY3, limits=limit)
+            limit = float(self.ui.winsorizeLimit.text()) / 100.0
+            valueY1 = self.winsorize(valueY1, limits=limit)
+            valueY2 = self.winsorize(valueY2, limits=limit)
+            valueY3 = self.winsorize(valueY3, limits=limit)
 
         axe1.set_title('Model error', color='white', fontweight='bold')
         axe1.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
@@ -191,9 +260,9 @@ class AnalyseWindow(widget.MwWidget):
         valueY1 = self.data['DecError']
         valueY2 = self.data['RaError']
         if self.ui.checkWinsorize.isChecked():
-            limit = float(self.ui.winsorizeLimit.text()) / 100
-            valueY1 = winsorize(valueY1, limits=limit)
-            valueY2 = winsorize(valueY2, limits=limit)
+            limit = float(self.ui.winsorizeLimit.text()) / 100.0
+            valueY1 = self.winsorize(valueY1, limits=limit)
+            valueY2 = self.winsorize(valueY2, limits=limit)
 
         axe1.set_title('Model error over modeled stars', color='white', fontweight='bold')
         axe1.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
@@ -229,9 +298,9 @@ class AnalyseWindow(widget.MwWidget):
         valueY1 = self.data['DecError']
         valueY2 = self.data['RaError']
         if self.ui.checkWinsorize.isChecked():
-            limit = float(self.ui.winsorizeLimit.text()) / 100
-            valueY1 = winsorize(valueY1, limits=limit)
-            valueY2 = winsorize(valueY2, limits=limit)
+            limit = float(self.ui.winsorizeLimit.text()) / 100.0
+            valueY1 = self.winsorize(valueY1, limits=limit)
+            valueY2 = self.winsorize(valueY2, limits=limit)
 
         axe1.set_title('Model error over Azimuth', color='white', fontweight='bold')
         axe1.set_ylabel('RA error (arcsec)', color='#C0C0C0')

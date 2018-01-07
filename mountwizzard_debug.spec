@@ -9,7 +9,6 @@ WORKPATH = '../build'
 
 a = Analysis(['mountwizzard\\mountwizzard.py'],
              pathex=['C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
-             # pathex=['C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\PyQt5\\Qt\\bin', 'C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
              binaries=[],
              datas=[
              ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy', '.\\astropy'),

@@ -156,6 +156,10 @@ class INDIClient(PyQt5.QtCore.QObject):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        # wait for the disconnect from host happen
+        while self.socket.state() != 0:
+            time.sleep(0.1)
+            QtWidgets.QApplication.processEvents()
         self.finished.emit()
 
     def handleHostFound(self):
