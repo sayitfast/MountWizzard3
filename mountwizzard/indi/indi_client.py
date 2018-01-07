@@ -151,16 +151,16 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
-
-    def stop(self):
-        self._mutex.lock()
-        self.isRunning = False
-        self._mutex.unlock()
         # wait for the disconnect from host happen
         while self.socket.state() != 0:
             time.sleep(0.1)
             QtWidgets.QApplication.processEvents()
         self.finished.emit()
+
+    def stop(self):
+        self._mutex.lock()
+        self.isRunning = False
+        self._mutex.unlock()
 
     def handleHostFound(self):
         pass
