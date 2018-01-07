@@ -112,7 +112,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
                 pressure = self.app.workerEnvironment.data['Pressure']
                 temperature = self.app.workerEnvironment.data['Temperature']
-                if (900.0 < pressure < 1100.0) and (-40.0 < temperature < 50.0):
+                if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
                     self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
                     if temperature > 0:
                         self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
