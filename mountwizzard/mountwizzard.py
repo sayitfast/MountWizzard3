@@ -1147,7 +1147,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0.0 beta'
+    BUILD_NO = '3.0 beta 1'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
