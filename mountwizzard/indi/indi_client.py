@@ -147,6 +147,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
+        # todo handle INDI disconnect as well to tell the server, that we are out
         # wait for the disconnect from host happen
         while self.socket.state() != 0:
             time.sleep(0.1)
@@ -174,10 +175,6 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
-        self.data['DriverNameCCD'] = ''
-        self.data['DriverNameFilter'] = ''
-        self.data['DriverNameTelescope'] = ''
-        self.data['DriverNameWeather'] = ''
         self.data['Connected'] = False
         self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
@@ -207,8 +204,9 @@ class INDIClient(PyQt5.QtCore.QObject):
             if device in self.data['Device']:
                 if 'name' in message.attr:
                     group = message.attr['name']
-                    if group in self.device[device]:
+                    if group in self.data['Device'][device]:
                         del self.data['Device'][device][group]
+
         else:
             device = message.attr['device']
             if device not in self.data['Device']:
