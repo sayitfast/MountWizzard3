@@ -47,10 +47,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         'ServerIP': '',
         'ServerPort': 7624,
         'Connected': False,
-        'DriverNameCCD': '',
-        'DriverNameFilter': '',
-        'DriverNameTelescope': '',
-        'DriverNameWeather': '',
         'Device': {}
     }
 
@@ -193,17 +189,18 @@ class INDIClient(PyQt5.QtCore.QObject):
         # data to mountwizzard
         if isinstance(message, indiXML.SetBLOBVector) or isinstance(message, indiXML.DefBLOBVector):
             device = message.attr['device']
-            if device == self.data['DriverNameCCD']:
-                name = message.attr['name']
-                if name == 'CCD1':
-                    if 'format' in message.getElt(0).attr:
-                        if message.getElt(0).attr['format'] == '.fits':
-                            imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
-                            imageHDU.writeto(self.imagePath)
-                            self.logger.info('image file is in raw fits format')
-                        else:
-                            self.logger.info('image file is not in raw fits format')
-                        self.receivedImage = True
+            if device in self.data['Device']:
+                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
+                    name = message.attr['name']
+                    if name == 'CCD1':
+                        if 'format' in message.getElt(0).attr:
+                            if message.getElt(0).attr['format'] == '.fits':
+                                imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                                imageHDU.writeto(self.imagePath)
+                                self.logger.info('image file is in raw fits format')
+                            else:
+                                self.logger.info('image file is not in raw fits format')
+                            self.receivedImage = True
 
         elif isinstance(message, indiXML.DelProperty):
             device = message.attr['device']
@@ -222,22 +219,16 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.data['Device'][device][group] = {}
                 for elt in message.elt_list:
                     self.data['Device'][device][group][elt.attr['name']] = elt.getValue()
-
-        if 'name' in message.attr:
-            if message.attr['name'] == 'DRIVER_INFO':
-                if message.elt_list[3].attr['name'] == 'DRIVER_INTERFACE':
-                    if int(message.getElt(3).getValue()) & self.TELESCOPE_INTERFACE:
-                        self.data['DriverNameTelescope'] = message.getElt(0).getValue()
-                        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': message.getElt(0).getValue()})
-                    elif int(message.getElt(3).getValue()) & self.CCD_INTERFACE:
-                        self.data['DriverNameCCD'] = message.getElt(0).getValue()
-                        self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': message.getElt(0).getValue()})
-                    elif int(message.getElt(3).getValue()) & self.FILTER_INTERFACE:
-                        self.data['DriverNameFilter'] = message.getElt(0).getValue()
-                        self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': message.getElt(0).getValue()})
-                    elif int(message.getElt(3).getValue()) == self.WEATHER_INTERFACE:
-                        self.data['DriverNameWeather'] = message.getElt(0).getValue()
-                        self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': message.getElt(0).getValue()})
+                # now place the information
+                if 'DRIVER_INFO' in self.data['Device'][device]:
+                    if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
+                        self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
+                        self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
+                        self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
