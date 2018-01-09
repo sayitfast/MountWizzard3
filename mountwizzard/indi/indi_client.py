@@ -191,8 +191,7 @@ class INDIClient(PyQt5.QtCore.QObject):
 
         device = message.attr['device']
 
-        # blob vector for image data
-        if isinstance(message, indiXML.SetBLOBVector) or isinstance(message, indiXML.DefBLOBVector):
+        if isinstance(message, indiXML.SetBLOBVector):
             if device in self.data['Device']:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     name = message.attr['name']
@@ -206,18 +205,17 @@ class INDIClient(PyQt5.QtCore.QObject):
                                 self.logger.info('image file is not in raw fits format')
                             self.receivedImage = True
 
-        # deleting devices
+        # deleting properties from devices
         elif isinstance(message, indiXML.DelProperty):
             if device in self.data['Device']:
                 if 'name' in message.attr:
-                    group = message.attr['name']
-                    if group in self.data['Device'][device]:
-                        del self.data['Device'][device][group]
+                    delVector = message.attr['name']
+                    if delVector in self.data['Device'][device]:
+                        del self.data['Device'][device][delVector]
 
         # receiving changes from vectors and updating them ins self.data['Device]
         elif isinstance(message, indiXML.SetSwitchVector) or \
                 isinstance(message, indiXML.SetTextVector) or \
-                isinstance(message, indiXML.SetBLOBVector) or \
                 isinstance(message, indiXML.SetLightVector) or \
                 isinstance(message, indiXML.SetNumberVector):
             if device in self.data['Device']:
@@ -243,11 +241,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                         self.data['Device'][device][defVector] = {}
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
-
-        # doing the rest, should be defining the devices offered by the server
-        elif isinstance(message, indiXML.GetProperties):
-            print(message)
-            pass
 
         if device in self.data['Device']:
             # now place the information
