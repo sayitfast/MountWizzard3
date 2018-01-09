@@ -184,6 +184,8 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
         # data to mountwizzard
+
+        # blob vector for image data
         if isinstance(message, indiXML.SetBLOBVector) or isinstance(message, indiXML.DefBLOBVector):
             device = message.attr['device']
             if device in self.data['Device']:
@@ -199,6 +201,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                                 self.logger.info('image file is not in raw fits format')
                             self.receivedImage = True
 
+        # deleting devices
         elif isinstance(message, indiXML.DelProperty):
             device = message.attr['device']
             if device in self.data['Device']:
@@ -207,6 +210,11 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if group in self.data['Device'][device]:
                         del self.data['Device'][device][group]
 
+        # receiving changing states from server
+        elif isinstance(message, indiXML.SetSwitchVector):
+            print(message)
+
+        # doing the rest, should be defining the devices offerend by the server
         else:
             device = message.attr['device']
             if device not in self.data['Device']:
