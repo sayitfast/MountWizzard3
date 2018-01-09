@@ -299,6 +299,10 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
+        self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
+        self.workerINDI.statusFilter.connect(self.setINDIStatusFilter)
+        self.workerINDI.statusTelescope.connect(self.setINDIStatusTelescope)
+        self.workerINDI.statusWeather.connect(self.setINDIStatusWeather)
 
     def workerINDIStop(self):
         self.threadINDI.quit()
@@ -923,6 +927,30 @@ class MountWizzardApp(widget.MwWidget):
         if not self.ui.checkEnableINDI.isChecked():
             self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
+    def setINDIStatusCCD(self, status):
+        if status:
+            self.ui.le_INDIStatusCCD.setStyleSheet('background-color: green;')
+        else:
+            self.ui.le_INDIStatusCCD.setStyleSheet('background-color: red;')
+
+    def setINDIStatusFilter(self, status):
+        if status:
+            self.ui.le_INDIStatusFilter.setStyleSheet('background-color: green;')
+        else:
+            self.ui.le_INDIStatusFilter.setStyleSheet('background-color: red;')
+
+    def setINDIStatusTelescope(self, status):
+        if status:
+            self.ui.le_INDIStatusTelescope.setStyleSheet('background-color: green;')
+        else:
+            self.ui.le_INDIStatusTelescope.setStyleSheet('background-color: red;')
+
+    def setINDIStatusWeather(self, status):
+        if status:
+            self.ui.le_INDIStatusWeather.setStyleSheet('background-color: green;')
+        else:
+            self.ui.le_INDIStatusWeather.setStyleSheet('background-color: red;')
+
     def fillINDIData(self, data):
         if data['Name'] == 'Telescope':
             self.ui.le_INDITelescope.setText(data['value'])
@@ -1147,7 +1175,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0 beta 1'
+    BUILD_NO = '3.0 alpha 1'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -1168,10 +1196,10 @@ if __name__ == "__main__":
     logging.info('-----------------------------------------')
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')
     logging.info('-----------------------------------------')
-    logging.info('Platform: ' + platform.system())
-    logging.info('Release: ' + platform.release())
-    logging.info('Version: ' + platform.version())
-    logging.info('Machine: ' + platform.machine())
+    logging.info('Platform : ' + platform.system())
+    logging.info('Release  : ' + platform.release())
+    logging.info('Version  : ' + platform.version())
+    logging.info('Machine  : ' + platform.machine())
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
         logging.info('Computer IP address: ' + host[i])

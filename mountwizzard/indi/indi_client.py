@@ -27,6 +27,10 @@ class INDIClient(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     received = QtCore.pyqtSignal(object)
     status = QtCore.pyqtSignal(int)
+    statusCCD = QtCore.pyqtSignal(bool)
+    statusFilter = QtCore.pyqtSignal(bool)
+    statusTelescope = QtCore.pyqtSignal(bool)
+    statusWeather = QtCore.pyqtSignal(bool)
 
     GENERAL_INTERFACE = 0
     TELESCOPE_INTERFACE = (1 << 0)
@@ -185,9 +189,10 @@ class INDIClient(PyQt5.QtCore.QObject):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
         # data to mountwizzard
 
+        device = message.attr['device']
+
         # blob vector for image data
         if isinstance(message, indiXML.SetBLOBVector) or isinstance(message, indiXML.DefBLOBVector):
-            device = message.attr['device']
             if device in self.data['Device']:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     name = message.attr['name']
@@ -203,38 +208,68 @@ class INDIClient(PyQt5.QtCore.QObject):
 
         # deleting devices
         elif isinstance(message, indiXML.DelProperty):
-            device = message.attr['device']
             if device in self.data['Device']:
                 if 'name' in message.attr:
                     group = message.attr['name']
                     if group in self.data['Device'][device]:
                         del self.data['Device'][device][group]
 
-        # receiving changing states from server
-        elif isinstance(message, indiXML.SetSwitchVector):
-            print(message)
+        # receiving changes from vectors and updating them ins self.data['Device]
+        elif isinstance(message, indiXML.SetSwitchVector) or \
+                isinstance(message, indiXML.SetTextVector) or \
+                isinstance(message, indiXML.SetBLOBVector) or \
+                isinstance(message, indiXML.SetLightVector) or \
+                isinstance(message, indiXML.SetNumberVector):
+            if device in self.data['Device']:
+                if 'name' in message.attr:
+                    setVector = message.attr['name']
+                    if setVector not in self.data['Device'][device]:
+                        self.logger.error('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
+                    for elt in message.elt_list:
+                        self.data['Device'][device][setVector][elt.attr['name']] = elt.getValue()
 
-        # doing the rest, should be defining the devices offerend by the server
-        else:
-            device = message.attr['device']
+        # receiving all definitions for vectors in indi and building them up in self.data['Device']
+        elif isinstance(message, indiXML.DefSwitchVector) or \
+                isinstance(message, indiXML.DefTextVector) or \
+                isinstance(message, indiXML.DefBLOBVector) or \
+                isinstance(message, indiXML.DefLightVector) or \
+                isinstance(message, indiXML.DefNumberVector):
             if device not in self.data['Device']:
                 self.data['Device'][device] = {}
-            if 'name' in message.attr:
-                group = message.attr['name']
-                if group not in self.data['Device'][device]:
-                    self.data['Device'][device][group] = {}
-                for elt in message.elt_list:
-                    self.data['Device'][device][group][elt.attr['name']] = elt.getValue()
-                # now place the information
-                if 'DRIVER_INFO' in self.data['Device'][device]:
-                    if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
-                        self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
-                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
-                        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
-                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
-                        self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
-                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
-                        self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
+            if device in self.data['Device']:
+                if 'name' in message.attr:
+                    defVector = message.attr['name']
+                    if defVector not in self.data['Device'][device]:
+                        self.data['Device'][device][defVector] = {}
+                    for elt in message.elt_list:
+                        self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
+
+        # doing the rest, should be defining the devices offered by the server
+        elif isinstance(message, indiXML.GetProperties):
+            print(message)
+            pass
+
+        if device in self.data['Device']:
+            # now place the information
+            if 'DRIVER_INFO' in self.data['Device'][device]:
+                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
+            # share the connection on / off data with gui
+            if 'CONNECTION' in self.data['Device'][device] and 'DRIVER_INFO' in self.data['Device'][device]:
+                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
+                    self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
+                    self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                    self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
+                    self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
