@@ -34,7 +34,7 @@ class INDICamera(MWCamera):
         self.checkAppInstall()
 
     def checkAppInstall(self):
-        self.appAvailable = False
+        self.appAvailable = True
 
     def checkAppStatus(self):
         if self.app.INDIworker.connected:

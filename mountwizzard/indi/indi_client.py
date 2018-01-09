@@ -196,7 +196,19 @@ class INDIClient(PyQt5.QtCore.QObject):
 
         device = message.attr['device']
 
-        if isinstance(message, indiXML.SetBLOBVector):
+        # receiving all definitions for vectors in indi and building them up in self.data['Device']
+        if isinstance(message, indiXML.DefBLOBVector):
+            if device not in self.data['Device']:
+                self.data['Device'][device] = {}
+            if device in self.data['Device']:
+                if 'name' in message.attr:
+                    defVector = message.attr['name']
+                    if defVector not in self.data['Device'][device]:
+                        self.data['Device'][device][defVector] = {}
+                    for elt in message.elt_list:
+                        self.data['Device'][device][defVector][elt.attr['name']] = ''
+
+        elif isinstance(message, indiXML.SetBLOBVector):
             if device in self.data['Device']:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     name = message.attr['name']
@@ -235,7 +247,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         # receiving all definitions for vectors in indi and building them up in self.data['Device']
         elif isinstance(message, indiXML.DefSwitchVector) or \
                 isinstance(message, indiXML.DefTextVector) or \
-                isinstance(message, indiXML.DefBLOBVector) or \
                 isinstance(message, indiXML.DefLightVector) or \
                 isinstance(message, indiXML.DefNumberVector):
             if device not in self.data['Device']:

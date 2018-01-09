@@ -149,7 +149,6 @@ class ImagingApps:
             self.imagingWorkerAppHandler = self.workerMaximDL
             self.imagingThreadAppHandler = self.threadMaximDL
             self.logger.info('Actual camera / plate solver is MaximDL')
-        '''
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
             self.imagingWorkerAppHandler = self.workerNoneCam
             self.imagingThreadAppHandler = self.threadNoneCam
@@ -158,7 +157,6 @@ class ImagingApps:
             self.imagingWorkerAppHandler = self.workerNoneCam
             self.imagingThreadAppHandler = self.threadNoneCam
             self.logger.info('Actual camera / plate solver is TheSkyX')
-        '''
         self.imagingThreadAppHandler.start()
         self.chooserLock.release()
 

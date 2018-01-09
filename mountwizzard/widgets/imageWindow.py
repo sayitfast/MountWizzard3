@@ -227,21 +227,21 @@ class ImagesWindow(widget.MwWidget):
         param = {'speed': 'HiSpeed',
                  'file': 'test.fit',
                  }
-        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.modeling.imagingHandler.getCameraProps()
+        suc, mes, sizeX, sizeY, canSubframe, gainValue = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.getCameraProps()
         param['gainValue'] = gainValue
         param['binning'] = self.app.ui.cameraBin.value()
         param['exposure'] = self.app.ui.cameraExposure.value()
         param['iso'] = self.app.ui.isoSetting.value()
         directory = time.strftime("%Y-%m-%d-exposure", time.gmtime())
-        param['base_dir_images'] = self.app.modeling.IMAGEDIR + '/' + directory
+        param['base_dir_images'] = self.app.workerModelingDispatcher.modelingRunner.imagingApps.IMAGEDIR + '/' + directory
         if not os.path.isdir(param['base_dir_images']):
             os.makedirs(param['base_dir_images'])
-        param = self.app.modeling.prepareCaptureImageSubframes(1, sizeX, sizeY, canSubframe, param)
+        param = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
         number = 0
         while os.path.isfile(param['base_dir_images'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
         param['file'] = self.BASENAME + '{0:04d}.fit'.format(number)
-        suc, mes, param = self.app.modeling.imagingHandler.getImage(param)
+        suc, mes, param = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.getImage(param)
         self.showFitsImage(param['imagepath'])
         '''
         self.showFitsImage('c:/temp/t2.fit')
