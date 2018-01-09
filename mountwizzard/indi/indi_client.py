@@ -180,6 +180,11 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
         self.data['Connected'] = False
+        self.data['Device'] = {}
+        self.statusCCD.emit(False)
+        self.statusFilter.emit(False)
+        self.statusTelescope.emit(False)
+        self.statusWeather.emit(False)
         self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
@@ -222,6 +227,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                 if 'name' in message.attr:
                     setVector = message.attr['name']
                     if setVector not in self.data['Device'][device]:
+                        self.data['Device'][device][setVector] = {}
                         self.logger.error('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
                     for elt in message.elt_list:
                         self.data['Device'][device][setVector][elt.attr['name']] = elt.getValue()
@@ -243,7 +249,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
 
         if device in self.data['Device']:
-            # now place the information
+            # now place the information about accessible devices in the gui
             if 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
@@ -253,7 +259,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
-            # share the connection on / off data with gui
+            # share the connection on / off about devices with gui, but first we need the DRIVER_INFO to get the information, which type of device it is
             if 'CONNECTION' in self.data['Device'][device] and 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
