@@ -266,6 +266,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
                     # make a shortcut for later use
                     self.data['Camera'] = self.data['Device'][device]
+                    self.data['Camera']['DriverName'] = device
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
                     # make a shortcut for later use

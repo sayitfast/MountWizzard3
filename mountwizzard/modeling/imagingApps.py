@@ -50,7 +50,6 @@ class ImagingApps:
             self.threadSGPro = PyQt5.QtCore.QThread()
             self.threadSGPro.setObjectName("SGPro")
             self.workerSGPro.moveToThread(self.threadSGPro)
-            # noinspection PyUnresolvedReferences
             self.threadSGPro.started.connect(self.workerSGPro.run)
             self.workerSGPro.finished.connect(self.workerSGProStop)
 
@@ -58,7 +57,6 @@ class ImagingApps:
             self.threadMaximDL = PyQt5.QtCore.QThread()
             self.threadMaximDL.setObjectName("MaximDL")
             self.workerMaximDL.moveToThread(self.threadMaximDL)
-            # noinspection PyUnresolvedReferences
             self.threadMaximDL.started.connect(self.workerMaximDL.run)
             self.workerMaximDL.finished.connect(self.workerMaximDLStop)
 
@@ -69,11 +67,15 @@ class ImagingApps:
         self.threadNoneCam = PyQt5.QtCore.QThread()
         self.threadNoneCam.setObjectName("NoneCamera")
         self.workerNoneCam.moveToThread(self.threadNoneCam)
-        # noinspection PyUnresolvedReferences
         self.threadNoneCam.started.connect(self.workerNoneCam.run)
         self.workerNoneCam.finished.connect(self.workerNoneCamStop)
 
-        self.INDICamera = indicamera.INDICamera(self.app)
+        self.workerINDICamera = indicamera.INDICamera(self.app)
+        self.threadINDICamera = PyQt5.QtCore.QThread()
+        self.threadINDICamera.setObjectName("INDICamera")
+        self.workerINDICamera.moveToThread(self.threadINDICamera)
+        self.threadINDICamera.started.connect(self.workerINDICamera.run)
+        self.workerINDICamera.finished.connect(self.workerINDICameraStop)
 
         # select default application
         self.imagingWorkerAppHandler = self.workerNoneCam
@@ -88,7 +90,7 @@ class ImagingApps:
         self.app.ui.pd_chooseImaging.clear()
         if self.workerNoneCam.data['AppAvailable']:
             self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['AppName'])
-        if self.INDICamera.appAvailable:
+        if self.workerINDICamera.data['AppAvailable']:
             self.app.ui.pd_chooseImaging.addItem('INDI Camera')
         if platform.system() == 'Windows':
             if self.workerSGPro.data['AppAvailable']:
@@ -149,9 +151,9 @@ class ImagingApps:
             self.imagingWorkerAppHandler = self.workerMaximDL
             self.imagingThreadAppHandler = self.threadMaximDL
             self.logger.info('Actual camera / plate solver is MaximDL')
-        elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI Camera'):
-            self.imagingWorkerAppHandler = self.workerNoneCam
-            self.imagingThreadAppHandler = self.threadNoneCam
+        elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
+            self.imagingWorkerAppHandler = self.workerINDICamera
+            self.imagingThreadAppHandler = self.threadINDICamera
             self.logger.info('Actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
             self.imagingWorkerAppHandler = self.workerNoneCam
@@ -172,10 +174,10 @@ class ImagingApps:
             return {}
         if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            imagingParameter['SizeX'] = int(camData['CameraXSize'] * scaleSubframe)
-            imagingParameter['SizeY'] = int(camData['CameraYSize'] * scaleSubframe)
-            imagingParameter['OffX'] = int((camData['CameraXSize'] - imagingParameter['SizeX']) / 2)
-            imagingParameter['OffY'] = int((camData['CameraYSize'] - imagingParameter['SizeY']) / 2)
+            imagingParameter['SizeX'] = int(float(camData['CameraXSize']) * scaleSubframe)
+            imagingParameter['SizeY'] = int(float(camData['CameraYSize']) * scaleSubframe)
+            imagingParameter['OffX'] = int((float(camData['CameraXSize']) - imagingParameter['SizeX']) / 2)
+            imagingParameter['OffY'] = int((float(camData['CameraYSize']) - imagingParameter['SizeY']) / 2)
             imagingParameter['CanSubframe'] = True
         else:
             imagingParameter['SizeX'] = 0
