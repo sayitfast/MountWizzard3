@@ -18,20 +18,22 @@ from camera.cameraBase import MWCamera
 
 
 class INDICamera(MWCamera):
-    logger = logging.getLogger(__name__)                                                                                    # logging enabling
+    logger = logging.getLogger(__name__)
 
     def __init__(self, app):
         self.app = app
+        self.data = {}
         self.appRunning = False
-        self.cameraConnected = False
-        self.cameraStatus = ''
         self.appInstallPath = ''
         self.appAvailable = False
         self.appName = 'INDI Camera'
         self.appExe = ''
         self.tryConnectionCounter = 0
         self.imagingStarted = False
+        self.cameraConnected = False
+        self.data['CameraStatus'] = 'DISCONNECTED'
         self.checkAppInstall()
+        self.getCameraProps()
 
     def checkAppInstall(self):
         self.appAvailable = True
@@ -87,26 +89,26 @@ class INDICamera(MWCamera):
         pass
 
     def getCameraProps(self):
-        if self.cameraConnected and self.app.INDIworker.driverNameCCD != '':
-            sizeX = self.app.INDIworker.device[self.app.INDIworker.driverNameCCD]['CCD_INFO']['CCD_MAX_X']
-            sizeY = self.app.INDIworker.device[self.app.INDIworker.driverNameCCD]['CCD_INFO']['CCD_MAX_Y']
-            return True, 'OK', sizeX, sizeY, False, 'High'
-        else:
-            return False, 'Camera not connected', 0, 0, False, ''
+        if self.app.workerINDI.data['Camera'] != '':
+            self.data['Gain'] = 0
+            self.data['Gains'] = ['High']
+            self.data['CanSubframe'] = False
+            self.data['CameraXSize'] = self.app.workerINDI.data['Camera']['CCD_INFO']['CCD_MAX_X']
+            self.data['CameraYSize'] = self.app.workerINDI.data['Camera']['CCD_INFO']['CCD_MAX_Y']
 
     def getCameraStatus(self):
-        if self.appRunning and self.app.INDIworker.driverNameCCD != '':
-            if self.app.INDIworker.device[self.app.INDIworker.driverNameCCD]['CONNECTION']['CONNECT'] == 'On':
+        if self.appRunning and self.app.workerINDI.driverNameCCD != '':
+            if self.app.workerINDI.data['Camera']['CONNECTION']['CONNECT'] == 'On':
                 self.cameraConnected = True
             else:
                 self.cameraConnected = False
-                self.cameraStatus = 'DISCONNECTED'
+                self.data['CameraStatus'] = 'DISCONNECTED'
             if self.cameraConnected:
-                if float(self.app.INDIworker.device[self.app.INDIworker.driverNameCCD]['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
-                    self.cameraStatus = 'INTEGRATING'
+                if float(self.app.workerINDI.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
+                    self.data['CameraStatus'] = 'INTEGRATING'
                 else:
-                    self.cameraStatus = 'READY - IDLE'
+                    self.data['CameraStatus'] = 'READY - IDLE'
         else:
-            self.cameraStatus = 'ERROR'
+            self.data['CameraStatus'] = 'ERROR'
             self.cameraConnected = False
-        self.app.INDIDataQueue.put({'Name': 'CameraStatus', 'value': self.cameraStatus})
+        self.app.INDIDataQueue.put({'Name': 'CameraStatus', 'value': self.data['CameraStatus']})

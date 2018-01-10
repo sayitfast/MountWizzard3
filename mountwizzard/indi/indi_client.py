@@ -264,12 +264,21 @@ class INDIClient(PyQt5.QtCore.QObject):
             if 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
+                    # make a shortcut for later use
+                    self.data['Camera'] = self.data['Device'][device]
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
+                    # make a shortcut for later use
+                    self.data['Telescope'] = self.data['Device'][device]
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
+                    # make a shortcut for later use
+                    self.data['Filter'] = self.data['Device'][device]
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
+                    # make a shortcut for later use
+                    self.data['Weather'] = self.data['Device'][device]
+
             # share the connection on / off about devices with gui, but first we need the DRIVER_INFO to get the information, which type of device it is
             if 'CONNECTION' in self.data['Device'][device] and 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:

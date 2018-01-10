@@ -161,9 +161,9 @@ class ImagingApps:
         self.chooserLock.release()
 
     def prepareImaging(self):
-        modelData = {}
+        imagingParameter = {}
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
-        modelData['Directory'] = directory
+        imagingParameter['Directory'] = directory
         camData = self.imagingWorkerAppHandler.data
         if camData['CanSubframe']:
             self.logger.info('camera props: {0}, {1}, {2}'.format(camData['CameraXSize'], camData['CameraYSize'], camData['CanSubframe']))
@@ -172,69 +172,69 @@ class ImagingApps:
             return {}
         if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            modelData['SizeX'] = int(camData['CameraXSize'] * scaleSubframe)
-            modelData['SizeY'] = int(camData['CameraYSize'] * scaleSubframe)
-            modelData['OffX'] = int((camData['CameraXSize'] - modelData['SizeX']) / 2)
-            modelData['OffY'] = int((camData['CameraYSize'] - modelData['SizeY']) / 2)
-            modelData['CanSubframe'] = True
+            imagingParameter['SizeX'] = int(camData['CameraXSize'] * scaleSubframe)
+            imagingParameter['SizeY'] = int(camData['CameraYSize'] * scaleSubframe)
+            imagingParameter['OffX'] = int((camData['CameraXSize'] - imagingParameter['SizeX']) / 2)
+            imagingParameter['OffY'] = int((camData['CameraYSize'] - imagingParameter['SizeY']) / 2)
+            imagingParameter['CanSubframe'] = True
         else:
-            modelData['SizeX'] = 0
-            modelData['SizeY'] = 0
-            modelData['OffX'] = 0
-            modelData['OffY'] = 0
-            modelData['CanSubframe'] = False
+            imagingParameter['SizeX'] = 0
+            imagingParameter['SizeY'] = 0
+            imagingParameter['OffX'] = 0
+            imagingParameter['OffY'] = 0
+            imagingParameter['CanSubframe'] = False
             self.logger.warning('Camera does not support subframe.')
-        modelData['GainValue'] = camData['Gains'][camData['Gain']]
-        modelData['BaseDirImages'] = self.IMAGEDIR + '/' + directory
+        imagingParameter['GainValue'] = camData['Gains'][camData['Gain']]
+        imagingParameter['BaseDirImages'] = self.IMAGEDIR + '/' + directory
         if self.app.ui.checkFastDownload.isChecked():
-            modelData['Speed'] = 'HiSpeed'
+            imagingParameter['Speed'] = 'HiSpeed'
         else:
-            modelData['Speed'] = 'Normal'
-        modelData['Binning'] = int(float(self.app.ui.cameraBin.value()))
-        modelData['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
-        modelData['Iso'] = int(float(self.app.ui.isoSetting.value()))
-        modelData['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-        modelData['ScaleHint'] = float(self.app.ui.pixelSize.value()) * modelData['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
-        if 'Binning' in modelData:
-            modelData['SizeX'] = int(modelData['SizeX'] / modelData['Binning'])
-            modelData['SizeY'] = int(modelData['SizeY'] / modelData['Binning'])
-        return modelData
+            imagingParameter['Speed'] = 'Normal'
+        imagingParameter['Binning'] = int(float(self.app.ui.cameraBin.value()))
+        imagingParameter['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
+        imagingParameter['Iso'] = int(float(self.app.ui.isoSetting.value()))
+        imagingParameter['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
+        imagingParameter['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imagingParameter['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
+        if 'Binning' in imagingParameter:
+            imagingParameter['SizeX'] = int(imagingParameter['SizeX'] / imagingParameter['Binning'])
+            imagingParameter['SizeY'] = int(imagingParameter['SizeY'] / imagingParameter['Binning'])
+        return imagingParameter
 
-    def capturingImage(self, modelData, simulation):
+    def capturingImage(self, imagingParameter, simulation):
         if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Modeling cancelled after capturing image')
-            return False, 'Cancel modeling pressed', modelData
-        LocalSiderealTimeFitsHeader = modelData['LocalSiderealTime'][0:10]
-        RaJ2000FitsHeader = self.transform.decimalToDegree(modelData['RaJ2000'], False, False, ' ')
-        DecJ2000FitsHeader = self.transform.decimalToDegree(modelData['DecJ2000'], True, False, ' ')
-        RaJNowFitsHeader = self.transform.decimalToDegree(modelData['RaJNow'], False, True, ' ')
-        DecJNowFitsHeader = self.transform.decimalToDegree(modelData['DecJNow'], True, True, ' ')
-        if modelData['Pierside'] == '1':
+            return False, 'Cancel modeling pressed', imagingParameter
+        LocalSiderealTimeFitsHeader = imagingParameter['LocalSiderealTime'][0:10]
+        RaJ2000FitsHeader = self.transform.decimalToDegree(imagingParameter['RaJ2000'], False, False, ' ')
+        DecJ2000FitsHeader = self.transform.decimalToDegree(imagingParameter['DecJ2000'], True, False, ' ')
+        RaJNowFitsHeader = self.transform.decimalToDegree(imagingParameter['RaJNow'], False, True, ' ')
+        DecJNowFitsHeader = self.transform.decimalToDegree(imagingParameter['DecJNow'], True, True, ' ')
+        if imagingParameter['Pierside'] == '1':
             pierside_fits_header = 'E'
         else:
             pierside_fits_header = 'W'
-        self.logger.info('modelData: {0}'.format(modelData))
-        suc, mes, modelData = self.imagingWorkerAppHandler.getImage(modelData)
+        self.logger.info('imagingParameter: {0}'.format(imagingParameter))
+        suc, mes, imagingParameter = self.imagingWorkerAppHandler.getImage(imagingParameter)
         if suc:
-            self.logger.info('suc: {0}, modelData{1}'.format(suc, modelData))
-            fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
+            self.logger.info('suc: {0}, imagingParameter{1}'.format(suc, imagingParameter))
+            fitsFileHandle = pyfits.open(imagingParameter['ImagePath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
             if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-                modelData['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
+                imagingParameter['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
             fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()
             fitsHeader['OBJCTRA'] = RaJ2000FitsHeader
             fitsHeader['OBJCTDEC'] = DecJ2000FitsHeader
-            fitsHeader['CDELT1'] = str(modelData['ScaleHint'])
-            fitsHeader['CDELT2'] = str(modelData['ScaleHint'])
-            fitsHeader['PIXSCALE'] = str(modelData['ScaleHint'])
-            fitsHeader['SCALE'] = str(modelData['ScaleHint'])
+            fitsHeader['CDELT1'] = str(imagingParameter['ScaleHint'])
+            fitsHeader['CDELT2'] = str(imagingParameter['ScaleHint'])
+            fitsHeader['PIXSCALE'] = str(imagingParameter['ScaleHint'])
+            fitsHeader['SCALE'] = str(imagingParameter['ScaleHint'])
             fitsHeader['MW_MRA'] = RaJNowFitsHeader
             fitsHeader['MW_MDEC'] = DecJNowFitsHeader
             fitsHeader['MW_ST'] = LocalSiderealTimeFitsHeader
             fitsHeader['MW_MSIDE'] = pierside_fits_header
-            fitsHeader['MW_EXP'] = modelData['Exposure']
-            fitsHeader['MW_AZ'] = modelData['Azimuth']
-            fitsHeader['MW_ALT'] = modelData['Altitude']
+            fitsHeader['MW_EXP'] = imagingParameter['Exposure']
+            fitsHeader['MW_AZ'] = imagingParameter['Azimuth']
+            fitsHeader['MW_ALT'] = imagingParameter['Altitude']
             self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT1:{3} MW_MRA:{4} '
                              'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
                              .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
@@ -243,53 +243,53 @@ class ImagingApps:
                                      fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            self.app.imageQueue.put(modelData['ImagePath'])
-            return True, 'OK', modelData
+            self.app.imageQueue.put(imagingParameter['ImagePath'])
+            return True, 'OK', imagingParameter
         else:
-            return False, mes, modelData
+            return False, mes, imagingParameter
 
-    def addSolveRandomValues(self, modelData):
-        modelData['RaJ2000Solved'] = modelData['RaJ2000'] + (2 * random.random() - 1) / 3600
-        modelData['DecJ2000Solved'] = modelData['DecJ2000'] + (2 * random.random() - 1) / 360
-        modelData['Scale'] = 1.3
-        modelData['Angle'] = 90
-        modelData['TimeTS'] = 2.5
-        ra, dec = self.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
-        modelData['RaJNowSolved'] = ra
-        modelData['DecJNowSolved'] = dec
-        modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
-        modelData['DecError'] = (modelData['DecJ2000Solved'] - modelData['DecJ2000']) * 3600
-        modelData['ModelError'] = math.sqrt(modelData['RaError'] * modelData['RaError'] + modelData['DecError'] * modelData['DecError'])
-        return modelData
+    def addSolveRandomValues(self, imagingParameter):
+        imagingParameter['RaJ2000Solved'] = imagingParameter['RaJ2000'] + (2 * random.random() - 1) / 3600
+        imagingParameter['DecJ2000Solved'] = imagingParameter['DecJ2000'] + (2 * random.random() - 1) / 360
+        imagingParameter['Scale'] = 1.3
+        imagingParameter['Angle'] = 90
+        imagingParameter['TimeTS'] = 2.5
+        ra, dec = self.transform.transformERFA(imagingParameter['RaJ2000Solved'], imagingParameter['DecJ2000Solved'], 3)
+        imagingParameter['RaJNowSolved'] = ra
+        imagingParameter['DecJNowSolved'] = dec
+        imagingParameter['RaError'] = (imagingParameter['RaJ2000Solved'] - imagingParameter['RaJ2000']) * 3600
+        imagingParameter['DecError'] = (imagingParameter['DecJ2000Solved'] - imagingParameter['DecJ2000']) * 3600
+        imagingParameter['ModelError'] = math.sqrt(imagingParameter['RaError'] * imagingParameter['RaError'] + imagingParameter['DecError'] * imagingParameter['DecError'])
+        return imagingParameter
 
-    def solveImage(self, modelData, simulation):
-        modelData['UseFitsHeaders'] = True
-        suc, mes, modelData = self.imagingWorkerAppHandler.solveImage(modelData)
+    def solveImage(self, imagingParameter, simulation):
+        imagingParameter['UseFitsHeaders'] = True
+        suc, mes, imagingParameter = self.imagingWorkerAppHandler.solveImage(imagingParameter)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(modelData['RaJ2000Solved'], modelData['DecJ2000Solved'], 3)
-            modelData['RaJNowSolved'] = ra_sol_Jnow
-            modelData['DecJNowSolved'] = dec_sol_Jnow
-            modelData['RaError'] = (modelData['RaJ2000Solved'] - modelData['RaJ2000']) * 3600
-            modelData['DecError'] = (modelData['DecJ2000Solved'] - modelData['DecJ2000']) * 3600
-            modelData['ModelError'] = math.sqrt(modelData['RaError'] * modelData['RaError'] + modelData['DecError'] * modelData['DecError'])
-            fitsFileHandle = pyfits.open(modelData['ImagePath'], mode='update')
+            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imagingParameter['RaJ2000Solved'], imagingParameter['DecJ2000Solved'], 3)
+            imagingParameter['RaJNowSolved'] = ra_sol_Jnow
+            imagingParameter['DecJNowSolved'] = dec_sol_Jnow
+            imagingParameter['RaError'] = (imagingParameter['RaJ2000Solved'] - imagingParameter['RaJ2000']) * 3600
+            imagingParameter['DecError'] = (imagingParameter['DecJ2000Solved'] - imagingParameter['DecJ2000']) * 3600
+            imagingParameter['ModelError'] = math.sqrt(imagingParameter['RaError'] * imagingParameter['RaError'] + imagingParameter['DecError'] * imagingParameter['DecError'])
+            fitsFileHandle = pyfits.open(imagingParameter['ImagePath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
-            fitsHeader['MW_PRA'] = modelData['RaJNowSolved']
-            fitsHeader['MW_PDEC'] = modelData['DecJNowSolved']
-            fitsHeader['MW_SRA'] = modelData['RaJ2000Solved']
-            fitsHeader['MW_SDEC'] = modelData['DecJ2000Solved']
-            fitsHeader['MW_PSCAL'] = modelData['Scale']
-            fitsHeader['MW_PANGL'] = modelData['Angle']
-            fitsHeader['MW_PTS'] = modelData['TimeTS']
+            fitsHeader['MW_PRA'] = imagingParameter['RaJNowSolved']
+            fitsHeader['MW_PDEC'] = imagingParameter['DecJNowSolved']
+            fitsHeader['MW_SRA'] = imagingParameter['RaJ2000Solved']
+            fitsHeader['MW_SDEC'] = imagingParameter['DecJ2000Solved']
+            fitsHeader['MW_PSCAL'] = imagingParameter['Scale']
+            fitsHeader['MW_PANGL'] = imagingParameter['Angle']
+            fitsHeader['MW_PTS'] = imagingParameter['TimeTS']
             self.logger.info('MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
                              format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
                                     fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))
             fitsFileHandle.flush()
             fitsFileHandle.close()
             if simulation:
-                modelData = self.addSolveRandomValues(modelData)
-            return True, mes, modelData
+                imagingParameter = self.addSolveRandomValues(imagingParameter)
+            return True, mes, imagingParameter
         else:
-            return False, mes, modelData
+            return False, mes, imagingParameter
 
