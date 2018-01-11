@@ -260,36 +260,33 @@ class INDIClient(PyQt5.QtCore.QObject):
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
 
         if device in self.data['Device']:
-            # now place the information about accessible devices in the gui
+            # now place the information about accessible devices in the gui and set the connection status
             if 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
-                    # make a shortcut for later use
+                    # make a shortcut for later use and knowing which is a Camera
                     self.data['Camera'] = self.data['Device'][device]
                     self.data['Camera']['DriverName'] = device
+                    if 'CONNECTION' in self.data['Device'][device]:
+                        self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
                     # make a shortcut for later use
                     self.data['Telescope'] = self.data['Device'][device]
+                    if 'CONNECTION' in self.data['Device'][device]:
+                        self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
                     # make a shortcut for later use
                     self.data['Filter'] = self.data['Device'][device]
+                    if 'CONNECTION' in self.data['Device'][device]:
+                        self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
                     # make a shortcut for later use
                     self.data['Weather'] = self.data['Device'][device]
-
-            # share the connection on / off about devices with gui, but first we need the DRIVER_INFO to get the information, which type of device it is
-            if 'CONNECTION' in self.data['Device'][device] and 'DRIVER_INFO' in self.data['Device'][device]:
-                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
-                    self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
-                    self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
-                    self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
-                    self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                    if 'CONNECTION' in self.data['Device'][device]:
+                        self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
