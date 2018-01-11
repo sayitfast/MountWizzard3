@@ -14,6 +14,7 @@
 import logging
 import time
 import threading
+import zlib
 from xml.etree import ElementTree
 import PyQt5
 from PyQt5 import QtCore, QtNetwork, QtWidgets
@@ -215,10 +216,14 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if name == 'CCD1':
                         if 'format' in message.getElt(0).attr:
                             if message.getElt(0).attr['format'] == '.fits':
+                                print('uncompressed', self.imagePath)
                                 imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
                                 imageHDU.writeto(self.imagePath)
                                 self.logger.info('image file is in raw fits format')
                             else:
+                                print('compressed', self.imagePath)
+                                imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
+                                imageHDU.writeto(self.imagePath)
                                 self.logger.info('image file is not in raw fits format')
                             self.receivedImage = True
 

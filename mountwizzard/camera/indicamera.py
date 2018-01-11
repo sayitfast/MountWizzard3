@@ -120,7 +120,7 @@ class INDICamera(PyQt5.QtCore.QObject):
             # Enable BLOB mode.
             self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.data['Camera']['DriverName']}))
             # set to raw - no compression mode
-            self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_RAW'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
+            self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
             # set frame type
             self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})], indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
             # set binning
@@ -131,7 +131,7 @@ class INDICamera(PyQt5.QtCore.QObject):
             while not self.app.workerINDI.receivedImage:
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
-        modelData['Imagepath'] = self.app.INDIworker.imagePath
+        modelData['Imagepath'] = self.app.workerINDI.imagePath
         return True, 'OK', modelData
 
     def solveImage(self, modelData):

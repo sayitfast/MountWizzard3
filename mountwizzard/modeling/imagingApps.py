@@ -36,7 +36,6 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
 class ImagingApps:
     logger = logging.getLogger(__name__)
 
-    REF_PICTURE = '/model001.fit'
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CAPTUREFILE = 'modeling'
 

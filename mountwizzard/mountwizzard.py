@@ -710,6 +710,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerModelingDispatcher.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
+        if self.workerINDI.isRunning:
+            self.workerINDI.stop()
         PyQt5.QtCore.QCoreApplication.instance().quit()
 
     def saveConfigData(self, filepath=''):

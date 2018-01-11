@@ -224,6 +224,7 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
+
         param = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
         if not os.path.isdir(param['BaseDirImages']):
             os.makedirs(param['BaseDirImages'])
