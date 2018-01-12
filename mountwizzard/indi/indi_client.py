@@ -272,19 +272,19 @@ class INDIClient(PyQt5.QtCore.QObject):
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
                     # make a shortcut for later use
-                    self.data['Telescope'].update(self.data['Device'][device])
+                    self.data['Telescope'] = self.data['Device'][device]
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
                     # make a shortcut for later use
-                    self.data['Filter'].update(self.data['Device'][device])
+                    self.data['Filter'] = self.data['Device'][device]
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
                     # make a shortcut for later use
-                    self.data['Weather'].update(self.data['Device'][device])
+                    self.data['Weather'] = self.data['Device'][device]
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
 
