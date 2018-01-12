@@ -165,12 +165,7 @@ class ImagingApps:
         imageParams = {}
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         imageParams['Directory'] = directory
-        camData = self.imagingWorkerCameraAppHandler.data
-        if camData['CanSubframe']:
-            self.logger.info('camera props: {0}, {1}, {2}'.format(camData['CameraXSize'], camData['CameraYSize'], camData['CanSubframe']))
-        else:
-            self.logger.warning('GetCameraProps with error: {0}'.format(camData['Message']))
-            return {}
+        camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
             imageParams['SizeX'] = int(float(camData['CameraXSize']) * scaleSubframe)

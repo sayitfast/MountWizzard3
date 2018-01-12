@@ -40,6 +40,8 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data['Camera']['Status'] = 'DISCONNECTED'
         self.data['Camera']['CanSubframe'] = False
         self.data['Solver']['Status'] = 'DISCONNECTED'
+        self.data['Camera']['Gains'] = 'Not Selected'
+        self.data['Camera']['Gain'] = 0
 
         self.cameraConnected = False
         self.solverConnected = False

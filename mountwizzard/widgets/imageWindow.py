@@ -232,7 +232,7 @@ class ImagesWindow(widget.MwWidget):
         while os.path.isfile(imageParams['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
         imageParams['File'] = self.BASENAME + '{0:04d}.fit'.format(number)
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.getImage(imageParams)
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.getImage(imageParams)
         self.showFitsImage(imageParams['Imagepath'])
         '''
         self.showFitsImage('c:/temp/t2.fit')
