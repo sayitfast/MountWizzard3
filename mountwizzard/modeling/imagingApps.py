@@ -77,8 +77,8 @@ class ImagingApps:
         self.workerINDICamera.finished.connect(self.workerINDICameraStop)
 
         # select default application
-        self.imagingWorkerAppHandler = self.workerNoneCam
-        self.imagingThreadAppHandler = self.threadNoneCam
+        self.imagingWorkerCameraAppHandler = self.workerNoneCam
+        self.imagingThreadCameraAppHandler = self.threadNoneCam
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
@@ -136,36 +136,36 @@ class ImagingApps:
 
     def chooseImaging(self):
         self.chooserLock.acquire()
-        if self.imagingWorkerAppHandler.isRunning:
-            self.imagingWorkerAppHandler.stop()
+        if self.imagingWorkerCameraAppHandler.isRunning:
+            self.imagingWorkerCameraAppHandler.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
-            self.imagingWorkerAppHandler = self.workerNoneCam
-            self.imagingThreadAppHandler = self.threadNoneCam
+            self.imagingWorkerCameraAppHandler = self.workerNoneCam
+            self.imagingThreadCameraAppHandler = self.threadNoneCam
             self.logger.info('Actual camera / plate solver is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
-            self.imagingWorkerAppHandler = self.workerSGPro
-            self.imagingThreadAppHandler = self.threadSGPro
+            self.imagingWorkerCameraAppHandler = self.workerSGPro
+            self.imagingThreadCameraAppHandler = self.threadSGPro
             self.logger.info('Actual camera / plate solver is SGPro')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
-            self.imagingWorkerAppHandler = self.workerMaximDL
-            self.imagingThreadAppHandler = self.threadMaximDL
+            self.imagingWorkerCameraAppHandler = self.workerMaximDL
+            self.imagingThreadCameraAppHandler = self.threadMaximDL
             self.logger.info('Actual camera / plate solver is MaximDL')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
-            self.imagingWorkerAppHandler = self.workerINDICamera
-            self.imagingThreadAppHandler = self.threadINDICamera
+            self.imagingWorkerCameraAppHandler = self.workerINDICamera
+            self.imagingThreadCameraAppHandler = self.threadINDICamera
             self.logger.info('Actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
-            self.imagingWorkerAppHandler = self.workerNoneCam
-            self.imagingThreadAppHandler = self.threadNoneCam
+            self.imagingWorkerCameraAppHandler = self.workerNoneCam
+            self.imagingThreadCameraAppHandler = self.threadNoneCam
             self.logger.info('Actual camera / plate solver is TheSkyX')
-        self.imagingThreadAppHandler.start()
+        self.imagingThreadCameraAppHandler.start()
         self.chooserLock.release()
 
     def prepareImaging(self):
         imageParams = {}
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         imageParams['Directory'] = directory
-        camData = self.imagingWorkerAppHandler.data
+        camData = self.imagingWorkerCameraAppHandler.data
         if camData['CanSubframe']:
             self.logger.info('camera props: {0}, {1}, {2}'.format(camData['CameraXSize'], camData['CameraYSize'], camData['CanSubframe']))
         else:
@@ -215,7 +215,7 @@ class ImagingApps:
         else:
             pierside_fits_header = 'W'
         self.logger.info('imageParams: {0}'.format(imageParams))
-        suc, mes, imageParams = self.imagingWorkerAppHandler.getImage(imageParams)
+        suc, mes, imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
         if suc:
             self.logger.info('suc: {0}, imageParams{1}'.format(suc, imageParams))
             fitsFileHandle = pyfits.open(imageParams['ImagePath'], mode='update')
@@ -265,7 +265,7 @@ class ImagingApps:
 
     def solveImage(self, imageParams, simulation):
         imageParams['UseFitsHeaders'] = True
-        suc, mes, imageParams = self.imagingWorkerAppHandler.solveImage(imageParams)
+        suc, mes, imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
