@@ -323,9 +323,9 @@ Exposures</string>
   <widget class="Line" name="cross4">
    <property name="geometry">
     <rect>
-     <x>395</x>
+     <x>405</x>
      <y>390</y>
-     <width>21</width>
+     <width>1</width>
      <height>231</height>
     </rect>
    </property>
@@ -339,9 +339,9 @@ Exposures</string>
   <widget class="Line" name="cross2">
    <property name="geometry">
     <rect>
-     <x>395</x>
+     <x>405</x>
      <y>120</y>
-     <width>21</width>
+     <width>1</width>
      <height>231</height>
     </rect>
    </property>
@@ -356,9 +356,9 @@ Exposures</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>360</y>
+     <y>370</y>
      <width>371</width>
-     <height>20</height>
+     <height>1</height>
     </rect>
    </property>
    <property name="font">
@@ -377,9 +377,9 @@ Exposures</string>
    <property name="geometry">
     <rect>
      <x>420</x>
-     <y>360</y>
+     <y>370</y>
      <width>351</width>
-     <height>20</height>
+     <height>1</height>
     </rect>
    </property>
    <property name="font">

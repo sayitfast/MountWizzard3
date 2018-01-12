@@ -76,6 +76,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         # self.logger.info('Mount RunnerFast found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Fast': True})
         self.getStatusFast()

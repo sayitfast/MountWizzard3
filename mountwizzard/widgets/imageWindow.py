@@ -224,16 +224,17 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
-
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
+        imageParams['Exposure'] = self.app.ui.cameraExposure.value()
         if not os.path.isdir(imageParams['BaseDirImages']):
             os.makedirs(imageParams['BaseDirImages'])
         number = 0
         while os.path.isfile(imageParams['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
-        imageParams['File'] = self.BASENAME + '{0:04d}.fit'.format(number)
+        imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime())
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.getImage(imageParams)
-        self.showFitsImage(imageParams['Imagepath'])
+        if imageParams['Success']:
+            self.showFitsImage(imageParams['Imagepath'])
         '''
         self.showFitsImage('c:/temp/t2.fit')
         '''

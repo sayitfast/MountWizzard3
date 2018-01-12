@@ -28,11 +28,12 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
-
         self.data['Camera']['Status'] = 'DISCONNECTED'
         self.data['Camera']['CanSubframe'] = False
+        self.data['Camera']['CONNECTION'] = {'CONNECT': 'On'}
         # self.data['Camera']['']
         self.data['Solver']['Status'] = 'DISCONNECTED'
+        self.data['Solver']['CONNECTION'] = {'CONNECT': 'On'}
         self.cameraConnected = False
         self.solverConnected = False
         self.data['AppAvailable'] = True
@@ -69,12 +70,16 @@ class NoneCamera(PyQt5.QtCore.QObject):
                 self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+        else:
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
 
         if 'CONNECTION' in self.data['Solver']:
             if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+        else:
+            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)

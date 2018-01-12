@@ -28,11 +28,9 @@ class INDICamera(PyQt5.QtCore.QObject):
     def __init__(self, app):
         super().__init__()
         self.app = app
+        self.data = {}
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
-
-        # in case of indi, the data set for the camera is identically the data set of indi client, so no data transfer
-        self.data = self.app.workerINDI.data
         if 'Camera' not in self.data:
             self.data['Camera'] = {}
         if 'Solver' not in self.data:
@@ -70,27 +68,33 @@ class INDICamera(PyQt5.QtCore.QObject):
         self._mutex.unlock()
 
     def setStatus(self):
-        if 'CONNECTION' in self.data['Camera']:
-            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
-                    self.data['Camera']['Status'] = 'INTEGRATING'
+        if self.app.workerINDI.cameraDevice != '':
+            self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
+            if 'CONNECTION' in self.data['Camera']:
+                if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                    if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
+                        self.data['Camera']['Status'] = 'INTEGRATING'
+                    else:
+                        self.data['Camera']['Status'] = 'IDLE'
+                    self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
                 else:
-                    self.data['Camera']['Status'] = 'IDLE'
+                    self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+                    self.data['Camera']['Status'] = 'DISCONNECTED'
             else:
-                self.data['Camera']['Status'] = 'DISCONNECTED'
+                self.data['Camera']['Status'] = 'ERROR'
+            if 'CCD_EXPOSURE' in self.data['Camera']:
+                self.cameraStatus.emit(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])
         else:
-            self.data['Camera']['Status'] = 'ERROR'
-        self.cameraStatus.emit(self.data['Camera']['Status'])
-        if 'CONNECTION' in self.data['Camera']:
-            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
-            else:
-                self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
+
         if 'CONNECTION' in self.data['Solver']:
             if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+        else:
+            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
+
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
@@ -102,38 +106,50 @@ class INDICamera(PyQt5.QtCore.QObject):
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
         self.app.workerINDI.imagePath = imagePath
-        device = self.data['Camera']['DriverName']
-        if 'CONNECTION' in self.data['Camera']:
-            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+        if self.app.workerINDI.cameraDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'On':
                 self.app.workerINDI.receivedImage = False
                 # Enable BLOB mode.
-                self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': device}))
+                self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
                 # set to raw - no compression mode
-                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': device}))
+                self.app.INDICommandQueue.put(
+                    indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESSED'})],
+                                            indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.cameraDevice}))
                 # set frame type
-                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})], indi_attr={'name': 'CCD_FRAME_TYPE', 'device': device}))
+                self.app.INDICommandQueue.put(
+                    indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})],
+                                            indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.workerINDI.cameraDevice}))
                 # set binning
-                self.app.INDICommandQueue.put(indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})], indi_attr={'name': 'CCD_BINNING', 'device': device}))
+                self.app.INDICommandQueue.put(
+                    indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
+                                            indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
                 # Request image.
-                self.app.INDICommandQueue.put(indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})], indi_attr={'name': 'CCD_EXPOSURE', 'device': device}))
+                self.app.INDICommandQueue.put(
+                    indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
+                                            indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
+
                 self.imagingStarted = True
                 while not self.app.workerINDI.receivedImage:
-                    time.sleep(0.1)
+                    time.sleep(1)
                     PyQt5.QtWidgets.QApplication.processEvents()
-        imageParams['Imagepath'] = self.app.workerINDI.imagePath
-        imageParams['Success'] = True
-        imageParams['Message'] = 'OK'
+            imageParams['Imagepath'] = self.app.workerINDI.imagePath
+            imageParams['Success'] = True
+            imageParams['Message'] = 'OK'
+        else:
+            imageParams['Imagepath'] = ''
+            imageParams['Success'] = False
+            imageParams['Message'] = 'No Picture Taken'
         return imageParams
 
     def solveImage(self, imageParams):
         return imageParams
 
     def connectCamera(self):
-        if 'CONNECTION' in self.data['Camera']:
-            if self.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
-                self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+        if self.app.workerINDI.cameraDevice != '':
+           if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'Off':
+                self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.cameraDevice}))
 
     def disconnectCamera(self):
-        if 'CONNECTION' in self.data['Camera']:
-            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+        if self.app.workerINDI.cameraDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'On':
+                self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.cameraDevice}))

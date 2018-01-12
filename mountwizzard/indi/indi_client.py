@@ -32,6 +32,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     statusFilter = QtCore.pyqtSignal(bool)
     statusTelescope = QtCore.pyqtSignal(bool)
     statusWeather = QtCore.pyqtSignal(bool)
+    processMessage = QtCore.pyqtSignal(object)
 
     GENERAL_INTERFACE = 0
     TELESCOPE_INTERFACE = (1 << 0)
@@ -68,6 +69,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.receivedImage = False
         self.imagePath = ''
         self.messageString = ''
+        self.cameraDevice = ''
 
     def initConfig(self):
         try:
@@ -138,10 +140,12 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
+        self.processMessage.connect(self.handleReceived)
         while self.isRunning:
             if not self.app.INDICommandQueue.empty() and self.data['Connected']:
                 indiCommand = self.app.INDICommandQueue.get()
                 self.sendMessage(indiCommand)
+                # print('Command', indiCommand.toXML())
             if not self.data['Connected'] and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
@@ -165,6 +169,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         pass
 
     def handleConnected(self):
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.data['Connected'] = True
         self.logger.info('INDI Server connected at {0}:{1}'.format(self.data['ServerIP'], self.data['ServerPort']))
         self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
@@ -179,6 +184,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.logger.info('INDI client connection is disconnected from host')
         self.data['Connected'] = False
         self.data['Device'] = {}
+        self.cameraDevice = ''
         self.statusCCD.emit(False)
         self.statusFilter.emit(False)
         self.statusTelescope.emit(False)
@@ -240,7 +246,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     setVector = message.attr['name']
                     if setVector not in self.data['Device'][device]:
                         self.data['Device'][device][setVector] = {}
-                        self.logger.error('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
+                        self.logger.warning('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
                     for elt in message.elt_list:
                         self.data['Device'][device][setVector][elt.attr['name']] = elt.getValue()
 
@@ -265,26 +271,22 @@ class INDIClient(PyQt5.QtCore.QObject):
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
                     # make a shortcut for later use and knowing which is a Camera
-                    self.data['Camera'].update(self.data['Device'][device])
-                    self.data['Camera']['DriverName'] = device
+                    self.cameraDevice = device
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
                     # make a shortcut for later use
-                    self.data['Telescope'] = self.data['Device'][device]
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
                     # make a shortcut for later use
-                    self.data['Filter'] = self.data['Device'][device]
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
                     # make a shortcut for later use
-                    self.data['Weather'] = self.data['Device'][device]
                     if 'CONNECTION' in self.data['Device'][device]:
                         self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
 
@@ -296,20 +298,18 @@ class INDIClient(PyQt5.QtCore.QObject):
         # Get message from socket.
         while self.socket.bytesAvailable():
             # print(self.socket.bytesAvailable())
-            tmp = str(self.socket.read(1000000), "ascii")
+            tmp = str(self.socket.read(100000), "ascii")
             self.messageString += tmp
-
+            PyQt5.QtWidgets.QApplication.processEvents()
         # Add closing tag.
         self.messageString += "</data>"
-
         # Try and parse the message.
         try:
             messages = ElementTree.fromstring(self.messageString)
             self.messageString = ""
             for message in messages:
                 xmlMessage = indiXML.parseETree(message)
-                self.handleReceived(xmlMessage)
-
+                self.processMessage.emit(xmlMessage)
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
             self.messageString = self.messageString[:-7]
@@ -318,5 +318,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.write(indiCommand.toXML() + b'\n')
             self.socket.flush()
+            PyQt5.QtWidgets.QApplication.processEvents()
         else:
             self.logger.warning('Socket not connected')

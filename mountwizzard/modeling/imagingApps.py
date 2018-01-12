@@ -163,7 +163,7 @@ class ImagingApps:
 
     def prepareImaging(self):
         imageParams = {}
-        directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
+        directory = time.strftime("%Y-%m-%d", time.gmtime())
         imageParams['Directory'] = directory
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():

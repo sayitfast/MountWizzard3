@@ -804,20 +804,3 @@ oneText = makeINDIFn("oneText")
 oneNumber = makeINDIFn("oneNumber")
 oneSwitch = makeINDIFn("oneSwitch")
 oneBLOB = makeINDIFn("oneBLOB")
-
-#
-# Simple tests.
-#
-if __name__ == "__main__":
-    # gp = clientGetProperties(indi_attr = {"version" : "1.0", "name" : "bar"})
-    gp = newSwitchVector([oneSwitch("On", indi_attr={"name": "CONNECT"})],
-                         indi_attr={"name": "CONNECTION", "device": "CCD Simulator"})
-    #    gp = oneSwitch("On", indi_attr = {"name" : "CONNECT"})
-    print(gp)
-    print(type(gp.toXML()))
-
-#
-#    gp.setAttr("name", "baz")
-#    print(gp.toXML())
-#
-#    print(parseETree(gp.toETree()))

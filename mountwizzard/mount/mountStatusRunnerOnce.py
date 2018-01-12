@@ -73,6 +73,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         # self.logger.info('Mount RunnerOnce found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Once': True})
         self.getStatusOnce()

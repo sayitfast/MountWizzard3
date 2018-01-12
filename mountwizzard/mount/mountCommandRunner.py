@@ -114,6 +114,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         pass
 
     def handleConnected(self):
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Command': True})
         self.logger.info('Mount RunnerCommand connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))

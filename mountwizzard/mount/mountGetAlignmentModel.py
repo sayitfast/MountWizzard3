@@ -74,6 +74,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         # self.logger.info('Mount AlignModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Align': True})
         self.getAlignmentModel()
