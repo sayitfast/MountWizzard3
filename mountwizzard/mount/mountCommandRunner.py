@@ -81,7 +81,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         # self.socket.readyRead.connect(self.handleReadyRead)
         while self.isRunning:
             PyQt5.QtWidgets.QApplication.processEvents()
-            while not self.app.mountCommandQueue.empty():
+            while not self.app.mountCommandQueue.empty() and self.connected:
                 commandSet = self.app.mountCommandQueue.get()
                 if isinstance(commandSet, str):
                     # only a single command without return needed
@@ -99,12 +99,16 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
+        # wait for the disconnect from host happen
+        while self.socket.state() != 0:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.finished.emit()
 
     def handleHostFound(self):
         pass

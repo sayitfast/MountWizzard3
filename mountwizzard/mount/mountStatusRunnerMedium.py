@@ -60,12 +60,15 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 self.sendCommandQueue.queue.clear()
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
+        while self.socket.state() != 0:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.finished.emit()
 
     def handleHostFound(self):
         pass

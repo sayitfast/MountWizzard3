@@ -138,25 +138,22 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
-        self.socket.readyRead.connect(self.handleReadyRead)
-        self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-        self.received.connect(self.handleReceived)
         while self.isRunning:
-            time.sleep(0.2)
-            if not self.app.INDICommandQueue.empty():
-                indi_command = self.app.INDICommandQueue.get()
-                self.sendMessage(indi_command)
-            QtWidgets.QApplication.processEvents()
+            if not self.app.INDICommandQueue.empty() and self.data['Connected']:
+                indiCommand = self.app.INDICommandQueue.get()
+                self.sendMessage(indiCommand)
             if not self.data['Connected'] and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+            time.sleep(0.1)
+            QtWidgets.QApplication.processEvents()
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
         # todo handle INDI disconnect as well to tell the server, that we are out
         # wait for the disconnect from host happen
         while self.socket.state() != 0:
             time.sleep(0.1)
-            QtWidgets.QApplication.processEvents()
+            PyQt5.QtWidgets.QApplication.processEvents()
         self.finished.emit()
 
     def stop(self):
@@ -194,9 +191,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
         # data to mountwizzard
-
         device = message.attr['device']
-
         # receiving all definitions for vectors in indi and building them up in self.data['Device']
         if isinstance(message, indiXML.DefBLOBVector):
             if device not in self.data['Device']:
@@ -312,16 +307,16 @@ class INDIClient(PyQt5.QtCore.QObject):
             messages = ElementTree.fromstring(self.messageString)
             self.messageString = ""
             for message in messages:
-                xml_message = indiXML.parseETree(message)
-                self.handleReceived(xml_message)
+                xmlMessage = indiXML.parseETree(message)
+                self.handleReceived(xmlMessage)
 
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
             self.messageString = self.messageString[:-7]
 
-    def sendMessage(self, indi_command):
+    def sendMessage(self, indiCommand):
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
-            self.socket.write(indi_command.toXML() + b'\n')
+            self.socket.write(indiCommand.toXML() + b'\n')
             self.socket.flush()
         else:
             self.logger.warning('Socket not connected')
