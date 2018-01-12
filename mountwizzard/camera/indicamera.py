@@ -83,7 +83,9 @@ class INDICamera(PyQt5.QtCore.QObject):
             else:
                 self.data['Camera']['Status'] = 'ERROR'
             if 'CCD_EXPOSURE' in self.data['Camera']:
-                self.cameraStatus.emit(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])
+                pass
+                # self.cameraStatus.emit(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])
+                self.cameraStatus.emit(self.data['Camera']['Status'] + ' - {0:1.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:
             self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
 
@@ -113,7 +115,7 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
                 # set to raw - no compression mode
                 self.app.INDICommandQueue.put(
-                    indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})],
+                    indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CCD_COMPRESS'})],
                                             indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.cameraDevice}))
                 # set frame type
                 self.app.INDICommandQueue.put(
@@ -130,7 +132,7 @@ class INDICamera(PyQt5.QtCore.QObject):
 
                 self.imagingStarted = True
                 while not self.app.workerINDI.receivedImage:
-                    time.sleep(1)
+                    time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath
             imageParams['Success'] = True
