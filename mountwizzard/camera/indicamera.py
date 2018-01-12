@@ -33,8 +33,14 @@ class INDICamera(PyQt5.QtCore.QObject):
 
         # in case of indi, the data set for the camera is identically the data set of indi client, so no data transfer
         self.data = self.app.workerINDI.data
-        self.data['Camera'] = {'Status': 'DISCONNECTED', 'CanSubframe': False}
-        self.data['Solver'] = {'Status': 'DISCONNECTED'}
+        if 'Camera' not in self.data:
+            self.data['Camera'] = {}
+        if 'Solver' not in self.data:
+            self.data['Solver'] = {}
+        self.data['Camera']['Status'] = 'DISCONNECTED'
+        self.data['Camera']['CanSubframe'] = False
+        self.data['Solver']['Status'] = 'DISCONNECTED'
+
         self.cameraConnected = False
         self.solverConnected = False
         self.tryConnectionCounter = 0
@@ -72,21 +78,17 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.data['Camera']['Status'] = 'DISCONNECTED'
         else:
             self.data['Camera']['Status'] = 'ERROR'
-
         self.cameraStatus.emit(self.data['Camera']['Status'])
-
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
                 self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
-
         if 'CONNECTION' in self.data['Solver']:
             if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
-
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
@@ -115,47 +117,19 @@ class INDICamera(PyQt5.QtCore.QObject):
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
         imageParams['Imagepath'] = self.app.workerINDI.imagePath
-        return True, 'OK', imageParams
+        imageParams['Success'] = True
+        imageParams['Message'] = 'OK'
+        return imageParams
 
     def solveImage(self, imageParams):
-        suc, mes, guid = self.SgSolveImage(imageParams['ImagePath'],
-                                           scaleHint=imageParams['ScaleHint'],
-                                           blindSolve=imageParams['Blind'],
-                                           useFitsHeaders=imageParams['UseFitsHeaders'])
-        if not suc:
-            self.logger.warning('no start {0}'.format(mes))
-            return False, mes, imageParams
-        while True:
-            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
-            mes = mes.strip('\n')
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
-                self.logger.info('imageParams {0}'.format(imageParams))
-                solved = True
-                imageParams['RaJ2000Solved'] = float(ra_sol)
-                imageParams['DecJ2000Solved'] = float(dec_sol)
-                imageParams['Scale'] = float(scale)
-                imageParams['Angle'] = float(angle)
-                imageParams['TimeTS'] = float(timeTS)
-                break
-            elif mes != 'Solving':
-                solved = False
-                break
-            # TODO: clarification should we again introduce model run cancel during plate solving -> very complicated solver should cancel if not possible after some time
-            # elif app.model.cancel:
-            #    solved = False
-            #    break
-            else:
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
-        return solved, mes, imageParams
+        return imageParams
 
     def connectCamera(self):
-        if self.appRunning and self.app.INDIworker.driverNameCCD != '':
-            self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
+                self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
     def disconnectCamera(self):
-        if self.cameraConnected:
-            self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
-
-    def solveImage(self, imageParams):
-        pass
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))

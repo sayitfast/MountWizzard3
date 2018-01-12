@@ -27,10 +27,12 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.app = app
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
-        self.data = {}
+        self.data = {'Camera': {}, 'Solver': {}}
 
-        self.data['Camera'] = {'Status': 'DISCONNECTED', 'CanSubframe': False}
-        self.data['Solver'] = {'Status': 'DISCONNECTED'}
+        self.data['Camera']['Status'] = 'DISCONNECTED'
+        self.data['Camera']['CanSubframe'] = False
+        # self.data['Camera']['']
+        self.data['Solver']['Status'] = 'DISCONNECTED'
         self.cameraConnected = False
         self.solverConnected = False
         self.data['AppAvailable'] = True
@@ -78,16 +80,11 @@ class NoneCamera(PyQt5.QtCore.QObject):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
     def getImage(self, imageParams):
-        return False, 'DISCONNECTED', imageParams
-
-    def getCameraProps(self):
-        suc = True
-        mes = 'OK'
-        canSubframe = False
-        gains = ''
-        sizeX = 1
-        sizeY = 1
-        return suc, mes, sizeX, sizeY, canSubframe, gains
+        imageParams['Success'] = False
+        imageParams['Message'] = 'Not OK'
+        return imageParams
 
     def solveImage(self, imageParams):
-        return False, 'ERROR', imageParams
+        imageParams['Success'] = False
+        imageParams['Message'] = 'Not OK'
+        return imageParams

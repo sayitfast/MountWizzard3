@@ -225,15 +225,15 @@ class ImagesWindow(widget.MwWidget):
 
     def exposeOnce(self):
 
-        param = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
-        if not os.path.isdir(param['BaseDirImages']):
-            os.makedirs(param['BaseDirImages'])
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
+        if not os.path.isdir(imageParams['BaseDirImages']):
+            os.makedirs(imageParams['BaseDirImages'])
         number = 0
-        while os.path.isfile(param['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
+        while os.path.isfile(imageParams['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
-        param['File'] = self.BASENAME + '{0:04d}.fit'.format(number)
-        suc, mes, param = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.getImage(param)
-        self.showFitsImage(param['Imagepath'])
+        imageParams['File'] = self.BASENAME + '{0:04d}.fit'.format(number)
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.getImage(imageParams)
+        self.showFitsImage(imageParams['Imagepath'])
         '''
         self.showFitsImage('c:/temp/t2.fit')
         '''
