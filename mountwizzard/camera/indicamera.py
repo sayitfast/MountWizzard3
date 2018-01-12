@@ -24,21 +24,19 @@ class INDICamera(PyQt5.QtCore.QObject):
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
-    CYCLEPROPS = 3000
-    SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
-    CAMERASTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
     def __init__(self, app):
         super().__init__()
         self.app = app
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
-        self.data = {}
 
+        # in case of indi, the data set for the camera is identically the data set of indi client, so no data transfer
+        self.data = self.app.workerINDI.data
+        self.data['Camera'] = {'Status': 'DISCONNECTED', 'CanSubframe': False}
+        self.data['Solver'] = {'Status': 'DISCONNECTED'}
         self.cameraConnected = False
-        self.data['CameraStatus'] = 'DISCONNECTED'
         self.solverConnected = False
-        self.data['SolverStatus'] = 'DISCONNECTED'
         self.tryConnectionCounter = 0
         self.imagingStarted = False
 
@@ -50,8 +48,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-        self.getStatus()
-        self.getCameraProps()
+        self.setStatus()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
             time.sleep(0.2)
@@ -64,55 +61,41 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.isRunning = False
         self._mutex.unlock()
 
-    def getStatus(self):
-        if 'Camera' in self.app.workerINDI.data:
-            if 'CONNECTION' in self.app.workerINDI.data['Camera']:
-                if self.app.workerINDI.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                    self.cameraConnected = True
+    def setStatus(self):
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
+                    self.data['Camera']['Status'] = 'INTEGRATING'
                 else:
-                    self.cameraConnected = False
-                    self.data['CameraStatus'] = 'DISCONNECTED'
-                if self.cameraConnected:
-                    if float(self.app.workerINDI.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
-                        self.data['CameraStatus'] = 'INTEGRATING'
-                    else:
-                        self.data['CameraStatus'] = 'READY - IDLE'
+                    self.data['Camera']['Status'] = 'IDLE'
             else:
-                self.data['CameraStatus'] = 'ERROR'
-                self.cameraConnected = False
-
-        self.cameraStatus.emit(self.data['CameraStatus'])
-
-        if self.cameraConnected:
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
+                self.data['Camera']['Status'] = 'DISCONNECTED'
         else:
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+            self.data['Camera']['Status'] = 'ERROR'
 
-        if self.solverConnected:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
-        else:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+        self.cameraStatus.emit(self.data['Camera']['Status'])
+
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
+            else:
+                self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+
+        if 'CONNECTION' in self.data['Solver']:
+            if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+            else:
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
 
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
-    def getCameraProps(self):
-        if self.cameraConnected:
-            self.data['Gain'] = 0
-            self.data['Gains'] = ['High']
-            self.data['CanSubframe'] = True
-            self.data['CameraXSize'] = self.app.workerINDI.data['Camera']['CCD_INFO']['CCD_MAX_X']
-            self.data['CameraYSize'] = self.app.workerINDI.data['Camera']['CCD_INFO']['CCD_MAX_Y']
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.getCameraProps)
-
-    def getImage(self, modelData):
-        binning = int(float(modelData['Binning']))
-        exposureLength = int(float(modelData['Exposure']))
-        speed = modelData['Speed']
-        filename = modelData['File']
-        path = modelData['BaseDirImages']
+    def getImage(self, imageParams):
+        binning = int(float(imageParams['Binning']))
+        exposureLength = int(float(imageParams['Exposure']))
+        speed = imageParams['Speed']
+        filename = imageParams['File']
+        path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
         self.app.workerINDI.imagePath = imagePath
         if self.cameraConnected:
@@ -131,28 +114,28 @@ class INDICamera(PyQt5.QtCore.QObject):
             while not self.app.workerINDI.receivedImage:
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
-        modelData['Imagepath'] = self.app.workerINDI.imagePath
-        return True, 'OK', modelData
+        imageParams['Imagepath'] = self.app.workerINDI.imagePath
+        return True, 'OK', imageParams
 
-    def solveImage(self, modelData):
-        suc, mes, guid = self.SgSolveImage(modelData['ImagePath'],
-                                           scaleHint=modelData['ScaleHint'],
-                                           blindSolve=modelData['Blind'],
-                                           useFitsHeaders=modelData['UseFitsHeaders'])
+    def solveImage(self, imageParams):
+        suc, mes, guid = self.SgSolveImage(imageParams['ImagePath'],
+                                           scaleHint=imageParams['ScaleHint'],
+                                           blindSolve=imageParams['Blind'],
+                                           useFitsHeaders=imageParams['UseFitsHeaders'])
         if not suc:
             self.logger.warning('no start {0}'.format(mes))
-            return False, mes, modelData
+            return False, mes, imageParams
         while True:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
-                self.logger.info('modelData {0}'.format(modelData))
+                self.logger.info('imageParams {0}'.format(imageParams))
                 solved = True
-                modelData['RaJ2000Solved'] = float(ra_sol)
-                modelData['DecJ2000Solved'] = float(dec_sol)
-                modelData['Scale'] = float(scale)
-                modelData['Angle'] = float(angle)
-                modelData['TimeTS'] = float(timeTS)
+                imageParams['RaJ2000Solved'] = float(ra_sol)
+                imageParams['DecJ2000Solved'] = float(dec_sol)
+                imageParams['Scale'] = float(scale)
+                imageParams['Angle'] = float(angle)
+                imageParams['TimeTS'] = float(timeTS)
                 break
             elif mes != 'Solving':
                 solved = False
@@ -164,7 +147,7 @@ class INDICamera(PyQt5.QtCore.QObject):
             else:
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
-        return solved, mes, modelData
+        return solved, mes, imageParams
 
     def connectCamera(self):
         if self.appRunning and self.app.INDIworker.driverNameCCD != '':
@@ -174,5 +157,5 @@ class INDICamera(PyQt5.QtCore.QObject):
         if self.cameraConnected:
             self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.INDIworker.driverNameCCD}))
 
-    def solveImage(self, modelData):
+    def solveImage(self, imageParams):
         pass
