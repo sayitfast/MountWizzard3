@@ -100,22 +100,24 @@ class INDICamera(PyQt5.QtCore.QObject):
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
         self.app.workerINDI.imagePath = imagePath
-        if self.cameraConnected:
-            self.app.workerINDI.receivedImage = False
-            # Enable BLOB mode.
-            self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.data['Camera']['DriverName']}))
-            # set to raw - no compression mode
-            self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
-            # set frame type
-            self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})], indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
-            # set binning
-            self.app.INDICommandQueue.put(indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})], indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
-            # Request image.
-            self.app.INDICommandQueue.put(indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})], indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.data['Camera']['DriverName']}))
-            self.imagingStarted = True
-            while not self.app.workerINDI.receivedImage:
-                time.sleep(0.1)
-                PyQt5.QtWidgets.QApplication.processEvents()
+        device = self.data['Camera']['DriverName']
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                self.app.workerINDI.receivedImage = False
+                # Enable BLOB mode.
+                self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': device}))
+                # set to raw - no compression mode
+                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})], indi_attr={'name': 'CCD_COMPRESSION', 'device': device}))
+                # set frame type
+                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})], indi_attr={'name': 'CCD_FRAME_TYPE', 'device': device}))
+                # set binning
+                self.app.INDICommandQueue.put(indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})], indi_attr={'name': 'CCD_BINNING', 'device': device}))
+                # Request image.
+                self.app.INDICommandQueue.put(indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})], indi_attr={'name': 'CCD_EXPOSURE', 'device': device}))
+                self.imagingStarted = True
+                while not self.app.workerINDI.receivedImage:
+                    time.sleep(0.1)
+                    PyQt5.QtWidgets.QApplication.processEvents()
         imageParams['Imagepath'] = self.app.workerINDI.imagePath
         imageParams['Success'] = True
         imageParams['Message'] = 'OK'
