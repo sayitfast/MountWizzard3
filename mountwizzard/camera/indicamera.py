@@ -113,7 +113,7 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
                 # set to raw - no compression mode
                 self.app.INDICommandQueue.put(
-                    indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESSED'})],
+                    indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})],
                                             indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.cameraDevice}))
                 # set frame type
                 self.app.INDICommandQueue.put(

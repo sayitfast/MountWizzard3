@@ -129,6 +129,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(1000), "ascii")
             self.messageString += tmp
+            PyQt5.QtWidgets.QApplication.processEvents()
             # print(self.messageString)
         if len(self.messageString) < 28:
             return
