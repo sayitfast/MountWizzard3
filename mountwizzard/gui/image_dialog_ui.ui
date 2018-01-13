@@ -394,13 +394,13 @@ Exposures</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_INDICameraStatus">
+  <widget class="QLineEdit" name="le_cameraStatus">
    <property name="geometry">
     <rect>
-     <x>390</x>
-     <y>60</y>
+     <x>400</x>
+     <y>70</y>
      <width>121</width>
-     <height>31</height>
+     <height>21</height>
     </rect>
    </property>
    <property name="font">
@@ -449,6 +449,84 @@ Exposures</string>
     <string/>
    </property>
   </widget>
+  <widget class="QLineEdit" name="le_cameraExposureTime">
+   <property name="geometry">
+    <rect>
+     <x>480</x>
+     <y>20</y>
+     <width>41</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Courier</family>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::RightToLeft</enum>
+   </property>
+   <property name="text">
+    <string>---</string>
+   </property>
+   <property name="maxLength">
+    <number>15</number>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_83">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>20</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Exp.Time (s)</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_84">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>50</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Camera Status</string>
+   </property>
+  </widget>
   <zorder>imageBackground</zorder>
   <zorder>image</zorder>
   <zorder>btn_expose</zorder>
@@ -465,7 +543,10 @@ Exposures</string>
   <zorder>cross2</zorder>
   <zorder>cross1</zorder>
   <zorder>cross3</zorder>
-  <zorder>le_INDICameraStatus</zorder>
+  <zorder>le_cameraStatus</zorder>
+  <zorder>le_cameraExposureTime</zorder>
+  <zorder>label_83</zorder>
+  <zorder>label_84</zorder>
  </widget>
  <resources/>
  <connections/>

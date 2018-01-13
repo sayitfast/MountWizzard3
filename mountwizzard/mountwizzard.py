@@ -300,7 +300,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
-        self.workerModelingDispatcher.modelingRunner.imagingApps.workerINDICamera.cameraStatus.connect(self.setINDIStatusCamera)
         self.workerINDI.statusFilter.connect(self.setINDIStatusFilter)
         self.workerINDI.statusTelescope.connect(self.setINDIStatusTelescope)
         self.workerINDI.statusWeather.connect(self.setINDIStatusWeather)
@@ -935,9 +934,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDIStatusCCD.setStyleSheet('background-color: green;')
         else:
             self.ui.le_INDIStatusCCD.setStyleSheet('background-color: red;')
-
-    def setINDIStatusCamera(self, status):
-        self.imageWindow.ui.le_INDICameraStatus.setText(status)
 
     def setINDIStatusFilter(self, status):
         if status:

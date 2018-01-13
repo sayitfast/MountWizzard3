@@ -22,6 +22,7 @@ class INDICamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
 
@@ -38,13 +39,11 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data['Camera']['Status'] = 'DISCONNECTED'
         self.data['Camera']['CanSubframe'] = False
         self.data['Solver']['Status'] = 'DISCONNECTED'
-        self.data['Camera']['Gains'] = 'Not Selected'
-        self.data['Camera']['Gain'] = 0
 
         self.cameraConnected = False
         self.solverConnected = False
-        self.tryConnectionCounter = 0
         self.imagingStarted = False
+        self.tryConnectionCounter = 0
 
         self.data['AppAvailable'] = True
         self.data['AppName'] = 'INDICamera'
@@ -85,9 +84,12 @@ class INDICamera(PyQt5.QtCore.QObject):
             if 'CCD_EXPOSURE' in self.data['Camera']:
                 pass
                 # self.cameraStatus.emit(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])
-                self.cameraStatus.emit(self.data['Camera']['Status'] + ' - {0:1.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
+                self.cameraStatus.emit(self.data['Camera']['Status'])
+                self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:
             self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
+            self.cameraStatus.emit('UNCONNECTED')
+            self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Solver']:
             if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
@@ -125,11 +127,13 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.app.INDICommandQueue.put(
                     indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
                                             indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
+                # set gain (necessary) ?
+                # todo: implement gain setting
                 # Request image.
                 self.app.INDICommandQueue.put(
                     indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
                                             indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
-
+                # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
                 self.imagingStarted = True
                 while not self.app.workerINDI.receivedImage:
                     time.sleep(0.1)

@@ -19,6 +19,7 @@ class NoneCamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 5000
 
@@ -60,10 +61,11 @@ class NoneCamera(PyQt5.QtCore.QObject):
     def setStatus(self):
         self.cameraConnected = True
         self.solverConnected = True
-        self.data['Camera']['Status'] = 'IDLE'
-        self.data['Solver']['Status'] = 'IDLE'
+        self.data['Camera']['Status'] = 'NONE'
+        self.data['Solver']['Status'] = 'NONE'
 
         self.cameraStatus.emit(self.data['Camera']['Status'])
+        self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':

@@ -37,12 +37,12 @@ class ImagesWindow(widget.MwWidget):
         self.imageVmax = 65535
         self.image = numpy.random.randint(low=5, high=100, size=(20, 20))
         self.cmapColor = 'gray'
-        self.ui = image_dialog_ui.Ui_ImageDialog()                                                                          # PyQt5 dialog ui
-        self.ui.setupUi(self)                                                                                               # setup the ui
+        self.ui = image_dialog_ui.Ui_ImageDialog()
+        self.ui.setupUi(self)
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
-        self.initUI()                                                                                                       # adaptions to ui setup
+        self.initUI()
         self.initConfig()
 
         self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
@@ -61,7 +61,6 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechLow.clicked.connect(self.setStrech)
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
-        # self.show()                                                                                                         # construct the window
         self.setVisible(False)
         self.ui.cross1.setVisible(False)
         self.ui.cross2.setVisible(False)
@@ -203,7 +202,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_expose.setEnabled(False)
         self.ui.btn_startContExposures.setEnabled(False)
         self.ui.btn_stopContExposures.setEnabled(False)
-        self.setWindowTitle('Image Window - Modeling running')
+        self.setWindowTitle('Image Window - Modeling running - No manual exposures possible')
 
     def enableExposures(self):
         self.ui.btn_expose.setEnabled(True)
@@ -235,9 +234,6 @@ class ImagesWindow(widget.MwWidget):
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.getImage(imageParams)
         if imageParams['Success']:
             self.showFitsImage(imageParams['Imagepath'])
-        '''
-        self.showFitsImage('c:/temp/t2.fit')
-        '''
 
     def exposeContinuous(self):
         pass

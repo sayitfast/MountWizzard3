@@ -15,6 +15,7 @@ import logging
 import time
 import threading
 import zlib
+import queue
 from xml.etree import ElementTree
 import PyQt5
 from PyQt5 import QtCore, QtNetwork, QtWidgets
@@ -26,7 +27,7 @@ from baseclasses import checkParamIP
 class INDIClient(PyQt5.QtCore.QObject):
     finished = PyQt5.QtCore.pyqtSignal()
     logger = logging.getLogger(__name__)
-    received = QtCore.pyqtSignal(object)
+    imageReceived = QtCore.pyqtSignal(str)
     status = QtCore.pyqtSignal(int)
     statusCCD = QtCore.pyqtSignal(bool)
     statusFilter = QtCore.pyqtSignal(bool)
@@ -34,6 +35,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     statusWeather = QtCore.pyqtSignal(bool)
     processMessage = QtCore.pyqtSignal(object)
 
+    # INDI device types
     GENERAL_INTERFACE = 0
     TELESCOPE_INTERFACE = (1 << 0)
     CCD_INTERFACE = (1 << 1)
@@ -65,6 +67,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self._mutex = PyQt5.QtCore.QMutex()
         self.checkIP = checkParamIP.CheckIP()
         self.socket = None
+        self.newDeviceQueue = queue.Queue()
         self.settingsChanged = False
         self.receivedImage = False
         self.imagePath = ''
@@ -145,7 +148,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             if not self.app.INDICommandQueue.empty() and self.data['Connected']:
                 indiCommand = self.app.INDICommandQueue.get()
                 self.sendMessage(indiCommand)
-                # print('Command', indiCommand.toXML())
+            self.handleNewDevice()
             if not self.data['Connected'] and self.socket.state() == 0:
                 self.socket.readyRead.connect(self.handleReadyRead)
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
@@ -153,7 +156,6 @@ class INDIClient(PyQt5.QtCore.QObject):
             QtWidgets.QApplication.processEvents()
         # if I leave the loop, I close the connection to remote host
         self.socket.disconnectFromHost()
-        # todo handle INDI disconnect as well to tell the server, that we are out
         # wait for the disconnect from host happen
         while self.socket.state() != 0:
             time.sleep(0.1)
@@ -172,7 +174,40 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.data['Connected'] = True
         self.logger.info('INDI Server connected at {0}:{1}'.format(self.data['ServerIP'], self.data['ServerPort']))
-        self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.0'}))
+        self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.7'}))
+        # todo waiting for the necessary data and switch it on
+
+    def handleNewDevice(self):
+        if not self.newDeviceQueue.empty():
+            device = self.newDeviceQueue.get()
+            # now place the information about accessible devices in the gui and set the connection status
+            # and configure the new devices adequately
+            if 'DRIVER_INFO' in self.data['Device'][device]:
+                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
+                    # make a shortcut for later use and knowing which is a Camera
+                    self.cameraDevice = device
+                    self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                    # reset the camera to get the right status feedback
+                    self.app.INDICommandQueue.put(
+                        indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'ABORT'})],
+                                                indi_attr={'name': 'CCD_ABORT_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
+                    # make a shortcut for later use
+                    self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
+                    # make a shortcut for later use
+                    self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
+                    self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
+                    # make a shortcut for later use
+                    self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+            else:
+                # if not ready, put it on the stack again !
+                print(device)
+                self.newDeviceQueue.put(device)
 
     def handleError(self, socketError):
         self.logger.error('INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
@@ -217,16 +252,15 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if name == 'CCD1':
                         if 'format' in message.getElt(0).attr:
                             if message.getElt(0).attr['format'] == '.fits':
-                                print('uncompressed', self.imagePath)
                                 imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
-                                imageHDU.writeto(self.imagePath)
+                                imageHDU.writeto(self.imagePath, overwrite=True)
                                 self.logger.info('image file is in raw fits format')
                             else:
-                                print('compressed', self.imagePath)
                                 imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
-                                imageHDU.writeto(self.imagePath)
+                                imageHDU.writeto(self.imagePath, overwrite=True)
                                 self.logger.info('image file is not in raw fits format')
-                            self.receivedImage = True
+                            # send the signal for the receive image
+                            self.imageReceived.emit(self.imagePath)
 
         # deleting properties from devices
         elif isinstance(message, indiXML.DelProperty):
@@ -256,7 +290,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                 isinstance(message, indiXML.DefLightVector) or \
                 isinstance(message, indiXML.DefNumberVector):
             if device not in self.data['Device']:
+                # new device !
                 self.data['Device'][device] = {}
+                self.newDeviceQueue.put(device)
             if device in self.data['Device']:
                 if 'name' in message.attr:
                     defVector = message.attr['name']
@@ -265,39 +301,12 @@ class INDIClient(PyQt5.QtCore.QObject):
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
 
-        if device in self.data['Device']:
-            # now place the information about accessible devices in the gui and set the connection status
-            if 'DRIVER_INFO' in self.data['Device'][device]:
-                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
-                    # make a shortcut for later use and knowing which is a Camera
-                    self.cameraDevice = device
-                    if 'CONNECTION' in self.data['Device'][device]:
-                        self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
-                    # make a shortcut for later use
-                    if 'CONNECTION' in self.data['Device'][device]:
-                        self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
-                    # make a shortcut for later use
-                    if 'CONNECTION' in self.data['Device'][device]:
-                        self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
-                    # make a shortcut for later use
-                    if 'CONNECTION' in self.data['Device'][device]:
-                        self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-
     def handleReadyRead(self):
         # Add starting tag if this is new message.
         if len(self.messageString) == 0:
             self.messageString = "<data>"
-
         # Get message from socket.
         while self.socket.bytesAvailable():
-            # print(self.socket.bytesAvailable())
             tmp = str(self.socket.read(100000), "ascii")
             self.messageString += tmp
             PyQt5.QtWidgets.QApplication.processEvents()

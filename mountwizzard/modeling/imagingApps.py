@@ -79,6 +79,8 @@ class ImagingApps:
         # select default application
         self.imagingWorkerCameraAppHandler = self.workerNoneCam
         self.imagingThreadCameraAppHandler = self.threadNoneCam
+        self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
+        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
@@ -136,6 +138,9 @@ class ImagingApps:
 
     def chooseImaging(self):
         self.chooserLock.acquire()
+        self.imagingWorkerCameraAppHandler.cameraStatus.disconnect(self.setStatusCamera)
+        self.imagingWorkerCameraAppHandler.cameraExposureTime.disconnect(self.setCameraExposureTime)
+
         if self.imagingWorkerCameraAppHandler.isRunning:
             self.imagingWorkerCameraAppHandler.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
@@ -158,8 +163,18 @@ class ImagingApps:
             self.imagingWorkerCameraAppHandler = self.workerNoneCam
             self.imagingThreadCameraAppHandler = self.threadNoneCam
             self.logger.info('Actual camera / plate solver is TheSkyX')
+
+        self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
+        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
+
         self.imagingThreadCameraAppHandler.start()
         self.chooserLock.release()
+
+    def setStatusCamera(self, status):
+        self.app.imageWindow.ui.le_cameraStatus.setText(status)
+
+    def setCameraExposureTime(self, status):
+        self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
 
     def prepareImaging(self):
         imageParams = {}
@@ -180,7 +195,10 @@ class ImagingApps:
             imageParams['OffY'] = 0
             imageParams['CanSubframe'] = False
             self.logger.warning('Camera does not support subframe.')
-        imageParams['GainValue'] = camData['Gains'][camData['Gain']]
+        if 'Gain' in camData:
+            imageParams['Gain'] = camData['Gain']
+        else:
+            imageParams['Gain'] = 'NotSet'
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + directory
         if self.app.ui.checkFastDownload.isChecked():
             imageParams['Speed'] = 'HiSpeed'
