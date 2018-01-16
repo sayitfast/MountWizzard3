@@ -45,8 +45,8 @@ class Client(object):
     default_url = 'http://127.0.0.1:8080/api/'
 
     def __init__(self, apiurl=default_url):
-        self.session = None
-        self.apiurl = apiurl
+        self.session = 'test'
+        self.apiurl = self.default_url # apiurl
 
     def get_url(self, service):
         return self.apiurl + service
@@ -245,17 +245,18 @@ class Client(object):
 
 if __name__ == '__main__':
     print('Running with args {0}'.format(sys.argv))
+    print(os.getcwd())
     import optparse
 
     parser = optparse.OptionParser()
     parser.add_option('--server', dest='server', default='127.0.0.1',
                       help='Set server base URL (eg, %default)')
     parser.add_option('--apikey', '-k', dest='apikey',
-                      help='API key for Astrometry.net web service; if not given will check AN_API_KEY environment variable')
+                       help='API key for Astrometry.net web service; if not given will check AN_API_KEY environment variable')
     parser.add_option('--upload', '-u', dest='upload', help='Upload a file')
     parser.add_option('--wait', '-w', dest='wait', action='store_true', help='After submitting, monitor job status')
     parser.add_option('--wcs', dest='wcs',
-                      help='Download resulting wcs.fits file, saving to given filename; implies --wait if --urlupload or --upload')
+                     help='Download resulting wcs.fits file, saving to given filename; implies --wait if --urlupload or --upload')
     parser.add_option('--newfits', dest='newfits',
                       help='Download resulting new-image.fits file, saving to given filename; implies --wait if --urlupload or --upload')
     parser.add_option('--kmz', dest='kmz',
@@ -266,8 +267,8 @@ if __name__ == '__main__':
     parser.add_option('--scale-units', dest='scale_units',
                       choices=('arcsecperpix', 'arcminwidth', 'degwidth', 'focalmm'),
                       help='Units for scale estimate')
-    # parser.add_option('--scale-type', dest='scale_type',
-    #                  choices=('ul', 'ev'), help='Scale bounds: lower/upper or estimate/error')
+    parser.add_option('--scale-type', dest='scale_type',
+                      choices=('ul', 'ev'), help='Scale bounds: lower/upper or estimate/error')
     parser.add_option('--scale-lower', dest='scale_lower', type=float, help='Scale lower-bound')
     parser.add_option('--scale-upper', dest='scale_upper', type=float, help='Scale upper-bound')
     parser.add_option('--scale-est', dest='scale_est', type=float, help='Scale estimate')
@@ -282,16 +283,16 @@ if __name__ == '__main__':
     parser.add_option('--crpix-center', dest='crpix_center', action='store_true', default=None,
                       help='Set reference point to center of image?')
     parser.add_option('--sdss', dest='sdss_wcs', nargs=2,
-                      help='Plot SDSS image for the given WCS file; write plot to given PNG filename')
+                     help='Plot SDSS image for the given WCS file; write plot to given PNG filename')
     parser.add_option('--galex', dest='galex_wcs', nargs=2,
-                      help='Plot GALEX image for the given WCS file; write plot to given PNG filename')
+                     help='Plot GALEX image for the given WCS file; write plot to given PNG filename')
     parser.add_option('--jobid', '-i', dest='solved_id', type=int,
                       help='retrieve result for jobId instead of submitting new image')
     parser.add_option('--substatus', '-s', dest='sub_id', help='Get status of a submission')
     parser.add_option('--jobstatus', '-j', dest='job_id', help='Get status of a job')
     parser.add_option('--jobs', '-J', dest='myjobs', action='store_true', help='Get all my jobs')
     parser.add_option('--jobsbyexacttag', '-T', dest='jobs_by_exact_tag',
-                      help='Get a list of jobs associated with a given tag--exact match')
+                     help='Get a list of jobs associated with a given tag--exact match')
     parser.add_option('--jobsbytag', '-t', dest='jobs_by_tag',
                       help='Get a list of jobs associated with a given tag')
     parser.add_option('--private', '-p',
@@ -307,22 +308,22 @@ if __name__ == '__main__':
                       default='d',
                       help='Select license to allow derivative works of submission, but only if shared under same conditions of original license')
     parser.add_option('--no_mod', '-M',
-                      dest='allow_mod',
-                      action='store_const',
-                      const='n',
-                      default='d',
+                       dest='allow_mod',
+                       action='store_const',
+                       const='n',
+                       default='d',
                       help='Select license to disallow derivative works of submission')
     parser.add_option('--no_commercial', '-c',
-                      dest='allow_commercial',
-                      action='store_const',
-                      const='n',
-                      default='d',
+                       dest='allow_commercial',
+                       action='store_const',
+                       const='n',
+                       default='d',
                       help='Select license to disallow commercial use of submission')
     opt, args = parser.parse_args()
 
-    if opt.apikey is None:
+    # if opt.apikey is None:
         # try the environment
-        opt.apikey = os.environ.get('AN_API_KEY', None)
+    #     opt.apikey = os.environ.get('AN_API_KEY', None)
     #if opt.apikey is None:
     #    parser.print_help()
     #    print()
@@ -331,6 +332,12 @@ if __name__ == '__main__':
 
     args = {}
     args['apiurl'] = opt.server
+
+    #
+    #
+    # here starting the client approach
+    #
+    #
     c = Client(**args)
     # c.login(opt.apikey)
 
