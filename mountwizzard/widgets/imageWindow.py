@@ -192,7 +192,6 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.draw()
 
     def showFitsImage(self, filename):
-        print('request image')
         hdulist = pyfits.open(filename)
         self.image = hdulist[0].data
         self.sizeY, self.sizeX = self.image.shape

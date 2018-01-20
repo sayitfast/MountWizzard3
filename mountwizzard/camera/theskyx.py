@@ -97,7 +97,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
             captureResponse = {}
             command = '/* Java Script */'
             command += 'var Out = "";'
-            command += 'ccdsoftCamera.Asynchronous=1;'
+            command += 'ccdsoftCamera.Asynchronous=0;'
             command += 'Out=String(\'{"ExposureStatus":"\'+ccdsoftCamera.ExposureStatus+\'","Status":"\'+ccdsoftCamera.Status+\'"}\');'
             # command += 'Out=ccdsoftCamera.ExposureStatus;'
             success, response = self.sendCommand(command)
@@ -133,11 +133,9 @@ class TheSkyX(PyQt5.QtCore.QObject):
         # construct exposure time if present
         if '(' in captureResponse['Status']:
             exposeval = float(captureResponse['Status'].split('(', 1)[1].split('Left)')[0].replace(',', '.'))
-            print(exposeval)
             self.cameraExposureTime.emit('{0:02.0f}'.format(exposeval))
         else:
             self.cameraExposureTime.emit('---')
-        PyQt5.QtWidgets.QApplication.processEvents()
 
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
@@ -166,7 +164,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
                 try:
                     command = '/* Java Script */'
                     command += 'var Out = "";'
-                    command += 'ccdsoftCamera.Asynchronous=1;'
+                    command += 'ccdsoftCamera.Asynchronous=0;'
                     command += 'Out=String(\'{"WidthInPixels":"\'+ccdsoftCamera.WidthInPixels+\'","HeightInPixels":"\'+ccdsoftCamera.HeightInPixels+\'"}\');'
                     success, response = self.sendCommand(command)
                     captureResponse = json.loads(response)
@@ -244,7 +242,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
 
         try:
             command = '/* Java Script */'
-            command += 'ccdsoftCamera.Asynchronous=1;'
+            command += 'ccdsoftCamera.Asynchronous=0;'
             command += 'ImageLink.pathToFITS="' + str(imageParams['ImagePath']).replace('\\', '/') + '";'
             if imageParams['ScaleHint']:
                 command += 'ImageLink.unknownScale=0;'
