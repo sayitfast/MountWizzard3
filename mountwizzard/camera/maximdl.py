@@ -117,7 +117,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     def setStatus(self):
         if self.maximCamera:
             mes = str(self.maximCamera.CameraStatus)
-            print(mes)
             if mes in self.CAMERASTATUS:
                 self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
                 self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
