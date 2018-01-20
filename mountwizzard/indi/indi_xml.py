@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# changes by Michael Würtenberger 08/2017
+# changes by Michael Würtenberger 2017/2018
 """
 
 An implementation of the INDI protocol - Copyright 2003-2007 Elwood Charles Downey
@@ -110,7 +110,8 @@ class INDIElement(INDIBase):
             if etree.text is not None:
                 self.value = etree.text.strip()
             else:
-                self.logger.warning('Got None for {0}'.format(self.etype))
+                self.value = ''
+                # self.logger.warning('Got None for {0}'.format(self.etype))
 
     def __str__(self):
         base_str = INDIBase.__str__(self)
