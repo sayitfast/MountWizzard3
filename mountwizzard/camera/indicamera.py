@@ -37,17 +37,17 @@ class INDICamera(PyQt5.QtCore.QObject):
         if 'Solver' not in self.data:
             self.data['Solver'] = {}
         self.data['Camera']['Status'] = 'DISCONNECTED'
-        self.data['Camera']['CanSubframe'] = False
         self.data['Solver']['Status'] = 'DISCONNECTED'
 
-        self.cameraConnected = False
-        self.solverConnected = False
         self.imagingStarted = False
         self.tryConnectionCounter = 0
 
-        self.data['AppAvailable'] = True
-        self.data['AppName'] = 'INDICamera'
-        self.data['AppInstallPath'] = ''
+        self.data['Camera']['AppAvailable'] = True
+        self.data['Camera']['AppName'] = 'INDICamera'
+        self.data['Camera']['AppInstallPath'] = ''
+        self.data['Solver']['AppAvailable'] = False
+        self.data['Solver']['AppName'] = 'ANSRV'
+        self.data['Solver']['AppInstallPath'] = ''
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
@@ -67,7 +67,8 @@ class INDICamera(PyQt5.QtCore.QObject):
         self._mutex.unlock()
 
     def setStatus(self):
-        if self.app.workerINDI.cameraDevice != '':
+        # check if INDIClient is running and camera device is there
+        if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
             self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
             if 'CONNECTION' in self.data['Camera']:
                 if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
@@ -81,23 +82,24 @@ class INDICamera(PyQt5.QtCore.QObject):
                     self.data['Camera']['Status'] = 'DISCONNECTED'
             else:
                 self.data['Camera']['Status'] = 'ERROR'
+
             if 'CCD_EXPOSURE' in self.data['Camera']:
-                pass
-                # self.cameraStatus.emit(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])
                 self.cameraStatus.emit(self.data['Camera']['Status'])
                 self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:
             self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
-            self.cameraStatus.emit('UNCONNECTED')
+            self.cameraStatus.emit('---')
             self.cameraExposureTime.emit('---')
 
-        if 'CONNECTION' in self.data['Solver']:
-            if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+        # todo: check the ansrv availability
+        if self.app.workerINDI.isRunning:
+            if 'CONNECTION' in self.data['Solver']:
+                if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
+                    self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+                else:
+                    self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
             else:
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
-        else:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
@@ -147,7 +149,8 @@ class INDICamera(PyQt5.QtCore.QObject):
             imageParams['Message'] = 'No Picture Taken'
         return imageParams
 
-    def solveImage(self, imageParams):
+    @staticmethod
+    def solveImage(imageParams):
         return imageParams
 
     def connectCamera(self):

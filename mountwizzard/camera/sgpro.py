@@ -23,6 +23,8 @@ from urllib import request
 class SGPro(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
+    cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
     CYCLEPROPS = 3000
@@ -34,13 +36,18 @@ class SGPro(PyQt5.QtCore.QObject):
         self.app = app
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
-        self.data = {}
-
-        self.cameraConnected = False
-        self.data['CameraStatus'] = 'DISCONNECTED'
-        self.solverConnected = False
-        self.data['SolverStatus'] = 'DISCONNECTED'
+        self.data = {'Camera': {}, 'Solver': {}}
         self.tryConnectionCounter = 0
+        self.data['Camera']['AppAvailable'] = True
+        self.data['Camera']['AppName'] = 'None'
+        self.data['Camera']['AppInstallPath'] = 'None'
+        self.data['Solver']['AppAvailable'] = True
+        self.data['Solver']['AppName'] = 'None'
+        self.data['Solver']['AppInstallPath'] = 'None'
+        self.data['Camera']['Status'] = '---'
+        self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
+        self.data['Solver']['Status'] = '---'
+        self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
 
         self.host = '127.0.0.1'
         self.port = 59590
@@ -57,14 +64,24 @@ class SGPro(PyQt5.QtCore.QObject):
         self.solveImagePath = 'SgSolveImage'
 
         self.appExe = 'Sequence Generator.exe'
-        self.checkAppInstall()
+        if platform.system() == 'Windows':
+            # sgpro only supported on local machine
+            self.data['Camera']['AppAvailable'], self.data['Camera']['AppName'], self.data['Camera']['AppInstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
+            if self.data['Camera']['AppAvailable']:
+                self.app.messageQueue.put('Found: {0}\n'.format(self.data['Camera']['AppName']))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.data['Camera']['AppName'], self.data['Camera']['AppInstallPath']))
+            else:
+                self.logger.info('Application SGPro not found on computer')
+            self.data['Solver']['AppAvailable'] = self.data['Camera']['AppAvailable']
+            self.data['Solver']['AppName'] = self.data['Camera']['AppName']
+            self.data['Solver']['AppInstallPath'] = self.data['Camera']['AppInstallPath']
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-        self.getStatus()
-        self.getCameraProps()
+        self.setStatus()
+        self.setCameraProps()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
             time.sleep(0.2)
@@ -77,69 +94,57 @@ class SGPro(PyQt5.QtCore.QObject):
         self.isRunning = False
         self._mutex.unlock()
 
-    def checkAppInstall(self):
-        if platform.system() == 'Windows':
-            self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
-            if self.data['AppAvailable']:
-                self.app.messageQueue.put('Found: {0}\n'.format(self.data['AppName']))
-                self.logger.info('Name: {0}, Path: {1}'.format(self.data['AppName'], self.data['AppInstallPath']))
-            else:
-                self.logger.info('Application SGPro not found on computer')
-
-    def getStatus(self):
+    def setStatus(self):
         suc, mes = self.SgGetDeviceStatus('Camera')
         if suc:
-            self.cameraConnected = True
             if mes in self.CAMERASTATUS:
-                self.data['CameraStatus'] = self.CAMERASTATUS[mes]
-                if self.data['CameraStatus'] == 'DISCONNECTED':
-                    self.cameraConnected = False
-            else:
-                print('error status {0}'.format(mes))
+                self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
         else:
-            self.data['CameraStatus'] = 'ERROR'
-            self.cameraConnected = False
+            self.data['Camera']['Status'] = 'ERROR'
 
         # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
         suc, mes = self.SgGetDeviceStatus('PlateSolver')
         if suc:
-            self.solverConnected = True
             if mes in self.SOLVERSTATUS:
-                self.data['SolverStatus'] = self.SOLVERSTATUS[mes]
-                if self.data['SolverStatus'] == 'DISCONNECTED':
-                    self.solverConnected = False
-                else:
-                    print('error status {0}'.format(mes))
+                self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
         else:
-            self.data['SolverStatus'] = 'ERROR'
-            self.solverConnected = False
+            self.data['Solver']['Status'] = 'ERROR'
 
-        if self.cameraConnected:
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
-        else:
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+        self.cameraStatus.emit(self.data['Camera']['Status'])
+        self.cameraExposureTime.emit('---')
 
-        if self.solverConnected:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
+            else:
+                self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
         else:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
+
+        if 'CONNECTION' in self.data['Solver']:
+            if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+            else:
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+        else:
+            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
-    def getCameraProps(self):
-        if self.cameraConnected:
-            value = self.SgGetCameraProps()
-            if value['Success']:
-                if 'GainValues' not in value['GainValues']:
-                    self.data['Gain'] = 0
-                    self.data['Gains'] = ['High']
-                else:
-                    self.data['Gains'] = value['GainValues']
-                self.data['Message'] = value['Message']
-                self.data['CanSubframe'] = value['SupportsSubframe']
-                self.data['CameraXSize'] = value['NumPixelsX']
-                self.data['CameraYSize'] = value['NumPixelsY']
+    def setCameraProps(self):
+        if 'CONNECTION' in self.data['Camera']:
+            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                value = self.SgGetCameraProps()
+                if value['Success']:
+                    if 'GainValues' not in value['GainValues']:
+                        self.data['Gain'] = 0
+                        self.data['Camera']['Gains'] = ['High']
+                    else:
+                        self.data['Camera']['Gain'] = value['GainValues']
+                    self.data['Camera']['Message'] = value['Message']
+                    self.data['Camera']['CCD_INFO']['CCD_MAX_X'] = value['NumPixelsX']
+                    self.data['Camera']['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.getCameraProps)

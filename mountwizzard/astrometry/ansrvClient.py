@@ -15,6 +15,8 @@ from email.encoders import encode_noop
 
 import json
 
+import ast
+
 
 def json2python(data):
     try:
@@ -45,7 +47,7 @@ class Client(object):
     default_url = 'http://127.0.0.1:8080/api/'
 
     def __init__(self, apiurl=default_url):
-        self.session = 'test'
+        self.session = 123456
         self.apiurl = self.default_url # apiurl
 
     def get_url(self, service):
@@ -124,7 +126,8 @@ class Client(object):
             f = urlopen(request)
             txt = f.read().decode()
             print('Got json:', txt)
-            result = json2python(txt)
+
+            result = ast.literal_eval(txt)
             print('Got result:', result)
             stat = result.get('status')
             print('Got status:', stat)
@@ -340,7 +343,7 @@ if __name__ == '__main__':
     #
     c = Client(**args)
     # c.login(opt.apikey)
-
+    opt.wait = True
     if opt.upload or opt.upload_url:
         if opt.wcs or opt.kmz or opt.newfits or opt.annotate:
             opt.wait = True

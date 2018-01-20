@@ -89,13 +89,13 @@ class ImagingApps:
             self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect()
         # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
-        if self.workerNoneCam.data['AppAvailable']:
-            self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['AppName'])
-        if self.workerINDICamera.data['AppAvailable']:
+        if self.workerNoneCam.data['Camera']['AppAvailable']:
+            self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['Camera']['AppName'])
+        if self.workerINDICamera.data['Camera']['AppAvailable']:
             self.app.ui.pd_chooseImaging.addItem('INDI Camera')
         if platform.system() == 'Windows':
-            if self.workerSGPro.data['AppAvailable']:
-                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.workerSGPro.data['AppName'])
+            if self.workerSGPro.data['Camera']['AppAvailable']:
+                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.workerSGPro.data['Camera']['AppName'])
             if self.workerMaximDL.data['AppAvailable']:
                 self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
         if platform.system() == 'Windows' or platform.system() == 'Darwin':

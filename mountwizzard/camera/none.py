@@ -29,17 +29,17 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
-        self.data['Camera']['Status'] = 'DISCONNECTED'
+        self.data['Camera']['Status'] = 'IDLE'
         self.data['Camera']['CanSubframe'] = False
         self.data['Camera']['CONNECTION'] = {'CONNECT': 'On'}
-        # self.data['Camera']['']
-        self.data['Solver']['Status'] = 'DISCONNECTED'
+        self.data['Solver']['Status'] = 'IDLE'
         self.data['Solver']['CONNECTION'] = {'CONNECT': 'On'}
-        self.cameraConnected = False
-        self.solverConnected = False
-        self.data['AppAvailable'] = True
-        self.data['AppName'] = 'None'
-        self.data['AppInstallPath'] = 'None'
+        self.data['Camera']['AppAvailable'] = True
+        self.data['Camera']['AppName'] = 'None'
+        self.data['Camera']['AppInstallPath'] = 'None'
+        self.data['Solver']['AppAvailable'] = True
+        self.data['Solver']['AppName'] = 'None'
+        self.data['Solver']['AppInstallPath'] = 'None'
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
@@ -59,10 +59,8 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self._mutex.unlock()
 
     def setStatus(self):
-        self.cameraConnected = True
-        self.solverConnected = True
-        self.data['Camera']['Status'] = 'NONE'
-        self.data['Solver']['Status'] = 'NONE'
+        self.data['Camera']['Status'] = 'IDLE'
+        self.data['Solver']['Status'] = 'IDLE'
 
         self.cameraStatus.emit(self.data['Camera']['Status'])
         self.cameraExposureTime.emit('---')
@@ -86,12 +84,14 @@ class NoneCamera(PyQt5.QtCore.QObject):
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
-    def getImage(self, imageParams):
+    @staticmethod
+    def getImage(imageParams):
         imageParams['Success'] = False
         imageParams['Message'] = 'Not OK'
         return imageParams
 
-    def solveImage(self, imageParams):
+    @staticmethod
+    def solveImage(imageParams):
         imageParams['Success'] = False
         imageParams['Message'] = 'Not OK'
         return imageParams
