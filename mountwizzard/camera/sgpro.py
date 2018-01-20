@@ -28,8 +28,8 @@ class SGPro(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 200
     CYCLEPROPS = 3000
-    SOLVERSTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
-    CAMERASTATUS = {'ERROR': 'Error', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
+    SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'BUSY': 'BUSY'}
+    CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
     def __init__(self, app):
         super().__init__()
@@ -99,16 +99,24 @@ class SGPro(PyQt5.QtCore.QObject):
         if suc:
             if mes in self.CAMERASTATUS:
                 self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
+                self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
+            else:
+                self.logger.error('Unknown camera status: {0}'.format(mes))
         else:
             self.data['Camera']['Status'] = 'ERROR'
+            self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
 
         # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
         suc, mes = self.SgGetDeviceStatus('PlateSolver')
         if suc:
             if mes in self.SOLVERSTATUS:
                 self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
+                self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
+            else:
+                self.logger.error('Unknown solver status: {0}'.format(mes))
         else:
             self.data['Solver']['Status'] = 'ERROR'
+            self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
 
         self.cameraStatus.emit(self.data['Camera']['Status'])
         self.cameraExposureTime.emit('---')
@@ -143,57 +151,68 @@ class SGPro(PyQt5.QtCore.QObject):
                     else:
                         self.data['Camera']['Gain'] = value['GainValues']
                     self.data['Camera']['Message'] = value['Message']
+                    if value['SupportsSubframe']:
+                        self.data['Camera']['CCD_FRAME'] = {}
+                        self.data['Camera']['CCD_FRAME']['HEIGHT'] = value['NumPixelsX']
+                        self.data['Camera']['CCD_FRAME']['WIDTH'] = value['NumPixelsY']
+                        self.data['Camera']['CCD_FRAME']['X'] = 0
+                        self.data['Camera']['CCD_FRAME']['Y'] = 0
+                    self.data['Camera']['CCD_INFO'] = {}
                     self.data['Camera']['CCD_INFO']['CCD_MAX_X'] = value['NumPixelsX']
                     self.data['Camera']['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
 
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.getCameraProps)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.setCameraProps)
 
-    def getImage(self, modelData):
-        suc, mes, guid = self.SgCaptureImage(binningMode=modelData['Binning'],
-                                             exposureLength=modelData['Exposure'],
-                                             iso=str(modelData['Iso']),
+    def getImage(self, imageParams):
+        suc, mes, guid = self.SgCaptureImage(binningMode=imageParams['Binning'],
+                                             exposureLength=imageParams['Exposure'],
+                                             iso=str(imageParams['Iso']),
                                              gain='Not Set',
-                                             speed=modelData['Speed'],
+                                             speed=imageParams['Speed'],
                                              frameType='Light',
-                                             filename=modelData['File'],
-                                             path=modelData['BaseDirImages'],
-                                             useSubframe=modelData['CanSubframe'],
-                                             posX=modelData['OffX'],
-                                             posY=modelData['OffY'],
-                                             width=modelData['SizeX'],
-                                             height=modelData['SizeY'])
-        modelData['ImagePath'] = ''
+                                             filename=imageParams['File'],
+                                             path=imageParams['BaseDirImages'],
+                                             useSubframe=imageParams['CanSubframe'],
+                                             posX=imageParams['OffX'],
+                                             posY=imageParams['OffY'],
+                                             width=imageParams['SizeX'],
+                                             height=imageParams['SizeY'])
+        imageParams['Imagepath'] = ''
         self.logger.info('message: {0}'.format(mes))
         if suc:
             while True:
-                suc, modelData['ImagePath'] = self.SgGetImagePath(guid)
+                suc, imageParams['Imagepath'] = self.SgGetImagePath(guid)
                 if suc:
                     break
                 else:
                     time.sleep(0.2)
                     PyQt5.QtWidgets.QApplication.processEvents()
-        return suc, mes, modelData
+        else:
+            imageParams['Imagepath'] = ''
+        imageParams['Success'] = suc
+        imageParams['Message'] = mes
+        return imageParams
 
-    def solveImage(self, modelData):
-        suc, mes, guid = self.SgSolveImage(modelData['ImagePath'],
-                                           scaleHint=modelData['ScaleHint'],
-                                           blindSolve=modelData['Blind'],
-                                           useFitsHeaders=modelData['UseFitsHeaders'])
+    def solveImage(self, imageParams):
+        suc, mes, guid = self.SgSolveImage(imageParams['ImagePath'],
+                                           scaleHint=imageParams['ScaleHint'],
+                                           blindSolve=imageParams['Blind'],
+                                           useFitsHeaders=imageParams['UseFitsHeaders'])
         if not suc:
             self.logger.warning('no start {0}'.format(mes))
-            return False, mes, modelData
+            return False, mes, imageParams
         while True:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
-                self.logger.info('modelData {0}'.format(modelData))
+                self.logger.info('imageParams {0}'.format(imageParams))
                 solved = True
-                modelData['RaJ2000Solved'] = float(ra_sol)
-                modelData['DecJ2000Solved'] = float(dec_sol)
-                modelData['Scale'] = float(scale)
-                modelData['Angle'] = float(angle)
-                modelData['TimeTS'] = float(timeTS)
+                imageParams['RaJ2000Solved'] = float(ra_sol)
+                imageParams['DecJ2000Solved'] = float(dec_sol)
+                imageParams['Scale'] = float(scale)
+                imageParams['Angle'] = float(angle)
+                imageParams['TimeTS'] = float(timeTS)
                 break
             elif mes != 'Solving':
                 solved = False
@@ -205,7 +224,9 @@ class SGPro(PyQt5.QtCore.QObject):
             else:
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
-        return solved, mes, modelData
+        imageParams['Success'] = solved
+        imageParams['Message'] = mes
+        return mimageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

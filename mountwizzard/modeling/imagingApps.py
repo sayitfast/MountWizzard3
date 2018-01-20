@@ -181,12 +181,13 @@ class ImagingApps:
         directory = time.strftime("%Y-%m-%d", time.gmtime())
         imageParams['Directory'] = directory
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
-        if camData['CanSubframe'] and self.app.ui.checkDoSubframe.isChecked():
+        # todo: handling of subframes
+        if False and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            imageParams['SizeX'] = int(float(camData['CameraXSize']) * scaleSubframe)
-            imageParams['SizeY'] = int(float(camData['CameraYSize']) * scaleSubframe)
-            imageParams['OffX'] = int((float(camData['CameraXSize']) - imageParams['SizeX']) / 2)
-            imageParams['OffY'] = int((float(camData['CameraYSize']) - imageParams['SizeY']) / 2)
+            imageParams['SizeX'] = int(float(camData['CCD_INFO']['CCD_MAX_X']) * scaleSubframe)
+            imageParams['SizeY'] = int(float(camData['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe)
+            imageParams['OffX'] = int((float(camData['CCD_INFO']['CCD_MAX_X']) - imageParams['SizeX']) / 2)
+            imageParams['OffY'] = int((float(camData['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
             imageParams['CanSubframe'] = True
         else:
             imageParams['SizeX'] = 0
@@ -194,7 +195,6 @@ class ImagingApps:
             imageParams['OffX'] = 0
             imageParams['OffY'] = 0
             imageParams['CanSubframe'] = False
-            self.logger.warning('Camera does not support subframe.')
         if 'Gain' in camData:
             imageParams['Gain'] = camData['Gain']
         else:
@@ -214,22 +214,17 @@ class ImagingApps:
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         return imageParams
 
-    def capturingImage(self, imageParams, simulation):
+    def capturingImage(self, imageParams):
         if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Modeling cancelled after capturing image')
             return False, 'Cancel modeling pressed', imageParams
-        LocalSiderealTimeFitsHeader = imageParams['LocalSiderealTime'][0:10]
         RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
         DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
-        RaJNowFitsHeader = self.transform.decimalToDegree(imageParams['RaJNow'], False, True, ' ')
-        DecJNowFitsHeader = self.transform.decimalToDegree(imageParams['DecJNow'], True, True, ' ')
-        if imageParams['Pierside'] == '1':
-            pierside_fits_header = 'E'
-        else:
-            pierside_fits_header = 'W'
         self.logger.info('imageParams: {0}'.format(imageParams))
-        suc, mes, imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
-        if suc:
+        # todo: indiclient image transfer
+        self.app.workerINDI.receivedImage = False
+        imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
+        if imageParams['Success']:
             self.logger.info('suc: {0}, imageParams{1}'.format(suc, imageParams))
             fitsFileHandle = pyfits.open(imageParams['ImagePath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
@@ -242,25 +237,15 @@ class ImagingApps:
             fitsHeader['CDELT2'] = str(imageParams['ScaleHint'])
             fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
             fitsHeader['SCALE'] = str(imageParams['ScaleHint'])
-            fitsHeader['MW_MRA'] = RaJNowFitsHeader
-            fitsHeader['MW_MDEC'] = DecJNowFitsHeader
-            fitsHeader['MW_ST'] = LocalSiderealTimeFitsHeader
-            fitsHeader['MW_MSIDE'] = pierside_fits_header
-            fitsHeader['MW_EXP'] = imageParams['Exposure']
-            fitsHeader['MW_AZ'] = imageParams['Azimuth']
-            fitsHeader['MW_ALT'] = imageParams['Altitude']
-            self.logger.info('DATE-OBS:{0}, OBJCTRA:{1} OBJTDEC:{2} CDELT1:{3} MW_MRA:{4} '
-                             'MW_MDEC:{5} MW_ST:{6} MW_PIER:{7} MW_EXP:{8} MW_AZ:{9} MW_ALT:{10}'
-                             .format(fitsHeader['DATE-OBS'], fitsHeader['OBJCTRA'], fitsHeader['OBJCTDEC'],
-                                     fitsHeader['CDELT1'], fitsHeader['MW_MRA'], fitsHeader['MW_MDEC'],
-                                     fitsHeader['MW_ST'], fitsHeader['MW_MSIDE'], fitsHeader['MW_EXP'],
-                                     fitsHeader['MW_AZ'], fitsHeader['MW_ALT']))
             fitsFileHandle.flush()
             fitsFileHandle.close()
             self.app.imageQueue.put(imageParams['ImagePath'])
-            return True, 'OK', imageParams
+            imageParams['Success'] = True
+            imageParams['Message'] = 'OK'
         else:
-            return False, mes, imageParams
+            imageParams['Success'] = False
+            imageParams['Message'] = mes
+        return imageParams
 
     def addSolveRandomValues(self, imageParams):
         imageParams['RaJ2000Solved'] = imageParams['RaJ2000'] + (2 * random.random() - 1) / 3600
@@ -276,11 +261,11 @@ class ImagingApps:
         imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
         return imageParams
 
-    def solveImage(self, imageParams, simulation):
+    def solveImage(self, imageParams):
         imageParams['UseFitsHeaders'] = True
-        suc, mes, imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
+        imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
-        if suc:
+        if imageParams['Success']:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
             imageParams['RaJNowSolved'] = ra_sol_Jnow
             imageParams['DecJNowSolved'] = dec_sol_Jnow
@@ -301,9 +286,9 @@ class ImagingApps:
                                     fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            if simulation:
-                imageParams = self.addSolveRandomValues(imageParams)
-            return True, mes, imageParams
+            imageParams['Success'] = True
+            imageParams['Message'] = 'OK'
         else:
-            return False, mes, imageParams
-
+            imageParams['Success'] = False
+            imageParams['Message'] = mes
+        return imageParams

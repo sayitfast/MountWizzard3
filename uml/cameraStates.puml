@@ -1,0 +1,23 @@
+@startuml
+(*)  --> "AppAvailable: INDIClient running - Windows->AppRegistration is present"
+If "self.data['Camera'][AppAvailable] = True" then
+--> [No] "Camera button gray"
+-->(*)
+else
+    --> [Yes] "Application Online: INDIClient connected - AppPort open"
+    If "self.data['Camera'][AppConnected] = True" then
+    --> [No] "Camera button red"
+    -->(*)
+    else
+    --> [No] "Camera Connected: INDIClient Device connected - AppPort linked - ASCOM object connected = true"
+        If "self.data['Camera']['CONNECTION']['CONNECT'] == 'On'" then
+        --> [Yes] "Camera button green"
+        -->(*)
+        else
+        --> [No] "Camera button yellow"
+        -->(*)
+        Endif
+    Endif
+Endif
+-->(*)
+@enduml
