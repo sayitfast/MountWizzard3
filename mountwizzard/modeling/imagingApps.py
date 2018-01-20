@@ -62,7 +62,12 @@ class ImagingApps:
             self.workerMaximDL.finished.connect(self.workerMaximDLStop)
 
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            self.TheSkyX = theskyx.TheSkyX(self.app, self.imagingCommandQueue)
+            self.workerTheSkyX = theskyx.TheSkyX(self.app, self.imagingCommandQueue)
+            self.threadTheSkyX = PyQt5.QtCore.QThread()
+            self.threadTheSkyX.setObjectName("TheSkyX")
+            self.workerTheSkyX.moveToThread(self.threadTheSkyX)
+            self.threadTheSkyX.started.connect(self.workerTheSkyX.run)
+            self.workerTheSkyX.finished.connect(self.workerTheSkyXStop)
 
         self.workerNoneCam = none.NoneCamera(self.app, self.imagingCommandQueue)
         self.threadNoneCam = PyQt5.QtCore.QThread()
@@ -101,8 +106,8 @@ class ImagingApps:
             if self.workerMaximDL.data['Camera']['AppAvailable']:
                 self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['Camera']['AppName'])
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            if self.TheSkyX.appAvailable:
-                self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
+            if self.workerTheSkyX.data['Camera']['AppAvailable']:
+                self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.workerTheSkyX.data['Camera']['AppName'])
         # load the config data
         try:
             if 'ImagingApplication' in self.app.config:
@@ -162,8 +167,8 @@ class ImagingApps:
             self.imagingThreadCameraAppHandler = self.threadINDICamera
             self.logger.info('Actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
-            self.imagingWorkerCameraAppHandler = self.workerNoneCam
-            self.imagingThreadCameraAppHandler = self.threadNoneCam
+            self.imagingWorkerCameraAppHandler = self.workerTheSkyX
+            self.imagingThreadCameraAppHandler = self.threadTheSkyX
             self.logger.info('Actual camera / plate solver is TheSkyX')
 
         self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
@@ -179,10 +184,12 @@ class ImagingApps:
         self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
 
     def prepareImaging(self):
+        camData = self.imagingWorkerCameraAppHandler.data['Camera']
+        if camData['CONNECTION']['CONNECT'] == 'Off':
+            return
         imageParams = {}
         directory = time.strftime("%Y-%m-%d", time.gmtime())
         imageParams['Directory'] = directory
-        camData = self.imagingWorkerCameraAppHandler.data['Camera']
         # todo: handling of subframes
         if False and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
@@ -217,6 +224,9 @@ class ImagingApps:
         return imageParams
 
     def captureImage(self, imageParams):
+        camData = self.imagingWorkerCameraAppHandler.data['Camera']
+        if camData['CONNECTION']['CONNECT'] == 'Off':
+            return
         if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Modeling cancelled after capturing image')
             imageParams['Success'] = False
@@ -249,7 +259,7 @@ class ImagingApps:
             fitsHeader['SCALE'] = str(imageParams['ScaleHint'])
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            self.app.imageQueue.put(imageParams['Imagepath'])
+            # self.app.imageQueue.put(imageParams['Imagepath'])
             imageParams['Success'] = True
             imageParams['Message'] = 'OK'
         else:
@@ -271,6 +281,10 @@ class ImagingApps:
         return imageParams
 
     def solveImage(self, imageParams):
+        camData = self.imagingWorkerCameraAppHandler.data['Camera']
+        if camData['CONNECTION']['CONNECT'] == 'Off':
+            return
+
         imageParams['UseFitsHeaders'] = True
         imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))

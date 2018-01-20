@@ -1147,10 +1147,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.messageWindow.ui.messages.setFontWeight(PyQt5.QtGui.QFont.Normal)
                 self.messageWindow.ui.messages.insertPlainText(text)
             self.messageWindow.ui.messages.moveCursor(PyQt5.QtGui.QTextCursor.End)
-        while not self.imageQueue.empty():
-            filename = self.imageQueue.get()
-            if self.imageWindow.showStatus:
-                self.imageWindow.showFitsImage(filename)
         PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
 
 

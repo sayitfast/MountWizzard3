@@ -192,6 +192,7 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.draw()
 
     def showFitsImage(self, filename):
+        print('request image')
         hdulist = pyfits.open(filename)
         self.image = hdulist[0].data
         self.sizeY, self.sizeX = self.image.shape
@@ -223,6 +224,9 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
+        camData = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']
+        if camData['CONNECTION']['CONNECT'] == 'Off':
+            return
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
         imageParams['RaJ2000'] = 0
