@@ -29,7 +29,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     CYCLEPROPS = 3000
 
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
-    CAMERASTATUS = {'1': 'ERROR', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
+    CAMERASTATUS = {'1': 'DISCONNECTED', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
 
     def __init__(self, app, commandQueue):
         super().__init__()
@@ -117,6 +117,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     def setStatus(self):
         if self.maximCamera:
             mes = str(self.maximCamera.CameraStatus)
+            print(mes)
             if mes in self.CAMERASTATUS:
                 self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
                 self.data['Solver']['CONNECTION']['CONNECT'] = 'On'

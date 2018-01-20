@@ -106,7 +106,10 @@ class SGPro(PyQt5.QtCore.QObject):
         if suc:
             if mes in self.CAMERASTATUS:
                 self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
-                self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
+                if self.CAMERASTATUS[mes] == 'DISCONNECTED':
+                    self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
+                else:
+                    self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
             else:
                 self.logger.error('Unknown camera status: {0}'.format(mes))
         else:
@@ -118,7 +121,10 @@ class SGPro(PyQt5.QtCore.QObject):
         if suc:
             if mes in self.SOLVERSTATUS:
                 self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
-                self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
+                if self.SOLVERSTATUS[mes] == 'DISCONNECTED':
+                    self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
+                else:
+                    self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
             else:
                 self.logger.error('Unknown solver status: {0}'.format(mes))
         else:

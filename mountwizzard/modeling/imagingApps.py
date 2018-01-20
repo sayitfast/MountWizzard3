@@ -192,8 +192,8 @@ class ImagingApps:
             imageParams['OffY'] = int((float(camData['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
             imageParams['CanSubframe'] = True
         else:
-            imageParams['SizeX'] = 0
-            imageParams['SizeY'] = 0
+            imageParams['SizeX'] = int(float(camData['CCD_INFO']['CCD_MAX_X']))
+            imageParams['SizeY'] = int(float(camData['CCD_INFO']['CCD_MAX_X']))
             imageParams['OffX'] = 0
             imageParams['OffY'] = 0
             imageParams['CanSubframe'] = False
@@ -224,7 +224,7 @@ class ImagingApps:
             return False, imageParams
         RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
         DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
-        self.logger.info('imageParams: {0}'.format(imageParams))
+        self.logger.info('Imaging parameters: {0}'.format(imageParams))
         # todo: indiclient image transfer
         self.app.workerINDI.receivedImage = False
 
