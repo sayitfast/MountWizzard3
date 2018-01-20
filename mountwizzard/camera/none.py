@@ -13,6 +13,7 @@
 ############################################################
 import PyQt5
 import logging
+import time
 
 
 class NoneCamera(PyQt5.QtCore.QObject):
@@ -23,9 +24,10 @@ class NoneCamera(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 5000
 
-    def __init__(self, app):
+    def __init__(self, app, commandQueue):
         super().__init__()
         self.app = app
+        self.commandQueue = commandQueue
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
@@ -48,7 +50,13 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.setStatus()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
-            # time.sleep(0.2)
+            if not self.commandQueue.empty():
+                command = self.commandQueue.get()
+                if command['Command'] == 'GetImage':
+                    command['ImageParams'] = self.getImage(command['ImageParams'])
+                elif command['Command'] == 'SolveImage':
+                    command['ImageParams'] = self.solveImage(command['ImageParams'])
+            time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()

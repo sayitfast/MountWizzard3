@@ -15,7 +15,6 @@ import logging
 import PyQt5
 import time
 import indi.indi_xml as indiXML
-from camera.cameraBase import MWCamera
 
 
 class INDICamera(PyQt5.QtCore.QObject):
@@ -26,9 +25,10 @@ class INDICamera(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 200
 
-    def __init__(self, app):
+    def __init__(self, app, commandQueue):
         super().__init__()
         self.app = app
+        self.commandQueue = commandQueue
         self.data = {}
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
@@ -56,7 +56,13 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.setStatus()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
-            time.sleep(0.2)
+            if not self.commandQueue.empty():
+                command = self.commandQueue.get()
+                if command['Command'] == 'GetImage':
+                    command['ImageParams'] = self.getImage(command['ImageParams'])
+                elif command['Command'] == 'SolveImage':
+                    command['ImageParams'] = self.solveImage(command['ImageParams'])
+            time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
@@ -136,8 +142,13 @@ class INDICamera(PyQt5.QtCore.QObject):
                     indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
                                             indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
                 # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
-                self.imagingStarted = True
                 while not self.app.workerINDI.receivedImage:
+                    if not self.commandQueue.empty():
+                        command = self.ommandQueue.get()
+                        if command['Command'] == 'GetImage':
+                            command['ImageParams'] = self.getImage(command['ImageParams'])
+                        elif command['Command'] == 'SolveImage':
+                            command['ImageParams'] = self.solveImage(command['ImageParams'])
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath

@@ -236,8 +236,8 @@ class ImagesWindow(widget.MwWidget):
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams)
         if imageParams['Success']:
             self.showFitsImage(imageParams['Imagepath'])
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams)
-        print(imageParams['Message'])
+        #imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams)
+        #print(imageParams['Message'])
 
     def exposeContinuous(self):
         pass

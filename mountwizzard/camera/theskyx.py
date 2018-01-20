@@ -17,14 +17,16 @@ import platform
 import socket
 import timeit
 
-from camera.cameraBase import MWCamera
+from baseclasses import cameraBase
 
 
-class TheSkyX(MWCamera):
+class TheSkyX(cameraBase.MWCamera):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, app):
+    def __init__(self, app, commandQueue):
         super(TheSkyX, self).__init__(app)
+        self.app = app
+        self.commandQueue = commandQueue
         self.host = '127.0.0.1'
         self.port = 3040
         self.responseSuccess = '|No error. Error = 0.'

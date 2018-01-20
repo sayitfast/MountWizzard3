@@ -31,9 +31,10 @@ class SGPro(PyQt5.QtCore.QObject):
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'BUSY': 'BUSY'}
     CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
-    def __init__(self, app):
+    def __init__(self, app, commandQueue):
         super().__init__()
         self.app = app
+        self.commandQueue = commandQueue
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
@@ -84,7 +85,13 @@ class SGPro(PyQt5.QtCore.QObject):
         self.setCameraProps()
         # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
         while self.isRunning:
-            time.sleep(0.2)
+            if not self.commandQueue.empty():
+                command = self.commandQueue.get()
+                if command['Command'] == 'GetImage':
+                    command['ImageParams'] = self.getImage(command['ImageParams'])
+                elif command['Command'] == 'SolveImage':
+                    command['ImageParams'] = self.solveImage(command['ImageParams'])
+            time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.finished.emit()
@@ -146,8 +153,7 @@ class SGPro(PyQt5.QtCore.QObject):
                 value = self.SgGetCameraProps()
                 if value['Success']:
                     if 'GainValues' not in value['GainValues']:
-                        self.data['Gain'] = 0
-                        self.data['Camera']['Gains'] = ['High']
+                        self.data['Camera']['Gain'] = ['High']
                     else:
                         self.data['Camera']['Gain'] = value['GainValues']
                     self.data['Camera']['Message'] = value['Message']

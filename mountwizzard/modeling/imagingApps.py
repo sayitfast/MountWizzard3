@@ -22,6 +22,7 @@ import random
 import shutil
 import sys
 import PyQt5
+import queue
 from astrometry import transform
 import astropy.io.fits as pyfits
 from camera import none
@@ -43,16 +44,17 @@ class ImagingApps:
         # make main sources available
         self.app = app
         self.transform = transform.Transform(self.app)
+        self.imagingCommandQueue = queue.Queue()
         # make imaging applications available
         if platform.system() == 'Windows':
-            self.workerSGPro = sgpro.SGPro(self.app)
+            self.workerSGPro = sgpro.SGPro(self.app, self.imagingCommandQueue)
             self.threadSGPro = PyQt5.QtCore.QThread()
             self.threadSGPro.setObjectName("SGPro")
             self.workerSGPro.moveToThread(self.threadSGPro)
             self.threadSGPro.started.connect(self.workerSGPro.run)
             self.workerSGPro.finished.connect(self.workerSGProStop)
 
-            self.workerMaximDL = maximdl.MaximDLCamera(self.app)
+            self.workerMaximDL = maximdl.MaximDLCamera(self.app, self.imagingCommandQueue)
             self.threadMaximDL = PyQt5.QtCore.QThread()
             self.threadMaximDL.setObjectName("MaximDL")
             self.workerMaximDL.moveToThread(self.threadMaximDL)
@@ -60,16 +62,16 @@ class ImagingApps:
             self.workerMaximDL.finished.connect(self.workerMaximDLStop)
 
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            self.TheSkyX = theskyx.TheSkyX(self.app)
+            self.TheSkyX = theskyx.TheSkyX(self.app, self.imagingCommandQueue)
 
-        self.workerNoneCam = none.NoneCamera(self.app)
+        self.workerNoneCam = none.NoneCamera(self.app, self.imagingCommandQueue)
         self.threadNoneCam = PyQt5.QtCore.QThread()
         self.threadNoneCam.setObjectName("NoneCamera")
         self.workerNoneCam.moveToThread(self.threadNoneCam)
         self.threadNoneCam.started.connect(self.workerNoneCam.run)
         self.workerNoneCam.finished.connect(self.workerNoneCamStop)
 
-        self.workerINDICamera = indicamera.INDICamera(self.app)
+        self.workerINDICamera = indicamera.INDICamera(self.app, self.imagingCommandQueue)
         self.threadINDICamera = PyQt5.QtCore.QThread()
         self.threadINDICamera.setObjectName("INDICamera")
         self.workerINDICamera.moveToThread(self.threadINDICamera)
@@ -96,8 +98,8 @@ class ImagingApps:
         if platform.system() == 'Windows':
             if self.workerSGPro.data['Camera']['AppAvailable']:
                 self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.workerSGPro.data['Camera']['AppName'])
-            if self.workerMaximDL.data['AppAvailable']:
-                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
+            if self.workerMaximDL.data['Camera']['AppAvailable']:
+                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['Camera']['AppName'])
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
             if self.TheSkyX.appAvailable:
                 self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.TheSkyX.appName)
@@ -225,7 +227,13 @@ class ImagingApps:
         self.logger.info('imageParams: {0}'.format(imageParams))
         # todo: indiclient image transfer
         self.app.workerINDI.receivedImage = False
-        imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
+
+        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        imageParams['Message'] = ''
+        while imageParams['Message'] == '':
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
         if imageParams['Success']:
             self.logger.info('Imaging parameters: {0}'.format(imageParams))
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
@@ -246,7 +254,6 @@ class ImagingApps:
             imageParams['Message'] = 'OK'
         else:
             imageParams['Success'] = False
-            imageParams['Message'] = mes
         return imageParams
 
     def addSolveRandomValues(self, imageParams):
