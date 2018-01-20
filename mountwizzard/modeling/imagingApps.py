@@ -214,10 +214,12 @@ class ImagingApps:
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         return imageParams
 
-    def capturingImage(self, imageParams):
+    def captureImage(self, imageParams):
         if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Modeling cancelled after capturing image')
-            return False, 'Cancel modeling pressed', imageParams
+            imageParams['Success'] = False
+            imageParams['Message'] = 'Cancel modeling pressed'
+            return False, imageParams
         RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
         DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
         self.logger.info('imageParams: {0}'.format(imageParams))
@@ -225,8 +227,8 @@ class ImagingApps:
         self.app.workerINDI.receivedImage = False
         imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
         if imageParams['Success']:
-            self.logger.info('suc: {0}, imageParams{1}'.format(suc, imageParams))
-            fitsFileHandle = pyfits.open(imageParams['ImagePath'], mode='update')
+            self.logger.info('Imaging parameters: {0}'.format(imageParams))
+            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
             if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
                 imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
@@ -239,7 +241,7 @@ class ImagingApps:
             fitsHeader['SCALE'] = str(imageParams['ScaleHint'])
             fitsFileHandle.flush()
             fitsFileHandle.close()
-            self.app.imageQueue.put(imageParams['ImagePath'])
+            self.app.imageQueue.put(imageParams['Imagepath'])
             imageParams['Success'] = True
             imageParams['Message'] = 'OK'
         else:
@@ -264,7 +266,7 @@ class ImagingApps:
     def solveImage(self, imageParams):
         imageParams['UseFitsHeaders'] = True
         imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
-        self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
+        self.logger.info('Imaging parameters: {0}'.format(imageParams))
         if imageParams['Success']:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
             imageParams['RaJNowSolved'] = ra_sol_Jnow
@@ -272,7 +274,7 @@ class ImagingApps:
             imageParams['RaError'] = (imageParams['RaJ2000Solved'] - imageParams['RaJ2000']) * 3600
             imageParams['DecError'] = (imageParams['DecJ2000Solved'] - imageParams['DecJ2000']) * 3600
             imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
-            fitsFileHandle = pyfits.open(imageParams['ImagePath'], mode='update')
+            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
             fitsHeader['MW_PRA'] = imageParams['RaJNowSolved']
             fitsHeader['MW_PDEC'] = imageParams['DecJNowSolved']
@@ -281,14 +283,10 @@ class ImagingApps:
             fitsHeader['MW_PSCAL'] = imageParams['Scale']
             fitsHeader['MW_PANGL'] = imageParams['Angle']
             fitsHeader['MW_PTS'] = imageParams['TimeTS']
-            self.logger.info('MW_PRA:{0} MW_PDEC:{1} MW_PSCAL:{2} MW_PANGL:{3} MW_PTS:{4}'.
-                             format(fitsHeader['MW_PRA'], fitsHeader['MW_PDEC'], fitsHeader['MW_PSCAL'],
-                                    fitsHeader['MW_PANGL'], fitsHeader['MW_PTS']))
             fitsFileHandle.flush()
             fitsFileHandle.close()
             imageParams['Success'] = True
             imageParams['Message'] = 'OK'
         else:
             imageParams['Success'] = False
-            imageParams['Message'] = mes
         return imageParams

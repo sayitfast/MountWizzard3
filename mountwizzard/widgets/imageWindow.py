@@ -225,15 +225,19 @@ class ImagesWindow(widget.MwWidget):
     def exposeOnce(self):
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
+        imageParams['RaJ2000'] = 0
+        imageParams['DecJ2000'] = 0
         if not os.path.isdir(imageParams['BaseDirImages']):
             os.makedirs(imageParams['BaseDirImages'])
         number = 0
         while os.path.isfile(imageParams['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime())
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.getImage(imageParams)
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams)
         if imageParams['Success']:
             self.showFitsImage(imageParams['Imagepath'])
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams)
+        print(imageParams['Message'])
 
     def exposeContinuous(self):
         pass

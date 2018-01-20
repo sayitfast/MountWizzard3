@@ -195,18 +195,20 @@ class SGPro(PyQt5.QtCore.QObject):
         return imageParams
 
     def solveImage(self, imageParams):
-        suc, mes, guid = self.SgSolveImage(imageParams['ImagePath'],
+        suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
                                            scaleHint=imageParams['ScaleHint'],
                                            blindSolve=imageParams['Blind'],
                                            useFitsHeaders=imageParams['UseFitsHeaders'])
         if not suc:
-            self.logger.warning('no start {0}'.format(mes))
-            return False, mes, imageParams
+            self.logger.warning('Solver no start, message: {0}'.format(mes))
+            imageParams['Success'] = False
+            imageParams['Message'] = mes
+            return imageParams
         while True:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
-                self.logger.info('imageParams {0}'.format(imageParams))
+                self.logger.info('Imaging parameters {0}'.format(imageParams))
                 solved = True
                 imageParams['RaJ2000Solved'] = float(ra_sol)
                 imageParams['DecJ2000Solved'] = float(dec_sol)
