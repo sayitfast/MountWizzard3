@@ -110,7 +110,10 @@ class Dome(PyQt5.QtCore.QObject):
             self.logger.info('Actual dome is ASCOM')
         elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
             self.stopAscom()
-            self.data['Connected'] = self.app.workerINDI.connected
+            if self.app.workerINDI.domeDevice != '':
+                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
+            else:
+                self.data['Connected'] = False
             self.logger.info('Actual dome is INDI')
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.signalDomeConnected.emit(0)
@@ -127,13 +130,16 @@ class Dome(PyQt5.QtCore.QObject):
         self.getData()
         while self.isRunning:
             if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                self.data['Connected'] = self.app.workerINDI.connected
+                if self.app.workerINDI.domeDevice != '':
+                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
+                else:
+                    self.data['Connected'] = False
             if self.data['Connected']:
+                self.signalDomeConnected.emit(3)
                 if not self.app.domeCommandQueue.empty():
                     command, value = self.app.domeCommandQueue.get()
                     if command == 'SlewAzimuth':
                         self.ascom.SlewToAzimuth(float(value))
-                    self.signalDomeConnected.emit(3)
             else:
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)

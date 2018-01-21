@@ -107,7 +107,10 @@ class Environment(PyQt5.QtCore.QObject):
             self.logger.info('Actual environment is ASCOM')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
             self.stopAscom()
-            self.data['Connected'] = self.app.workerINDI.data['Connected']
+            if self.app.workerINDI.weatherDevice != '':
+                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['CONNECTION']['CONNECT'] == 'On'
+            else:
+                self.data['Connected'] = False
             self.logger.info('Actual environment is INDI')
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
             self.signalEnvironmentConnected.emit(0)
@@ -123,7 +126,10 @@ class Environment(PyQt5.QtCore.QObject):
         self.getData()
         while self.isRunning:
             if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
-                self.data['Connected'] = self.app.workerINDI.data['Connected']
+                if self.app.workerINDI.weatherDevice != '':
+                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['CONNECTION']['CONNECT'] == 'On'
+                else:
+                    self.data['Connected'] = False
             if self.data['Connected']:
                 self.signalEnvironmentConnected.emit(3)
             else:

@@ -303,6 +303,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerINDI.statusFilter.connect(self.setINDIStatusFilter)
         self.workerINDI.statusTelescope.connect(self.setINDIStatusTelescope)
         self.workerINDI.statusWeather.connect(self.setINDIStatusWeather)
+        self.workerINDI.statusDome.connect(self.setINDIStatusDome)
 
     def workerINDIStop(self):
         self.threadINDI.quit()
@@ -953,6 +954,12 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.le_INDIStatusWeather.setStyleSheet('background-color: red;')
 
+    def setINDIStatusDome(self, status):
+        if status:
+            self.ui.le_INDIStatusDome.setStyleSheet('background-color: green;')
+        else:
+            self.ui.le_INDIStatusDome.setStyleSheet('background-color: red;')
+
     def fillINDIData(self, data):
         if data['Name'] == 'Telescope':
             self.ui.le_INDITelescope.setText(data['value'])
@@ -962,6 +969,8 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.le_INDIFilter.setText(data['value'])
         elif data['Name'] == 'Weather':
             self.ui.le_INDIWeather.setText(data['value'])
+        elif data['Name'] == 'Dome':
+            self.ui.le_INDIDome.setText(data['value'])
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
