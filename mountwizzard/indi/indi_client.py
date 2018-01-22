@@ -208,7 +208,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.statusDome.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
             else:
                 # if not ready, put it on the stack again !
-                print(device)
                 self.newDeviceQueue.put(device)
 
     def handleError(self, socketError):

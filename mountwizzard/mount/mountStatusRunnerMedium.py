@@ -110,7 +110,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     doRefractionUpdate = True
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
-            if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] not in ['READY - IDLE', 'DOWNLOADING']:
+            if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] == 'IDLE':
                 doRefractionUpdate = True
         if doRefractionUpdate:
             if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
