@@ -96,6 +96,8 @@ class ImagingApps:
             self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect()
         # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
+        view = PyQt5.QtWidgets.QListView()
+        self.app.ui.pd_chooseImaging.setView(view)
         if self.workerNoneCam.data['Camera']['AppAvailable']:
             self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['Camera']['AppName'])
         if self.workerINDICamera.data['Camera']['AppAvailable']:

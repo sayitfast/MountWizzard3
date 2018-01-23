@@ -13,6 +13,7 @@
 ############################################################
 import logging
 import time
+import PyQt5
 import requests
 import urllib
 from baseclasses import checkParamIP
@@ -47,21 +48,37 @@ class Relays:
         self.app.ui.relay8Text.textChanged.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
         self.app.ui.le_relayIP.textChanged.connect(self.setIP)
 
-    def initConfig(self):                                                                                                   # index 0 is first entry etc.
+    def initConfig(self):
+        view1 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay1Function.setView(view1)
         self.app.ui.relay1Function.addItem('Switch - Toggle')
         self.app.ui.relay1Function.addItem('Pulse 1 sec')
+        view2 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay2Function.setView(view2)
         self.app.ui.relay2Function.addItem('Switch - Toggle')
         self.app.ui.relay2Function.addItem('Pulse 1 sec')
+        view3 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay3Function.setView(view3)
         self.app.ui.relay3Function.addItem('Switch - Toggle')
         self.app.ui.relay3Function.addItem('Pulse 1 sec')
+        view4 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay4Function.setView(view4)
         self.app.ui.relay4Function.addItem('Switch - Toggle')
         self.app.ui.relay4Function.addItem('Pulse 1 sec')
+        view5 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay5Function.setView(view5)
         self.app.ui.relay5Function.addItem('Switch - Toggle')
         self.app.ui.relay5Function.addItem('Pulse 1 sec')
+        view6 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay6Function.setView(view6)
         self.app.ui.relay6Function.addItem('Switch - Toggle')
         self.app.ui.relay6Function.addItem('Pulse 1 sec')
+        view7 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay7Function.setView(view7)
         self.app.ui.relay7Function.addItem('Switch - Toggle')
         self.app.ui.relay7Function.addItem('Pulse 1 sec')
+        view8 = PyQt5.QtWidgets.QListView()
+        self.app.ui.relay8Function.setView(view8)
         self.app.ui.relay8Function.addItem('Switch - Toggle')
         self.app.ui.relay8Function.addItem('Pulse 1 sec')
         try:

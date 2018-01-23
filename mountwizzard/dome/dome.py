@@ -51,6 +51,8 @@ class Dome(PyQt5.QtCore.QObject):
             self.app.ui.pd_chooseDome.currentIndexChanged.disconnect()
         # first build the pull down menu
         self.app.ui.pd_chooseDome.clear()
+        view = PyQt5.QtWidgets.QListView()
+        self.app.ui.pd_chooseDome.setView(view)
         self.app.ui.pd_chooseDome.addItem('No Dome')
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseDome.addItem('ASCOM')

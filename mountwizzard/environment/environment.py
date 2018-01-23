@@ -48,6 +48,8 @@ class Environment(PyQt5.QtCore.QObject):
         if self.app.ui.pd_chooseEnvironment.receivers(self.app.ui.pd_chooseEnvironment.currentIndexChanged) > 0:
             self.app.ui.pd_chooseEnvironment.currentIndexChanged.disconnect()
         self.app.ui.pd_chooseEnvironment.clear()
+        view = PyQt5.QtWidgets.QListView()
+        self.app.ui.pd_chooseEnvironment.setView(view)
         self.app.ui.pd_chooseEnvironment.addItem('No Environment')
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseEnvironment.addItem('ASCOM')

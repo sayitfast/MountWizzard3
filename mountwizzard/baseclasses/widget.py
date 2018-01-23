@@ -281,15 +281,27 @@ class MwWidget(QWidget):
         width: 20px;
         height: 31px;
     }
-    QComboBox QAbstractItemView {
-        padding: 5px;
+
+     QComboBox QListView {
         border-width: 2px;
         border-style: outset;
         border-color: #404040;
         border-radius: 2px;
         color: #C0C0C0;
         background-color: #101010;
-        selection-background-color: rgb(32, 144, 192);
+    }
+    QComboBox QListView::item {
+        min-height: 28px;
+    }
+    QComboBox QListView::item:selected { 
+        border-width: 1px;
+        border-style: outset;
+        border-color: #404040;
+        border-radius: 2px; 
+        color: #101010;
+        background-color: rgb(32, 144, 192);
+    }
+    QComboBox QListView::item:!selected { 
     }
 
     /* lines */
