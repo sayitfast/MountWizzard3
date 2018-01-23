@@ -257,6 +257,7 @@ class MwWidget(QWidget):
     
     /* Combo Boxes */
     QComboBox {
+        combobox-popup: 0;
         text-align: right;
         color: #C0C0C0;
         border-color: #404040;
@@ -303,7 +304,11 @@ class MwWidget(QWidget):
     }
     QComboBox QListView::item:!selected { 
     }
-
+    QComboBox QListView::up-arrow:vertical, QComboBox QListView::down-arrow:vertical{
+        height: 0px;
+        width: 0px;
+    }
+    
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
         color: rgb(16, 72, 96);
@@ -320,6 +325,7 @@ class MwWidget(QWidget):
         border-style: outset;
     }
     QTabBar::tab {
+        align: left;
         background-color: #202020;
         color: #C0C0C0;
         border-width: 2px;

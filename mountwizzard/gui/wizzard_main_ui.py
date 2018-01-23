@@ -3456,7 +3456,7 @@ class Ui_MainWindow(object):
         self.settingsTabWidget.setStyleSheet("")
         self.settingsTabWidget.setTabPosition(QtWidgets.QTabWidget.North)
         self.settingsTabWidget.setTabShape(QtWidgets.QTabWidget.Rounded)
-        self.settingsTabWidget.setElideMode(QtCore.Qt.ElideMiddle)
+        self.settingsTabWidget.setElideMode(QtCore.Qt.ElideLeft)
         self.settingsTabWidget.setUsesScrollButtons(True)
         self.settingsTabWidget.setObjectName("settingsTabWidget")
         self.tab_12 = QtWidgets.QWidget()
@@ -5110,7 +5110,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.mainTabWidget.setCurrentIndex(9)
-        self.settingsTabWidget.setCurrentIndex(2)
+        self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
         MainWindow.setTabOrder(self.btn_mountBoot, self.btn_mountShutdown)
