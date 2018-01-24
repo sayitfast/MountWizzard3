@@ -181,7 +181,15 @@ class Environment(PyQt5.QtCore.QObject):
         PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
     def getINDIData(self):
-        pass
+        # check if client has device found
+        if self.app.workerINDI.weatherDevice != '':
+            # and device is connected
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['CONNECTION']['CONNECT'] == 'On':
+                # than get the data
+                self.data['DewPoint'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
+                self.data['Temperature'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_TEMPERATURE'])
+                self.data['Humidity'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_HUMIDITY'])
+                self.data['Pressure'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_BAROMETER'])
 
     # noinspection PyBroadException
     def getAscomData(self):
