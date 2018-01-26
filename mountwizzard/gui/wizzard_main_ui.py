@@ -1704,7 +1704,7 @@ class Ui_MainWindow(object):
         self.cameraExposure.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.cameraExposure.setDecimals(0)
         self.cameraExposure.setMinimum(1.0)
-        self.cameraExposure.setMaximum(10.0)
+        self.cameraExposure.setMaximum(300.0)
         self.cameraExposure.setSingleStep(1.0)
         self.cameraExposure.setProperty("value", 1.0)
         self.cameraExposure.setObjectName("cameraExposure")
@@ -5109,7 +5109,7 @@ class Ui_MainWindow(object):
         self.btn_INDIConnected.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(9)
+        self.mainTabWidget.setCurrentIndex(2)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)

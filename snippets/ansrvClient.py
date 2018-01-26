@@ -44,7 +44,7 @@ class RequestError(Exception):
 
 class Client(object):
 
-    default_url = 'http://127.0.0.1:8080/api/'
+    default_url = 'http://192.168.2.57:53475/api/'
 
     def __init__(self, apiurl=default_url):
         self.session = 123456

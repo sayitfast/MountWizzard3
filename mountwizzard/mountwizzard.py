@@ -1182,7 +1182,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0 alpha 1'
+    BUILD_NO = '3.0.0 alpha 2'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
@@ -1210,7 +1210,6 @@ if __name__ == "__main__":
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
         logging.info('Computer IP address: ' + host[i])
-
     # generating the necessary folders
     logging.info('working directory: {0}'.format(os.getcwd()))
     if not os.access(os.getcwd(), os.W_OK):

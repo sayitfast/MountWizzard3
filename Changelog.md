@@ -1,14 +1,12 @@
 3.0 todo
-- analyse window error by scaling: changed from polar
 - image window rework
-- environment on indi
-- dome on indi
-- enable / disable relay box make it work
-- loading horizon mask split load and keep data in memory
+- status after integrating until picture shown
 - edit model points (no real split between base and refine)
 - edit horizon mask
 - save model points
-- replace model plot with hemisphere
-- replace refinement model with full model
-- replace base model with alignment
-- dome and environment: selector in subroutine, on is ascom other is indi third is none
+- plate solver ansrv
+- simulator based on indi / ansrv in MW
+- modeling boost
+- refactor signal / slot for image taking and environment
+- check long variables
+- ascom camera and platesolver including

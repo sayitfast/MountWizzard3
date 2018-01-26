@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4647,7 +4647,7 @@ Window</string>
       <double>1.000000000000000</double>
      </property>
      <property name="maximum">
-      <double>10.000000000000000</double>
+      <double>300.000000000000000</double>
      </property>
      <property name="singleStep">
       <double>1.000000000000000</double>

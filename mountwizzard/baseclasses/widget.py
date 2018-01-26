@@ -13,6 +13,7 @@
 ############################################################
 import logging
 import os
+import platform
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
@@ -282,7 +283,6 @@ class MwWidget(QWidget):
         width: 20px;
         height: 31px;
     }
-
      QComboBox QListView {
         border-width: 2px;
         border-style: outset;
@@ -304,11 +304,7 @@ class MwWidget(QWidget):
     }
     QComboBox QListView::item:!selected { 
     }
-    QComboBox QListView::up-arrow:vertical, QComboBox QListView::down-arrow:vertical{
-        height: 0px;
-        width: 0px;
-    }
-    
+
     /* lines */
     QFrame[frameShape="4"] {/* horizontal lines */
         color: rgb(16, 72, 96);
@@ -325,7 +321,6 @@ class MwWidget(QWidget):
         border-style: outset;
     }
     QTabBar::tab {
-        align: left;
         background-color: #202020;
         color: #C0C0C0;
         border-width: 2px;
