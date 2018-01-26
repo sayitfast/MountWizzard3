@@ -75,6 +75,8 @@ class INDICamera(PyQt5.QtCore.QObject):
     def setStatus(self):
         # check if INDIClient is running and camera device is there
         if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
+            if self.app.workerINDI.astrometryDevice != '':
+                self.data['Solver'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.astrometryDevice])
             self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
             if 'CONNECTION' in self.data['Camera']:
                 if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
