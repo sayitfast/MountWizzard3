@@ -227,7 +227,7 @@ class ImagingApps:
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         return imageParams
 
-    def captureImage(self, imageParams):
+    def captureImage(self, imageParams, queue=True):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
@@ -239,7 +239,10 @@ class ImagingApps:
         RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
         DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
-        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        if queue:
+            self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        else:
+            imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
         imageParams['Message'] = ''
         imageParams['Success'] = False
         while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
@@ -282,13 +285,16 @@ class ImagingApps:
         imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
         return imageParams
 
-    def solveImage(self, imageParams):
+    def solveImage(self, imageParams, queue=True):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
 
         imageParams['UseFitsHeaders'] = True
-        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        if queue:
+            self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        else:
+            imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         imageParams['Message'] = ''
         imageParams['Success'] = False
         while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:

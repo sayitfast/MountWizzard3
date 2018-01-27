@@ -123,7 +123,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechLow(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(3, 99.9)
+        interval = AsymmetricPercentileInterval(25, 99.99)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -133,7 +133,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechMid(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(8, 99.8)
+        interval = AsymmetricPercentileInterval(25, 99.8)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -143,7 +143,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechHigh(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(24, 99.5)
+        interval = AsymmetricPercentileInterval(25, 99.5)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -221,7 +221,7 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
-        '''
+
         camData = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
@@ -245,7 +245,7 @@ class ImagesWindow(widget.MwWidget):
         '''
 
         self.showFitsImage('mountwizzard/astrometry/NGC7023.fit')
-
+        '''
 
     def exposeContinuous(self):
         pass
