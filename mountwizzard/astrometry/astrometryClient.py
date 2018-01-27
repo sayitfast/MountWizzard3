@@ -14,6 +14,8 @@
 import logging
 import requests
 import json
+import time
+import PyQt5
 import collections
 from astrometry.encode import MultipartEncoder
 import io
@@ -49,12 +51,15 @@ class AstrometryClient:
 
     def __init__(self, app):
         self.app = app
+        self.isRunning = False
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
-        self.urlAPI = '{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
+        self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
 
     def initConfig(self):
         try:
+            if 'CheckEnableAstrometry' in self.app.config:
+                self.app.ui.checkEnableAstrometry.setChecked(self.app.config['CheckEnableAstrometry'])
             if 'AstrometryServerPort' in self.app.config:
                 self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
             if 'AstrometryServerIP' in self.app.config:
@@ -71,10 +76,12 @@ class AstrometryClient:
         self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.imageWindow.ui.btn_solve.clicked.connect(self.solveImage)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
+        self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
 
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
@@ -93,38 +100,57 @@ class AstrometryClient:
         if valid:
             self.data['ServerIP'] = value
 
+    def login(self, apikey):
+        args = {'apikey': apikey }
+        result = self.send_request('login', args)
+        data = {'request-json': json}
+        headers = {}
+        result = requests.post(self.urlAPI + '/submissions/{0}'.format(sub_id), data=data, headers=headers)
+        stat = json.loads(result.text)
+        jobs = stat['jobs']
+        if not sess:
+            return
+        self.session = sess
+
+    def checkAstrometryServerRunning(self):
+        self.isRunning = True
+        return self.isRunning
+
     def solveImage(self, filename):
+        filename = 'mountwizzard/astrometry/NGC7023.fit'
+        if not self.isRunning:
+            return {}
         fields = collections.OrderedDict()
-        fields['request-json'] = (json.dumps(self.data), 'text/plain')
+        fields['request-json'] = (json.dumps(self.dataTest), 'text/plain')
         fields['file'] = (filename, open(filename, 'rb'), 'application/octet-stream')
         m = MultipartEncoder(fields)
         result = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
-        return json.loads(result.text)
+        result = json.loads(result.text)
+        stat = result['status']
+        if stat != 'success':
+            return {}
+        jobID = result['subid']
 
         while True:
             data = {'request-json': json}
             headers = {}
-            result = requests.post(self.urlAPI + '/submissions/{0}'.format(sub_id), data=data, headers=headers)
-            json.loads(result.text)
-            jobs = stat['jobs']
+            result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
+            result = json.loads(result.text)
+            jobs = result['jobs']
             if len(jobs) > 0:
                 break
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
         data = {'request-json': json}
         headers = {}
-        result = requests.post(self.urlAPI + '/jobs/{0}'.format(job_id), data=data, headers=headers)
+        result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
         result = json.loads(result.text)
         stat = result['status']
         if stat == 'success':
-            result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(job_id), data=data, headers=headers)
-            return json.loads(result.text)
+            result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
+            value = json.loads(result.text)
         else:
-            return {}
-
-
-
-if __name__ == '__main__':
-
-    c = AstrometryClient()
-    c.solveImage('NGC7023.fit')
-
+            value = {}
+        print(value)
+        return value

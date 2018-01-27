@@ -99,13 +99,9 @@ class INDICamera(PyQt5.QtCore.QObject):
             self.cameraStatus.emit('---')
             self.cameraExposureTime.emit('---')
 
-        # todo: check the ansrv availability
         if self.app.ui.checkEnableAstrometry.isChecked():
-            if 'CONNECTION' in self.data['Solver']:
-                if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
-                    self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
-                else:
-                    self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+            if self.solver.checkAstrometryServerRunning():
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
         else:
