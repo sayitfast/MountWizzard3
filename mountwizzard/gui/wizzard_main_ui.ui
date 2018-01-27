@@ -10617,7 +10617,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>200</y>
+         <y>165</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -10631,11 +10631,11 @@ Window</string>
         <string>CCD</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_INDIWeather">
+      <widget class="QLineEdit" name="le_INDIEnvironment">
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>260</y>
+         <y>190</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -10788,8 +10788,8 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>260</y>
-         <width>71</width>
+         <y>190</y>
+         <width>81</width>
          <height>21</height>
         </rect>
        </property>
@@ -10799,7 +10799,7 @@ Window</string>
         </font>
        </property>
        <property name="text">
-        <string>Weather</string>
+        <string>Environment</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_259">
@@ -10826,7 +10826,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>200</y>
+         <y>165</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -10883,66 +10883,6 @@ Window</string>
        </property>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_INDITelescope">
-       <property name="geometry">
-        <rect>
-         <x>480</x>
-         <y>170</y>
-         <width>221</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>---</string>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_149">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>170</y>
-         <width>71</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Telescope</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_mountIP_6">
@@ -11005,113 +10945,11 @@ Window</string>
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_INDIFilter">
-       <property name="geometry">
-        <rect>
-         <x>480</x>
-         <y>230</y>
-         <width>221</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>---</string>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_210">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>230</y>
-         <width>71</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Filter</string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_INDIStatusTelescope">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>170</y>
-         <width>21</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
       <widget class="QLineEdit" name="le_INDIStatusCCD">
        <property name="geometry">
         <rect>
          <x>710</x>
-         <y>200</y>
+         <y>165</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11149,53 +10987,11 @@ Window</string>
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_INDIStatusFilter">
+      <widget class="QLineEdit" name="le_INDIStatusEnvironment">
        <property name="geometry">
         <rect>
          <x>710</x>
-         <y>230</y>
-         <width>21</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Courier</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="maxLength">
-        <number>15</number>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_INDIStatusWeather">
-       <property name="geometry">
-        <rect>
-         <x>710</x>
-         <y>260</y>
+         <y>190</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11237,7 +11033,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>290</y>
+         <y>215</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -11255,7 +11051,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>290</y>
+         <y>215</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -11297,7 +11093,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>710</x>
-         <y>290</y>
+         <y>215</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11335,12 +11131,12 @@ Window</string>
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QLabel" name="label_212">
+      <widget class="QLabel" name="label_mountIP_7">
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>320</y>
-         <width>71</width>
+         <y>365</y>
+         <width>161</width>
          <height>21</height>
         </rect>
        </property>
@@ -11350,15 +11146,39 @@ Window</string>
         </font>
        </property>
        <property name="text">
-        <string>Astrometry</string>
+        <string>Port Number</string>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_INDIAstrometry">
+      <widget class="QCheckBox" name="checkEnableAstrometry">
        <property name="geometry">
         <rect>
-         <x>480</x>
-         <y>320</y>
-         <width>221</width>
+         <x>410</x>
+         <y>300</y>
+         <width>271</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Enable ASTROMETRY.NET Client running</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_AstrometryServerPort">
+       <property name="geometry">
+        <rect>
+         <x>670</x>
+         <y>360</y>
+         <width>61</width>
          <height>21</height>
         </rect>
        </property>
@@ -11377,16 +11197,19 @@ Window</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Port address of INDI server&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
+       <property name="inputMask">
+        <string>99999</string>
+       </property>
        <property name="text">
-        <string>---</string>
+        <string>7624</string>
        </property>
        <property name="maxLength">
-        <number>15</number>
+        <number>5</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -11395,12 +11218,71 @@ Window</string>
         <bool>false</bool>
        </property>
       </widget>
-      <widget class="QLineEdit" name="le_INDIStatusAstrometry">
+      <widget class="QLabel" name="label_260">
        <property name="geometry">
         <rect>
-         <x>710</x>
-         <y>320</y>
-         <width>21</width>
+         <x>400</x>
+         <y>270</y>
+         <width>241</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Configuration of ASTROMETRY.NET</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_79">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>290</y>
+         <width>341</width>
+         <height>1</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_mountIP_4">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>330</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>IP Address</string>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_AstrometryServerIP">
+       <property name="geometry">
+        <rect>
+         <x>600</x>
+         <y>330</y>
+         <width>131</width>
          <height>21</height>
         </rect>
        </property>
@@ -11419,13 +11301,13 @@ Window</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string/>
+        <string>127.0.0.1</string>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -13999,7 +13881,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>300</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14023,7 +13905,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>160</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14074,7 +13956,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>230</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14122,7 +14004,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>370</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14319,7 +14201,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>90</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14477,9 +14359,8 @@ Window</string>
   <tabstop>le_INDIServerIP</tabstop>
   <tabstop>le_INDIServerPort</tabstop>
   <tabstop>le_INDIStatus</tabstop>
-  <tabstop>le_INDITelescope</tabstop>
   <tabstop>le_INDICCD</tabstop>
-  <tabstop>le_INDIWeather</tabstop>
+  <tabstop>le_INDIEnvironment</tabstop>
   <tabstop>le_parkPos1Text</tabstop>
   <tabstop>le_azParkPos1</tabstop>
   <tabstop>le_altParkPos1</tabstop>

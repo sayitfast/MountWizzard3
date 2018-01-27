@@ -132,7 +132,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.getData()
         while self.isRunning:
             if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                if self.app.workerINDI.domeDevice != '':
+                if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
                     self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
                 else:
                     self.data['Connected'] = False
@@ -146,7 +146,10 @@ class Dome(PyQt5.QtCore.QObject):
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)
                 else:
-                    self.signalDomeConnected.emit(1)
+                    if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':
+                        self.signalDomeConnected.emit(2)
+                    else:
+                        self.signalDomeConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':

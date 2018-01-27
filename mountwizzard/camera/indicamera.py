@@ -15,6 +15,7 @@ import logging
 import PyQt5
 import time
 import indi.indi_xml as indiXML
+from astrometry import astrometryClient
 
 
 class INDICamera(PyQt5.QtCore.QObject):
@@ -30,6 +31,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.app = app
         self.commandQueue = commandQueue
         self.data = {}
+        self.solver = astrometryClient.AstrometryClient()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         if 'Camera' not in self.data:
@@ -75,8 +77,6 @@ class INDICamera(PyQt5.QtCore.QObject):
     def setStatus(self):
         # check if INDIClient is running and camera device is there
         if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
-            if self.app.workerINDI.astrometryDevice != '':
-                self.data['Solver'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.astrometryDevice])
             self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
             if 'CONNECTION' in self.data['Camera']:
                 if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
@@ -95,19 +95,21 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.cameraStatus.emit(self.data['Camera']['Status'])
                 self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
+            self.app.workerModelingDispatcher.signalStatusCamera.emit(1)
             self.cameraStatus.emit('---')
             self.cameraExposureTime.emit('---')
 
         # todo: check the ansrv availability
-        if self.app.workerINDI.isRunning:
+        if self.app.ui.checkEnableAstrometry.isChecked():
             if 'CONNECTION' in self.data['Solver']:
                 if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
                 else:
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
             else:
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
+        else:
+            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
@@ -164,6 +166,12 @@ class INDICamera(PyQt5.QtCore.QObject):
 
     @staticmethod
     def solveImage(imageParams):
+        if self.app.workerINDI.astrometryDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.astrometryDevice]['CONNECTION']['CONNECT'] == 'On':
+                self.app.INDICommandQueue.put(
+                    indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
+                                            indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
+
         return imageParams
 
     def connectCamera(self):

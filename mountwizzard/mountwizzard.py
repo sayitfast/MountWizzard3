@@ -300,11 +300,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
-        self.workerINDI.statusFilter.connect(self.setINDIStatusFilter)
-        self.workerINDI.statusTelescope.connect(self.setINDIStatusTelescope)
-        self.workerINDI.statusWeather.connect(self.setINDIStatusWeather)
+        self.workerINDI.statusEnvironment.connect(self.setINDIStatusEnvironment)
         self.workerINDI.statusDome.connect(self.setINDIStatusDome)
-        self.workerINDI.statusAstrometry.connect(self.setINDIStatusAstrometry)
 
     def workerINDIStop(self):
         self.threadINDI.quit()
@@ -937,23 +934,11 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.le_INDIStatusCCD.setStyleSheet('background-color: red;')
 
-    def setINDIStatusFilter(self, status):
+    def setINDIStatusEnvironment(self, status):
         if status:
-            self.ui.le_INDIStatusFilter.setStyleSheet('background-color: green;')
+            self.ui.le_INDIStatusEnvironment.setStyleSheet('background-color: green;')
         else:
-            self.ui.le_INDIStatusFilter.setStyleSheet('background-color: red;')
-
-    def setINDIStatusTelescope(self, status):
-        if status:
-            self.ui.le_INDIStatusTelescope.setStyleSheet('background-color: green;')
-        else:
-            self.ui.le_INDIStatusTelescope.setStyleSheet('background-color: red;')
-
-    def setINDIStatusWeather(self, status):
-        if status:
-            self.ui.le_INDIStatusWeather.setStyleSheet('background-color: green;')
-        else:
-            self.ui.le_INDIStatusWeather.setStyleSheet('background-color: red;')
+            self.ui.le_INDIStatusEnvironment.setStyleSheet('background-color: red;')
 
     def setINDIStatusDome(self, status):
         if status:
@@ -961,25 +946,13 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.le_INDIStatusDome.setStyleSheet('background-color: red;')
 
-    def setINDIStatusAstrometry(self, status):
-        if status:
-            self.ui.le_INDIStatusAstrometry.setStyleSheet('background-color: green;')
-        else:
-            self.ui.le_INDIStatusAstrometry.setStyleSheet('background-color: red;')
-
     def fillINDIData(self, data):
-        if data['Name'] == 'Telescope':
-            self.ui.le_INDITelescope.setText(data['value'])
-        elif data['Name'] == 'CCD':
+        if data['Name'] == 'CCD':
             self.ui.le_INDICCD.setText(data['value'])
-        elif data['Name'] == 'Filter':
-            self.ui.le_INDIFilter.setText(data['value'])
-        elif data['Name'] == 'Weather':
-            self.ui.le_INDIWeather.setText(data['value'])
+        elif data['Name'] == 'Environment':
+            self.ui.le_INDIEnvironment.setText(data['value'])
         elif data['Name'] == 'Dome':
             self.ui.le_INDIDome.setText(data['value'])
-        elif data['Name'] == 'Astrometry':
-            self.ui.le_INDIAstrometry.setText(data['value'])
         elif data['Name'] == 'CameraStatus':
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 

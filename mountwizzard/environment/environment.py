@@ -109,8 +109,8 @@ class Environment(PyQt5.QtCore.QObject):
             self.logger.info('Actual environment is ASCOM')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
             self.stopAscom()
-            if self.app.workerINDI.weatherDevice != '':
-                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['CONNECTION']['CONNECT'] == 'On'
+            if self.app.workerINDI.environmentDevice != '':
+                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
             else:
                 self.data['Connected'] = False
             self.logger.info('Actual environment is INDI')
@@ -128,8 +128,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.getData()
         while self.isRunning:
             if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
-                if self.app.workerINDI.weatherDevice != '':
-                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['CONNECTION']['CONNECT'] == 'On'
+                if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
+                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
                 else:
                     self.data['Connected'] = False
             if self.data['Connected']:
@@ -138,7 +138,10 @@ class Environment(PyQt5.QtCore.QObject):
                 if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
                     self.signalEnvironmentConnected.emit(0)
                 else:
-                    self.signalEnvironmentConnected.emit(1)
+                    if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI') and self.app.workerINDI.environmentDevice != '':
+                        self.signalEnvironmentConnected.emit(2)
+                    else:
+                        self.signalEnvironmentConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':
@@ -182,14 +185,14 @@ class Environment(PyQt5.QtCore.QObject):
 
     def getINDIData(self):
         # check if client has device found
-        if self.app.workerINDI.weatherDevice != '':
+        if self.app.workerINDI.environmentDevice != '':
             # and device is connected
-            if self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['CONNECTION']['CONNECT'] == 'On':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
-                self.data['DewPoint'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
-                self.data['Temperature'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_TEMPERATURE'])
-                self.data['Humidity'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_HUMIDITY'])
-                self.data['Pressure'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.weatherDevice]['WEATHER_PARAMETERS']['WEATHER_BAROMETER'])
+                self.data['DewPoint'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
+                self.data['Temperature'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_TEMPERATURE'])
+                self.data['Humidity'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_HUMIDITY'])
+                self.data['Pressure'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_BAROMETER'])
 
     # noinspection PyBroadException
     def getAscomData(self):

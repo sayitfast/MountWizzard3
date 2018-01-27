@@ -30,11 +30,8 @@ class INDIClient(PyQt5.QtCore.QObject):
     imageReceived = QtCore.pyqtSignal(str)
     status = QtCore.pyqtSignal(int)
     statusCCD = QtCore.pyqtSignal(bool)
-    statusFilter = QtCore.pyqtSignal(bool)
-    statusTelescope = QtCore.pyqtSignal(bool)
-    statusWeather = QtCore.pyqtSignal(bool)
+    statusEnvironment = QtCore.pyqtSignal(bool)
     statusDome = QtCore.pyqtSignal(bool)
-    statusAstrometry = QtCore.pyqtSignal(bool)
     processMessage = QtCore.pyqtSignal(object)
 
     # INDI device types
@@ -75,9 +72,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.imagePath = ''
         self.messageString = ''
         self.cameraDevice = ''
-        self.weatherDevice = ''
+        self.environmentDevice = ''
         self.domeDevice = ''
-        self.astrometryDevice = ''
 
     def initConfig(self):
         try:
@@ -194,21 +190,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDICommandQueue.put(
                         indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'ABORT'})],
                                                 indi_attr={'name': 'CCD_ABORT_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
-                    # make a shortcut for later use
-                    self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
-                    # make a shortcut for later use
-                    self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     # make a shortcut for later use
-                    self.weatherDevice = device
-                    self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) == self.GENERAL_INTERFACE:
-                    if device == 'Astrometry':
-                        # make a shortcut for later use
-                        self.astrometryDevice = device
-                        self.statusAstrometry.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                    self.environmentDevice = device
+                    self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                     # make a shortcut for later use
                     self.domeDevice = device
@@ -228,21 +213,14 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.data['Connected'] = False
         self.data['Device'] = {}
         self.cameraDevice = ''
-        self.weatherDevice = ''
+        self.environmentDevice = ''
         self.domeDevice = ''
-        self.astrometryDevice = ''
         self.statusCCD.emit(False)
-        self.statusFilter.emit(False)
-        self.statusTelescope.emit(False)
-        self.statusWeather.emit(False)
+        self.statusEnvironment.emit(False)
         self.statusDome.emit(False)
-        self.statusAstrometry.emit(False)
-        self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': '---'})
+        self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
-        self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': '---'})
-        self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': '---'})
-        self.app.INDIStatusQueue.put({'Name': 'Astrometry', 'value': '---'})
 
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
@@ -322,22 +300,12 @@ class INDIClient(PyQt5.QtCore.QObject):
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
                     self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'Telescope', 'value': device})
-                    self.statusTelescope.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.FILTER_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'Filter', 'value': device})
-                    self.statusFilter.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
-                    self.app.INDIStatusQueue.put({'Name': 'Weather', 'value': device})
-                    self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                    self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': device})
+                    self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': device})
-                    self.statusWeather.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) == self.GENERAL_INTERFACE:
-                    if device == 'Astrometry':
-                        self.app.INDIStatusQueue.put({'Name': 'Astrometry', 'value': device})
-                        self.statusAstrometry.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                    self.statusDome.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
