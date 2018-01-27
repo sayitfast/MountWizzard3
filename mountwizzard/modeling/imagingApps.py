@@ -239,6 +239,8 @@ class ImagingApps:
         RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
         DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
+        # using a queue if the calling thread is gui -> no wait
+        # if it is done through modeling -> separate thread which is calling
         if queue:
             self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         else:
@@ -248,7 +250,6 @@ class ImagingApps:
         while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-
         if imageParams['Success']:
             self.logger.info('Imaging parameters: {0}'.format(imageParams))
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
@@ -289,8 +290,9 @@ class ImagingApps:
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
-
         imageParams['UseFitsHeaders'] = True
+        # using a queue if the calling thread is gui -> no wait
+        # if it is done through modeling -> separate thread which is calling
         if queue:
             self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         else:
