@@ -31,7 +31,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.app = app
         self.commandQueue = commandQueue
         self.data = {}
-        self.solver = astrometryClient.AstrometryClient()
+        self.solver = astrometryClient.AstrometryClient(self.app)
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         if 'Camera' not in self.data:

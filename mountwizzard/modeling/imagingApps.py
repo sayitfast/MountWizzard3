@@ -121,9 +121,11 @@ class ImagingApps:
         # connect change in imaging app to the subroutine of setting it up
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
         self.chooseImaging()
+        self.workerINDICamera.solver.initConfig()
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
+        self.workerINDICamera.solver.storeConfig()
 
     def workerNoneCamStop(self):
         self.threadNoneCam.quit()

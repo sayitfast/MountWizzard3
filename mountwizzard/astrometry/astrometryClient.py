@@ -49,8 +49,9 @@ class AstrometryClient:
 
     def __init__(self, app):
         self.app = app
+        self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
-        self.urlAPI = '{0}:{1}/api'.format(self.data[ServerIP], self.data[ServerPort])
+        self.urlAPI = '{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
 
     def initConfig(self):
         try:
@@ -70,7 +71,6 @@ class AstrometryClient:
         self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.status.emit(0)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
