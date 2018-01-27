@@ -239,12 +239,10 @@ class ImagingApps:
         RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
         DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
-        # todo: indiclient image transfer
-        self.app.workerINDI.receivedImage = False
-
         self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         imageParams['Message'] = ''
-        while imageParams['Message'] == '':
+        imageParams['Success'] = False
+        while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -290,6 +288,13 @@ class ImagingApps:
             return
 
         imageParams['UseFitsHeaders'] = True
+        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        imageParams['Message'] = ''
+        imageParams['Success'] = False
+        while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
         imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         if imageParams['Success']:

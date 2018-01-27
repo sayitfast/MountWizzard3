@@ -17,7 +17,7 @@ import json
 import time
 import PyQt5
 import collections
-from astrometry.encode import MultipartEncoder
+from requests_toolbelt import MultipartEncoder
 import io
 import sys
 from baseclasses import checkParamIP
@@ -26,22 +26,22 @@ from baseclasses import checkParamIP
 class AstrometryClient:
     logger = logging.getLogger(__name__)
 
-    dataTest = {'session': 12345,
-                'allow_commercial_use': 'd',
-                'allow_modifications': 'd',
-                'publicly_visible': 'n',
-                'scale_units': 'arcsecperpix',
-                'scale_type': 'ev',
-                'scale_est': 1.3,
-                'scale_err': 20,
-                'center_ra': 315,
-                'center_dec': 68,
-                # 'radius': float,
-                # 'downsample_factor': 2,
-                # 'use_sextractor': False,
-                # 'crpix_center': False,
-                # 'parity': 2
-                }
+    solveData = {'session': 12345,
+                 'allow_commercial_use': 'd',
+                 'allow_modifications': 'd',
+                 'publicly_visible': 'n',
+                 'scale_units': 'arcsecperpix',
+                 'scale_type': 'ev',
+                 'scale_est': 1.3,
+                 'scale_err': 20,
+                 'center_ra': 315,
+                 'center_dec': 68,
+                 # 'radius': float,
+                 # 'downsample_factor': 2,
+                 # 'use_sextractor': False,
+                 # 'crpix_center': False,
+                 # 'parity': 2
+                 }
 
     data = {
         'ServerIP': '192.168.2.161',
@@ -52,6 +52,7 @@ class AstrometryClient:
     def __init__(self, app):
         self.app = app
         self.isRunning = False
+        self.isSolving = False
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
         self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
@@ -76,7 +77,6 @@ class AstrometryClient:
         self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.imageWindow.ui.btn_solve.clicked.connect(self.solveImage)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
@@ -103,7 +103,7 @@ class AstrometryClient:
     def login(self, apikey):
         args = {'apikey': apikey }
         result = self.send_request('login', args)
-        data = {'request-json': json}
+        data = {'request-json': ''}
         headers = {}
         result = requests.post(self.urlAPI + '/submissions/{0}'.format(sub_id), data=data, headers=headers)
         stat = json.loads(result.text)
@@ -113,26 +113,44 @@ class AstrometryClient:
         self.session = sess
 
     def checkAstrometryServerRunning(self):
-        self.isRunning = True
-        return self.isRunning
+        jobID = 12345
+        data = {'request-json': ''}
+        headers = {}
+        result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
+        result = json.loads(result.text)
+        if 'jobs' in result:
+            self.isRunning = True
+            if self.isSolving:
+                return 1
+            else:
+            # free to get ome solving part
+                return 2
+        else:
+            self.isRunning = False
+            return 0
 
-    def solveImage(self, filename):
-        filename = 'mountwizzard/astrometry/NGC7023.fit'
+    def solveImage(self, filename, ra, dec, scale):
         if not self.isRunning:
             return {}
+        self.isSolving = True
+        data = self.solveData
+        data['scale_est'] = scale
+        data['center_ra'] = ra
+        data['center_dec'] = dec
         fields = collections.OrderedDict()
-        fields['request-json'] = (json.dumps(self.dataTest), 'text/plain')
+        fields['request-json'] = json.dumps(data)
         fields['file'] = (filename, open(filename, 'rb'), 'application/octet-stream')
         m = MultipartEncoder(fields)
         result = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
         result = json.loads(result.text)
         stat = result['status']
         if stat != 'success':
+            self.isSolving = False
             return {}
         jobID = result['subid']
 
-        while True:
-            data = {'request-json': json}
+        while self.app.workerModelingDispatcher.isRunning:
+            data = {'request-json': ''}
             headers = {}
             result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
             result = json.loads(result.text)
@@ -142,7 +160,7 @@ class AstrometryClient:
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
 
-        data = {'request-json': json}
+        data = {'request-json': ''}
         headers = {}
         result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
         result = json.loads(result.text)
@@ -152,5 +170,5 @@ class AstrometryClient:
             value = json.loads(result.text)
         else:
             value = {}
-        print(value)
+        self.isSolving = False
         return value

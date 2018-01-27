@@ -1,0 +1,40 @@
+@startuml
+
+package "MountWizzard" {
+[WorkerINDI]
+[WorkerEnvironment]
+[WorkerDome]
+[WorkerRemote]
+[WorkerUpload]
+[ModelingDispatcher]
+[MountDispatcher]
+}
+
+package "Mount" {
+[MountDispatcher] ---> [WorkerMountCommandRunner]
+[MountDispatcher] ---> [WorkerMountGetAlignmentModel]
+[MountDispatcher] ---> [WorkerMountStatusRunnerFast]
+[MountDispatcher] ---> [WorkerMountStatusRunnerMedium]
+[MountDispatcher] ---> [WorkerMountStatusRunnerSlow]
+[MountDispatcher] ---> [WorkerMountStatusRunnerOnce]
+}
+
+package "Modeling"{
+[ModelingDispatcher] -> [ModelingRunner]
+[ModelingRunner] ---> [ImagingApps]
+[ModelingRunner] ---> [Analyse]
+[ModelingRunner] ---> [ModelPoints]
+[ModelingRunner] ---> [WorkerSlewPoint]
+[ModelingRunner] ---> [WorkerImage]
+[ModelingRunner] ---> [WorkerPlateSolve]
+}
+
+package "Camera"{
+[ImagingApps] ---> [WorkerTheSkyX]
+[ImagingApps] ---> [WorkerNoneCam]
+[ImagingApps] ---> [WorkerINDICamera]
+[ImagingApps] ---> [WorkerMaximDL]
+[ImagingApps] ---> [WorkerSGPro]
+}
+
+@enduml

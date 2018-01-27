@@ -33,6 +33,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data = {}
         self.solver = astrometryClient.AstrometryClient(self.app)
         self.isRunning = False
+        self.counter = 0
         self._mutex = PyQt5.QtCore.QMutex()
         if 'Camera' not in self.data:
             self.data['Camera'] = {}
@@ -61,6 +62,7 @@ class INDICamera(PyQt5.QtCore.QObject):
             if not self.commandQueue.empty():
                 command = self.commandQueue.get()
                 if command['Command'] == 'GetImage':
+                    self.app.workerINDI.receivedImage = False
                     command['ImageParams'] = self.getImage(command['ImageParams'])
                 elif command['Command'] == 'SolveImage':
                     command['ImageParams'] = self.solveImage(command['ImageParams'])
@@ -99,13 +101,19 @@ class INDICamera(PyQt5.QtCore.QObject):
             self.cameraStatus.emit('---')
             self.cameraExposureTime.emit('---')
 
-        if self.app.ui.checkEnableAstrometry.isChecked():
-            if self.solver.checkAstrometryServerRunning():
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+        # reduced status speed for astrometry
+        self.counter += 1
+        if self.counter % 5 == 0:
+            if self.app.ui.checkEnableAstrometry.isChecked():
+                self.data['Solver']['Status'] = self.solver.checkAstrometryServerRunning()
+                if self.data['Solver']['Status'] == 2:
+                    self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+                elif self.data['Solver']['Status'] == 1:
+                    self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+                elif self.data['Solver']['Status'] == 0:
+                    self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
             else:
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
-        else:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
+                self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
@@ -142,13 +150,7 @@ class INDICamera(PyQt5.QtCore.QObject):
                     indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
                                             indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
                 # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
-                while not self.app.workerINDI.receivedImage:
-                    if not self.commandQueue.empty():
-                        command = self.ommandQueue.get()
-                        if command['Command'] == 'GetImage':
-                            command['ImageParams'] = self.getImage(command['ImageParams'])
-                        elif command['Command'] == 'SolveImage':
-                            command['ImageParams'] = self.solveImage(command['ImageParams'])
+                while not self.app.workerINDI.receivedImage and self.app.workerModelingDispatcher.isRunning:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath
@@ -160,19 +162,31 @@ class INDICamera(PyQt5.QtCore.QObject):
             imageParams['Message'] = 'No Picture Taken'
         return imageParams
 
-    @staticmethod
-    def solveImage(imageParams):
-        if self.app.workerINDI.astrometryDevice != '':
-            if self.app.workerINDI.data['Device'][self.app.workerINDI.astrometryDevice]['CONNECTION']['CONNECT'] == 'On':
-                self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
-                                            indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
-
+    def solveImage(self, imageParams):
+        if 'Imagepath' not in imageParams:
+            imageParams['Success'] = False
+            imageParams['Message'] = 'No Imagepath'
+            return imageParams
+        if self.app.ui.checkEnableAstrometry.isChecked():
+            if self.data['Solver']['Status'] == 2:
+                result = self.solver.solveImage(imageParams['Imagepath'], imageParams['RaJ2000'], imageParams['DecJ2000'], imageParams['ScaleHint'])
+                if result:
+                    imageParams['RaJ2000Solved'] = result['ra']
+                    imageParams['DecJ2000Solved'] = result['dec']
+                    imageParams['Angle'] = result['orientation']
+                    imageParams['Scale'] = result['pixscale']
+                    imageParams['Success'] = True
+                    imageParams['Message'] = 'Solved'
+                else:
+                    imageParams['Success'] = False
+                    imageParams['Message'] = 'Solve failed'
+            else:
+                self.logger.error('There is a solving process already running')
         return imageParams
 
     def connectCamera(self):
         if self.app.workerINDI.cameraDevice != '':
-           if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'Off':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'Off':
                 self.app.INDISendCommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.cameraDevice}))
 
     def disconnectCamera(self):

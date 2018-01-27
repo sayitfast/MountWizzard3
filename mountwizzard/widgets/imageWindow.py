@@ -16,6 +16,7 @@ import os
 import time
 import numpy
 import astropy.io.fits as pyfits
+from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPercentileInterval, PowerStretch
 from matplotlib import use
 from baseclasses import widget
 from gui import image_dialog_ui
@@ -121,37 +122,34 @@ class ImagesWindow(widget.MwWidget):
             self.strechHigh()
 
     def strechLow(self):
-        image_new = self.loggray(self.image)
-        self.imageVmin = numpy.min(image_new)
-        self.imageVmax = numpy.max(image_new)
-        self.imageMatplotlib.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
+        # Create interval object
+        interval = AsymmetricPercentileInterval(3, 99.9)
+        vmin, vmax = interval.get_limits(self.image)
+        # Create an ImageNormalize object using a LogStrech object
+        norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
+        # Display the image
+        self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
         self.imageMatplotlib.draw()
 
     def strechMid(self):
-        image_new = self.loggray(self.image, a=numpy.min(self.image) * 1.25, b=numpy.max(self.image) * 0.8)
-        self.imageVmin = numpy.min(image_new)
-        self.imageVmax = numpy.max(image_new)
-        self.imageMatplotlib.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
+        # Create interval object
+        interval = AsymmetricPercentileInterval(8, 99.8)
+        vmin, vmax = interval.get_limits(self.image)
+        # Create an ImageNormalize object using a LogStrech object
+        norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
+        # Display the image
+        self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
         self.imageMatplotlib.draw()
 
     def strechHigh(self):
-        image_new = self.loggray(self.image, a=numpy.min(self.image) * 1.5, b=numpy.max(self.image) * 0.66)
-        self.imageVmin = numpy.min(image_new)
-        self.imageVmax = numpy.max(image_new)
-        self.imageMatplotlib.axes.imshow(image_new, cmap=self.cmapColor, vmin=self.imageVmin, vmax=self.imageVmax)
+        # Create interval object
+        interval = AsymmetricPercentileInterval(24, 99.5)
+        vmin, vmax = interval.get_limits(self.image)
+        # Create an ImageNormalize object using a LogStrech object
+        norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
+        # Display the image
+        self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
         self.imageMatplotlib.draw()
-
-    def loggray(self, x, a=None, b=None):
-        """
-        Auxiliary function that specifies the logarithmic gray scale.
-        a and b are the cutoffs : if not specified, min and max are used
-        """
-        if not a:
-            a = numpy.min(x)
-        if not b:
-            b = numpy.max(x)
-        linval = 10.0 + 990.0 * (x - float(a)) / (b - a)
-        return (numpy.log10(linval) - 1.0) * 0.5 * 255.0
 
     def setZoom(self):
         if self.ui.btn_size25.isChecked():
@@ -223,13 +221,14 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
+        '''
         camData = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
-        imageParams['RaJ2000'] = 0
-        imageParams['DecJ2000'] = 0
+        imageParams['RaJ2000'] = 4.5
+        imageParams['DecJ2000'] = 16
         if not os.path.isdir(imageParams['BaseDirImages']):
             os.makedirs(imageParams['BaseDirImages'])
         number = 0
@@ -240,7 +239,13 @@ class ImagesWindow(widget.MwWidget):
         if imageParams['Success']:
             self.showFitsImage(imageParams['Imagepath'])
         #imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams)
-        #print(imageParams['Message'])
+        #if imageParams['Success']:
+        #    print(imageParams['Message'])
+        #    print(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'])
+        '''
+
+        self.showFitsImage('mountwizzard/astrometry/NGC7023.fit')
+
 
     def exposeContinuous(self):
         pass
