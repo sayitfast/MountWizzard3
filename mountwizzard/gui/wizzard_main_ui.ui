@@ -7443,8 +7443,8 @@ Window</string>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>610</x>
-       <y>50</y>
+       <x>600</x>
+       <y>85</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -7463,7 +7463,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>85</y>
-       <width>131</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -7478,7 +7478,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>51</y>
+       <y>85</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7588,7 +7588,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>50</y>
-       <width>131</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -7973,7 +7973,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>120</y>
-       <width>131</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -7987,8 +7987,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorRMS2">
      <property name="geometry">
       <rect>
-       <x>700</x>
-       <y>85</y>
+       <x>715</x>
+       <y>120</y>
        <width>36</width>
        <height>26</height>
       </rect>
@@ -8029,8 +8029,8 @@ Window</string>
     <widget class="QLabel" name="label_75">
      <property name="geometry">
       <rect>
-       <x>610</x>
-       <y>85</y>
+       <x>595</x>
+       <y>120</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -8049,7 +8049,7 @@ Window</string>
       <rect>
        <x>460</x>
        <y>155</y>
-       <width>131</width>
+       <width>121</width>
        <height>26</height>
       </rect>
      </property>
@@ -8063,8 +8063,8 @@ Window</string>
     <widget class="QLineEdit" name="le_alignNumberStars2">
      <property name="geometry">
       <rect>
-       <x>700</x>
-       <y>120</y>
+       <x>715</x>
+       <y>155</y>
        <width>36</width>
        <height>26</height>
       </rect>
@@ -8105,9 +8105,9 @@ Window</string>
     <widget class="QLabel" name="label_76">
      <property name="geometry">
       <rect>
-       <x>610</x>
-       <y>120</y>
-       <width>81</width>
+       <x>680</x>
+       <y>155</y>
+       <width>36</width>
        <height>26</height>
       </rect>
      </property>
@@ -8117,13 +8117,13 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Number Stars</string>
+      <string>Stars</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignNumberTerms2">
      <property name="geometry">
       <rect>
-       <x>700</x>
+       <x>635</x>
        <y>155</y>
        <width>36</width>
        <height>26</height>
@@ -8165,9 +8165,9 @@ Window</string>
     <widget class="QLabel" name="label_209">
      <property name="geometry">
       <rect>
-       <x>610</x>
+       <x>595</x>
        <y>155</y>
-       <width>86</width>
+       <width>41</width>
        <height>26</height>
       </rect>
      </property>
@@ -8177,7 +8177,23 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Number Terms</string>
+      <string>Terms</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_reloadAlignmentModel">
+     <property name="geometry">
+      <rect>
+       <x>595</x>
+       <y>50</y>
+       <width>156</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the alignment model in mount. Can't be revised.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Reload Mount Model</string>
      </property>
     </widget>
     <zorder>line_18</zorder>
@@ -8216,6 +8232,7 @@ Window</string>
     <zorder>label_76</zorder>
     <zorder>le_alignNumberTerms2</zorder>
     <zorder>label_209</zorder>
+    <zorder>btn_reloadAlignmentModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
@@ -9448,6 +9465,16 @@ Window</string>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+    <widget class="QListView" name="listView">
+     <property name="geometry">
+      <rect>
+       <x>220</x>
+       <y>40</y>
+       <width>256</width>
+       <height>192</height>
+      </rect>
      </property>
     </widget>
    </widget>

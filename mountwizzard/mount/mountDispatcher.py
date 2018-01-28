@@ -151,6 +151,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
+            'ReloadAlignmentModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_reloadAlignmentModel,
+                            'Method': self.reloadAlignmentModel,
+                        }
+                    ]
+                },
             'SaveBackupModel':
                 {
                     'Worker': [
@@ -373,17 +382,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def run(self):
         if not self.isRunning:
             self.isRunning = True
-        self.threadMountStatusRunnerOnce.start()
-        self.threadMountStatusRunnerSlow.start()
-        self.threadMountStatusRunnerMedium.start()
-        self.threadMountStatusRunnerFast.start()
-        self.threadMountCommandRunner.start()
-        self.threadMountGetAlignmentModel.start()
-
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcher('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcher('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcher('DeleteWorstPoint'))
         self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcher('FLIP'))
+        self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ReloadAlignmentModel'))
         self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcher('SaveBackupModel'))
         self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcher('LoadBackupModel'))
         self.app.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandDispatcher('SaveSimpleModel'))
@@ -398,6 +401,13 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcher('Shutdown'))
         self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlign'))
+
+        self.threadMountStatusRunnerOnce.start()
+        self.threadMountStatusRunnerSlow.start()
+        self.threadMountStatusRunnerMedium.start()
+        self.threadMountStatusRunnerFast.start()
+        self.threadMountCommandRunner.start()
+        self.threadMountGetAlignmentModel.start()
         while self.isRunning:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -547,6 +557,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         else:
             self.app.messageQueue.put('#BWTarget RMS Run finished\n')
         self.runTargetRMS = False
+
+    def reloadAlignmentModel(self):
+        self.workerMountGetAlignmentModel.getAlignmentModel()
+        # wait form alignment model to be downloaded
+        while self.data['ModelLoading']:
+            time.sleep(0.2)
 
     def cancelRunTargetRMSFunction(self):
         if self.runTargetRMS:
