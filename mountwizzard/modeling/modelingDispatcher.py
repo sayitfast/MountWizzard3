@@ -20,7 +20,6 @@ from modeling import modelingRunner
 
 class ModelingDispatcher(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
 
     signalStatusCamera = PyQt5.QtCore.pyqtSignal(int)
     signalStatusSolver = PyQt5.QtCore.pyqtSignal(int)
@@ -28,12 +27,13 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 5000
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         # make main sources available
         self.app = app
+        self.thread = thread
         self.modelingRunner = modelingRunner.ModelingRunner(self.app)
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
@@ -253,7 +253,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.finished.emit()
+        self.thread.quit()
+        self.thread.wait()
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

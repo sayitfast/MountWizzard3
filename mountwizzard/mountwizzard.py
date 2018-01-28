@@ -113,61 +113,54 @@ class MountWizzardApp(widget.MwWidget):
         self.transform = transform.Transform(self)
         self.relays = relays.Relays(self)
         # runtime threads
-        self.workerINDI = indi_client.INDIClient(self)
         self.threadINDI = PyQt5.QtCore.QThread()
+        self.workerINDI = indi_client.INDIClient(self, self.threadINDI)
         self.threadINDI.setObjectName("INDI")
         self.workerINDI.moveToThread(self.threadINDI)
         self.threadINDI.started.connect(self.workerINDI.run)
-        self.workerINDI.finished.connect(self.workerINDIStop)
         self.workerINDI.status.connect(self.setINDIStatus)
         # threading for environment data
-        self.workerEnvironment = environment.Environment(self)
         self.threadEnvironment = PyQt5.QtCore.QThread()
+        self.workerEnvironment = environment.Environment(self, self.threadEnvironment)
         self.threadEnvironment.setObjectName("Environment")
         self.workerEnvironment.moveToThread(self.threadEnvironment)
         self.threadEnvironment.started.connect(self.workerEnvironment.run)
-        self.workerEnvironment.finished.connect(self.workerEnvironmentStop)
         self.workerEnvironment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
         # threading for ascom dome data
-        self.workerDome = dome.Dome(self)
         self.threadDome = PyQt5.QtCore.QThread()
+        self.workerDome = dome.Dome(self, self.threadDome)
         self.threadDome.setObjectName("Dome")
         self.workerDome.moveToThread(self.threadDome)
         self.threadDome.started.connect(self.workerDome.run)
-        self.workerDome.finished.connect(self.workerDomeStop)
         self.workerDome.signalDomeConnected.connect(self.setDomeStatus)
         # threading for remote shutdown
-        self.workerRemote = remoteThread.Remote(self)
         self.threadRemote = PyQt5.QtCore.QThread()
+        self.workerRemote = remoteThread.Remote(self, self.threadRemote)
         self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
-        self.workerRemote.finished.connect(self.workerRemoteStop)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for updater automation
         if platform.system() == 'Windows':
-            self.workerUpload = upload.UpdaterAuto(self)
             self.threadUpload = PyQt5.QtCore.QThread()
+            self.workerUpload = upload.UpdaterAuto(self, self.threadUpload)
             self.threadUpload.setObjectName("Upload")
             self.workerUpload.moveToThread(self.threadUpload)
             self.threadUpload.started.connect(self.workerUpload.run)
-            self.workerUpload.finished.connect(self.workerUploadStop)
             self.threadUpload.start()
-        self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self)
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
+        self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
-        self.workerModelingDispatcher.finished.connect(self.workerModelingDispatcherStop)
         self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
         self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
         # mount class
-        self.workerMountDispatcher = mountDispatcher.MountDispatcher(self)
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
+        self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
-        self.workerMountDispatcher.finished.connect(self.workerMountDispatcherStop)
         self.workerMountDispatcher.signalMountConnectedFast.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
@@ -193,10 +186,6 @@ class MountWizzardApp(widget.MwWidget):
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
 
-    def workerEnvironmentStop(self):
-        self.threadEnvironment.quit()
-        self.threadEnvironment.wait()
-
     def workerAscomEnvironmentSetup(self):
         if platform.system() != 'Windows':
             return
@@ -206,10 +195,6 @@ class MountWizzardApp(widget.MwWidget):
         self.workerEnvironment.setupDriver()
         self.ui.le_ascomEnvironmentDriverName.setText(self.workerEnvironment.ascomDriverName)
         self.threadEnvironment.start()
-
-    def workerDomeStop(self):
-        self.threadDome.quit()
-        self.threadDome.wait()
 
     def workerAscomDomeSetup(self):
         if platform.system() != 'Windows':
@@ -230,14 +215,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: yellow;color: black;}')
         elif status == 3:
             self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;color: black;}')
-
-    def workerRemoteStop(self):
-        self.threadRemote.quit()
-        self.threadRemote.wait()
-
-    def workerUploadStop(self):
-        self.threadUpload.quit()
-        self.threadUpload.wait()
 
     def workerModelingDispatcherStop(self):
         self.threadModelingDispatcher.quit()
@@ -302,10 +279,6 @@ class MountWizzardApp(widget.MwWidget):
         self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
         self.workerINDI.statusEnvironment.connect(self.setINDIStatusEnvironment)
         self.workerINDI.statusDome.connect(self.setINDIStatusDome)
-
-    def workerINDIStop(self):
-        self.threadINDI.quit()
-        self.threadINDI.wait()
 
     def mountBoot(self):
         import socket
@@ -955,7 +928,6 @@ class MountWizzardApp(widget.MwWidget):
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
     def setMountStatus(self, status):
-        print(status)
         for key in status:
             self.workerMountDispatcher.mountStatus[key] = status[key]
         stat = 0

@@ -21,20 +21,20 @@ from baseclasses import checkParamIP
 
 class Remote(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
 
     signalRemoteConnected = PyQt5.QtCore.pyqtSignal(bool, name='RemoteConnected')
     signalRemoteShutdown = PyQt5.QtCore.pyqtSignal(bool, name='RemoteShutdown')
     TCP_IP = '127.0.0.1'
     SIZEOF_UINT16 = 2
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.ipChangeLock = threading.Lock()
 
         self.app = app
+        self.thread = thread
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
         self.remotePort = 0
@@ -129,7 +129,8 @@ class Remote(PyQt5.QtCore.QObject):
         self.clientConnection = None
         self.logger.info('MountWizzard Remote Server is shut down'.format(self.remotePort))
         # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.finished.emit()
+        self.thread.quit()
+        self.thread.wait()
 
     def addConnection(self):
         self.clientConnection = self.tcpServer.nextPendingConnection()

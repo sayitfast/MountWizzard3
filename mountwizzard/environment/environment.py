@@ -23,18 +23,18 @@ if platform.system() == 'Windows':
 
 class Environment(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
 
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_DATA = 2000
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
 
         self.app = app
+        self.thread = thread
         self.data = {
             'Connected': False
         }
@@ -146,13 +146,14 @@ class Environment(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':
             pythoncom.CoUninitialize()
-        self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
         self.stopAscom()
+        self.thread.quit()
+        self.thread.wait()
 
     def getData(self):
         if self.data['Connected']:

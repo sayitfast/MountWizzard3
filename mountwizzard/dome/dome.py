@@ -23,7 +23,6 @@ if platform.system() == 'Windows':
 
 class Dome(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
 
     signalDomeConnected = PyQt5.QtCore.pyqtSignal([int])
     signalDomePointer = PyQt5.QtCore.pyqtSignal(float)
@@ -31,12 +30,13 @@ class Dome(PyQt5.QtCore.QObject):
 
     CYCLE_DATA = 500
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
 
         self.app = app
+        self.thread = thread
         self.data = {
             'Connected': False
         }
@@ -154,13 +154,14 @@ class Dome(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
         if platform.system() == 'Windows':
             pythoncom.CoUninitialize()
-        self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
         self.stopAscom()
+        self.thread.quit()
+        self.thread.wait()
 
     def getData(self):
         if self.data['Connected']:

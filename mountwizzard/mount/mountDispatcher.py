@@ -29,7 +29,6 @@ from baseclasses import checkParamIP
 
 
 class MountDispatcher(PyQt5.QtCore.QThread):
-    finished = PyQt5.QtCore.pyqtSignal()
     logger = logging.getLogger(__name__)
     signalMountConnectedOnce = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedSlow = PyQt5.QtCore.pyqtSignal(dict)
@@ -71,9 +70,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         'FW': 21501
     }
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
         self.app = app
+        self.thread = thread
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.ipChangeLock = threading.Lock()
@@ -86,47 +86,41 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
         # getting all threads setup
         # commands sending thread
-        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.data, self.signalMountConnectedCommand)
         self.threadMountCommandRunner = PyQt5.QtCore.QThread()
+        self.workerMountCommandRunner = mountCommandRunner.MountCommandRunner(self.app, self.threadMountCommandRunner, self.data, self.signalMountConnectedCommand)
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
-        self.workerMountCommandRunner.finished.connect(self.workerMountCommandRunnerStop)
         # fast status thread
-        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.data, self.signalMountConnectedFast, self.signalMountAzAltPointer)
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
+        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnectedFast, self.signalMountAzAltPointer)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
-        self.workerMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFastStop)
         # medium status thread
-        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.data, self.signalMountConnectedMedium)
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
+        self.workerMountStatusRunnerMedium = mountStatusRunnerMedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnectedMedium)
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
         self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
-        self.workerMountStatusRunnerMedium.finished.connect(self.workerMountStatusRunnerMediumStop)
         # slow status thread
-        self.workerMountStatusRunnerSlow = mountStatusRunnerSlow.MountStatusRunnerSlow(self.app, self.data, self.signalMountConnectedSlow)
         self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
+        self.workerMountStatusRunnerSlow = mountStatusRunnerSlow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnectedSlow)
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
-        self.workerMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlowStop)
         # once status thread
-        self.workerMountStatusRunnerOnce = mountStatusRunnerOnce.MountStatusRunnerOnce(self.app, self.data, self.signalMountConnectedOnce)
         self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
+        self.workerMountStatusRunnerOnce = mountStatusRunnerOnce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnectedOnce)
         self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
         self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
-        self.workerMountStatusRunnerOnce.finished.connect(self.workerMountStatusRunnerOnceStop)
         # get alignment model
-        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.data, self.signalMountConnectedAlign, self.signalMountShowAlignmentModel)
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
+        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedAlign, self.signalMountShowAlignmentModel)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
-        self.workerMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModelStop)
 
         self.commandDispatch = {
             'RunTargetRMSAlignment':
@@ -345,7 +339,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def changedMountConnectionSettings(self):
         if self.settingsChanged:
-            print('settings mount changed')
             self.settingsChanged = False
             self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
             self.ipChangeLock.acquire()
@@ -376,30 +369,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
         if valid:
             self.data['mountMAC'] = value
-
-    def workerMountStatusRunnerFastStop(self):
-        self.threadMountStatusRunnerFast.quit()
-        self.threadMountStatusRunnerFast.wait()
-
-    def workerMountStatusRunnerMediumStop(self):
-        self.threadMountStatusRunnerMedium.quit()
-        self.threadMountStatusRunnerMedium.wait()
-
-    def workerMountStatusRunnerSlowStop(self):
-        self.threadMountStatusRunnerSlow.quit()
-        self.threadMountStatusRunnerSlow.wait()
-
-    def workerMountStatusRunnerOnceStop(self):
-        self.threadMountStatusRunnerOnce.quit()
-        self.threadMountStatusRunnerOnce.wait()
-
-    def workerMountCommandRunnerStop(self):
-        self.threadMountCommandRunner.quit()
-        self.threadMountCommandRunner.wait()
-
-    def workerMountGetAlignmentModelStop(self):
-        self.threadMountGetAlignmentModel.quit()
-        self.threadMountGetAlignmentModel.wait()
 
     def run(self):
         if not self.isRunning:
@@ -444,7 +413,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountStatusRunnerSlow.stop()
         self.workerMountStatusRunnerMedium.stop()
         self.workerMountStatusRunnerFast.stop()
-        self.finished.emit()
+        self.thread.quit()
+        self.thread.wait()
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

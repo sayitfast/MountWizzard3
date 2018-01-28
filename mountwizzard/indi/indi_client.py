@@ -25,7 +25,6 @@ from baseclasses import checkParamIP
 
 
 class INDIClient(PyQt5.QtCore.QObject):
-    finished = PyQt5.QtCore.pyqtSignal()
     logger = logging.getLogger(__name__)
     imageReceived = QtCore.pyqtSignal(str)
     status = QtCore.pyqtSignal(int)
@@ -57,10 +56,11 @@ class INDIClient(PyQt5.QtCore.QObject):
         'Device': {}
     }
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
 
         self.app = app
+        self.thread = thread
         self.isRunning = False
         self.ipChangeLock = threading.Lock()
         self._mutex = PyQt5.QtCore.QMutex()
@@ -144,6 +144,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
+        self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
         while self.isRunning:
@@ -152,25 +153,22 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.sendMessage(indiCommand)
             self.handleNewDevice()
             if not self.data['Connected'] and self.socket.state() == 0:
-                self.socket.readyRead.connect(self.handleReadyRead)
+
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
             time.sleep(0.1)
             QtWidgets.QApplication.processEvents()
         # if I leave the loop, I close the connection to remote host
-        if self.socket.state() == 3:
-            self.socket.close()
-        else:
+        if self.socket.state() != 3:
             self.socket.abort()
-        # wait for the disconnect from host happen
-        while self.socket.state() != 0:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.finished.emit()
+        self.socket.close()
+        self.socket.waitForDisconnected(1000)
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def handleHostFound(self):
         pass

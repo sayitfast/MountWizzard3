@@ -167,6 +167,7 @@ class Relays:
             self.relayIP = value
 
     def enableDisableRelay(self):
+        print('relay')
         if self.app.ui.checkEnableRelay.isChecked():
             self.connected = self.checkAppStatus()
             self.app.ui.mainTabWidget.setTabEnabled(7, True)

@@ -24,7 +24,6 @@ from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 class UpdaterAuto(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
@@ -50,12 +49,13 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
     UTC_2_FILE = 'tai-utc.dat'
     OPENDIALOG = 'Dialog'
 
-    def __init__(self, app):
+    def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
 
         self.app = app
+        self.thread = thread
         self.appAvailable = False
         self.appName = ''
         self.appInstallPath = ''
@@ -266,7 +266,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
-        self.finished.emit()
+        self.thread.quit()
+        self.thread.wait()
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

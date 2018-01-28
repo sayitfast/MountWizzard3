@@ -56,10 +56,11 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':CMS#': 1
     }
 
-    def __init__(self, app, data, signalConnected):
+    def __init__(self, app, thread, data, signalConnected):
         super().__init__()
 
         self.app = app
+        self.thread = thread
         self.data = data
         self.signalConnected = signalConnected
         self._mutex = PyQt5.QtCore.QMutex()
@@ -78,6 +79,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
+        self.socket.readyRead.connect(self.handleReadyRead)
         # self.socket.readyRead.connect(self.handleReadyRead)
         while self.isRunning:
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -95,24 +97,22 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             time.sleep(0.1)
             self.socket.state()
             if not self.connected and self.socket.state() == 0:
-                self.socket.readyRead.connect(self.handleReadyRead)
+
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.app.mountCommandQueue.queue.clear()
         # if I leave the loop, I close the connection to remote host
-        if self.socket.state() == 3:
-            self.socket.close()
-        else:
+        if self.socket.state() != 3:
             self.socket.abort()
-        # wait for the disconnect from host happen
-        while self.socket.state() != 0:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.finished.emit()
+        self.socket.close()
+        self.socket.waitForDisconnected(1000)
+        # self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def handleHostFound(self):
         self.logger.info('Mount RunnerCommand found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
@@ -127,7 +127,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.logger.error('Mount RunnerCommand connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
-        self.logger.info('Mount connection CommandRunner has state: {0}'.format(self.socket.state()))
+        self.logger.info('Mount RunnerCommand connection has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerCommand connection is disconnected from host')
