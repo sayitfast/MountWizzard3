@@ -42,6 +42,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.ascomChooser = None
         self.ascomDriverName = ''
         self.chooserLock = threading.Lock()
+        # connect change in environment to the subroutine of setting it up
+        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
 
     def initConfig(self):
         # first build the pull down menu
@@ -65,8 +67,7 @@ class Environment(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # connect change in environment to the subroutine of setting it up
-        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
+
 
     def storeConfig(self):
         self.app.config['EnvironmentAscomDriverName'] = self.ascomDriverName

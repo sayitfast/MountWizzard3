@@ -47,6 +47,7 @@ class Relays:
         self.app.ui.relay7Text.textChanged.connect(lambda: self.app.ui.btn_relay7.setText(self.app.ui.relay7Text.text()))
         self.app.ui.relay8Text.textChanged.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
         self.app.ui.le_relayIP.textChanged.connect(self.setIP)
+        self.app.ui.checkEnableRelay.stateChanged.connect(self.enableDisableRelay)
 
     def initConfig(self):
         view1 = PyQt5.QtWidgets.QListView()
@@ -135,8 +136,6 @@ class Relays:
         finally:
             pass
         self.setIP()
-        self.app.ui.checkEnableRelay.stateChanged.connect(lambda: self.enableDisableRelay())
-        self.enableDisableRelay()
 
     def storeConfig(self):
         self.app.config['RelayIP'] = self.relayIP
@@ -159,7 +158,6 @@ class Relays:
         self.app.config['RelayUsername'] = self.app.ui.le_relayUsername.text()
         self.app.config['RelayPassword'] = self.app.ui.le_relayPassword.text()
         self.app.config['CheckEnableRelay'] = self.app.ui.checkEnableRelay.isChecked()
-        self.app.ui.le_relayIP.editingFinished.connect(self.enableDisableRelay)
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_relayIP)
@@ -167,7 +165,6 @@ class Relays:
             self.relayIP = value
 
     def enableDisableRelay(self):
-        print('relay')
         if self.app.ui.checkEnableRelay.isChecked():
             self.connected = self.checkAppStatus()
             self.app.ui.mainTabWidget.setTabEnabled(7, True)

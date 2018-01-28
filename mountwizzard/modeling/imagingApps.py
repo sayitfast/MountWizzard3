@@ -89,6 +89,8 @@ class ImagingApps:
         self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
         self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock = threading.Lock()
+        # connect change in imaging app to the subroutine of setting it up
+        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
         # if there was a receiver established, remove it. if not, we will fire the event by changing the list
@@ -118,8 +120,7 @@ class ImagingApps:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # connect change in imaging app to the subroutine of setting it up
-        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
+
         self.chooseImaging()
         self.workerINDICamera.solver.initConfig()
 

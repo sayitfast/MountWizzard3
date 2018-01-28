@@ -222,7 +222,16 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
 
         self.checkApplication()
         self.TARGET_DIR = self.appInstallPath
-        self.initConfig()
+        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcher('EARTHROTATION'))
+        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcher('SPACESTATIONS'))
+        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcher('SATBRIGHTEST'))
+        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_MPC5000'))
+        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_NEA'))
+        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_PHA'))
+        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_TNO'))
+        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.commandDispatcher('COMETS'))
+        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.commandDispatcher('ALL'))
+        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.commandDispatcher('UPLOADMOUNT'))
 
     def initConfig(self):
         try:
@@ -251,16 +260,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcher('EARTHROTATION'))
-        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcher('SPACESTATIONS'))
-        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcher('SATBRIGHTEST'))
-        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_MPC5000'))
-        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_NEA'))
-        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_PHA'))
-        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_TNO'))
-        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.commandDispatcher('COMETS'))
-        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.commandDispatcher('ALL'))
-        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.commandDispatcher('UPLOADMOUNT'))
+
 
     def stop(self):
         self._mutex.lock()

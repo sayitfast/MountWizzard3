@@ -74,6 +74,10 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.cameraDevice = ''
         self.environmentDevice = ''
         self.domeDevice = ''
+        self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
+        self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
+        self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
+        self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
 
     def initConfig(self):
         try:
@@ -93,10 +97,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.ui.checkEnableINDI.stateChanged.connect(lambda: self.enableDisableINDI())
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = False
-        self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
-        self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
-        self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
-        self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
+
         self.status.emit(0)
 
     def storeConfig(self):

@@ -308,6 +308,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
+        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
+        self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
+        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
 
     def initConfig(self):
         try:
@@ -327,9 +330,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.setMAC()
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = False
-        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
-        self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
-        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
 
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
