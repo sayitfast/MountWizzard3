@@ -1,10 +1,8 @@
 3.0 todo
-- image window rework
 - status after integrating until picture shown
 - edit model points (no real split between base and refine)
 - edit horizon mask
 - save model points
-- plate solver ansrv
 - simulator based on indi / ansrv in MW
 - modeling boost
 - refactor signal / slot for image taking and environment

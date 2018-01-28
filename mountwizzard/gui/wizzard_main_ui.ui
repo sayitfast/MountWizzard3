@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>5</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -7446,7 +7446,7 @@ Window</string>
        <x>610</x>
        <y>50</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7462,9 +7462,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>90</y>
+       <y>85</y>
        <width>131</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7480,7 +7480,7 @@ Window</string>
        <x>700</x>
        <y>51</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7589,7 +7589,7 @@ Window</string>
        <x>460</x>
        <y>50</y>
        <width>131</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7972,9 +7972,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>130</y>
+       <y>120</y>
        <width>131</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -7988,9 +7988,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>90</y>
+       <y>85</y>
        <width>36</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8030,9 +8030,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>90</y>
+       <y>85</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8048,9 +8048,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>460</x>
-       <y>170</y>
+       <y>155</y>
        <width>131</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -8064,9 +8064,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>130</y>
+       <y>120</y>
        <width>36</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8106,9 +8106,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>130</y>
+       <y>120</y>
        <width>81</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8124,9 +8124,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>700</x>
-       <y>170</y>
+       <y>155</y>
        <width>36</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8166,9 +8166,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>610</x>
-       <y>175</y>
+       <y>155</y>
        <width>86</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">

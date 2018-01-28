@@ -100,18 +100,6 @@ class AstrometryClient:
         if valid:
             self.data['ServerIP'] = value
 
-    def login(self, apikey):
-        args = {'apikey': apikey }
-        result = self.send_request('login', args)
-        data = {'request-json': ''}
-        headers = {}
-        result = requests.post(self.urlAPI + '/submissions/{0}'.format(sub_id), data=data, headers=headers)
-        stat = json.loads(result.text)
-        jobs = stat['jobs']
-        if not sess:
-            return
-        self.session = sess
-
     def checkAstrometryServerRunning(self):
         jobID = 12345
         data = {'request-json': ''}
@@ -123,7 +111,7 @@ class AstrometryClient:
             if self.isSolving:
                 return 1
             else:
-            # free to get ome solving part
+                # free to get some solving part
                 return 2
         else:
             self.isRunning = False
@@ -131,6 +119,7 @@ class AstrometryClient:
 
     def solveImage(self, filename, ra, dec, scale):
         if not self.isRunning:
+            self.logger.warning('Astrometry connection is not available')
             return {}
         self.isSolving = True
         data = self.solveData
@@ -146,6 +135,7 @@ class AstrometryClient:
         stat = result['status']
         if stat != 'success':
             self.isSolving = False
+            self.logger.warning('Could not upload image to astrometry server')
             return {}
         jobID = result['subid']
 

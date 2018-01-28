@@ -336,6 +336,7 @@ class MountWizzardApp(widget.MwWidget):
         widget.fig.clf()
         widget.axes = widget.fig.add_subplot(1, 1, 1, polar=True)
         widget.axes.grid(True, color='#404040')
+        widget.axes.set_title('Actual Mount Model', color='white', fontweight='bold', y=1.15)
         widget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
         widget.axes.set_facecolor((32/256, 32/256, 32/256))
         widget.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
