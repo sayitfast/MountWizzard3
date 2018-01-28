@@ -7443,7 +7443,7 @@ Window</string>
     <widget class="QLabel" name="label_37">
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>595</x>
        <y>85</y>
        <width>71</width>
        <height>26</height>
@@ -7987,7 +7987,7 @@ Window</string>
     <widget class="QLineEdit" name="le_alignErrorRMS2">
      <property name="geometry">
       <rect>
-       <x>715</x>
+       <x>700</x>
        <y>120</y>
        <width>36</width>
        <height>26</height>
