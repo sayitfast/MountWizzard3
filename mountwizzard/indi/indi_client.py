@@ -106,6 +106,7 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def changedINDIClientConnectionSettings(self):
         if self.settingsChanged:
+            print('settings Indi changed')
             self.settingsChanged = False
             self.app.messageQueue.put('Setting IP address/port for INDI client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
             if self.app.ui.checkEnableINDI.isChecked():
@@ -156,7 +157,10 @@ class INDIClient(PyQt5.QtCore.QObject):
             time.sleep(0.1)
             QtWidgets.QApplication.processEvents()
         # if I leave the loop, I close the connection to remote host
-        self.socket.disconnectFromHost()
+        if self.socket.state() == 3:
+            self.socket.close()
+        else:
+            self.socket.abort()
         # wait for the disconnect from host happen
         while self.socket.state() != 0:
             time.sleep(0.1)

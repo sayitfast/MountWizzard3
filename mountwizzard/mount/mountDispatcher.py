@@ -345,25 +345,25 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def changedMountConnectionSettings(self):
         if self.settingsChanged:
+            print('settings mount changed')
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address for mount: {0}\n'.format(self.data['MountIP']))
+            self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
             self.ipChangeLock.acquire()
             # stopping all interaction
-            self.workerMountCommandRunner.stop()
-            self.workerMountGetAlignmentModel.stop()
-            self.workerMountStatusRunnerOnce.stop()
-            self.workerMountStatusRunnerSlow.stop()
-            self.workerMountStatusRunnerMedium.stop()
-            self.workerMountStatusRunnerFast.stop()
-            # wait for some time to come down
-            time.sleep(1)
-            # starting new communication
-            self.threadMountCommandRunner.start()
-            self.threadMountGetAlignmentModel.start()
-            self.threadMountStatusRunnerOnce.start()
-            self.threadMountStatusRunnerSlow.start()
-            self.threadMountStatusRunnerMedium.start()
-            self.threadMountStatusRunnerFast.start()
+            if self.isRunning:
+                self.workerMountCommandRunner.stop()
+                self.workerMountGetAlignmentModel.stop()
+                self.workerMountStatusRunnerOnce.stop()
+                self.workerMountStatusRunnerSlow.stop()
+                self.workerMountStatusRunnerMedium.stop()
+                self.workerMountStatusRunnerFast.stop()
+
+                self.threadMountStatusRunnerOnce.start()
+                self.threadMountStatusRunnerSlow.start()
+                self.threadMountStatusRunnerMedium.start()
+                self.threadMountStatusRunnerFast.start()
+                self.threadMountCommandRunner.start()
+                self.threadMountGetAlignmentModel.start()
             self.ipChangeLock.release()
 
     def setIP(self):

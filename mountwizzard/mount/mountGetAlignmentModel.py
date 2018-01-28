@@ -29,7 +29,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.signalConnected = signalConnected
         self.signalMountShowAlignmentModel = signalMountShowAlignmentModel
         self._mutex = PyQt5.QtCore.QMutex()
-        self.isRunning = True
+        self.isRunning = False
         self.connected = False
         self.socket = None
         self.counter = 0
@@ -58,7 +58,10 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.sendCommandQueue.queue.clear()
         # if I leave the loop, I close the connection to remote host
-        self.socket.disconnectFromHost()
+        if self.socket.state() == 3:
+            self.socket.close()
+        else:
+            self.socket.abort()
         while self.socket.state() != 0:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -70,8 +73,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self._mutex.unlock()
 
     def handleHostFound(self):
-        pass
-        # self.logger.info('Mount AlignModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.info('Mount AlignModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
@@ -84,8 +86,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.logger.error('Mount GetAlignmentModel connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
-        pass
-        # self.logger.info('Mount connection AlignModel has state: {0}'.format(self.socket.state()))
+        self.logger.info('Mount connection AlignModel has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('Mount GetAlignmentModel connection is disconnected from host')

@@ -545,49 +545,46 @@ class MountWizzardApp(widget.MwWidget):
             pass
 
         # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
-        self.workerMountDispatcher.initConfig()
+        if self.workerINDI.isRunning:
+            self.workerINDI.stop()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
-        self.threadMountDispatcher.start()
-
-        self.workerModelingDispatcher.initConfig()
         if self.workerModelingDispatcher.isRunning:
             self.workerModelingDispatcher.stop()
-        self.threadModelingDispatcher.start()
-
-        self.workerEnvironment.initConfig()
+        if self.workerUpload.isRunning:
+            self.workerUpload.stop()
+        if self.workerRemote.isRunning:
+            self.workerRemote.stop()
         if self.workerEnvironment.isRunning:
             self.workerEnvironment.stop()
-        self.threadEnvironment.start()
-
-        self.workerDome.initConfig()
         if self.workerDome.isRunning:
             self.workerDome.stop()
-        self.threadDome.start()
-
-        if platform.system() == 'Windows':
-            self.workerUpload.initConfig()
-            if self.workerUpload.isRunning:
-                self.workerUpload.stop()
-            self.threadUpload.start()
-
-        self.workerRemote.initConfig()
-        if self.ui.checkEnableRemoteAccess.isChecked():
-            if self.workerRemote.isRunning:
-                self.workerRemote.stop()
-            self.threadRemote.start()
 
         self.workerINDI.initConfig()
-        if self.ui.checkEnableINDI.isChecked():
-            if self.workerINDI.isRunning:
-                self.workerINDI.stop()
-            self.threadINDI.start()
+        self.workerMountDispatcher.initConfig()
+        self.workerModelingDispatcher.initConfig()
+        self.workerEnvironment.initConfig()
+        self.workerDome.initConfig()
+        self.workerRemote.initConfig()
+        self.workerUpload.initConfig()
 
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
         self.relays.initConfig()
+
+        if self.ui.checkEnableINDI.isChecked():
+            self.threadINDI.start()
+        if not self.workerMountDispatcher.isRunning:
+            self.threadMountDispatcher.start()
+        self.threadModelingDispatcher.start()
+        self.threadEnvironment.start()
+        self.threadDome.start()
+        if self.ui.checkEnableRemoteAccess.isChecked():
+            self.threadRemote.start()
+        if platform.system() == 'Windows':
+            self.threadUpload.start()
 
         # make windows visible, if they were on the desktop depending on their show status
         if self.modelWindow.showStatus:
@@ -958,6 +955,7 @@ class MountWizzardApp(widget.MwWidget):
             self.imageWindow.ui.le_INDICameraStatus.setText(data['value'])
 
     def setMountStatus(self, status):
+        print(status)
         for key in status:
             self.workerMountDispatcher.mountStatus[key] = status[key]
         stat = 0
