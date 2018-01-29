@@ -382,7 +382,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def run(self):
         if not self.isRunning:
             self.isRunning = True
-        self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcher('SetRefractionParameter'))
+        self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcher('SetRefractionParameter'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcher('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcher('DeleteWorstPoint'))
         self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcher('FLIP'))

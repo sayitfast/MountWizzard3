@@ -129,7 +129,7 @@ class Relays:
                 self.app.ui.le_relayUsername.setText(self.app.config['RelayUsername'])
             if 'RelayPassword' in self.app.config:
                 self.app.ui.le_relayPassword.setText(self.app.config['RelayPassword'])
-            if 'RelayPassword' in self.app.config:
+            if 'CheckEnableRelay' in self.app.config:
                 self.app.ui.checkEnableRelay.setChecked(self.app.config['CheckEnableRelay'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
