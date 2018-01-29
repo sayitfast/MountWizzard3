@@ -78,6 +78,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
+        # have to choose lambda to get the right threading context
+        self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
     def initConfig(self):
         try:
@@ -93,11 +95,8 @@ class INDIClient(PyQt5.QtCore.QObject):
             pass
         self.setIP()
         self.setPort()
-        # have to choose lambda to get the right threading context
-        self.app.ui.checkEnableINDI.stateChanged.connect(lambda: self.enableDisableINDI())
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = False
-
         self.status.emit(0)
 
     def storeConfig(self):
@@ -172,7 +171,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
-        pass
+        self.logger.info('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
@@ -206,10 +205,11 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.newDeviceQueue.put(device)
 
     def handleError(self, socketError):
-        self.logger.error('INDI connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
+        self.logger.error('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
         self.status.emit(self.socket.state())
+        self.logger.info('INDI client connection has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
