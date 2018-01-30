@@ -522,8 +522,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerINDI.stop()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
-        if self.workerModelingDispatcher.isRunning:
-            self.workerModelingDispatcher.stop()
+        #if self.workerModelingDispatcher.isRunning:
+        #    self.workerModelingDispatcher.stop()
         if self.workerUpload.isRunning:
             self.workerUpload.stop()
         if self.workerRemote.isRunning:
@@ -551,9 +551,12 @@ class MountWizzardApp(widget.MwWidget):
             self.threadINDI.start()
         if not self.workerMountDispatcher.isRunning:
             self.threadMountDispatcher.start()
-        self.threadModelingDispatcher.start()
-        self.threadEnvironment.start()
-        self.threadDome.start()
+        if not self.workerModelingDispatcher.isRunning:
+            self.threadModelingDispatcher.start()
+        if not self.workerEnvironment.isRunning:
+            self.threadEnvironment.start()
+        if not self.workerDome.isRunning:
+            self.threadDome.start()
         if self.ui.checkEnableRemoteAccess.isChecked():
             self.threadRemote.start()
         if platform.system() == 'Windows':

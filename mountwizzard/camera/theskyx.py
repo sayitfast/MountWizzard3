@@ -22,7 +22,6 @@ import PyQt5
 
 class TheSkyX(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
@@ -31,9 +30,10 @@ class TheSkyX(PyQt5.QtCore.QObject):
 
     CAMERASTATUS = {'Not Connected': 'DISCONNECTED', 'Downloading Light': 'IDLE', 'Exposure complete': 'IDLE', 'Ready': 'IDLE', 'Exposing Light': 'INTEGRATING'}
 
-    def __init__(self, app, commandQueue):
+    def __init__(self, app, thread, commandQueue):
         super().__init__()
         self.app = app
+        self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()

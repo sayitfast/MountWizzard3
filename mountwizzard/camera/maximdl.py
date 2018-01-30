@@ -21,7 +21,6 @@ import pythoncom
 
 class MaximDLCamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
@@ -31,9 +30,10 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
     CAMERASTATUS = {'1': 'DISCONNECTED', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
 
-    def __init__(self, app, commandQueue):
+    def __init__(self, app, thread, commandQueue):
         super().__init__()
         self.app = app
+        self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
@@ -107,12 +107,13 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
         self.maximCamera = None
         self.maximDocument = None
         pythoncom.CoUninitialize()
-        self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def setStatus(self):
         if self.maximCamera:

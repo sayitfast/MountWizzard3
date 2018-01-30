@@ -47,41 +47,36 @@ class ImagingApps:
         self.imagingCommandQueue = queue.Queue()
         # make imaging applications available
         if platform.system() == 'Windows':
-            self.workerSGPro = sgpro.SGPro(self.app, self.imagingCommandQueue)
             self.threadSGPro = PyQt5.QtCore.QThread()
+            self.workerSGPro = sgpro.SGPro(self.app, self.threadSGPro, self.imagingCommandQueue)
             self.threadSGPro.setObjectName("SGPro")
             self.workerSGPro.moveToThread(self.threadSGPro)
             self.threadSGPro.started.connect(self.workerSGPro.run)
-            self.workerSGPro.finished.connect(self.workerSGProStop)
 
-            self.workerMaximDL = maximdl.MaximDLCamera(self.app, self.imagingCommandQueue)
             self.threadMaximDL = PyQt5.QtCore.QThread()
+            self.workerMaximDL = maximdl.MaximDLCamera(self.app, self.threadMaximDL, self.imagingCommandQueue)
             self.threadMaximDL.setObjectName("MaximDL")
             self.workerMaximDL.moveToThread(self.threadMaximDL)
             self.threadMaximDL.started.connect(self.workerMaximDL.run)
-            self.workerMaximDL.finished.connect(self.workerMaximDLStop)
 
         if platform.system() == 'Windows' or platform.system() == 'Darwin':
-            self.workerTheSkyX = theskyx.TheSkyX(self.app, self.imagingCommandQueue)
             self.threadTheSkyX = PyQt5.QtCore.QThread()
+            self.workerTheSkyX = theskyx.TheSkyX(self.app, self.threadTheSkyX, self.imagingCommandQueue)
             self.threadTheSkyX.setObjectName("TheSkyX")
             self.workerTheSkyX.moveToThread(self.threadTheSkyX)
             self.threadTheSkyX.started.connect(self.workerTheSkyX.run)
-            self.workerTheSkyX.finished.connect(self.workerTheSkyXStop)
 
-        self.workerNoneCam = none.NoneCamera(self.app, self.imagingCommandQueue)
         self.threadNoneCam = PyQt5.QtCore.QThread()
+        self.workerNoneCam = none.NoneCamera(self.app, self.threadNoneCam, self.imagingCommandQueue)
         self.threadNoneCam.setObjectName("NoneCamera")
         self.workerNoneCam.moveToThread(self.threadNoneCam)
         self.threadNoneCam.started.connect(self.workerNoneCam.run)
-        self.workerNoneCam.finished.connect(self.workerNoneCamStop)
 
-        self.workerINDICamera = indicamera.INDICamera(self.app, self.imagingCommandQueue)
         self.threadINDICamera = PyQt5.QtCore.QThread()
+        self.workerINDICamera = indicamera.INDICamera(self.app, self.threadINDICamera, self.imagingCommandQueue)
         self.threadINDICamera.setObjectName("INDICamera")
         self.workerINDICamera.moveToThread(self.threadINDICamera)
         self.threadINDICamera.started.connect(self.workerINDICamera.run)
-        self.workerINDICamera.finished.connect(self.workerINDICameraStop)
 
         # select default application
         self.imagingWorkerCameraAppHandler = self.workerNoneCam
@@ -127,26 +122,6 @@ class ImagingApps:
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
         self.workerINDICamera.solver.storeConfig()
-
-    def workerNoneCamStop(self):
-        self.threadNoneCam.quit()
-        self.threadNoneCam.wait()
-
-    def workerSGProStop(self):
-        self.threadSGPro.quit()
-        self.threadSGPro.wait()
-
-    def workerMaximDLStop(self):
-        self.threadMaximDL.quit()
-        self.threadMaximDL.wait()
-
-    def workerTheSkyXStop(self):
-        self.threadTheSkyX.quit()
-        self.threadTheSkyX.wait()
-
-    def workerINDICameraStop(self):
-        self.threadINDICamera.quit()
-        self.threadINDICamera.wait()
 
     def chooseImaging(self):
         self.chooserLock.acquire()

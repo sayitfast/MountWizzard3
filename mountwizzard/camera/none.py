@@ -17,16 +17,15 @@ import time
 
 
 class NoneCamera(PyQt5.QtCore.QObject):
-    logger = logging.getLogger(__name__)
-    finished = PyQt5.QtCore.pyqtSignal()
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 5000
 
-    def __init__(self, app, commandQueue):
+    def __init__(self, app, thread, commandQueue):
         super().__init__()
         self.app = app
+        self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
@@ -58,13 +57,13 @@ class NoneCamera(PyQt5.QtCore.QObject):
                     command['ImageParams'] = self.solveImage(command['ImageParams'])
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.finished.emit()
 
     def stop(self):
         self._mutex.lock()
         self.isRunning = False
         self._mutex.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def setStatus(self):
         self.data['Camera']['Status'] = 'IDLE'
