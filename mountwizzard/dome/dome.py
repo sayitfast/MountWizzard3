@@ -70,6 +70,7 @@ class Dome(PyQt5.QtCore.QObject):
             pass
         # connect change in dome to the subroutine of setting it up
         self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
+        self.chooserDome()
 
     def storeConfig(self):
         self.app.config['DomeAscomDriverName'] = self.ascomDriverName
@@ -119,7 +120,6 @@ class Dome(PyQt5.QtCore.QObject):
             self.logger.info('Actual dome is INDI')
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.signalDomeConnected.emit(0)
-        self.signalDomePointerVisibility.emit(self.data['Connected'])
         self.chooserLock.release()
 
     def run(self):
@@ -189,11 +189,17 @@ class Dome(PyQt5.QtCore.QObject):
                 'Altitude': 0.0,
             }
         if 'Azimuth' in self.data:
+            self.signalDomePointerVisibility.emit(self.data['Connected'])
             self.signalDomePointer.emit(self.data['Azimuth'])
         PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
     def getINDIData(self):
-        self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
+        # check if client has device found
+        if self.app.workerINDI.domeDevice != '':
+            # and device is connected
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
+                # than get the data
+                self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
 
     # noinspection PyBroadException
     def getAscomData(self):

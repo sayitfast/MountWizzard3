@@ -106,7 +106,6 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def changedINDIClientConnectionSettings(self):
         if self.settingsChanged:
-            print('settings Indi changed')
             self.settingsChanged = False
             self.app.messageQueue.put('Setting IP address/port for INDI client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
             if self.app.ui.checkEnableINDI.isChecked():

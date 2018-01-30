@@ -110,8 +110,8 @@ class HemisphereWindow(widget.MwWidget):
 
     def setDomePointer(self, az):
         if self.showStatus:
-            self.pointerDome1.set_xy((az, 1))
-            self.pointerDome2.set_xy((az, 1))
+            self.pointerDome1.set_xy((az - 15, 1))
+            self.pointerDome2.set_xy((az - 15, 1))
             self.hemisphereMatplotlib.fig.canvas.draw()
             QApplication.processEvents()
 
