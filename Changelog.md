@@ -8,4 +8,4 @@
 - refactor signal / slot for image taking and environment
 - check long variables
 - ascom camera and platesolver including
-- check reload same profile ends up with camera connected or not
+- dome ascom loading after switch from indi

@@ -44,8 +44,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.ascomChooser = None
         self.ascomDriverName = ''
         self.chooserLock = threading.Lock()
-        # connect change in dome to the subroutine of setting it up
-        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
 
     def initConfig(self):
         # if there was a receiver established, remove it. if not, we will fire the event by changing the list
@@ -70,6 +68,8 @@ class Dome(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+        # connect change in dome to the subroutine of setting it up
+        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
 
     def storeConfig(self):
         self.app.config['DomeAscomDriverName'] = self.ascomDriverName
@@ -141,7 +141,12 @@ class Dome(PyQt5.QtCore.QObject):
                 if not self.app.domeCommandQueue.empty():
                     command, value = self.app.domeCommandQueue.get()
                     if command == 'SlewAzimuth':
-                        self.ascom.SlewToAzimuth(float(value))
+                        if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
+                            self.app.INDICommandQueue.put(
+                                indiXML.newNumberVector(indiXML.oneNumber(binning, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'}),
+                                                        indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
+                        else:
+                            self.ascom.SlewToAzimuth(float(value))
             else:
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)
@@ -188,7 +193,7 @@ class Dome(PyQt5.QtCore.QObject):
         PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
     def getINDIData(self):
-        pass
+        self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
 
     # noinspection PyBroadException
     def getAscomData(self):

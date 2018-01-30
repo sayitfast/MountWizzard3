@@ -42,8 +42,6 @@ class Environment(PyQt5.QtCore.QObject):
         self.ascomChooser = None
         self.ascomDriverName = ''
         self.chooserLock = threading.Lock()
-        # connect change in environment to the subroutine of setting it up
-        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
 
     def initConfig(self):
         # first build the pull down menu
@@ -67,7 +65,8 @@ class Environment(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-
+        # connect change in environment to the subroutine of setting it up
+        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
 
     def storeConfig(self):
         self.app.config['EnvironmentAscomDriverName'] = self.ascomDriverName
@@ -200,56 +199,38 @@ class Environment(PyQt5.QtCore.QObject):
     def getAscomData(self):
         try:
             self.data['DewPoint'] = self.ascom.DewPoint
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['Temperature'] = self.ascom.Temperature
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['Humidity'] = self.ascom.Humidity
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['Pressure'] = self.ascom.Pressure
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['SQR'] = self.ascom.SkyQuality
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['CloudCover'] = self.ascom.CloudCover
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['RainRate'] = self.ascom.RainRate
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['WindSpeed'] = self.ascom.WindSpeed
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['WindDirection'] = self.ascom.WindDirection
-        except Exception:
-            pass
         finally:
             pass
 
