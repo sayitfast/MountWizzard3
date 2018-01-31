@@ -121,12 +121,12 @@ class ModelPoints:
             if horizonPointsFileName == '':
                 msg = 'No horizon points filename given !'
                 return msg
-            if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName):
+            if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName + '.txt'):
                 msg = 'Horizon points file does not exist !'
                 self.logger.warning('horizon points file does not exist')
             else:
                 try:
-                    with open(os.getcwd() + '/config/' + horizonPointsFileName) as f:
+                    with open(os.getcwd() + '/config/' + horizonPointsFileName + '.txt') as f:
                         for line in f:
                             if ':' in line:
                                 # model maker format
