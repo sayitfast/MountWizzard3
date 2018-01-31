@@ -203,7 +203,7 @@ class ImagingApps:
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         return imageParams
 
-    def captureImage(self, imageParams, queue=True):
+    def captureImage(self, imageParams, queue=False):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
@@ -262,7 +262,7 @@ class ImagingApps:
         imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
         return imageParams
 
-    def solveImage(self, imageParams, queue=True):
+    def solveImage(self, imageParams, queue=False):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return

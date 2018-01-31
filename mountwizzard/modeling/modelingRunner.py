@@ -82,24 +82,26 @@ class Image(PyQt5.QtCore.QObject):
             if not self.queueImage.empty():
                 modelData = self.queueImage.get()
                 modelData['File'] = self.main.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
-                modelData['LocalSiderealTime'] = self.main.app.workerMount.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.workerMount.data['LocalSiderealTime'][0:9])
-                modelData['RaJ2000'] = self.main.app.workerMount.data['RaJ2000']
-                modelData['DecJ2000'] = self.main.app.workerMount.data['DecJ2000']
-                modelData['RaJNow'] = self.main.app.workerMount.data['RaJNow']
-                modelData['DecJNow'] = self.main.app.workerMount.data['DecJNow']
-                modelData['Pierside'] = self.main.app.workerMount.data['Pierside']
-                modelData['RefractionTemperature'] = self.main.app.workerMount.data['RefractionTemperature']
-                modelData['RefractionPressure'] = self.main.app.workerMount.data['RefractionPressure']
+                modelData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
+                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
+                modelData['RaJ2000'] = self.main.app.workerMountDispatcher.data['RaJ2000']
+                modelData['DecJ2000'] = self.main.app.workerMountDispatcher.data['DecJ2000']
+                modelData['RaJNow'] = self.main.app.workerMountDispatcher.data['RaJNow']
+                modelData['DecJNow'] = self.main.app.workerMountDispatcher.data['DecJNow']
+                modelData['Pierside'] = self.main.app.workerMountDispatcher.data['Pierside']
+                modelData['RefractionTemperature'] = self.main.app.workerMountDispatcher.data['RefractionTemperature']
+                modelData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
-                while True:
-                    suc, mes = self.main.app.workerModeling.SGPro.SgGetDeviceStatus('Camera')
-                    if suc and mes == 'IDLE':
-                            break
-                suc, mes, imagepath = self.main.capturingImage(modelData, modelData['Simulation'])
+                # wait for camera again IDLE
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] != 'IDLE':
+                    time.sleep(0.1)
+                    PyQt5.QtWidgets.QApplication.processEvents()
+                # getting next image
+                modelData = self.main.imagingApps.capturingImage(modelData, modelData['Simulation'])
                 self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
-                modelData['ImagingSuccess'] = suc
-                # self.main.workerSlewpoint.signalSlewing.emit()
+                modelData['ImagingSuccess'] = modelData['Success']
+                # this would be the improvement: after image is done, start slewing: ideally after integrating is done !
+                self.main.workerSlewpoint.signalSlewing.emit()
                 self.main.workerPlatesolve.queuePlatesolve.put(modelData)
 
     @PyQt5.QtCore.pyqtSlot()

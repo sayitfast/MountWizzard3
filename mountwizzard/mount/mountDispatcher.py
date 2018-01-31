@@ -77,6 +77,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.ipChangeLock = threading.Lock()
+        self.data = {}
         # getting all supporting classes assigned
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)

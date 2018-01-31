@@ -235,10 +235,10 @@ class ImagesWindow(widget.MwWidget):
         while os.path.isfile(imageParams['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
             number += 1
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime())
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams)
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams, queue=True)
         if imageParams['Success']:
             self.showFitsImage(imageParams['Imagepath'])
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams)
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams, queue=True)
         if imageParams['Success']:
             print(imageParams['Message'])
             print(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'])
