@@ -41,6 +41,8 @@ class INDICamera(PyQt5.QtCore.QObject):
             self.data['Solver'] = {}
         self.data['Camera']['Status'] = 'DISCONNECTED'
         self.data['Solver']['Status'] = 'DISCONNECTED'
+        self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
+        self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
 
         self.imagingStarted = False
         self.tryConnectionCounter = 0
@@ -98,6 +100,7 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.cameraStatus.emit(self.data['Camera']['Status'])
                 self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:
+            self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
             self.app.workerModelingDispatcher.signalStatusCamera.emit(1)
             self.cameraStatus.emit('---')
             self.cameraExposureTime.emit('---')
@@ -109,12 +112,16 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.data['Solver']['Status'] = self.solver.checkAstrometryServerRunning()
                 if self.data['Solver']['Status'] == 2:
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+                    self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
                 elif self.data['Solver']['Status'] == 1:
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+                    self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
                 elif self.data['Solver']['Status'] == 0:
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
+                    self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
+                self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)

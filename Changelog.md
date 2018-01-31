@@ -8,4 +8,3 @@
 - refactor signal / slot for image taking and environment
 - check long variables
 - ascom camera and platesolver including
-- dome ascom loading after switch from indi
