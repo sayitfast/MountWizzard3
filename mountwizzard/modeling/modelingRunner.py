@@ -53,14 +53,13 @@ class Slewpoint(PyQt5.QtCore.QObject):
     def slewing(self):
         if not self.queuePoint.empty():
             modelData = self.queuePoint.get()
-            if modelData['Item'].isVisible():
-                self.main.app.messageQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.main.timeStamp(), modelData['Index'] + 1, modelData['Azimuth'], modelData['Altitude']))
-                self.main.slewMountDome(modelData)
-                self.main.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec\n'.format(self.main.timeStamp(), modelData['SettlingTime']))
-                timeCounter = modelData['SettlingTime']
-                while timeCounter > 0:
-                    time.sleep(1)
-                    timeCounter -= 1
+            self.main.app.messageQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.main.timeStamp(), modelData['Index'] + 1, modelData['Azimuth'], modelData['Altitude']))
+            self.main.slewMountDome(modelData)
+            self.main.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec\n'.format(self.main.timeStamp(), modelData['SettlingTime']))
+            timeCounter = modelData['SettlingTime']
+            while timeCounter > 0:
+                time.sleep(1)
+                timeCounter -= 1
             self.main.workerImage.queueImage.put(modelData)
 
 
@@ -82,16 +81,16 @@ class Image(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.queueImage.empty():
                 modelData = self.queueImage.get()
-                modelData['File'] = self.main.app.workerModeling.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
-                modelData['LocalSiderealTime'] = self.main.app.mount.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.mount.data['LocalSiderealTime'][0:9])
-                modelData['RaJ2000'] = self.main.app.mount.data['RaJ2000']
-                modelData['DecJ2000'] = self.main.app.mount.data['DecJ2000']
-                modelData['RaJNow'] = self.main.app.mount.data['RaJNow']
-                modelData['DecJNow'] = self.main.app.mount.data['DecJNow']
-                modelData['Pierside'] = self.main.app.mount.data['Pierside']
-                modelData['RefractionTemperature'] = self.main.app.mount.data['RefractionTemperature']
-                modelData['RefractionPressure'] = self.main.app.mount.data['RefractionPressure']
+                modelData['File'] = self.main.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
+                modelData['LocalSiderealTime'] = self.main.app.workerMount.data['LocalSiderealTime']
+                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.workerMount.data['LocalSiderealTime'][0:9])
+                modelData['RaJ2000'] = self.main.app.workerMount.data['RaJ2000']
+                modelData['DecJ2000'] = self.main.app.workerMount.data['DecJ2000']
+                modelData['RaJNow'] = self.main.app.workerMount.data['RaJNow']
+                modelData['DecJNow'] = self.main.app.workerMount.data['DecJNow']
+                modelData['Pierside'] = self.main.app.workerMount.data['Pierside']
+                modelData['RefractionTemperature'] = self.main.app.workerMount.data['RefractionTemperature']
+                modelData['RefractionPressure'] = self.main.app.workerMount.data['RefractionPressure']
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                 while True:
                     suc, mes = self.main.app.workerModeling.SGPro.SgGetDeviceStatus('Camera')
@@ -134,8 +133,6 @@ class Platesolve(PyQt5.QtCore.QObject):
                     if modelData['PlateSolveSuccess']:
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
-
-                        modelData['Item'].setVisible(False)
                     else:
                         self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
                 self.main.solvedPointsQueue.put(modelData)
@@ -150,12 +147,10 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.queuePlatesolve.queue.clear()
 
 
-def timeStamp():
-    return time.strftime("%H:%M:%S", time.localtime())
-
-
 class ModelingRunner:
     logger = logging.getLogger(__name__)
+
+    CAPTUREFILE = 'MODELIMAGE'
 
     def __init__(self, app):
         # make environment available to class
@@ -196,6 +191,10 @@ class ModelingRunner:
         self.numberSolvedPoints = 0
         self.cancel = False
 
+    @staticmethod
+    def timeStamp():
+        return time.strftime("%H:%M:%S", time.localtime())
+
     def initConfig(self):
         self.imagingApps.initConfig()
         self.modelPoints.initConfig()
@@ -222,15 +221,21 @@ class ModelingRunner:
         altitude = modelData['Altitude']
         domeIsConnected = modelData['DomeConnected']
         simulation = modelData['Simulation']
+        if simulation:
+            # make indi telescope move to data
+            if self.app.workerINDI.telescopeDevice != '':
+                pass
+            time.sleep(1)
+            return
         # limit azimuth and altitude
         if azimuth >= 360:
             azimuth = 359.9
         elif azimuth < 0.0:
             azimuth = 0.0
         # setting the coordinates for the mount
-        self.app.mountCommandQueue.put('Sz{0:03d}*{1:02d}'.format(int(azimuth), int((azimuth - int(azimuth)) * 60 + 0.5)))
-        self.app.mountCommandQueue.put('Sa+{0:02d}*{1:02d}'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
-        self.app.mountCommandQueue.put('MS')
+        self.app.mountCommandQueue.put(':Sz{0:03d}*{1:02d}#'.format(int(azimuth), int((azimuth - int(azimuth)) * 60 + 0.5)))
+        self.app.mountCommandQueue.put(':Sa+{0:02d}*{1:02d}#'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
+        self.app.mountCommandQueue.put(':MS#')
         # if there is a dome connected, we have to start slewing it, too
         counterMaxWait = 0
         if domeIsConnected:
@@ -315,12 +320,12 @@ class ModelingRunner:
         messageQueue.put('status-- of --')
         messageQueue.put('percent0')
         messageQueue.put('timeleft--:--')
-        messageQueue.put('#BW{0} - Start Boost Model\n'.format(timeStamp()))
+        messageQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
         if not os.path.isdir(modelData['BaseDirImages']):
             os.makedirs(modelData['BaseDirImages'])
         self.logger.info('modelData: {0}'.format(modelData))
-        self.app.mountCommandQueue.put('PO')
-        self.app.mountCommandQueue.put('AP')
+        self.app.mountCommandQueue.put(':PO#')
+        self.app.mountCommandQueue.put(':AP#')
         self.modelRun = True
         # starting the necessary threads
         self.threadSlewpoint.start()
@@ -328,23 +333,21 @@ class ModelingRunner:
         self.threadPlatesolve.start()
         # here starts the real model running cycle
         # loading all the point in queue
-        for i, (p_az, p_alt, p_item, p_solve) in enumerate(runPoints):
-            if p_item.isVisible() and p_solve:
-                modelData['Index'] = i
-                modelData['Azimuth'] = p_az
-                modelData['Altitude'] = p_alt
-                modelData['Item'] = p_item
-                modelData['SettlingTime'] = settlingTime
-                modelData['Simulation'] = simulation
-                modelData['DomeConnected'] = domeIsConnected
-                modelData['Simulation'] = simulation
-                self.workerSlewpoint.queuePoint.put(copy.copy(modelData))
+        for i, (p_az, p_alt) in enumerate(runPoints):
+            modelData['Index'] = i
+            modelData['Azimuth'] = p_az
+            modelData['Altitude'] = p_alt
+            modelData['SettlingTime'] = settlingTime
+            modelData['Simulation'] = simulation
+            modelData['DomeConnected'] = domeIsConnected
+            modelData['Simulation'] = simulation
+            self.workerSlewpoint.queuePoint.put(copy.copy(modelData))
         self.numberPointsMax = len(runPoints)
         # start process
         self.timeStart = time.time()
         self.hasFinished = False
         self.workerSlewpoint.signalSlewing.emit()
-        while self.app.workerModeling.modelRun:
+        while self.modelRun:
             # stop loop if cancelled
             if self.cancel:
                 break
@@ -378,7 +381,7 @@ class ModelingRunner:
             results.append(copy.copy(modelData))
         if not keepImages:
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(timeStamp(), self.numberSolvedPoints))
+        messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
         return results
 
     def runBaseModel(self):

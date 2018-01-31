@@ -74,6 +74,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.cameraDevice = ''
         self.environmentDevice = ''
         self.domeDevice = ''
+        self.telescopeDevice = ''
         self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
@@ -195,6 +196,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                     # make a shortcut for later use
                     self.environmentDevice = device
                     self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                    # make a shortcut for later use
+                    self.telescopeDevice = device
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                     # make a shortcut for later use
                     self.domeDevice = device
@@ -217,6 +221,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.cameraDevice = ''
         self.environmentDevice = ''
         self.domeDevice = ''
+        self.telescopeDevice = ''
         self.statusCCD.emit(False)
         self.statusEnvironment.emit(False)
         self.statusDome.emit(False)
