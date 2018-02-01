@@ -62,7 +62,7 @@ class ModelPoints:
             self.logger.warning('No Model Points Filename given!')
             return p, msg
         try:
-            with open('config/' + modelPointsFileName, 'r') as fileHandle:
+            with open('config/' + modelPointsFileName + '.txt', 'r') as fileHandle:
                 for line in fileHandle:
                     if line.startswith('GRID'):
                         # if grid, then its a TSX file (the sky x)

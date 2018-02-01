@@ -34,6 +34,8 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.solver = astrometryClient.AstrometryClient(self.app)
         self.isRunning = False
         self.counter = 0
+        self.receivedImage = True
+        self.lastState = ''
         self._mutex = PyQt5.QtCore.QMutex()
         if 'Camera' not in self.data:
             self.data['Camera'] = {}
@@ -54,6 +56,8 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data['Solver']['AppName'] = 'ANSRV'
         self.data['Solver']['AppInstallPath'] = ''
 
+        self.app.workerINDI.receivedImage.connect(self.setReceivedImage)
+
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         if not self.isRunning:
@@ -64,7 +68,6 @@ class INDICamera(PyQt5.QtCore.QObject):
             if not self.commandQueue.empty():
                 command = self.commandQueue.get()
                 if command['Command'] == 'GetImage':
-                    self.app.workerINDI.receivedImage = False
                     command['ImageParams'] = self.getImage(command['ImageParams'])
                 elif command['Command'] == 'SolveImage':
                     command['ImageParams'] = self.solveImage(command['ImageParams'])
@@ -79,16 +82,24 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.thread.quit()
         self.thread.wait()
 
+    def setReceivedImage(self):
+        self.receivedImage = True
+
     def setStatus(self):
         # check if INDIClient is running and camera device is there
         if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
             self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
             if 'CONNECTION' in self.data['Camera']:
                 if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
+                    self.lastState = self.data['Camera']['Status']
                     if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
                         self.data['Camera']['Status'] = 'INTEGRATING'
                     else:
-                        self.data['Camera']['Status'] = 'IDLE'
+                        # check if download is already there
+                        if not self.receivedImage and self.lastState in ['INTEGRATING', 'DOWNLOADING']:
+                            self.data['Camera']['Status'] = 'DOWNLOADING'
+                        else:
+                            self.data['Camera']['Status'] = 'IDLE'
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
                 else:
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
@@ -136,7 +147,6 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.app.workerINDI.imagePath = imagePath
         if self.app.workerINDI.cameraDevice != '':
             if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'On':
-                self.app.workerINDI.receivedImage = False
                 # Enable BLOB mode.
                 self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
                 # set to raw - no compression mode
@@ -157,8 +167,9 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.app.INDICommandQueue.put(
                     indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
                                             indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
+                self.receivedImage = False
                 # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
-                while not self.app.workerINDI.receivedImage and self.app.workerModelingDispatcher.isRunning:
+                while not self.receivedImage and self.app.workerModelingDispatcher.isRunning:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath

@@ -238,12 +238,11 @@ class ImagesWindow(widget.MwWidget):
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams, queue=True)
         if imageParams['Success']:
             self.showFitsImage(imageParams['Imagepath'])
+        '''
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams, queue=True)
         if imageParams['Success']:
             print(imageParams['Message'])
             print(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'])
-        '''
-
         self.showFitsImage('mountwizzard/astrometry/NGC7023.fit')
         '''
 

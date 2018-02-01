@@ -212,8 +212,6 @@ class ImagingApps:
             imageParams['Success'] = False
             imageParams['Message'] = 'Cancel modeling pressed'
             return False, imageParams
-        RaJ2000FitsHeader = self.transform.decimalToDegree(imageParams['RaJ2000'], False, False, ' ')
-        DecJ2000FitsHeader = self.transform.decimalToDegree(imageParams['DecJ2000'], True, False, ' ')
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         # using a queue if the calling thread is gui -> no wait
         # if it is done through modeling -> separate thread which is calling
@@ -228,19 +226,6 @@ class ImagingApps:
             PyQt5.QtWidgets.QApplication.processEvents()
         if imageParams['Success']:
             self.logger.info('Imaging parameters: {0}'.format(imageParams))
-            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
-            fitsHeader = fitsFileHandle[0].header
-            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
-            fitsHeader['DATE-OBS'] = datetime.datetime.now().isoformat()
-            fitsHeader['OBJCTRA'] = RaJ2000FitsHeader
-            fitsHeader['OBJCTDEC'] = DecJ2000FitsHeader
-            fitsHeader['CDELT1'] = str(imageParams['ScaleHint'])
-            fitsHeader['CDELT2'] = str(imageParams['ScaleHint'])
-            fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
-            fitsHeader['SCALE'] = str(imageParams['ScaleHint'])
-            fitsFileHandle.flush()
-            fitsFileHandle.close()
             # self.app.imageQueue.put(imageParams['Imagepath'])
             imageParams['Success'] = True
             imageParams['Message'] = 'OK'
@@ -288,17 +273,6 @@ class ImagingApps:
             imageParams['RaError'] = (imageParams['RaJ2000Solved'] - imageParams['RaJ2000']) * 3600
             imageParams['DecError'] = (imageParams['DecJ2000Solved'] - imageParams['DecJ2000']) * 3600
             imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
-            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
-            fitsHeader = fitsFileHandle[0].header
-            fitsHeader['MW_PRA'] = imageParams['RaJNowSolved']
-            fitsHeader['MW_PDEC'] = imageParams['DecJNowSolved']
-            fitsHeader['MW_SRA'] = imageParams['RaJ2000Solved']
-            fitsHeader['MW_SDEC'] = imageParams['DecJ2000Solved']
-            fitsHeader['MW_PSCAL'] = imageParams['Scale']
-            fitsHeader['MW_PANGL'] = imageParams['Angle']
-            fitsHeader['MW_PTS'] = imageParams['TimeTS']
-            fitsFileHandle.flush()
-            fitsFileHandle.close()
             imageParams['Success'] = True
             imageParams['Message'] = 'OK'
         else:

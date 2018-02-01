@@ -28,7 +28,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
     CYCLESTATUS = 200
     CYCLEPROPS = 3000
 
-    CAMERASTATUS = {'Not Connected': 'DISCONNECTED', 'Downloading Light': 'IDLE', 'Exposure complete': 'IDLE', 'Ready': 'IDLE', 'Exposing Light': 'INTEGRATING'}
+    CAMERASTATUS = {'Not Connected': 'DISCONNECTED', 'Downloading Light': 'DOWNLOAD', 'Exposure complete': 'IDLE', 'Ready': 'IDLE', 'Exposing Light': 'INTEGRATING'}
 
     def __init__(self, app, thread, commandQueue):
         super().__init__()

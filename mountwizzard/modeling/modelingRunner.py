@@ -83,7 +83,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelData = self.queueImage.get()
                 modelData['File'] = self.main.CAPTUREFILE + '{0:03d}'.format(modelData['Index']) + '.fit'
                 modelData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
-                modelData['LocalSiderealTimeFloat'] = self.main.app.workerModeling.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
+                modelData['LocalSiderealTimeFloat'] = self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
                 modelData['RaJ2000'] = self.main.app.workerMountDispatcher.data['RaJ2000']
                 modelData['DecJ2000'] = self.main.app.workerMountDispatcher.data['DecJ2000']
                 modelData['RaJNow'] = self.main.app.workerMountDispatcher.data['RaJNow']
@@ -92,16 +92,19 @@ class Image(PyQt5.QtCore.QObject):
                 modelData['RefractionTemperature'] = self.main.app.workerMountDispatcher.data['RefractionTemperature']
                 modelData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
-                # wait for camera again IDLE
+                # getting next image
+                modelData = self.main.imagingApps.captureImage(modelData)
+                self.logger.info('Imaging Results: {0}'.format(modelData))
+                modelData['ImagingSuccess'] = modelData['Success']
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] == 'INTEGRATING':
+                    time.sleep(0.1)
+                    PyQt5.QtWidgets.QApplication.processEvents()
+                # next point after integrating but during downloading if possible or after IDLE
+                self.main.workerSlewpoint.signalSlewing.emit()
+                # we have to wait until image is downloaded before being able to plate solve
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] != 'IDLE':
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
-                # getting next image
-                modelData = self.main.imagingApps.capturingImage(modelData, modelData['Simulation'])
-                self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
-                modelData['ImagingSuccess'] = modelData['Success']
-                # this would be the improvement: after image is done, start slewing: ideally after integrating is done !
-                self.main.workerSlewpoint.signalSlewing.emit()
                 self.main.workerPlatesolve.queuePlatesolve.put(modelData)
 
     @PyQt5.QtCore.pyqtSlot()

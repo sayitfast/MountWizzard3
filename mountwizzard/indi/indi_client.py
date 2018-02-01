@@ -26,11 +26,11 @@ from baseclasses import checkParamIP
 
 class INDIClient(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    imageReceived = QtCore.pyqtSignal(str)
     status = QtCore.pyqtSignal(int)
     statusCCD = QtCore.pyqtSignal(bool)
     statusEnvironment = QtCore.pyqtSignal(bool)
     statusDome = QtCore.pyqtSignal(bool)
+    receivedImage = QtCore.pyqtSignal(bool)
     processMessage = QtCore.pyqtSignal(object)
 
     # INDI device types
@@ -68,7 +68,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket = None
         self.newDeviceQueue = queue.Queue()
         self.settingsChanged = False
-        self.receivedImage = False
         self.imagePath = ''
         self.messageString = ''
         self.cameraDevice = ''
@@ -259,9 +258,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                                 imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
                                 imageHDU.writeto(self.imagePath, overwrite=True)
                                 self.logger.info('image file is not in raw fits format')
-                            # send the signal for the receive image
-                            # self.imageReceived.emit(self.imagePath)
-                            self.receivedImage = True
+                            self.receivedImage.emit(True)
 
         # deleting properties from devices
         elif isinstance(message, indiXML.DelProperty):
