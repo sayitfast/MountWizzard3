@@ -35,7 +35,6 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.isRunning = False
         self.counter = 0
         self.receivedImage = True
-        self.lastState = ''
         self._mutex = PyQt5.QtCore.QMutex()
         if 'Camera' not in self.data:
             self.data['Camera'] = {}
@@ -91,15 +90,18 @@ class INDICamera(PyQt5.QtCore.QObject):
             self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
             if 'CONNECTION' in self.data['Camera']:
                 if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                    self.lastState = self.data['Camera']['Status']
-                    if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
-                        self.data['Camera']['Status'] = 'INTEGRATING'
-                    else:
-                        # check if download is already there
-                        if not self.receivedImage and self.lastState in ['INTEGRATING', 'DOWNLOADING']:
+                    if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:
+                        if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
+                            self.data['Camera']['Status'] = 'INTEGRATING'
+                        else:
                             self.data['Camera']['Status'] = 'DOWNLOADING'
+                    elif self.data['Camera']['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
+                        if not self.receivedImage:
+                            self.data['Camera']['Status'] = 'INTEGRATING'
                         else:
                             self.data['Camera']['Status'] = 'IDLE'
+                    elif self.data['Camera']['CCD_EXPOSURE']['state'] == 'Error':
+                        self.data['Camera']['Status'] = 'ERROR'
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
                 else:
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(2)

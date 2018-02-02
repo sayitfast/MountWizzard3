@@ -12,11 +12,10 @@
 #
 ############################################################
 import logging
-# import basic stuff
 import time
-# import PyQT5 for threading purpose
 import PyQt5
 import threading
+import queue
 from mount import mountCommandRunner
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
@@ -77,6 +76,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.isRunning = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.ipChangeLock = threading.Lock()
+        self.commandDispatcherQueue = queue.Queue()
         # getting all supporting classes assigned
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
@@ -321,6 +321,26 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
         self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
 
+        self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))
+        self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTargetRMSAlignment'))
+        self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
+        self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcherQueue.put('FLIP'))
+        self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ReloadAlignmentModel'))
+        self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveBackupModel'))
+        self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBackupModel'))
+        self.app.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveSimpleModel'))
+        self.app.ui.btn_loadSimpleModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadSimpleModel'))
+        self.app.ui.btn_saveRefinementModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveRefinementModel'))
+        self.app.ui.btn_loadRefinementModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadRefinementModel'))
+        self.app.ui.btn_saveBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveBaseModel'))
+        self.app.ui.btn_loadBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBaseModel'))
+        self.app.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO1Model'))
+        self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO1Model'))
+        self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO2Model'))
+        self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO2Model'))
+        self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
+        self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
+
     def initConfig(self):
         try:
             if 'MountIP' in self.app.config:
@@ -382,26 +402,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def run(self):
         if not self.isRunning:
             self.isRunning = True
-        self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcher('SetRefractionParameter'))
-        self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcher('RunTargetRMSAlignment'))
-        self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcher('DeleteWorstPoint'))
-        self.app.ui.btn_flipMount.clicked.connect(lambda: self.commandDispatcher('FLIP'))
-        self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ReloadAlignmentModel'))
-        self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcher('SaveBackupModel'))
-        self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcher('LoadBackupModel'))
-        self.app.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandDispatcher('SaveSimpleModel'))
-        self.app.ui.btn_loadSimpleModel.clicked.connect(lambda: self.commandDispatcher('LoadSimpleModel'))
-        self.app.ui.btn_saveRefinementModel.clicked.connect(lambda: self.commandDispatcher('SaveRefinementModel'))
-        self.app.ui.btn_loadRefinementModel.clicked.connect(lambda: self.commandDispatcher('LoadRefinementModel'))
-        self.app.ui.btn_saveBaseModel.clicked.connect(lambda: self.commandDispatcher('SaveBaseModel'))
-        self.app.ui.btn_loadBaseModel.clicked.connect(lambda: self.commandDispatcher('LoadBaseModel'))
-        self.app.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO1Model'))
-        self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO1Model'))
-        self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcher('SaveDSO2Model'))
-        self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcher('LoadDSO2Model'))
-        self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcher('Shutdown'))
-        self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcher('ClearAlign'))
-
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
@@ -409,6 +409,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountCommandRunner.start()
         self.threadMountGetAlignmentModel.start()
         while self.isRunning:
+            if not self.commandDispatcherQueue.empty():
+                command = self.commandDispatcherQueue.get()
+                self.commandDispatcher(command)
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
 

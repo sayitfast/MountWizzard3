@@ -185,6 +185,7 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
+        # print('Thread ID:',int(PyQt5.QtCore.QThread.currentThreadId()))
 
     def workerAscomEnvironmentSetup(self):
         if platform.system() != 'Windows':

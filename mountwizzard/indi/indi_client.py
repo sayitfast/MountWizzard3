@@ -279,6 +279,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if setVector not in self.data['Device'][device]:
                         self.data['Device'][device][setVector] = {}
                         self.logger.warning('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
+                    self.data['Device'][device][setVector]['state'] = message.attr['state']
+                    self.data['Device'][device][setVector]['timeout'] = message.attr['timeout']
                     for elt in message.elt_list:
                         self.data['Device'][device][setVector][elt.attr['name']] = elt.getValue()
 
@@ -296,6 +298,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                     defVector = message.attr['name']
                     if defVector not in self.data['Device'][device]:
                         self.data['Device'][device][defVector] = {}
+                    self.data['Device'][device][defVector]['state'] = message.attr['state']
+                    self.data['Device'][device][defVector]['perm'] = message.attr['perm']
+                    self.data['Device'][device][defVector]['timeout'] = message.attr['timeout']
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
 
@@ -328,7 +333,6 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.messageString = ""
             for message in messages:
                 xmlMessage = indiXML.parseETree(message)
-                print(xmlMessage)
                 self.processMessage.emit(xmlMessage)
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:

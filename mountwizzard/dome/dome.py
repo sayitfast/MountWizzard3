@@ -46,9 +46,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
-        # if there was a receiver established, remove it. if not, we will fire the event by changing the list
-        if self.app.ui.pd_chooseDome.receivers(self.app.ui.pd_chooseDome.currentIndexChanged) > 0:
-            self.app.ui.pd_chooseDome.currentIndexChanged.disconnect()
         # first build the pull down menu
         self.app.ui.pd_chooseDome.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -69,8 +66,7 @@ class Dome(PyQt5.QtCore.QObject):
         finally:
             pass
         # connect change in dome to the subroutine of setting it up
-        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
-        self.chooserDome()
+        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome, type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['DomeAscomDriverName'] = self.ascomDriverName

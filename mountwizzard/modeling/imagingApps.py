@@ -84,13 +84,8 @@ class ImagingApps:
         self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
         self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock = threading.Lock()
-        # connect change in imaging app to the subroutine of setting it up
-        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
-        # if there was a receiver established, remove it. if not, we will fire the event by changing the list
-        if self.app.ui.pd_chooseImaging.receivers(self.app.ui.pd_chooseImaging.currentIndexChanged) > 0:
-            self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect()
         # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -118,6 +113,7 @@ class ImagingApps:
 
         self.chooseImaging()
         self.workerINDICamera.solver.initConfig()
+        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging, type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()

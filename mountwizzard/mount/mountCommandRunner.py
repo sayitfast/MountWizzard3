@@ -44,6 +44,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':Sz': 1,
                       ':Sa': 1,
                       ':MA#': 1,
+                      ':MS#': 1,
                       ':shutdown': 1,
                       ':Sw': 1,
                       ':Sdat': 1,
