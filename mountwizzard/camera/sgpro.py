@@ -18,6 +18,7 @@ import time
 import PyQt5
 # packages for handling web interface to SGPro
 from urllib import request
+import requests
 
 
 class SGPro(PyQt5.QtCore.QObject):
@@ -25,7 +26,7 @@ class SGPro(PyQt5.QtCore.QObject):
     cameraStatus = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLESTATUS = 200
+    CYCLESTATUS = 500
     CYCLEPROPS = 3000
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'BUSY': 'BUSY'}
     CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
@@ -102,31 +103,36 @@ class SGPro(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def setStatus(self):
-        suc, mes = self.SgGetDeviceStatus('Camera')
+        suc, state, message = self.SgGetDeviceStatus('Camera')
         if suc:
-            if mes in self.CAMERASTATUS:
-                self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
-                if self.CAMERASTATUS[mes] == 'DISCONNECTED':
+            if state in self.CAMERASTATUS:
+                if self.CAMERASTATUS[state] == 'DISCONNECTED':
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
                 else:
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
+                    if 'integrating' in message:
+                        self.data['Camera']['Status'] = 'INTEGRATING'
+                    elif 'downloading' in message:
+                        self.data['Camera']['Status'] = 'DOWNLOADING'
+                    elif 'ready' in message or 'idle' in message:
+                        self.data['Camera']['Status'] = 'IDLE'
             else:
-                self.logger.error('Unknown camera status: {0}'.format(mes))
+                self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
         else:
             self.data['Camera']['Status'] = 'ERROR'
             self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
 
         # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
-        suc, mes = self.SgGetDeviceStatus('PlateSolver')
+        suc, state, message = self.SgGetDeviceStatus('PlateSolver')
         if suc:
-            if mes in self.SOLVERSTATUS:
-                self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
-                if self.SOLVERSTATUS[mes] == 'DISCONNECTED':
+            if state in self.SOLVERSTATUS:
+                self.data['Solver']['Status'] = self.SOLVERSTATUS[state]
+                if self.SOLVERSTATUS[state] == 'DISCONNECTED':
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
                 else:
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
             else:
-                self.logger.error('Unknown solver status: {0}'.format(mes))
+                self.logger.error('Unknown solver status: {0}'.format(state))
         else:
             self.data['Solver']['Status'] = 'ERROR'
             self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
@@ -288,13 +294,11 @@ class SGPro(PyQt5.QtCore.QObject):
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
         data = {'Device': device}
         try:
-            req = request.Request(self.ipSGPro + self.getDeviceStatusPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # states are  "IDLE", "CAPTURING", "BUSY", "MOVING", "DISCONNECTED", "PARKED"
-            # {"State":"IDLE","Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['State']
+            result = requests.post(self.ipSGPro + self.getDeviceStatusPath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            if 'Message' not in result:
+                result['Message'] = 'None'
+            return result['Success'], result['State'], result['Message']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed'

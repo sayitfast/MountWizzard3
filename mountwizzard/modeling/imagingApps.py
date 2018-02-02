@@ -207,7 +207,7 @@ class ImagingApps:
             self.logger.info('Modeling cancelled after capturing image')
             imageParams['Success'] = False
             imageParams['Message'] = 'Cancel modeling pressed'
-            return False, imageParams
+            return imageParams
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         # using a queue if the calling thread is gui -> no wait
         # if it is done through modeling -> separate thread which is calling
@@ -215,18 +215,15 @@ class ImagingApps:
         imageParams['Success'] = False
         if queue:
             self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+            while camData['Status'] != 'INTEGRATING' and self.app.workerModelingDispatcher.isRunning:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
         else:
             imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
-        while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        if imageParams['Success']:
+            while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
             self.logger.info('Imaging parameters: {0}'.format(imageParams))
-            self.app.imageQueue.put(imageParams['Imagepath'])
-            imageParams['Success'] = True
-            imageParams['Message'] = 'OK'
-        else:
-            imageParams['Success'] = False
         return imageParams
 
     def addSolveRandomValues(self, imageParams):

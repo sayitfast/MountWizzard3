@@ -122,6 +122,8 @@ class AstrometryClient:
         if not self.isRunning:
             self.logger.warning('Astrometry connection is not available')
             return {}
+        if self.parent.cancel:
+            return {}
         self.isSolving = True
         data = self.solveData
         data['scale_est'] = scale

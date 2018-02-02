@@ -158,7 +158,6 @@ class HemisphereWindow(widget.MwWidget):
         refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
         if len(refine) > 0:
             # draw points in two colors
-            print([i[0] for i in refine], [i[1] for i in refine])
             self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=9, color='#00A000')
             self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=3, color='#E0E000')
             # add text to points

@@ -43,6 +43,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
     def run(self):
         if not self.isRunning:
             self.isRunning = True
+        self.takeNextPoint = False
         while self.isRunning:
             if self.takeNextPoint and not self.queuePoint.empty():
                 self.takeNextPoint = False
@@ -102,7 +103,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                 # getting next image
-                modelData = self.main.imagingApps.captureImage(modelData, queue=True)
+                self.main.imagingApps.captureImage(modelData, queue=True)
                 self.logger.info('Imaging Results: {0}'.format(modelData))
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING', 'IDLE']:
                     time.sleep(0.1)
@@ -153,7 +154,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
                     else:
-                        self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), mes))
+                        self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelData['Message']))
                 self.main.solvedPointsQueue.put(modelData)
                 self.main.app.messageQueue.put('status{0} of {1}'.format(modelData['Index'] + 1, self.main.numberPointsMax))
                 self.main.numberSolvedPoints += 1
@@ -323,7 +324,7 @@ class ModelingRunner:
             name = modelData['Directory'] + '_full.dat'
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
-                self.analyse.saveData(self.modelData, name)
+                self.analyseData.saveData(self.modelData, name)
                 # self.app.mount.saveRefinementModel()
                 # if not self.app.workerModeling.cancel:
                 # self.app.mount.programBatchData(self.modelData)
@@ -386,7 +387,6 @@ class ModelingRunner:
         while not self.solvedPointsQueue.empty():
             modelData = self.solvedPointsQueue.get()
             # clean up intermediate data
-            del modelData['Item']
             del modelData['Simulation']
             del modelData['SettlingTime']
             results.append(copy.copy(modelData))
