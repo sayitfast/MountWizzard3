@@ -249,7 +249,7 @@ class SGPro(PyQt5.QtCore.QObject):
                 PyQt5.QtWidgets.QApplication.processEvents()
         imageParams['Success'] = solved
         imageParams['Message'] = mes
-        return mimageParams
+        return imageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,
