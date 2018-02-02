@@ -219,7 +219,6 @@ class SGPro(PyQt5.QtCore.QObject):
                                            ScaleHint=imageParams['ScaleHint'],
                                            BlindSolve=imageParams['Blind'],
                                            UseFitsHeaders=False)
-        print(suc)
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
             imageParams['Success'] = False
