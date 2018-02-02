@@ -296,6 +296,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                     defVector = message.attr['name']
                     if defVector not in self.data['Device'][device]:
                         self.data['Device'][device][defVector] = {}
+                    # todo: adding the standard attributes for vetors in state
+                    for attr in message.attr:
+                        self.data['Device'][device][defVector][elt.attr['name']]
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
 
