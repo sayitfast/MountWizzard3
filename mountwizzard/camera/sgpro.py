@@ -204,7 +204,7 @@ class SGPro(PyQt5.QtCore.QObject):
                 if suc:
                     break
                 else:
-                    time.sleep(0.2)
+                    time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
         else:
             imageParams['Imagepath'] = ''
@@ -214,9 +214,12 @@ class SGPro(PyQt5.QtCore.QObject):
 
     def solveImage(self, imageParams):
         suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                           scaleHint=imageParams['ScaleHint'],
-                                           blindSolve=imageParams['Blind'],
-                                           useFitsHeaders=imageParams['UseFitsHeaders'])
+                                           RaHint=imageParams['RaJ2000'],
+                                           DecHint=imageParams['DecJ2000'],
+                                           ScaleHint=imageParams['ScaleHint'],
+                                           BlindSolve=imageParams['Blind'],
+                                           UseFitsHeaders=False)
+        print(suc)
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
             imageParams['Success'] = False
@@ -331,15 +334,15 @@ class SGPro(PyQt5.QtCore.QObject):
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
-    def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
+    def SgSolveImage(self, path, RaHint=None, DecHint=None, ScaleHint=None, BlindSolve=False, UseFitsHeaders=False):
         # reference {"ImagePath":"String","RaHint":0,"DecHint":0,"ScaleHint":0,"BlindSolve":false,"UseFitsHeadersForHints":false}
-        data = {"ImagePath": path, "BlindSolve": blindSolve, "UseFitsHeadersForHints": useFitsHeaders}
+        data = {"ImagePath": path, "BlindSolve": BlindSolve, "UseFitsHeadersForHints": UseFitsHeaders}
         if raHint:
-            data['RaHint'] = raHint
+            data['RaHint'] = RaHint
         if decHint:
-            data['DecHint'] = decHint
+            data['DecHint'] = DecHint
         if scaleHint:
-            data['ScaleHint'] = scaleHint
+            data['ScaleHint'] = ScaleHint
         try:
             req = request.Request(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
             req.add_header('Content-Type', 'application/json')

@@ -220,10 +220,7 @@ class ImagingApps:
                 PyQt5.QtWidgets.QApplication.processEvents()
         else:
             imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
-            while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
-                time.sleep(0.1)
-                PyQt5.QtWidgets.QApplication.processEvents()
-            self.logger.info('Imaging parameters: {0}'.format(imageParams))
+        self.logger.info('Imaging parameters: {0}'.format(imageParams))
         return imageParams
 
     def addSolveRandomValues(self, imageParams):
@@ -247,17 +244,12 @@ class ImagingApps:
         imageParams['UseFitsHeaders'] = True
         # using a queue if the calling thread is gui -> no wait
         # if it is done through modeling -> separate thread which is calling
+        imageParams['Message'] = ''
+        imageParams['Success'] = False
         if queue:
             self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         else:
             imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
-        imageParams['Message'] = ''
-        imageParams['Success'] = False
-        while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-
-        imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         if imageParams['Success']:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)

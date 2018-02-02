@@ -110,11 +110,11 @@ class Image(PyQt5.QtCore.QObject):
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()
-                PyQt5.QtWidgets.QApplication.processEvents()
                 # we have to wait until image is downloaded before being able to plate solve
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] != 'IDLE':
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
+                time.sleep(0.5)
                 self.main.workerPlatesolve.queuePlatesolve.put(modelData)
             time.sleep(0.1)
 
@@ -149,7 +149,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                 modelData = self.queuePlatesolve.get()
                 if modelData['Success']:
                     self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
-                    modelData = self.main.imagingApps.solveImage(modelData)
+                    modelData = self.main.imagingApps.solveImage(modelData, queue=False)
                     if modelData['Success']:
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
