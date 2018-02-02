@@ -67,6 +67,10 @@ class INDIBase(object):
                 base_str += ", " + self.attr["device"]
             if "perm" in self.attr:
                 base_str += ", " + self.attr["perm"]
+            if "state" in self.attr:
+                base_str += ", " + self.attr["state"]
+            if "timeout" in self.attr:
+                base_str += ", " + self.attr["timeout"]
             return base_str + ")"
         else:
             return self.etype + "()"

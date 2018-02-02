@@ -328,6 +328,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.messageString = ""
             for message in messages:
                 xmlMessage = indiXML.parseETree(message)
+                print(xmlMessage)
                 self.processMessage.emit(xmlMessage)
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:
