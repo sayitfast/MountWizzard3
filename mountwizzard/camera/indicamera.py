@@ -31,11 +31,15 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandQueue = commandQueue
         self.data = {}
-        self.solver = astrometryClient.AstrometryClient(self.app)
+        self.solver = astrometryClient.AstrometryClient(self, self.app)
         self.isRunning = False
+        self._mutex = PyQt5.QtCore.QMutex()
+
+        self.cancel = False
         self.counter = 0
         self.receivedImage = True
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.imagingStarted = False
+
         if 'Camera' not in self.data:
             self.data['Camera'] = {}
         if 'Solver' not in self.data:
@@ -44,10 +48,6 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data['Solver']['Status'] = 'DISCONNECTED'
         self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
         self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
-
-        self.imagingStarted = False
-        self.tryConnectionCounter = 0
-
         self.data['Camera']['AppAvailable'] = True
         self.data['Camera']['AppName'] = 'INDICamera'
         self.data['Camera']['AppInstallPath'] = ''
@@ -147,6 +147,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
         self.app.workerINDI.imagePath = imagePath
+        self.cancel = False
         if self.app.workerINDI.cameraDevice != '':
             if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'On':
                 # Enable BLOB mode.
@@ -171,7 +172,7 @@ class INDICamera(PyQt5.QtCore.QObject):
                                             indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
                 self.receivedImage = False
                 # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
-                while not self.receivedImage and self.app.workerModelingDispatcher.isRunning:
+                while not self.receivedImage and self.app.workerModelingDispatcher.isRunning and not self.cancel:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath

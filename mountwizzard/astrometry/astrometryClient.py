@@ -49,8 +49,9 @@ class AstrometryClient:
         'Connected': False,
     }
 
-    def __init__(self, app):
+    def __init__(self, parent, app):
         self.app = app
+        self.parent = parent
         self.isRunning = False
         self.isSolving = False
         self.checkIP = checkParamIP.CheckIP()
@@ -139,7 +140,7 @@ class AstrometryClient:
             return {}
         jobID = result['subid']
 
-        while self.app.workerModelingDispatcher.isRunning:
+        while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
             result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)

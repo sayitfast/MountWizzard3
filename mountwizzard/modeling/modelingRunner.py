@@ -64,6 +64,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.queuePoint.queue.clear()
         self.thread.quit()
         self.thread.wait()
+        print('Slewing stopped')
 
     @PyQt5.QtCore.pyqtSlot()
     def slewing(self):
@@ -103,11 +104,12 @@ class Image(PyQt5.QtCore.QObject):
                 # getting next image
                 modelData = self.main.imagingApps.captureImage(modelData, queue=True)
                 self.logger.info('Imaging Results: {0}'.format(modelData))
-                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] == 'INTEGRATING':
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING', 'IDLE']:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()
+                PyQt5.QtWidgets.QApplication.processEvents()
                 # we have to wait until image is downloaded before being able to plate solve
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] != 'IDLE':
                     time.sleep(0.1)
@@ -118,9 +120,11 @@ class Image(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def stop(self):
         self.isRunning = False
+        self.main.imagingApps.imagingWorkerCameraAppHandler.cancel = True
         self.queueImage.queue.clear()
         self.thread.quit()
         self.thread.wait()
+        print('Image stopped')
 
 
 class Platesolve(PyQt5.QtCore.QObject):
@@ -163,6 +167,7 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.queuePlatesolve.queue.clear()
         self.thread.quit()
         self.thread.wait()
+        print('Platesolve stopped')
 
 
 class ModelingRunner:

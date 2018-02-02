@@ -93,6 +93,8 @@ class HemisphereWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def setAzAltPointer(self, az, alt):
+        az += 0.5
+        alt -= 0.125
         if self.showStatus:
             self.pointerAzAlt1.center = az, alt
             self.pointerAzAlt2.center = az, alt
@@ -146,8 +148,8 @@ class HemisphereWindow(widget.MwWidget):
         offy = 7 / aspectRatio
         base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
         if len(base) > 0:
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=8, color='#E00000')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=4, color='#E0E000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=9, color='#E00000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=3, color='#E0E000')
             number = 1
             if self.ui.checkShowNumbers.isChecked():
                 for i in range(0, len(base)):
@@ -156,8 +158,9 @@ class HemisphereWindow(widget.MwWidget):
         refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
         if len(refine) > 0:
             # draw points in two colors
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=8, color='#00A000')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=4, color='#E0E000')
+            print([i[0] for i in refine], [i[1] for i in refine])
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=9, color='#00A000')
+            self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=3, color='#E0E000')
             # add text to points
             number = 1
             if self.ui.checkShowNumbers.isChecked():
