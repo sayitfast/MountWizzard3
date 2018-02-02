@@ -211,18 +211,18 @@ class ImagingApps:
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         # using a queue if the calling thread is gui -> no wait
         # if it is done through modeling -> separate thread which is calling
+        imageParams['Message'] = ''
+        imageParams['Success'] = False
         if queue:
             self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         else:
             imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
-        imageParams['Message'] = ''
-        imageParams['Success'] = False
         while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         if imageParams['Success']:
             self.logger.info('Imaging parameters: {0}'.format(imageParams))
-            # self.app.imageQueue.put(imageParams['Imagepath'])
+            self.app.imageQueue.put(imageParams['Imagepath'])
             imageParams['Success'] = True
             imageParams['Message'] = 'OK'
         else:

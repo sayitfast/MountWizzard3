@@ -31,9 +31,10 @@ class Slewpoint(PyQt5.QtCore.QObject):
     queuePoint = Queue()
     signalSlewing = PyQt5.QtCore.pyqtSignal(name='slew')
 
-    def __init__(self, main):
+    def __init__(self, main, thread):
         super().__init__()
         self.main = main
+        self.thread = thread
         self.isRunning = True
         self.takeNextPoint = False
         self.signalSlewing.connect(self.slewing)
@@ -61,6 +62,8 @@ class Slewpoint(PyQt5.QtCore.QObject):
     def stop(self):
         self.isRunning = False
         self.queuePoint.queue.clear()
+        self.thread.quit()
+        self.thread.wait()
 
     @PyQt5.QtCore.pyqtSlot()
     def slewing(self):
@@ -72,9 +75,10 @@ class Image(PyQt5.QtCore.QObject):
     queueImage = Queue()
     signalImaging = PyQt5.QtCore.pyqtSignal(name='image')
 
-    def __init__(self, main):
+    def __init__(self, main, thread):
         super().__init__()
         self.main = main
+        self.thread = thread
         self.isRunning = True
 
     @PyQt5.QtCore.pyqtSlot()
@@ -97,7 +101,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
                 # getting next image
-                modelData = self.main.imagingApps.captureImage(modelData)
+                modelData = self.main.imagingApps.captureImage(modelData, queue=True)
                 self.logger.info('Imaging Results: {0}'.format(modelData))
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] == 'INTEGRATING':
                     time.sleep(0.1)
@@ -115,6 +119,8 @@ class Image(PyQt5.QtCore.QObject):
     def stop(self):
         self.isRunning = False
         self.queueImage.queue.clear()
+        self.thread.quit()
+        self.thread.wait()
 
 
 class Platesolve(PyQt5.QtCore.QObject):
@@ -122,9 +128,10 @@ class Platesolve(PyQt5.QtCore.QObject):
     queuePlatesolve = Queue()
     signalPlatesolveFinished = PyQt5.QtCore.pyqtSignal(name='platesolveFinished')
 
-    def __init__(self, main):
+    def __init__(self, main, thread):
         super().__init__()
         self.main = main
+        self.thread = thread
         self.isRunning = True
 
     @PyQt5.QtCore.pyqtSlot()
@@ -137,7 +144,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                 modelData = self.queuePlatesolve.get()
                 if modelData['Success']:
                     self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelData['Index'] + 1))
-                    modelData = self.main.solveImage(modelData)
+                    modelData = self.main.imagingApps.solveImage(modelData)
                     if modelData['Success']:
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelData['ImagePath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelData['RaError'], modelData['DecError']))
@@ -154,6 +161,8 @@ class Platesolve(PyQt5.QtCore.QObject):
     def stop(self):
         self.isRunning = False
         self.queuePlatesolve.queue.clear()
+        self.thread.quit()
+        self.thread.wait()
 
 
 class ModelingRunner:
@@ -172,18 +181,18 @@ class ModelingRunner:
         self.imagingApps = imagingApps.ImagingApps(self.app)
 
         # initialize the parallel thread modeling parts
-        self.workerSlewpoint = Slewpoint(self)
         self.threadSlewpoint = PyQt5.QtCore.QThread()
+        self.workerSlewpoint = Slewpoint(self, self.threadSlewpoint)
         self.workerSlewpoint.moveToThread(self.threadSlewpoint)
         self.threadSlewpoint.started.connect(self.workerSlewpoint.run)
         # self.threadSlewpoint.start()
-        self.workerImage = Image(self)
         self.threadImage = PyQt5.QtCore.QThread()
+        self.workerImage = Image(self, self.threadImage)
         self.workerImage.moveToThread(self.threadImage)
         self.threadImage.started.connect(self.workerImage.run)
         # self.threadImage.start()
-        self.workerPlatesolve = Platesolve(self)
         self.threadPlatesolve = PyQt5.QtCore.QThread()
+        self.workerPlatesolve = Platesolve(self, self.threadPlatesolve)
         self.workerPlatesolve.moveToThread(self.threadPlatesolve)
         self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
         # self.threadPlatesolve.start()
@@ -366,14 +375,8 @@ class ModelingRunner:
             messageQueue.put('timeleft--:--')
             self.logger.info('Modeling cancelled in main loop')
         self.workerSlewpoint.stop()
-        self.threadSlewpoint.quit()
-        self.threadSlewpoint.wait()
         self.workerImage.stop()
-        self.threadImage.quit()
-        self.threadImage.wait()
         self.workerPlatesolve.stop()
-        self.threadPlatesolve.quit()
-        self.threadPlatesolve.wait()
         self.modelRun = False
         while not self.solvedPointsQueue.empty():
             modelData = self.solvedPointsQueue.get()

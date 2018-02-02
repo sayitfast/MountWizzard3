@@ -55,7 +55,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data['Solver']['AppName'] = 'ANSRV'
         self.data['Solver']['AppInstallPath'] = ''
 
-        self.app.workerINDI.receivedImage.connect(self.setReceivedImage)
+        self.app.workerINDI.receivedImage.connect(lambda: self.setReceivedImage())
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
