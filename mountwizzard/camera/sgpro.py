@@ -337,11 +337,11 @@ class SGPro(PyQt5.QtCore.QObject):
     def SgSolveImage(self, path, RaHint=None, DecHint=None, ScaleHint=None, BlindSolve=False, UseFitsHeaders=False):
         # reference {"ImagePath":"String","RaHint":0,"DecHint":0,"ScaleHint":0,"BlindSolve":false,"UseFitsHeadersForHints":false}
         data = {"ImagePath": path, "BlindSolve": BlindSolve, "UseFitsHeadersForHints": UseFitsHeaders}
-        if raHint:
+        if RaHint:
             data['RaHint'] = RaHint
-        if decHint:
+        if DecHint:
             data['DecHint'] = DecHint
-        if scaleHint:
+        if ScaleHint:
             data['ScaleHint'] = ScaleHint
         try:
             req = request.Request(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
