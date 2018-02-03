@@ -147,14 +147,13 @@ class Platesolve(PyQt5.QtCore.QObject):
                         modelingData['RaError'] = (modelingData['RaJ2000Solved'] - modelingData['RaJ2000']) * 3600
                         modelingData['DecError'] = (modelingData['DecJ2000Solved'] - modelingData['DecJ2000']) * 3600
                         modelingData['ModelError'] = math.sqrt(modelingData['RaError'] * modelingData['RaError'] + modelingData['DecError'] * modelingData['DecError'])
-                        modelingData['Success'] = True
                         modelingData['Message'] = 'OK'
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelingData['Imagepath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelingData['RaError'], modelingData['DecError']))
+                        self.main.solvedPointsQueue.put(modelingData)
                     else:
                         self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelingData['Message'][:95]))
                 self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
-                self.main.solvedPointsQueue.put(modelingData)
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                     self.main.modelingHasFinished = True
@@ -246,7 +245,7 @@ class ModelingRunner:
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
-            dec = self.transform.degStringToDecimal(commandSet['reply'], '*')
+            dec = self.transform.degStringToDecimal(commandSet['reply'], ':')
             commandSet = {'command': ':Gr#', 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
