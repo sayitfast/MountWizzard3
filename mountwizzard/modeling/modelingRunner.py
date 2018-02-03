@@ -276,7 +276,6 @@ class ModelingRunner:
             if modelingData['Simulation']:
                 # wait for
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
-                    print(self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'])
                     time.sleep(0.5)
         else:
             # if there is no dome, we wait for the mount start slewing

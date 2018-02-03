@@ -150,7 +150,7 @@ class AstrometryClient:
             jobs = result['jobs']
             if len(jobs) > 0:
                 break
-            time.sleep(0.2)
+            time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
         data = {'request-json': ''}
@@ -164,4 +164,5 @@ class AstrometryClient:
         else:
             value = {}
         self.isSolving = False
+        print(value)
         return value
