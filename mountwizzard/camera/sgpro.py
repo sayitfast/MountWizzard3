@@ -200,12 +200,13 @@ class SGPro(PyQt5.QtCore.QObject):
         self.logger.info('message: {0}'.format(mes))
         if suc:
             while True:
-                suc, imageParams['Imagepath'] = self.SgGetImagePath(guid)
+                suc, path = self.SgGetImagePath(guid)
                 if suc:
                     break
                 else:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
+            imageParams['Imagepath'] = path
         else:
             imageParams['Imagepath'] = ''
         imageParams['Success'] = suc

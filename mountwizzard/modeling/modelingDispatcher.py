@@ -49,7 +49,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'RunRefinementModel':
+            'RunFullModel':
                 {
                     'Worker': [
                         {

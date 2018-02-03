@@ -101,14 +101,14 @@ class Image(PyQt5.QtCore.QObject):
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
                 # getting next image
                 self.main.imagingApps.captureImage(modelingData)
-                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING', 'IDLE']:
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING']:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()
                 # we have to wait until image is downloaded before being able to plate solve
                 while modelingData['Imagepath'] == '':
-                    time.sleep(0.1)
+                    time.sleep(1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
             time.sleep(0.1)
@@ -341,7 +341,7 @@ class ModelingRunner:
             # has to be a copy, otherwise we have always the same content
             self.workerSlewpoint.queuePoint.put(copy.copy(modelingData))
         # start process
-        self.hasFinished = False
+        self.modelingHasFinished = False
         self.timeStart = time.time()
         self.workerSlewpoint.signalSlewing.emit()
         while self.modelRun:
@@ -349,7 +349,7 @@ class ModelingRunner:
             if self.cancel:
                 break
             # stop loop if finished
-            if self.hasFinished:
+            if self.modelingHasFinished:
                 break
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
