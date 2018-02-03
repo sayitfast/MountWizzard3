@@ -246,11 +246,13 @@ class ModelingRunner:
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
             dec = self.transform.degStringToDecimal(commandSet['reply'], ':')
+            # print(commandSet['reply'], dec)
             commandSet = {'command': ':Gr#', 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
             ra = self.transform.degStringToDecimal(commandSet['reply'], ':')
+            # print(commandSet['reply'], ra)
             if self.app.workerINDI.telescopeDevice != '':
                 self.app.INDICommandQueue.put(
                     indiXML.newNumberVector([indiXML.oneNumber(ra, indi_attr={'name': 'RA'}),

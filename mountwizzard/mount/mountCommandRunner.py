@@ -55,8 +55,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':SREF': 1,
                       ':CM#': 27,
                       ':CMS#': 1,
-                      ':Gr#': 8,
-                      ':Gd#': 7
+                      ':Gr#': 12,
+                      ':Gd#': 12
     }
 
     def __init__(self, app, thread, data, signalConnected):
