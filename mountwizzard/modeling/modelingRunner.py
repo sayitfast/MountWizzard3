@@ -241,6 +241,7 @@ class ModelingRunner:
         self.app.mountCommandQueue.put(':Sa+{0:02d}*{1:02d}#'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':MS#')
         if modelingData['Simulation']:
+            self.app.mountCommandQueue.put(':U2#')
             commandSet = {'command': ':Gd#', 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
