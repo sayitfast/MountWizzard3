@@ -17,11 +17,8 @@ import os
 import shutil
 import time
 import PyQt5
-# Cameras
 from modeling import imagingApps
-# analyse save functions
 from analyse import analysedata
-# modelPoints
 from modeling import modelingPoints
 from queue import Queue
 
@@ -43,7 +40,6 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.takeNextPoint = True
 
     def run(self):
-        self.takeNextPoint = False
         if not self.isRunning:
             self.isRunning = True
         while self.isRunning:
@@ -254,7 +250,7 @@ class ModelingRunner:
                     break
                 time.sleep(0.2)
             # and waiting for both to stop slewing
-            while self.app.workerMountDispatcher.data['Slewing'] or self.app.workerAscomDome.data['Slewing']:
+            while self.app.workerMountDispatcher.data['Slewing'] or self.app.workerDome.data['Slewing']:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
@@ -324,7 +320,7 @@ class ModelingRunner:
         messageQueue.put('status-- of --')
         messageQueue.put('percent0')
         messageQueue.put('timeleft--:--')
-        messageQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
+        messageQueue.put('#BW{0} - Start Full Model\n'.format(self.timeStamp()))
         self.logger.info('modelingData: {0}'.format(modelingData))
         # start tracking
         self.app.mountCommandQueue.put(':PO#')
@@ -334,7 +330,7 @@ class ModelingRunner:
         self.threadSlewpoint.start()
         self.threadImage.start()
         self.threadPlatesolve.start()
-        # wait untile threads started
+        # wait until threads started
         while not self.workerImage.isRunning and not self.workerPlatesolve.isRunning and not self.workerSlewpoint.isRunning:
             time.sleep(0.1)
         # loading the point to the queue

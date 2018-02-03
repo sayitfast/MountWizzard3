@@ -16,6 +16,7 @@ import platform
 import threading
 import PyQt5
 import time
+import indi.indi_xml as indiXML
 if platform.system() == 'Windows':
     from win32com.client.dynamic import Dispatch
     import pythoncom
@@ -139,7 +140,7 @@ class Dome(PyQt5.QtCore.QObject):
                     if command == 'SlewAzimuth':
                         if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
                             self.app.INDICommandQueue.put(
-                                indiXML.newNumberVector(indiXML.oneNumber(binning, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'}),
+                                indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
                                                         indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
                         else:
                             self.ascom.SlewToAzimuth(float(value))
