@@ -164,5 +164,4 @@ class AstrometryClient:
         else:
             value = {}
         self.isSolving = False
-        print(value)
         return value

@@ -139,7 +139,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                 if modelingData['Imagepath'] != '':
                     self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
                     modelingData = self.main.imagingApps.solveImage(modelingData)
-                    if 'RaJNowSolved' in modelingData:
+                    if 'RaJ2000Solved' in modelingData:
                         ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
                         modelingData['RaJNowSolved'] = ra_sol_Jnow
                         modelingData['DecJNowSolved'] = dec_sol_Jnow
