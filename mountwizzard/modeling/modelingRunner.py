@@ -16,6 +16,7 @@ import copy
 import os
 import shutil
 import time
+import math
 import PyQt5
 import indi.indi_xml as indiXML
 from modeling import imagingApps
@@ -148,7 +149,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                         modelingData['ModelError'] = math.sqrt(modelingData['RaError'] * modelingData['RaError'] + modelingData['DecError'] * modelingData['DecError'])
                         modelingData['Success'] = True
                         modelingData['Message'] = 'OK'
-                        self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelingData['ImagePath']))
+                        self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelingData['Imagepath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelingData['RaError'], modelingData['DecError']))
                     else:
                         self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelingData['Message'][:95]))
