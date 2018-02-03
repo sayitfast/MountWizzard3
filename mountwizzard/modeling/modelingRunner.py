@@ -208,7 +208,7 @@ class ModelingRunner:
         self.timeStart = 0
         self.results = []
         self.modelingResultData = []
-        self.modelData = []
+        self.modelAlignmentData = []
         self.modelRun = False
         self.hasFinished = False
         self.numberPointsMax = 0
@@ -240,11 +240,9 @@ class ModelingRunner:
         self.app.mountCommandQueue.put('ClearAlign')
         time.sleep(4)
 
-    def slewMountDome(self, modelData):
-        azimuth = modelData['Azimuth']
-        altitude = modelData['Altitude']
-        domeIsConnected = modelData['DomeConnected']
-        simulation = modelData['Simulation']
+    def slewMountDome(self, modelingData):
+        altitude = modelingData['Altitude']
+        azimuth = modelingData['Azimuth']
         # limit azimuth and altitude
         if azimuth >= 360:
             azimuth = 359.9
@@ -256,7 +254,7 @@ class ModelingRunner:
         self.app.mountCommandQueue.put(':MS#')
         # if there is a dome connected, we have to start slewing it, too
         counterMaxWait = 0
-        if domeIsConnected:
+        if modelingData['DomeIsConnected']:
             self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
             # now we wait for both start slewing
             while not self.app.workerMountDispatcher.data['Slewing'] and not self.app.workerDome.data['Slewing']:
@@ -288,7 +286,8 @@ class ModelingRunner:
                     break
                 time.sleep(0.2)
 
-    def runRefinementModel(self):
+    def runFullModel(self):
+        modelingData = {'Directory': time.strftime("%Y-%m-%d", time.gmtime())}
         # imaging has to be connected
         if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
             return
@@ -308,30 +307,26 @@ class ModelingRunner:
             return
         if not self.app.workerMountDispatcher.mountStatus['Align']:
             return
+        # there have to be some modeling points
+        if len(self.modelPoints.RefinementPoints) == 0:
+            self.logger.warning('There are no Refinement Points to modeling')
+            return
         # if dome is present, it has to be connected, too
         if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
             domeIsConnected = self.app.workerDome.data['Connected']
         else:
             domeIsConnected = False
+        modelingData['DomeIsConnected'] = domeIsConnected
+        modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
+        modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
+        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.RefinementPoints, modelingData)
+        name = modelingData['Directory'] + '_full.dat'
+        if len(self.modelAlignmentData) > 0:
+            self.app.ui.le_analyseFileName.setText(name)
+            self.analyseData.saveData(self.modelAlignmentData, name)
 
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
-        if len(self.modelPoints.RefinementPoints) > 0:
-            simulation = self.app.ui.checkSimulation.isChecked()
-            keepImages = self.app.ui.checkKeepImages.isChecked()
-            modelData = self.imagingApps.prepareImaging()
-            self.modelData = self.runBoost(self.app.messageQueue, self.modelPoints.RefinementPoints, modelData, settlingTime, simulation, keepImages, domeIsConnected)
-            # self.app.modeling.modelData = self.app.mount.retrofitMountData(self.app.modeling.modelData)
-            name = modelData['Directory'] + '_full.dat'
-            if len(self.modelData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)
-                self.analyseData.saveData(self.modelData, name)
-                # self.app.mount.saveRefinementModel()
-                # if not self.app.workerModeling.cancel:
-                # self.app.mount.programBatchData(self.modelData)
-        else:
-            self.logger.warning('There are no Refinement Points to modeling')
-
-    def runBoost(self, messageQueue, runPoints, modelData, settlingTime, simulation=False, keepImages=False, domeIsConnected=False):
+    def runModelCore(self, messageQueue, runPoints, modelingData):
         # start clearing the data
         results = []
         # preparing the gui outputs
@@ -339,9 +334,8 @@ class ModelingRunner:
         messageQueue.put('percent0')
         messageQueue.put('timeleft--:--')
         messageQueue.put('#BW{0} - Start Boost Model\n'.format(self.timeStamp()))
-        if not os.path.isdir(modelData['BaseDirImages']):
-            os.makedirs(modelData['BaseDirImages'])
-        self.logger.info('modelData: {0}'.format(modelData))
+        self.logger.info('modelingData: {0}'.format(modelingData))
+        # start tracking
         self.app.mountCommandQueue.put(':PO#')
         self.app.mountCommandQueue.put(':AP#')
         self.modelRun = True
@@ -349,21 +343,17 @@ class ModelingRunner:
         self.threadSlewpoint.start()
         self.threadImage.start()
         self.threadPlatesolve.start()
-        # here starts the real model running cycle
-        # loading all the point in queue
+        # loading the point to the queue
         for i, (p_az, p_alt) in enumerate(runPoints):
-            modelData['Index'] = i
-            modelData['Azimuth'] = p_az
-            modelData['Altitude'] = p_alt
-            modelData['SettlingTime'] = settlingTime
-            modelData['Simulation'] = simulation
-            modelData['DomeConnected'] = domeIsConnected
-            modelData['Simulation'] = simulation
-            self.workerSlewpoint.queuePoint.put(copy.copy(modelData))
-        self.numberPointsMax = len(runPoints)
+            modelingData['Index'] = i
+            modelingData['Azimuth'] = p_az
+            modelingData['Altitude'] = p_alt
+            modelingData['NumberPoints'] = len(runPoints)
+            # has to be a copy, otherwise we have always the same content
+            self.workerSlewpoint.queuePoint.put(copy.copy(modelingData))
         # start process
-        self.timeStart = time.time()
         self.hasFinished = False
+        self.timeStart = time.time()
         self.workerSlewpoint.signalSlewing.emit()
         while self.modelRun:
             # stop loop if cancelled
@@ -385,15 +375,13 @@ class ModelingRunner:
         self.workerPlatesolve.stop()
         self.modelRun = False
         while not self.solvedPointsQueue.empty():
-            modelData = self.solvedPointsQueue.get()
+            modelingData = self.solvedPointsQueue.get()
             # clean up intermediate data
-            del modelData['Simulation']
-            del modelData['SettlingTime']
-            results.append(copy.copy(modelData))
+            results.append(copy.copy(modelingData))
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         if not keepImages:
-            shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
+            shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
         messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
         return results
 
@@ -408,7 +396,6 @@ class ModelingRunner:
         if len(self.modelPoints.BasePoints) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
-            modelData = self.imagingApps.prepareImaging()
             domeIsConnected = self.app.workerAscomDome.isRunning
             self.modelData = self.runModel(self.app.messageQueue, 'Base', self.modelPoints.BasePoints, modelData, settlingTime, simulation, keepImages, domeIsConnected)
             self.modelData = self.app.mount.retrofitMountData(self.modelData)
@@ -433,7 +420,6 @@ class ModelingRunner:
                 else:
                     self.app.mount.loadBaseModel()
                 keepImages = self.app.ui.checkKeepImages.isChecked()
-                modelData = self.imagingApps.prepareImaging()
                 domeIsConnected = self.app.workerAscomDome.isRunning
                 refinePoints = self.runModel(self.app.messageQueue, 'Refinement', self.modelPoints.RefinementPoints, modelData, settlingTime, simulation, keepImages, domeIsConnected)
                 for i in range(0, len(refinePoints)):
@@ -459,7 +445,6 @@ class ModelingRunner:
             simulation = self.app.ui.checkSimulation.isChecked()
             keepImages = self.app.ui.checkKeepImages.isChecked()
             domeIsConnected = self.app.workerAscomDome.isRunning
-            modelData = self.imagingApps.prepareImaging()
             self.modelingResultData = self.runModel(self.app.messageQueue, 'Check', points, modelData, settlingTime, simulation, keepImages, domeIsConnected)
             name = modelData['Directory'] + '_check.dat'
             if len(self.modelingResultData) > 0:
@@ -506,7 +491,6 @@ class ModelingRunner:
         simulation = self.app.ui.checkSimulation.isChecked()
         keepImages = self.app.ui.checkKeepImages.isChecked()
         domeIsConnected = self.app.workerAscomDome.isRunning
-        modelData = self.imagingApps.prepareImaging()
         self.modelingResultData = self.runModel(self.app.messageQueue, 'Hysterese', points, modelData, waitingTime, simulation, keepImages, domeIsConnected)
         name = modelData['Directory'] + '_hysterese.dat'
         self.app.ui.le_analyseFileName.setText(name)
@@ -534,7 +518,6 @@ class ModelingRunner:
 
     def plateSolveSync(self, simulation=False):
         self.app.messageQueue.put('{0} - Start Sync Mount Model\n'.format(timeStamp()))
-        modelData = self.imagingApps.prepareImaging()
         modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')

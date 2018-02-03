@@ -269,12 +269,9 @@ class SGPro(PyQt5.QtCore.QObject):
         if path and filename:
             data['Path'] = path + '/' + filename
         try:
-            req = request.Request(self.ipSGPro + self.captureImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
+            result = requests.post(self.ipSGPro + self.captureImagePath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message'], result['Receipt']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''
@@ -283,11 +280,9 @@ class SGPro(PyQt5.QtCore.QObject):
         # reference {}
         data = {}
         try:
-            req = request.Request(self.ipSGPro + self.getCameraPropsPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            return captureResponse
+            result = requests.post(self.ipSGPro + self.getCameraPropsPath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
@@ -303,18 +298,15 @@ class SGPro(PyQt5.QtCore.QObject):
             return result['Success'], result['State'], result['Message']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
-            return False, 'Request failed'
+            return False, 'Request failed', 'Request failed'
 
     def SgGetImagePath(self, _guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
         data = {'Receipt': _guid}
         try:
-            req = request.Request(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['Message']
+            result = requests.post(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed'
@@ -323,12 +315,9 @@ class SGPro(PyQt5.QtCore.QObject):
         # reference {"Receipt":"00000000000000000000000000000000"}
         data = {'Receipt': _guid}
         try:
-            req = request.Request(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec'], captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
+            result = requests.post(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message'], result['Ra'], result['Dec'], result['Scale'], result['Angle'], result['TimeToSolve']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
@@ -343,11 +332,9 @@ class SGPro(PyQt5.QtCore.QObject):
         if ScaleHint:
             data['ScaleHint'] = ScaleHint
         try:
-            req = request.Request(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))                                                      # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
+            result = requests.post(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message'], result['Receipt']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''

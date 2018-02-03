@@ -159,13 +159,25 @@ class ImagingApps:
     def setCameraExposureTime(self, status):
         self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
 
-    def prepareImaging(self):
+    def captureImage(self, imageParams):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
+        if self.app.workerModelingDispatcher.modelingRunner.cancel:
+            self.logger.info('Cancelled capturing image')
+            imageParams['Success'] = False
+            imageParams['Message'] = 'Cancel modeling pressed'
+            return imageParams
         if camData['CONNECTION']['CONNECT'] == 'Off':
-            return
-        imageParams = {}
-        directory = time.strftime("%Y-%m-%d", time.gmtime())
-        imageParams['Directory'] = directory
+            imageParams['Success'] = False
+            imageParams['Message'] = 'Camera not connected'
+            return imageParams
+        imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
+        if not os.path.isdir(imageParams['BaseDirImages']):
+            os.makedirs(imageParams['BaseDirImages'])
+        imageParams['Binning'] = int(float(self.app.ui.cameraBin.value()))
+        imageParams['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
+        imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
+        imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
+        imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         # todo: handling of subframes
         if False and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
@@ -184,42 +196,14 @@ class ImagingApps:
             imageParams['Gain'] = camData['Gain']
         else:
             imageParams['Gain'] = 'NotSet'
-        imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + directory
         if self.app.ui.checkFastDownload.isChecked():
             imageParams['Speed'] = 'HiSpeed'
         else:
             imageParams['Speed'] = 'Normal'
-        imageParams['Binning'] = int(float(self.app.ui.cameraBin.value()))
-        imageParams['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
-        imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
-        imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-        imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         if 'Binning' in imageParams:
             imageParams['SizeX'] = int(imageParams['SizeX'] / imageParams['Binning'])
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
-        return imageParams
-
-    def captureImage(self, imageParams, queue=False):
-        camData = self.imagingWorkerCameraAppHandler.data['Camera']
-        if camData['CONNECTION']['CONNECT'] == 'Off':
-            return
-        if self.app.workerModelingDispatcher.modelingRunner.cancel:
-            self.logger.info('Modeling cancelled after capturing image')
-            imageParams['Success'] = False
-            imageParams['Message'] = 'Cancel modeling pressed'
-            return imageParams
-        self.logger.info('Imaging parameters: {0}'.format(imageParams))
-        # using a queue if the calling thread is gui -> no wait
-        # if it is done through modeling -> separate thread which is calling
-        imageParams['Message'] = ''
-        imageParams['Success'] = False
-        if queue:
-            self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
-            while camData['Status'] != 'INTEGRATING' and self.app.workerModelingDispatcher.isRunning:
-                time.sleep(0.1)
-                PyQt5.QtWidgets.QApplication.processEvents()
-        else:
-            imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
+        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         return imageParams
 
