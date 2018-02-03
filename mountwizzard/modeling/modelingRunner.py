@@ -66,7 +66,6 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.queuePoint.queue.clear()
         self.thread.quit()
         self.thread.wait()
-        print('Slewing stopped')
 
 
 class Image(PyQt5.QtCore.QObject):
@@ -119,7 +118,6 @@ class Image(PyQt5.QtCore.QObject):
         self.queueImage.queue.clear()
         self.thread.quit()
         self.thread.wait()
-        print('Image stopped')
 
 
 class Platesolve(PyQt5.QtCore.QObject):
@@ -139,10 +137,18 @@ class Platesolve(PyQt5.QtCore.QObject):
             PyQt5.QtWidgets.QApplication.processEvents()
             if not self.queuePlatesolve.empty():
                 modelingData = self.queuePlatesolve.get()
-                if modelingData['Success']:
+                if modelingData['Imagepath'] != '':
                     self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
-                    modelingData = self.main.imagingApps.solveImage(modelingData)
+                    self.main.imagingApps.solveImage(modelingData)
                     if modelingData['Success']:
+                        ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
+                        modelingData['RaJNowSolved'] = ra_sol_Jnow
+                        modelingData['DecJNowSolved'] = dec_sol_Jnow
+                        modelingData['RaError'] = (modelingData['RaJ2000Solved'] - modelingData['RaJ2000']) * 3600
+                        modelingData['DecError'] = (modelingData['DecJ2000Solved'] - modelingData['DecJ2000']) * 3600
+                        modelingData['ModelError'] = math.sqrt(modelingData['RaError'] * modelingData['RaError'] + modelingData['DecError'] * modelingData['DecError'])
+                        modelingData['Success'] = True
+                        modelingData['Message'] = 'OK'
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelingData['ImagePath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelingData['RaError'], modelingData['DecError']))
                     else:
@@ -160,7 +166,6 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.queuePlatesolve.queue.clear()
         self.thread.quit()
         self.thread.wait()
-        print('Platesolve stopped')
 
 
 class ModelingRunner:
@@ -366,7 +371,7 @@ class ModelingRunner:
             results.append(copy.copy(modelingData))
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        if 'KeepImages' in modelingData:
+        if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
         messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))

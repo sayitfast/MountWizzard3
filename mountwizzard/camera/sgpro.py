@@ -89,9 +89,9 @@ class SGPro(PyQt5.QtCore.QObject):
             if not self.commandQueue.empty():
                 command = self.commandQueue.get()
                 if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
+                    self.getImage(command['ImageParams'])
                 elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
+                    self.solveImage(command['ImageParams'])
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -211,7 +211,6 @@ class SGPro(PyQt5.QtCore.QObject):
             imageParams['Imagepath'] = ''
         imageParams['Success'] = suc
         imageParams['Message'] = mes
-        return imageParams
 
     def solveImage(self, imageParams):
         suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
@@ -224,7 +223,6 @@ class SGPro(PyQt5.QtCore.QObject):
             self.logger.warning('Solver no start, message: {0}'.format(mes))
             imageParams['Success'] = False
             imageParams['Message'] = mes
-            return imageParams
         while not imageParams['Cancel']:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
@@ -240,16 +238,11 @@ class SGPro(PyQt5.QtCore.QObject):
             elif mes != 'Solving':
                 solved = False
                 break
-            # TODO: clarification should we again introduce model run cancel during plate solving -> very complicated solver should cancel if not possible after some time
-            # elif app.model.cancel:
-            #    solved = False
-            #    break
             else:
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
         imageParams['Success'] = solved
         imageParams['Message'] = mes
-        return imageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

@@ -220,7 +220,7 @@ class ImagingApps:
         imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
         return imageParams
 
-    def solveImage(self, imageParams, queue=False):
+    def solveImage(self, imageParams):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
@@ -229,10 +229,7 @@ class ImagingApps:
         # if it is done through modeling -> separate thread which is calling
         imageParams['Message'] = ''
         imageParams['Success'] = False
-        if queue:
-            self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
-        else:
-            imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
+        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         if imageParams['Success']:
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
@@ -245,4 +242,4 @@ class ImagingApps:
             imageParams['Message'] = 'OK'
         else:
             imageParams['Success'] = False
-        return imageParams
+
