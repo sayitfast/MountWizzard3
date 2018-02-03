@@ -151,7 +151,6 @@ class Platesolve(PyQt5.QtCore.QObject):
                         self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelingData['Message'][:95]))
                 self.main.solvedPointsQueue.put(modelingData)
                 self.main.app.messageQueue.put('status{0} of {1}'.format(modelingData['Index'] + 1, modelingData['NumberPoints']))
-                self.main.numberSolvedPoints += 1
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                     self.main.modelingHasFinished = True
@@ -374,7 +373,7 @@ class ModelingRunner:
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
-        messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
+        messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of processed points: {1:3d}\n\n'.format(self.timeStamp(), modelingData['NumberPoints']))
         return results
 
 
