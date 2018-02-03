@@ -49,6 +49,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
                 self.main.app.messageQueue.put('#BG{0} - Slewing to point {1:2d}  @ Az: {2:3.0f}\xb0 Alt: {3:2.0f}\xb0\n'.format(self.main.timeStamp(), modelingData['Index'] + 1, modelingData['Azimuth'], modelingData['Altitude']))
                 self.main.slewMountDome(modelingData)
                 self.main.app.messageQueue.put('{0} -\t Wait mount settling / delay time:  {1:02d} sec\n'.format(self.main.timeStamp(), modelingData['SettlingTime']))
+                self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
                 timeCounter = modelingData['SettlingTime']
                 while timeCounter > 0:
                     time.sleep(1)
@@ -105,6 +106,7 @@ class Image(PyQt5.QtCore.QObject):
                 while modelingData['Imagepath'] == '' and not self.main.cancel:
                     time.sleep(1)
                     PyQt5.QtWidgets.QApplication.processEvents()
+                self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
                 self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
             time.sleep(0.1)
 
@@ -149,8 +151,8 @@ class Platesolve(PyQt5.QtCore.QObject):
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelingData['RaError'], modelingData['DecError']))
                     else:
                         self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelingData['Message'][:95]))
+                self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
                 self.main.solvedPointsQueue.put(modelingData)
-                self.main.app.messageQueue.put('status{0} of {1}'.format(modelingData['Index'] + 1, modelingData['NumberPoints']))
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                     self.main.modelingHasFinished = True
@@ -316,7 +318,9 @@ class ModelingRunner:
         # start clearing the data
         results = []
         # preparing the gui outputs
-        messageQueue.put('status-- of --')
+        messageQueue.put('Imaged>{0:02d}'.format(0))
+        messageQueue.put('Solved>{0:02d}'.format(0))
+        messageQueue.put('Processed>{0:02d}'.format(0))
         messageQueue.put('percent0')
         messageQueue.put('timeleft--:--')
         messageQueue.put('#BW{0} - Start Full Model\n'.format(self.timeStamp()))
@@ -356,7 +360,6 @@ class ModelingRunner:
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.cancel:
             # clearing the gui
-            messageQueue.put('status-- of --')
             messageQueue.put('percent0')
             messageQueue.put('timeleft--:--')
             self.logger.info('Modeling cancelled in main loop')

@@ -523,8 +523,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerINDI.stop()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
-        #if self.workerModelingDispatcher.isRunning:
-        #    self.workerModelingDispatcher.stop()
+        # if self.workerModelingDispatcher.isRunning:
+        #     self.workerModelingDispatcher.stop()
         if self.workerUpload.isRunning:
             self.workerUpload.stop()
         if self.workerRemote.isRunning:
@@ -1082,8 +1082,16 @@ class MountWizzardApp(widget.MwWidget):
             text = self.messageQueue.get()
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
-            elif text.startswith('status'):
-                self.ui.le_modelingStatus.setText(text[6:])
+            elif text.startswith('ToModel>'):
+                self.ui.le_numberPointsToModel.setText(text[8:])
+            elif text.startswith('Slewed>'):
+                self.ui.le_numberPointsSlewed.setText(text[7:])
+            elif text.startswith('Imaged>'):
+                self.ui.le_numberPointsImaged.setText(text[7:])
+            elif text.startswith('Solved>'):
+                self.ui.le_numberPointsSolved.setText(text[7:])
+            elif text.startswith('Processed>'):
+                self.ui.le_numberPointsProcessed.setText(text[10:])
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):

@@ -7157,12 +7157,12 @@ Window</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QLineEdit" name="le_modelingStatus">
+    <widget class="QLineEdit" name="le_numberPointsSolved">
      <property name="geometry">
       <rect>
-       <x>505</x>
-       <y>360</y>
-       <width>61</width>
+       <x>600</x>
+       <y>260</y>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -7190,7 +7190,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>00 of 00</string>
+      <string>00</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -7203,8 +7203,8 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>360</y>
-       <width>91</width>
+       <y>260</y>
+       <width>106</width>
        <height>21</height>
       </rect>
      </property>
@@ -7217,7 +7217,7 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Points modeled:</string>
+      <string>Points solved:</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_modelingStatusTime">
@@ -7331,9 +7331,9 @@ Window</string>
     <widget class="QLineEdit" name="le_numberPointsToModel">
      <property name="geometry">
       <rect>
-       <x>185</x>
-       <y>415</y>
-       <width>61</width>
+       <x>600</x>
+       <y>170</y>
+       <width>31</width>
        <height>21</height>
       </rect>
      </property>
@@ -7361,7 +7361,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>--</string>
+      <string>00</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -7373,8 +7373,8 @@ Window</string>
     <widget class="QLabel" name="label_59">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>415</y>
+       <x>405</x>
+       <y>170</y>
        <width>166</width>
        <height>21</height>
       </rect>
@@ -7388,7 +7388,196 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Number of Points to model:</string>
+      <string>Points to model:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_77">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>230</y>
+       <width>106</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Points imaged:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_numberPointsImaged">
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>230</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_81">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>290</y>
+       <width>106</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Points processed:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_numberPointsProcessed">
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>290</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_numberPointsSlewed">
+     <property name="geometry">
+      <rect>
+       <x>600</x>
+       <y>200</y>
+       <width>31</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_100">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>200</y>
+       <width>106</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Points slewed:</string>
      </property>
     </widget>
     <zorder>line_42</zorder>
@@ -7427,7 +7616,7 @@ Window</string>
     <zorder>line_38</zorder>
     <zorder>label_138</zorder>
     <zorder>bar_modelingStatusPercent</zorder>
-    <zorder>le_modelingStatus</zorder>
+    <zorder>le_numberPointsSolved</zorder>
     <zorder>label_28</zorder>
     <zorder>le_modelingStatusTime</zorder>
     <zorder>label_29</zorder>
@@ -7435,6 +7624,12 @@ Window</string>
     <zorder>checkNoUpdateModel</zorder>
     <zorder>le_numberPointsToModel</zorder>
     <zorder>label_59</zorder>
+    <zorder>label_77</zorder>
+    <zorder>le_numberPointsImaged</zorder>
+    <zorder>label_81</zorder>
+    <zorder>le_numberPointsProcessed</zorder>
+    <zorder>le_numberPointsSlewed</zorder>
+    <zorder>label_100</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
