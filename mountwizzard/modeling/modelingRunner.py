@@ -17,6 +17,7 @@ import os
 import shutil
 import time
 import PyQt5
+import indi.indi_xml as indiXML
 from modeling import imagingApps
 from analyse import analysedata
 from modeling import modelingPoints
@@ -238,6 +239,22 @@ class ModelingRunner:
         self.app.mountCommandQueue.put(':Sz{0:03d}*{1:02d}#'.format(int(azimuth), int((azimuth - int(azimuth)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':Sa+{0:02d}*{1:02d}#'.format(int(altitude), int((altitude - int(altitude)) * 60 + 0.5)))
         self.app.mountCommandQueue.put(':MS#')
+        if modelingData['Simulation']:
+            commandSet = {'command': ':Gd#', 'reply': ''}
+            self.app.mountCommandQueue.put(commandSet)
+            while len(commandSet['reply']) == 0:
+                time.sleep(0.1)
+            dec = self.transform.degStringToDecimal(commandSet['reply'], '*')
+            commandSet = {'command': ':Gr#', 'reply': ''}
+            self.app.mountCommandQueue.put(commandSet)
+            while len(commandSet['reply']) == 0:
+                time.sleep(0.1)
+            ra = self.transform.degStringToDecimal(commandSet['reply'], ':')
+            if self.app.workerINDI.telescopeDevice != '':
+                self.app.INDICommandQueue.put(
+                    indiXML.newNumberVector([indiXML.oneNumber(ra, indi_attr={'name': 'RA'}),
+                                             indiXML.oneNumber(dec, indi_attr={'name': 'DEC'})],
+                                            indi_attr={'name': 'EQUATORIAL_EOD_COORD', 'device': self.app.workerINDI.telescopeDevice}))
         # if there is a dome connected, we have to start slewing it, too
         counterMaxWait = 0
         if modelingData['DomeIsConnected']:
@@ -256,6 +273,11 @@ class ModelingRunner:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
                 time.sleep(0.2)
+            if modelingData['Simulation']:
+                # wait for
+                while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
+                    print(self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'])
+                    time.sleep(0.5)
         else:
             # if there is no dome, we wait for the mount start slewing
             while not self.app.workerMountDispatcher.data['Slewing']:
@@ -271,6 +293,11 @@ class ModelingRunner:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
                 time.sleep(0.2)
+            if modelingData['Simulation']:
+                # wait for
+                while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
+                    time.sleep(0.1)
+
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d", time.gmtime())}

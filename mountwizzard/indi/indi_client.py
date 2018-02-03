@@ -152,7 +152,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.sendMessage(indiCommand)
             self.handleNewDevice()
             if not self.data['Connected'] and self.socket.state() == 0:
-
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
             time.sleep(0.1)
             QtWidgets.QApplication.processEvents()
