@@ -162,11 +162,9 @@ class ImagingApps:
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Cancelled capturing image')
-            imageParams['Success'] = False
             imageParams['Message'] = 'Cancel modeling pressed'
             return imageParams
         if camData['CONNECTION']['CONNECT'] == 'Off':
-            imageParams['Success'] = False
             imageParams['Message'] = 'Camera not connected'
             return imageParams
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
@@ -223,23 +221,11 @@ class ImagingApps:
     def solveImage(self, imageParams):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
-            return
-        imageParams['UseFitsHeaders'] = True
+            return imageParams
         # using a queue if the calling thread is gui -> no wait
         # if it is done through modeling -> separate thread which is calling
-        imageParams['Message'] = ''
-        imageParams['Success'] = False
-        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        # self.imagingCommandQueue.put({'Command': 'SolveImage', 'ImageParams': imageParams})
+        imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
-        if imageParams['Success']:
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
-            imageParams['RaJNowSolved'] = ra_sol_Jnow
-            imageParams['DecJNowSolved'] = dec_sol_Jnow
-            imageParams['RaError'] = (imageParams['RaJ2000Solved'] - imageParams['RaJ2000']) * 3600
-            imageParams['DecError'] = (imageParams['DecJ2000Solved'] - imageParams['DecJ2000']) * 3600
-            imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
-            imageParams['Success'] = True
-            imageParams['Message'] = 'OK'
-        else:
-            imageParams['Success'] = False
+        return imageParams
 

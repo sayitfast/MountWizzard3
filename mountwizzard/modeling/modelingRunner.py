@@ -43,9 +43,9 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.takeNextPoint = True
 
     def run(self):
+        self.takeNextPoint = False
         if not self.isRunning:
             self.isRunning = True
-        self.takeNextPoint = False
         while self.isRunning:
             if self.takeNextPoint and not self.queuePoint.empty():
                 self.takeNextPoint = False
@@ -99,7 +99,7 @@ class Image(PyQt5.QtCore.QObject):
                 modelingData['Imagepath'] = ''
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
                 # getting next image
-                self.main.imagingApps.captureImage(modelingData)
+                modelingData = self.main.imagingApps.captureImage(modelingData)
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING'] and not self.main.cancel:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
@@ -139,8 +139,8 @@ class Platesolve(PyQt5.QtCore.QObject):
                 modelingData = self.queuePlatesolve.get()
                 if modelingData['Imagepath'] != '':
                     self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
-                    self.main.imagingApps.solveImage(modelingData)
-                    if modelingData['Success']:
+                    modelingData = self.main.imagingApps.solveImage(modelingData)
+                    if 'RaJNowSolved' in modelingData:
                         ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
                         modelingData['RaJNowSolved'] = ra_sol_Jnow
                         modelingData['DecJNowSolved'] = dec_sol_Jnow
@@ -309,6 +309,8 @@ class ModelingRunner:
         modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
         modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
+        self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
+        self.cancel = False
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.RefinementPoints, modelingData)
         name = modelingData['Directory'] + '_full.dat'
         if len(self.modelAlignmentData) > 0:
@@ -332,9 +334,11 @@ class ModelingRunner:
         self.threadSlewpoint.start()
         self.threadImage.start()
         self.threadPlatesolve.start()
+        # wait untile threads started
+        while not self.workerImage.isRunning and not self.workerPlatesolve.isRunning and not self.workerSlewpoint.isRunning:
+            time.sleep(0.1)
         # loading the point to the queue
         for i, (p_az, p_alt) in enumerate(runPoints):
-            modelingData['Cancel'] = False
             modelingData['Index'] = i
             modelingData['Azimuth'] = p_az
             modelingData['Altitude'] = p_alt
@@ -348,7 +352,7 @@ class ModelingRunner:
         while self.modelRun:
             # stop loop if modeling is cancelled from external
             if self.cancel:
-                modelingData['Cancel'] = True
+                self.imagingApps.imagingWorkerCameraAppHandler.cancel = True
                 break
             # stop loop if finished
             if self.modelingHasFinished:

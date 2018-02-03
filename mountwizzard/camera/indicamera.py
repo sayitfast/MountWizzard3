@@ -176,18 +176,14 @@ class INDICamera(PyQt5.QtCore.QObject):
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath
-            imageParams['Success'] = True
             imageParams['Message'] = 'OK'
         else:
             imageParams['Imagepath'] = ''
-            imageParams['Success'] = False
             imageParams['Message'] = 'No Picture Taken'
         return imageParams
 
     def solveImage(self, imageParams):
         if 'Imagepath' not in imageParams:
-            imageParams['Success'] = False
-            imageParams['Message'] = 'No Imagepath'
             return imageParams
         if self.app.ui.checkEnableAstrometry.isChecked():
             if self.data['Solver']['Status'] == 2:
@@ -197,10 +193,8 @@ class INDICamera(PyQt5.QtCore.QObject):
                     imageParams['DecJ2000Solved'] = result['dec']
                     imageParams['Angle'] = result['orientation']
                     imageParams['Scale'] = result['pixscale']
-                    imageParams['Success'] = True
                     imageParams['Message'] = 'Solved'
                 else:
-                    imageParams['Success'] = False
                     imageParams['Message'] = 'Solve failed'
             else:
                 self.logger.error('There is a solving process already running')

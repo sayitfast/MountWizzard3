@@ -37,6 +37,7 @@ class SGPro(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
+        self.cancel = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
         self.tryConnectionCounter = 0
@@ -89,9 +90,9 @@ class SGPro(PyQt5.QtCore.QObject):
             if not self.commandQueue.empty():
                 command = self.commandQueue.get()
                 if command['Command'] == 'GetImage':
-                    self.getImage(command['ImageParams'])
+                    command['ImageParams'] = self.getImage(command['ImageParams'])
                 elif command['Command'] == 'SolveImage':
-                    self.solveImage(command['ImageParams'])
+                    command['ImageParams'] = self.solveImage(command['ImageParams'])
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -199,7 +200,7 @@ class SGPro(PyQt5.QtCore.QObject):
         imageParams['Imagepath'] = ''
         self.logger.info('message: {0}'.format(mes))
         if suc:
-            while not imageParams['Cancel']:
+            while True:
                 suc, path = self.SgGetImagePath(guid)
                 if suc:
                     break
@@ -209,8 +210,8 @@ class SGPro(PyQt5.QtCore.QObject):
             imageParams['Imagepath'] = path
         else:
             imageParams['Imagepath'] = ''
-        imageParams['Success'] = suc
         imageParams['Message'] = mes
+        return imageParams
 
     def solveImage(self, imageParams):
         suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
@@ -221,14 +222,12 @@ class SGPro(PyQt5.QtCore.QObject):
                                            UseFitsHeaders=False)
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
-            imageParams['Success'] = False
             imageParams['Message'] = mes
-        while not imageParams['Cancel']:
+        while True:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
                 self.logger.info('Imaging parameters {0}'.format(imageParams))
-                solved = True
                 imageParams['RaJ2000Solved'] = float(ra_sol)
                 imageParams['DecJ2000Solved'] = float(dec_sol)
                 imageParams['Scale'] = float(scale)
@@ -236,13 +235,12 @@ class SGPro(PyQt5.QtCore.QObject):
                 imageParams['TimeTS'] = float(timeTS)
                 break
             elif mes != 'Solving':
-                solved = False
                 break
             else:
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
-        imageParams['Success'] = solved
         imageParams['Message'] = mes
+        return imageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,
