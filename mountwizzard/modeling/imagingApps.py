@@ -38,7 +38,6 @@ class ImagingApps:
     logger = logging.getLogger(__name__)
 
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
-    CAPTUREFILE = 'modeling'
 
     def __init__(self, app):
         # make main sources available

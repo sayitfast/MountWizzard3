@@ -101,13 +101,13 @@ class Image(PyQt5.QtCore.QObject):
                 self.main.app.messageQueue.put('{0} -\t Capturing image for model point {1:2d}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
                 # getting next image
                 self.main.imagingApps.captureImage(modelingData)
-                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING']:
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING'] and not self.main.cancel:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()
                 # we have to wait until image is downloaded before being able to plate solve
-                while modelingData['Imagepath'] == '':
+                while modelingData['Imagepath'] == '' and not self.main.cancel:
                     time.sleep(1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
@@ -125,7 +125,6 @@ class Image(PyQt5.QtCore.QObject):
 class Platesolve(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     queuePlatesolve = Queue()
-    signalPlatesolveFinished = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, main, thread):
         super().__init__()
@@ -142,18 +141,18 @@ class Platesolve(PyQt5.QtCore.QObject):
                 modelingData = self.queuePlatesolve.get()
                 if modelingData['Success']:
                     self.main.app.messageQueue.put('{0} -\t Solving image for model point {1}\n'.format(self.main.timeStamp(), modelingData['Index'] + 1))
-                    modelingData = self.main.imagingApps.solveImage(modelingData, queue=False)
+                    modelingData = self.main.imagingApps.solveImage(modelingData)
                     if modelingData['Success']:
                         self.main.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(self.main.timeStamp(), modelingData['ImagePath']))
                         self.main.app.messageQueue.put('{0} -\t RA_diff:  {1:2.1f}    DEC_diff: {2:2.1f}\n'.format(self.main.timeStamp(), modelingData['RaError'], modelingData['DecError']))
                     else:
-                        self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelingData['Message']))
+                        self.main.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(self.main.timeStamp(), modelingData['Message'][:95]))
                 self.main.solvedPointsQueue.put(modelingData)
-                self.main.app.messageQueue.put('status{0} of {1}'.format(modelingData['Index'] + 1, self.main.numberPointsMax))
+                self.main.app.messageQueue.put('status{0} of {1}'.format(modelingData['Index'] + 1, modelingData['NumberPoints']))
                 self.main.numberSolvedPoints += 1
                 # we come to an end
-                if modelingData['NumberPoints'] == modelingData['Index']:
-                    self.main.signalModelingHasFinished.emit()
+                if modelingData['NumberPoints'] == modelingData['Index'] + 1:
+                    self.main.modelingHasFinished = True
             time.sleep(0.1)
 
     def stop(self):
@@ -166,7 +165,6 @@ class Platesolve(PyQt5.QtCore.QObject):
 
 class ModelingRunner:
     logger = logging.getLogger(__name__)
-    signalModelingHasFinished = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app):
         # make environment available to class
@@ -218,9 +216,6 @@ class ModelingRunner:
     def storeConfig(self):
         self.imagingApps.storeConfig()
         self.modelPoints.storeConfig()
-
-    def modelingHasFinished(self):
-        self.modelingHasFinished = True
 
     def clearAlignmentModel(self):
         # clearing the older results, because they are invalid afterwards
@@ -334,6 +329,7 @@ class ModelingRunner:
         self.threadPlatesolve.start()
         # loading the point to the queue
         for i, (p_az, p_alt) in enumerate(runPoints):
+            modelingData['Cancel'] = False
             modelingData['Index'] = i
             modelingData['Azimuth'] = p_az
             modelingData['Altitude'] = p_alt
@@ -347,6 +343,7 @@ class ModelingRunner:
         while self.modelRun:
             # stop loop if modeling is cancelled from external
             if self.cancel:
+                modelingData['Cancel'] = True
                 break
             # stop loop if finished
             if self.modelingHasFinished:
@@ -369,8 +366,9 @@ class ModelingRunner:
             results.append(copy.copy(modelingData))
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        if not keepImages:
-            shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
+        if 'KeepImages' in modelingData:
+            if not modelingData['KeepImages']:
+                shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
         messageQueue.put('#BW{0} - Boost Model Step 1 finished. Number of images and solved points: {1:3d}\n\n'.format(self.timeStamp(), self.numberSolvedPoints))
         return results
 

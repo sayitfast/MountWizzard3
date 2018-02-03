@@ -199,7 +199,7 @@ class SGPro(PyQt5.QtCore.QObject):
         imageParams['Imagepath'] = ''
         self.logger.info('message: {0}'.format(mes))
         if suc:
-            while True:
+            while not imageParams['Cancel']:
                 suc, path = self.SgGetImagePath(guid)
                 if suc:
                     break
@@ -225,7 +225,7 @@ class SGPro(PyQt5.QtCore.QObject):
             imageParams['Success'] = False
             imageParams['Message'] = mes
             return imageParams
-        while True:
+        while not imageParams['Cancel']:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
