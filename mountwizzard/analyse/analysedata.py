@@ -33,11 +33,7 @@ class Analyse:
         self.app = app
 
     def saveData(self, dataProcess, name):
-        if name in ['base.dat', 'refine.dat', 'actual.dat', 'simple.dat', 'dso1.dat', 'dso2.dat']:
-            number = self.app.mount.numberModelStars()
-            if number == -1:
-                return
-        filenameData = os.getcwd() + self.filepath + '/' + name
+        filenameData = os.getcwd() + self.filepath + '/' + name + '.dat'
         try:
             outfile = open(filenameData, 'w')
             json.dump(dataProcess, outfile)

@@ -298,9 +298,8 @@ class ModelingRunner:
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
                     time.sleep(0.1)
 
-
     def runFullModel(self):
-        modelingData = {'Directory': time.strftime("%Y-%m-%d", time.gmtime())}
+        modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
         if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
             return
@@ -336,7 +335,7 @@ class ModelingRunner:
         self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
         self.cancel = False
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.RefinementPoints, modelingData)
-        name = modelingData['Directory'] + '_full.dat'
+        name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
             self.analyseData.saveData(self.modelAlignmentData, name)
