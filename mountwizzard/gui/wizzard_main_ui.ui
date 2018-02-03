@@ -6435,7 +6435,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>230</y>
+       <y>255</y>
        <width>171</width>
        <height>31</height>
       </rect>
@@ -6451,7 +6451,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>230</y>
+       <y>255</y>
        <width>171</width>
        <height>31</height>
       </rect>
@@ -6575,7 +6575,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>310</y>
+       <y>355</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6642,7 +6642,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>320</y>
+       <y>365</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6680,7 +6680,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>220</y>
+       <y>245</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6696,7 +6696,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>360</y>
+       <y>405</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -6734,7 +6734,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>360</y>
+       <y>405</y>
        <width>41</width>
        <height>31</height>
       </rect>
@@ -6752,7 +6752,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>360</y>
+       <y>405</y>
        <width>41</width>
        <height>31</height>
       </rect>
@@ -6770,7 +6770,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>360</y>
+       <y>405</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -6808,7 +6808,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>360</y>
+       <y>405</y>
        <width>61</width>
        <height>31</height>
       </rect>
@@ -6826,7 +6826,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>300</x>
-       <y>360</y>
+       <y>405</y>
        <width>41</width>
        <height>31</height>
       </rect>
@@ -7072,7 +7072,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>270</y>
+       <y>295</y>
        <width>171</width>
        <height>31</height>
       </rect>
@@ -7088,7 +7088,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>360</y>
+       <y>410</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -7123,7 +7123,7 @@ Window</string>
       <rect>
        <x>400</x>
        <y>20</y>
-       <width>341</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -7160,8 +7160,8 @@ Window</string>
     <widget class="QLineEdit" name="le_numberPointsSolved">
      <property name="geometry">
       <rect>
-       <x>600</x>
-       <y>260</y>
+       <x>510</x>
+       <y>265</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -7203,7 +7203,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>260</y>
+       <y>265</y>
        <width>106</width>
        <height>21</height>
       </rect>
@@ -7331,8 +7331,8 @@ Window</string>
     <widget class="QLineEdit" name="le_numberPointsToModel">
      <property name="geometry">
       <rect>
-       <x>600</x>
-       <y>170</y>
+       <x>510</x>
+       <y>190</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -7374,7 +7374,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>170</y>
+       <y>190</y>
        <width>166</width>
        <height>21</height>
       </rect>
@@ -7395,7 +7395,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>230</y>
+       <y>240</y>
        <width>106</width>
        <height>21</height>
       </rect>
@@ -7415,8 +7415,8 @@ Window</string>
     <widget class="QLineEdit" name="le_numberPointsImaged">
      <property name="geometry">
       <rect>
-       <x>600</x>
-       <y>230</y>
+       <x>510</x>
+       <y>240</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -7478,7 +7478,7 @@ Window</string>
     <widget class="QLineEdit" name="le_numberPointsProcessed">
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>510</x>
        <y>290</y>
        <width>31</width>
        <height>21</height>
@@ -7520,8 +7520,8 @@ Window</string>
     <widget class="QLineEdit" name="le_numberPointsSlewed">
      <property name="geometry">
       <rect>
-       <x>600</x>
-       <y>200</y>
+       <x>510</x>
+       <y>215</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -7563,7 +7563,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>200</y>
+       <y>215</y>
        <width>106</width>
        <height>21</height>
       </rect>
@@ -7578,6 +7578,158 @@ Window</string>
      </property>
      <property name="text">
       <string>Points slewed:</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_113">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>225</y>
+       <width>311</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Generate Model Points based on greater circles</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_136">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>335</y>
+       <width>311</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Generate Model Points based on tracks</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_149">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>160</y>
+       <width>126</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Modeling progress</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_55">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>180</y>
+       <width>351</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="bar_numberPointsSlewed">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>215</y>
+       <width>201</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="bar_numberPointsImaged">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>240</y>
+       <width>201</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="bar_numberPointsSolved">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>265</y>
+       <width>201</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="bar_numberPointsProcessed">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>290</y>
+       <width>201</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
      </property>
     </widget>
     <zorder>line_42</zorder>
@@ -7630,6 +7782,14 @@ Window</string>
     <zorder>le_numberPointsProcessed</zorder>
     <zorder>le_numberPointsSlewed</zorder>
     <zorder>label_100</zorder>
+    <zorder>label_113</zorder>
+    <zorder>label_136</zorder>
+    <zorder>label_149</zorder>
+    <zorder>line_55</zorder>
+    <zorder>bar_numberPointsSlewed</zorder>
+    <zorder>bar_numberPointsImaged</zorder>
+    <zorder>bar_numberPointsSolved</zorder>
+    <zorder>bar_numberPointsProcessed</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
