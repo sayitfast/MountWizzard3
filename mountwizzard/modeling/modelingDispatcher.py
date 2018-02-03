@@ -53,8 +53,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_runRefinementModel,
-                            'Method': self.modelingRunner.runRefinementModel,
+                            'Button': self.app.ui.btn_runFullModel,
+                            'Method': self.modelingRunner.runFullModel,
                             'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
@@ -232,7 +232,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTimeChangeModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHystereseModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_runRefinementModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunRefinementModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFullModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunBaseModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):

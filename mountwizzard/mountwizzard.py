@@ -80,7 +80,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_mountShutdown, ':/computer_remove.ico')
         self.widgetIcon(self.ui.btn_runBaseModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelModel1, ':/stop.ico')
-        self.widgetIcon(self.ui.btn_runRefinementModel, ':/play.ico')
+        self.widgetIcon(self.ui.btn_runFullModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelModel2, ':/stop.ico')
         self.widgetIcon(self.ui.btn_loadBasePoints, ':/floppy_disc_add.ico')
         self.widgetIcon(self.ui.btn_generateBasePoints, ':/process_add.ico')

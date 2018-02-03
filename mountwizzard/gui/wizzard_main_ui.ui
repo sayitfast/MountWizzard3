@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -6555,7 +6555,7 @@ Window</string>
       <double>10.000000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runRefinementModel">
+    <widget class="QPushButton" name="btn_runFullModel">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -7403,7 +7403,7 @@ Window</string>
     <zorder>btn_generateMaxPoints</zorder>
     <zorder>numberGridPointsRow</zorder>
     <zorder>numberGridPointsCol</zorder>
-    <zorder>btn_runRefinementModel</zorder>
+    <zorder>btn_runFullModel</zorder>
     <zorder>btn_loadRefinementPoints</zorder>
     <zorder>btn_cancelModel2</zorder>
     <zorder>btn_generateDSOPoints</zorder>
@@ -14323,7 +14323,7 @@ Window</string>
   <tabstop>numberHoursDSO</tabstop>
   <tabstop>numberPointsDSO</tabstop>
   <tabstop>numberHoursPreview</tabstop>
-  <tabstop>btn_runRefinementModel</tabstop>
+  <tabstop>btn_runFullModel</tabstop>
   <tabstop>btn_cancelModel2</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
