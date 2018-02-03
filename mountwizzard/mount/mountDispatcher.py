@@ -535,6 +535,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 time.sleep(0.1)
             if commandSet['reply'] == 'E':
                 self.logger.warning('point {0} could not be added'.format(commandSet['reply']))
+            self.app.messageQueue.put('Processed>{0:02d}'.format(i + 1))
         commandSet = {'command': ':endalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
