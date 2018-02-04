@@ -87,6 +87,7 @@ class AstrometryClient:
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
+            self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
             self.app.messageQueue.put('Setting IP address/port for Astrometry client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
 
     def setPort(self):
@@ -102,21 +103,28 @@ class AstrometryClient:
             self.data['ServerIP'] = value
 
     def checkAstrometryServerRunning(self):
-        jobID = 12345
-        data = {'request-json': ''}
-        headers = {}
-        result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
-        result = json.loads(result.text)
-        if 'jobs' in result:
-            self.isRunning = True
-            if self.isSolving:
-                return 1
+        try:
+            jobID = 12345
+            data = {'request-json': ''}
+            headers = {}
+            result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
+            result = json.loads(result.text)
+            if 'jobs' in result:
+                self.isRunning = True
+                if self.isSolving:
+                    retValue = 1
+                else:
+                    # free to get some solving part
+                    retValue = 2
             else:
-                # free to get some solving part
-                return 2
-        else:
+                self.isRunning = False
+                retValue = 0
+        except Exception as e:
+            self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI), e)
             self.isRunning = False
-            return 0
+            retValue = 0
+        finally:
+            return retValue
 
     def solveImage(self, filename, ra, dec, scale):
         if not self.isRunning:
