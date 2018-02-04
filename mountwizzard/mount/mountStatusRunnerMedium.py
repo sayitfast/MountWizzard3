@@ -62,7 +62,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         if self.socket.state() != 3:
             self.socket.abort()
         self.socket.close()
-        self.socket.waitForDisconnected(1000)
 
     def stop(self):
         self._mutex.lock()

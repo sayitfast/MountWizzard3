@@ -43,7 +43,7 @@ from indi import indi_client
 from astrometry import transform
 if platform.system() == 'Windows':
     from automation import upload
-from wakeonlan import wol
+from wakeonlan import main as wol
 
 
 class MountWizzardApp(widget.MwWidget):
@@ -525,8 +525,9 @@ class MountWizzardApp(widget.MwWidget):
             self.workerMountDispatcher.stop()
         # if self.workerModelingDispatcher.isRunning:
         #     self.workerModelingDispatcher.stop()
-        if self.workerUpload.isRunning:
-            self.workerUpload.stop()
+        if platform.system() == 'Windows':
+            if self.workerUpload.isRunning:
+                self.workerUpload.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
         if self.workerEnvironment.isRunning:
@@ -540,8 +541,8 @@ class MountWizzardApp(widget.MwWidget):
         self.workerEnvironment.initConfig()
         self.workerDome.initConfig()
         self.workerRemote.initConfig()
-        self.workerUpload.initConfig()
-
+        if platform.system() == 'Windows':
+            self.workerUpload.initConfig()
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
@@ -1151,7 +1152,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0.0 alpha 2'
+    BUILD_NO = '3.0.0 alpha 3'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

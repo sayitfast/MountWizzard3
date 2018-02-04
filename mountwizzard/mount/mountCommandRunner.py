@@ -107,8 +107,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         if self.socket.state() != 3:
             self.socket.abort()
         self.socket.close()
-        self.socket.waitForDisconnected(1000)
-        # self.finished.emit()
 
     def stop(self):
         self._mutex.lock()

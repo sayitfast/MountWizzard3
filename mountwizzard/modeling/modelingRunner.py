@@ -340,6 +340,8 @@ class ModelingRunner:
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
             self.app.ui.le_analyseFileName.setText(name)
+            if self.app.analyseWindows.showStatus:
+                self.app.analyseWindows.showView()
             self.analyseData.saveData(self.modelAlignmentData, name)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
