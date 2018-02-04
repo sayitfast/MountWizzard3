@@ -23,7 +23,8 @@ import requests
 
 class SGPro(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
+    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 500
@@ -138,7 +139,7 @@ class SGPro(PyQt5.QtCore.QObject):
             self.data['Solver']['Status'] = 'ERROR'
             self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
 
-        self.cameraStatus.emit(self.data['Camera']['Status'])
+        self.cameraStatusText.emit(self.data['Camera']['Status'])
         self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:

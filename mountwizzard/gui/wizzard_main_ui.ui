@@ -72,7 +72,7 @@
     <rect>
      <x>20</x>
      <y>60</y>
-     <width>411</width>
+     <width>256</width>
      <height>21</height>
     </rect>
    </property>
@@ -14263,9 +14263,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>285</x>
      <y>20</y>
-     <width>61</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -14287,7 +14287,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>150</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14338,7 +14338,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>230</x>
+     <x>215</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14361,7 +14361,7 @@ Window</string>
     <rect>
      <x>20</x>
      <y>90</y>
-     <width>141</width>
+     <width>126</width>
      <height>31</height>
     </rect>
    </property>
@@ -14386,9 +14386,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>360</x>
      <y>20</y>
-     <width>61</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -14525,9 +14525,9 @@ Window</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>300</x>
+     <x>285</x>
      <y>90</y>
-     <width>131</width>
+     <width>146</width>
      <height>31</height>
     </rect>
    </property>
@@ -14546,9 +14546,9 @@ Window</string>
   <widget class="QPushButton" name="btn_mountBoot">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>150</x>
      <y>90</y>
-     <width>121</width>
+     <width>126</width>
      <height>31</height>
     </rect>
    </property>
@@ -14583,7 +14583,7 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>90</x>
+     <x>85</x>
      <y>20</y>
      <width>61</width>
      <height>31</height>
@@ -14599,6 +14599,84 @@ Window</string>
    </property>
    <property name="text">
     <string>INDI</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="le_cameraStatusText">
+   <property name="geometry">
+    <rect>
+     <x>285</x>
+     <y>60</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>8</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="toolTip">
+    <string>Status feedback from mount </string>
+   </property>
+   <property name="text">
+    <string>---</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="le_solverStatusText">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>60</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>8</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>false</bool>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="toolTip">
+    <string>Status feedback from mount </string>
+   </property>
+   <property name="text">
+    <string>---</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
   <zorder>mainBackground</zorder>
@@ -14620,6 +14698,8 @@ Window</string>
   <zorder>btn_mountShutdown</zorder>
   <zorder>btn_mountBoot</zorder>
   <zorder>btn_INDIConnected</zorder>
+  <zorder>le_cameraStatusText</zorder>
+  <zorder>le_solverStatusText</zorder>
  </widget>
  <tabstops>
   <tabstop>btn_openMessageWindow</tabstop>

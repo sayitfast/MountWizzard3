@@ -80,7 +80,8 @@ class ImagingApps:
         # select default application
         self.imagingWorkerCameraAppHandler = self.workerNoneCam
         self.imagingThreadCameraAppHandler = self.threadNoneCam
-        self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
+        self.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
+        self.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
         self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock = threading.Lock()
 
@@ -120,7 +121,8 @@ class ImagingApps:
 
     def chooseImaging(self):
         self.chooserLock.acquire()
-        self.imagingWorkerCameraAppHandler.cameraStatus.disconnect(self.setStatusCamera)
+        self.imagingWorkerCameraAppHandler.cameraStatusText.disconnect(self.setCameraStatusText)
+        self.imagingWorkerCameraAppHandler.solverStatusText.disconnect(self.setSolverStatusText)
         self.imagingWorkerCameraAppHandler.cameraExposureTime.disconnect(self.setCameraExposureTime)
 
         if self.imagingWorkerCameraAppHandler.isRunning:
@@ -146,14 +148,19 @@ class ImagingApps:
             self.imagingThreadCameraAppHandler = self.threadTheSkyX
             self.logger.info('Actual camera / plate solver is TheSkyX')
 
-        self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
+        self.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
+        self.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
         self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
 
         self.imagingThreadCameraAppHandler.start()
         self.chooserLock.release()
 
-    def setStatusCamera(self, status):
-        self.app.imageWindow.ui.le_cameraStatus.setText(status)
+    def setCameraStatusText(self, status):
+        self.app.imageWindow.ui.le_cameraStatusText.setText(status)
+        self.app.ui.le_cameraStatusText.setText(status)
+
+    def setSolverStatusText(self, status):
+        self.app.ui.le_solverStatusText.setText(status)
 
     def setCameraExposureTime(self, status):
         self.app.imageWindow.ui.le_cameraExposureTime.setText(status)

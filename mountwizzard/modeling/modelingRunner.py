@@ -339,10 +339,10 @@ class ModelingRunner:
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.RefinementPoints, modelingData)
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
-            self.app.ui.le_analyseFileName.setText(name)
-            if self.app.analyseWindows.showStatus:
-                self.app.analyseWindows.showView()
             self.analyseData.saveData(self.modelAlignmentData, name)
+            self.app.ui.le_analyseFileName.setText(name)
+            if self.app.analyseWindow.showStatus:
+                self.app.ui.btn_openAnalyseWindow.clicked.emit()
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
         # start clearing the data

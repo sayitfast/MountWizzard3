@@ -20,7 +20,8 @@ from astrometry import astrometryClient
 
 class INDICamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
+    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
@@ -93,15 +94,22 @@ class INDICamera(PyQt5.QtCore.QObject):
                     if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:
                         if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
                             self.data['Camera']['Status'] = 'INTEGRATING'
+                            self.cameraStatusText.emit('INTEGRATE')
                         else:
                             self.data['Camera']['Status'] = 'DOWNLOADING'
+                            self.cameraStatusText.emit('DOWNLOAD')
                     elif self.data['Camera']['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
                         if not self.receivedImage:
                             self.data['Camera']['Status'] = 'INTEGRATING'
+                            self.cameraStatusText.emit('INTEGRATE')
                         else:
                             self.data['Camera']['Status'] = 'IDLE'
+                            self.cameraStatusText.emit('IDLE')
+
                     elif self.data['Camera']['CCD_EXPOSURE']['state'] == 'Error':
                         self.data['Camera']['Status'] = 'ERROR'
+                        self.cameraStatusText.emit('ERROR')
+
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
                 else:
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
@@ -110,12 +118,11 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.data['Camera']['Status'] = 'ERROR'
 
             if 'CCD_EXPOSURE' in self.data['Camera']:
-                self.cameraStatus.emit(self.data['Camera']['Status'])
                 self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:
             self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
             self.app.workerModelingDispatcher.signalStatusCamera.emit(1)
-            self.cameraStatus.emit('---')
+            self.cameraStatusText.emit('---')
             self.cameraExposureTime.emit('---')
 
         # reduced status speed for astrometry
@@ -125,15 +132,19 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.data['Solver']['Status'] = self.solver.checkAstrometryServerRunning()
                 if self.data['Solver']['Status'] == 2:
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+                    self.solverStatusText.emit('IDLE')
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
                 elif self.data['Solver']['Status'] == 1:
-                    self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+                    self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
+                    self.solverStatusText.emit('SOLVE')
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
                 elif self.data['Solver']['Status'] == 0:
                     self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
+                    self.solverStatusText.emit('DISCONN')
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
+                self.solverStatusText.emit('---')
                 self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
 
         if self.isRunning:
