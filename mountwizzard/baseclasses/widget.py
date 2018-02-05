@@ -254,7 +254,10 @@ class MwWidget(QWidget):
     QPushButton[iconset='true'] {
         text-align: left;
         padding-left: 10px;
-    }   
+    }
+    QPushButton:focus {
+        outline: none;
+    }
     
     /* Combo Boxes */
     QComboBox {
