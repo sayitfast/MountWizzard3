@@ -43,7 +43,7 @@ from indi import indi_client
 from astrometry import transform
 if platform.system() == 'Windows':
     from automation import upload
-from wakeonlan import main as wol
+from wakeonlan import send_magic_packet
 
 
 class MountWizzardApp(widget.MwWidget):
@@ -298,7 +298,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
         self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
         PyQt5.QtWidgets.QApplication.processEvents()
-        wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
+        send_magic_packet(self.ui.le_mountMAC.text().strip())
         time.sleep(1)
         self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')

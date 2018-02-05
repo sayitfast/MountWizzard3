@@ -62,6 +62,8 @@ class AstrometryClient:
         try:
             if 'CheckEnableAstrometry' in self.app.config:
                 self.app.ui.checkEnableAstrometry.setChecked(self.app.config['CheckEnableAstrometry'])
+            if 'CheckEnableAstrometryNET' in self.app.config:
+                self.app.ui.checkEnableAstrometryNET.setChecked(self.app.config['CheckEnableAstrometryNET'])
             if 'AstrometryServerPort' in self.app.config:
                 self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
             if 'AstrometryServerIP' in self.app.config:
@@ -83,12 +85,16 @@ class AstrometryClient:
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
         self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
+        self.app.config['CheckEnableAstrometryNET'] = self.app.ui.checkEnableAstrometryNET.isChecked()
 
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
-            self.app.messageQueue.put('Setting IP address/port for Astrometry client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
+            if self.app.ui.checkEnableAstrometryNET.isChecked():
+                self.urlAPI = 'http://nova.astrometry.net/api'
+            else:
+                self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
+            self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_AstrometryServerPort)
