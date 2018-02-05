@@ -27,9 +27,10 @@ class Dome(PyQt5.QtCore.QObject):
 
     signalDomeConnected = PyQt5.QtCore.pyqtSignal([int])
     signalDomePointer = PyQt5.QtCore.pyqtSignal(float)
+    domeStatusText = PyQt5.QtCore.pyqtSignal(str)
     signalDomePointerVisibility = PyQt5.QtCore.pyqtSignal(bool)
 
-    CYCLE_DATA = 500
+    CYCLE_DATA = 250
 
     def __init__(self, app, thread):
         super().__init__()
@@ -135,6 +136,10 @@ class Dome(PyQt5.QtCore.QObject):
                     self.data['Connected'] = False
             if self.data['Connected']:
                 self.signalDomeConnected.emit(3)
+                if self.data['Slewing']:
+                    self.domeStatusText.emit('SLEW')
+                else:
+                    self.domeStatusText.emit('IDLE')
                 if not self.app.domeCommandQueue.empty():
                     command, value = self.app.domeCommandQueue.get()
                     if command == 'SlewAzimuth':
@@ -147,7 +152,9 @@ class Dome(PyQt5.QtCore.QObject):
             else:
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)
+                    self.domeStatusText.emit('---')
                 else:
+                    self.domeStatusText.emit('DISCONN')
                     if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':
                         self.signalDomeConnected.emit(2)
                     else:
@@ -197,6 +204,10 @@ class Dome(PyQt5.QtCore.QObject):
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
                 self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
+                if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['DOME_MOTION']['state'] == 'Busy':
+                    self.data['Slewing'] = True
+                else:
+                    self.data['Slewing'] = False
 
     # noinspection PyBroadException
     def getAscomData(self):

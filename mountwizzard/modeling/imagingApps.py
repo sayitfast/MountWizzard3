@@ -80,9 +80,6 @@ class ImagingApps:
         # select default application
         self.imagingWorkerCameraAppHandler = self.workerNoneCam
         self.imagingThreadCameraAppHandler = self.threadNoneCam
-        self.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
-        self.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
-        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
@@ -121,10 +118,6 @@ class ImagingApps:
 
     def chooseImaging(self):
         self.chooserLock.acquire()
-        self.imagingWorkerCameraAppHandler.cameraStatusText.disconnect(self.setCameraStatusText)
-        self.imagingWorkerCameraAppHandler.solverStatusText.disconnect(self.setSolverStatusText)
-        self.imagingWorkerCameraAppHandler.cameraExposureTime.disconnect(self.setCameraExposureTime)
-
         if self.imagingWorkerCameraAppHandler.isRunning:
             self.imagingWorkerCameraAppHandler.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
@@ -147,23 +140,8 @@ class ImagingApps:
             self.imagingWorkerCameraAppHandler = self.workerTheSkyX
             self.imagingThreadCameraAppHandler = self.threadTheSkyX
             self.logger.info('Actual camera / plate solver is TheSkyX')
-
-        self.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
-        self.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
-        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
-
         self.imagingThreadCameraAppHandler.start()
         self.chooserLock.release()
-
-    def setCameraStatusText(self, status):
-        self.app.imageWindow.ui.le_cameraStatusText.setText(status)
-        self.app.ui.le_cameraStatusText.setText(status)
-
-    def setSolverStatusText(self, status):
-        self.app.ui.le_solverStatusText.setText(status)
-
-    def setCameraExposureTime(self, status):
-        self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
 
     def captureImage(self, imageParams):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']

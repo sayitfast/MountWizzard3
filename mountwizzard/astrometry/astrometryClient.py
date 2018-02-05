@@ -75,18 +75,22 @@ class AstrometryClient:
         self.setIP()
         self.setPort()
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = False
+        self.setAstrometryNet()
         self.app.ui.le_AstrometryServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.checkEnableAstrometryNET.stateChanged.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.checkEnableAstrometryNET.stateChanged.connect(self.setAstrometryNet)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
         self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
         self.app.config['CheckEnableAstrometryNET'] = self.app.ui.checkEnableAstrometryNET.isChecked()
+
+    def setAstrometryNet(self):
+        self.settingsChanged = True
+        self.changedAstrometryClientConnectionSettings()
 
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
@@ -111,6 +115,7 @@ class AstrometryClient:
 
     def checkAstrometryServerRunning(self):
         try:
+            retValue = 0
             jobID = 12345
             data = {'request-json': ''}
             headers = {}

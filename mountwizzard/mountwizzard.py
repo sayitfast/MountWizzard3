@@ -280,6 +280,10 @@ class MountWizzardApp(widget.MwWidget):
         self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
         self.workerINDI.statusEnvironment.connect(self.setINDIStatusEnvironment)
         self.workerINDI.statusDome.connect(self.setINDIStatusDome)
+        self.workerDome.domeStatusText.connect(self.setDomeStatusText)
+        self.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
+        self.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
+        self.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
 
     def mountBoot(self):
         import socket
@@ -1072,6 +1076,21 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: red;color: black;}')
         else:
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+
+    def setCameraStatusText(self, status):
+        self.imageWindow.ui.le_cameraStatusText.setText(status)
+        self.ui.le_cameraStatusText.setText(status)
+
+    def setSolverStatusText(self, status):
+        self.ui.le_solverStatusText.setText(status)
+
+    def setDomeStatusText(self, status):
+        self.ui.le_domeStatusText.setText(status)
+
+    def setCameraExposureTime(self, status):
+        self.imageWindow.ui.le_cameraExposureTime.setText(status)
+
+
 
     def mainLoop(self):
         self.fillMountData()

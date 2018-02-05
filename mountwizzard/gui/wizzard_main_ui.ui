@@ -11513,7 +11513,7 @@ Window</string>
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Enable Client running</string>
+        <string>Enable astronometry</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -11523,7 +11523,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>670</x>
-         <y>335</y>
+         <y>310</y>
          <width>61</width>
          <height>21</height>
         </rect>
@@ -11609,7 +11609,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>335</y>
+         <y>310</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -11627,7 +11627,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>530</x>
-         <y>335</y>
+         <y>310</y>
          <width>131</width>
          <height>21</height>
         </rect>
@@ -11668,9 +11668,9 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableAstrometryNET">
        <property name="geometry">
         <rect>
-         <x>400</x>
-         <y>305</y>
-         <width>271</width>
+         <x>445</x>
+         <y>340</y>
+         <width>291</width>
          <height>21</height>
         </rect>
        </property>
@@ -11683,7 +11683,7 @@ Window</string>
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Use Internet ASTROMETRY.NET as Solver</string>
+        <string>Use NOVA.ASTROMETRY.NET as IP address</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -14251,9 +14251,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>285</x>
+     <x>290</x>
      <y>20</y>
-     <width>71</width>
+     <width>66</width>
      <height>31</height>
     </rect>
    </property>
@@ -14275,9 +14275,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>215</x>
      <y>20</y>
-     <width>71</width>
+     <width>66</width>
      <height>31</height>
     </rect>
    </property>
@@ -14349,7 +14349,7 @@ Window</string>
     <rect>
      <x>20</x>
      <y>90</y>
-     <width>131</width>
+     <width>126</width>
      <height>31</height>
     </rect>
    </property>
@@ -14374,9 +14374,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>365</x>
      <y>20</y>
-     <width>71</width>
+     <width>66</width>
      <height>31</height>
     </rect>
    </property>
@@ -14513,9 +14513,9 @@ Window</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>285</x>
+     <x>290</x>
      <y>90</y>
-     <width>146</width>
+     <width>141</width>
      <height>31</height>
     </rect>
    </property>
@@ -14592,9 +14592,9 @@ Window</string>
   <widget class="QLineEdit" name="le_cameraStatusText">
    <property name="geometry">
     <rect>
-     <x>285</x>
+     <x>290</x>
      <y>60</y>
-     <width>71</width>
+     <width>66</width>
      <height>21</height>
     </rect>
    </property>
@@ -14631,9 +14631,9 @@ Window</string>
   <widget class="QLineEdit" name="le_solverStatusText">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>365</x>
      <y>60</y>
-     <width>71</width>
+     <width>66</width>
      <height>21</height>
     </rect>
    </property>
@@ -14670,9 +14670,9 @@ Window</string>
   <widget class="QLineEdit" name="le_domeStatusText">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>215</x>
      <y>60</y>
-     <width>71</width>
+     <width>66</width>
      <height>21</height>
     </rect>
    </property>
