@@ -184,6 +184,9 @@ class HemisphereWindow(widget.MwWidget):
         self.pointerTrack = None
         self.line1 = None
         self.line2 = None
+        self.annotate = list()
+        self.offx = 0
+        self.offy = 0
         self.ui = hemisphere_dialog_ui.Ui_HemisphereDialog()
         self.ui.setupUi(self)
         self.initUI()
@@ -196,7 +199,7 @@ class HemisphereWindow(widget.MwWidget):
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
-        self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
+        # self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
         self.app.workerDome.signalDomePointerVisibility.connect(self.setDomePointerVisibility)
         # from start on invisible
@@ -278,17 +281,25 @@ class HemisphereWindow(widget.MwWidget):
             # delete a point
             if len(refine) > 0:
                 del(refine[ind])
+                if self.ui.checkShowNumbers.isChecked():
+                    self.annotate[ind].remove()
+                    del(self.annotate[ind])
             # now redraw plot
             self.line1.set_data([i[0] for i in refine], [i[1] for i in refine])
             self.line2.set_data([i[0] for i in refine], [i[1] for i in refine])
-            self.hemisphereMatplotlib.fig.canvas.draw()
         if event.button == 1 and ind is None:
             # add a point
             refine.append((event.xdata, event.ydata))
+            if self.ui.checkShowNumbers.isChecked():
+                self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(len(refine)), xy=(event.xdata - self.offx, event.ydata - self.offy), color='#E0E0E0'))
             # now redraw plot
             self.line1.set_data([i[0] for i in refine], [i[1] for i in refine])
             self.line2.set_data([i[0] for i in refine], [i[1] for i in refine])
-            self.hemisphereMatplotlib.fig.canvas.draw()
+
+        if self.ui.checkShowNumbers.isChecked():
+            for i in range(0, len(refine)):
+                self.annotate[i].set_text('{0:2d}'.format(i + 1))
+        self.hemisphereMatplotlib.fig.canvas.draw()
 
     def get_ind_under_point(self, event, epsilon):
         xy = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
@@ -333,8 +344,8 @@ class HemisphereWindow(widget.MwWidget):
             self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
             self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         # model points
-        offx = -2
-        offy = 7 / aspectRatio
+        self.offx = -2
+        self.offy = 7 / aspectRatio
         base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
         if len(base) > 0:
             self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=9, color='#E00000')
@@ -342,7 +353,7 @@ class HemisphereWindow(widget.MwWidget):
             number = 1
             if self.ui.checkShowNumbers.isChecked():
                 for i in range(0, len(base)):
-                    self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(base[i][0] - offx, base[i][1] - offy), color='#E0E0E0')
+                    self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(base[i][0] - self.offx, base[i][1] - self.offy), color='#E0E0E0')
                     number += 1
         refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
         if len(refine) > -1:
@@ -353,7 +364,7 @@ class HemisphereWindow(widget.MwWidget):
             number = 1
             if self.ui.checkShowNumbers.isChecked():
                 for i in range(0, len(refine)):
-                    self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - offx, refine[i][1] - offy), color='#E0E0E0')
+                    self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - self.offx, refine[i][1] - self.offy), color='#E0E0E0'))
                     number += 1
         # adding the pointer of mount
         self.pointerAzAlt1 = matplotlib.patches.Ellipse((180, 45), 4 * aspectRatio, 4, zorder=10, color='#FF00FF', lw=2, fill=False, visible=False)
