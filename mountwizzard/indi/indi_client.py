@@ -152,7 +152,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.sendMessage(indiCommand)
             self.handleNewDevice()
             if not self.data['Connected'] and self.socket.state() == 0:
-
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
             time.sleep(0.1)
             QtWidgets.QApplication.processEvents()
@@ -279,6 +278,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if setVector not in self.data['Device'][device]:
                         self.data['Device'][device][setVector] = {}
                         self.logger.warning('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
+                    if 'state' in message.attr:
+                        self.data['Device'][device][setVector]['state'] = message.attr['state']
+                    if 'timeout' in message.attr:
+                        self.data['Device'][device][setVector]['timeout'] = message.attr['timeout']
                     for elt in message.elt_list:
                         self.data['Device'][device][setVector][elt.attr['name']] = elt.getValue()
 
@@ -296,9 +299,12 @@ class INDIClient(PyQt5.QtCore.QObject):
                     defVector = message.attr['name']
                     if defVector not in self.data['Device'][device]:
                         self.data['Device'][device][defVector] = {}
-                    # todo: adding the standard attributes for vetors in state
-                    for attr in message.attr:
-                        self.data['Device'][device][defVector][elt.attr['name']]
+                    if 'state' in message.attr:
+                        self.data['Device'][device][defVector]['state'] = message.attr['state']
+                    if 'perm' in message.attr:
+                        self.data['Device'][device][defVector]['perm'] = message.attr['perm']
+                    if 'timeout' in message.attr:
+                        self.data['Device'][device][defVector]['timeout'] = message.attr['timeout']
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
 
@@ -331,7 +337,6 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.messageString = ""
             for message in messages:
                 xmlMessage = indiXML.parseETree(message)
-                print(xmlMessage)
                 self.processMessage.emit(xmlMessage)
         # Message is incomplete, remove </data> and wait..
         except ElementTree.ParseError:

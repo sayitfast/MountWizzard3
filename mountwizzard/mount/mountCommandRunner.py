@@ -44,6 +44,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':Sz': 1,
                       ':Sa': 1,
                       ':MA#': 1,
+                      ':MS#': 1,
                       ':shutdown': 1,
                       ':Sw': 1,
                       ':Sdat': 1,
@@ -53,7 +54,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':Sh': 1,
                       ':SREF': 1,
                       ':CM#': 27,
-                      ':CMS#': 1
+                      ':CMS#': 1,
+                      ':Gr#': 12,
+                      ':Gd#': 12
     }
 
     def __init__(self, app, thread, data, signalConnected):
@@ -104,8 +107,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         if self.socket.state() != 3:
             self.socket.abort()
         self.socket.close()
-        self.socket.waitForDisconnected(1000)
-        # self.finished.emit()
 
     def stop(self):
         self._mutex.lock()

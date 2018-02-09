@@ -394,7 +394,7 @@ Exposures</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_cameraStatus">
+  <widget class="QLineEdit" name="le_cameraStatusText">
    <property name="geometry">
     <rect>
      <x>400</x>
@@ -543,7 +543,7 @@ Exposures</string>
   <zorder>cross2</zorder>
   <zorder>cross1</zorder>
   <zorder>cross3</zorder>
-  <zorder>le_cameraStatus</zorder>
+  <zorder>le_cameraStatusText</zorder>
   <zorder>le_cameraExposureTime</zorder>
   <zorder>label_83</zorder>
   <zorder>label_84</zorder>

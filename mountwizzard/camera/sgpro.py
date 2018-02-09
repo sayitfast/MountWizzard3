@@ -18,14 +18,16 @@ import time
 import PyQt5
 # packages for handling web interface to SGPro
 from urllib import request
+import requests
 
 
 class SGPro(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
+    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLESTATUS = 200
+    CYCLESTATUS = 500
     CYCLEPROPS = 3000
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'BUSY': 'BUSY'}
     CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
@@ -36,6 +38,7 @@ class SGPro(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
+        self.cancel = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
         self.tryConnectionCounter = 0
@@ -102,36 +105,41 @@ class SGPro(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def setStatus(self):
-        suc, mes = self.SgGetDeviceStatus('Camera')
+        suc, state, message = self.SgGetDeviceStatus('Camera')
         if suc:
-            if mes in self.CAMERASTATUS:
-                self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
-                if self.CAMERASTATUS[mes] == 'DISCONNECTED':
+            if state in self.CAMERASTATUS:
+                if self.CAMERASTATUS[state] == 'DISCONNECTED':
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
                 else:
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
+                    if 'integrating' in message:
+                        self.data['Camera']['Status'] = 'INTEGRATING'
+                    elif 'downloading' in message:
+                        self.data['Camera']['Status'] = 'DOWNLOADING'
+                    elif 'ready' in message or 'idle' in message:
+                        self.data['Camera']['Status'] = 'IDLE'
             else:
-                self.logger.error('Unknown camera status: {0}'.format(mes))
+                self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
         else:
             self.data['Camera']['Status'] = 'ERROR'
             self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
 
         # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
-        suc, mes = self.SgGetDeviceStatus('PlateSolver')
+        suc, state, message = self.SgGetDeviceStatus('PlateSolver')
         if suc:
-            if mes in self.SOLVERSTATUS:
-                self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
-                if self.SOLVERSTATUS[mes] == 'DISCONNECTED':
+            if state in self.SOLVERSTATUS:
+                self.data['Solver']['Status'] = self.SOLVERSTATUS[state]
+                if self.SOLVERSTATUS[state] == 'DISCONNECTED':
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
                 else:
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
             else:
-                self.logger.error('Unknown solver status: {0}'.format(mes))
+                self.logger.error('Unknown solver status: {0}'.format(state))
         else:
             self.data['Solver']['Status'] = 'ERROR'
             self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
 
-        self.cameraStatus.emit(self.data['Camera']['Status'])
+        self.cameraStatusText.emit(self.data['Camera']['Status'])
         self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:
@@ -194,34 +202,33 @@ class SGPro(PyQt5.QtCore.QObject):
         self.logger.info('message: {0}'.format(mes))
         if suc:
             while True:
-                suc, imageParams['Imagepath'] = self.SgGetImagePath(guid)
+                suc, path = self.SgGetImagePath(guid)
                 if suc:
                     break
                 else:
-                    time.sleep(0.2)
+                    time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
+            imageParams['Imagepath'] = path
         else:
             imageParams['Imagepath'] = ''
-        imageParams['Success'] = suc
         imageParams['Message'] = mes
         return imageParams
 
     def solveImage(self, imageParams):
         suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                           scaleHint=imageParams['ScaleHint'],
-                                           blindSolve=imageParams['Blind'],
-                                           useFitsHeaders=imageParams['UseFitsHeaders'])
+                                           RaHint=imageParams['RaJ2000'],
+                                           DecHint=imageParams['DecJ2000'],
+                                           ScaleHint=imageParams['ScaleHint'],
+                                           BlindSolve=imageParams['Blind'],
+                                           UseFitsHeaders=False)
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
-            imageParams['Success'] = False
             imageParams['Message'] = mes
-            return imageParams
         while True:
             suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             mes = mes.strip('\n')
             if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
                 self.logger.info('Imaging parameters {0}'.format(imageParams))
-                solved = True
                 imageParams['RaJ2000Solved'] = float(ra_sol)
                 imageParams['DecJ2000Solved'] = float(dec_sol)
                 imageParams['Scale'] = float(scale)
@@ -229,18 +236,12 @@ class SGPro(PyQt5.QtCore.QObject):
                 imageParams['TimeTS'] = float(timeTS)
                 break
             elif mes != 'Solving':
-                solved = False
                 break
-            # TODO: clarification should we again introduce model run cancel during plate solving -> very complicated solver should cancel if not possible after some time
-            # elif app.model.cancel:
-            #    solved = False
-            #    break
             else:
                 time.sleep(0.2)
                 PyQt5.QtWidgets.QApplication.processEvents()
-        imageParams['Success'] = solved
         imageParams['Message'] = mes
-        return mimageParams
+        return imageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,
@@ -261,12 +262,9 @@ class SGPro(PyQt5.QtCore.QObject):
         if path and filename:
             data['Path'] = path + '/' + filename
         try:
-            req = request.Request(self.ipSGPro + self.captureImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
+            result = requests.post(self.ipSGPro + self.captureImagePath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message'], result['Receipt']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''
@@ -275,11 +273,9 @@ class SGPro(PyQt5.QtCore.QObject):
         # reference {}
         data = {}
         try:
-            req = request.Request(self.ipSGPro + self.getCameraPropsPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            return captureResponse
+            result = requests.post(self.ipSGPro + self.getCameraPropsPath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', ''
@@ -288,27 +284,22 @@ class SGPro(PyQt5.QtCore.QObject):
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}
         data = {'Device': device}
         try:
-            req = request.Request(self.ipSGPro + self.getDeviceStatusPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # states are  "IDLE", "CAPTURING", "BUSY", "MOVING", "DISCONNECTED", "PARKED"
-            # {"State":"IDLE","Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['State']
+            result = requests.post(self.ipSGPro + self.getDeviceStatusPath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            if 'Message' not in result:
+                result['Message'] = 'None'
+            return result['Success'], result['State'], result['Message']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
-            return False, 'Request failed'
+            return False, 'Request failed', 'Request failed'
 
     def SgGetImagePath(self, _guid):
         # reference {"Receipt":"00000000000000000000000000000000"}
         data = {'Receipt': _guid}
         try:
-            req = request.Request(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String"}
-            return captureResponse['Success'], captureResponse['Message']
+            result = requests.post(self.ipSGPro + self.getImagePath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed'
@@ -317,31 +308,26 @@ class SGPro(PyQt5.QtCore.QObject):
         # reference {"Receipt":"00000000000000000000000000000000"}
         data = {'Receipt': _guid}
         try:
-            req = request.Request(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))
-            # {"Success":false,"Message":"String","Ra":0,"Dec":0,"Scale":0,"Angle":0,"TimeToSolve":0}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Ra'], captureResponse['Dec'], captureResponse['Scale'], captureResponse['Angle'], captureResponse['TimeToSolve']
+            result = requests.post(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message'], result['Ra'], result['Dec'], result['Scale'], result['Angle'], result['TimeToSolve']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', '', '', '', '', ''
 
-    def SgSolveImage(self, path, raHint=None, decHint=None, scaleHint=None, blindSolve=False, useFitsHeaders=False):
+    def SgSolveImage(self, path, RaHint=None, DecHint=None, ScaleHint=None, BlindSolve=False, UseFitsHeaders=False):
         # reference {"ImagePath":"String","RaHint":0,"DecHint":0,"ScaleHint":0,"BlindSolve":false,"UseFitsHeadersForHints":false}
-        data = {"ImagePath": path, "BlindSolve": blindSolve, "UseFitsHeadersForHints": useFitsHeaders}
-        if raHint:
-            data['RaHint'] = raHint
-        if decHint:
-            data['DecHint'] = decHint
-        if scaleHint:
-            data['ScaleHint'] = scaleHint
+        data = {"ImagePath": path, "BlindSolve": BlindSolve, "UseFitsHeadersForHints": UseFitsHeaders}
+        if RaHint:
+            data['RaHint'] = RaHint
+        if DecHint:
+            data['DecHint'] = DecHint
+        if ScaleHint:
+            data['ScaleHint'] = ScaleHint
         try:
-            req = request.Request(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')), method='POST')
-            req.add_header('Content-Type', 'application/json')
-            with request.urlopen(req) as f:
-                captureResponse = json.loads(f.read().decode('utf-8'))                                                      # {"Success":false,"Message":"String","Receipt":"00000000000000000000000000000000"}
-            return captureResponse['Success'], captureResponse['Message'], captureResponse['Receipt']
+            result = requests.post(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')))
+            result = json.loads(result.text)
+            return result['Success'], result['Message'], result['Receipt']
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed', ''

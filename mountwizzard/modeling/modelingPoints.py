@@ -184,6 +184,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if doSortingPoints:
             self.sortPoints('Refinement')
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.RefinementPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateDSOPoints(self, limitByHorizonMask, hoursPathLength, numberOfPathPoints, hoursPathLengthPreview):
@@ -200,6 +201,7 @@ class ModelPoints:
                 self.RefinementPoints.append((az, alt))
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.RefinementPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateMaxPoints(self, limitByHorizonMask, doSortingPoints):
@@ -224,6 +226,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if doSortingPoints:
             self.sortPoints('Refinement')
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.RefinementPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateNormalPoints(self, limitByHorizonMask, doSortingPoints):
@@ -246,6 +249,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if doSortingPoints:
             self.sortPoints('Refinement')
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.RefinementPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateMinPoints(self, limitByHorizonMask, doSortingPoints):
@@ -268,6 +272,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if doSortingPoints:
             self.sortPoints('Refinement')
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.RefinementPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateGridPoints(self, limitByHorizonMask, doSortingPoints, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
@@ -279,6 +284,7 @@ class ModelPoints:
             self.deleteBelowHorizonLine()
         if doSortingPoints:
             self.sortPoints('Refinement')
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.RefinementPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
 
     def generateBasePoints(self, azimuth, altitude, numberOfPoints):

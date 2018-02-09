@@ -17,7 +17,8 @@ import time
 
 
 class NoneCamera(PyQt5.QtCore.QObject):
-    cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
+    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 5000
@@ -28,6 +29,7 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
+        self.cancel = False
         self._mutex = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
         self.data['Camera']['Status'] = 'IDLE'
@@ -69,7 +71,7 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.data['Camera']['Status'] = 'IDLE'
         self.data['Solver']['Status'] = 'IDLE'
 
-        self.cameraStatus.emit(self.data['Camera']['Status'])
+        self.cameraStatusText.emit(self.data['Camera']['Status'])
         self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:
@@ -93,12 +95,11 @@ class NoneCamera(PyQt5.QtCore.QObject):
 
     @staticmethod
     def getImage(imageParams):
-        imageParams['Success'] = False
         imageParams['Message'] = 'Not OK'
+        imageParams['Imagepath'] = ''
         return imageParams
 
     @staticmethod
     def solveImage(imageParams):
-        imageParams['Success'] = False
         imageParams['Message'] = 'Not OK'
         return imageParams

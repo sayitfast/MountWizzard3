@@ -21,7 +21,8 @@ import pythoncom
 
 class MaximDLCamera(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    cameraStatus = PyQt5.QtCore.pyqtSignal(str)
+    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
+    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
@@ -128,7 +129,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             else:
                 self.logger.error('Unknown camera status: {0}'.format(mes))
 
-        self.cameraStatus.emit(self.data['Camera']['Status'])
+        self.cameraStatusText.emit(self.data['Camera']['Status'])
         self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:

@@ -16,6 +16,7 @@ import platform
 import threading
 import PyQt5
 import time
+import indi.indi_xml as indiXML
 if platform.system() == 'Windows':
     from win32com.client.dynamic import Dispatch
     import pythoncom
@@ -26,9 +27,10 @@ class Dome(PyQt5.QtCore.QObject):
 
     signalDomeConnected = PyQt5.QtCore.pyqtSignal([int])
     signalDomePointer = PyQt5.QtCore.pyqtSignal(float)
+    domeStatusText = PyQt5.QtCore.pyqtSignal(str)
     signalDomePointerVisibility = PyQt5.QtCore.pyqtSignal(bool)
 
-    CYCLE_DATA = 500
+    CYCLE_DATA = 250
 
     def __init__(self, app, thread):
         super().__init__()
@@ -46,9 +48,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.chooserLock = threading.Lock()
 
     def initConfig(self):
-        # if there was a receiver established, remove it. if not, we will fire the event by changing the list
-        if self.app.ui.pd_chooseDome.receivers(self.app.ui.pd_chooseDome.currentIndexChanged) > 0:
-            self.app.ui.pd_chooseDome.currentIndexChanged.disconnect()
         # first build the pull down menu
         self.app.ui.pd_chooseDome.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -69,8 +68,7 @@ class Dome(PyQt5.QtCore.QObject):
         finally:
             pass
         # connect change in dome to the subroutine of setting it up
-        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
-        self.chooserDome()
+        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome, type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['DomeAscomDriverName'] = self.ascomDriverName
@@ -138,19 +136,25 @@ class Dome(PyQt5.QtCore.QObject):
                     self.data['Connected'] = False
             if self.data['Connected']:
                 self.signalDomeConnected.emit(3)
+                if self.data['Slewing']:
+                    self.domeStatusText.emit('SLEW')
+                else:
+                    self.domeStatusText.emit('IDLE')
                 if not self.app.domeCommandQueue.empty():
                     command, value = self.app.domeCommandQueue.get()
                     if command == 'SlewAzimuth':
                         if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
                             self.app.INDICommandQueue.put(
-                                indiXML.newNumberVector(indiXML.oneNumber(binning, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'}),
+                                indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
                                                         indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
                         else:
                             self.ascom.SlewToAzimuth(float(value))
             else:
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)
+                    self.domeStatusText.emit('---')
                 else:
+                    self.domeStatusText.emit('DISCONN')
                     if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':
                         self.signalDomeConnected.emit(2)
                     else:
@@ -200,6 +204,10 @@ class Dome(PyQt5.QtCore.QObject):
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
                 self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
+                if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['DOME_MOTION']['state'] == 'Busy':
+                    self.data['Slewing'] = True
+                else:
+                    self.data['Slewing'] = False
 
     # noinspection PyBroadException
     def getAscomData(self):

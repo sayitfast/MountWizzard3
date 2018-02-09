@@ -254,7 +254,10 @@ class MwWidget(QWidget):
     QPushButton[iconset='true'] {
         text-align: left;
         padding-left: 10px;
-    }   
+    }
+    QPushButton:focus {
+        outline: none;
+    }
     
     /* Combo Boxes */
     QComboBox {
@@ -412,11 +415,11 @@ class MwWidget(QWidget):
     }
     QProgressBar::chunk {
         background-color: rgb(32, 144, 192);
-        width: 8px;
+        width: 3px;
         margin: 1px;
-        border-width: 2px;
+        border-width: 1px;
         border-color: #404040;
-        border-radius: 3px;
+        border-radius: 2px;
         border-style: outset;
     }
     QTextBrowser {

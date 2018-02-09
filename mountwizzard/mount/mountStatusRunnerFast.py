@@ -20,7 +20,7 @@ from queue import Queue
 class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_STATUS_FAST = 100
+    CYCLE_STATUS_FAST = 300
 
     def __init__(self, app, thread, data, signalConnected, signalMountAzAltPointer):
         super().__init__()
@@ -61,7 +61,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         if self.socket.state() != 3:
             self.socket.abort()
         self.socket.close()
-        self.socket.waitForDisconnected(1000)
 
     def stop(self):
         self._mutex.lock()

@@ -38,7 +38,6 @@ class ImagingApps:
     logger = logging.getLogger(__name__)
 
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
-    CAPTUREFILE = 'modeling'
 
     def __init__(self, app):
         # make main sources available
@@ -81,16 +80,9 @@ class ImagingApps:
         # select default application
         self.imagingWorkerCameraAppHandler = self.workerNoneCam
         self.imagingThreadCameraAppHandler = self.threadNoneCam
-        self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
-        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock = threading.Lock()
-        # connect change in imaging app to the subroutine of setting it up
-        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
-        # if there was a receiver established, remove it. if not, we will fire the event by changing the list
-        if self.app.ui.pd_chooseImaging.receivers(self.app.ui.pd_chooseImaging.currentIndexChanged) > 0:
-            self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect()
         # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -118,6 +110,7 @@ class ImagingApps:
 
         self.chooseImaging()
         self.workerINDICamera.solver.initConfig()
+        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging, type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
@@ -125,9 +118,6 @@ class ImagingApps:
 
     def chooseImaging(self):
         self.chooserLock.acquire()
-        self.imagingWorkerCameraAppHandler.cameraStatus.disconnect(self.setStatusCamera)
-        self.imagingWorkerCameraAppHandler.cameraExposureTime.disconnect(self.setCameraExposureTime)
-
         if self.imagingWorkerCameraAppHandler.isRunning:
             self.imagingWorkerCameraAppHandler.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
@@ -150,26 +140,26 @@ class ImagingApps:
             self.imagingWorkerCameraAppHandler = self.workerTheSkyX
             self.imagingThreadCameraAppHandler = self.threadTheSkyX
             self.logger.info('Actual camera / plate solver is TheSkyX')
-
-        self.imagingWorkerCameraAppHandler.cameraStatus.connect(self.setStatusCamera)
-        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
-
         self.imagingThreadCameraAppHandler.start()
         self.chooserLock.release()
 
-    def setStatusCamera(self, status):
-        self.app.imageWindow.ui.le_cameraStatus.setText(status)
-
-    def setCameraExposureTime(self, status):
-        self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
-
-    def prepareImaging(self):
+    def captureImage(self, imageParams):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
+        if self.app.workerModelingDispatcher.modelingRunner.cancel:
+            self.logger.info('Cancelled capturing image')
+            imageParams['Message'] = 'Cancel modeling pressed'
+            return imageParams
         if camData['CONNECTION']['CONNECT'] == 'Off':
-            return
-        imageParams = {}
-        directory = time.strftime("%Y-%m-%d", time.gmtime())
-        imageParams['Directory'] = directory
+            imageParams['Message'] = 'Camera not connected'
+            return imageParams
+        imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
+        if not os.path.isdir(imageParams['BaseDirImages']):
+            os.makedirs(imageParams['BaseDirImages'])
+        imageParams['Binning'] = int(float(self.app.ui.cameraBin.value()))
+        imageParams['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
+        imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
+        imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
+        imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         # todo: handling of subframes
         if False and self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
@@ -188,49 +178,15 @@ class ImagingApps:
             imageParams['Gain'] = camData['Gain']
         else:
             imageParams['Gain'] = 'NotSet'
-        imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + directory
         if self.app.ui.checkFastDownload.isChecked():
             imageParams['Speed'] = 'HiSpeed'
         else:
             imageParams['Speed'] = 'Normal'
-        imageParams['Binning'] = int(float(self.app.ui.cameraBin.value()))
-        imageParams['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
-        imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
-        imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-        imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         if 'Binning' in imageParams:
             imageParams['SizeX'] = int(imageParams['SizeX'] / imageParams['Binning'])
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
-        return imageParams
-
-    def captureImage(self, imageParams, queue=False):
-        camData = self.imagingWorkerCameraAppHandler.data['Camera']
-        if camData['CONNECTION']['CONNECT'] == 'Off':
-            return
-        if self.app.workerModelingDispatcher.modelingRunner.cancel:
-            self.logger.info('Modeling cancelled after capturing image')
-            imageParams['Success'] = False
-            imageParams['Message'] = 'Cancel modeling pressed'
-            return False, imageParams
+        self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
-        # using a queue if the calling thread is gui -> no wait
-        # if it is done through modeling -> separate thread which is calling
-        if queue:
-            self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
-        else:
-            imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
-        imageParams['Message'] = ''
-        imageParams['Success'] = False
-        while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        if imageParams['Success']:
-            self.logger.info('Imaging parameters: {0}'.format(imageParams))
-            # self.app.imageQueue.put(imageParams['Imagepath'])
-            imageParams['Success'] = True
-            imageParams['Message'] = 'OK'
-        else:
-            imageParams['Success'] = False
         return imageParams
 
     def addSolveRandomValues(self, imageParams):
@@ -247,34 +203,14 @@ class ImagingApps:
         imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
         return imageParams
 
-    def solveImage(self, imageParams, queue=False):
+    def solveImage(self, imageParams):
         camData = self.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
-            return
-        imageParams['UseFitsHeaders'] = True
+            return imageParams
         # using a queue if the calling thread is gui -> no wait
         # if it is done through modeling -> separate thread which is calling
-        if queue:
-            self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
-        else:
-            imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
-        imageParams['Message'] = ''
-        imageParams['Success'] = False
-        while imageParams['Message'] == '' and self.app.workerModelingDispatcher.isRunning:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-
+        # self.imagingCommandQueue.put({'Command': 'SolveImage', 'ImageParams': imageParams})
         imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
-        if imageParams['Success']:
-            ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
-            imageParams['RaJNowSolved'] = ra_sol_Jnow
-            imageParams['DecJNowSolved'] = dec_sol_Jnow
-            imageParams['RaError'] = (imageParams['RaJ2000Solved'] - imageParams['RaJ2000']) * 3600
-            imageParams['DecError'] = (imageParams['DecJ2000Solved'] - imageParams['DecJ2000']) * 3600
-            imageParams['ModelError'] = math.sqrt(imageParams['RaError'] * imageParams['RaError'] + imageParams['DecError'] * imageParams['DecError'])
-            imageParams['Success'] = True
-            imageParams['Message'] = 'OK'
-        else:
-            imageParams['Success'] = False
         return imageParams
+

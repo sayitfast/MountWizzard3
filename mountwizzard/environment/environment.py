@@ -45,8 +45,6 @@ class Environment(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         # first build the pull down menu
-        if self.app.ui.pd_chooseEnvironment.receivers(self.app.ui.pd_chooseEnvironment.currentIndexChanged) > 0:
-            self.app.ui.pd_chooseEnvironment.currentIndexChanged.disconnect()
         self.app.ui.pd_chooseEnvironment.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseEnvironment.setView(view)
@@ -66,7 +64,7 @@ class Environment(PyQt5.QtCore.QObject):
         finally:
             pass
         # connect change in environment to the subroutine of setting it up
-        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
+        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment, type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['EnvironmentAscomDriverName'] = self.ascomDriverName

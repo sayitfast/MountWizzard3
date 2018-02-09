@@ -49,8 +49,9 @@ class AstrometryClient:
         'Connected': False,
     }
 
-    def __init__(self, app):
+    def __init__(self, parent, app):
         self.app = app
+        self.parent = parent
         self.isRunning = False
         self.isSolving = False
         self.checkIP = checkParamIP.CheckIP()
@@ -61,6 +62,8 @@ class AstrometryClient:
         try:
             if 'CheckEnableAstrometry' in self.app.config:
                 self.app.ui.checkEnableAstrometry.setChecked(self.app.config['CheckEnableAstrometry'])
+            if 'CheckEnableAstrometryNET' in self.app.config:
+                self.app.ui.checkEnableAstrometryNET.setChecked(self.app.config['CheckEnableAstrometryNET'])
             if 'AstrometryServerPort' in self.app.config:
                 self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
             if 'AstrometryServerIP' in self.app.config:
@@ -72,21 +75,31 @@ class AstrometryClient:
         self.setIP()
         self.setPort()
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = False
+        self.setAstrometryNet()
         self.app.ui.le_AstrometryServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.checkEnableAstrometryNET.stateChanged.connect(self.setAstrometryNet)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
         self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
+        self.app.config['CheckEnableAstrometryNET'] = self.app.ui.checkEnableAstrometryNET.isChecked()
+
+    def setAstrometryNet(self):
+        self.settingsChanged = True
+        self.changedAstrometryClientConnectionSettings()
 
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address/port for Astrometry client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
+            if self.app.ui.checkEnableAstrometryNET.isChecked():
+                self.urlAPI = 'http://nova.astrometry.net/api'
+            else:
+                self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
+            self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_AstrometryServerPort)
@@ -101,25 +114,35 @@ class AstrometryClient:
             self.data['ServerIP'] = value
 
     def checkAstrometryServerRunning(self):
-        jobID = 12345
-        data = {'request-json': ''}
-        headers = {}
-        result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
-        result = json.loads(result.text)
-        if 'jobs' in result:
-            self.isRunning = True
-            if self.isSolving:
-                return 1
+        try:
+            retValue = 0
+            jobID = 12345
+            data = {'request-json': ''}
+            headers = {}
+            result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
+            result = json.loads(result.text)
+            if 'jobs' in result:
+                self.isRunning = True
+                if self.isSolving:
+                    retValue = 1
+                else:
+                    # free to get some solving part
+                    retValue = 2
             else:
-                # free to get some solving part
-                return 2
-        else:
+                self.isRunning = False
+                retValue = 0
+        except Exception as e:
+            self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI), e)
             self.isRunning = False
-            return 0
+            retValue = 0
+        finally:
+            return retValue
 
     def solveImage(self, filename, ra, dec, scale):
         if not self.isRunning:
             self.logger.warning('Astrometry connection is not available')
+            return {}
+        if self.parent.cancel:
             return {}
         self.isSolving = True
         data = self.solveData
@@ -139,7 +162,7 @@ class AstrometryClient:
             return {}
         jobID = result['subid']
 
-        while self.app.workerModelingDispatcher.isRunning:
+        while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
             result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
@@ -147,7 +170,7 @@ class AstrometryClient:
             jobs = result['jobs']
             if len(jobs) > 0:
                 break
-            time.sleep(0.2)
+            time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
         data = {'request-json': ''}

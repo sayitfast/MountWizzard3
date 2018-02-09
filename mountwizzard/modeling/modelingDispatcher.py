@@ -14,6 +14,7 @@
 import logging
 import time
 import PyQt5
+import queue
 # workers
 from modeling import modelingRunner
 
@@ -34,6 +35,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         # make main sources available
         self.app = app
         self.thread = thread
+        self.commandDispatcherQueue = queue.Queue()
         self.modelingRunner = modelingRunner.ModelingRunner(self.app)
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
@@ -47,12 +49,12 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'RunRefinementModel':
+            'RunFullModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_runRefinementModel,
-                            'Method': self.modelingRunner.runRefinementModel,
+                            'Button': self.app.ui.btn_runFullModel,
+                            'Method': self.modelingRunner.runFullModel,
                             'Cancel': self.app.ui.btn_cancelModel2
                         }
                     ]
@@ -195,7 +197,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     ]
                 }
             }
-        # setting the config up
 
     def initConfig(self):
         try:
@@ -210,6 +211,29 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         finally:
             pass
         self.modelingRunner.initConfig()
+        self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcherQueue.put('PlateSolveSync'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadRefinementPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_loadBasePoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateMaxPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateMaxPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateNormalPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateNormalPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateMinPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateMinPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateGridPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateBasePoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTimeChangeModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHystereseModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFullModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunBaseModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
@@ -220,34 +244,17 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     def run(self):
         if not self.isRunning:
             self.isRunning = True
-        self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcher('PlateSolveSync'))
-        self.app.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.commandDispatcher('LoadRefinementPoints'))
-        self.app.ui.btn_loadBasePoints.clicked.connect(lambda: self.commandDispatcher('LoadBasePoints'))
-        self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
-        self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
-        self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
-        self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcher('GenerateDSOPoints'))
-        self.app.ui.btn_generateMaxPoints.clicked.connect(lambda: self.commandDispatcher('GenerateMaxPoints'))
-        self.app.ui.btn_generateNormalPoints.clicked.connect(lambda: self.commandDispatcher('GenerateNormalPoints'))
-        self.app.ui.btn_generateMinPoints.clicked.connect(lambda: self.commandDispatcher('GenerateMinPoints'))
-        self.app.ui.btn_generateGridPoints.clicked.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
-        self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
-        self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
-        self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
-        self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcher('GenerateGridPoints'))
-        self.app.ui.btn_generateBasePoints.clicked.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
-        self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
-        self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
-        self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcher('GenerateBasePoints'))
-        self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcher('RunTimeChangeModel'))
-        self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcher('RunHystereseModel'))
-        self.app.ui.btn_runRefinementModel.clicked.connect(lambda: self.commandDispatcher('RunRefinementModel'))
-        self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcher('RunBaseModel'))
         # TODO: it's not Model Connected, but imaging app connected
         self.signalStatusCamera.emit(0)
         self.signalStatusSolver.emit(0)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         self.getStatus()
+        while self.isRunning:
+            if not self.commandDispatcherQueue.empty():
+                command = self.commandDispatcherQueue.get()
+                self.commandDispatcher(command)
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self._mutex.lock()

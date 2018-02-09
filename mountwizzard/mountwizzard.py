@@ -43,7 +43,7 @@ from indi import indi_client
 from astrometry import transform
 if platform.system() == 'Windows':
     from automation import upload
-from wakeonlan import wol
+from wakeonlan import send_magic_packet
 
 
 class MountWizzardApp(widget.MwWidget):
@@ -80,7 +80,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_mountShutdown, ':/computer_remove.ico')
         self.widgetIcon(self.ui.btn_runBaseModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelModel1, ':/stop.ico')
-        self.widgetIcon(self.ui.btn_runRefinementModel, ':/play.ico')
+        self.widgetIcon(self.ui.btn_runFullModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelModel2, ':/stop.ico')
         self.widgetIcon(self.ui.btn_loadBasePoints, ':/floppy_disc_add.ico')
         self.widgetIcon(self.ui.btn_generateBasePoints, ':/process_add.ico')
@@ -185,6 +185,7 @@ class MountWizzardApp(widget.MwWidget):
         self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
+        # print('Thread ID:',int(PyQt5.QtCore.QThread.currentThreadId()))
 
     def workerAscomEnvironmentSetup(self):
         if platform.system() != 'Windows':
@@ -279,6 +280,10 @@ class MountWizzardApp(widget.MwWidget):
         self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
         self.workerINDI.statusEnvironment.connect(self.setINDIStatusEnvironment)
         self.workerINDI.statusDome.connect(self.setINDIStatusDome)
+        self.workerDome.domeStatusText.connect(self.setDomeStatusText)
+        self.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
+        self.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
+        self.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
 
     def mountBoot(self):
         import socket
@@ -297,7 +302,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
         self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
         PyQt5.QtWidgets.QApplication.processEvents()
-        wol.send_magic_packet(self.ui.le_mountMAC.text().strip())
+        send_magic_packet(self.ui.le_mountMAC.text().strip())
         time.sleep(1)
         self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')
@@ -522,10 +527,11 @@ class MountWizzardApp(widget.MwWidget):
             self.workerINDI.stop()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
-        #if self.workerModelingDispatcher.isRunning:
-        #    self.workerModelingDispatcher.stop()
-        if self.workerUpload.isRunning:
-            self.workerUpload.stop()
+        # if self.workerModelingDispatcher.isRunning:
+        #     self.workerModelingDispatcher.stop()
+        if platform.system() == 'Windows':
+            if self.workerUpload.isRunning:
+                self.workerUpload.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
         if self.workerEnvironment.isRunning:
@@ -539,8 +545,8 @@ class MountWizzardApp(widget.MwWidget):
         self.workerEnvironment.initConfig()
         self.workerDome.initConfig()
         self.workerRemote.initConfig()
-        self.workerUpload.initConfig()
-
+        if platform.system() == 'Windows':
+            self.workerUpload.initConfig()
         self.modelWindow.initConfig()
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
@@ -1071,6 +1077,21 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
+    def setCameraStatusText(self, status):
+        self.imageWindow.ui.le_cameraStatusText.setText(status)
+        self.ui.le_cameraStatusText.setText(status)
+
+    def setSolverStatusText(self, status):
+        self.ui.le_solverStatusText.setText(status)
+
+    def setDomeStatusText(self, status):
+        self.ui.le_domeStatusText.setText(status)
+
+    def setCameraExposureTime(self, status):
+        self.imageWindow.ui.le_cameraExposureTime.setText(status)
+
+
+
     def mainLoop(self):
         self.fillMountData()
         self.fillEnvironmentData()
@@ -1081,8 +1102,20 @@ class MountWizzardApp(widget.MwWidget):
             text = self.messageQueue.get()
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
-            elif text.startswith('status'):
-                self.ui.le_modelingStatus.setText(text[6:])
+            elif text.startswith('ToModel>'):
+                self.ui.le_numberPointsToModel.setText(text[8:])
+            elif text.startswith('Slewed>'):
+                self.ui.le_numberPointsSlewed.setText(text[7:])
+                self.ui.bar_numberPointsSlewed.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+            elif text.startswith('Imaged>'):
+                self.ui.le_numberPointsImaged.setText(text[7:])
+                self.ui.bar_numberPointsImaged.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+            elif text.startswith('Solved>'):
+                self.ui.le_numberPointsSolved.setText(text[7:])
+                self.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+            elif text.startswith('Processed>'):
+                self.ui.le_numberPointsProcessed.setText(text[10:])
+                self.ui.bar_numberPointsProcessed.setValue(int(1000 * float(text[10:]) / float(self.ui.le_numberPointsToModel.text())))
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):
@@ -1138,7 +1171,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0.0 alpha 2'
+    BUILD_NO = '3.0.0 alpha 3'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
