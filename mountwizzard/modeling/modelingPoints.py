@@ -24,9 +24,9 @@ class ModelPoints:
     def __init__(self, app):
         self.app = app
         self.transform = self.app.transform
-        self.horizonPoints = []
-        self.BasePoints = []
-        self.RefinementPoints = []
+        self.horizonPoints = list()
+        self.BasePoints = list()
+        self.RefinementPoints = list()
 
     def initConfig(self):
         try:
