@@ -41,9 +41,9 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
+     <y>10</y>
      <width>111</width>
-     <height>31</height>
+     <height>51</height>
     </rect>
    </property>
    <property name="font">
@@ -55,7 +55,8 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Clear Points</string>
+    <string>Clear
+Model Points</string>
    </property>
   </widget>
   <widget class="QLabel" name="hemisphereBackground">
@@ -71,9 +72,65 @@
     <string/>
    </property>
   </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>10</y>
+     <width>201</width>
+     <height>51</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Edit</string>
+   </property>
+   <widget class="QRadioButton" name="btn_editNone">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>None</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="btn_editModelPoints">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>20</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Points</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="btn_editHorizonMask">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>20</y>
+      <width>61</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mask</string>
+    </property>
+   </widget>
+  </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>hemisphere</zorder>
   <zorder>btn_deletePoints</zorder>
+  <zorder>groupBox_2</zorder>
  </widget>
  <resources/>
  <connections/>

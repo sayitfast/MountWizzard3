@@ -169,6 +169,7 @@ class ModelPoints:
         if horizonByAltitude:
             y = numpy.clip(y, altitudeMinimumHorizon, None)
         self.horizonPoints = [list(a) for a in zip(x, y)]
+        self.horizonPoints = hp
         return msg
 
     def isAboveHorizonLine(self, point):
