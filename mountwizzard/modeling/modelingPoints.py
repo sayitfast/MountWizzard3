@@ -162,25 +162,22 @@ class ModelPoints:
                     self.logger.error('Error loading horizon points: {0}'.format(e))
                     return msg
             hp = sorted(hp, key=operator.itemgetter(0))
-        x = range(0, 361)
         if len(hp) == 0:
             hp = ((0, 0), (360, 0))
-        y = numpy.interp(x, [i[0] for i in hp], [i[1] for i in hp], left=None, right=None, period=None)
+        x = [i[0] for i in hp]
+        y = [i[1] for i in hp]
         if horizonByAltitude:
             y = numpy.clip(y, altitudeMinimumHorizon, None)
         self.horizonPoints = [list(a) for a in zip(x, y)]
-        self.horizonPoints = hp
         return msg
 
     def isAboveHorizonLine(self, point):
-        length = len(self.horizonPoints)
-        if length > 0 and point[0] < length:
-            if point[1] > self.horizonPoints[int(point[0])][1]:
-                return True
-            else:
-                return False
-        else:
+        x = range(0, 361)
+        y = numpy.interp(x, [i[0] for i in self.horizonPoints], [i[1] for i in self.horizonPoints], left=None, right=None, period=None)
+        if point[1] > y[int(point[0])]:
             return True
+        else:
+            return False
 
     def deleteBelowHorizonLine(self):
         i = 0
