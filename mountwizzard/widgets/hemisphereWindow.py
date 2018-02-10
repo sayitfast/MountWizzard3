@@ -201,10 +201,8 @@ class HemisphereWindow(widget.MwWidget):
             horizon.append((360, 0))
             self.maskPlotFill.set_xy(horizon)
         if event.button == 1 and ind is None and self.ui.btn_editHorizonMask.isChecked():
-            horizon.insert(indlow + 2, (event.xdata, event.ydata))
+            horizon.insert(indlow + 1, (event.xdata, event.ydata))
             self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
-            horizon.insert(0, (0, 0))
-            horizon.append((360, 0))
             self.maskPlotFill.set_xy(horizon)
         if self.ui.btn_editHorizonMask.isChecked():
             pass
