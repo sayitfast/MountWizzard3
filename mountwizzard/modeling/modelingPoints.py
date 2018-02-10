@@ -55,6 +55,26 @@ class ModelPoints:
         self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
         self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
 
+    def saveModelPoints(self, modelPointsFileName):
+        msg = None
+        fileHandle = None
+        if modelPointsFileName.strip() == '':
+            msg = 'No Model Points Filename given!'
+            self.logger.warning('No Model Points Filename given!')
+            return msg
+        try:
+            fileHandle = open(modelPointsFileName + '.txt', 'w')
+            for i in range(0, len(self.modelPoints)):
+                fileHandle.write('MW-3:{0:03d}:{1:03d}\n'.format(int(self.modelPoints[i][0]), int(int(self.modelPoints[i][1]))))
+            fileHandle.close()
+        except Exception as e:
+            msg = 'Error saving modeling points to file [{0}] error: {1}!'.format(modelPointsFileName, e)
+            self.logger.warning('Error loading modeling points to file [{0}] error: {1}!'.format(modelPointsFileName, e))
+        finally:
+            if fileHandle:
+                fileHandle.close()
+            return msg
+
     def loadModelPoints(self, modelPointsFileName, modeltype):
         p = []
         number = 0
@@ -75,14 +95,10 @@ class ModelPoints:
                             p.append(point)
                         elif modeltype == 'Base' and number <= 3:
                             p.append(point)
-                    elif line.startswith('MW3'):
+                    elif line.startswith('MW-3'):
                         # if mountwizzard, it's native version 3
-                        if line.startswith('MW3-Initial') and modeltype == 'Initial':
-                            # initial points
-                            pass
-                        elif line.startswith('MW3-Full') and modeltype == 'Full':
-                            # full points
-                            pass
+                        convertedLine = line.rstrip('\n').split(':')
+                        p.append((float(convertedLine[1]), float(convertedLine[2])))
                     else:
                         # format is same as Per's Model Maker
                         convertedLine = line.rstrip('\n').split(':')

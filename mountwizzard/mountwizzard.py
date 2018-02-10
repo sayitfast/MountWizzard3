@@ -268,6 +268,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
         self.ui.btn_loadHorizonMask.clicked.connect(self.selectHorizonPointsFileName)
         self.ui.btn_loadModelPoints.clicked.connect(self.selectModelPointsFileName)
+        self.ui.btn_saveModelPoints.clicked.connect(self.saveModelPoints)
+        self.ui.btn_saveModelPointsAs.clicked.connect(self.saveModelPointsAs)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -731,6 +733,18 @@ class MountWizzardApp(widget.MwWidget):
             self.saveConfigData(value + '.cfg')
         else:
             self.logger.warning('No config file selected')
+
+    def saveModelPoints(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_modelPointsFileName.text()
+        self.workerModelingDispatcher.modelingRunner.modelPoints.saveModelPoints(filepath)
+
+    def saveModelPointsAs(self):
+        value = self.selectFile(self, 'Save model points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        if value != '':
+            self.ui.le_modelPointsFileName.setText(os.path.basename(value))
+            self.workerModelingDispatcher.modelingRunner.modelPoints.saveModelPoints(value)
+        else:
+            self.logger.warning('No model points file selected')
 
     def selectModelPointsFileName(self):
         value = self.selectFile(self, 'Open model points file', '/config', 'Model points files (*.txt)', '.txt', True)
