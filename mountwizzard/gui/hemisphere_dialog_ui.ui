@@ -58,33 +58,6 @@
     <string>Clear Points</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="checkShowNumbers">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>20</y>
-     <width>111</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Checked if you would like to see the tracking line and flip time in the window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="layoutDirection">
-    <enum>Qt::LeftToRight</enum>
-   </property>
-   <property name="text">
-    <string>Show Numbers</string>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-  </widget>
   <widget class="QLabel" name="hemisphereBackground">
    <property name="geometry">
     <rect>
@@ -101,7 +74,6 @@
   <zorder>hemisphereBackground</zorder>
   <zorder>hemisphere</zorder>
   <zorder>btn_deletePoints</zorder>
-  <zorder>checkShowNumbers</zorder>
  </widget>
  <resources/>
  <connections/>

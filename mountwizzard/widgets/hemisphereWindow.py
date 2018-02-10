@@ -218,8 +218,6 @@ class HemisphereWindow(widget.MwWidget):
                 self.move(x, y)
             if 'CoordinatePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['CoordinatePopupWindowShowStatus']
-            if 'CheckShowNumbers' in self.app.config:
-                self.ui.checkShowNumbers.setChecked(self.app.config['CheckShowNumbers'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -229,7 +227,6 @@ class HemisphereWindow(widget.MwWidget):
         self.app.config['CoordinatePopupWindowPositionX'] = self.pos().x()
         self.app.config['CoordinatePopupWindowPositionY'] = self.pos().y()
         self.app.config['CoordinatePopupWindowShowStatus'] = self.showStatus
-        self.app.config['CheckShowNumbers'] = self.ui.checkShowNumbers.isChecked()
 
     def showWindow(self):
         self.showStatus = True
@@ -271,38 +268,35 @@ class HemisphereWindow(widget.MwWidget):
             self.hemisphereMatplotlib.fig.canvas.draw()
             QApplication.processEvents()
 
-    def onmouse(self, event):
+    def onMouse(self, event):
         if event.inaxes is None:
             return
         ind = self.get_ind_under_point(event, 2)
-        print('mouse event:', event, ' index:', ind)
-        refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
+        points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         if event.button == 3 and ind is not None:
             # delete a point
-            if len(refine) > 0:
-                del(refine[ind])
-                if self.ui.checkShowNumbers.isChecked():
-                    self.annotate[ind].remove()
-                    del(self.annotate[ind])
+            if len(points) > 0:
+                # print(ind, len(self.annotate), len(points))
+                del(points[ind])
+                self.annotate[ind].remove()
+                del(self.annotate[ind])
             # now redraw plot
-            self.line1.set_data([i[0] for i in refine], [i[1] for i in refine])
-            self.line2.set_data([i[0] for i in refine], [i[1] for i in refine])
+            self.line1.set_data([i[0] for i in points], [i[1] for i in points])
+            self.line2.set_data([i[0] for i in points], [i[1] for i in points])
         if event.button == 1 and ind is None:
             # add a point
-            refine.append((event.xdata, event.ydata))
-            if self.ui.checkShowNumbers.isChecked():
-                self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(len(refine)), xy=(event.xdata - self.offx, event.ydata - self.offy), color='#E0E0E0'))
+            points.append((event.xdata, event.ydata))
+            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(len(points)), xy=(event.xdata - self.offx, event.ydata - self.offy), color='#E0E0E0'))
             # now redraw plot
-            self.line1.set_data([i[0] for i in refine], [i[1] for i in refine])
-            self.line2.set_data([i[0] for i in refine], [i[1] for i in refine])
+            self.line1.set_data([i[0] for i in points], [i[1] for i in points])
+            self.line2.set_data([i[0] for i in points], [i[1] for i in points])
 
-        if self.ui.checkShowNumbers.isChecked():
-            for i in range(0, len(refine)):
-                self.annotate[i].set_text('{0:2d}'.format(i + 1))
+        for i in range(0, len(points)):
+            self.annotate[i].set_text('{0:2d}'.format(i + 1))
         self.hemisphereMatplotlib.fig.canvas.draw()
 
     def get_ind_under_point(self, event, epsilon):
-        xy = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
+        xy = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         if len(xy) == 0:
             return None
         xt = np.asarray([i[0] for i in xy])
@@ -315,9 +309,10 @@ class HemisphereWindow(widget.MwWidget):
         return ind
 
     def drawHemisphere(self):
-        #self.hemisphereMatplotlib.fig.canvas.mpl_connect('pick_event', self.onpick)
-        self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onmouse)
-
+        for i in range(0, len(self.annotate)):
+            self.annotate[i].remove()
+        self.annotate = list()
+        self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlib.axes.cla()
         self.hemisphereMatplotlib.axes.spines['bottom'].set_color('#2090C0')
         self.hemisphereMatplotlib.axes.spines['top'].set_color('#2090C0')
@@ -338,34 +333,20 @@ class HemisphereWindow(widget.MwWidget):
         aspectRatio = displayRatio / dataRatio
         # horizon
         horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
-        if len(horizon) > 0:
-            horizon.insert(0, (0, 0))
-            horizon.append((360, 0))
-            self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
+        horizon.insert(0, (0, 0))
+        horizon.append((360, 0))
+        self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
+        self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         # model points
         self.offx = -2
         self.offy = 7 / aspectRatio
-        base = self.app.workerModelingDispatcher.modelingRunner.modelPoints.BasePoints
-        if len(base) > 0:
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=9, color='#E00000')
-            self.hemisphereMatplotlib.axes.plot([i[0] for i in base], [i[1] for i in base], 'o', markersize=3, color='#E0E000')
-            number = 1
-            if self.ui.checkShowNumbers.isChecked():
-                for i in range(0, len(base)):
-                    self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(base[i][0] - self.offx, base[i][1] - self.offy), color='#E0E0E0')
-                    number += 1
-        refine = self.app.workerModelingDispatcher.modelingRunner.modelPoints.RefinementPoints
-        if len(refine) > -1:
-            # draw points in two colors
-            self.line1,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=9, color='#00A000')
-            self.line2,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in refine], [i[1] for i in refine], 'o', markersize=3, color='#E0E000')
-            # add text to points
-            number = 1
-            if self.ui.checkShowNumbers.isChecked():
-                for i in range(0, len(refine)):
-                    self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(number), xy=(refine[i][0] - self.offx, refine[i][1] - self.offy), color='#E0E0E0'))
-                    number += 1
+        points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
+        # draw points in two colors
+        self.line1,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, color='#00A000')
+        self.line2,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=3, color='#E0E000')
+        # add text to points
+        for i in range(0, len(points)):
+            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] - self.offx, points[i][1] - self.offy), color='#E0E0E0'))
         # adding the pointer of mount
         self.pointerAzAlt1 = matplotlib.patches.Ellipse((180, 45), 4 * aspectRatio, 4, zorder=10, color='#FF00FF', lw=2, fill=False, visible=False)
         self.pointerAzAlt2 = matplotlib.patches.Ellipse((180, 45), 1.5 * aspectRatio, 1.5, zorder=10, color='#FF00FF', lw=1, fill=False, visible=False)

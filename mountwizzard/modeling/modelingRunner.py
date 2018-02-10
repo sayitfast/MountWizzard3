@@ -412,7 +412,7 @@ class ModelingRunner:
 
 
 
-    def runBaseModel(self):
+    def runInitialModel(self):
         if not self.checkModelingAvailable():
             return
         if self.app.ui.checkClearModelFirst.isChecked():

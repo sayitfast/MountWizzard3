@@ -39,12 +39,12 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner = modelingRunner.ModelingRunner(self.app)
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
-            'RunBaseModel':
+            'RunInitialModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_runBaseModel,
-                            'Method': self.modelingRunner.runBaseModel,
+                            'Button': self.app.ui.btn_runInitialModel,
+                            'Method': self.modelingRunner.runInitialModel,
                             'Cancel': self.app.ui.btn_cancelModel1
                         }
                     ]
@@ -139,22 +139,22 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'LoadBasePoints':
+            'LoadInitialPoints':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadBasePoints,
-                            'Method': self.modelingRunner.modelPoints.loadBasePoints,
+                            'Button': self.app.ui.btn_loadInitialPoints,
+                            'Method': self.modelingRunner.modelPoints.loadInitialPoints,
                             'Parameter': ['self.app.ui.le_modelPointsFileName.text()']
                         }
                     ]
                 },
-            'LoadRefinementPoints':
+            'LoadFullPoints':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadRefinementPoints,
-                            'Method': self.modelingRunner.modelPoints.loadRefinementPoints,
+                            'Button': self.app.ui.btn_loadFullPoints,
+                            'Method': self.modelingRunner.modelPoints.loadFullPoints,
                             'Parameter': ['self.app.ui.le_modelPointsFileName.text()',
                                           'self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()']
@@ -176,12 +176,12 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'GenerateBasePoints':
+            'GenerateInitialPoints':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_generateBasePoints,
-                            'Method': self.modelingRunner.modelPoints.generateBasePoints,
+                            'Button': self.app.ui.btn_generateInitialPoints,
+                            'Method': self.modelingRunner.modelPoints.generateInitialPoints,
                             'Parameter': ['float(self.app.ui.azimuthBase.value())',
                                           'float(self.app.ui.altitudeBase.value())',
                                           'int(float(self.app.ui.numberBase.value()))']
@@ -212,8 +212,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             pass
         self.modelingRunner.initConfig()
         self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcherQueue.put('PlateSolveSync'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_loadRefinementPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadRefinementPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_loadBasePoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_loadFullPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFullPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_loadInitialPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
@@ -226,14 +226,14 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_generateBasePoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_generateInitialPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTimeChangeModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHystereseModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFullModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_runBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunBaseModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunInitialModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()

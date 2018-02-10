@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5093,7 +5093,7 @@ Window</string>
    </widget>
    <widget class="QWidget" name="tab_15">
     <attribute name="title">
-     <string>Align Model</string>
+     <string>Initial Model</string>
     </attribute>
     <widget class="QLabel" name="label_109">
      <property name="geometry">
@@ -5223,7 +5223,7 @@ Window</string>
       <double>50.000000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_runBaseModel">
+    <widget class="QPushButton" name="btn_runInitialModel">
      <property name="geometry">
       <rect>
        <x>270</x>
@@ -5236,7 +5236,7 @@ Window</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Runs the base model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Run Setup Model</string>
+      <string>Run Initial Model</string>
      </property>
     </widget>
     <widget class="Line" name="line_35">
@@ -5279,7 +5279,7 @@ Window</string>
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_generateBasePoints">
+    <widget class="QPushButton" name="btn_generateInitialPoints">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -5292,7 +5292,7 @@ Window</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Generates base points based on number, altitude and azimuth settings.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Generate Setup Points</string>
+      <string>Generate Initial Points</string>
      </property>
     </widget>
     <widget class="QDoubleSpinBox" name="altitudeBase">
@@ -5331,7 +5331,7 @@ Window</string>
       <double>50.000000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadBasePoints">
+    <widget class="QPushButton" name="btn_loadInitialPoints">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -5344,7 +5344,7 @@ Window</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows the base points of model points file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Setup Points from File</string>
+      <string>Initial Points from File</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_cancelModel1">
@@ -6312,11 +6312,11 @@ Window</string>
     <zorder>label_171</zorder>
     <zorder>label_170</zorder>
     <zorder>azimuthBase</zorder>
-    <zorder>btn_runBaseModel</zorder>
+    <zorder>btn_runInitialModel</zorder>
     <zorder>label_110</zorder>
-    <zorder>btn_generateBasePoints</zorder>
+    <zorder>btn_generateInitialPoints</zorder>
     <zorder>altitudeBase</zorder>
-    <zorder>btn_loadBasePoints</zorder>
+    <zorder>btn_loadInitialPoints</zorder>
     <zorder>btn_cancelModel1</zorder>
     <zorder>label</zorder>
     <zorder>le_alignErrorAz</zorder>
@@ -6587,7 +6587,7 @@ Window</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadRefinementPoints">
+    <widget class="QPushButton" name="btn_loadFullPoints">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -6600,7 +6600,7 @@ Window</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows the model points of the given model points file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Model Points from File</string>
+      <string>Full Model Points from File</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_cancelModel2">
@@ -7745,7 +7745,7 @@ Window</string>
     <zorder>numberGridPointsRow</zorder>
     <zorder>numberGridPointsCol</zorder>
     <zorder>btn_runFullModel</zorder>
-    <zorder>btn_loadRefinementPoints</zorder>
+    <zorder>btn_loadFullPoints</zorder>
     <zorder>btn_cancelModel2</zorder>
     <zorder>btn_generateDSOPoints</zorder>
     <zorder>line_40</zorder>
@@ -14767,13 +14767,13 @@ Window</string>
   <tabstop>checkAutoRefractionCamera</tabstop>
   <tabstop>checkAutoRefractionNotTracking</tabstop>
   <tabstop>btn_setRefractionParameters</tabstop>
-  <tabstop>btn_loadBasePoints</tabstop>
-  <tabstop>btn_generateBasePoints</tabstop>
+  <tabstop>btn_loadInitialPoints</tabstop>
+  <tabstop>btn_generateInitialPoints</tabstop>
   <tabstop>altitudeBase</tabstop>
   <tabstop>azimuthBase</tabstop>
-  <tabstop>btn_runBaseModel</tabstop>
+  <tabstop>btn_runInitialModel</tabstop>
   <tabstop>btn_cancelModel1</tabstop>
-  <tabstop>btn_loadRefinementPoints</tabstop>
+  <tabstop>btn_loadFullPoints</tabstop>
   <tabstop>btn_generateGridPoints</tabstop>
   <tabstop>numberGridPointsRow</tabstop>
   <tabstop>altitudeMin</tabstop>
