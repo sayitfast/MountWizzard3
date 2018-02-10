@@ -293,6 +293,7 @@ class HemisphereWindow(widget.MwWidget):
 
         for i in range(0, len(points)):
             self.annotate[i].set_text('{0:2d}'.format(i + 1))
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(points)))
         self.hemisphereMatplotlib.fig.canvas.draw()
 
     def get_ind_under_point(self, event, epsilon):
