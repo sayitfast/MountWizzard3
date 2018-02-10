@@ -137,10 +137,18 @@ class HemisphereWindow(widget.MwWidget):
     def setEditModus(self):
         if self.ui.btn_editNone.isChecked():
             self.maskPlotMarker.set_marker('None')
+            self.maskPlotMarker.set_color('#006000')
+            self.pointsPlotBig.set_color('#00A000')
+
         elif self.ui.btn_editModelPoints.isChecked():
             self.maskPlotMarker.set_marker('None')
+            self.maskPlotMarker.set_color('#006000')
+            self.pointsPlotBig.set_color('#FF00FF')
+
         elif self.ui.btn_editHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
+            self.pointsPlotBig.set_color('#00A000')
+            self.maskPlotMarker.set_color('#FF00FF')
         else:
             pass
         self.hemisphereMatplotlib.fig.canvas.draw()
@@ -148,11 +156,17 @@ class HemisphereWindow(widget.MwWidget):
     def onMouse(self, event):
         if event.inaxes is None or self.ui.btn_editNone.isChecked():
             return
-        ind = self.get_ind_under_point(event, 2)
+        ind = None
+        ind1 = None
+        ind2 = None
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
-
         # first do the model points
+        if self.ui.btn_editModelPoints.isChecked():
+            ind = self.get_ind_under_point(event, 2, points)
+        if self.ui.btn_editHorizonMask.isChecked():
+            ind = self.get_ind_under_point(event, 2, horizon)
+            ind1, ind2 = self.get_two_ind_under_point(event, horizon)
         if event.button == 3 and ind is not None and self.ui.btn_editModelPoints.isChecked():
             # delete a point
             if len(points) > 0:
@@ -176,13 +190,18 @@ class HemisphereWindow(widget.MwWidget):
             self.app.messageQueue.put('ToModel>{0:02d}'.format(len(points)))
 
         # now do the horizon mask
-        # self.ui.btn_editHorizonMask.isChecked()
+        if event.button == 3 and ind is not None and self.ui.btn_editHorizonMask.isChecked():
+            pass
+        if event.button == 1 and ind is None and self.ui.btn_editHorizonMask.isChecked():
+            pass
+        if self.ui.btn_editHorizonMask.isChecked():
+            pass
 
         # finally redraw
         self.hemisphereMatplotlib.fig.canvas.draw()
 
-    def get_ind_under_point(self, event, epsilon):
-        xy = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
+    @staticmethod
+    def get_ind_under_point(event, epsilon, xy):
         if len(xy) == 0:
             return None
         xt = numpy.asarray([i[0] for i in xy])
@@ -193,6 +212,16 @@ class HemisphereWindow(widget.MwWidget):
         if d[ind] >= epsilon:
             ind = None
         return ind
+
+    @staticmethod
+    def get_two_ind_under_point(event, xy):
+        if len(xy) <= 0:
+            return None
+        xt = numpy.asarray([i[0] for i in xy])
+        yt = numpy.asarray([i[1] for i in xy])
+        d = numpy.sqrt((xt - event.xdata)**2 / 16 + (yt - event.ydata)**2)
+        indseq = numpy.nonzero(numpy.equal(d, numpy.amin(d)))[0]
+        return indseq[0], indseq[1]
 
     def drawHemisphere(self):
         for i in range(0, len(self.annotate)):
@@ -224,6 +253,9 @@ class HemisphereWindow(widget.MwWidget):
         self.maskPlotFill,  = self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
         # self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         self.maskPlotMarker,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
+        if self.ui.btn_editHorizonMask.isChecked():
+            self.maskPlotMarker.set_marker('o')
+            self.maskPlotMarker.set_color('#FF00FF')
         # model points
         self.offx = -2
         self.offy = 7 / aspectRatio
@@ -231,6 +263,8 @@ class HemisphereWindow(widget.MwWidget):
         # draw points in two colors
         self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, color='#00A000')
         self.pointsPlotSmall,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=3, color='#E0E000')
+        if self.ui.btn_editModelPoints.isChecked():
+            self.pointsPlotBig.set_color('#FF00FF')
         # add text to points
         for i in range(0, len(points)):
             self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] - self.offx, points[i][1] - self.offy), color='#E0E0E0'))
