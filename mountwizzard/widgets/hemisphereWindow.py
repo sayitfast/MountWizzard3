@@ -157,8 +157,8 @@ class HemisphereWindow(widget.MwWidget):
         if event.inaxes is None or self.ui.btn_editNone.isChecked():
             return
         ind = None
-        ind1 = None
-        ind2 = None
+        indlow = None
+
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
         # first do the model points
@@ -166,7 +166,7 @@ class HemisphereWindow(widget.MwWidget):
             ind = self.get_ind_under_point(event, 2, points)
         if self.ui.btn_editHorizonMask.isChecked():
             ind = self.get_ind_under_point(event, 2, horizon)
-            ind1, ind2 = self.get_two_ind_under_point(event, horizon)
+            indlow = self.get_two_ind_under_point_in_x(event, horizon)
         if event.button == 3 and ind is not None and self.ui.btn_editModelPoints.isChecked():
             # delete a point
             if len(points) > 0:
@@ -191,9 +191,21 @@ class HemisphereWindow(widget.MwWidget):
 
         # now do the horizon mask
         if event.button == 3 and ind is not None and self.ui.btn_editHorizonMask.isChecked():
-            pass
+            # delete a point
+            if len(horizon) > 0:
+                # print(ind, len(self.annotate), len(points))
+                del(horizon[ind])
+            # now redraw plot
+            self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
+            horizon.insert(0, (0, 0))
+            horizon.append((360, 0))
+            self.maskPlotFill.set_xy(horizon)
         if event.button == 1 and ind is None and self.ui.btn_editHorizonMask.isChecked():
-            pass
+            horizon.insert(indlow + 2, (event.xdata, event.ydata))
+            self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
+            horizon.insert(0, (0, 0))
+            horizon.append((360, 0))
+            self.maskPlotFill.set_xy(horizon)
         if self.ui.btn_editHorizonMask.isChecked():
             pass
 
@@ -207,21 +219,21 @@ class HemisphereWindow(widget.MwWidget):
         xt = numpy.asarray([i[0] for i in xy])
         yt = numpy.asarray([i[1] for i in xy])
         d = numpy.sqrt((xt - event.xdata)**2 / 16 + (yt - event.ydata)**2)
-        indseq = numpy.nonzero(numpy.equal(d, numpy.amin(d)))[0]
-        ind = indseq[0]
+        ind = d.argsort()[:1][0]
         if d[ind] >= epsilon:
             ind = None
         return ind
 
     @staticmethod
-    def get_two_ind_under_point(event, xy):
+    def get_two_ind_under_point_in_x(event, xy):
         if len(xy) <= 0:
             return None
         xt = numpy.asarray([i[0] for i in xy])
-        yt = numpy.asarray([i[1] for i in xy])
-        d = numpy.sqrt((xt - event.xdata)**2 / 16 + (yt - event.ydata)**2)
-        indseq = numpy.nonzero(numpy.equal(d, numpy.amin(d)))[0]
-        return indseq[0], indseq[1]
+        d = numpy.sqrt((xt - event.xdata)**2)
+        if d.argsort()[:2][0] < d.argsort()[:2][1]:
+            return d.argsort()[:2][0]
+        else:
+            return d.argsort()[:2][1]
 
     def drawHemisphere(self):
         for i in range(0, len(self.annotate)):

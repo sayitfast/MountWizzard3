@@ -5014,7 +5014,7 @@ Window</string>
     </widget>
     <widget class="QPushButton" name="btn_saveHorizonMaskAs">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -5065,7 +5065,7 @@ Window</string>
     </widget>
     <widget class="QPushButton" name="btn_saveHorizonMask">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>

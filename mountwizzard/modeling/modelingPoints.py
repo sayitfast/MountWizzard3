@@ -80,8 +80,8 @@ class ModelPoints:
         number = 0
         msg = None
         if modelPointsFileName.strip() == '':
-            msg = 'No Model Points Filename given!'
-            self.logger.warning('No Model Points Filename given!')
+            msg = 'No model points filename given!'
+            self.logger.warning('No model points filename given!')
             return p, msg
         try:
             with open('config/' + modelPointsFileName + '.txt', 'r') as fileHandle:
@@ -143,7 +143,7 @@ class ModelPoints:
                 return msg
             if not os.path.isfile(os.getcwd() + '/config/' + horizonPointsFileName + '.txt'):
                 msg = 'Horizon points file does not exist !'
-                self.logger.warning('horizon points file does not exist')
+                self.logger.warning('Horizon points file does not exist')
             else:
                 try:
                     with open(os.getcwd() + '/config/' + horizonPointsFileName + '.txt') as f:
@@ -170,6 +170,27 @@ class ModelPoints:
             y = numpy.clip(y, altitudeMinimumHorizon, None)
         self.horizonPoints = [list(a) for a in zip(x, y)]
         return msg
+
+    def saveHorizonPoints(self, horizonPointsFileName):
+        msg = None
+        fileHandle = None
+        if horizonPointsFileName.strip() == '':
+            msg = 'No horizon points filename given!'
+            self.logger.warning('No Model Points Filename given!')
+            return msg
+        try:
+            fileHandle = open(horizonPointsFileName + '.txt', 'w')
+            for i in range(0, len(self.horizonPoints)):
+                # saving in model maker format
+                fileHandle.write('{0:03d}:{1:03d}\n'.format(int(self.horizonPoints[i][0]), int(int(self.horizonPoints[i][1]))))
+            fileHandle.close()
+        except Exception as e:
+            msg = 'Error saving horizon points to file [{0}] error: {1}!'.format(horizonPointsFileName, e)
+            self.logger.warning('Error loading horizon points to file [{0}] error: {1}!'.format(horizonPointsFileName, e))
+        finally:
+            if fileHandle:
+                fileHandle.close()
+            return msg
 
     def isAboveHorizonLine(self, point):
         x = range(0, 361)

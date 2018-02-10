@@ -270,6 +270,8 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_loadModelPoints.clicked.connect(self.selectModelPointsFileName)
         self.ui.btn_saveModelPoints.clicked.connect(self.saveModelPoints)
         self.ui.btn_saveModelPointsAs.clicked.connect(self.saveModelPointsAs)
+        self.ui.btn_saveHorizonMask.clicked.connect(self.saveHorizonMask)
+        self.ui.btn_saveHorizonMaskAs.clicked.connect(self.saveHorizonMaskAs)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -753,6 +755,18 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.logger.warning('No file selected')
 
+    def saveHorizonMask(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_horizonPointsFileName.text()
+        self.workerModelingDispatcher.modelingRunner.modelPoints.saveHorizonPoints(filepath)
+
+    def saveHorizonMaskAs(self):
+        value = self.selectFile(self, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        if value != '':
+            self.ui.le_horizonPointsFileName.setText(os.path.basename(value))
+            self.workerModelingDispatcher.modelingRunner.modelPoints.saveHorizonPoints(value)
+        else:
+            self.logger.warning('No model points file selected')
+
     def selectAnalyseFileName(self):
         value = self.selectFile(self, 'Open analyse file', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
         if value != '':
@@ -1103,8 +1117,6 @@ class MountWizzardApp(widget.MwWidget):
 
     def setCameraExposureTime(self, status):
         self.imageWindow.ui.le_cameraExposureTime.setText(status)
-
-
 
     def mainLoop(self):
         self.fillMountData()
