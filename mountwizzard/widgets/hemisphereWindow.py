@@ -18,6 +18,8 @@ from baseclasses import widget
 from astrometry import transform
 import numpy
 import matplotlib
+import itertools
+import bisect
 from gui import hemisphere_dialog_ui
 
 
@@ -200,20 +202,22 @@ class HemisphereWindow(widget.MwWidget):
         # now do the horizon mask
         if event.button == 3 and ind is not None and self.ui.btn_editHorizonMask.isChecked():
             # delete a point
-            if len(horizon) > 0:
-                # print(ind, len(self.annotate), len(points))
+            if len(horizon) > 2:
                 del(horizon[ind])
             # now redraw plot
             self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
-            horizon.insert(0, (0, 0))
-            horizon.append((360, 0))
             self.maskPlotFill.set_xy(horizon)
         if event.button == 1 and ind is None and self.ui.btn_editHorizonMask.isChecked():
-            horizon.insert(indlow + 1, (event.xdata, event.ydata))
+            if indlow is not None:
+                horizon.insert(indlow + 1, (event.xdata, event.ydata))
             self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
-            self.maskPlotFill.set_xy(horizon)
-        if self.ui.btn_editHorizonMask.isChecked():
-            pass
+            x = [i[0] for i in horizon]
+            x.insert(0, 0)
+            x.append(360)
+            y = [i[1] for i in horizon]
+            y.insert(0, 0)
+            y.append(0)
+            self.maskPlotFill.set_xy(numpy.column_stack((x, y)))
 
         # finally redraw
         self.hemisphereMatplotlib.fig.canvas.draw()
@@ -232,14 +236,10 @@ class HemisphereWindow(widget.MwWidget):
 
     @staticmethod
     def get_two_ind_under_point_in_x(event, xy):
-        if len(xy) <= 0:
+        if len(xy) < 2:
             return None
-        xt = numpy.asarray([i[0] for i in xy])
-        d = numpy.sqrt((xt - event.xdata)**2)
-        if d.argsort()[:2][0] < d.argsort()[:2][1]:
-            return d.argsort()[:2][0]
-        else:
-            return d.argsort()[:2][1]
+        xt = [i[0] for i in xy]
+        return bisect.bisect_left(xt, event.xdata) - 1
 
     def drawHemisphere(self):
         for i in range(0, len(self.annotate)):
@@ -265,10 +265,18 @@ class HemisphereWindow(widget.MwWidget):
         dataRatio = 90 / 360
         aspectRatio = displayRatio / dataRatio
         # horizon
-        horizon = copy.copy(self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints)
-        horizon.insert(0, (0, 0))
-        horizon.append((360, 0))
-        self.maskPlotFill,  = self.hemisphereMatplotlib.axes.fill([i[0] for i in horizon], [i[1] for i in horizon], color='#002000', zorder=-20)
+        horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
+        if len(horizon) < 2:
+            del(horizon[:])
+            horizon.append((0, 0))
+            horizon.append((360, 0))
+        x = [i[0] for i in horizon]
+        x.insert(0, 0)
+        x.append(360)
+        y = [i[1] for i in horizon]
+        y.insert(0, 0)
+        y.append(0)
+        self.maskPlotFill,  = self.hemisphereMatplotlib.axes.fill(x, y, color='#002000', zorder=-20)
         # self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         self.maskPlotMarker,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         if self.ui.btn_editHorizonMask.isChecked():
