@@ -206,7 +206,13 @@ class HemisphereWindow(widget.MwWidget):
                 del(horizon[ind])
             # now redraw plot
             self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
-            self.maskPlotFill.set_xy(horizon)
+            x = [i[0] for i in horizon]
+            x.insert(0, 0)
+            x.append(360)
+            y = [i[1] for i in horizon]
+            y.insert(0, 0)
+            y.append(0)
+            self.maskPlotFill.set_xy(numpy.column_stack((x, y)))
         if event.button == 1 and ind is None and self.ui.btn_editHorizonMask.isChecked():
             if indlow is not None:
                 horizon.insert(indlow + 1, (event.xdata, event.ydata))
