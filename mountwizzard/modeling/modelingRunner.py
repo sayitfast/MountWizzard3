@@ -299,50 +299,6 @@ class ModelingRunner:
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
                     time.sleep(0.1)
 
-    def runFullModel(self):
-        modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
-        # imaging has to be connected
-        if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
-            return
-        # solver has to be connected
-        if self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']['CONNECTION']['CONNECT'] == 'Off':
-            return
-        # telescope has to be connected
-        if not self.app.workerMountDispatcher.mountStatus['Command']:
-            return
-        if not self.app.workerMountDispatcher.mountStatus['Once']:
-            return
-        if not self.app.workerMountDispatcher.mountStatus['Slow']:
-            return
-        if not self.app.workerMountDispatcher.mountStatus['Medium']:
-            return
-        if not self.app.workerMountDispatcher.mountStatus['Fast']:
-            return
-        if not self.app.workerMountDispatcher.mountStatus['Align']:
-            return
-        # there have to be some modeling points
-        if len(self.modelPoints.modelPoints) == 0:
-            self.logger.warning('There are no Refinement Points to modeling')
-            return
-        # if dome is present, it has to be connected, too
-        if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
-            domeIsConnected = self.app.workerDome.data['Connected']
-        else:
-            domeIsConnected = False
-        modelingData['DomeIsConnected'] = domeIsConnected
-        modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
-        modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
-        modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
-        self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
-        self.cancel = False
-        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
-        name = modelingData['Directory'] + '_full'
-        if len(self.modelAlignmentData) > 0:
-            self.analyseData.saveData(self.modelAlignmentData, name)
-            self.app.ui.le_analyseFileName.setText(name)
-            if self.app.analyseWindow.showStatus:
-                self.app.ui.btn_openAnalyseWindow.clicked.emit()
-
     def runModelCore(self, messageQueue, runPoints, modelingData):
         # start clearing hemisphere window
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
@@ -433,6 +389,50 @@ class ModelingRunner:
         else:
             self.logger.warning('There are no Basepoints for modeling')
 
+    def runFullModel(self):
+        modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
+        # imaging has to be connected
+        if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # solver has to be connected
+        if self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # telescope has to be connected
+        if not self.app.workerMountDispatcher.mountStatus['Command']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Once']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Slow']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Medium']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Fast']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Align']:
+            return
+        # there have to be some modeling points
+        if len(self.modelPoints.modelPoints) == 0:
+            self.logger.warning('There are no Refinement Points to modeling')
+            return
+        # if dome is present, it has to be connected, too
+        if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
+            domeIsConnected = self.app.workerDome.data['Connected']
+        else:
+            domeIsConnected = False
+        modelingData['DomeIsConnected'] = domeIsConnected
+        modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
+        modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
+        self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
+        self.cancel = False
+        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        name = modelingData['Directory'] + '_full'
+        if len(self.modelAlignmentData) > 0:
+            self.analyseData.saveData(self.modelAlignmentData, name)
+            self.app.ui.le_analyseFileName.setText(name)
+            if self.app.analyseWindow.showStatus:
+                self.app.ui.btn_openAnalyseWindow.clicked.emit()
+
     def runCheckModel(self):
         if not self.checkModelingAvailable():
             return
@@ -449,10 +449,6 @@ class ModelingRunner:
                 self.analyseData.saveData(self.modelingResultData, name)
         else:
             self.logger.warning('There are no Refinement or Base Points to modeling')
-
-    def runAllModel(self):
-        self.runBaseModel()
-        self.runRefinementModel()
 
     def runTimeChangeModel(self):
         if not self.checkModelingAvailable():
@@ -514,7 +510,7 @@ class ModelingRunner:
         self.app.mount.programBatchData(data)
 
     def plateSolveSync(self, simulation=False):
-        self.app.messageQueue.put('{0} - Start Sync Mount Model\n'.format(timeStamp()))
+        self.app.messageQueue.put('#BWStart Sync Mount Model\n')
         modelData['base_dir_images'] = self.app.workerModeling.IMAGEDIR + '/platesolvesync'
         self.logger.info('modelData: {0}'.format(modelData))
         self.app.mountCommandQueue.put('PO')
@@ -533,22 +529,22 @@ class ModelingRunner:
         modelData['RefractionPressure'] = self.app.mount.data['RefractionPressure']
         modelData['Azimuth'] = 0
         modelData['Altitude'] = 0
-        self.app.messageQueue.put('{0} -\t Capturing image\n'.format(timeStamp()))
+        self.app.messageQueue.put('\tCapturing image\n')
         suc, mes, imagepath = self.imagingApps.capturingImage(modelData, simulation)
         self.logger.info('suc:{0} mes:{1}'.format(suc, mes))
         if suc:
-            self.app.messageQueue.put('{0} -\t Solving Image\n'.format(timeStamp()))
+            self.app.messageQueue.put('\tSolving Image\n')
             suc, mes, modelData = self.imagingApps.solveImage(modelData, simulation)
-            self.app.messageQueue.put('{0} -\t Image path: {1}\n'.format(timeStamp(), modelData['ImagePath']))
+            self.app.messageQueue.put('\tImage path: {0}\n'.format(modelData['ImagePath']))
             if suc:
                 suc = self.app.mount.syncMountModel(modelData['RaJNowSolved'], modelData['DecJNowSolved'])
                 if suc:
-                    self.app.messageQueue.put('{0} -\t Mount Model Synced\n'.format(timeStamp()))
+                    self.app.messageQueue.put('\tMount Model Synced\n')
                 else:
-                    self.app.messageQueue.put('{0} -\t Mount Model could not be synced - please check!\n'.format(timeStamp()))
+                    self.app.messageQueue.put('\tMount Model could not be synced - please check!\n')
             else:
-                self.app.messageQueue.put('{0} -\t Solving error: {1}\n'.format(timeStamp(), mes))
+                self.app.messageQueue.put('\tSolving error: {0}\n'.format(mes))
         if not self.app.ui.checkKeepImages.isChecked():
             shutil.rmtree(modelData['BaseDirImages'], ignore_errors=True)
-        self.app.messageQueue.put('{0} - Sync Mount Model finished !\n'.format(timeStamp()))
+        self.app.messageQueue.put('#BWSync Mount Model finished !\n')
 
