@@ -114,13 +114,12 @@ class ModelPoints:
             return p, msg
 
     def sortPoints(self):
-        points = self.ModelPoints
-        if len(points) == 0:
+        if len(self.modelPoints) == 0:
             self.logger.warning('There are no points to sort')
             return
         westSide = []
         eastSide = []
-        a = sorted(points, key=operator.itemgetter(0))
+        a = sorted(self.modelPoints, key=operator.itemgetter(0))
         for i in range(0, len(a)):
             if a[i][0] >= 180:
                 westSide.append((a[i][0], a[i][1]))

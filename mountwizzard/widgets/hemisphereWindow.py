@@ -168,9 +168,9 @@ class HemisphereWindow(widget.MwWidget):
             return
         ind = None
         indlow = None
-
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
+
         # first do the model points
         if self.ui.btn_editModelPoints.isChecked():
             ind = self.get_ind_under_point(event, 2, points)
@@ -178,20 +178,17 @@ class HemisphereWindow(widget.MwWidget):
             ind = self.get_ind_under_point(event, 2, horizon)
             indlow = self.get_two_ind_under_point_in_x(event, horizon)
         if event.button == 3 and ind is not None and self.ui.btn_editModelPoints.isChecked():
-            # delete a point
             if len(points) > 0:
-                # print(ind, len(self.annotate), len(points))
                 del(points[ind])
                 self.annotate[ind].remove()
                 del(self.annotate[ind])
-            # now redraw plot
             self.pointsPlotBig.set_data([i[0] for i in points], [i[1] for i in points])
             self.pointsPlotSmall.set_data([i[0] for i in points], [i[1] for i in points])
         if event.button == 1 and ind is None and self.ui.btn_editModelPoints.isChecked():
-            # add a point
             points.append((event.xdata, event.ydata))
-            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(len(points)), xy=(event.xdata - self.offx, event.ydata - self.offy), color='#E0E0E0'))
-            # now redraw plot
+            if self.app.ui.checkSortPoints.isChecked():
+                self.app.workerModelingDispatcher.modelingRunner.modelPoints.sortPoints()
+            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('', xy=(event.xdata - self.offx, event.ydata - self.offy), color='#E0E0E0'))
             self.pointsPlotBig.set_data([i[0] for i in points], [i[1] for i in points])
             self.pointsPlotSmall.set_data([i[0] for i in points], [i[1] for i in points])
         if self.ui.btn_editModelPoints.isChecked():
