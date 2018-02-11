@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5471,7 +5471,7 @@ Window</string>
     <widget class="QLineEdit" name="le_alignKnobTurnAz">
      <property name="geometry">
       <rect>
-       <x>650</x>
+       <x>625</x>
        <y>50</y>
        <width>91</width>
        <height>21</height>
@@ -5633,7 +5633,7 @@ Window</string>
     <widget class="QLineEdit" name="le_alignKnobTurnAlt">
      <property name="geometry">
       <rect>
-       <x>650</x>
+       <x>625</x>
        <y>260</y>
        <width>91</width>
        <height>21</height>
@@ -5675,7 +5675,7 @@ Window</string>
     <widget class="QLabel" name="label_156">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>530</x>
        <y>50</y>
        <width>91</width>
        <height>21</height>
@@ -5953,7 +5953,7 @@ Window</string>
     <widget class="QLabel" name="label_157">
      <property name="geometry">
       <rect>
-       <x>540</x>
+       <x>530</x>
        <y>260</y>
        <width>91</width>
        <height>21</height>
@@ -6304,6 +6304,42 @@ Window</string>
       <string>Fast Align</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_210">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>50</y>
+       <width>36</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Turns</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_212">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>260</y>
+       <width>36</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Turns</string>
+     </property>
+    </widget>
     <zorder>line_54</zorder>
     <zorder>line_27</zorder>
     <zorder>line_35</zorder>
@@ -6354,6 +6390,8 @@ Window</string>
     <zorder>checkUseBlindSolve</zorder>
     <zorder>line_66</zorder>
     <zorder>label_208</zorder>
+    <zorder>label_210</zorder>
+    <zorder>label_212</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">

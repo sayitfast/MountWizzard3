@@ -129,7 +129,7 @@ class ModelPoints:
         westSide = sorted(westSide, key=operator.itemgetter(1))
         eastSide = sorted(eastSide, key=operator.itemgetter(1))
         self.modelPoints = westSide + eastSide
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def loadHorizonPoints(self, horizonPointsFileName, horizonByFile, horizonByAltitude, altitudeMinimumHorizon):
         self.horizonPoints = []
@@ -210,11 +210,11 @@ class ModelPoints:
 
     def deletePoints(self):
         self.modelPoints = list()
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def loadInitialPoints(self, filename):
         self.modelPoints, msg = self.loadModelPoints(filename, 'Initial')
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def loadFullPoints(self, filename, limitByHorizonMask, doSortingPoints):
         self.modelPoints, msg = self.loadModelPoints(filename, 'Full')
@@ -223,7 +223,7 @@ class ModelPoints:
         if doSortingPoints:
             self.sortPoints()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateDSOPoints(self, limitByHorizonMask, hoursPathLength, numberOfPathPoints, hoursPathLengthPreview):
         # we have no position of the mount -> therefore we can't calculate the path
@@ -240,7 +240,7 @@ class ModelPoints:
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateMaxPoints(self, limitByHorizonMask, doSortingPoints):
         west = []
@@ -288,7 +288,7 @@ class ModelPoints:
         if doSortingPoints:
             self.sortPoints()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateMinPoints(self, limitByHorizonMask, doSortingPoints):
         west = list()
@@ -311,7 +311,7 @@ class ModelPoints:
         if doSortingPoints:
             self.sortPoints()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateGridPoints(self, limitByHorizonMask, doSortingPoints, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
         self.modelPoints = list()
@@ -323,7 +323,7 @@ class ModelPoints:
         if doSortingPoints:
             self.sortPoints()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateInitialPoints(self, azimuth, altitude, numberOfPoints):
         self.modelPoints = list()
@@ -334,4 +334,4 @@ class ModelPoints:
             azp = int(azp)
             point = (azp, altitude)
             self.modelPoints.append(point)
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()

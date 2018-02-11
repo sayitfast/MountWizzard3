@@ -24,7 +24,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     signalStatusCamera = PyQt5.QtCore.pyqtSignal(int)
     signalStatusSolver = PyQt5.QtCore.pyqtSignal(int)
-    signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal(bool)
+    signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
 
     CYCLESTATUS = 5000
 

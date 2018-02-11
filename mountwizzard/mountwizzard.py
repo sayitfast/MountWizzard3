@@ -67,6 +67,10 @@ class MountWizzardApp(widget.MwWidget):
         self.initUI()
         self.checkPlatformDependableMenus()
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
+        self.messageQueue.put('#BWMountWizzard v {0} started \n'.format(BUILD_NO))
+        self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
+        self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
+        self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
         # show icon in main gui and add some icons for push buttons
         self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
         self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
@@ -1118,6 +1122,10 @@ class MountWizzardApp(widget.MwWidget):
     def setCameraExposureTime(self, status):
         self.imageWindow.ui.le_cameraExposureTime.setText(status)
 
+    @staticmethod
+    def timeStamp():
+        return time.strftime('%H:%M:%S -> ', time.localtime())
+
     def mainLoop(self):
         self.fillMountData()
         self.fillEnvironmentData()
@@ -1126,6 +1134,7 @@ class MountWizzardApp(widget.MwWidget):
             self.fillINDIData(data)
         while not self.messageQueue.empty():
             text = self.messageQueue.get()
+            textadd = self.timeStamp()
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
             elif text.startswith('ToModel>'):
@@ -1149,27 +1158,27 @@ class MountWizzardApp(widget.MwWidget):
             elif text.startswith('#BW'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_WHITE)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
-                self.messageWindow.ui.messages.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             elif text.startswith('#BG'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_GREEN)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
-                self.messageWindow.ui.messages.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             elif text.startswith('#BY'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_YELLOW)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
-                self.messageWindow.ui.messages.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             elif text.startswith('#BR'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_ORANGE)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
-                self.messageWindow.ui.messages.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             elif text.startswith('#BO'):
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_ORANGE)
                 # self.messageWindow.ui.messages.setFontWeight(QFont.Bold)
-                self.messageWindow.ui.messages.insertPlainText(text[3:])
+                self.messageWindow.ui.messages.insertPlainText(textadd + text[3:])
             else:
                 self.messageWindow.ui.messages.setTextColor(self.COLOR_ASTRO)
                 self.messageWindow.ui.messages.setFontWeight(PyQt5.QtGui.QFont.Normal)
-                self.messageWindow.ui.messages.insertPlainText(text)
+                self.messageWindow.ui.messages.insertPlainText(textadd + text)
             self.messageWindow.ui.messages.moveCursor(PyQt5.QtGui.QTextCursor.End)
         PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
 
@@ -1197,7 +1206,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0.0 alpha 3'
+    BUILD_NO = '3.0.0 alpha 4'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

@@ -59,6 +59,8 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
+
+        self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.drawCanvas)
         # from start on invisible
         self.showStatus = False
         self.setVisible(False)
@@ -133,6 +135,12 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerDome2.set_xy((az - 15, 1))
             self.hemisphereMatplotlib.fig.canvas.draw()
             QApplication.processEvents()
+
+    def drawCanvas(self, az, alt):
+        az += 0.5
+        alt -= 0.125
+        self.hemisphereMatplotlib.axes.plot(az, alt, 'X', color='#FF00FF', zorder=5, markersize=9)
+        self.hemisphereMatplotlib.fig.canvas.draw()
 
     def setEditModus(self):
         if self.ui.btn_editNone.isChecked():
