@@ -36,6 +36,9 @@ class ModelPoints:
         self.app.ui.btn_loadFullModelPoints.clicked.connect(self.selectFullModelPointsFileName)
         self.app.ui.btn_saveFullModelPoints.clicked.connect(self.saveFullModelPoints)
         self.app.ui.btn_saveFullModelPointsAs.clicked.connect(self.saveFullModelPointsAs)
+        self.app.ui.btn_loadHorizonMask.clicked.connect(self.selectHorizonPointsFileName)
+        self.app.ui.btn_saveHorizonMask.clicked.connect(self.saveHorizonMask)
+        self.app.ui.btn_saveHorizonMaskAs.clicked.connect(self.saveHorizonMaskAs)
 
     def initConfig(self):
         try:
@@ -68,6 +71,25 @@ class ModelPoints:
         self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
         self.app.config['ModelInitialPointsFileName'] = self.app.ui.le_modelInitialPointsFileName.text()
         self.app.config['ModelFullPointsFileName'] = self.app.ui.le_modelFullPointsFileName.text()
+
+    def saveHorizonMask(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_horizonPointsFileName.text()
+        self.saveHorizonPoints(filepath)
+
+    def saveHorizonMaskAs(self):
+        value = self.selectFile(self, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        if value != '':
+            self.app.ui.le_horizonPointsFileName.setText(os.path.basename(value))
+            self.saveHorizonPoints(value)
+        else:
+            self.logger.warning('No model points file selected')
+
+    def selectHorizonPointsFileName(self):
+        value = self.app.selectFile(self.app, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)', '.txt', True)
+        if value != '':
+            self.app.ui.le_horizonPointsFileName.setText(os.path.basename(value))
+            self.app.modelWindow.selectHorizonPointsMode()
+            self.app.modelWindow.drawHemisphere()
 
     def saveModelPoints(self, modelPointsFileName):
         msg = None

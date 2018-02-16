@@ -268,9 +268,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
-        self.ui.btn_loadHorizonMask.clicked.connect(self.selectHorizonPointsFileName)
-        self.ui.btn_saveHorizonMask.clicked.connect(self.saveHorizonMask)
-        self.ui.btn_saveHorizonMaskAs.clicked.connect(self.saveHorizonMaskAs)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -732,18 +729,6 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.logger.warning('No config file selected')
 
-    def saveHorizonMask(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_horizonPointsFileName.text()
-        self.workerModelingDispatcher.modelingRunner.modelPoints.saveHorizonPoints(filepath)
-
-    def saveHorizonMaskAs(self):
-        value = self.selectFile(self, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', '.txt', False)
-        if value != '':
-            self.ui.le_horizonPointsFileName.setText(os.path.basename(value))
-            self.workerModelingDispatcher.modelingRunner.modelPoints.saveHorizonPoints(value)
-        else:
-            self.logger.warning('No model points file selected')
-
     def selectAnalyseFileName(self):
         value = self.selectFile(self, 'Open analyse file', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
         if value != '':
@@ -751,13 +736,6 @@ class MountWizzardApp(widget.MwWidget):
             self.analyseWindow.showWindow()
         else:
             self.logger.warning('no file selected')
-
-    def selectHorizonPointsFileName(self):
-        value = self.selectFile(self, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)', '.txt', True)
-        if value != '':
-            self.ui.le_horizonPointsFileName.setText(os.path.basename(value))
-            self.modelWindow.selectHorizonPointsMode()
-            self.modelWindow.drawHemisphere()
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()
