@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='mountwizzard',
-    version='3.0.0a4',
+    version='3.0.0a5',
     packages=[
         'mountwizzard',
         'mountwizzard.analyse',
@@ -26,7 +26,7 @@ setup(
     ],
     python_requires='~=3.5',
     install_requires=[
-        # 'PyQt5>=5.6',                 # problem on ubuntu, can't be installed via pip, should be done with apt-get install
+        'PyQt5>=5.6',                   #  problem on ubuntu, can't be installed via pip, should be done with apt-get install
         'matplotlib>=1.5.3',            # sudo apt-get install libfreetype6-dev might be needed
         # 'pypiwin32>=219',             # not useful for linux
         'wakeonlan>=1.0.0',

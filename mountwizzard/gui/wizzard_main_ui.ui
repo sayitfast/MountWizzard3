@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -6343,7 +6343,7 @@ Window</string>
        <x>190</x>
        <y>185</y>
        <width>101</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6359,9 +6359,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>180</y>
+       <y>185</y>
        <width>91</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6409,9 +6409,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>180</y>
+       <y>185</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6463,9 +6463,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>180</y>
+       <y>185</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6517,7 +6517,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>355</y>
+       <y>360</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6568,7 +6568,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>365</y>
+       <y>370</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6622,9 +6622,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>60</x>
-       <y>405</y>
+       <y>410</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6660,9 +6660,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>405</y>
+       <y>410</y>
        <width>41</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6678,9 +6678,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>405</y>
+       <y>410</y>
        <width>41</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6696,9 +6696,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>405</y>
+       <y>410</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6734,9 +6734,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>240</x>
-       <y>405</y>
+       <y>410</y>
        <width>61</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6752,9 +6752,9 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>300</x>
-       <y>405</y>
+       <y>410</y>
        <width>41</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6792,7 +6792,7 @@ Window</string>
        <x>190</x>
        <y>220</y>
        <width>101</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6810,7 +6810,7 @@ Window</string>
        <x>290</x>
        <y>220</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6848,7 +6848,7 @@ Window</string>
        <x>110</x>
        <y>220</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6886,7 +6886,7 @@ Window</string>
        <x>10</x>
        <y>220</y>
        <width>91</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6926,7 +6926,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>225</y>
+       <y>220</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -6974,7 +6974,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>225</y>
+       <y>220</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7530,7 +7530,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>335</y>
+       <y>340</y>
        <width>311</width>
        <height>21</height>
       </rect>

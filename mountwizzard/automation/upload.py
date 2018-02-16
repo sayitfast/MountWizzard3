@@ -18,8 +18,8 @@ import PyQt5
 # webservices
 import urllib.request as urllib2
 # windows automation
-from pywinauto import Application, timings, findwindows, application
-from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
+#from pywinauto import Application, timings, findwindows, application
+#from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
 class UpdaterAuto(PyQt5.QtCore.QObject):
@@ -260,7 +260,6 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         if not self.isRunning:
             self.isRunning = True
-
 
     def stop(self):
         self._mutex.lock()
