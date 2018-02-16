@@ -16,6 +16,7 @@ import time
 import PyQt5
 import threading
 import queue
+import math
 from mount import mountCommandRunner
 from mount import mountStatusRunnerFast
 from mount import mountStatusRunnerMedium
@@ -520,7 +521,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             return True
 
     def programBatchData(self, data):
-        # self.mountModelHandling.saveModel('BACKUP')
         self.app.messageQueue.put('#BWProgramming alignment model data\n')
         commandSet = {'command': ':newalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
@@ -546,7 +546,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if commandSet['reply'] == 'V':
             self.logger.info('Model successful finished!')
             self.app.messageQueue.put('#BWProgramming alignment model with {0} points finished\n'.format(len(data['Index'])))
-            self.reloadAlignmentModel()
             PyQt5.QtWidgets.QApplication.processEvents()
         else:
             self.logger.warning('Model could not be calculated with current data!')
@@ -616,3 +615,19 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         while self.data['ModelLoading']:
             time.sleep(0.2)
         return False
+
+    def retrofitMountData(self, modelingData):
+        if len(self.data['ModelError']) == len(modelingData['Index']):
+            modelingData['ModelErrorOptimized'] = list()
+            modelingData['RaErrorOptimized'] = list()
+            modelingData['DecErrorOptimized'] = list()
+            for i in range(0, len(self.data)):
+                modelingData['ModelErrorOptimized'].append(self.data['ModelError'][i])
+                modelingData['RaErrorOptimized'].append(self.data['ModelError'][i] * math.sin(math.radians(self.data['ModelErrorAngle'][i])))
+                modelingData['DecErrorOptimized'].append(self.data['ModelError'][i] * math.cos(math.radians(self.data['ModelErrorAngle'][i])))
+            self.app.messageQueue.put('Data synced\n')
+        else:
+            self.logger.warning('Size mount modeling {0} and modeling data {1} do not fit !'.format(len(modelingData), len(self.data['ModelError'])))
+            self.app.messageQueue.put('Mount Model and Model Data could not be synced\n')
+            self.app.messageQueue.put('Error data sync mismatch!\n')
+        return

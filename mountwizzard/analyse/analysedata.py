@@ -154,15 +154,19 @@ class Analyse:
         except Exception as e:
             self.logger.error('analyse data file {0}, Error : {1}'.format(filename, e))
             return {}
-        resultData = dict()
-        for timestepdict in dataJson:
-            for (keyData, valueData) in timestepdict.items():
-                if keyData in self.UPDATE:
-                    keyData = self.UPDATE[keyData]
-                if keyData in resultData:
-                    resultData[keyData].append(valueData)
-                else:
-                    resultData[keyData] = [valueData]
+        # check if old file format
+        if isinstance(dataJson, list):
+            resultData = dict()
+            for timestepdict in dataJson:
+                for (keyData, valueData) in timestepdict.items():
+                    if keyData in self.UPDATE:
+                        keyData = self.UPDATE[keyData]
+                    if keyData in resultData:
+                        resultData[keyData].append(valueData)
+                    else:
+                        resultData[keyData] = [valueData]
+        else:
+            resultData = dataJson
         return resultData
 
     def loadDataRaw(self, filename):

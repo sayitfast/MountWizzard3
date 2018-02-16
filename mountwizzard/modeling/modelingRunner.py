@@ -364,10 +364,10 @@ class ModelingRunner:
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
-        messageQueue.put('#BWModel finished. Number of processed points: {0:3d}\n\n'.format(modelingData['NumberPoints']))
+        messageQueue.put('#BWModel finished. Number of processed points: {0:3d}\n'.format(modelingData['NumberPoints']))
         # turn list of dicts to dict of lists
         changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
-        return results, changedResults
+        return changedResults
 
     def runInitialModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -409,14 +409,16 @@ class ModelingRunner:
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
         self.cancel = False
-        self.modelAlignmentData, programData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_initial'
         if len(self.modelAlignmentData) > 0:
+            self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
+            self.app.messageQueue.put('Reloading actual alignment model from mount\n')
+            self.app.workerMountDispatcher.reloadAlignmentModel()
             self.analyseData.saveData(self.modelAlignmentData, name)
             self.app.ui.le_analyseFileName.setText(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.workerMountDispatcher.programBatchData(programData)
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -458,14 +460,18 @@ class ModelingRunner:
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
         self.cancel = False
-        self.modelAlignmentData, programData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
+            self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
+            self.app.messageQueue.put('Reloading actual alignment model from mount\n')
+            self.app.workerMountDispatcher.reloadAlignmentModel()
+            self.app.messageQueue.put('Syncing actual alignment model and modeling data\n')
+            self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData)
             self.analyseData.saveData(self.modelAlignmentData, name)
             self.app.ui.le_analyseFileName.setText(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.workerMountDispatcher.programBatchData(programData)
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():
