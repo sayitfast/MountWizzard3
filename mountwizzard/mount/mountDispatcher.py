@@ -621,7 +621,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             modelingData['ModelErrorOptimized'] = list()
             modelingData['RaErrorOptimized'] = list()
             modelingData['DecErrorOptimized'] = list()
-            for i in range(0, len(self.data)):
+            for i in range(0, len(self.data['ModelError'])):
                 modelingData['ModelErrorOptimized'].append(self.data['ModelError'][i])
                 modelingData['RaErrorOptimized'].append(self.data['ModelError'][i] * math.sin(math.radians(self.data['ModelErrorAngle'][i])))
                 modelingData['DecErrorOptimized'].append(self.data['ModelError'][i] * math.cos(math.radians(self.data['ModelErrorAngle'][i])))

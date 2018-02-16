@@ -190,6 +190,33 @@
     <string>Limit in %</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="checkOptimized">
+   <property name="geometry">
+    <rect>
+     <x>405</x>
+     <y>20</y>
+     <width>116</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cuts outlayers by using winsorize method with the given limit.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="text">
+    <string>Show Optimized</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
   <zorder>analyseBackground</zorder>
   <zorder>btn_errorTime</zorder>
   <zorder>btn_errorOverview</zorder>
@@ -198,6 +225,7 @@
   <zorder>checkWinsorize</zorder>
   <zorder>winsorizeLimit</zorder>
   <zorder>label_201</zorder>
+  <zorder>checkOptimized</zorder>
  </widget>
  <resources/>
  <connections/>

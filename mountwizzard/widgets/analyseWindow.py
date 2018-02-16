@@ -45,6 +45,7 @@ class AnalyseWindow(widget.MwWidget):
         self.ui.btn_errorTime.clicked.connect(self.showErrorTime)
         self.ui.btn_errorAzAlt.clicked.connect(self.showErrorAzAlt)
         self.ui.checkWinsorize.stateChanged.connect(self.showView)
+        self.ui.checkOptimized.stateChanged.connect(self.showView)
         self.ui.winsorizeLimit.valueChanged.connect(self.showView)
 
         self.setVisible(False)
@@ -136,6 +137,8 @@ class AnalyseWindow(widget.MwWidget):
                 self.analyseView = self.app.config['AnalyseView']
             if 'CheckWinsorized' in self.app.config:
                 self.ui.checkWinsorize.setChecked(self.app.config['CheckWinsorized'])
+            if 'CheckOptimized' in self.app.config:
+                self.ui.checkOptimized.setChecked(self.app.config['CheckOptimized'])
             if 'WinsorizedLimit' in self.app.config:
                 self.ui.winsorizeLimit.setValue(self.app.config['WinsorizedLimit'])
         except Exception as e:
@@ -149,6 +152,7 @@ class AnalyseWindow(widget.MwWidget):
         self.app.config['AnalyseView'] = self.analyseView
         self.app.config['AnalysePopupWindowShowStatus'] = self.showStatus
         self.app.config['CheckWinsorized'] = self.ui.checkWinsorize.isChecked()
+        self.app.config['CheckOptimized'] = self.ui.checkOptimized.isChecked()
         self.app.config['WinsorizedLimit'] = self.ui.winsorizeLimit.value()
 
     def showWindow(self):
@@ -203,9 +207,15 @@ class AnalyseWindow(widget.MwWidget):
         axe2 = self.analyseMatplotlib.fig.add_subplot(1, 2, 2, polar=True)
         self.setStyle(axe2)
 
-        valueY1 = self.data['DecError']
-        valueY2 = self.data['RaError']
-        valueY3 = self.data['ModelError']
+        if self.ui.checkOptimized.isChecked():
+            valueY1 = self.data['DecErrorOptimized']
+            valueY2 = self.data['RaErrorOptimized']
+            valueY3 = self.data['ModelErrorOptimized']
+        else:
+            valueY1 = self.data['DecError']
+            valueY2 = self.data['RaError']
+            valueY3 = self.data['ModelError']
+
         if self.ui.checkWinsorize.isChecked():
             limit = float(self.ui.winsorizeLimit.text()) / 100.0
             valueY1 = self.winsorize(valueY1, limits=limit)
@@ -257,8 +267,13 @@ class AnalyseWindow(widget.MwWidget):
         axe2 = self.analyseMatplotlib.fig.add_subplot(2, 1, 2)
         self.setStyle(axe2)
 
-        valueY1 = self.data['DecError']
-        valueY2 = self.data['RaError']
+        if self.ui.checkOptimized.isChecked():
+            valueY1 = self.data['DecErrorOptimized']
+            valueY2 = self.data['RaErrorOptimized']
+        else:
+            valueY1 = self.data['DecError']
+            valueY2 = self.data['RaError']
+
         if self.ui.checkWinsorize.isChecked():
             limit = float(self.ui.winsorizeLimit.text()) / 100.0
             valueY1 = self.winsorize(valueY1, limits=limit)
@@ -295,8 +310,13 @@ class AnalyseWindow(widget.MwWidget):
         axe4 = self.analyseMatplotlib.fig.add_subplot(2, 2, 4)
         self.setStyle(axe4)
 
-        valueY1 = self.data['DecError']
-        valueY2 = self.data['RaError']
+        if self.ui.checkOptimized.isChecked():
+            valueY1 = self.data['DecErrorOptimized']
+            valueY2 = self.data['RaErrorOptimized']
+        else:
+            valueY1 = self.data['DecError']
+            valueY2 = self.data['RaError']
+
         if self.ui.checkWinsorize.isChecked():
             limit = float(self.ui.winsorizeLimit.text()) / 100.0
             valueY1 = self.winsorize(valueY1, limits=limit)
