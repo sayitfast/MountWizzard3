@@ -5468,7 +5468,7 @@ Window</string>
       </font>
      </property>
      <property name="text">
-      <string>Turn Knobs AZ</string>
+      <string>Turn Knob AZ</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_158">

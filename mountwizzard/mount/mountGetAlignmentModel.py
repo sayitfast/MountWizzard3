@@ -140,11 +140,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.data['NumberAlignmentStars'] = numberStars
             self.data['Number'] = numberStars
             del valueList[0]
-            if numberStars < 4:
+            if numberStars < 3:
                 valueList = ['E,E,E,E,E,E,E,E,E']
             # now the second part of the command cluster. it is related to firmware feature
             if self.data['FW'] > 21500:
-                if numberStars < 4:
+                if numberStars < 3:
                     valueList = ['E,E,E,E,E,E,E,E,E']
                 # here we have more data in
                 if len(valueList[0]) > 3:

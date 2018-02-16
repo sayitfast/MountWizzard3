@@ -5741,7 +5741,7 @@ class Ui_MainWindow(object):
         self.le_alignNumberTerms.setText(_translate("MainWindow", "0"))
         self.le_alignKnobTurnAlt.setToolTip(_translate("MainWindow", "<html><head/><body><p>Number of Turns altitude ajustment knobs for correction (down if the polar axis has to be moved downwards) </p></body></html>"))
         self.le_alignKnobTurnAlt.setText(_translate("MainWindow", "--- left/right"))
-        self.label_156.setText(_translate("MainWindow", "Turn Knobs AZ"))
+        self.label_156.setText(_translate("MainWindow", "Turn Knob AZ"))
         self.label_158.setText(_translate("MainWindow", "AZ Pointing"))
         self.le_alignNumberStars.setToolTip(_translate("MainWindow", "Number of alignment stars in actual used pointing model"))
         self.le_alignNumberStars.setText(_translate("MainWindow", "0"))
