@@ -139,23 +139,23 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
-            'LoadInitialPoints':
+            'ShowInitialPoints':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadInitialPoints,
-                            'Method': self.modelingRunner.modelPoints.loadInitialPoints,
-                            'Parameter': ['self.app.ui.le_modelPointsFileName.text()']
+                            'Button': self.app.ui.btn_showFullModelPoints,
+                            'Method': self.modelingRunner.modelPoints.showInitialPoints,
+                            'Parameter': ['self.app.ui.le_modelInitialPointsFileName.text()']
                         }
                     ]
                 },
-            'LoadFullPoints':
+            'ShowFullPoints':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadFullPoints,
-                            'Method': self.modelingRunner.modelPoints.loadFullPoints,
-                            'Parameter': ['self.app.ui.le_modelPointsFileName.text()',
+                            'Button': self.app.ui.btn_showFullModelPoints,
+                            'Method': self.modelingRunner.modelPoints.showFullPoints,
+                            'Parameter': ['self.app.ui.le_modelFullPointsFileName.text()',
                                           'self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()']
                         }
@@ -212,8 +212,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             pass
         self.modelingRunner.initConfig()
         self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcherQueue.put('PlateSolveSync'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_loadFullPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFullPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
-        self.app.ui.btn_loadInitialPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_showFullModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowFullPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_showInitialModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)

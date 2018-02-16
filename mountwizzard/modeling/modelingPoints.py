@@ -30,6 +30,13 @@ class ModelPoints:
         self.BasePoints = list()
         self.RefinementPoints = list()
 
+        self.app.ui.btn_loadInitialModelPoints.clicked.connect(self.selectInitialModelPointsFileName)
+        self.app.ui.btn_saveInitialModelPoints.clicked.connect(self.saveInitialModelPoints)
+        self.app.ui.btn_saveInitialModelPointsAs.clicked.connect(self.saveInitialModelPointsAs)
+        self.app.ui.btn_loadFullModelPoints.clicked.connect(self.selectFullModelPointsFileName)
+        self.app.ui.btn_saveFullModelPoints.clicked.connect(self.saveFullModelPoints)
+        self.app.ui.btn_saveFullModelPointsAs.clicked.connect(self.saveFullModelPointsAs)
+
     def initConfig(self):
         try:
             if 'HorizonPointsFileName' in self.app.config:
@@ -40,6 +47,11 @@ class ModelPoints:
                 self.app.ui.checkUseFileHorizonLine.setChecked(self.app.config['CheckUseFileHorizonLine'])
             if 'AltitudeMinimumHorizon' in self.app.config:
                 self.app.ui.altitudeMinimumHorizon.setValue(self.app.config['AltitudeMinimumHorizon'])
+            if 'ModelInitialPointsFileName' in self.app.config:
+                self.app.ui.le_modelInitialPointsFileName.setText(self.app.config['ModelInitialPointsFileName'])
+            if 'ModelFullPointsFileName' in self.app.config:
+                self.app.ui.le_modelFullPointsFileName.setText(self.app.config['ModelFullPointsFileName'])
+
             self.loadHorizonPoints(self.app.config['HorizonPointsFileName'],
                                    self.app.config['CheckUseFileHorizonLine'],
                                    self.app.config['CheckUseMinimumHorizonLine'],
@@ -54,6 +66,8 @@ class ModelPoints:
         self.app.config['CheckUseMinimumHorizonLine'] = self.app.ui.checkUseMinimumHorizonLine.isChecked()
         self.app.config['CheckUseFileHorizonLine'] = self.app.ui.checkUseFileHorizonLine.isChecked()
         self.app.config['AltitudeMinimumHorizon'] = self.app.ui.altitudeMinimumHorizon.value()
+        self.app.config['ModelInitialPointsFileName'] = self.app.ui.le_modelInitialPointsFileName.text()
+        self.app.config['ModelFullPointsFileName'] = self.app.ui.le_modelFullPointsFileName.text()
 
     def saveModelPoints(self, modelPointsFileName):
         msg = None
@@ -74,6 +88,48 @@ class ModelPoints:
             if fileHandle:
                 fileHandle.close()
             return msg
+
+    def saveInitialModelPoints(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_modelInitialPointsFileName.text()
+        self.saveInitialModelPoints(filepath)
+
+    def saveInitialModelPointsAs(self):
+        value = self.app.selectFile(self.app, 'Save initial model points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        if value != '':
+            self.app.ui.le_modelInitialPointsFileName.setText(os.path.basename(value))
+            self.saveInitialModelPoints(value)
+        else:
+            self.logger.warning('No model points file selected')
+
+    def selectInitialModelPointsFileName(self):
+        value = self.app.selectFile(self.app, 'Open initial model points file', '/config', 'Model points files (*.txt)', '.txt', True)
+        if value != '':
+            value = os.path.basename(value)
+            self.app.ui.le_modelInitialPointsFileName.setText(value)
+            self.showInitialPoints(value)
+        else:
+            self.logger.warning('No file selected')
+
+    def saveFullModelPoints(self):
+        filepath = os.getcwd() + '/config/' + self.ui.le_modelFullPointsFileName.text()
+        self.saveFullModelPoints(filepath)
+
+    def saveFullModelPointsAs(self):
+        value = self.app.selectFile(self.app, 'Save full model points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        if value != '':
+            self.app.ui.le_modelFullPointsFileName.setText(os.path.basename(value))
+            self.saveFullModelPoints(value)
+        else:
+            self.logger.warning('No model points file selected')
+
+    def selectFullModelPointsFileName(self):
+        value = self.app.selectFile(self.app, 'Open full model points file', '/config', 'Model points files (*.txt)', '.txt', True)
+        if value != '':
+            value = os.path.basename(value)
+            self.app.ui.le_modelFullPointsFileName.setText(value)
+            self.showFullPoints(value, self.app.ui.checkDeletePointsHorizonMask.isChecked(), self.app.ui.checkSortPoints.isChecked())
+        else:
+            self.logger.warning('No file selected')
 
     def loadModelPoints(self, modelPointsFileName, modeltype):
         p = []
@@ -211,11 +267,11 @@ class ModelPoints:
         self.modelPoints = list()
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def loadInitialPoints(self, filename):
+    def showInitialPoints(self, filename):
         self.modelPoints, msg = self.loadModelPoints(filename, 'Initial')
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
-    def loadFullPoints(self, filename, limitByHorizonMask, doSortingPoints):
+    def showFullPoints(self, filename, limitByHorizonMask, doSortingPoints):
         self.modelPoints, msg = self.loadModelPoints(filename, 'Full')
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()

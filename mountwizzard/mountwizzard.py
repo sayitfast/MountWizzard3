@@ -86,10 +86,8 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_cancelModel1, ':/stop.ico')
         self.widgetIcon(self.ui.btn_runFullModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelModel2, ':/stop.ico')
-        self.widgetIcon(self.ui.btn_loadInitialPoints, ':/floppy_disc_add.ico')
         self.widgetIcon(self.ui.btn_generateInitialPoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_plateSolveSync, ':/calculator_accept.ico')
-        self.widgetIcon(self.ui.btn_loadFullPoints, ':/floppy_disc_add.ico')
         self.widgetIcon(self.ui.btn_generateGridPoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_generateMaxPoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_generateNormalPoints, ':/process_add.ico')
@@ -271,9 +269,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
         self.ui.btn_loadHorizonMask.clicked.connect(self.selectHorizonPointsFileName)
-        self.ui.btn_loadModelPoints.clicked.connect(self.selectModelPointsFileName)
-        self.ui.btn_saveModelPoints.clicked.connect(self.saveModelPoints)
-        self.ui.btn_saveModelPointsAs.clicked.connect(self.saveModelPointsAs)
         self.ui.btn_saveHorizonMask.clicked.connect(self.saveHorizonMask)
         self.ui.btn_saveHorizonMaskAs.clicked.connect(self.saveHorizonMaskAs)
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
@@ -445,8 +440,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_altParkPos6.setText(self.config['ParkPosAlt6'])
             if 'ParkPosAz6' in self.config:
                 self.ui.le_azParkPos6.setText(self.config['ParkPosAz6'])
-            if 'ModelPointsFileName' in self.config:
-                self.ui.le_modelPointsFileName.setText(self.config['ModelPointsFileName'])
             if 'CameraBin' in self.config:
                 self.ui.cameraBin.setValue(self.config['CameraBin'])
             if 'CameraExposure' in self.config:
@@ -614,7 +607,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ParkPosText6'] = self.ui.le_parkPos6Text.text()
         self.config['ParkPosAlt6'] = self.ui.le_altParkPos6.text()
         self.config['ParkPosAz6'] = self.ui.le_azParkPos6.text()
-        self.config['ModelPointsFileName'] = self.ui.le_modelPointsFileName.text()
         self.config['CameraBin'] = self.ui.cameraBin.value()
         self.config['CameraExposure'] = self.ui.cameraExposure.value()
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
@@ -739,25 +731,6 @@ class MountWizzardApp(widget.MwWidget):
             self.saveConfigData(value + '.cfg')
         else:
             self.logger.warning('No config file selected')
-
-    def saveModelPoints(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_modelPointsFileName.text()
-        self.workerModelingDispatcher.modelingRunner.modelPoints.saveModelPoints(filepath)
-
-    def saveModelPointsAs(self):
-        value = self.selectFile(self, 'Save model points file', '/config', 'Model point files (*.txt)', '.txt', False)
-        if value != '':
-            self.ui.le_modelPointsFileName.setText(os.path.basename(value))
-            self.workerModelingDispatcher.modelingRunner.modelPoints.saveModelPoints(value)
-        else:
-            self.logger.warning('No model points file selected')
-
-    def selectModelPointsFileName(self):
-        value = self.selectFile(self, 'Open model points file', '/config', 'Model points files (*.txt)', '.txt', True)
-        if value != '':
-            self.ui.le_modelPointsFileName.setText(os.path.basename(value))
-        else:
-            self.logger.warning('No file selected')
 
     def saveHorizonMask(self):
         filepath = os.getcwd() + '/config/' + self.ui.le_horizonPointsFileName.text()
