@@ -59,6 +59,15 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         }
                     ]
                 },
+            'RunBatchModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_runBatchModel,
+                            'Method': self.modelingRunner.runBatchModel
+                        }
+                    ]
+                },
             'PlateSolveSync':
                 {
                     'Worker': [
@@ -212,6 +221,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             pass
         self.modelingRunner.initConfig()
         self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcherQueue.put('PlateSolveSync'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunBatchModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_showFullModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowFullPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_showInitialModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)

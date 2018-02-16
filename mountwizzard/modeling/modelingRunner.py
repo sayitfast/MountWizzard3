@@ -380,7 +380,7 @@ class ModelingRunner:
             keepImages = self.app.ui.checkKeepImages.isChecked()
             domeIsConnected = self.app.workerAscomDome.isRunning
             self.modelData = self.runModel(self.app.messageQueue, 'Base', self.modelPoints.BasePoints, modelData, settlingTime, simulation, keepImages, domeIsConnected)
-            self.modelData = self.app.mount.retrofitMountData(self.modelData)
+            # self.modelData = self.app.mount.retrofitMountData(self.modelData)
             name = modelData['Directory'] + '_base.dat'
             if len(self.modelData) > 0:
                 self.app.ui.le_analyseFileName.setText(name)
@@ -493,21 +493,21 @@ class ModelingRunner:
 
     def runBatchModel(self):
         nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.info('modeling from {0}'.format(nameDataFile))
-        data = self.app.workerModeling.analyse.loadData(nameDataFile)
+        self.logger.info('Modeling from {0}'.format(nameDataFile))
+        data = self.analyseData.loadData(nameDataFile)
         if not('RaJNow' in data and 'DecJNow' in data):
             self.logger.warning('RaJNow or DecJNow not in data file')
-            self.app.modelLogQueue.put('{0} - mount coordinates missing\n'.format(timeStamp()))
+            self.app.messageQueue.put('Mount coordinates missing\n')
             return
         if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
             self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
-            self.app.modelLogQueue.put('{0} - solved data missing\n'.format(timeStamp()))
+            self.app.messageQueue.put('Solved data missing\n')
             return
-        if not('Pierside' in data and 'LocalSiderealTime' in data):
-            self.logger.warning('Pierside and LocalSiderealTime not in data file')
-            self.app.modelLogQueue.put('{0} - Time and Pierside missing\n'.format(timeStamp()))
+        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
+            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
+            self.app.messageQueue.put('Time and Pierside missing\n')
             return
-        self.app.mount.programBatchData(data)
+        self.app.workerMountDispatcher.programBatchData(data)
 
     def plateSolveSync(self, simulation=False):
         self.app.messageQueue.put('#BWStart Sync Mount Model\n')

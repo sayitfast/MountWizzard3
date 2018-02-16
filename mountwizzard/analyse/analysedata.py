@@ -26,7 +26,13 @@ class Analyse:
               'altitude': 'Altitude',
               'modelError': 'ModelError',
               'raError': 'RaError',
-              'decError': 'DecError'}
+              'decError': 'DecError',
+              'ra_Jnow': 'RaJNow',
+              'dec_Jnow': 'DecJNow',
+              'ra_sol_Jnow': 'RaJNowSolved',
+              'dec_sol_Jnow': 'DecJNowSolved',
+              'pierside': 'Pierside',
+              'sidereal_time_float': 'LocalSiderealTimeFloat'}
 
     def __init__(self, app):
         self.filepath = '/analysedata'

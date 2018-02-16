@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -9092,7 +9092,7 @@ Window</string>
       <rect>
        <x>400</x>
        <y>60</y>
-       <width>341</width>
+       <width>351</width>
        <height>21</height>
       </rect>
      </property>
@@ -9128,7 +9128,7 @@ Window</string>
       <rect>
        <x>400</x>
        <y>40</y>
-       <width>341</width>
+       <width>351</width>
        <height>1</height>
       </rect>
      </property>
@@ -9144,7 +9144,7 @@ Window</string>
       <rect>
        <x>400</x>
        <y>130</y>
-       <width>341</width>
+       <width>351</width>
        <height>31</height>
       </rect>
      </property>
@@ -9678,6 +9678,22 @@ Window</string>
       <string>Load</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_runBatchModel">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>180</y>
+       <width>351</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run full alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Run Batch Model</string>
+     </property>
+    </widget>
     <zorder>line_33</zorder>
     <zorder>line_43</zorder>
     <zorder>line_29</zorder>
@@ -9720,6 +9736,7 @@ Window</string>
     <zorder>label_186</zorder>
     <zorder>label_187</zorder>
     <zorder>btn_loadAnalyseData</zorder>
+    <zorder>btn_runBatchModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_9">
     <attribute name="title">

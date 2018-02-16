@@ -1101,7 +1101,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
             elif text.startswith('Processed>'):
                 self.ui.le_numberPointsProcessed.setText(text[10:])
-                self.ui.bar_numberPointsProcessed.setValue(int(1000 * float(text[10:]) / float(self.ui.le_numberPointsToModel.text())))
+                if float(self.ui.le_numberPointsToModel.text()) != 0:
+                    self.ui.bar_numberPointsProcessed.setValue(int(1000 * float(text[10:]) / float(self.ui.le_numberPointsToModel.text())))
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):
@@ -1157,7 +1158,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0.0 alpha 4'
+    BUILD_NO = '3.0.0 alpha 5'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

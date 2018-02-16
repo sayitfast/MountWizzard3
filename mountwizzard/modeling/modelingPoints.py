@@ -342,7 +342,7 @@ class ModelPoints:
         if doSortingPoints:
             self.sortPoints()
         self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit(True)
+        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateNormalPoints(self, limitByHorizonMask, doSortingPoints):
         west = []

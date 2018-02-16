@@ -520,8 +520,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             return True
 
     def programBatchData(self, data):
-        self.saveBackupModel()
-        self.workerMountCommandRunner.sendCommand(':newalig#')
+        # self.mountModelHandling.saveModel('BACKUP')
+        self.app.messageQueue.put('#BWProgramming alignment model data\n')
+        commandSet = {'command': ':newalig#', 'reply': ''}
+        self.app.mountCommandQueue.put(commandSet)
         for i in range(0, len(data['Index'])):
             command = ':newalpt{0},{1},{2},{3},{4},{5}#'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
                                                                 self.transform.decimalToDegree(data['DecJNow'][i], True, False),
@@ -534,16 +536,21 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             while len(commandSet['reply']) == 0:
                 time.sleep(0.1)
             if commandSet['reply'] == 'E':
-                self.logger.warning('point {0} could not be added'.format(commandSet['reply']))
-            self.app.messageQueue.put('Processed>{0:02d}'.format(i + 1))
+                self.app.messageQueue.put('Point {0:02d} could not be added\n'.format(i + 1))
+            else:
+                self.app.messageQueue.put('Processed>{0:02d}'.format(i + 1))
         commandSet = {'command': ':endalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
             time.sleep(0.1)
         if commandSet['reply'] == 'V':
             self.logger.info('Model successful finished!')
+            self.app.messageQueue.put('#BWProgramming alignment model with {0} points finished\n'.format(len(data['Index'])))
+            self.reloadAlignmentModel()
+            PyQt5.QtWidgets.QApplication.processEvents()
         else:
             self.logger.warning('Model could not be calculated with current data!')
+            self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
 
     def runTargetRMSAlignment(self):
         self.runTargetRMS = True
