@@ -291,6 +291,7 @@ class ModelPoints:
 
     def showInitialPoints(self, filename):
         self.modelPoints, msg = self.loadModelPoints(filename, 'Initial')
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def showFullPoints(self, filename, limitByHorizonMask, doSortingPoints):

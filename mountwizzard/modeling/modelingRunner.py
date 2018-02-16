@@ -364,37 +364,21 @@ class ModelingRunner:
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
-        messageQueue.put('#BWBoost Model finished. Number of processed points: {0:3d}\n\n'.format(modelingData['NumberPoints']))
-        return results
+        messageQueue.put('#BWModel finished. Number of processed points: {0:3d}\n\n'.format(modelingData['NumberPoints']))
+        # turn list of dicts to dict of lists
+        changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
+        return results, changedResults
 
     def runInitialModel(self):
-        if not self.checkModelingAvailable():
-            return
-        if self.app.ui.checkClearModelFirst.isChecked():
-            self.app.modelLogQueue.put('Clearing alignment modeling - taking 4 seconds.\n')
-            self.clearAlignmentModel()
-            self.app.modelLogQueue.put('Model cleared!\n')
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
-        if len(self.modelPoints.BasePoints) > 0:
-            simulation = self.app.ui.checkSimulation.isChecked()
-            keepImages = self.app.ui.checkKeepImages.isChecked()
-            domeIsConnected = self.app.workerAscomDome.isRunning
-            self.modelData = self.runModel(self.app.messageQueue, 'Base', self.modelPoints.BasePoints, modelData, settlingTime, simulation, keepImages, domeIsConnected)
-            # self.modelData = self.app.mount.retrofitMountData(self.modelData)
-            name = modelData['Directory'] + '_base.dat'
-            if len(self.modelData) > 0:
-                self.app.ui.le_analyseFileName.setText(name)
-                self.analyseData.saveData(self.modelData, name)
-                self.app.mount.saveBaseModel()
-        else:
-            self.logger.warning('There are no Basepoints for modeling')
-
-    def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
+        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']:
+            return
         if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
             return
         # solver has to be connected
+        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']:
+            return
         if self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']['CONNECTION']['CONNECT'] == 'Off':
             return
         # telescope has to be connected
@@ -412,7 +396,7 @@ class ModelingRunner:
             return
         # there have to be some modeling points
         if len(self.modelPoints.modelPoints) == 0:
-            self.logger.warning('There are no Refinement Points to modeling')
+            self.logger.warning('There are no modeling points to process')
             return
         # if dome is present, it has to be connected, too
         if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
@@ -425,13 +409,63 @@ class ModelingRunner:
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
         self.cancel = False
-        self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        self.modelAlignmentData, programData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        name = modelingData['Directory'] + '_initial'
+        if len(self.modelAlignmentData) > 0:
+            self.analyseData.saveData(self.modelAlignmentData, name)
+            self.app.ui.le_analyseFileName.setText(name)
+            if self.app.analyseWindow.showStatus:
+                self.app.ui.btn_openAnalyseWindow.clicked.emit()
+            self.app.workerMountDispatcher.programBatchData(programData)
+
+    def runFullModel(self):
+        modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
+        # imaging has to be connected
+        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']:
+            return
+        if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # solver has to be connected
+        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']:
+            return
+        if self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # telescope has to be connected
+        if not self.app.workerMountDispatcher.mountStatus['Command']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Once']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Slow']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Medium']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Fast']:
+            return
+        if not self.app.workerMountDispatcher.mountStatus['Align']:
+            return
+        # there have to be some modeling points
+        if len(self.modelPoints.modelPoints) == 0:
+            self.logger.warning('There are no modeling points to process')
+            return
+        # if dome is present, it has to be connected, too
+        if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
+            domeIsConnected = self.app.workerDome.data['Connected']
+        else:
+            domeIsConnected = False
+        modelingData['DomeIsConnected'] = domeIsConnected
+        modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
+        modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
+        self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
+        self.cancel = False
+        self.modelAlignmentData, programData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
             self.analyseData.saveData(self.modelAlignmentData, name)
             self.app.ui.le_analyseFileName.setText(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
+            self.app.workerMountDispatcher.programBatchData(programData)
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():

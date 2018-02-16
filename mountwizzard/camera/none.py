@@ -34,9 +34,9 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.data = {'Camera': {}, 'Solver': {}}
         self.data['Camera']['Status'] = 'IDLE'
         self.data['Camera']['CanSubframe'] = False
-        self.data['Camera']['CONNECTION'] = {'CONNECT': 'On'}
+        # self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
         self.data['Solver']['Status'] = 'IDLE'
-        self.data['Solver']['CONNECTION'] = {'CONNECT': 'On'}
+        # self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
         self.data['Camera']['AppAvailable'] = True
         self.data['Camera']['AppName'] = 'None'
         self.data['Camera']['AppInstallPath'] = 'None'
@@ -71,14 +71,13 @@ class NoneCamera(PyQt5.QtCore.QObject):
         self.data['Camera']['Status'] = 'IDLE'
         self.data['Solver']['Status'] = 'IDLE'
 
-        self.cameraStatusText.emit(self.data['Camera']['Status'])
-        self.cameraExposureTime.emit('---')
-
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
                 self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+            self.cameraStatusText.emit(self.data['Camera']['Status'])
+            self.cameraExposureTime.emit('---')
         else:
             self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
 
@@ -87,6 +86,7 @@ class NoneCamera(PyQt5.QtCore.QObject):
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
             else:
                 self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
+            self.solverStatusText.emit(self.data['Solver']['Status'])
         else:
             self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 

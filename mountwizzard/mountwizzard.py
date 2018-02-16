@@ -1092,13 +1092,16 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_numberPointsToModel.setText(text[8:])
             elif text.startswith('Slewed>'):
                 self.ui.le_numberPointsSlewed.setText(text[7:])
-                self.ui.bar_numberPointsSlewed.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+                if float(self.ui.le_numberPointsToModel.text()) != 0:
+                    self.ui.bar_numberPointsSlewed.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
             elif text.startswith('Imaged>'):
                 self.ui.le_numberPointsImaged.setText(text[7:])
-                self.ui.bar_numberPointsImaged.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+                if float(self.ui.le_numberPointsToModel.text()) != 0:
+                    self.ui.bar_numberPointsImaged.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
             elif text.startswith('Solved>'):
                 self.ui.le_numberPointsSolved.setText(text[7:])
-                self.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+                if float(self.ui.le_numberPointsToModel.text()) != 0:
+                    self.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
             elif text.startswith('Processed>'):
                 self.ui.le_numberPointsProcessed.setText(text[10:])
                 if float(self.ui.le_numberPointsToModel.text()) != 0:
