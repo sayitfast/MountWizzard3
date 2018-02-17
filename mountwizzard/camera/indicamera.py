@@ -197,7 +197,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         if 'Imagepath' not in imageParams:
             return imageParams
         if self.app.ui.checkEnableAstrometry.isChecked():
-            if self.data['Solver']['Status'] == 2:
+            if not self.solver.isSolving:
                 result = self.solver.solveImage(imageParams['Imagepath'], imageParams['RaJ2000'], imageParams['DecJ2000'], imageParams['ScaleHint'])
                 if result:
                     imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
@@ -208,7 +208,10 @@ class INDICamera(PyQt5.QtCore.QObject):
                 else:
                     imageParams['Message'] = 'Solve failed'
             else:
+                imageParams['Message'] = 'Solve failed because other solving process is still running'
                 self.logger.error('There is a solving process already running')
+        else:
+            self.logger.error('Astrometry is disabled')
         return imageParams
 
     def connectCamera(self):

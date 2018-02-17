@@ -150,7 +150,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                         modelingData['RaError'] = (modelingData['RaJ2000Solved'] - modelingData['RaJ2000']) * 3600
                         modelingData['DecError'] = (modelingData['DecJ2000Solved'] - modelingData['DecJ2000']) * 3600
                         modelingData['ModelError'] = math.sqrt(modelingData['RaError'] * modelingData['RaError'] + modelingData['DecError'] * modelingData['DecError'])
-                        modelingData['Message'] = 'OK'
+                        modelingData['Message'] = 'OK - solved'
                         self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                         self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
                         self.main.solvedPointsQueue.put(modelingData)
