@@ -13,6 +13,7 @@
 ############################################################
 import copy
 import logging
+import threading
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
@@ -30,6 +31,7 @@ class HemisphereWindow(widget.MwWidget):
         super(HemisphereWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
+        self.lockDrawCanvas = threading.Lock()
         self.pointerAzAlt1 = None
         self.pointerAzAlt2 = None
         self.pointerDome1 = None
@@ -62,7 +64,7 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
 
-        self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.drawCanvas)
+        self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False
         self.setVisible(False)
@@ -113,6 +115,11 @@ class HemisphereWindow(widget.MwWidget):
             self.app.messageQueue.put(msg + '\n')
         self.drawHemisphere()
 
+    def drawCanvas(self):
+        self.lockDrawCanvas.acquire()
+        self.hemisphereMatplotlib.fig.canvas.draw()
+        self.lockDrawCanvas.release()
+
     def setAzAltPointer(self, az, alt):
         az += 0.5
         alt -= 0.125
@@ -121,28 +128,25 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerAzAlt2.center = az, alt
             self.pointerAzAlt1.set_visible(True)
             self.pointerAzAlt2.set_visible(True)
-            self.hemisphereMatplotlib.fig.canvas.draw()
-            QApplication.processEvents()
+            self.drawCanvas()
 
     def setDomePointerVisibility(self, stat):
         if self.showStatus:
             self.pointerDome1.set_visible(stat)
             self.pointerDome2.set_visible(stat)
-            self.hemisphereMatplotlib.fig.canvas.draw()
-            QApplication.processEvents()
+            self.drawCanvas()
 
     def setDomePointer(self, az):
         if self.showStatus:
             self.pointerDome1.set_xy((az - 15, 1))
             self.pointerDome2.set_xy((az - 15, 1))
-            self.hemisphereMatplotlib.fig.canvas.draw()
-            QApplication.processEvents()
+            self.drawCanvas()
 
-    def drawCanvas(self, az, alt):
+    def plotImagedPoint(self, az, alt):
         az += 0.5
         alt -= 0.125
         self.hemisphereMatplotlib.axes.plot(az, alt, 'X', color='#FF00FF', zorder=5, markersize=9)
-        self.hemisphereMatplotlib.fig.canvas.draw()
+        self.drawCanvas()
 
     def setEditModus(self):
         if self.ui.btn_editNone.isChecked():
@@ -161,7 +165,7 @@ class HemisphereWindow(widget.MwWidget):
             self.maskPlotMarker.set_color('#FF00FF')
         else:
             pass
-        self.hemisphereMatplotlib.fig.canvas.draw()
+        self.drawCanvas()
 
     def onMouse(self, event):
         if event.inaxes is None or self.ui.btn_editNone.isChecked():
@@ -223,7 +227,7 @@ class HemisphereWindow(widget.MwWidget):
             self.maskPlotFill.set_xy(numpy.column_stack((x, y)))
 
         # finally redraw
-        self.hemisphereMatplotlib.fig.canvas.draw()
+        self.drawCanvas()
 
     @staticmethod
     def get_ind_under_point(event, epsilon, xy):
@@ -307,4 +311,4 @@ class HemisphereWindow(widget.MwWidget):
         self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False, visible=False)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
-        self.hemisphereMatplotlib.draw()
+        self.drawCanvas()

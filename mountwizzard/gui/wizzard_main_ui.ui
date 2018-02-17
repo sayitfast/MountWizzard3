@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>9</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -488,7 +488,7 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>????</string>
+      <string>----</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -566,7 +566,7 @@
       <string/>
      </property>
      <property name="text">
-      <string>??</string>
+      <string>--</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -713,7 +713,7 @@
       <string/>
      </property>
      <property name="text">
-      <string>??</string>
+      <string>--</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -10051,7 +10051,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>5</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -14122,9 +14122,9 @@ Window</string>
       <widget class="QLabel" name="le_firmwareProductName_2">
        <property name="geometry">
         <rect>
-         <x>370</x>
+         <x>460</x>
          <y>370</y>
-         <width>361</width>
+         <width>271</width>
          <height>21</height>
         </rect>
        </property>
@@ -14135,7 +14135,7 @@ Window</string>
         </font>
        </property>
        <property name="text">
-        <string>MountWizzard3 (C) 2016, 2017, 2018 MWORION</string>
+        <string>MountWizzard3 (C) 2016-18 MWORION</string>
        </property>
       </widget>
       <widget class="QLabel" name="firmwareProductName_6">
