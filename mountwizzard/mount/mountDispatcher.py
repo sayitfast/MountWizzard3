@@ -545,8 +545,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             time.sleep(0.1)
         if commandSet['reply'] == 'V':
             self.logger.info('Model successful finished!')
-            self.app.messageQueue.put('#BWProgramming alignment model with {0} points finished\n'.format(len(data['Index'])))
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.messageQueue.put('#BWProgrammed alignment model with {0} points\n'.format(len(data['Index'])))
         else:
             self.logger.warning('Model could not be calculated with current data!')
             self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
