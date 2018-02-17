@@ -180,14 +180,14 @@ class AstrometryClient:
             self.logger.warning('Could not upload image to astrometry server')
             return {}
         submissionID = result['subid']
-        print('upload: ', result)
+        # print('upload: ', result)
         timeoutCounter = 0
         while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
             result = requests.post(self.urlAPI + '/submissions/{0}'.format(submissionID), data=data, headers=headers)
             result = json.loads(result.text)
-            print('submissions: ', result)
+            # print('submissions: ', result)
             jobs = result['jobs']
             if len(jobs) > 0:
                 if jobs[0] is not None:
@@ -206,7 +206,7 @@ class AstrometryClient:
             headers = {}
             result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
             result = json.loads(result.text)
-            print('jobs: ', result)
+            # print('jobs: ', result)
             stat = result['status']
             if stat == 'success':
                 break
