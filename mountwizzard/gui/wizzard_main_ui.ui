@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5144,7 +5144,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>150</y>
+       <y>130</y>
        <width>201</width>
        <height>31</height>
       </rect>
@@ -5821,7 +5821,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>220</y>
+       <y>235</y>
        <width>201</width>
        <height>31</height>
       </rect>
@@ -6022,7 +6022,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>345</x>
-       <y>90</y>
+       <y>85</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -6046,7 +6046,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>345</x>
-       <y>120</y>
+       <y>105</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -6067,7 +6067,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>210</y>
+       <y>225</y>
        <width>201</width>
        <height>1</height>
       </rect>
@@ -6083,7 +6083,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>190</y>
+       <y>205</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -6255,6 +6255,25 @@ Window</string>
       <string>Load</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_clearModel">
+     <property name="geometry">
+      <rect>
+       <x>325</x>
+       <y>165</y>
+       <width>201</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels model run.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Clear Model</string>
+     </property>
+    </widget>
     <zorder>line_54</zorder>
     <zorder>line_27</zorder>
     <zorder>line_35</zorder>
@@ -6308,6 +6327,7 @@ Window</string>
     <zorder>le_modelInitialPointsFileName</zorder>
     <zorder>label_147</zorder>
     <zorder>btn_loadInitialModelPoints</zorder>
+    <zorder>btn_clearModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_6">
     <attribute name="title">
@@ -10051,7 +10071,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>2</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -11057,7 +11077,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>120</y>
+         <y>100</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -11099,7 +11119,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>120</y>
+         <y>100</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -11117,7 +11137,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>145</y>
+         <y>125</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -11135,7 +11155,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>170</y>
+         <y>150</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -11288,7 +11308,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>170</y>
+         <y>150</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -11326,7 +11346,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>145</y>
+         <y>125</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -11431,7 +11451,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>710</x>
-         <y>145</y>
+         <y>125</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11473,7 +11493,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>710</x>
-         <y>170</y>
+         <y>150</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11515,7 +11535,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>195</y>
+         <y>175</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -11533,7 +11553,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>480</x>
-         <y>195</y>
+         <y>175</y>
          <width>221</width>
          <height>21</height>
         </rect>
@@ -11575,7 +11595,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>710</x>
-         <y>195</y>
+         <y>175</y>
          <width>21</width>
          <height>21</height>
         </rect>
@@ -11617,7 +11637,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>410</x>
-         <y>280</y>
+         <y>260</y>
          <width>271</width>
          <height>21</height>
         </rect>
@@ -11641,7 +11661,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>670</x>
-         <y>310</y>
+         <y>290</y>
          <width>61</width>
          <height>21</height>
         </rect>
@@ -11686,7 +11706,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>250</y>
+         <y>230</y>
          <width>241</width>
          <height>21</height>
         </rect>
@@ -11706,7 +11726,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>270</y>
+         <y>250</y>
          <width>341</width>
          <height>1</height>
         </rect>
@@ -11727,8 +11747,8 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>310</y>
-         <width>161</width>
+         <y>290</y>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -11745,7 +11765,7 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>530</x>
-         <y>310</y>
+         <y>290</y>
          <width>131</width>
          <height>21</height>
         </rect>
@@ -11786,8 +11806,8 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableAstrometryNET">
        <property name="geometry">
         <rect>
-         <x>445</x>
-         <y>340</y>
+         <x>400</x>
+         <y>320</y>
          <width>291</width>
          <height>21</height>
         </rect>
@@ -11805,6 +11825,66 @@ Window</string>
        </property>
        <property name="checked">
         <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLineEdit" name="le_AstrometryServerAPIKey">
+       <property name="geometry">
+        <rect>
+         <x>530</x>
+         <y>345</y>
+         <width>201</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Courier</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>false</bool>
+       </property>
+       <property name="acceptDrops">
+        <bool>false</bool>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="layoutDirection">
+        <enum>Qt::RightToLeft</enum>
+       </property>
+       <property name="text">
+        <string>abcdefgh</string>
+       </property>
+       <property name="maxLength">
+        <number>25</number>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="readOnly">
+        <bool>false</bool>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_mountIP_6">
+       <property name="geometry">
+        <rect>
+         <x>415</x>
+         <y>345</y>
+         <width>56</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>API Key</string>
        </property>
       </widget>
      </widget>

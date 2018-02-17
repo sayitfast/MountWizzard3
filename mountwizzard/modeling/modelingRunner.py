@@ -223,7 +223,7 @@ class ModelingRunner:
         # clearing the older results, because they are invalid afterwards
         self.modelingResultData = []
         # clearing the mount model and wait 4 seconds for the mount computer to recover (I don't know why, but Per Frejval did it)
-        self.app.mountCommandQueue.put('ClearAlign')
+        self.app.mountCommandQueue.put(':delalig#')
         time.sleep(4)
 
     def slewMountDome(self, modelingData):

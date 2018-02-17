@@ -33,11 +33,11 @@ class AstrometryClient:
                  'scale_units': 'arcsecperpix',
                  'scale_type': 'ev',
                  'scale_est': 1.3,
-                 'scale_err': 20,
+                 'scale_err': 50,
                  'center_ra': 315,
                  'center_dec': 68,
-                 # 'radius': float,
-                 # 'downsample_factor': 2,
+                 'radius': 2,
+                 # 'downsample_factor': 2
                  # 'use_sextractor': False,
                  # 'crpix_center': False,
                  # 'parity': 2
@@ -47,6 +47,7 @@ class AstrometryClient:
         'ServerIP': '192.168.2.161',
         'ServerPort': 3499,
         'Connected': False,
+        'APIKey': ''
     }
 
     def __init__(self, parent, app):
@@ -56,6 +57,7 @@ class AstrometryClient:
         self.isSolving = False
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
+        self.urlLogin = ''
         self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
 
     def initConfig(self):
@@ -68,6 +70,8 @@ class AstrometryClient:
                 self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
             if 'AstrometryServerIP' in self.app.config:
                 self.app.ui.le_AstrometryServerIP.setText(self.app.config['AstrometryServerIP'])
+            if 'AstrometryServerAPIKey' in self.app.config:
+                self.app.ui.le_AstrometryServerAPIKey.setText(self.app.config['AstrometryServerAPIKey'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -85,6 +89,7 @@ class AstrometryClient:
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
+        self.app.config['AstrometryServerAPIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
         self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
         self.app.config['CheckEnableAstrometryNET'] = self.app.ui.checkEnableAstrometryNET.isChecked()
 
@@ -97,8 +102,21 @@ class AstrometryClient:
             self.settingsChanged = False
             if self.app.ui.checkEnableAstrometryNET.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
+                self.urlLogin = 'http://nova.astrometry.net/api/login'
+                pass
+                # we have to login
+                self.data['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
+                result = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.data['APIKey']})}, headers={})
+                result = json.loads(result.text)
+                if result['status'] == 'error':
+                    self.app.messageQueue.put('Get session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
+                    self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
+                elif result['status'] == 'success':
+                    self.solveData['session'] = result['session']
+                    self.app.messageQueue.put('Session key for ASTROMETRY.NET is    [{0}]\n'.format(result['session']))
             else:
                 self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
+                self.solveData['session'] = 12345
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
     def setPort(self):
@@ -116,12 +134,10 @@ class AstrometryClient:
     def checkAstrometryServerRunning(self):
         try:
             retValue = 0
-            jobID = 12345
             data = {'request-json': ''}
             headers = {}
-            result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
-            result = json.loads(result.text)
-            if 'jobs' in result:
+            result = requests.post(self.urlAPI, data=data, headers=headers)
+            if result.status_code > 400:
                 self.isRunning = True
                 if self.isSolving:
                     retValue = 1
@@ -161,7 +177,6 @@ class AstrometryClient:
             self.logger.warning('Could not upload image to astrometry server')
             return {}
         jobID = result['subid']
-
         timeoutCounter = 0
         while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
@@ -184,7 +199,7 @@ class AstrometryClient:
         if stat == 'success':
             result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
             value = json.loads(result.text)
-            value['Message'] = 'Solve succeeded'
+            value['Message'] = 'Solve OK'
         else:
             if timeoutCounter > 60:
                 value = {'Message': 'Solve failed due to timeout'}

@@ -39,6 +39,15 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner = modelingRunner.ModelingRunner(self.app)
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
+            'ClearModel':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_clearModel,
+                            'Method': self.modelingRunner.clearAlignmentModel
+                        }
+                    ]
+                },
             'RunInitialModel':
                 {
                     'Worker': [
@@ -221,6 +230,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             pass
         self.modelingRunner.initConfig()
         self.app.ui.btn_plateSolveSync.clicked.connect(lambda: self.commandDispatcherQueue.put('PlateSolveSync'), type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_runBatchModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunBatchModel'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_showFullModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowFullPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)
         self.app.ui.btn_showInitialModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowInitialPoints'), type=PyQt5.QtCore.Qt.UniqueConnection)

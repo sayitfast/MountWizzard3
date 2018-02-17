@@ -200,13 +200,15 @@ class INDICamera(PyQt5.QtCore.QObject):
             if not self.solver.isSolving:
                 result = self.solver.solveImage(imageParams['Imagepath'], imageParams['RaJ2000'], imageParams['DecJ2000'], imageParams['ScaleHint'])
                 if result:
-                    imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
-                    imageParams['DecJ2000Solved'] = result['dec']
-                    imageParams['Angle'] = result['orientation']
-                    imageParams['Scale'] = result['pixscale']
-                    imageParams['Message'] = result['Message']
+                    if result['Message'] == 'Solve OK':
+                        print(result)
+                        imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
+                        imageParams['DecJ2000Solved'] = result['dec']
+                        imageParams['Angle'] = result['orientation']
+                        imageParams['Scale'] = result['pixscale']
+                        imageParams['Message'] = result['Message']
                 else:
-                    imageParams['Message'] = result['Message']
+                    imageParams['Message'] = 'Solve aborted'
             else:
                 imageParams['Message'] = 'Solve failed because other solving process is still running'
                 self.logger.error('There is a solving process already running')
