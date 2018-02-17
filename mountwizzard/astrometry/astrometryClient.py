@@ -37,10 +37,10 @@ class AstrometryClient:
                  'center_ra': 315,
                  'center_dec': 68,
                  'radius': 2,
-                 # 'downsample_factor': 2
-                 # 'use_sextractor': False,
-                 # 'crpix_center': False,
-                 # 'parity': 2
+                 # 'downsample_factor': 2,
+                 'use_sextractor': False,
+                 'crpix_center': True,
+                 'parity': 2
                  }
 
     data = {
@@ -57,6 +57,7 @@ class AstrometryClient:
         self.isSolving = False
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
+        self.timeoutMax = 60
         self.urlLogin = ''
         self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
 
@@ -103,11 +104,11 @@ class AstrometryClient:
             if self.app.ui.checkEnableAstrometryNET.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
-                pass
                 # we have to login
                 self.data['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
                 result = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.data['APIKey']})}, headers={})
                 result = json.loads(result.text)
+                self.timeoutMax = 360
                 if result['status'] == 'error':
                     self.app.messageQueue.put('Get session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
                     self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
@@ -117,6 +118,7 @@ class AstrometryClient:
             else:
                 self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
                 self.solveData['session'] = 12345
+                self.timeoutMax = 60
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
     def setPort(self):
@@ -163,7 +165,8 @@ class AstrometryClient:
         self.isSolving = True
         data = self.solveData
         data['scale_est'] = scale
-        data['center_ra'] = ra
+        # ra is in
+        data['center_ra'] = ra * 360 / 24
         data['center_dec'] = dec
         fields = collections.OrderedDict()
         fields['request-json'] = json.dumps(data)
@@ -176,34 +179,37 @@ class AstrometryClient:
             self.isSolving = False
             self.logger.warning('Could not upload image to astrometry server')
             return {}
-        jobID = result['subid']
+        submissionID = result['subid']
+        print('upload: ', result)
         timeoutCounter = 0
         while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
-            result = requests.post(self.urlAPI + '/submissions/{0}'.format(jobID), data=data, headers=headers)
+            result = requests.post(self.urlAPI + '/submissions/{0}'.format(submissionID), data=data, headers=headers)
             result = json.loads(result.text)
+            print('submissions: ', result)
             jobs = result['jobs']
             if len(jobs) > 0:
+                jobID = jobs[0]
                 break
             timeoutCounter += 1
-            if timeoutCounter > 60:
-                break
+            if timeoutCounter > self.timeoutMax:
+                # timeout after 60 seconds
+                self.isSolving = False
+                return {'Message': 'Solve failed due to timeout'}
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
         data = {'request-json': ''}
         headers = {}
         result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
         result = json.loads(result.text)
+        print('jobs: ', result)
         stat = result['status']
         if stat == 'success':
             result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
             value = json.loads(result.text)
             value['Message'] = 'Solve OK'
         else:
-            if timeoutCounter > 60:
-                value = {'Message': 'Solve failed due to timeout'}
-            else:
-                value = {'Message': 'Solve failed'}
+            value = {'Message': 'Solve failed'}
         self.isSolving = False
         return value

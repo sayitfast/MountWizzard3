@@ -201,12 +201,11 @@ class INDICamera(PyQt5.QtCore.QObject):
                 result = self.solver.solveImage(imageParams['Imagepath'], imageParams['RaJ2000'], imageParams['DecJ2000'], imageParams['ScaleHint'])
                 if result:
                     if result['Message'] == 'Solve OK':
-                        print(result)
                         imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
                         imageParams['DecJ2000Solved'] = result['dec']
                         imageParams['Angle'] = result['orientation']
                         imageParams['Scale'] = result['pixscale']
-                        imageParams['Message'] = result['Message']
+                    imageParams['Message'] = result['Message']
                 else:
                     imageParams['Message'] = 'Solve aborted'
             else:
