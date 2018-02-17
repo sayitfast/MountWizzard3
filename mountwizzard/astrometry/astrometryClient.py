@@ -37,7 +37,7 @@ class AstrometryClient:
                  'center_ra': 315,
                  'center_dec': 68,
                  'radius': 2,
-                 # 'downsample_factor': 2,
+                 'downsample_factor': 2,
                  'use_sextractor': False,
                  'crpix_center': True,
                  'parity': 2
@@ -190,26 +190,35 @@ class AstrometryClient:
             print('submissions: ', result)
             jobs = result['jobs']
             if len(jobs) > 0:
-                jobID = jobs[0]
-                break
+                if jobs[0] is not None:
+                    jobID = jobs[0]
+                    break
             timeoutCounter += 1
             if timeoutCounter > self.timeoutMax:
-                # timeout after 60 seconds
+                # timeout after timeoutMax seconds
                 self.isSolving = False
                 return {'Message': 'Solve failed due to timeout'}
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        data = {'request-json': ''}
-        headers = {}
-        result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
-        result = json.loads(result.text)
-        print('jobs: ', result)
-        stat = result['status']
-        if stat == 'success':
-            result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
-            value = json.loads(result.text)
-            value['Message'] = 'Solve OK'
-        else:
-            value = {'Message': 'Solve failed'}
+
+        while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
+            data = {'request-json': ''}
+            headers = {}
+            result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
+            result = json.loads(result.text)
+            print('jobs: ', result)
+            stat = result['status']
+            if stat == 'success':
+                break
+            timeoutCounter += 1
+            if timeoutCounter > self.timeoutMax:
+                # timeout after timeoutMax seconds
+                self.isSolving = False
+                return {'Message': 'Solve failed due to timeout'}
+            time.sleep(1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
+        value = json.loads(result.text)
+        value['Message'] = 'Solve OK'
         self.isSolving = False
         return value
