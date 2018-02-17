@@ -2,9 +2,7 @@
 #
 # to remember: import astropy.tests from __init__.py was removed manually
 #
-
 block_cipher = None
-
 import sys
 sys.modules['FixTk'] = None
 DISTPATH = '../dist'
@@ -48,3 +46,10 @@ exe = EXE(pyz,
           upx=False,
           console=True,
           icon='mountwizzard\\icons\\mw.ico')
+
+#######################################
+# Code-sign the generated executable
+import subprocess
+import os
+subprocess.call('c:\signtool\signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /f c:\signtool\mountwizzard.pfx /p saturn ' + os.getcwd() + '\dist\mountwizzard-console.exe')
+#######################################
