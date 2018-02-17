@@ -119,6 +119,7 @@ class HemisphereWindow(widget.MwWidget):
         self.lockDrawCanvas.acquire()
         self.hemisphereMatplotlib.fig.canvas.draw()
         self.lockDrawCanvas.release()
+        PyQt5.QtWidgets.QApplication.processEvents()
 
     def setAzAltPointer(self, az, alt):
         az += 0.5
