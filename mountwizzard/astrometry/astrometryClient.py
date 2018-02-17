@@ -162,6 +162,7 @@ class AstrometryClient:
             return {}
         jobID = result['subid']
 
+        timeoutCounter = 0
         while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
@@ -170,9 +171,11 @@ class AstrometryClient:
             jobs = result['jobs']
             if len(jobs) > 0:
                 break
+            timeoutCounter += 1
+            if timeoutCounter > 60:
+                break
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
-
         data = {'request-json': ''}
         headers = {}
         result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
@@ -181,7 +184,11 @@ class AstrometryClient:
         if stat == 'success':
             result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
             value = json.loads(result.text)
+            value['Message'] = 'Solve succeeded'
         else:
-            value = {}
+            if timeoutCounter > 60:
+                value = {'Message': 'Solve failed due to timeout'}
+            else:
+                value = {'Message': 'Solve failed'}
         self.isSolving = False
         return value

@@ -204,9 +204,9 @@ class INDICamera(PyQt5.QtCore.QObject):
                     imageParams['DecJ2000Solved'] = result['dec']
                     imageParams['Angle'] = result['orientation']
                     imageParams['Scale'] = result['pixscale']
-                    imageParams['Message'] = 'Solved'
+                    imageParams['Message'] = result['Message']
                 else:
-                    imageParams['Message'] = 'Solve failed'
+                    imageParams['Message'] = result['Message']
             else:
                 imageParams['Message'] = 'Solve failed because other solving process is still running'
                 self.logger.error('There is a solving process already running')

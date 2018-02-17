@@ -14,6 +14,7 @@
 import copy
 import logging
 import threading
+import PyQt5
 from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
@@ -285,7 +286,6 @@ class HemisphereWindow(widget.MwWidget):
         y.insert(0, 0)
         y.append(0)
         self.maskPlotFill,  = self.hemisphereMatplotlib.axes.fill(x, y, color='#002000', zorder=-20)
-        # self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         self.maskPlotMarker,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
         if self.ui.btn_editHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
