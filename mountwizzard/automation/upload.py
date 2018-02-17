@@ -13,13 +13,12 @@
 ############################################################
 import os
 import logging
-# PyQt5
 import PyQt5
-# webservices
 import urllib.request as urllib2
-# windows automation
-#from pywinauto import Application, timings, findwindows, application
-#from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
+import comtypes.client
+comtypes.client.gen_dir = None
+from pywinauto import Application, timings, findwindows, application
+from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
 class UpdaterAuto(PyQt5.QtCore.QObject):

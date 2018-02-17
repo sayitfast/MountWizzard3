@@ -1,4 +1,7 @@
 # -*- mode: python -*-
+#
+# to remember: import astropy.tests from __init__.py was removed manually
+#
 
 block_cipher = None
 
@@ -11,19 +14,19 @@ a = Analysis(['mountwizzard\\mountwizzard.py'],
              pathex=['C:\\Users\\mw\\Projects\\MountWizzard3\\mountwizzard'],
              binaries=[],
              datas=[
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\io\\fits', '.\\astropy\\io\\fits'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\io\\__init__.py', '.\\astropy\\io'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\_erfa', '.\\astropy\\_erfa'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\utils', '.\\astropy\\utils'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\logger.py', '.\\astropy'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\config', '.\\astropy\\config'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\units', '.\\astropy\\units'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\constants', '.\\astropy\\constants'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\visualization', '.\\astropy\\visualization'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\stats', '.\\astropy\\stats'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\extern', '.\\astropy\\extern'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\__init__.py', '.\\astropy'),
-             ('C:\\Program Files (x86)\\Python35-32\\Lib\\site-packages\\astropy\\astropy.cfg', '.\\astropy'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\io\\fits', '.\\astropy\\io\\fits'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\io\\__init__.py', '.\\astropy\\io'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\_erfa', '.\\astropy\\_erfa'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\utils', '.\\astropy\\utils'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\logger.py', '.\\astropy'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\config', '.\\astropy\\config'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\units', '.\\astropy\\units'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\constants', '.\\astropy\\constants'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\visualization', '.\\astropy\\visualization'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\stats', '.\\astropy\\stats'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\extern', '.\\astropy\\extern'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\__init__.py', '.\\astropy'),
+             ('C:\\Program Files (x86)\\Python36-32\\Lib\\site-packages\\astropy\\astropy.cfg', '.\\astropy'),
              ],
              hiddenimports=['numpy.lib.recfunctions','xml.dom'],
              hookspath=[],

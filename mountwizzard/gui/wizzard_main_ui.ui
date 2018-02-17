@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -1614,24 +1614,6 @@
       <string>Horion Lim low</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_60">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
-       <y>400</y>
-       <width>16</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>°</string>
-     </property>
-    </widget>
     <widget class="QLineEdit" name="le_horizonLimitLow">
      <property name="geometry">
       <rect>
@@ -1683,24 +1665,6 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QLabel" name="label_42">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>400</y>
-       <width>16</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>°</string>
-     </property>
-    </widget>
     <widget class="Line" name="line_51">
      <property name="geometry">
       <rect>
@@ -1741,6 +1705,54 @@
      </property>
      <property name="text">
       <string>Pointing Coordinates</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_104">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>400</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_109">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>400</y>
+       <width>21</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>°</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
      </property>
     </widget>
     <zorder>line_15</zorder>
@@ -1802,10 +1814,10 @@
     <zorder>label_20</zorder>
     <zorder>le_horizonLimitHigh</zorder>
     <zorder>label_4</zorder>
-    <zorder>label_60</zorder>
     <zorder>le_horizonLimitLow</zorder>
-    <zorder>label_42</zorder>
     <zorder>label_98</zorder>
+    <zorder>label_104</zorder>
+    <zorder>label_109</zorder>
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">

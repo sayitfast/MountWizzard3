@@ -26,17 +26,17 @@ setup(
     ],
     python_requires='~=3.5',
     install_requires=[
-        'PyQt5>=5.6',                   #  problem on ubuntu, can't be installed via pip, should be done with apt-get install
-        'matplotlib>=1.5.3',            # sudo apt-get install libfreetype6-dev might be needed
-        # 'pypiwin32>=219',             # not useful for linux
+        'PyQt5==5.10',                   #  problem on ubuntu, can't be installed via pip, should be done with apt-get install
+        'matplotlib==2.1.2',            # sudo apt-get install libfreetype6-dev might be needed
         'wakeonlan>=1.0.0',
-        'requests',
+        'requests==2.18.4',
         'astropy==2.0.2',
-        'requests_toolbelt'
+        'numpy==1.14.0',
+        'requests_toolbelt==0.8.0'
     ]
-    + (['PyQt5>=5.6'] if "Darwin" == platform.system() else [])
-    + (['PyQt5>=5.6'] if "Windows" == platform.system() else [])
-    + (['pypiwin32>=219'] if "Windows" == platform.system() else [])
+    + (['pypiwin32==220'] if "Windows" == platform.system() else [])
+    + (['pywinauto==0.6.4'] if "Windows" == platform.system() else [])
+    + (['comtypes==1.1.1'] if "Windows" == platform.system() else [])
     ,
     url='https://pypi.python.org/pypi/mountwizzard',
     license='APL 2.0',

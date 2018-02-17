@@ -1,11 +1,11 @@
-PyQt5>=5.7
-matplotlib>=1.5.3
-pypiwin32>=219
-pyfits>=3.4
-wakeonlan>=1.0.0
-pywinauto>=0.6.3
-numpy
-requests
+comtypes==1.1.1
+pywinauto==0.6.4
+pypiwin32==220
+PyQt5==5.10
+matplotlib==2.1.2
+wakeonlan==1.0.0
+numpy==1.14.0
+requests==2.18.4
 astropy==2.0.2
-requests_toolbelt
+requests_toolbelt==0.8.0
 

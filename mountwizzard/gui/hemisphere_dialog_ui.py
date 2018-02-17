@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'hemisphere_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.10
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -32,14 +32,14 @@ class Ui_HemisphereDialog(object):
         self.hemisphereBackground.setText("")
         self.hemisphereBackground.setObjectName("hemisphereBackground")
         self.groupBox_2 = QtWidgets.QGroupBox(HemisphereDialog)
-        self.groupBox_2.setGeometry(QtCore.QRect(150, 10, 201, 51))
+        self.groupBox_2.setGeometry(QtCore.QRect(150, 10, 211, 51))
         self.groupBox_2.setObjectName("groupBox_2")
         self.btn_editNone = QtWidgets.QRadioButton(self.groupBox_2)
         self.btn_editNone.setGeometry(QtCore.QRect(10, 20, 61, 21))
         self.btn_editNone.setChecked(True)
         self.btn_editNone.setObjectName("btn_editNone")
         self.btn_editModelPoints = QtWidgets.QRadioButton(self.groupBox_2)
-        self.btn_editModelPoints.setGeometry(QtCore.QRect(70, 20, 61, 21))
+        self.btn_editModelPoints.setGeometry(QtCore.QRect(70, 20, 71, 21))
         self.btn_editModelPoints.setObjectName("btn_editModelPoints")
         self.btn_editHorizonMask = QtWidgets.QRadioButton(self.groupBox_2)
         self.btn_editHorizonMask.setGeometry(QtCore.QRect(140, 20, 61, 21))
