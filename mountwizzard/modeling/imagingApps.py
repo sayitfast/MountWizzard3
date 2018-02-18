@@ -110,7 +110,7 @@ class ImagingApps:
 
         self.chooseImaging()
         self.workerINDICamera.solver.initConfig()
-        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging, type=PyQt5.QtCore.Qt.UniqueConnection)
+        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()

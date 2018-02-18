@@ -123,6 +123,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
 
+        self.mountStatus = {'Fast': False,
+                            'Medium': False,
+                            'Slow': False,
+                            'Once': False,
+                            'Align': False,
+                            'Command': False}
+        self.cancelRunTargetRMS = False
+        self.runTargetRMS = False
         self.commandDispatch = {
             'RunTargetRMSAlignment':
                 {
@@ -134,11 +142,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'ClearAlign':
+            'ClearAlign1':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_clearAlignmentModel,
+                            'Button': self.app.ui.btn_clearModel1,
                             'Method': self.mountModelHandling.clearAlign
                         }
                     ]
@@ -147,7 +155,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_clearAlignmentModel2,
+                            'Button': self.app.ui.btn_clearModel2,
                             'Method': self.mountModelHandling.clearAlign
                         }
                     ]
@@ -318,19 +326,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     ]
                 }
         }
-
-        self.mountStatus = {'Fast': False,
-                            'Medium': False,
-                            'Slow': False,
-                            'Once': False,
-                            'Align': False,
-                            'Command': False}
-        self.cancelRunTargetRMS = False
-        self.runTargetRMS = False
+        # signal slot
         self.app.ui.le_mountIP.textChanged.connect(self.setIP)
         self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
         self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
-
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
@@ -349,8 +348,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO2Model'))
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
-        self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
-        self.app.ui.btn_clearAlignmentModel2.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign2'))
+        self.app.ui.btn_clearModel1.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign1'))
+        self.app.ui.btn_clearModel2.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign2'))
 
     def initConfig(self):
         try:

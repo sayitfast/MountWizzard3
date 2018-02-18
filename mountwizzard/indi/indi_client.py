@@ -74,11 +74,11 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.environmentDevice = ''
         self.domeDevice = ''
         self.telescopeDevice = ''
+        # signal slot
         self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
-        # have to choose lambda to get the right threading context
         self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
     def initConfig(self):

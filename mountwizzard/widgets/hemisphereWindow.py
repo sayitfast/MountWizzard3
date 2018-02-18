@@ -57,14 +57,11 @@ class HemisphereWindow(widget.MwWidget):
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
-        # self.ui.checkShowNumbers.stateChanged.connect(self.drawHemisphere)
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
         self.app.workerDome.signalDomePointerVisibility.connect(self.setDomePointerVisibility)
-
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
-
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False

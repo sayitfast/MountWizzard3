@@ -196,12 +196,6 @@ class Ui_HemisphereDialog(object):
         font.setWeight(75)
         self.label_149.setFont(font)
         self.label_149.setObjectName("label_149")
-        self.btn_clearModel2 = QtWidgets.QPushButton(HemisphereDialog)
-        self.btn_clearModel2.setGeometry(QtCore.QRect(20, 50, 111, 36))
-        font = QtGui.QFont()
-        font.setPointSize(10)
-        self.btn_clearModel2.setFont(font)
-        self.btn_clearModel2.setObjectName("btn_clearModel2")
         self.hemisphereBackground.raise_()
         self.hemisphere.raise_()
         self.btn_deletePoints.raise_()
@@ -221,7 +215,6 @@ class Ui_HemisphereDialog(object):
         self.le_numberPointsToModel.raise_()
         self.label_59.raise_()
         self.label_149.raise_()
-        self.btn_clearModel2.raise_()
 
         self.retranslateUi(HemisphereDialog)
         QtCore.QMetaObject.connectSlotsByName(HemisphereDialog)
@@ -252,7 +245,4 @@ class Ui_HemisphereDialog(object):
         self.le_numberPointsToModel.setText(_translate("HemisphereDialog", "00"))
         self.label_59.setText(_translate("HemisphereDialog", "Points to model:"))
         self.label_149.setText(_translate("HemisphereDialog", "Modeling progress"))
-        self.btn_clearModel2.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p>Delete all points on coordinate window including Base / Model</p></body></html>"))
-        self.btn_clearModel2.setText(_translate("HemisphereDialog", "Clear\n"
-"Mount Model"))
 

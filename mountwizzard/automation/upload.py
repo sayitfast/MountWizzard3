@@ -221,6 +221,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
 
         self.checkApplication()
         self.TARGET_DIR = self.appInstallPath
+        # signal slot
         self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcher('EARTHROTATION'))
         self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcher('SPACESTATIONS'))
         self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcher('SATBRIGHTEST'))

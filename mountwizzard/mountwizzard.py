@@ -172,7 +172,7 @@ class MountWizzardApp(widget.MwWidget):
         self.setMountStatus({})
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
-        self.modelWindow = hemisphereWindow.HemisphereWindow(self)
+        self.hemisphereWindow = hemisphereWindow.HemisphereWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
         self.messageWindow = messageWindow.MessageWindow(self)
         # loading config data - will be config.cfg
@@ -268,13 +268,13 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
-        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
-        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.modelWindow.selectHorizonPointsMode)
-        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.modelWindow.selectHorizonPointsMode)
+        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
+        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
+        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
         self.ui.btn_loadAnalyseData.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showWindow)
         self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
-        self.ui.btn_openModelingPlotWindow.clicked.connect(self.modelWindow.showWindow)
+        self.ui.btn_openModelingPlotWindow.clicked.connect(self.hemisphereWindow.showWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
@@ -525,8 +525,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerINDI.stop()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
-        # if self.workerModelingDispatcher.isRunning:
-        #     self.workerModelingDispatcher.stop()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
         if platform.system() == 'Windows':
             if self.workerUpload.isRunning:
                 self.workerUpload.stop()
@@ -545,7 +545,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.initConfig()
         if platform.system() == 'Windows':
             self.workerUpload.initConfig()
-        self.modelWindow.initConfig()
+        self.hemisphereWindow.initConfig()
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
@@ -567,11 +567,11 @@ class MountWizzardApp(widget.MwWidget):
             self.threadUpload.start()
 
         # make windows visible, if they were on the desktop depending on their show status
-        if self.modelWindow.showStatus:
-            self.modelWindow.showWindow()
-            self.modelWindow.drawHemisphere()
+        if self.hemisphereWindow.showStatus:
+            self.hemisphereWindow.showWindow()
+            self.hemisphereWindow.drawHemisphere()
         else:
-            self.modelWindow.setVisible(False)
+            self.hemisphereWindow.setVisible(False)
         if self.imageWindow.showStatus:
             self.imageWindow.showWindow()
         else:
@@ -649,7 +649,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerDome.storeConfig()
         if platform.system() == 'Windows':
             self.workerUpload.storeConfig()
-        self.modelWindow.storeConfig()
+        self.hemisphereWindow.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
         self.messageWindow.storeConfig()

@@ -46,6 +46,8 @@ class Dome(PyQt5.QtCore.QObject):
         self.ascomChooser = None
         self.ascomDriverName = ''
         self.chooserLock = threading.Lock()
+        # connect change in dome to the subroutine of setting it up
+        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
 
     def initConfig(self):
         # first build the pull down menu
@@ -67,8 +69,6 @@ class Dome(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        # connect change in dome to the subroutine of setting it up
-        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome, type=PyQt5.QtCore.Qt.UniqueConnection)
 
     def storeConfig(self):
         self.app.config['DomeAscomDriverName'] = self.ascomDriverName

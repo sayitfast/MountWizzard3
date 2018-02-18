@@ -29,7 +29,7 @@ class ModelPoints:
         self.modelPoints = list()
         self.BasePoints = list()
         self.RefinementPoints = list()
-
+        # signal slot
         self.app.ui.btn_loadInitialModelPoints.clicked.connect(self.selectInitialModelPointsFileName)
         self.app.ui.btn_saveInitialModelPoints.clicked.connect(self.saveInitialModelPoints)
         self.app.ui.btn_saveInitialModelPointsAs.clicked.connect(self.saveInitialModelPointsAs)

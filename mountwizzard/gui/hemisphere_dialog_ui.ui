@@ -538,28 +538,6 @@ Model Points</string>
     <string>Modeling progress</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_clearModel2">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>50</y>
-     <width>111</width>
-     <height>36</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Clear
-Mount Model</string>
-   </property>
-  </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>hemisphere</zorder>
   <zorder>btn_deletePoints</zorder>
@@ -579,7 +557,6 @@ Mount Model</string>
   <zorder>le_numberPointsToModel</zorder>
   <zorder>label_59</zorder>
   <zorder>label_149</zorder>
-  <zorder>btn_clearModel2</zorder>
  </widget>
  <resources/>
  <connections/>

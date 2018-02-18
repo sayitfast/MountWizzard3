@@ -38,6 +38,7 @@ class Relays:
         self.app.ui.btn_relay6.clicked.connect(lambda: self.runRelay(6))
         self.app.ui.btn_relay7.clicked.connect(lambda: self.runRelay(7))
         self.app.ui.btn_relay8.clicked.connect(lambda: self.runRelay(8))
+        # signal slot
         self.app.ui.relay1Text.textChanged.connect(lambda: self.app.ui.btn_relay1.setText(self.app.ui.relay1Text.text()))
         self.app.ui.relay2Text.textChanged.connect(lambda: self.app.ui.btn_relay2.setText(self.app.ui.relay2Text.text()))
         self.app.ui.relay3Text.textChanged.connect(lambda: self.app.ui.btn_relay3.setText(self.app.ui.relay3Text.text()))

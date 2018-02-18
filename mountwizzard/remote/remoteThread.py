@@ -40,6 +40,7 @@ class Remote(PyQt5.QtCore.QObject):
         self.remotePort = 0
         self.tcpServer = None
         self.clientConnection = None
+        # signal slot
         self.app.ui.le_remotePort.textChanged.connect(self.setPort)
         self.app.ui.le_remotePort.editingFinished.connect(self.enableDisableRemoteAccess)
         self.app.ui.checkEnableRemoteAccess.stateChanged.connect(self.enableDisableRemoteAccess)
