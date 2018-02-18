@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>9</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -10525,7 +10525,7 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableRemoteAccess">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>20</x>
          <y>320</y>
          <width>201</width>
          <height>21</height>
@@ -10769,7 +10769,7 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableINDI">
        <property name="geometry">
         <rect>
-         <x>410</x>
+         <x>400</x>
          <y>40</y>
          <width>201</width>
          <height>21</height>
@@ -10999,7 +10999,7 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableRelay">
        <property name="geometry">
         <rect>
-         <x>30</x>
+         <x>20</x>
          <y>150</y>
          <width>201</width>
          <height>21</height>
@@ -11209,8 +11209,8 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableAstrometry">
        <property name="geometry">
         <rect>
-         <x>410</x>
-         <y>260</y>
+         <x>400</x>
+         <y>265</y>
          <width>271</width>
          <height>21</height>
         </rect>
@@ -11224,7 +11224,7 @@ Window</string>
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="text">
-        <string>Enable astronometry</string>
+        <string>Enable astronometry solver</string>
        </property>
        <property name="checked">
         <bool>false</bool>
@@ -11319,7 +11319,7 @@ Window</string>
       <widget class="QLabel" name="label_mountIP_4">
        <property name="geometry">
         <rect>
-         <x>400</x>
+         <x>410</x>
          <y>290</y>
          <width>56</width>
          <height>21</height>
@@ -11379,7 +11379,7 @@ Window</string>
       <widget class="QCheckBox" name="checkEnableAstrometryNET">
        <property name="geometry">
         <rect>
-         <x>400</x>
+         <x>410</x>
          <y>320</y>
          <width>291</width>
          <height>21</height>
@@ -11445,7 +11445,7 @@ Window</string>
       <widget class="QLabel" name="label_mountIP_6">
        <property name="geometry">
         <rect>
-         <x>415</x>
+         <x>410</x>
          <y>345</y>
          <width>56</width>
          <height>21</height>
