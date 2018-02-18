@@ -463,22 +463,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
             if 'CheckClearModelFirst' in self.config:
                 self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
-            if 'AltitudeBase' in self.config:
-                self.ui.altitudeBase.setValue(self.config['AltitudeBase'])
-            if 'AzimuthBase' in self.config:
-                self.ui.azimuthBase.setValue(self.config['AzimuthBase'])
-            if 'NumberGridPointsCol' in self.config:
-                self.ui.numberGridPointsCol.setValue(self.config['NumberGridPointsCol'])
-            if 'NumberGridPointsRow' in self.config:
-                self.ui.numberGridPointsRow.setValue(self.config['NumberGridPointsRow'])
-            if 'AltitudeMin' in self.config:
-                self.ui.altitudeMin.setValue(self.config['AltitudeMin'])
-            if 'AltitudeMax' in self.config:
-                self.ui.altitudeMax.setValue(self.config['AltitudeMax'])
-            if 'NumberPointsDSO' in self.config:
-                self.ui.numberPointsDSO.setValue(self.config['NumberPointsDSO'])
-            if 'NumberHoursDSO' in self.config:
-                self.ui.numberHoursDSO.setValue(self.config['NumberHoursDSO'])
             if 'AnalyseFileName' in self.config:
                 self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             if 'AltitudeTimeChange' in self.config:
@@ -616,14 +600,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ScaleSubframe'] = self.ui.scaleSubframe.value()
         self.config['CheckDoSubframe'] = self.ui.checkDoSubframe.isChecked()
         self.config['CheckKeepImages'] = self.ui.checkKeepImages.isChecked()
-        self.config['AltitudeBase'] = self.ui.altitudeBase.value()
-        self.config['AzimuthBase'] = self.ui.azimuthBase.value()
-        self.config['NumberGridPointsRow'] = self.ui.numberGridPointsRow.value()
-        self.config['NumberGridPointsCol'] = self.ui.numberGridPointsCol.value()
-        self.config['AltitudeMin'] = self.ui.altitudeMin.value()
-        self.config['AltitudeMax'] = self.ui.altitudeMax.value()
-        self.config['NumberPointsDSO'] = self.ui.numberPointsDSO.value()
-        self.config['NumberHoursDSO'] = self.ui.numberHoursDSO.value()
         self.config['WindowPositionX'] = self.pos().x()
         self.config['WindowPositionY'] = self.pos().y()
         self.config['AnalyseFileName'] = self.ui.le_analyseFileName.text()

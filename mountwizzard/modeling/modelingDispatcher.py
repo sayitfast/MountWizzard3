@@ -212,27 +212,38 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.btn_showFullModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowFullPoints'))
         self.app.ui.btn_showInitialModelPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('ShowInitialPoints'))
         self.app.ui.btn_generateDSOPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
-        #self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
-        #self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
-        #self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
+        self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
+        self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
+        self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
         self.app.ui.btn_generateMaxPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateMaxPoints'))
         self.app.ui.btn_generateNormalPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateNormalPoints'))
         self.app.ui.btn_generateMinPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateMinPoints'))
         self.app.ui.btn_generateGridPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
-        #self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
-        #self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
-        #self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
-        #self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
         self.app.ui.btn_generateInitialPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'))
-        #self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
-        #self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
-        #self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
+        self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
+        self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
+        self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.btn_runTimeChangeModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTimeChangeModel'))
         self.app.ui.btn_runHystereseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunHystereseModel'))
         self.app.ui.btn_runFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunFullModel'))
         self.app.ui.btn_runInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('RunInitialModel'))
 
     def initConfig(self):
+        # before changing value through config (which fires the signals) i have to disable them
+        self.app.ui.numberHoursDSO.valueChanged.disconnect()
+        self.app.ui.numberPointsDSO.valueChanged.disconnect()
+        self.app.ui.numberHoursPreview.valueChanged.disconnect()
+        self.app.ui.numberGridPointsRow.valueChanged.disconnect()
+        self.app.ui.numberGridPointsCol.valueChanged.disconnect()
+        self.app.ui.altitudeMin.valueChanged.disconnect()
+        self.app.ui.altitudeMax.valueChanged.disconnect()
+        self.app.ui.altitudeBase.valueChanged.disconnect()
+        self.app.ui.azimuthBase.valueChanged.disconnect()
+        self.app.ui.numberBase.valueChanged.disconnect()
         try:
             if 'CheckSortPoints' in self.app.config:
                 self.app.ui.checkSortPoints.setChecked(self.app.config['CheckSortPoints'])
@@ -240,16 +251,53 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                 self.app.ui.checkDeletePointsHorizonMask.setChecked(self.app.config['CheckDeletePointsHorizonMask'])
             if 'CheckSimulation' in self.app.config:
                 self.app.ui.checkSimulation.setChecked(self.app.config['CheckSimulation'])
+            if 'AltitudeBase' in self.app.config:
+                self.app.ui.altitudeBase.setValue(self.app.config['AltitudeBase'])
+            if 'AzimuthBase' in self.app.config:
+                self.app.ui.azimuthBase.setValue(self.app.config['AzimuthBase'])
+            if 'NumberGridPointsCol' in self.app.config:
+                self.app.ui.numberGridPointsCol.setValue(self.app.config['NumberGridPointsCol'])
+            if 'NumberGridPointsRow' in self.app.config:
+                self.app.ui.numberGridPointsRow.setValue(self.app.config['NumberGridPointsRow'])
+            if 'AltitudeMin' in self.app.config:
+                self.app.ui.altitudeMin.setValue(self.app.config['AltitudeMin'])
+            if 'AltitudeMax' in self.app.config:
+                self.app.ui.altitudeMax.setValue(self.app.config['AltitudeMax'])
+            if 'NumberPointsDSO' in self.app.config:
+                self.app.ui.numberPointsDSO.setValue(self.app.config['NumberPointsDSO'])
+            if 'NumberHoursDSO' in self.app.config:
+                self.app.ui.numberHoursDSO.setValue(self.app.config['NumberHoursDSO'])
+
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
         self.modelingRunner.initConfig()
+        # and restored
+        self.app.ui.numberHoursDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
+        self.app.ui.numberPointsDSO.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
+        self.app.ui.numberHoursPreview.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateDSOPoints'))
+        self.app.ui.numberGridPointsRow.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
+        self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
+        self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
+        self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
 
     def storeConfig(self):
         self.app.config['CheckSortPoints'] = self.app.ui.checkSortPoints.isChecked()
         self.app.config['CheckDeletePointsHorizonMask'] = self.app.ui.checkDeletePointsHorizonMask.isChecked()
         self.app.config['CheckSimulation'] = self.app.ui.checkSimulation.isChecked()
+        self.app.config['AltitudeBase'] = self.app.ui.altitudeBase.value()
+        self.app.config['AzimuthBase'] = self.app.ui.azimuthBase.value()
+        self.app.config['NumberGridPointsRow'] = self.app.ui.numberGridPointsRow.value()
+        self.app.config['NumberGridPointsCol'] = self.app.ui.numberGridPointsCol.value()
+        self.app.config['AltitudeMin'] = self.app.ui.altitudeMin.value()
+        self.app.config['AltitudeMax'] = self.app.ui.altitudeMax.value()
+        self.app.config['NumberPointsDSO'] = self.app.ui.numberPointsDSO.value()
+        self.app.config['NumberHoursDSO'] = self.app.ui.numberHoursDSO.value()
+
         self.modelingRunner.storeConfig()
 
     def run(self):
