@@ -415,7 +415,7 @@ class MwWidget(QWidget):
     }
     QProgressBar::chunk {
         background-color: rgb(32, 144, 192);
-        width: 3px;
+        width: 4px;
         margin: 1px;
         border-width: 1px;
         border-color: #404040;
