@@ -1089,23 +1089,23 @@ class MountWizzardApp(widget.MwWidget):
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
             elif text.startswith('ToModel>'):
-                self.ui.le_numberPointsToModel.setText(text[8:])
+                self.hemisphereWindow.ui.le_numberPointsToModel.setText(text[8:])
             elif text.startswith('Slewed>'):
-                self.ui.le_numberPointsSlewed.setText(text[7:])
-                if float(self.ui.le_numberPointsToModel.text()) != 0:
-                    self.ui.bar_numberPointsSlewed.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+                self.hemisphereWindow.ui.le_numberPointsSlewed.setText(text[7:])
+                if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
+                    self.hemisphereWindow.ui.bar_numberPointsSlewed.setValue(int(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
             elif text.startswith('Imaged>'):
-                self.ui.le_numberPointsImaged.setText(text[7:])
-                if float(self.ui.le_numberPointsToModel.text()) != 0:
-                    self.ui.bar_numberPointsImaged.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+                self.hemisphereWindow.ui.le_numberPointsImaged.setText(text[7:])
+                if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
+                    self.hemisphereWindow.ui.bar_numberPointsImaged.setValue(int(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
             elif text.startswith('Solved>'):
-                self.ui.le_numberPointsSolved.setText(text[7:])
-                if float(self.ui.le_numberPointsToModel.text()) != 0:
-                    self.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.ui.le_numberPointsToModel.text())))
+                self.hemisphereWindow.ui.le_numberPointsSolved.setText(text[7:])
+                if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
+                    self.hemisphereWindow.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
             elif text.startswith('Processed>'):
-                self.ui.le_numberPointsProcessed.setText(text[10:])
-                if float(self.ui.le_numberPointsToModel.text()) != 0:
-                    self.ui.bar_numberPointsProcessed.setValue(int(1000 * float(text[10:]) / float(self.ui.le_numberPointsToModel.text())))
+                self.hemisphereWindow.ui.le_numberPointsProcessed.setText(text[10:])
+                if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
+                    self.hemisphereWindow.ui.bar_numberPointsProcessed.setValue(int(1000 * float(text[10:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):

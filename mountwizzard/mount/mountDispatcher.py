@@ -143,6 +143,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
+            'ClearAlign2':
+                {
+                    'Worker': [
+                        {
+                            'Button': self.app.ui.btn_clearAlignmentModel2,
+                            'Method': self.mountModelHandling.clearAlign
+                        }
+                    ]
+                },
             'DeleteWorstPoint':
                 {
                     'Worker': [
@@ -341,6 +350,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
         self.app.ui.btn_clearAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
+        self.app.ui.btn_clearAlignmentModel2.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign2'))
 
     def initConfig(self):
         try:
