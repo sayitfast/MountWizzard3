@@ -49,6 +49,8 @@ class INDIClient(PyQt5.QtCore.QObject):
     DETECTOR_INTERFACE = (1 << 11)
     AUX_INTERFACE = (1 << 15)
 
+    CYCLE_MAIN_LOOP = 200
+
     data = {
         'ServerIP': '',
         'ServerPort': 7624,
@@ -63,7 +65,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.thread = thread
         self.isRunning = False
         self.ipChangeLock = threading.Lock()
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.checkIP = checkParamIP.CheckIP()
         self.socket = None
         self.newDeviceQueue = queue.Queue()
@@ -136,8 +138,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.stop()
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.socket = QtNetwork.QTcpSocket()
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
@@ -146,24 +150,27 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
-        while self.isRunning:
-            if not self.app.INDICommandQueue.empty() and self.data['Connected']:
-                indiCommand = self.app.INDICommandQueue.get()
-                self.sendMessage(indiCommand)
-            self.handleNewDevice()
-            if not self.data['Connected'] and self.socket.state() == 0:
-                self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-            time.sleep(0.1)
-            QtWidgets.QApplication.processEvents()
+
+    def mainLoop(self):
+        if not self.app.INDICommandQueue.empty() and self.data['Connected']:
+            indiCommand = self.app.INDICommandQueue.get()
+            self.sendMessage(indiCommand)
+        self.handleNewDevice()
+        if not self.data['Connected'] and self.socket.state() == 0:
+            self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
+
+    def stop(self):
         # if I leave the loop, I close the connection to remote host
         if self.socket.state() != 3:
             self.socket.abort()
         self.socket.close()
-
-    def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
 
