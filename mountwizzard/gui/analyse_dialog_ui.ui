@@ -17,9 +17,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>80</y>
+     <y>105</y>
      <width>771</width>
-     <height>551</height>
+     <height>526</height>
     </rect>
    </property>
    <property name="font">
@@ -35,7 +35,7 @@
    <property name="geometry">
     <rect>
      <x>140</x>
-     <y>20</y>
+     <y>15</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -56,7 +56,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
+     <y>15</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -79,7 +79,7 @@
      <x>0</x>
      <y>0</y>
      <width>790</width>
-     <height>66</height>
+     <height>96</height>
     </rect>
    </property>
    <property name="text">
@@ -90,7 +90,7 @@
    <property name="geometry">
     <rect>
      <x>260</x>
-     <y>20</y>
+     <y>15</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -110,10 +110,10 @@
   <widget class="QCheckBox" name="checkWinsorize">
    <property name="geometry">
     <rect>
-     <x>545</x>
-     <y>20</y>
+     <x>535</x>
+     <y>15</y>
      <width>111</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -128,7 +128,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="text">
-    <string>Winsorize data,</string>
+    <string>Winsorize data</string>
    </property>
    <property name="checked">
     <bool>false</bool>
@@ -137,10 +137,10 @@
   <widget class="QDoubleSpinBox" name="winsorizeLimit">
    <property name="geometry">
     <rect>
-     <x>725</x>
-     <y>20</y>
-     <width>46</width>
-     <height>31</height>
+     <x>730</x>
+     <y>15</y>
+     <width>41</width>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -175,10 +175,10 @@
   <widget class="QLabel" name="label_201">
    <property name="geometry">
     <rect>
-     <x>660</x>
-     <y>20</y>
+     <x>665</x>
+     <y>15</y>
      <width>61</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -193,10 +193,10 @@
   <widget class="QCheckBox" name="checkOptimized">
    <property name="geometry">
     <rect>
-     <x>405</x>
-     <y>20</y>
-     <width>116</width>
-     <height>31</height>
+     <x>535</x>
+     <y>50</y>
+     <width>196</width>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -211,7 +211,7 @@
     <enum>Qt::LeftToRight</enum>
    </property>
    <property name="text">
-    <string>Show Optimized</string>
+    <string>Use data with pointing model</string>
    </property>
    <property name="checked">
     <bool>false</bool>

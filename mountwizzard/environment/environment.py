@@ -27,11 +27,12 @@ class Environment(PyQt5.QtCore.QObject):
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_DATA = 2000
+    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
 
         self.app = app
         self.thread = thread
@@ -118,37 +119,43 @@ class Environment(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         if platform.system() == 'Windows':
             pythoncom.CoInitialize()
         self.chooserEnvironment()
         self.getData()
-        while self.isRunning:
-            if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
-                if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
-                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
-                else:
-                    self.data['Connected'] = False
-            if self.data['Connected']:
-                self.signalEnvironmentConnected.emit(3)
+        self.mainLoop()
+
+    def mainLoop(self):
+        if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
+            if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
+                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
             else:
-                if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
-                    self.signalEnvironmentConnected.emit(0)
+                self.data['Connected'] = False
+        if self.data['Connected']:
+            self.signalEnvironmentConnected.emit(3)
+        else:
+            if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
+                self.signalEnvironmentConnected.emit(0)
+            else:
+                if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI') and self.app.workerINDI.environmentDevice != '':
+                    self.signalEnvironmentConnected.emit(2)
                 else:
-                    if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI') and self.app.workerINDI.environmentDevice != '':
-                        self.signalEnvironmentConnected.emit(2)
-                    else:
-                        self.signalEnvironmentConnected.emit(1)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
+                    self.signalEnvironmentConnected.emit(1)
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        if platform.system() == 'Windows':
+            pythoncom.CoUninitialize()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.stopAscom()
         self.thread.quit()
         self.thread.wait()
@@ -180,7 +187,10 @@ class Environment(PyQt5.QtCore.QObject):
                 'WindDirection': 0,
                 'SQR': 0
             }
-        PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
+        self.mutexIsRunning.unlock()
 
     def getINDIData(self):
         # check if client has device found

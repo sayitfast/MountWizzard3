@@ -77,7 +77,7 @@ Model Points</string>
     <rect>
      <x>150</x>
      <y>10</y>
-     <width>116</width>
+     <width>161</width>
      <height>76</height>
     </rect>
    </property>
@@ -87,14 +87,14 @@ Model Points</string>
    <widget class="QRadioButton" name="btn_editNone">
     <property name="geometry">
      <rect>
-      <x>45</x>
+      <x>50</x>
       <y>10</y>
-      <width>61</width>
+      <width>106</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>None</string>
+     <string>Nothing</string>
     </property>
     <property name="checked">
      <bool>true</bool>
@@ -103,27 +103,27 @@ Model Points</string>
    <widget class="QRadioButton" name="btn_editModelPoints">
     <property name="geometry">
      <rect>
-      <x>45</x>
+      <x>50</x>
       <y>30</y>
-      <width>71</width>
+      <width>106</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Points</string>
+     <string>Model Points</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="btn_editHorizonMask">
     <property name="geometry">
      <rect>
-      <x>45</x>
+      <x>50</x>
       <y>50</y>
-      <width>61</width>
+      <width>106</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Mask</string>
+     <string>Horizon Mask</string>
     </property>
    </widget>
   </widget>
@@ -458,8 +458,8 @@ Model Points</string>
   <widget class="QLineEdit" name="le_numberPointsToModel">
    <property name="geometry">
     <rect>
-     <x>415</x>
-     <y>70</y>
+     <x>435</x>
+     <y>30</y>
      <width>21</width>
      <height>16</height>
     </rect>
@@ -500,9 +500,9 @@ Model Points</string>
   <widget class="QLabel" name="label_59">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>70</y>
-     <width>106</width>
+     <x>335</x>
+     <y>30</y>
+     <width>96</width>
      <height>16</height>
     </rect>
    </property>
@@ -521,8 +521,8 @@ Model Points</string>
   <widget class="QLabel" name="label_149">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>10</y>
+     <x>335</x>
+     <y>5</y>
      <width>126</width>
      <height>21</height>
     </rect>
@@ -536,6 +536,27 @@ Model Points</string>
    </property>
    <property name="text">
     <string>Modeling progress</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_78">
+   <property name="geometry">
+    <rect>
+     <x>335</x>
+     <y>25</y>
+     <width>121</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
    </property>
   </widget>
   <zorder>hemisphereBackground</zorder>
@@ -557,6 +578,7 @@ Model Points</string>
   <zorder>le_numberPointsToModel</zorder>
   <zorder>label_59</zorder>
   <zorder>label_149</zorder>
+  <zorder>line_78</zorder>
  </widget>
  <resources/>
  <connections/>

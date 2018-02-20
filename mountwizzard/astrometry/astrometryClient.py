@@ -65,8 +65,10 @@ class AstrometryClient:
         try:
             if 'CheckEnableAstrometry' in self.app.config:
                 self.app.ui.checkEnableAstrometry.setChecked(self.app.config['CheckEnableAstrometry'])
-            if 'CheckEnableAstrometryNET' in self.app.config:
-                self.app.ui.checkEnableAstrometryNET.setChecked(self.app.config['CheckEnableAstrometryNET'])
+            if 'CheckUseOnlineSolver' in self.app.config:
+                self.app.ui.rb_useOnlineSolver.setChecked(self.app.config['CheckUseOnlineSolver'])
+            if 'CheckUseLocalSolver' in self.app.config:
+                self.app.ui.rb_useLocalSolver.setChecked(self.app.config['CheckUseLocalSolver'])
             if 'AstrometryServerPort' in self.app.config:
                 self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
             if 'AstrometryServerIP' in self.app.config:
@@ -85,14 +87,16 @@ class AstrometryClient:
         self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.checkEnableAstrometryNET.stateChanged.connect(self.setAstrometryNet)
+        self.app.ui.rb_useOnlineSolver.clicked.connect(self.setAstrometryNet)
+        self.app.ui.rb_useLocalSolver.clicked.connect(self.setAstrometryNet)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
         self.app.config['AstrometryServerAPIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
         self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
-        self.app.config['CheckEnableAstrometryNET'] = self.app.ui.checkEnableAstrometryNET.isChecked()
+        self.app.config['CheckUseOnlineSolver'] = self.app.ui.rb_useOnlineSolver.isChecked()
+        self.app.config['CheckUseLocalSolver'] = self.app.ui.rb_useLocalSolver.isChecked()
 
     def setAstrometryNet(self):
         self.settingsChanged = True
@@ -101,7 +105,7 @@ class AstrometryClient:
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            if self.app.ui.checkEnableAstrometryNET.isChecked():
+            if self.app.ui.rb_useOnlineSolver.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
                 # we have to login

@@ -31,11 +31,12 @@ class Dome(PyQt5.QtCore.QObject):
     signalDomePointerVisibility = PyQt5.QtCore.pyqtSignal(bool)
 
     CYCLE_DATA = 250
+    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
 
         self.app = app
         self.thread = thread
@@ -122,52 +123,58 @@ class Dome(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         if platform.system() == 'Windows':
             pythoncom.CoInitialize()
         self.chooserDome()
         self.getData()
-        while self.isRunning:
-            if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
-                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
-                else:
-                    self.data['Connected'] = False
-            if self.data['Connected']:
-                self.signalDomeConnected.emit(3)
-                if self.data['Slewing']:
-                    self.domeStatusText.emit('SLEW')
-                else:
-                    self.domeStatusText.emit('IDLE')
-                if not self.app.domeCommandQueue.empty():
-                    command, value = self.app.domeCommandQueue.get()
-                    if command == 'SlewAzimuth':
-                        if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                            self.app.INDICommandQueue.put(
-                                indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
-                                                        indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
-                        else:
-                            self.ascom.SlewToAzimuth(float(value))
+        self.mainLoop()
+
+    def mainLoop(self):
+        if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
+            if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
+                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
             else:
-                if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
-                    self.signalDomeConnected.emit(0)
-                    self.domeStatusText.emit('---')
-                else:
-                    self.domeStatusText.emit('DISCONN')
-                    if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':
-                        self.signalDomeConnected.emit(2)
+                self.data['Connected'] = False
+        if self.data['Connected']:
+            self.signalDomeConnected.emit(3)
+            if self.data['Slewing']:
+                self.domeStatusText.emit('SLEW')
+            else:
+                self.domeStatusText.emit('IDLE')
+            if not self.app.domeCommandQueue.empty():
+                command, value = self.app.domeCommandQueue.get()
+                if command == 'SlewAzimuth':
+                    if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
+                        self.app.INDICommandQueue.put(
+                            indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
+                                                    indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
                     else:
-                        self.signalDomeConnected.emit(1)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
+                        self.ascom.SlewToAzimuth(float(value))
+        else:
+            if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
+                self.signalDomeConnected.emit(0)
+                self.domeStatusText.emit('---')
+            else:
+                self.domeStatusText.emit('DISCONN')
+                if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':
+                    self.signalDomeConnected.emit(2)
+                else:
+                    self.signalDomeConnected.emit(1)
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        if platform.system() == 'Windows':
+            pythoncom.CoUninitialize()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.stopAscom()
         self.thread.quit()
         self.thread.wait()
@@ -195,7 +202,10 @@ class Dome(PyQt5.QtCore.QObject):
         if 'Azimuth' in self.data:
             self.signalDomePointerVisibility.emit(self.data['Connected'])
             self.signalDomePointer.emit(self.data['Azimuth'])
-        PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
+        self.mutexIsRunning.unlock()
 
     def getINDIData(self):
         # check if client has device found

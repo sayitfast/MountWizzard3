@@ -25,7 +25,7 @@ from uuid import uuid4
 
 import requests
 
-from astrometry.compat import fields
+from snippets.compat import fields
 
 
 class FileNotSupportedError(Exception):
