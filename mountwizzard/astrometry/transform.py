@@ -95,9 +95,6 @@ class Transform:
         SiteElevation = float(self.app.workerMountDispatcher.data['SiteHeight'])
         SiteLatitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         SiteLongitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLongitude'])
-        if SiteLatitude == 0 or SiteLongitude == 0 or SiteElevation == 0:
-            self.logger.error('No site parameters set')
-            return 0, 0
         ts = datetime.datetime.utcnow()
         dut1_prev = self.ERFA.dat(ts.year, ts.month, ts.day, 0)
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
