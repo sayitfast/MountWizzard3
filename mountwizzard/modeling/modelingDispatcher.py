@@ -223,7 +223,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.ui.numberGridPointsCol.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
         self.app.ui.altitudeMin.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
         self.app.ui.altitudeMax.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateGridPoints'))
-        self.app.ui.btn_generateInitialPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateBasePoints'))
+        self.app.ui.btn_generateInitialPoints.clicked.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.altitudeBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.azimuthBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))
         self.app.ui.numberBase.valueChanged.connect(lambda: self.commandDispatcherQueue.put('GenerateInitialPoints'))

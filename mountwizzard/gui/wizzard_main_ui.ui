@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -152,7 +152,7 @@
    </property>
    <widget class="QWidget" name="tab_2">
     <attribute name="title">
-     <string>Pointing</string>
+     <string> Mount Data</string>
     </attribute>
     <widget class="QLineEdit" name="le_telescopeRA">
      <property name="geometry">
@@ -181,7 +181,7 @@
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:400;&quot;&gt;Right Ascention in J2000&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt; font-weight:400;&quot;&gt;Right Ascension in J2000&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -1821,7 +1821,7 @@
    </widget>
    <widget class="QWidget" name="tab_4">
     <attribute name="title">
-     <string>Site Conditions</string>
+     <string>Site Data</string>
     </attribute>
     <widget class="QLineEdit" name="le_siteElevation">
      <property name="geometry">
@@ -3920,7 +3920,7 @@
       </font>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the coordinate an model points popup window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the image window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="styleSheet">
       <string notr="true"/>
@@ -4097,7 +4097,7 @@ Window</string>
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Horizon Mask file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -4467,7 +4467,7 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>Sets the time to wait after mount stop before imaging</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets the binning for the camera&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -5828,7 +5828,7 @@ Window</string>
     <widget class="QLabel" name="label_206">
      <property name="geometry">
       <rect>
-       <x>20</x>
+       <x>120</x>
        <y>220</y>
        <width>101</width>
        <height>31</height>
@@ -6110,7 +6110,7 @@ Window</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Show</string>
+      <string>Reload</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_saveInitialModelPoints">
@@ -6191,7 +6191,7 @@ Window</string>
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Model Points file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Model Points file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -7295,7 +7295,7 @@ Window</string>
       <bool>false</bool>
      </property>
      <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Model Points file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Model Points file, where the data is stored.&lt;/p&gt;&lt;p&gt;Please Double Click to Select&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="layoutDirection">
       <enum>Qt::RightToLeft</enum>
@@ -7328,7 +7328,7 @@ Window</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Show</string>
+      <string>Reload</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_saveFullModelPoints">
@@ -9617,7 +9617,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>4</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -9627,7 +9627,7 @@ Window</string>
      </property>
      <widget class="QWidget" name="tab_12">
       <attribute name="title">
-       <string>Choose Driver</string>
+       <string>Connections</string>
       </attribute>
       <widget class="Line" name="line_56">
        <property name="geometry">
@@ -14053,7 +14053,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of camera: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of camera:&lt;/p&gt;&lt;p&gt;Red: Error&lt;/p&gt;&lt;p&gt;Yellow: Connecting&lt;/p&gt;&lt;p&gt;Green: Connected&lt;/p&gt;&lt;p&gt;Gray: No Configured&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Camera</string>
@@ -14077,7 +14077,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of dome: grey: no dome configured&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of dome: &lt;/p&gt;&lt;p&gt;Red: Error&lt;/p&gt;&lt;p&gt;Gray: No Configured&lt;/p&gt;&lt;p&gt;Green: Connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Dome</string>
@@ -14101,7 +14101,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of mount&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of mount&lt;/p&gt;&lt;p&gt;Red: Error&lt;/p&gt;&lt;p&gt;Yellow: Connecting&lt;/p&gt;&lt;p&gt;Green: Connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Mount</string>
@@ -14128,7 +14128,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of environment: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of environment: &lt;/p&gt;&lt;p&gt;Red: Error&lt;/p&gt;&lt;p&gt;Gray: No Configured&lt;/p&gt;&lt;p&gt;Green: Connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Environ</string>
@@ -14176,7 +14176,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of plate solver: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of plate solver:&lt;/p&gt;&lt;p&gt;Red: Error&lt;/p&gt;&lt;p&gt;Yellow: Connecting&lt;/p&gt;&lt;p&gt;Green: Connected&lt;/p&gt;&lt;p&gt;Gray: No Configured&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Solver</string>
@@ -14373,7 +14373,7 @@ Window</string>
     </font>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of INDI subsystem: green = available and connected&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Status of INDI subsystem: &lt;/p&gt;&lt;p&gt;Red: Error&lt;/p&gt;&lt;p&gt;Yellow: Connecting&lt;/p&gt;&lt;p&gt;Green: Connected&lt;/p&gt;&lt;p&gt;Gray: No Configured&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>INDI</string>
