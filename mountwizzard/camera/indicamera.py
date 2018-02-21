@@ -89,7 +89,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         # check if INDIClient is running and camera device is there
         if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
             self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
-            if 'CONNECTION' in self.data['Camera']:
+            if 'CONNECTION' and 'CCD_EXPOSURE' in self.data['Camera']:
                 if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
                     if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:
                         if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):

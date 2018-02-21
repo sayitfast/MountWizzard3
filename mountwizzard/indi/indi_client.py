@@ -150,6 +150,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
+        self.mainLoop()
 
     def mainLoop(self):
         if not self.app.INDICommandQueue.empty() and self.data['Connected']:
