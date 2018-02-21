@@ -136,7 +136,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -1389,13 +1389,13 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="inputMask">
-      <string>99</string>
+      <string/>
      </property>
      <property name="text">
-      <string>00</string>
+      <string/>
      </property>
      <property name="cursorPosition">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -1581,10 +1581,10 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="inputMask">
-      <string>99</string>
+      <string/>
      </property>
      <property name="text">
-      <string>00</string>
+      <string/>
      </property>
      <property name="cursorPosition">
       <number>0</number>
@@ -1644,13 +1644,13 @@
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="inputMask">
-      <string>99</string>
+      <string/>
      </property>
      <property name="text">
-      <string>0</string>
+      <string/>
      </property>
      <property name="maxLength">
-      <number>2</number>
+      <number>32767</number>
      </property>
      <property name="frame">
       <bool>true</bool>
