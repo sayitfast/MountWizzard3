@@ -112,14 +112,14 @@ class ModelPoints:
             return msg
 
     def saveInitialModelPoints(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_modelInitialPointsFileName.text()
-        self.saveInitialModelPoints(filepath)
+        filepath = os.getcwd() + '/config/' + self.app.ui.le_modelInitialPointsFileName.text()
+        self.saveModelPoints(filepath)
 
     def saveInitialModelPointsAs(self):
         value = self.app.selectFile(self.app, 'Save initial model points file', '/config', 'Model point files (*.txt)', '.txt', False)
         if value != '':
             self.app.ui.le_modelInitialPointsFileName.setText(os.path.basename(value))
-            self.saveInitialModelPoints(value)
+            self.saveModelPoints(value)
         else:
             self.logger.warning('No model points file selected')
 
@@ -133,14 +133,14 @@ class ModelPoints:
             self.logger.warning('No file selected')
 
     def saveFullModelPoints(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_modelFullPointsFileName.text()
-        self.saveFullModelPoints(filepath)
+        filepath = os.getcwd() + '/config/' + self.app.ui.le_modelFullPointsFileName.text()
+        self.saveModelPoints(filepath)
 
     def saveFullModelPointsAs(self):
         value = self.app.selectFile(self.app, 'Save full model points file', '/config', 'Model point files (*.txt)', '.txt', False)
         if value != '':
             self.app.ui.le_modelFullPointsFileName.setText(os.path.basename(value))
-            self.saveFullModelPoints(value)
+            self.saveModelPoints(value)
         else:
             self.logger.warning('No model points file selected')
 
