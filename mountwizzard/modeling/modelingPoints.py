@@ -73,11 +73,11 @@ class ModelPoints:
         self.app.config['ModelFullPointsFileName'] = self.app.ui.le_modelFullPointsFileName.text()
 
     def saveHorizonMask(self):
-        filepath = os.getcwd() + '/config/' + self.ui.le_horizonPointsFileName.text()
+        filepath = os.getcwd() + '/config/' + self.app.ui.le_horizonPointsFileName.text()
         self.saveHorizonPoints(filepath)
 
     def saveHorizonMaskAs(self):
-        value = self.selectFile(self, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        value = self.app.selectFile(self.app, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', '.txt', False)
         if value != '':
             self.app.ui.le_horizonPointsFileName.setText(os.path.basename(value))
             self.saveHorizonPoints(value)
