@@ -28,6 +28,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 200
     CYCLEPROPS = 3000
+    CYCLE_MAIN_LOOP = 200
 
     CAMERASTATUS = {'Not Connected': 'DISCONNECTED', 'Downloading Light': 'DOWNLOAD', 'Exposure complete': 'IDLE', 'Ready': 'IDLE', 'Exposing Light': 'INTEGRATING'}
 
@@ -37,7 +38,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
         self.data['Camera']['AppAvailable'] = True
         self.data['Camera']['AppName'] = 'None'
@@ -71,27 +72,32 @@ class TheSkyX(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.setStatus()
         self.setCameraProps()
-        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        while self.isRunning:
-            if not self.commandQueue.empty():
-                command = self.commandQueue.get()
-                if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
-                elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.finished.emit()
+        self.mainLoop()
+
+    def mainLoop(self):
+        if not self.commandQueue.empty():
+            command = self.commandQueue.get()
+            if command['Command'] == 'GetImage':
+                command['ImageParams'] = self.getImage(command['ImageParams'])
+            elif command['Command'] == 'SolveImage':
+                command['ImageParams'] = self.solveImage(command['ImageParams'])
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def setStatus(self):
         try:
@@ -266,17 +272,13 @@ class TheSkyX(PyQt5.QtCore.QObject):
                     imageParams['Scale'] = float(captureResponse['imageScale'])
                     imageParams['Angle'] = float(captureResponse['imagePositionAngle'])
                     imageParams['TimeTS'] = solveTime
-                    imageParams['Success'] = True
                     imageParams['Message'] = 'Solved'
                 else:
-                    imageParams['Success'] = False
                     imageParams['Message'] = 'Unsolved'
             else:
-                imageParams['Success'] = False
                 imageParams['Message'] = 'Request failed'
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
-            imageParams['Success'] = False
             imageParams['Message'] = 'Request failed'
         finally:
             return imageParams
@@ -325,12 +327,10 @@ class TheSkyX(PyQt5.QtCore.QObject):
             command += 'var Out = "";'
             command += 'Out=ccdsoftCamera.LastImageFileName;'
             success, response = self.sendCommand(command)
-            imageParams['Success'] = success
             imageParams['Message'] = 'OK'
             imageParams['Imagepath'] = response
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
-            imageParams['Success'] = False
             imageParams['Message'] = 'Request failed'
             imageParams['Imagepath'] = ''
         finally:

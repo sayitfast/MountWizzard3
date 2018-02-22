@@ -27,6 +27,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 200
     CYCLEPROPS = 3000
+    CYCLE_MAIN_LOOP = 200
 
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
     CAMERASTATUS = {'1': 'DISCONNECTED', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
@@ -37,7 +38,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandQueue = commandQueue
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.data = {'Camera': {}, 'Solver': {}}
 
         self.driverNameCamera = 'MaxIm.CCDCamera'
@@ -70,8 +71,10 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         if self.driverNameCamera != '' and self.driverNameDocument != '':
             pythoncom.CoInitialize()
             try:
@@ -93,26 +96,30 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 if self.isRunning:
                     self.setStatus()
                     self.setCameraProps()
-        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        while self.isRunning:
-            if not self.commandQueue.empty():
-                command = self.commandQueue.get()
-                if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
-                elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        # when the worker thread finished, it emit the finished signal to the parent to clean up
-        self.maximCamera.LinkEnabled = False
-        self.maximCamera = None
-        self.maximDocument = None
-        pythoncom.CoUninitialize()
+        self.mainLoop()
+
+    def mainLoop(self):
+        if not self.commandQueue.empty():
+            command = self.commandQueue.get()
+            if command['Command'] == 'GetImage':
+                command['ImageParams'] = self.getImage(command['ImageParams'])
+            elif command['Command'] == 'SolveImage':
+                command['ImageParams'] = self.solveImage(command['ImageParams'])
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        else:
+            self.maximCamera.LinkEnabled = False
+            self.maximCamera = None
+            self.maximDocument = None
+            pythoncom.CoUninitialize()
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
+
         self.thread.quit()
         self.thread.wait()
 
@@ -126,11 +133,12 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 if self.data['Camera']['Status'] == 'DISCONNECTED':
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
+                    self.cameraStatusText.emit('DISCONN')
+                    self.solverStatusText.emit('DISCONN')
             else:
                 self.logger.error('Unknown camera status: {0}'.format(mes))
-
-        self.cameraStatusText.emit(self.data['Camera']['Status'])
-        self.cameraExposureTime.emit('---')
+                self.cameraStatusText.emit(self.data['Camera']['Status'])
+                self.cameraExposureTime.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
@@ -190,18 +198,15 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 while not self.maximCamera.ImageReady:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
-                imageParams['Imagepath'] = imageParams['BaseDirImages'] + '/' + imageParams['File']
-                self.maximCamera.SaveImage(imageParams['Imagepath'])
-                suc = True
+                path = imageParams['BaseDirImages'] + '/' + imageParams['File']
+                self.maximCamera.SaveImage(path)
+                imageParams['Imagepath'] = path
                 mes = 'Image integrated'
             except Exception as e:
                 self.logger.error('error: {0}'.format(e))
-                suc = False
             finally:
-                imageParams['Success'] = suc
                 imageParams['Message'] = mes
         else:
-            imageParams['Success'] = False
             imageParams['Message'] = 'Camera not Connected'
         return imageParams
 
@@ -242,10 +247,8 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             success = self.maximDocument.Close
             if not success:
                 self.logger.error('document {0} could not be closed'.format(imageParams['Imagepath']))
-                imageParams['Success'] = False
                 imageParams['Message'] = 'Problem closing document in MaximDL'
             else:
-                imageParams['Success'] = False
                 imageParams['Message'] = 'The time limit for plate solving has expired'
         elif status == 2:
             imageParams['RaJ2000Solved'] = self.maximDocument.CenterRA
@@ -254,6 +257,5 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             imageParams['Angle'] = self.maximDocument.PositionAngle
             imageParams['TimeTS'] = timeTS
             self.logger.info('imageParams {0}'.format(imageParams))
-            imageParams['Success'] = True
             imageParams['Message'] = 'Solved'
         return imageParams

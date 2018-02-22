@@ -230,7 +230,7 @@ class ImagesWindow(widget.MwWidget):
         imageParams['Imagepath'] = ''
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
         imageParams['Directory'] = time.strftime('/%Y-%m-%d', time.gmtime())
-        imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime())
+        imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams)
         while imageParams['Imagepath'] == '':
             time.sleep(0.1)
