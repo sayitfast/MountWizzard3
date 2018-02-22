@@ -142,20 +142,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'ClearAlign1':
+            'ClearAlign':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_clearModel1,
-                            'Method': self.mountModelHandling.clearAlign
-                        }
-                    ]
-                },
-            'ClearAlign2':
-                {
-                    'Worker': [
-                        {
-                            'Button': self.app.ui.btn_clearModel2,
+                            'Button': self.app.ui.btn_clearModel,
                             'Method': self.mountModelHandling.clearAlign
                         }
                     ]
@@ -348,8 +339,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO2Model'))
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
-        self.app.ui.btn_clearModel1.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign1'))
-        self.app.ui.btn_clearModel2.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign2'))
+        self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
 
     def initConfig(self):
         try:

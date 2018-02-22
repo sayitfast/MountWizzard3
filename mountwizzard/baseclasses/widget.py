@@ -87,6 +87,12 @@ class MwWidget(QWidget):
         border-style: outset;
         border-radius: 2px;
     }
+    QLineEdit:disabled {
+        border-width: 1px;
+        border-color: #000000;
+        border-style: flat;
+        border-radius: 2px;
+    }
     QLineEdit[check='false'] {
         background-color: #101010;
         color: rgb(255, 0, 0);

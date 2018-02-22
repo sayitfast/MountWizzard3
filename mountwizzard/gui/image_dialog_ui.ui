@@ -395,6 +395,9 @@ Exposures</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_cameraStatusText">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>400</x>
@@ -450,6 +453,9 @@ Exposures</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_cameraExposureTime">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>480</x>

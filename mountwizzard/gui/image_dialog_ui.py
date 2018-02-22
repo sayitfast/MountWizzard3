@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'image_dialog_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.9.2
+# Created by: PyQt5 UI code generator 5.10
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -114,6 +114,7 @@ class Ui_ImageDialog(object):
         self.cross3.setFrameShape(QtWidgets.QFrame.HLine)
         self.cross3.setObjectName("cross3")
         self.le_cameraStatusText = QtWidgets.QLineEdit(ImageDialog)
+        self.le_cameraStatusText.setEnabled(False)
         self.le_cameraStatusText.setGeometry(QtCore.QRect(400, 70, 121, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")
@@ -133,6 +134,7 @@ class Ui_ImageDialog(object):
         self.imageBackground.setText("")
         self.imageBackground.setObjectName("imageBackground")
         self.le_cameraExposureTime = QtWidgets.QLineEdit(ImageDialog)
+        self.le_cameraExposureTime.setEnabled(False)
         self.le_cameraExposureTime.setGeometry(QtCore.QRect(480, 20, 41, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")

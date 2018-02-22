@@ -147,6 +147,9 @@ Model Points</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_numberPointsProcessed">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>545</x>
@@ -229,6 +232,9 @@ Model Points</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_numberPointsSolved">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>545</x>
@@ -311,6 +317,9 @@ Model Points</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_numberPointsImaged">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>545</x>
@@ -393,6 +402,9 @@ Model Points</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_numberPointsSlewed">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>545</x>
@@ -456,6 +468,9 @@ Model Points</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_numberPointsToModel">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>435</x>
