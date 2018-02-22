@@ -15,6 +15,7 @@ import logging
 import os
 import time
 import numpy
+import PyQt5
 import astropy.io.fits as pyfits
 from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPercentileInterval, PowerStretch
 from matplotlib import use
@@ -225,19 +226,16 @@ class ImagesWindow(widget.MwWidget):
         camData = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']
         if camData['CONNECTION']['CONNECT'] == 'Off':
             return
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.prepareImaging()
+        imageParams = dict()
+        imageParams['Imagepath'] = ''
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
-        imageParams['RaJ2000'] = 4.5
-        imageParams['DecJ2000'] = 16
-        if not os.path.isdir(imageParams['BaseDirImages']):
-            os.makedirs(imageParams['BaseDirImages'])
-        number = 0
-        while os.path.isfile(imageParams['BaseDirImages'] + '/' + self.BASENAME + '{0:04d}.fit'.format(number)):
-            number += 1
+        imageParams['Directory'] = time.strftime('/%Y-%m-%d', time.gmtime())
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime())
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams, queue=True)
-        if imageParams['Success']:
-            self.showFitsImage(imageParams['Imagepath'])
+        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams)
+        while imageParams['Imagepath'] == '':
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.showFitsImage(imageParams['Imagepath'])
         '''
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams, queue=True)
         if imageParams['Success']:

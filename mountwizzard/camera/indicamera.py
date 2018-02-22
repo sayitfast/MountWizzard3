@@ -25,6 +25,7 @@ class INDICamera(PyQt5.QtCore.QObject):
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
+    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread, commandQueue):
         super().__init__()
@@ -34,7 +35,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.data = {}
         self.solver = astrometryClient.AstrometryClient(self, self.app)
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
 
         self.cancel = False
         self.counter = 0
@@ -60,25 +61,29 @@ class INDICamera(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.setStatus()
-        # main loop, if there is something to do, it should be inside. Important: all functions should be non blocking or calling processEvents()
-        while self.isRunning:
-            if not self.commandQueue.empty():
-                command = self.commandQueue.get()
-                if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
-                elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.mainLoop()
+
+    def mainLoop(self):
+        if not self.commandQueue.empty():
+            command = self.commandQueue.get()
+            if command['Command'] == 'GetImage':
+                command['ImageParams'] = self.getImage(command['ImageParams'])
+            elif command['Command'] == 'SolveImage':
+                command['ImageParams'] = self.solveImage(command['ImageParams'])
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
 

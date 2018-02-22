@@ -109,7 +109,7 @@ class Image(PyQt5.QtCore.QObject):
                 self.main.workerSlewpoint.signalSlewing.emit()
                 # we have to wait until image is downloaded before being able to plate solve
                 while modelingData['Imagepath'] == '' and not self.main.cancel:
-                    time.sleep(1)
+                    time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
                 self.main.workerPlatesolve.queuePlatesolve.put(modelingData)

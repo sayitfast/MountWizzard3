@@ -139,7 +139,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>5</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -8182,7 +8182,7 @@ Window</string>
       <string>Actual RMS</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_clearModel2">
+    <widget class="QPushButton" name="btn_clearModel">
      <property name="geometry">
       <rect>
        <x>460</x>
@@ -8371,7 +8371,7 @@ Window</string>
     <zorder>btn_cancelRunTargetRMSAlignment</zorder>
     <zorder>le_alignErrorRMS2</zorder>
     <zorder>label_75</zorder>
-    <zorder>btn_clearModel2</zorder>
+    <zorder>btn_clearModel</zorder>
     <zorder>le_alignNumberStars2</zorder>
     <zorder>label_76</zorder>
     <zorder>le_alignNumberTerms2</zorder>
@@ -14748,7 +14748,7 @@ Window</string>
   <tabstop>btn_deleteWorstPoint</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_cancelRunTargetRMSAlignment</tabstop>
-  <tabstop>btn_clearModel2</tabstop>
+  <tabstop>btn_clearModel</tabstop>
   <tabstop>targetRMS</tabstop>
   <tabstop>btn_saveBackupModel</tabstop>
   <tabstop>btn_loadBackupModel</tabstop>
