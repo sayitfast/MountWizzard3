@@ -110,18 +110,15 @@ class INDICamera(PyQt5.QtCore.QObject):
                         else:
                             self.data['Camera']['Status'] = 'IDLE'
                             self.cameraStatusText.emit('IDLE')
-
                     elif self.data['Camera']['CCD_EXPOSURE']['state'] == 'Error':
                         self.data['Camera']['Status'] = 'ERROR'
                         self.cameraStatusText.emit('ERROR')
-
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
                 else:
                     self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
                     self.data['Camera']['Status'] = 'DISCONNECTED'
             else:
                 self.data['Camera']['Status'] = 'ERROR'
-
             if 'CCD_EXPOSURE' in self.data['Camera']:
                 self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
         else:

@@ -84,6 +84,7 @@ class SGPro(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
@@ -120,15 +121,20 @@ class SGPro(PyQt5.QtCore.QObject):
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
                     if 'integrating' in message:
                         self.data['Camera']['Status'] = 'INTEGRATING'
+                        self.cameraStatusText.emit('INTEGRATE')
                     elif 'downloading' in message:
                         self.data['Camera']['Status'] = 'DOWNLOADING'
+                        self.cameraStatusText.emit('DOWNLOAD')
                     elif 'ready' in message or 'idle' in message:
                         self.data['Camera']['Status'] = 'IDLE'
+                        self.cameraStatusText.emit('IDLE')
             else:
                 self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
         else:
             self.data['Camera']['Status'] = 'ERROR'
             self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
+            self.cameraStatusText.emit(self.data['Camera']['Status'])
+            self.cameraExposureTime.emit('---')
 
         # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
         suc, state, message = self.SgGetDeviceStatus('PlateSolver')
@@ -137,16 +143,16 @@ class SGPro(PyQt5.QtCore.QObject):
                 self.data['Solver']['Status'] = self.SOLVERSTATUS[state]
                 if self.SOLVERSTATUS[state] == 'DISCONNECTED':
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
+                    self.solverStatusText.emit('DISCONN')
                 else:
                     self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
+                    self.solverStatusText.emit('IDLE')
             else:
                 self.logger.error('Unknown solver status: {0}'.format(state))
         else:
             self.data['Solver']['Status'] = 'ERROR'
             self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
-
-        self.cameraStatusText.emit(self.data['Camera']['Status'])
-        self.cameraExposureTime.emit('---')
+            self.solverStatusText.emit('---')
 
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
