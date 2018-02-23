@@ -166,10 +166,8 @@ class Dome(PyQt5.QtCore.QObject):
                     self.signalDomeConnected.emit(2)
                 else:
                     self.signalDomeConnected.emit(1)
-        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
-        self.mutexIsRunning.unlock()
 
     def stop(self):
         if platform.system() == 'Windows':

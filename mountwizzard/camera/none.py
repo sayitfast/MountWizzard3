@@ -63,10 +63,8 @@ class NoneCamera(PyQt5.QtCore.QObject):
                 command['ImageParams'] = self.getImage(command['ImageParams'])
             elif command['Command'] == 'SolveImage':
                 command['ImageParams'] = self.solveImage(command['ImageParams'])
-        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
-        self.mutexIsRunning.unlock()
 
     def stop(self):
         self.mutexIsRunning.lock()

@@ -107,7 +107,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 command['ImageParams'] = self.getImage(command['ImageParams'])
             elif command['Command'] == 'SolveImage':
                 command['ImageParams'] = self.solveImage(command['ImageParams'])
-        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
         else:
@@ -115,7 +114,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             self.maximCamera = None
             self.maximDocument = None
             pythoncom.CoUninitialize()
-        self.mutexIsRunning.unlock()
 
     def stop(self):
         self.mutexIsRunning.lock()

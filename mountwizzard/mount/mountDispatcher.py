@@ -419,10 +419,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
-        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
-        self.mutexIsRunning.unlock()
 
     def stop(self):
         self.mutexIsRunning.lock()

@@ -453,8 +453,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
             self.app.messageQueue.put('#BRError in choosing upload files, please check 10micron updater\n')
             os.chdir(actual_work_dir)
             return
-        if self.app.workerMountDispatcher.data['GVD'] == 'Simulation' or not self.app.mount.mountHandler.connected:     # Upload with real mount which is connected
-            self.app.messageQueue.put('Upload only possible with real mount !')
+        if self.app.workerMountDispatcher.mountStatus['Once']:
+            self.app.messageQueue.put('Upload only possible with connected mount !')
             uploadNecessary = False
         if uploadNecessary:
             try:
