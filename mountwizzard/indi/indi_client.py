@@ -49,8 +49,6 @@ class INDIClient(PyQt5.QtCore.QObject):
     DETECTOR_INTERFACE = (1 << 11)
     AUX_INTERFACE = (1 << 15)
 
-    CYCLE_MAIN_LOOP = 200
-
     data = {
         'ServerIP': '',
         'ServerPort': 7624,
@@ -166,18 +164,6 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.socket.disconnectFromHost()
             self.socket.waitForDisconnected(1000)
         self.socket.close()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        if not self.app.INDICommandQueue.empty() and self.data['Connected']:
-            indiCommand = self.app.INDICommandQueue.get()
-            self.sendMessage(indiCommand)
-        self.handleNewDevice()
-        if not self.data['Connected'] and self.socket.state() == 0:
-            self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def stop(self):
         # if I leave the loop, I close the connection to remote host

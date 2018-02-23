@@ -21,7 +21,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_STATUS_FAST = 300
-    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread, data, signalConnected, signalMountAzAltPointer):
         super().__init__()
@@ -51,7 +50,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        # self.mainLoop()
         while self.isRunning:
             if not self.sendCommandQueue.empty() and self.connected:
                 command = self.sendCommandQueue.get()
@@ -67,18 +65,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
             self.socket.disconnectFromHost()
             self.socket.waitForDisconnected(1000)
         self.socket.close()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        if not self.sendCommandQueue.empty() and self.connected:
-            command = self.sendCommandQueue.get()
-            self.sendCommand(command)
-        if not self.connected and self.socket.state() == 0:
-            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-            self.sendCommandQueue.queue.clear()
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def stop(self):
         self.mutexIsRunning.lock()

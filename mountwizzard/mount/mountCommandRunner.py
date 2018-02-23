@@ -21,8 +21,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_MAIN_LOOP = 200
-
     # define the number of bytes for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like number of
     # bytes to be expected. it's just plain data and i have to find out myself how much it is.
@@ -90,7 +88,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
-        # self.mainLoop()
         while self.isRunning:
             while not self.app.mountCommandQueue.empty() and self.connected:
                 commandSet = self.app.mountCommandQueue.get()
@@ -113,25 +110,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             self.socket.disconnectFromHost()
             self.socket.waitForDisconnected(1000)
         self.socket.close()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        while not self.app.mountCommandQueue.empty() and self.connected:
-            commandSet = self.app.mountCommandQueue.get()
-            if isinstance(commandSet, str):
-                # only a single command without return needed
-                self.sendCommand(commandSet)
-            elif isinstance(commandSet, dict):
-                command = commandSet['command']
-                reply = self.sendCommand(command).rstrip('#')
-                commandSet['reply'] = reply
-            else:
-                self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
-        if not self.connected and self.socket.state() == 0:
-            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def stop(self):
         self.mutexIsRunning.lock()
