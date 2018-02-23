@@ -50,7 +50,22 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        self.mainLoop()
+        # self.mainLoop()
+        while self.isRunning:
+            if not self.sendCommandQueue.empty() and self.connected:
+                command = self.sendCommandQueue.get()
+                self.sendCommand(command)
+            if not self.connected and self.socket.state() == 0:
+                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+                self.sendCommandQueue.queue.clear()
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        if self.socket.state() != 3:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.waitForDisconnected(1000)
+        self.socket.close()
 
     def mainLoop(self):
         if not self.isRunning:
@@ -69,12 +84,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
-        if self.socket.state() != 3:
-            self.socket.abort()
-        else:
-            self.socket.disconnectFromHost()
-            self.socket.waitForDisconnected(1000)
-        self.socket.close()
         self.thread.quit()
         self.thread.wait()
 

@@ -150,7 +150,22 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
-        self.mainLoop()
+        # self.mainLoop()
+        while self.isRunning:
+            if not self.app.INDICommandQueue.empty() and self.data['Connected']:
+                indiCommand = self.app.INDICommandQueue.get()
+                self.sendMessage(indiCommand)
+            self.handleNewDevice()
+            if not self.data['Connected'] and self.socket.state() == 0:
+                self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        if self.socket.state() != 3:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.waitForDisconnected(1000)
+        self.socket.close()
 
     def mainLoop(self):
         if not self.isRunning:
@@ -169,12 +184,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
-        if self.socket.state() != 3:
-            self.socket.abort()
-        else:
-            self.socket.disconnectFromHost()
-            self.socket.waitForDisconnected(1000)
-        self.socket.close()
+
         self.thread.quit()
         self.thread.wait()
 
@@ -193,27 +203,28 @@ class INDIClient(PyQt5.QtCore.QObject):
             device = self.newDeviceQueue.get()
             # now place the information about accessible devices in the gui and set the connection status
             # and configure the new devices adequately
-            if 'DRIVER_INFO' in self.data['Device'][device]:
-                if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
-                    # make a shortcut for later use and knowing which is a Camera
-                    self.cameraDevice = device
-                    self.app.INDICommandQueue.put(
-                        indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'ABORT'})],
-                                                indi_attr={'name': 'CCD_ABORT_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
-                    # make a shortcut for later use
-                    self.environmentDevice = device
-                    self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
-                    # make a shortcut for later use
-                    self.telescopeDevice = device
-                elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
-                    # make a shortcut for later use
-                    self.domeDevice = device
-                    self.statusDome.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
-            else:
-                # if not ready, put it on the stack again !
-                self.newDeviceQueue.put(device)
+            if device in self.data['Device']:
+                if 'DRIVER_INFO' in self.data['Device'][device]:
+                    if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
+                        # make a shortcut for later use and knowing which is a Camera
+                        self.cameraDevice = device
+                        self.app.INDICommandQueue.put(
+                            indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'ABORT'})],
+                                                    indi_attr={'name': 'CCD_ABORT_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
+                        # make a shortcut for later use
+                        self.environmentDevice = device
+                        self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
+                        # make a shortcut for later use
+                        self.telescopeDevice = device
+                    elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
+                        # make a shortcut for later use
+                        self.domeDevice = device
+                        self.statusDome.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
+                else:
+                    # if not ready, put it on the stack again !
+                    self.newDeviceQueue.put(device)
 
     def handleError(self, socketError):
         self.logger.error('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))

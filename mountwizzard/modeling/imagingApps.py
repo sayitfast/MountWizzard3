@@ -81,6 +81,10 @@ class ImagingApps:
         self.imagingWorkerCameraAppHandler = self.workerNoneCam
         self.imagingThreadCameraAppHandler = self.threadNoneCam
         self.chooserLock = threading.Lock()
+        # signal slot
+        self.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
+        self.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
+        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
 
     def initConfig(self):
         # build the drop down menu
@@ -108,8 +112,8 @@ class ImagingApps:
         finally:
             pass
 
-        self.chooseImaging()
         self.workerINDICamera.solver.initConfig()
+        self.chooseImaging()
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def storeConfig(self):
@@ -120,6 +124,9 @@ class ImagingApps:
         self.chooserLock.acquire()
         if self.imagingWorkerCameraAppHandler.isRunning:
             self.imagingWorkerCameraAppHandler.stop()
+            self.imagingWorkerCameraAppHandler.cameraStatusText.disconnect()
+            self.imagingWorkerCameraAppHandler.solverStatusText.disconnect()
+            self.imagingWorkerCameraAppHandler.cameraExposureTime.disconnect()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
             self.imagingWorkerCameraAppHandler = self.workerNoneCam
             self.imagingThreadCameraAppHandler = self.threadNoneCam
@@ -141,6 +148,9 @@ class ImagingApps:
             self.imagingThreadCameraAppHandler = self.threadTheSkyX
             self.logger.info('Actual camera / plate solver is TheSkyX')
         self.imagingThreadCameraAppHandler.start()
+        self.imagingWorkerCameraAppHandler.cameraStatusText.connect(self.setCameraStatusText)
+        self.imagingWorkerCameraAppHandler.solverStatusText.connect(self.setSolverStatusText)
+        self.imagingWorkerCameraAppHandler.cameraExposureTime.connect(self.setCameraExposureTime)
         self.chooserLock.release()
 
     def captureImage(self, imageParams):
@@ -148,9 +158,11 @@ class ImagingApps:
         if self.app.workerModelingDispatcher.modelingRunner.cancel:
             self.logger.info('Cancelled capturing image')
             imageParams['Message'] = 'Cancel modeling pressed'
+            imageParams['Imagepath'] = ''
             return imageParams
         if camData['CONNECTION']['CONNECT'] == 'Off':
             imageParams['Message'] = 'Camera not connected'
+            imageParams['Imagepath'] = ''
             return imageParams
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
         if not os.path.isdir(imageParams['BaseDirImages']):
@@ -213,4 +225,14 @@ class ImagingApps:
         imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         return imageParams
+
+    def setCameraStatusText(self, status):
+        self.app.imageWindow.ui.le_cameraStatusText.setText(status)
+        self.app.ui.le_cameraStatusText.setText(status)
+
+    def setSolverStatusText(self, status):
+        self.app.ui.le_solverStatusText.setText(status)
+
+    def setCameraExposureTime(self, status):
+        self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
 

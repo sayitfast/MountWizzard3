@@ -302,10 +302,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner.storeConfig()
 
     def run(self):
-        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
-        self.mutexIsRunning.unlock()
+        # TODO: it's not Model Connected, but imaging app connected
         self.signalStatusCamera.emit(0)
         self.signalStatusSolver.emit(0)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
@@ -318,8 +317,10 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
+        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
         self.mutexIsRunning.lock()

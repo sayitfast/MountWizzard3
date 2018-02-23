@@ -29,7 +29,7 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     CYCLEPROPS = 3000
     CYCLE_MAIN_LOOP = 200
 
-    SOLVERSTATUS = {'2': 'SOLVED', '3': 'SOLVING', '1': 'BUSY', }
+    SOLVERSTATUS = {'2': 'SOLVED', '3': 'SOLVING', '1': 'IDLE', }
     CAMERASTATUS = {'1': 'DISCONN', '0': 'DISCONN', '5': 'DOWNLOAD', '2': 'IDLE', '3': 'INTEGRATE'}
 
     def __init__(self, app, thread, commandQueue):
