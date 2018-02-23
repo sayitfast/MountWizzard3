@@ -255,6 +255,8 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlib.axes.set_xticks(numpy.arange(0, 361, 30))
         self.hemisphereMatplotlib.axes.set_ylim(0, 90)
         self.hemisphereMatplotlib.axes.tick_params(axis='y', colors='#2090C0', which='both', labelleft='on', labelright='on', labelsize=12)
+        self.hemisphereMatplotlib.axes.set_xlabel('Azimuth in degrees', color='#2090C0', fontweight='bold', fontsize=12)
+        self.hemisphereMatplotlib.axes.set_ylabel('Altitude in degrees', color='#2090C0', fontweight='bold', fontsize=12)
         # horizon
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
         if len(horizon) < 2:
