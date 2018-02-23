@@ -1109,8 +1109,14 @@ class MyApp(PyQt5.QtWidgets.QApplication):
                 return retValue
             except Exception as e:
                 isex = True
+                result = traceback.format_exception(*sys.exc_info())
+                logging.error('-----------------------------------------')
+                logging.error('Object: {0},  Event:{1}'.format(obj, event))
+                logging.error('Exception error in event loop: {0}'.format(e))
+                for i in range(0, len(result)):
+                    logging.error(result[i].replace('\n', ''))
+                logging.error('-----------------------------------------')
                 print('Exception error in event loop: {0}'.format(e))
-                traceback.format_exception(*sys.exc_info())
                 return False
             finally:
                 if isex:

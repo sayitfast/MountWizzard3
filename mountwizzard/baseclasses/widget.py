@@ -42,8 +42,8 @@ class MwWidget(QWidget):
         border-width: 2px;
         border-style: outset;
         border-color: #404040;
-        background-color: yellow;
-        color: #101010;
+        background-color: #202020;
+        color: #C0C0C0;
         padding: 5px;
     }
     QWidget {
