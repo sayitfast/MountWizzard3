@@ -29,8 +29,8 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
     CYCLEPROPS = 3000
     CYCLE_MAIN_LOOP = 200
 
-    SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'BUSY', }
-    CAMERASTATUS = {'1': 'DISCONNECTED', '0': 'DISCONNECTED', '5': 'DOWNLOADING', '2': 'IDLE', '3': 'INTEGRATING'}
+    SOLVERSTATUS = {'2': 'SOLVED', '3': 'SOLVING', '1': 'BUSY', }
+    CAMERASTATUS = {'1': 'DISCONN', '0': 'DISCONN', '5': 'DOWNLOAD', '2': 'IDLE', '3': 'INTEGRATE'}
 
     def __init__(self, app, thread, commandQueue):
         super().__init__()
@@ -128,17 +128,28 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
             mes = str(self.maximCamera.CameraStatus)
             if mes in self.CAMERASTATUS:
                 self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
-                self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
+                self.cameraStatusText.emit(self.CAMERASTATUS[mes])
                 self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
-                if self.data['Camera']['Status'] == 'DISCONNECTED':
+                if self.data['Camera']['Status'] == 'DISCONN':
                     self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
-                    self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
                     self.cameraStatusText.emit('DISCONN')
-                    self.solverStatusText.emit('DISCONN')
             else:
                 self.logger.error('Unknown camera status: {0}'.format(mes))
                 self.cameraStatusText.emit(self.data['Camera']['Status'])
                 self.cameraExposureTime.emit('---')
+
+        if self.maximDocument:
+            mes = str(self.maximDocument.PinPointStatus)
+            if mes in self.SOLVERSTATUS:
+                self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
+                self.solverStatusText.emit(self.SOLVERSTATUS[mes])
+                self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
+                if self.data['Camera']['Status'] == 'DISCONN':
+                    self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
+                    self.solverStatusText.emit('DISCONN')
+            else:
+                self.logger.error('Unknown camera status: {0}'.format(mes))
+                self.solverStatusText.emit(self.data['Solver']['Status'])
 
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
