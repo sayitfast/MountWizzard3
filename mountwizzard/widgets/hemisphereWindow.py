@@ -119,8 +119,6 @@ class HemisphereWindow(widget.MwWidget):
         PyQt5.QtWidgets.QApplication.processEvents()
 
     def setAzAltPointer(self, az, alt):
-        az = round(az)
-        alt = round(alt)
         if self.showStatus:
             self.pointerAzAlt1.set_data((az, alt))
             self.pointerAzAlt2.set_data((az, alt))
@@ -137,8 +135,6 @@ class HemisphereWindow(widget.MwWidget):
             self.drawCanvas()
 
     def plotImagedPoint(self, az, alt):
-        az = round(az)
-        alt = round(alt)
         self.hemisphereMatplotlib.axes.plot(az, alt, 'X', color='#FF00FF', zorder=5, markersize=9)
         self.drawCanvas()
 
