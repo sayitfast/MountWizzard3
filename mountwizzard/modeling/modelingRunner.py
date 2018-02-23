@@ -386,7 +386,10 @@ class ModelingRunner:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
         messageQueue.put('#BWModel finished. Number of processed points: {0:3d}\n'.format(modelingData['NumberPoints']))
         # turn list of dicts to dict of lists
-        changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
+        if len(results) > 0:
+            changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
+        else:
+            changedResults = {}
         return changedResults
 
     def runInitialModel(self):
