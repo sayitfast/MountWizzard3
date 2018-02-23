@@ -30,7 +30,7 @@ class Remote(PyQt5.QtCore.QObject):
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.ipChangeLock = threading.Lock()
 
         self.app = app
@@ -96,8 +96,10 @@ class Remote(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         result = 0
         testPortSocket = None
         try:
@@ -122,9 +124,9 @@ class Remote(PyQt5.QtCore.QObject):
             self.logger.warning('port {0} is already in use'.format(self.remotePort))
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.tcpServer.close()
         self.tcpServer = None
         self.clientConnection = None

@@ -307,7 +307,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.signalStatusCamera.emit(0)
         self.signalStatusSolver.emit(0)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        self.getStatus()
         while self.isRunning:
             if not self.commandDispatcherQueue.empty():
                 command = self.commandDispatcherQueue.get()
@@ -373,13 +372,3 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             self.app.ui.btn_cancelAnalyseModel.style().polish(self.app.ui.btn_cancelAnalyseModel)
             self.logger.info('User canceled modeling with cancel analyse run')
             self.modelingRunner.cancel = True
-
-    def getStatus(self):
-        # the status should be:
-        # 0: No Imaging App available
-        # 1: Imaging solution is installed
-        # 2: Imaging app Task is running
-        # 3: Application is ready for Imaging
-        if self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.getStatus)

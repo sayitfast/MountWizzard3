@@ -35,19 +35,27 @@ class Slewpoint(PyQt5.QtCore.QObject):
         super().__init__()
         self.main = main
         self.thread = thread
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.mutexTakeNextPoint = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.takeNextPoint = False
         self.signalSlewing.connect(self.slewing)
 
     def slewing(self):
+        self.mutexTakeNextPoint.lock()
         self.takeNextPoint = True
+        self.mutexTakeNextPoint.unlock()
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         while self.isRunning:
             if self.takeNextPoint and not self.queuePoint.empty():
+                self.mutexTakeNextPoint.lock()
                 self.takeNextPoint = False
+                self.mutexTakeNextPoint.unlock()
                 modelingData = self.queuePoint.get()
                 self.main.app.messageQueue.put('#BGSlewing to point {0:2d}  @ Az: {1:3.0f}\xb0 Alt: {2:2.0f}\xb0\n'.format(modelingData['Index'] + 1, modelingData['Azimuth'], modelingData['Altitude']))
                 self.main.slewMountDome(modelingData)
@@ -60,11 +68,13 @@ class Slewpoint(PyQt5.QtCore.QObject):
                 self.main.workerImage.queueImage.put(modelingData)
                 # make signal for hemisphere that point is imaged
                 self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
-            time.sleep(0.1)
+            time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
+        self.mutexIsRunning.lock()
         self.isRunning = False
+        self.mutexIsRunning.unlock()
         self.queuePoint.queue.clear()
         self.thread.quit()
         self.thread.wait()
@@ -80,12 +90,14 @@ class Image(PyQt5.QtCore.QObject):
         self.main = main
         self.thread = thread
         self.isRunning = True
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
             if not self.queueImage.empty():
                 modelingData = self.queueImage.get()
                 modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
@@ -113,10 +125,13 @@ class Image(PyQt5.QtCore.QObject):
                     PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
                 self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
-            time.sleep(0.1)
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
+        self.mutexIsRunning.lock()
         self.isRunning = False
+        self.mutexIsRunning.unlock()
         self.main.imagingApps.imagingWorkerCameraAppHandler.cancel = True
         self.queueImage.queue.clear()
         self.thread.quit()
@@ -131,13 +146,15 @@ class Platesolve(PyQt5.QtCore.QObject):
         super().__init__()
         self.main = main
         self.thread = thread
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = True
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
             if not self.queuePlatesolve.empty():
                 modelingData = self.queuePlatesolve.get()
                 if modelingData['Imagepath'] != '':
@@ -160,10 +177,13 @@ class Platesolve(PyQt5.QtCore.QObject):
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                     self.main.modelingHasFinished = True
-            time.sleep(0.1)
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
+        self.mutexIsRunning.lock()
         self.isRunning = False
+        self.mutexIsRunning.unlock()
         self.queuePlatesolve.queue.clear()
         self.thread.quit()
         self.thread.wait()
@@ -297,7 +317,7 @@ class ModelingRunner:
             if modelingData['Simulation']:
                 # wait for
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
-                    time.sleep(0.1)
+                    time.sleep(0.2)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
         # start clearing hemisphere window
@@ -323,7 +343,7 @@ class ModelingRunner:
         self.threadPlatesolve.start()
         # wait until threads started
         while not self.workerImage.isRunning and not self.workerPlatesolve.isRunning and not self.workerSlewpoint.isRunning:
-            time.sleep(0.1)
+            time.sleep(0.2)
         # loading the point to the queue
         for i, (p_az, p_alt) in enumerate(runPoints):
             modelingData['Index'] = i
