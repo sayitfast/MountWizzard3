@@ -88,8 +88,8 @@ class ModelPoints:
         value = self.app.selectFile(self.app, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)', '.txt', True)
         if value != '':
             self.app.ui.le_horizonPointsFileName.setText(os.path.basename(value))
-            self.app.modelWindow.selectHorizonPointsMode()
-            self.app.modelWindow.drawHemisphere()
+            self.app.hemisphereWindow.selectHorizonPointsMode()
+            self.app.hemisphereWindow.drawHemisphere()
 
     def saveModelPoints(self, modelPointsFileName):
         msg = None
