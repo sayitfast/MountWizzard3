@@ -222,10 +222,14 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(True)
 
     def exposeOnce(self):
-
+        # link to cam and check if available
         camData = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']
-        if camData['CONNECTION']['CONNECT'] == 'Off':
+        if 'CONNECTION' in camData:
+            if camData['CONNECTION']['CONNECT'] == 'Off':
+                return
+        else:
             return
+        # start prep imaging
         imageParams = dict()
         imageParams['Imagepath'] = ''
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
