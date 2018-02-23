@@ -125,7 +125,7 @@ class Image(PyQt5.QtCore.QObject):
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
-                self.main.workerPlatesolve.queuePlatesolve.put(modelingData)
+                self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -171,7 +171,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                         modelingData['Message'] = 'OK - solved'
                         self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                         self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
-                        self.main.solvedPointsQueue.put(modelingData)
+                        self.main.solvedPointsQueue.put(copy.copy(modelingData))
                     else:
                         self.main.app.messageQueue.put('\tSolving error: {0}\n'.format(modelingData['Message'][:95]))
                 self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
@@ -438,6 +438,8 @@ class ModelingRunner:
             self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
             self.app.messageQueue.put('Reloading actual alignment model from mount\n')
             self.app.workerMountDispatcher.reloadAlignmentModel()
+            self.app.messageQueue.put('Syncing actual alignment model and modeling data\n')
+            self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData)
             self.analyseData.saveData(self.modelAlignmentData, name)
             self.app.ui.le_analyseFileName.setText(name)
             if self.app.analyseWindow.showStatus:

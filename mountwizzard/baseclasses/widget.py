@@ -58,7 +58,7 @@ class MwWidget(QWidget):
         border-color: rgb(16, 72, 96);
         border-style: outset;
         border-radius: 2px;
-        background-color: rgb(8, 36, 48);
+        background-color: rgb(6, 27, 32);
     }
     QLabel#hemisphereBackground, QLabel#analyseBackground, QLabel#imageBackground {
         border-width: 3px;
@@ -76,7 +76,7 @@ class MwWidget(QWidget):
     
     /* QLine Edit*/
     QLineEdit {
-        background-color: #101010;
+        background-color: #000000;
         color: rgb(32, 144, 192);
         text-align: right;
         font-family: Arial;
@@ -421,8 +421,8 @@ class MwWidget(QWidget):
     }
     QProgressBar::chunk {
         background-color: rgb(32, 144, 192);
-        width: 4px;
-        margin: 1px;
+        /*width: 4px;
+        margin: 1px;*/
         border-width: 1px;
         border-color: #404040;
         border-radius: 2px;

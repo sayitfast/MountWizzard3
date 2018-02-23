@@ -205,7 +205,6 @@ class SGPro(PyQt5.QtCore.QObject):
                                              posY=imageParams['OffY'],
                                              width=imageParams['SizeX'],
                                              height=imageParams['SizeY'])
-        imageParams['Imagepath'] = ''
         self.logger.info('message: {0}'.format(mes))
         if suc:
             while True:

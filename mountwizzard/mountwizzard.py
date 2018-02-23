@@ -108,9 +108,6 @@ class MountWizzardApp(widget.MwWidget):
 
         # enable a matplotlib figure polar plot in main gui
         self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
-        self.measure1Widget = widget.IntegrateMatplotlib(self.ui.measure1)
-        self.measure2Widget = widget.IntegrateMatplotlib(self.ui.measure2)
-
         # instantiating all subclasses and connecting thread signals
         self.transform = transform.Transform(self)
         self.relays = relays.Relays(self)
@@ -1102,25 +1099,29 @@ class MountWizzardApp(widget.MwWidget):
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):
-        def notify(self, obj, event):
-            isex = False
-            try:
-                retValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
-                return retValue
-            except Exception as e:
-                isex = True
-                result = traceback.format_exception(*sys.exc_info())
-                logging.error('-----------------------------------------')
-                logging.error('Object: {0},  Event:{1}'.format(obj, event))
-                logging.error('Exception error in event loop: {0}'.format(e))
-                for i in range(0, len(result)):
-                    logging.error(result[i].replace('\n', ''))
-                logging.error('-----------------------------------------')
-                print('Exception error in event loop: {0}'.format(e))
-                return False
-            finally:
-                if isex:
-                    self.quit()
+    import traceback
+
+    def notify(self, obj, event):
+        isex = False
+        try:
+            retValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
+            return retValue
+        except Exception as e:
+            isex = True
+            result = traceback.format_exception(*sys.exc_info())
+            traceback.print_exc()
+            logging.error('-----------------------------------------')
+            logging.error('Object: {0},  Event:{1}'.format(obj, event))
+            logging.error('Exception error in event loop: {0}'.format(e))
+            for i in range(0, len(result)):
+                logging.error(result[i].replace('\n', ''))
+            logging.error('-----------------------------------------')
+            print('Exception error in event loop: {0}'.format(e))
+            return False
+        finally:
+            pass
+            # if isex:
+            #    self.quit()
 
 
 if __name__ == "__main__":

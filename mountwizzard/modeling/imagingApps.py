@@ -198,6 +198,7 @@ class ImagingApps:
             imageParams['SizeX'] = int(imageParams['SizeX'] / imageParams['Binning'])
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         self.imagingCommandQueue.put({'Command': 'GetImage', 'ImageParams': imageParams})
+        # imageParams = self.imagingWorkerCameraAppHandler.getImage(imageParams)
         self.logger.info('Imaging parameters: {0}'.format(imageParams))
         return imageParams
 

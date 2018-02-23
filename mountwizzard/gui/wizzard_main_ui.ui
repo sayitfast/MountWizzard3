@@ -74,7 +74,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>60</y>
+     <y>40</y>
      <width>186</width>
      <height>21</height>
     </rect>
@@ -110,6 +110,9 @@
    </property>
   </widget>
   <widget class="QTabWidget" name="mainTabWidget">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>5</x>
@@ -139,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -9524,75 +9527,6 @@ Window</string>
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
-    <widget class="QListView" name="listView">
-     <property name="geometry">
-      <rect>
-       <x>220</x>
-       <y>40</y>
-       <width>256</width>
-       <height>192</height>
-      </rect>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_13">
-    <attribute name="title">
-     <string>Measures</string>
-    </attribute>
-    <widget class="QWidget" name="measure1" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>5</x>
-       <y>75</y>
-       <width>361</width>
-       <height>361</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QWidget" name="measure2" native="true">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>395</x>
-       <y>75</y>
-       <width>361</width>
-       <height>361</height>
-      </rect>
-     </property>
-     <property name="autoFillBackground">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="Line" name="line_45">
-     <property name="geometry">
-      <rect>
-       <x>370</x>
-       <y>5</y>
-       <width>21</width>
-       <height>431</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="lineWidth">
-      <number>2</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
@@ -14131,6 +14065,16 @@ Window</string>
         <string>Minutes</string>
        </property>
       </widget>
+      <widget class="QListView" name="listView">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>165</y>
+         <width>256</width>
+         <height>192</height>
+        </rect>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -14139,9 +14083,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>670</x>
-     <y>20</y>
+     <y>65</y>
      <width>101</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14156,16 +14100,16 @@ Window</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Save / Quit</string>
+    <string>Save/Quit</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_saveConfig">
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>90</y>
+     <y>95</y>
      <width>101</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14190,9 +14134,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>20</y>
+     <y>65</y>
      <width>66</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14214,9 +14158,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>215</x>
-     <y>20</y>
+     <y>65</y>
      <width>66</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14238,9 +14182,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>20</y>
+     <y>65</y>
      <width>56</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14265,9 +14209,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>150</x>
-     <y>20</y>
+     <y>65</y>
      <width>56</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14286,9 +14230,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>90</y>
+     <y>95</y>
      <width>126</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14313,9 +14257,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>365</x>
-     <y>20</y>
+     <y>65</y>
      <width>66</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14334,9 +14278,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>20</y>
+     <y>65</y>
      <width>101</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14358,9 +14302,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>670</x>
-     <y>90</y>
+     <y>95</y>
      <width>101</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14384,9 +14328,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>610</x>
-     <y>60</y>
-     <width>161</width>
+     <x>560</x>
+     <y>40</y>
+     <width>211</width>
      <height>21</height>
     </rect>
    </property>
@@ -14411,7 +14355,7 @@ Window</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Actual used profile&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>config</string>
+    <string>profile</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -14437,27 +14381,29 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>560</x>
-     <y>60</y>
-     <width>41</width>
+     <y>15</y>
+     <width>51</width>
      <height>21</height>
     </rect>
    </property>
    <property name="font">
     <font>
      <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
     </font>
    </property>
    <property name="text">
-    <string>Config:</string>
+    <string>Profile</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>90</y>
+     <y>95</y>
      <width>141</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14476,9 +14422,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>155</x>
-     <y>90</y>
+     <y>95</y>
      <width>126</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14498,7 +14444,7 @@ Window</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>791</width>
+     <width>790</width>
      <height>141</height>
     </rect>
    </property>
@@ -14513,9 +14459,9 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>85</x>
-     <y>20</y>
+     <y>65</y>
      <width>56</width>
-     <height>31</height>
+     <height>26</height>
     </rect>
    </property>
    <property name="font">
@@ -14537,7 +14483,7 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>60</y>
+     <y>40</y>
      <width>66</width>
      <height>21</height>
     </rect>
@@ -14579,7 +14525,7 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>365</x>
-     <y>60</y>
+     <y>40</y>
      <width>66</width>
      <height>21</height>
     </rect>
@@ -14621,7 +14567,7 @@ Window</string>
    <property name="geometry">
     <rect>
      <x>215</x>
-     <y>60</y>
+     <y>40</y>
      <width>66</width>
      <height>21</height>
     </rect>
@@ -14656,6 +14602,58 @@ Window</string>
     <bool>true</bool>
    </property>
   </widget>
+  <widget class="Line" name="line_30">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>35</y>
+     <width>211</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_110">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>15</y>
+     <width>51</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Status</string>
+   </property>
+  </widget>
+  <widget class="Line" name="line_32">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>35</y>
+     <width>411</width>
+     <height>1</height>
+    </rect>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+  </widget>
   <zorder>mainBackground</zorder>
   <zorder>le_mountStatus</zorder>
   <zorder>mainTabWidget</zorder>
@@ -14678,6 +14676,9 @@ Window</string>
   <zorder>le_cameraStatusText</zorder>
   <zorder>le_solverStatusText</zorder>
   <zorder>le_domeStatusText</zorder>
+  <zorder>line_30</zorder>
+  <zorder>label_110</zorder>
+  <zorder>line_32</zorder>
  </widget>
  <tabstops>
   <tabstop>btn_openMessageWindow</tabstop>
