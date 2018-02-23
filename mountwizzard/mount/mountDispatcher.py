@@ -40,7 +40,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_AUTO_UPDATE = 3000
-    CYCLE_MAIN_LOOP = 200
 
     statusReference = {
         '0': 'Tracking',
@@ -411,16 +410,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerFast.start()
         self.threadMountCommandRunner.start()
         self.threadMountGetAlignmentModel.start()
-        self.mainLoop()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        if not self.commandDispatcherQueue.empty():
-            command = self.commandDispatcherQueue.get()
-            self.commandDispatcher(command)
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        while self.isRunning:
+            if not self.commandDispatcherQueue.empty():
+                command = self.commandDispatcherQueue.get()
+                self.commandDispatcher(command)
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()

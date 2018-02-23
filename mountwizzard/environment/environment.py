@@ -27,7 +27,6 @@ class Environment(PyQt5.QtCore.QObject):
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_DATA = 2000
-    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread):
         super().__init__()
@@ -127,28 +126,26 @@ class Environment(PyQt5.QtCore.QObject):
             pythoncom.CoInitialize()
         self.chooserEnvironment()
         self.getData()
-        self.mainLoop()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
-            if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
-                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
-            else:
-                self.data['Connected'] = False
-        if self.data['Connected']:
-            self.signalEnvironmentConnected.emit(3)
-        else:
-            if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
-                self.signalEnvironmentConnected.emit(0)
-            else:
-                if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI') and self.app.workerINDI.environmentDevice != '':
-                    self.signalEnvironmentConnected.emit(2)
+        while self.isRunning:
+            if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
+                if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
+                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
                 else:
-                    self.signalEnvironmentConnected.emit(1)
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+                    self.data['Connected'] = False
+            if self.data['Connected']:
+                self.signalEnvironmentConnected.emit(3)
+            else:
+                if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
+                    self.signalEnvironmentConnected.emit(0)
+                else:
+                    if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI') and self.app.workerINDI.environmentDevice != '':
+                        self.signalEnvironmentConnected.emit(2)
+                    else:
+                        self.signalEnvironmentConnected.emit(1)
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        if platform.system() == 'Windows':
+            pythoncom.CoUninitialize()
 
     def stop(self):
         if platform.system() == 'Windows':

@@ -27,7 +27,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
 
     CYCLESTATUS = 200
     CYCLEPROPS = 3000
-    CYCLE_MAIN_LOOP = 200
 
     SOLVERSTATUS = {'2': 'SOLVED', '3': 'SOLVING', '1': 'IDLE', }
     CAMERASTATUS = {'1': 'DISCONN', '0': 'DISCONN', '5': 'DOWNLOAD', '2': 'IDLE', '3': 'INTEGRATE'}
@@ -96,24 +95,19 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 if self.isRunning:
                     self.setStatus()
                     self.setCameraProps()
-        self.mainLoop()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        if not self.commandQueue.empty():
-            command = self.commandQueue.get()
-            if command['Command'] == 'GetImage':
-                command['ImageParams'] = self.getImage(command['ImageParams'])
-            elif command['Command'] == 'SolveImage':
-                command['ImageParams'] = self.solveImage(command['ImageParams'])
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
-        else:
-            self.maximCamera.LinkEnabled = False
-            self.maximCamera = None
-            self.maximDocument = None
-            pythoncom.CoUninitialize()
+        while self.isRunning:
+            if not self.commandQueue.empty():
+                command = self.commandQueue.get()
+                if command['Command'] == 'GetImage':
+                    command['ImageParams'] = self.getImage(command['ImageParams'])
+                elif command['Command'] == 'SolveImage':
+                    command['ImageParams'] = self.solveImage(command['ImageParams'])
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.maximCamera.LinkEnabled = False
+        self.maximCamera = None
+        self.maximDocument = None
+        pythoncom.CoUninitialize()
 
     def stop(self):
         self.mutexIsRunning.lock()

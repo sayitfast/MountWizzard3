@@ -61,7 +61,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.socket.abort()
         else:
             self.socket.disconnectFromHost()
-            self.socket.waitForDisconnected(1000)
         self.socket.close()
 
     def stop(self):

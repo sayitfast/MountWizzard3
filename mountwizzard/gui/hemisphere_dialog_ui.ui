@@ -473,9 +473,9 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>435</x>
+     <x>430</x>
      <y>30</y>
-     <width>21</width>
+     <width>26</width>
      <height>16</height>
     </rect>
    </property>
@@ -515,7 +515,7 @@ Model Points</string>
   <widget class="QLabel" name="label_59">
    <property name="geometry">
     <rect>
-     <x>335</x>
+     <x>330</x>
      <y>30</y>
      <width>96</width>
      <height>16</height>
@@ -536,7 +536,7 @@ Model Points</string>
   <widget class="QLabel" name="label_149">
    <property name="geometry">
     <rect>
-     <x>335</x>
+     <x>330</x>
      <y>5</y>
      <width>126</width>
      <height>21</height>
@@ -556,7 +556,7 @@ Model Points</string>
   <widget class="Line" name="line_78">
    <property name="geometry">
     <rect>
-     <x>335</x>
+     <x>330</x>
      <y>25</y>
      <width>121</width>
      <height>1</height>

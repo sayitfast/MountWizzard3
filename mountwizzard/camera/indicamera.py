@@ -25,7 +25,6 @@ class INDICamera(PyQt5.QtCore.QObject):
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLESTATUS = 200
-    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread, commandQueue):
         super().__init__()
@@ -66,19 +65,15 @@ class INDICamera(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.setStatus()
-        self.mainLoop()
-
-    def mainLoop(self):
-        if not self.isRunning:
-            return
-        if not self.commandQueue.empty():
-            command = self.commandQueue.get()
-            if command['Command'] == 'GetImage':
-                command['ImageParams'] = self.getImage(command['ImageParams'])
-            elif command['Command'] == 'SolveImage':
-                command['ImageParams'] = self.solveImage(command['ImageParams'])
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        while self.isRunning:
+            if not self.commandQueue.empty():
+                command = self.commandQueue.get()
+                if command['Command'] == 'GetImage':
+                    command['ImageParams'] = self.getImage(command['ImageParams'])
+                elif command['Command'] == 'SolveImage':
+                    command['ImageParams'] = self.solveImage(command['ImageParams'])
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()

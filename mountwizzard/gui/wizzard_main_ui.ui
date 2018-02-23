@@ -139,7 +139,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>9</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -13836,11 +13836,6 @@ Window</string>
         <string>Relay Button Text Setup</string>
        </property>
       </widget>
-     </widget>
-     <widget class="QWidget" name="tab_16">
-      <attribute name="title">
-       <string>Profiles</string>
-      </attribute>
      </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">

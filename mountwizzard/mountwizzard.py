@@ -660,7 +660,7 @@ class MountWizzardApp(widget.MwWidget):
             self.workerRemote.stop()
         if self.workerINDI.isRunning:
             self.workerINDI.stop()
-        PyQt5.QtCore.QCoreApplication.instance().quit()
+        PyQt5.QtCore.QCoreApplication.quit()
 
     def saveConfigData(self, filepath=''):
         self.storeConfig()
@@ -1101,6 +1101,22 @@ class MountWizzardApp(widget.MwWidget):
         PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
 
 
+class MyApp(PyQt5.QtWidgets.QApplication):
+        def notify(self, obj, event):
+            isex = False
+            try:
+                retValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
+                return retValue
+            except Exception as e:
+                isex = True
+                print('Exception error in event loop: {0}'.format(e))
+                traceback.format_exception(*sys.exc_info())
+                return False
+            finally:
+                if isex:
+                    self.quit()
+
+
 if __name__ == "__main__":
     import traceback
     import warnings
@@ -1116,8 +1132,9 @@ if __name__ == "__main__":
         logging.error('-----------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
-    # Create and display the splash screen
-    app = PyQt5.QtWidgets.QApplication(sys.argv)
+    # app = PyQt5.QtWidgets.QApplication(sys.argv)
+    # implement notify different to catch exception from event handler
+    app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
     splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())

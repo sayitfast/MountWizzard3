@@ -51,7 +51,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
 
         self.app = app
         self.thread = thread
@@ -258,13 +258,15 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
 
