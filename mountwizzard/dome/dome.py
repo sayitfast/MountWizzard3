@@ -26,11 +26,10 @@ class Dome(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     signalDomeConnected = PyQt5.QtCore.pyqtSignal([int])
-    signalDomePointer = PyQt5.QtCore.pyqtSignal(float)
+    signalDomePointer = PyQt5.QtCore.pyqtSignal(float, bool)
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
-    signalDomePointerVisibility = PyQt5.QtCore.pyqtSignal(bool)
 
-    CYCLE_DATA = 250
+    CYCLE_DATA = 500
 
     def __init__(self, app, thread):
         super().__init__()
@@ -195,12 +194,9 @@ class Dome(PyQt5.QtCore.QObject):
                 'Altitude': 0.0,
             }
         if 'Azimuth' in self.data:
-            self.signalDomePointerVisibility.emit(self.data['Connected'])
-            self.signalDomePointer.emit(self.data['Azimuth'])
-        self.mutexIsRunning.lock()
+            self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
-        self.mutexIsRunning.unlock()
 
     def getINDIData(self):
         # check if client has device found

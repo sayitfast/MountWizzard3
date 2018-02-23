@@ -13,7 +13,6 @@
 ############################################################
 import copy
 import logging
-import threading
 import PyQt5
 from PyQt5.QtWidgets import *
 from baseclasses import widget
@@ -32,7 +31,7 @@ class HemisphereWindow(widget.MwWidget):
         super(HemisphereWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
-        self.lockDrawCanvas = threading.Lock()
+        self.lockDrawCanvas = PyQt5.QtCore.QMutex()
         self.pointerAzAlt1 = None
         self.pointerAzAlt2 = None
         self.pointerDome1 = None
@@ -58,7 +57,6 @@ class HemisphereWindow(widget.MwWidget):
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
-        self.app.workerDome.signalDomePointerVisibility.connect(self.setDomePointerVisibility)
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
@@ -114,9 +112,10 @@ class HemisphereWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def drawCanvas(self):
-        self.lockDrawCanvas.acquire()
+        if not self.lockDrawCanvas.tryLock():
+            return
         self.hemisphereMatplotlib.fig.canvas.draw()
-        self.lockDrawCanvas.release()
+        self.lockDrawCanvas.unlock()
         PyQt5.QtWidgets.QApplication.processEvents()
 
     def setAzAltPointer(self, az, alt):
@@ -129,14 +128,10 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerAzAlt2.set_visible(True)
             self.drawCanvas()
 
-    def setDomePointerVisibility(self, stat):
+    def setDomePointer(self, az, stat):
         if self.showStatus:
             self.pointerDome1.set_visible(stat)
             self.pointerDome2.set_visible(stat)
-            self.drawCanvas()
-
-    def setDomePointer(self, az):
-        if self.showStatus:
             self.pointerDome1.set_xy((az - 15, 1))
             self.pointerDome2.set_xy((az - 15, 1))
             self.drawCanvas()

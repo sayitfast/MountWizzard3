@@ -54,7 +54,9 @@ class AstrometryClient:
         self.app = app
         self.parent = parent
         self.isRunning = False
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isSolving = False
+        self.mutexIsSolving = PyQt5.QtCore.QMutex()
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
         self.timeoutMax = 60
@@ -144,29 +146,39 @@ class AstrometryClient:
             headers = {}
             result = requests.post(self.urlAPI, data=data, headers=headers)
             if result.status_code > 400:
+                self.mutexIsRunning.lock()
                 self.isRunning = True
+                self.mutexIsRunning.unlock()
                 if self.isSolving:
                     retValue = 1
                 else:
                     # free to get some solving part
                     retValue = 2
             else:
+                self.mutexIsRunning.lock()
                 self.isRunning = False
+                self.mutexIsRunning.unlock()
                 retValue = 0
         except Exception as e:
             self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI), e)
+            self.mutexIsRunning.lock()
             self.isRunning = False
+            self.mutexIsRunning.unlock()
             retValue = 0
         finally:
             return retValue
 
     def solveImage(self, filename, ra, dec, scale):
+        if self.isSolving:
+            return
         if not self.isRunning:
             self.logger.warning('Astrometry connection is not available')
             return {}
         if self.parent.cancel:
             return {}
+        self.mutexIsSolving.lock()
         self.isSolving = True
+        self.mutexIsSolving.unlock()
         data = self.solveData
         data['scale_est'] = scale
         # ra is in
@@ -180,7 +192,9 @@ class AstrometryClient:
         result = json.loads(result.text)
         stat = result['status']
         if stat != 'success':
+            self.mutexIsSolving.lock()
             self.isSolving = False
+            self.mutexIsSolving.unlock()
             self.logger.warning('Could not upload image to astrometry server')
             return {}
         submissionID = result['subid']
@@ -200,7 +214,9 @@ class AstrometryClient:
             timeoutCounter += 1
             if timeoutCounter > self.timeoutMax:
                 # timeout after timeoutMax seconds
+                self.mutexIsSolving.lock()
                 self.isSolving = False
+                self.mutexIsSolving.unlock()
                 return {'Message': 'Solve failed due to timeout'}
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -217,12 +233,16 @@ class AstrometryClient:
             timeoutCounter += 1
             if timeoutCounter > self.timeoutMax:
                 # timeout after timeoutMax seconds
+                self.mutexIsSolving.lock()
                 self.isSolving = False
+                self.mutexIsSolving.unlock()
                 return {'Message': 'Solve failed due to timeout'}
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
         result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
         value = json.loads(result.text)
         value['Message'] = 'Solve OK'
+        self.mutexIsSolving.lock()
         self.isSolving = False
+        self.mutexIsSolving.unlock()
         return value

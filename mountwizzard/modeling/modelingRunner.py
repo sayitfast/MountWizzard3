@@ -23,6 +23,7 @@ from modeling import imagingApps
 from analyse import analysedata
 from modeling import modelingPoints
 from queue import Queue
+from astrometry import transform
 
 
 class Slewpoint(PyQt5.QtCore.QObject):
@@ -198,7 +199,7 @@ class ModelingRunner:
 
         # assign support classes
         self.analyseData = analysedata.Analyse(self.app)
-        self.transform = self.app.transform
+        self.transform = transform.Transform(self.app)
         self.modelPoints = modelingPoints.ModelPoints(self.app)
         self.imagingApps = imagingApps.ImagingApps(self.app)
 
@@ -207,17 +208,16 @@ class ModelingRunner:
         self.workerSlewpoint = Slewpoint(self, self.threadSlewpoint)
         self.workerSlewpoint.moveToThread(self.threadSlewpoint)
         self.threadSlewpoint.started.connect(self.workerSlewpoint.run)
-        # self.threadSlewpoint.start()
+
         self.threadImage = PyQt5.QtCore.QThread()
         self.workerImage = Image(self, self.threadImage)
         self.workerImage.moveToThread(self.threadImage)
         self.threadImage.started.connect(self.workerImage.run)
-        # self.threadImage.start()
+
         self.threadPlatesolve = PyQt5.QtCore.QThread()
         self.workerPlatesolve = Platesolve(self, self.threadPlatesolve)
         self.workerPlatesolve.moveToThread(self.threadPlatesolve)
         self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
-        # self.threadPlatesolve.start()
 
         # class variables
         self.solvedPointsQueue = Queue()

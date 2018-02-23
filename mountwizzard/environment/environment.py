@@ -32,7 +32,6 @@ class Environment(PyQt5.QtCore.QObject):
         super().__init__()
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-
         self.app = app
         self.thread = thread
         self.data = {
@@ -184,10 +183,8 @@ class Environment(PyQt5.QtCore.QObject):
                 'WindDirection': 0,
                 'SQR': 0
             }
-        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
-        self.mutexIsRunning.unlock()
 
     def getINDIData(self):
         # check if client has device found
