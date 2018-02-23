@@ -27,11 +27,12 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
 
     CYCLESTATUS = 5000
+    CYCLE_MAIN_LOOP = 200
 
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         # make main sources available
         self.app = app
         self.thread = thread
@@ -301,24 +302,31 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner.storeConfig()
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
-        # TODO: it's not Model Connected, but imaging app connected
+        self.mutexIsRunning.unlock()
         self.signalStatusCamera.emit(0)
         self.signalStatusSolver.emit(0)
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         self.getStatus()
-        while self.isRunning:
-            if not self.commandDispatcherQueue.empty():
-                command = self.commandDispatcherQueue.get()
-                self.commandDispatcher(command)
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.mainLoop()
+
+    def mainLoop(self):
+        if not self.isRunning:
+            return
+        if not self.commandDispatcherQueue.empty():
+            command = self.commandDispatcherQueue.get()
+            self.commandDispatcher(command)
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
 

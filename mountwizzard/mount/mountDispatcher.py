@@ -40,6 +40,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_AUTO_UPDATE = 3000
+    CYCLE_MAIN_LOOP = 200
 
     statusReference = {
         '0': 'Tracking',
@@ -75,7 +76,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app = app
         self.thread = thread
         self.isRunning = False
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.ipChangeLock = threading.Lock()
         self.commandDispatcherQueue = queue.Queue()
         # getting all supporting classes assigned
@@ -400,25 +401,33 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.data['mountMAC'] = value
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
         self.threadMountCommandRunner.start()
         self.threadMountGetAlignmentModel.start()
-        while self.isRunning:
-            if not self.commandDispatcherQueue.empty():
-                command = self.commandDispatcherQueue.get()
-                self.commandDispatcher(command)
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.mainLoop()
+
+    def mainLoop(self):
+        if not self.isRunning:
+            return
+        if not self.commandDispatcherQueue.empty():
+            command = self.commandDispatcherQueue.get()
+            self.commandDispatcher(command)
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+        self.mutexIsRunning.unlock()
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
         # stopping all interaction
         self.workerMountCommandRunner.stop()
         self.workerMountGetAlignmentModel.stop()

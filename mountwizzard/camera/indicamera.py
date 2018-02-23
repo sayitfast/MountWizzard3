@@ -69,6 +69,8 @@ class INDICamera(PyQt5.QtCore.QObject):
         self.mainLoop()
 
     def mainLoop(self):
+        if not self.isRunning:
+            return
         if not self.commandQueue.empty():
             command = self.commandQueue.get()
             if command['Command'] == 'GetImage':

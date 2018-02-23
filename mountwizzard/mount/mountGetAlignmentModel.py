@@ -20,6 +20,8 @@ from queue import Queue
 class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
+    CYCLE_MAIN_LOOP = 200
+
     def __init__(self, app, thread, data, signalConnected, signalMountShowAlignmentModel):
         super().__init__()
 
@@ -28,7 +30,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.data = data
         self.signalConnected = signalConnected
         self.signalMountShowAlignmentModel = signalMountShowAlignmentModel
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.connected = False
         self.socket = None
@@ -37,8 +39,10 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.transform = self.app.transform
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.socket = PyQt5.QtNetwork.QTcpSocket()
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
@@ -46,26 +50,31 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        while self.isRunning:
-            if not self.sendCommandQueue.empty() and self.connected:
-                command = self.sendCommandQueue.get()
-                self.sendCommand(command)
-            self.socket.state()
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-            if not self.connected and self.socket.state() == 0:
+        self.mainLoop()
 
-                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.sendCommandQueue.queue.clear()
-        # if I leave the loop, I close the connection to remote host
-        if self.socket.state() != 3:
-            self.socket.abort()
-        self.socket.close()
+    def mainLoop(self):
+        if not self.isRunning:
+            return
+        if not self.sendCommandQueue.empty() and self.connected:
+            command = self.sendCommandQueue.get()
+            self.sendCommand(command)
+        if not self.connected and self.socket.state() == 0:
+            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+            self.sendCommandQueue.queue.clear()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def stop(self):
-        self._mutex.lock()
+        # if I leave the loop, I close the connection to remote host
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
+        if self.socket.state() != 3:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.waitForDisconnected(1000)
+        self.socket.close()
         self.thread.quit()
         self.thread.wait()
 

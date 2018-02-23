@@ -153,25 +153,28 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.mainLoop()
 
     def mainLoop(self):
+        if not self.isRunning:
+            return
         if not self.app.INDICommandQueue.empty() and self.data['Connected']:
             indiCommand = self.app.INDICommandQueue.get()
             self.sendMessage(indiCommand)
         self.handleNewDevice()
         if not self.data['Connected'] and self.socket.state() == 0:
             self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-        self.mutexIsRunning.lock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
-        self.mutexIsRunning.unlock()
 
     def stop(self):
         # if I leave the loop, I close the connection to remote host
-        if self.socket.state() != 3:
-            self.socket.abort()
-        self.socket.close()
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
+        if self.socket.state() != 3:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.waitForDisconnected(1000)
+        self.socket.close()
         self.thread.quit()
         self.thread.wait()
 

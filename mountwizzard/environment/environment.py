@@ -130,6 +130,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.mainLoop()
 
     def mainLoop(self):
+        if not self.isRunning:
+            return
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
             if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
                 self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'

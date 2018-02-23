@@ -21,6 +21,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     finished = PyQt5.QtCore.pyqtSignal()
 
+    CYCLE_MAIN_LOOP = 200
+
     # define the number of bytes for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like number of
     # bytes to be expected. it's just plain data and i have to find out myself how much it is.
@@ -69,7 +71,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.thread = thread
         self.data = data
         self.signalConnected = signalConnected
-        self._mutex = PyQt5.QtCore.QMutex()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.connected = False
         self.socket = None
@@ -77,8 +79,10 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.sendLock = threading.Lock()
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.socket = PyQt5.QtNetwork.QTcpSocket()
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
@@ -86,35 +90,37 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
-        # self.socket.readyRead.connect(self.handleReadyRead)
-        while self.isRunning:
-            PyQt5.QtWidgets.QApplication.processEvents()
-            while not self.app.mountCommandQueue.empty() and self.connected:
-                commandSet = self.app.mountCommandQueue.get()
-                if isinstance(commandSet, str):
-                    # only a single command without return needed
-                    self.sendCommand(commandSet)
-                elif isinstance(commandSet, dict):
-                    command = commandSet['command']
-                    reply = self.sendCommand(command).rstrip('#')
-                    commandSet['reply'] = reply
-                else:
-                    self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
-            time.sleep(0.1)
-            self.socket.state()
-            if not self.connected and self.socket.state() == 0:
+        self.mainLoop()
 
-                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.app.mountCommandQueue.queue.clear()
-        # if I leave the loop, I close the connection to remote host
-        if self.socket.state() != 3:
-            self.socket.abort()
-        self.socket.close()
+    def mainLoop(self):
+        if not self.isRunning:
+            return
+        while not self.app.mountCommandQueue.empty() and self.connected:
+            commandSet = self.app.mountCommandQueue.get()
+            if isinstance(commandSet, str):
+                # only a single command without return needed
+                self.sendCommand(commandSet)
+            elif isinstance(commandSet, dict):
+                command = commandSet['command']
+                reply = self.sendCommand(command).rstrip('#')
+                commandSet['reply'] = reply
+            else:
+                self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
+        if not self.connected and self.socket.state() == 0:
+            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def stop(self):
-        self._mutex.lock()
+        self.mutexIsRunning.lock()
         self.isRunning = False
-        self._mutex.unlock()
+        self.mutexIsRunning.unlock()
+        if self.socket.state() != 3:
+            self.socket.abort()
+        else:
+            self.socket.disconnectFromHost()
+            self.socket.waitForDisconnected(1000)
+        self.socket.close()
         self.thread.quit()
         self.thread.wait()
 

@@ -134,6 +134,8 @@ class Dome(PyQt5.QtCore.QObject):
         self.mainLoop()
 
     def mainLoop(self):
+        if not self.isRunning:
+            return
         if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
             if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
                 self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
