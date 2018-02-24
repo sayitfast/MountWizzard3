@@ -459,7 +459,7 @@ class MwWidget(QWidget):
         gui.setProperty('iconset', True)
         gui.style().unpolish(gui)
         gui.style().polish(gui)
-        gui.setIconSize(PyQt5.QtCore.QSize(32, 16))
+        gui.setIconSize(PyQt5.QtCore.QSize(32, 18))
 
     def initUI(self):
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)

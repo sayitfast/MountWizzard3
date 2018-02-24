@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -6627,7 +6627,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>115</y>
+       <y>90</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -7158,30 +7158,6 @@ Window</string>
       <string>Full Model</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkNoUpdateModel">
-     <property name="geometry">
-      <rect>
-       <x>430</x>
-       <y>90</y>
-       <width>261</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Simulation - no update of model in mount</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_113">
      <property name="geometry">
       <rect>
@@ -7417,7 +7393,6 @@ Window</string>
     <zorder>label_204</zorder>
     <zorder>line_38</zorder>
     <zorder>label_138</zorder>
-    <zorder>checkNoUpdateModel</zorder>
     <zorder>label_113</zorder>
     <zorder>label_136</zorder>
     <zorder>label_213</zorder>
@@ -9529,7 +9504,7 @@ Window</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>5</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -13964,33 +13939,6 @@ Window</string>
         <string>Run in simulation mode</string>
        </property>
       </widget>
-      <widget class="QCheckBox" name="checkUseFITSHeaders">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>240</y>
-         <width>151</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>Checked if you would like to keep the images of modeling session</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::LeftToRight</enum>
-       </property>
-       <property name="text">
-        <string>Use FITS Header</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
-       </property>
-      </widget>
       <widget class="QProgressBar" name="bar_modelingStatusPercent">
        <property name="geometry">
         <rect>
@@ -14092,40 +14040,6 @@ Window</string>
        </property>
        <property name="text">
         <string>Minutes</string>
-       </property>
-      </widget>
-      <widget class="QListView" name="listView">
-       <property name="geometry">
-        <rect>
-         <x>400</x>
-         <y>165</y>
-         <width>256</width>
-         <height>192</height>
-        </rect>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkClearModelFirst">
-       <property name="geometry">
-        <rect>
-         <x>455</x>
-         <y>120</y>
-         <width>121</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the alignment model in the mount computer first and then starting modeling.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="text">
-        <string>Clear model first</string>
-       </property>
-       <property name="checked">
-        <bool>false</bool>
        </property>
       </widget>
      </widget>
@@ -14468,7 +14382,7 @@ Window</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send shutdown command to the mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Shutdown</string>
+    <string>Shutdown Mount</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_mountBoot">
@@ -14489,7 +14403,7 @@ Window</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If the mount is connected via ethernet and is in the same subnet, from firmware 2.15.8 on the mount could be started by sending a WOL packet to the moutn computer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Boot WOL</string>
+    <string>Boot Mount (WOL)</string>
    </property>
   </widget>
   <widget class="QLabel" name="mainBackground">

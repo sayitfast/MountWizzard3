@@ -455,8 +455,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkDoSubframe.setChecked(self.config['CheckDoSubframe'])
             if 'CheckKeepImages' in self.config:
                 self.ui.checkKeepImages.setChecked(self.config['CheckKeepImages'])
-            if 'CheckClearModelFirst' in self.config:
-                self.ui.checkClearModelFirst.setChecked(self.config['CheckClearModelFirst'])
             if 'AnalyseFileName' in self.config:
                 self.ui.le_analyseFileName.setText(self.config['AnalyseFileName'])
             if 'AltitudeTimeChange' in self.config:
@@ -607,7 +605,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['AzimuthHysterese2'] = self.ui.azimuthHysterese2.value()
         self.config['NumberRunsHysterese'] = self.ui.numberRunsHysterese.value()
         self.config['DelayTimeHysterese'] = self.ui.delayTimeHysterese.value()
-        self.config['CheckClearModelFirst'] = self.ui.checkClearModelFirst.isChecked()
         self.config['ConfigName'] = self.ui.le_configName.text()
         self.config['MainTabPosition'] = self.ui.mainTabWidget.currentIndex()
         self.config['SettingTabPosition'] = self.ui.settingsTabWidget.currentIndex()
