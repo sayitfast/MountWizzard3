@@ -27,7 +27,7 @@ class SGPro(PyQt5.QtCore.QObject):
     solverStatusText = PyQt5.QtCore.pyqtSignal(str)
     cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLESTATUS = 500
+    CYCLESTATUS = 250
     CYCLEPROPS = 3000
 
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'BUSY': 'BUSY'}
@@ -205,7 +205,7 @@ class SGPro(PyQt5.QtCore.QObject):
                                              posY=imageParams['OffY'],
                                              width=imageParams['SizeX'],
                                              height=imageParams['SizeY'])
-        self.logger.info('message: {0}'.format(mes))
+        self.logger.info('SgCaptureImage: {0}'.format(mes))
         if suc:
             while True:
                 suc, path = self.SgGetImagePath(guid)
@@ -214,10 +214,11 @@ class SGPro(PyQt5.QtCore.QObject):
                 else:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
-            imageParams['Imagepath'] = path
+            imageParams['Imagepath'] = path.replace('\\', '/')
         else:
             imageParams['Imagepath'] = ''
         imageParams['Message'] = mes
+        self.logger.info('SgGetImagePath: {0}'.format(path))
         return imageParams
 
     def solveImage(self, imageParams):

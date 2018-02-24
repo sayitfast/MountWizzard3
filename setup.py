@@ -4,7 +4,7 @@ import platform
 
 setup(
     name='mountwizzard',
-    version='3.0.0a7',
+    version='3.0a7',
     packages=[
         'mountwizzard',
         'mountwizzard.analyse',
@@ -26,8 +26,8 @@ setup(
     ],
     python_requires='~=3.5',
     install_requires=[
-        'PyQt5==5.10',                   #  problem on ubuntu, can't be installed via pip, should be done with apt-get install
-        'matplotlib==2.1.2',            # sudo apt-get install libfreetype6-dev might be needed
+        'PyQt5==5.10',
+        'matplotlib==2.1.2',
         'wakeonlan>=1.0.0',
         'requests==2.18.4',
         'astropy==2.0.2',

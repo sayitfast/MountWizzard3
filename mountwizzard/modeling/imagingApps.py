@@ -224,7 +224,7 @@ class ImagingApps:
         # if it is done through modeling -> separate thread which is calling
         # self.imagingCommandQueue.put({'Command': 'SolveImage', 'ImageParams': imageParams})
         imageParams = self.imagingWorkerCameraAppHandler.solveImage(imageParams)
-        self.logger.info('Imaging parameters: {0}'.format(imageParams))
+        self.logger.info('Solving parameters: {0}'.format(imageParams))
         return imageParams
 
     def setCameraStatusText(self, status):

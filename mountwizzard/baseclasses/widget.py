@@ -139,6 +139,7 @@ class MwWidget(QWidget):
         border-color: #404040;
         padding: 2px 2px 2px 2px;
         color: #C0C0C0;
+        font: 10pt;
     }
     QGroupBox::indicator {
         border-width: 1px;
@@ -155,6 +156,7 @@ class MwWidget(QWidget):
     QRadioButton {
         color: #C0C0C0;
         background-color: transparent;
+        font: 10pt;
     }
     QRadioButton::indicator {
         border-width: 1px;
@@ -421,11 +423,11 @@ class MwWidget(QWidget):
     }
     QProgressBar::chunk {
         background-color: rgb(32, 144, 192);
-        /*width: 4px;
-        margin: 1px;*/
-        border-width: 1px;
+        width: 1px;
+        margin: 0px;
+        border-width: 0px; 
         border-color: #404040;
-        border-radius: 2px;
+        border-radius: 0px;
         border-style: outset;
     }
     QTextBrowser {

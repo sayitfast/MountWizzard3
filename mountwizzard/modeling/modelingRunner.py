@@ -115,8 +115,11 @@ class Image(PyQt5.QtCore.QObject):
                 self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
                 # getting next image
                 modelingData = self.main.imagingApps.captureImage(modelingData)
-                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['DOWNLOADING'] and not self.main.cancel:
-                    time.sleep(0.1)
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['INTEGRATING'] and not self.main.cancel:
+                    time.sleep(0.05)
+                    PyQt5.QtWidgets.QApplication.processEvents()
+                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] in ['INTEGRATING'] and not self.main.cancel:
+                    time.sleep(0.05)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()

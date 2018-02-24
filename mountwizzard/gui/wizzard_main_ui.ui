@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5048,7 +5048,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>170</x>
-       <y>185</y>
+       <y>190</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -5066,7 +5066,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>15</x>
-       <y>185</y>
+       <y>190</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -5100,7 +5100,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>185</y>
+       <y>190</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -5164,7 +5164,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>145</y>
+       <y>150</y>
        <width>271</width>
        <height>31</height>
       </rect>
@@ -5180,7 +5180,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>65</x>
-       <y>185</y>
+       <y>190</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -5216,7 +5216,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>140</y>
+       <y>90</y>
        <width>201</width>
        <height>31</height>
       </rect>
@@ -5345,9 +5345,9 @@ Window</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>670</x>
        <y>50</y>
-       <width>91</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
@@ -5516,9 +5516,9 @@ Window</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>660</x>
+       <x>670</x>
        <y>260</y>
-       <width>91</width>
+       <width>71</width>
        <height>21</height>
       </rect>
      </property>
@@ -5558,7 +5558,7 @@ Window</string>
     <widget class="QLabel" name="label_156">
      <property name="geometry">
       <rect>
-       <x>565</x>
+       <x>575</x>
        <y>50</y>
        <width>91</width>
        <height>21</height>
@@ -5848,7 +5848,7 @@ Window</string>
     <widget class="QLabel" name="label_157">
      <property name="geometry">
       <rect>
-       <x>565</x>
+       <x>575</x>
        <y>260</y>
        <width>91</width>
        <height>21</height>
@@ -5923,7 +5923,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>225</y>
+       <y>215</y>
        <width>201</width>
        <height>31</height>
       </rect>
@@ -5939,7 +5939,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>120</x>
-       <y>220</y>
+       <y>225</y>
        <width>101</width>
        <height>31</height>
       </rect>
@@ -5957,7 +5957,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>220</y>
+       <y>225</y>
        <width>51</width>
        <height>31</height>
       </rect>
@@ -6120,35 +6120,11 @@ Window</string>
       <string>TextLabel</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkClearModelFirst">
-     <property name="geometry">
-      <rect>
-       <x>345</x>
-       <y>90</y>
-       <width>121</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the alignment model in the mount computer first and then starting modeling.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Clear model first</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkUseBlindSolve">
      <property name="geometry">
       <rect>
        <x>345</x>
-       <y>110</y>
+       <y>130</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -6169,7 +6145,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>215</y>
+       <y>205</y>
        <width>201</width>
        <height>1</height>
       </rect>
@@ -6185,7 +6161,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>325</x>
-       <y>195</y>
+       <y>185</y>
        <width>131</width>
        <height>21</height>
       </rect>
@@ -6193,6 +6169,8 @@ Window</string>
      <property name="font">
       <font>
        <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
       </font>
      </property>
      <property name="text">
@@ -6403,7 +6381,6 @@ Window</string>
     <zorder>line_65</zorder>
     <zorder>label_207</zorder>
     <zorder>picALT</zorder>
-    <zorder>checkClearModelFirst</zorder>
     <zorder>checkUseBlindSolve</zorder>
     <zorder>line_66</zorder>
     <zorder>label_208</zorder>
@@ -7209,7 +7186,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>260</y>
+       <y>265</y>
        <width>311</width>
        <height>21</height>
       </rect>
@@ -7243,22 +7220,6 @@ Window</string>
      </property>
      <property name="text">
       <string>Generate Model Points based on tracks</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_55">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>180</y>
-       <width>351</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <widget class="QLabel" name="label_213">
@@ -7459,7 +7420,6 @@ Window</string>
     <zorder>checkNoUpdateModel</zorder>
     <zorder>label_113</zorder>
     <zorder>label_136</zorder>
-    <zorder>line_55</zorder>
     <zorder>label_213</zorder>
     <zorder>le_modelFullPointsFileName</zorder>
     <zorder>btn_showFullModelPoints</zorder>
@@ -11933,9 +11893,9 @@ Window</string>
       <widget class="QLineEdit" name="le_altParkPos3">
        <property name="geometry">
         <rect>
-         <x>310</x>
+         <x>315</x>
          <y>130</y>
-         <width>41</width>
+         <width>36</width>
          <height>21</height>
         </rect>
        </property>
@@ -12049,7 +12009,7 @@ Window</string>
         <rect>
          <x>220</x>
          <y>70</y>
-         <width>21</width>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -12067,7 +12027,7 @@ Window</string>
         <rect>
          <x>220</x>
          <y>100</y>
-         <width>21</width>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -12239,9 +12199,9 @@ Window</string>
       <widget class="QLineEdit" name="le_altParkPos4">
        <property name="geometry">
         <rect>
-         <x>310</x>
+         <x>315</x>
          <y>160</y>
-         <width>41</width>
+         <width>36</width>
          <height>21</height>
         </rect>
        </property>
@@ -12278,9 +12238,9 @@ Window</string>
       <widget class="QLineEdit" name="le_altParkPos1">
        <property name="geometry">
         <rect>
-         <x>310</x>
+         <x>315</x>
          <y>70</y>
-         <width>41</width>
+         <width>36</width>
          <height>21</height>
         </rect>
        </property>
@@ -12319,7 +12279,7 @@ Window</string>
         <rect>
          <x>20</x>
          <y>70</y>
-         <width>61</width>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -12335,9 +12295,9 @@ Window</string>
       <widget class="QLineEdit" name="le_altParkPos2">
        <property name="geometry">
         <rect>
-         <x>310</x>
+         <x>315</x>
          <y>100</y>
-         <width>41</width>
+         <width>36</width>
          <height>21</height>
         </rect>
        </property>
@@ -12394,7 +12354,7 @@ Window</string>
         <rect>
          <x>20</x>
          <y>160</y>
-         <width>61</width>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -12412,7 +12372,7 @@ Window</string>
         <rect>
          <x>20</x>
          <y>100</y>
-         <width>61</width>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -12469,7 +12429,7 @@ Window</string>
         <rect>
          <x>220</x>
          <y>160</y>
-         <width>21</width>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -12565,7 +12525,7 @@ Window</string>
         <rect>
          <x>220</x>
          <y>130</y>
-         <width>21</width>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -12640,7 +12600,7 @@ Window</string>
         <rect>
          <x>20</x>
          <y>130</y>
-         <width>61</width>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -12697,7 +12657,7 @@ Window</string>
         <rect>
          <x>20</x>
          <y>220</y>
-         <width>51</width>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -12713,9 +12673,9 @@ Window</string>
       <widget class="QLineEdit" name="le_altParkPos6">
        <property name="geometry">
         <rect>
-         <x>310</x>
+         <x>315</x>
          <y>220</y>
-         <width>41</width>
+         <width>36</width>
          <height>21</height>
         </rect>
        </property>
@@ -12754,7 +12714,7 @@ Window</string>
         <rect>
          <x>220</x>
          <y>190</y>
-         <width>21</width>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -12790,7 +12750,7 @@ Window</string>
         <rect>
          <x>20</x>
          <y>190</y>
-         <width>61</width>
+         <width>56</width>
          <height>21</height>
         </rect>
        </property>
@@ -12806,9 +12766,9 @@ Window</string>
       <widget class="QLineEdit" name="le_altParkPos5">
        <property name="geometry">
         <rect>
-         <x>310</x>
+         <x>315</x>
          <y>190</y>
-         <width>41</width>
+         <width>36</width>
          <height>21</height>
         </rect>
        </property>
@@ -12925,7 +12885,7 @@ Window</string>
         <rect>
          <x>220</x>
          <y>220</y>
-         <width>21</width>
+         <width>16</width>
          <height>21</height>
         </rect>
        </property>
@@ -13021,9 +12981,9 @@ Window</string>
        <property name="geometry">
         <rect>
          <x>80</x>
-         <y>40</y>
+         <y>50</y>
          <width>51</width>
-         <height>31</height>
+         <height>16</height>
         </rect>
        </property>
        <property name="font">
@@ -13172,7 +13132,7 @@ Window</string>
          <x>570</x>
          <y>50</y>
          <width>51</width>
-         <height>21</height>
+         <height>16</height>
         </rect>
        </property>
        <property name="font">
@@ -13298,7 +13258,7 @@ Window</string>
          <x>400</x>
          <y>50</y>
          <width>51</width>
-         <height>21</height>
+         <height>16</height>
         </rect>
        </property>
        <property name="font">
@@ -13507,7 +13467,7 @@ Window</string>
          <x>450</x>
          <y>50</y>
          <width>51</width>
-         <height>21</height>
+         <height>16</height>
         </rect>
        </property>
        <property name="font">
@@ -13663,6 +13623,75 @@ Window</string>
         <string>Relay Button Text Setup</string>
        </property>
       </widget>
+      <zorder>label_103</zorder>
+      <zorder>le_altParkPos3</zorder>
+      <zorder>le_parkPos3Text</zorder>
+      <zorder>le_parkPos1Text</zorder>
+      <zorder>label_19</zorder>
+      <zorder>label_43</zorder>
+      <zorder>label_54</zorder>
+      <zorder>le_azParkPos3</zorder>
+      <zorder>le_parkPos2Text</zorder>
+      <zorder>le_azParkPos1</zorder>
+      <zorder>label_45</zorder>
+      <zorder>le_altParkPos4</zorder>
+      <zorder>le_altParkPos1</zorder>
+      <zorder>label_2</zorder>
+      <zorder>le_altParkPos2</zorder>
+      <zorder>label_51</zorder>
+      <zorder>label_50</zorder>
+      <zorder>label_44</zorder>
+      <zorder>le_azParkPos2</zorder>
+      <zorder>label_49</zorder>
+      <zorder>label_3</zorder>
+      <zorder>le_azParkPos4</zorder>
+      <zorder>label_46</zorder>
+      <zorder>label_48</zorder>
+      <zorder>le_parkPos4Text</zorder>
+      <zorder>label_47</zorder>
+      <zorder>le_azParkPos5</zorder>
+      <zorder>label_92</zorder>
+      <zorder>le_altParkPos6</zorder>
+      <zorder>label_93</zorder>
+      <zorder>label_94</zorder>
+      <zorder>label_95</zorder>
+      <zorder>le_altParkPos5</zorder>
+      <zorder>le_parkPos6Text</zorder>
+      <zorder>le_parkPos5Text</zorder>
+      <zorder>label_131</zorder>
+      <zorder>label_132</zorder>
+      <zorder>le_azParkPos6</zorder>
+      <zorder>line_83</zorder>
+      <zorder>label_97</zorder>
+      <zorder>relay2Text</zorder>
+      <zorder>relay2Function</zorder>
+      <zorder>relay7Function</zorder>
+      <zorder>label_192</zorder>
+      <zorder>relay1Text</zorder>
+      <zorder>label_161</zorder>
+      <zorder>label_195</zorder>
+      <zorder>relay6Text</zorder>
+      <zorder>relay1Function</zorder>
+      <zorder>relay6Function</zorder>
+      <zorder>relay5Function</zorder>
+      <zorder>relay4Text</zorder>
+      <zorder>label_53</zorder>
+      <zorder>label_36</zorder>
+      <zorder>relay4Function</zorder>
+      <zorder>relay3Function</zorder>
+      <zorder>label_191</zorder>
+      <zorder>relay8Text</zorder>
+      <zorder>relay3Text</zorder>
+      <zorder>label_150</zorder>
+      <zorder>label_162</zorder>
+      <zorder>label_41</zorder>
+      <zorder>relay7Text</zorder>
+      <zorder>label_101</zorder>
+      <zorder>label_148</zorder>
+      <zorder>relay5Text</zorder>
+      <zorder>relay8Function</zorder>
+      <zorder>line_4</zorder>
+      <zorder>line_22</zorder>
      </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -14075,6 +14104,30 @@ Window</string>
         </rect>
        </property>
       </widget>
+      <widget class="QCheckBox" name="checkClearModelFirst">
+       <property name="geometry">
+        <rect>
+         <x>455</x>
+         <y>120</y>
+         <width>121</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the alignment model in the mount computer first and then starting modeling.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+       <property name="text">
+        <string>Clear model first</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -14082,9 +14135,9 @@ Window</string>
   <widget class="QPushButton" name="btn_saveConfigQuit">
    <property name="geometry">
     <rect>
-     <x>670</x>
+     <x>680</x>
      <y>65</y>
-     <width>101</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14106,9 +14159,9 @@ Window</string>
   <widget class="QPushButton" name="btn_saveConfig">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>585</x>
      <y>95</y>
-     <width>101</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14135,7 +14188,7 @@ Window</string>
     <rect>
      <x>290</x>
      <y>65</y>
-     <width>66</width>
+     <width>81</width>
      <height>26</height>
     </rect>
    </property>
@@ -14157,9 +14210,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>215</x>
+     <x>210</x>
      <y>65</y>
-     <width>66</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -14183,7 +14236,7 @@ Window</string>
     <rect>
      <x>20</x>
      <y>65</y>
-     <width>56</width>
+     <width>61</width>
      <height>26</height>
     </rect>
    </property>
@@ -14208,9 +14261,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>145</x>
      <y>65</y>
-     <width>56</width>
+     <width>61</width>
      <height>26</height>
     </rect>
    </property>
@@ -14231,7 +14284,7 @@ Window</string>
     <rect>
      <x>20</x>
      <y>95</y>
-     <width>126</width>
+     <width>141</width>
      <height>26</height>
     </rect>
    </property>
@@ -14256,9 +14309,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>365</x>
+     <x>375</x>
      <y>65</y>
-     <width>66</width>
+     <width>81</width>
      <height>26</height>
     </rect>
    </property>
@@ -14277,9 +14330,9 @@ Window</string>
   <widget class="QPushButton" name="btn_loadFrom">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>585</x>
      <y>65</y>
-     <width>101</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14301,9 +14354,9 @@ Window</string>
   <widget class="QPushButton" name="btn_saveConfigAs">
    <property name="geometry">
     <rect>
-     <x>670</x>
+     <x>680</x>
      <y>95</y>
-     <width>101</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14328,9 +14381,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>585</x>
      <y>40</y>
-     <width>211</width>
+     <width>186</width>
      <height>21</height>
     </rect>
    </property>
@@ -14367,7 +14420,7 @@ Window</string>
   <widget class="QLabel" name="mainicon">
    <property name="geometry">
     <rect>
-     <x>445</x>
+     <x>470</x>
      <y>20</y>
      <width>101</width>
      <height>101</height>
@@ -14380,7 +14433,7 @@ Window</string>
   <widget class="QLabel" name="label_102">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>585</x>
      <y>15</y>
      <width>51</width>
      <height>21</height>
@@ -14400,9 +14453,9 @@ Window</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>310</x>
      <y>95</y>
-     <width>141</width>
+     <width>146</width>
      <height>26</height>
     </rect>
    </property>
@@ -14421,9 +14474,9 @@ Window</string>
   <widget class="QPushButton" name="btn_mountBoot">
    <property name="geometry">
     <rect>
-     <x>155</x>
+     <x>165</x>
      <y>95</y>
-     <width>126</width>
+     <width>141</width>
      <height>26</height>
     </rect>
    </property>
@@ -14484,7 +14537,7 @@ Window</string>
     <rect>
      <x>290</x>
      <y>40</y>
-     <width>66</width>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -14524,9 +14577,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>365</x>
+     <x>375</x>
      <y>40</y>
-     <width>66</width>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -14566,9 +14619,9 @@ Window</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>215</x>
+     <x>210</x>
      <y>40</y>
-     <width>66</width>
+     <width>76</width>
      <height>21</height>
     </rect>
    </property>
@@ -14605,9 +14658,9 @@ Window</string>
   <widget class="Line" name="line_30">
    <property name="geometry">
     <rect>
-     <x>560</x>
+     <x>585</x>
      <y>35</y>
-     <width>211</width>
+     <width>186</width>
      <height>1</height>
     </rect>
    </property>
@@ -14643,7 +14696,7 @@ Window</string>
     <rect>
      <x>20</x>
      <y>35</y>
-     <width>411</width>
+     <width>436</width>
      <height>1</height>
     </rect>
    </property>

@@ -1053,19 +1053,20 @@ class MountWizzardApp(widget.MwWidget):
             elif text.startswith('Slewed>'):
                 self.hemisphereWindow.ui.le_numberPointsSlewed.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
-                    self.hemisphereWindow.ui.bar_numberPointsSlewed.setValue(int(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
+                    self.hemisphereWindow.ui.bar_numberPointsSlewed.setValue(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
+
             elif text.startswith('Imaged>'):
                 self.hemisphereWindow.ui.le_numberPointsImaged.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
-                    self.hemisphereWindow.ui.bar_numberPointsImaged.setValue(int(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
+                    self.hemisphereWindow.ui.bar_numberPointsImaged.setValue(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
             elif text.startswith('Solved>'):
                 self.hemisphereWindow.ui.le_numberPointsSolved.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
-                    self.hemisphereWindow.ui.bar_numberPointsSolved.setValue(int(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
+                    self.hemisphereWindow.ui.bar_numberPointsSolved.setValue(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
             elif text.startswith('Processed>'):
                 self.hemisphereWindow.ui.le_numberPointsProcessed.setText(text[10:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
-                    self.hemisphereWindow.ui.bar_numberPointsProcessed.setValue(int(1000 * float(text[10:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text())))
+                    self.hemisphereWindow.ui.bar_numberPointsProcessed.setValue(1000 * float(text[10:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):
@@ -1109,14 +1110,12 @@ class MyApp(PyQt5.QtWidgets.QApplication):
         except Exception as e:
             isex = True
             result = traceback.format_exception(*sys.exc_info())
-            traceback.print_exc()
             logging.error('-----------------------------------------')
             logging.error('Object: {0},  Event:{1}'.format(obj, event))
             logging.error('Exception error in event loop: {0}'.format(e))
             for i in range(0, len(result)):
                 logging.error(result[i].replace('\n', ''))
             logging.error('-----------------------------------------')
-            print('Exception error in event loop: {0}'.format(e))
             return False
         finally:
             pass

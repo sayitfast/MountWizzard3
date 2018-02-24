@@ -87,11 +87,16 @@ Model Points</string>
    <widget class="QRadioButton" name="btn_editNone">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>45</x>
       <y>10</y>
-      <width>106</width>
+      <width>111</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Nothing</string>
@@ -103,11 +108,16 @@ Model Points</string>
    <widget class="QRadioButton" name="btn_editModelPoints">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>45</x>
       <y>30</y>
-      <width>106</width>
+      <width>111</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Model Points</string>
@@ -116,11 +126,16 @@ Model Points</string>
    <widget class="QRadioButton" name="btn_editHorizonMask">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>45</x>
       <y>50</y>
-      <width>106</width>
+      <width>111</width>
       <height>21</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>Horizon Mask</string>
@@ -391,14 +406,29 @@ Model Points</string>
      <height>16</height>
     </rect>
    </property>
+   <property name="minimum">
+    <number>0</number>
+   </property>
    <property name="maximum">
     <number>1000</number>
    </property>
    <property name="value">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="textVisible">
     <bool>false</bool>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="invertedAppearance">
+    <bool>false</bool>
+   </property>
+   <property name="textDirection">
+    <enum>QProgressBar::BottomToTop</enum>
+   </property>
+   <property name="format">
+    <string>%p%</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_numberPointsSlewed">
@@ -473,7 +503,7 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>435</x>
      <y>30</y>
      <width>26</width>
      <height>16</height>
@@ -558,7 +588,7 @@ Model Points</string>
     <rect>
      <x>330</x>
      <y>25</y>
-     <width>121</width>
+     <width>131</width>
      <height>1</height>
     </rect>
    </property>
