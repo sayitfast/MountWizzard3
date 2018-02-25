@@ -30,7 +30,7 @@ class SGPro(PyQt5.QtCore.QObject):
     CYCLESTATUS = 250
     CYCLEPROPS = 3000
 
-    SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'BUSY': 'BUSY'}
+    SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'None': 'IDLE'}
     CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
     def __init__(self, app, thread, commandQueue):
@@ -147,7 +147,7 @@ class SGPro(PyQt5.QtCore.QObject):
         else:
             self.data['Solver']['Status'] = 'ERROR'
             self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
-            self.solverStatusText.emit('---')
+            self.solverStatusText.emit('ERROR')
 
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
@@ -218,7 +218,7 @@ class SGPro(PyQt5.QtCore.QObject):
         else:
             imageParams['Imagepath'] = ''
         imageParams['Message'] = mes
-        self.logger.info('SgGetImagePath: {0}'.format(path))
+        self.logger.info('SgGetImagePath: {0}'.format(imageParams['Imagepath']))
         return imageParams
 
     def solveImage(self, imageParams):

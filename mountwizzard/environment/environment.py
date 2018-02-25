@@ -70,7 +70,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.app.config['Environment'] = self.app.ui.pd_chooseEnvironment.currentIndex()
 
     def startAscom(self):
-        if self.ascomDriverName != '' and not self.ascom:
+        if self.ascomDriverName != '' and self.ascom is None:
             try:
                 self.ascom = Dispatch(self.ascomDriverName)
                 self.ascom.connected = True
@@ -81,7 +81,7 @@ class Environment(PyQt5.QtCore.QObject):
                 self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.ascomDriverName, e))
             finally:
                 pass
-        else:
+        elif self.ascomDriverName == '':
             # no connection made
             self.data['Connected'] = False
 

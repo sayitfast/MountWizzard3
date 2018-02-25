@@ -172,8 +172,7 @@ class ImagingApps:
         imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
         imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
         imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
-        # todo: handling of subframes
-        if False and self.app.ui.checkDoSubframe.isChecked():
+        if self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
             imageParams['SizeX'] = int(float(camData['CCD_INFO']['CCD_MAX_X']) * scaleSubframe)
             imageParams['SizeY'] = int(float(camData['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe)

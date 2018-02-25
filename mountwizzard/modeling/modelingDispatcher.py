@@ -362,7 +362,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             self.app.ui.btn_cancelModel2.setProperty('cancel', True)
             self.app.ui.btn_cancelModel2.style().unpolish(self.app.ui.btn_cancelModel2)
             self.app.ui.btn_cancelModel2.style().polish(self.app.ui.btn_cancelModel2)
-            self.logger.info('User canceled modeling with cancel any model run')
+            self.logger.info('User canceled modeling')
             self.modelingRunner.cancel = True
 
     def cancelAnalyseModeling(self):
@@ -370,5 +370,5 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             self.app.ui.btn_cancelAnalyseModel.setProperty('cancel', True)
             self.app.ui.btn_cancelAnalyseModel.style().unpolish(self.app.ui.btn_cancelAnalyseModel)
             self.app.ui.btn_cancelAnalyseModel.style().polish(self.app.ui.btn_cancelAnalyseModel)
-            self.logger.info('User canceled modeling with cancel analyse run')
+            self.logger.info('User canceled analyse modeling')
             self.modelingRunner.cancel = True

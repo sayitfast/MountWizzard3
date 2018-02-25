@@ -174,6 +174,8 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.app.INDICommandQueue.put(
                     indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
                                             indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
+                # set subframe
+                # todo set subframe
                 # set gain (necessary) ?
                 # todo: implement gain setting
                 # Request image.
@@ -199,7 +201,7 @@ class INDICamera(PyQt5.QtCore.QObject):
             if not self.solver.isSolving:
                 result = self.solver.solveImage(imageParams['Imagepath'], imageParams['RaJ2000'], imageParams['DecJ2000'], imageParams['ScaleHint'])
                 if result:
-                    if result['Message'] == 'Solve OK':
+                    if result['Message'] == 'Solve OK' and 'ra' in result:
                         imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
                         imageParams['DecJ2000Solved'] = result['dec']
                         imageParams['Angle'] = result['orientation']
