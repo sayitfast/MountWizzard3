@@ -173,10 +173,10 @@ class SGPro(PyQt5.QtCore.QObject):
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
                 value = self.SgGetCameraProps()
                 if value['Success']:
-                    if 'GainValues' not in value['GainValues']:
+                    if 'GainValues' not in value:
                         self.data['Camera']['Gain'] = ['High']
                     else:
-                        self.data['Camera']['Gain'] = value['GainValues']
+                        self.data['Camera']['Gain'] = value['GainValues'][0]
                     self.data['Camera']['Message'] = value['Message']
                     if value['SupportsSubframe']:
                         self.data['Camera']['CCD_FRAME'] = {}
@@ -195,7 +195,7 @@ class SGPro(PyQt5.QtCore.QObject):
         suc, mes, guid = self.SgCaptureImage(binningMode=imageParams['Binning'],
                                              exposureLength=imageParams['Exposure'],
                                              iso=str(imageParams['Iso']),
-                                             gain='Not Set',
+                                             gain=imageParams['Gain'],
                                              speed=imageParams['Speed'],
                                              frameType='Light',
                                              filename=imageParams['File'],
