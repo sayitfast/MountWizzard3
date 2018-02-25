@@ -12,6 +12,7 @@
 #
 ############################################################
 import logging
+import os
 import requests
 import json
 import time
@@ -110,20 +111,10 @@ class AstrometryClient:
             if self.app.ui.rb_useOnlineSolver.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
-                # we have to login
-                self.data['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
-                result = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.data['APIKey']})}, headers={})
-                result = json.loads(result.text)
                 self.timeoutMax = 360
-                if result['status'] == 'error':
-                    self.app.messageQueue.put('Get session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
-                    self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
-                elif result['status'] == 'success':
-                    self.solveData['session'] = result['session']
-                    self.app.messageQueue.put('Session key for ASTROMETRY.NET is    [{0}]\n'.format(result['session']))
             else:
                 self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
-                self.solveData['session'] = 12345
+                self.urlLogin = ''
                 self.timeoutMax = 60
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
@@ -169,16 +160,48 @@ class AstrometryClient:
             return retValue
 
     def solveImage(self, filename, ra, dec, scale):
+        # check if solving is possible
         if self.isSolving:
             return
         if not self.isRunning:
             self.logger.warning('Astrometry connection is not available')
-            return {}
+            return {'Message': 'Astrometry not available'}
         if self.parent.cancel:
-            return {}
+            return {'Message': 'Cancel'}
+        if not os.path.isfile(filename):
+            return {'Message': 'File missing'}
+
+        # start formal solving
         self.mutexIsSolving.lock()
         self.isSolving = True
         self.mutexIsSolving.unlock()
+
+        # check if we have the online solver running
+        if self.urlLogin != '':
+            # we have to login with the api key for the online solver to get the session key
+            self.data['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
+            try:
+                result = ''
+                response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.data['APIKey']})}, headers={})
+                result = json.loads(response.text)
+            except Exception as e:
+                self.logger.error('Problem setting api key, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                return {'Message': 'Login with api key failed'}
+
+            if 'status' in result:
+                if result['status'] == 'error':
+                    self.app.messageQueue.put('\nGet session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
+                    self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
+                elif result['status'] == 'success':
+                    self.solveData['session'] = result['session']
+                    self.app.messageQueue.put('\tSession key for ASTROMETRY.NET is [{0}]\n'.format(result['session']))
+            else:
+                return {'Message': 'Malformed result in login procedure'}
+        else:
+            # local solve runs with dummy session key
+            self.solveData['session'] = 12345
+
+        # start uploading the data and define the parameters
         data = self.solveData
         data['scale_est'] = scale
         # ra is in
@@ -188,24 +211,42 @@ class AstrometryClient:
         fields['request-json'] = json.dumps(data)
         fields['file'] = (filename, open(filename, 'rb'), 'application/octet-stream')
         m = MultipartEncoder(fields)
-        result = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
-        result = json.loads(result.text)
-        stat = result['status']
+        try:
+            result = ''
+            response = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
+            result = json.loads(response.text)
+            stat = result['status']
+        except Exception as e:
+            self.logger.error('Problem upload, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+            self.mutexIsSolving.lock()
+            self.isSolving = False
+            self.mutexIsSolving.unlock()
+            return {'Message': 'Error upload'}
+
         if stat != 'success':
             self.mutexIsSolving.lock()
             self.isSolving = False
             self.mutexIsSolving.unlock()
             self.logger.warning('Could not upload image to astrometry server')
-            return {}
+            return {'Message': 'Upload failed'}
         submissionID = result['subid']
-        # print('upload: ', result)
+
+        # wait for the submission = star detection algorithm to take place
         timeoutCounter = 0
         while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
-            result = requests.post(self.urlAPI + '/submissions/{0}'.format(submissionID), data=data, headers=headers)
-            result = json.loads(result.text)
-            # print('submissions: ', result)
+            try:
+                result = ''
+                response = requests.post(self.urlAPI + '/submissions/{0}'.format(submissionID), data=data, headers=headers)
+                result = json.loads(response.text)
+            except Exception as e:
+                self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                self.mutexIsSolving.lock()
+                self.isSolving = False
+                self.mutexIsSolving.unlock()
+                return {'Message': 'Error submission'}
+
             jobs = result['jobs']
             if len(jobs) > 0:
                 if jobs[0] is not None:
@@ -221,12 +262,20 @@ class AstrometryClient:
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
+        # waiting for the solving results done by jobs are present
         while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
             data = {'request-json': ''}
             headers = {}
-            result = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
-            result = json.loads(result.text)
-            # print('jobs: ', result)
+            try:
+                result = ''
+                response = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
+                result = json.loads(response.text)
+            except Exception as e:
+                self.logger.error('Problem jobs, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                self.mutexIsSolving.lock()
+                self.isSolving = False
+                self.mutexIsSolving.unlock()
+                return {'Message': 'Error Jobs'}
             stat = result['status']
             if stat == 'success':
                 break
@@ -239,10 +288,20 @@ class AstrometryClient:
                 return {'Message': 'Solve failed due to timeout'}
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        result = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
-        value = json.loads(result.text)
-        value['Message'] = 'Solve OK'
+
+        # now get the solving data and results
+        try:
+            result = ''
+            response = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
+            result = json.loads(response.text)
+        except Exception as e:
+            self.logger.error('Problem get calibration data, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+            self.mutexIsSolving.lock()
+            self.isSolving = False
+            self.mutexIsSolving.unlock()
+            return {'Message': 'Error Jobs'}
+        result['Message'] = 'Solve OK'
         self.mutexIsSolving.lock()
         self.isSolving = False
         self.mutexIsSolving.unlock()
-        return value
+        return result
