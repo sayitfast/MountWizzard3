@@ -412,4 +412,5 @@ class ModelPoints:
             azp = int(azp)
             point = (azp, altitude)
             self.modelPoints.append(point)
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(self.modelPoints)))
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
