@@ -119,7 +119,7 @@ class Image(PyQt5.QtCore.QObject):
                     time.sleep(0.05)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] in ['INTEGRATING'] and not self.main.cancel:
-                    time.sleep(0.05)
+                    time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()

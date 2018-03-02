@@ -31,7 +31,7 @@ class SGPro(PyQt5.QtCore.QObject):
     CYCLEPROPS = 3000
 
     SOLVERSTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'IDLE': 'IDLE', 'None': 'IDLE'}
-    CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'IDLE', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
+    CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'DOWNLOADING', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
     def __init__(self, app, thread, commandQueue):
         super().__init__()
@@ -117,7 +117,7 @@ class SGPro(PyQt5.QtCore.QObject):
                     if 'integrating' in message:
                         self.data['Camera']['Status'] = 'INTEGRATING'
                         self.cameraStatusText.emit('INTEGRATE')
-                    elif 'downloading' in message:
+                    elif 'ready' in message:
                         self.data['Camera']['Status'] = 'DOWNLOADING'
                         self.cameraStatusText.emit('DOWNLOAD')
                     elif 'ready' in message or 'idle' in message:
