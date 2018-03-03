@@ -33,14 +33,27 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
     from imaging import theskyx
 
 
-class ImagingApps:
+class ImagingApps(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+
+    # signals to be used for others
+    # putting status to gui
+    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
+    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
+    imagingCancel = PyQt5.QtCore.pyqtSignal()
+
+    # putting status to processing
+    imageIntegrated = PyQt5.QtCore.pyqtSignal()
+    imageDownloaded = PyQt5.QtCore.pyqtSignal()
+    imageSaved = PyQt5.QtCore.pyqtSignal(str)  # str is the path of image
+    cameraIdle = PyQt5.QtCore.pyqtSignal()
 
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
+        super().__init__()
         # make main sources available
         self.app = app
         self.thread = thread
@@ -48,16 +61,6 @@ class ImagingApps:
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.imagingCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
-
-        # signals to be used for others
-        self.cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
-        self.cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
-        self.imagingCancel = PyQt5.QtCore.pyqtSignal()
-
-        self.imageIntegrated = PyQt5.QtCore.pyqtSignal()
-        self.imageDownloaded = PyQt5.QtCore.pyqtSignal()
-        self.imageSaved = PyQt5.QtCore.pyqtSignal(str)          # str is the path of image
-        self.cameraIdle = PyQt5.QtCore.pyqtSignal()
 
         # wait conditions used by others
         self.waitForIntegrate = PyQt5.QtCore.QWaitCondition()
@@ -67,18 +70,15 @@ class ImagingApps:
 
         # class data
         self.data = dict()
-        self.data['AppAvailable'] = False
-        self.data['AppName'] = ''
-        self.data['AppInstallPath'] = ''
-        self.data['AppStatus'] = ''
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
 
         # external classes
         self.transform = transform.Transform(self.app)
         self.SGPro = sgpro.SGPro(self, self.app, self.data)
+        self.NoneCam = none.NoneCamera(self, self.app, self.data)
 
         # shortcuts for better usage
-        self.cameraHandler = self.workerNoneCam
+        self.cameraHandler = self.NoneCam
         # signal slot links
         self.cameraStatusText.connect(self.setCameraStatusText)
         self.cameraExposureTime.connect(self.setCameraExposureTime)
@@ -89,13 +89,14 @@ class ImagingApps:
         self.app.ui.pd_chooseImaging.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseImaging.setView(view)
-        #if self.workerNoneCam.data['AppAvailable']:
-        #    self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.workerNoneCam.data['AppName'])
+
+        if self.NoneCam.application['Available']:
+            self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.NoneCam.application['Name'])
         #if self.workerINDICamera.data['AppAvailable']:
         #    self.app.ui.pd_chooseImaging.addItem('INDI Camera')
         if platform.system() == 'Windows':
-            if self.SGPro.data['AppAvailable']:
-                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.data['AppName'])
+            if self.SGPro.application['Available']:
+                self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.application['Name'])
         #    if self.workerMaximDL.data['AppAvailable']:
         #        self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
         #if platform.system() == 'Windows' or platform.system() == 'Darwin':
@@ -113,26 +114,25 @@ class ImagingApps:
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
-        self.workerINDICamera.solver.storeConfig()
 
     def chooseImaging(self):
-        self.chooserLock.acquire()
+        self.mutexChooser.lock()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
-            self.cameraHandler = self.workerNoneCam
+            self.cameraHandler = self.NoneCam
             self.logger.info('Actual camera / plate solver is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
-            self.cameraHandler = self.workerSGPro
+            self.cameraHandler = self.SGPro
             self.logger.info('Actual camera / plate solver is SGPro')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
-            self.cameraHandler = self.workerMaximDL
+            self.cameraHandler = self.MaximDL
             self.logger.info('Actual camera / plate solver is MaximDL')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
-            self.cameraHandler = self.workerINDICamera
+            self.cameraHandler = self.INDICamera
             self.logger.info('Actual camera / plate solver is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
-            self.cameraHandler = self.workerTheSkyX
+            self.cameraHandler = self.TheSkyX
             self.logger.info('Actual camera / plate solver is TheSkyX')
-        self.chooserLock.release()
+        self.mutexChooser.unlock()
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
@@ -142,8 +142,8 @@ class ImagingApps:
         self.mutexIsRunning.unlock()
         self.getStatus()
         while self.isRunning:
-            if not self.commandQueue.empty():
-                imageParams = self.commandQueue.get()
+            if not self.imagingCommandQueue.empty():
+                imageParams = self.imagingCommandQueue.get()
                 self.captureImage(imageParams)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -205,15 +205,15 @@ class ImagingApps:
     def getStatus(self):
         self.cameraHandler.getStatus()
         # get status to gui
-        if not self.data['AppAvailable']:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
-        elif self.data['AppStatus'] == 'ERROR':
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        elif self.data['AppStatus'] == 'OK':
+        if not self.cameraHandler.application['Available']:
+            self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+        elif self.cameraHandler.application['Status'] == 'ERROR':
+            self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
+        elif self.cameraHandler.application['Status'] == 'OK':
             if self.data['CONNECTION']['CONNECT'] == 'Off':
-                self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+                self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
             else:
-                self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
+                self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)

@@ -142,7 +142,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for imaging apps
         self.threadImaging = PyQt5.QtCore.QThread()
-        self.workerImaging = remoteThread.Remote(self, self.threadImaging)
+        self.workerImaging = imagingApps.ImagingApps(self, self.threadImaging)
         self.threadImaging.setObjectName("Imaging")
         self.workerImaging.moveToThread(self.threadImaging)
         self.threadImaging.started.connect(self.workerImaging.run)
@@ -632,6 +632,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerModelingDispatcher.storeConfig()
         self.workerEnvironment.storeConfig()
         self.workerDome.storeConfig()
+        self.workerImaging.storeConfig()
         if platform.system() == 'Windows':
             self.workerUpload.storeConfig()
         self.hemisphereWindow.storeConfig()

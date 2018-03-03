@@ -24,53 +24,53 @@ import requests
 class SGPro:
     logger = logging.getLogger(__name__)
 
-    CAMERASTATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'DOWNLOADING', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
+    # base definitions of class
+    host = '127.0.0.1'
+    port = 59590
+    ipSGProBase = 'http://' + host + ':' + str(port)
+    ipSGPro = 'http://' + host + ':' + str(port) + '/json/reply/'
+    captureImagePath = 'SgCaptureImage'
+    getCameraPropsPath = 'SgGetCameraProps'
+    getDeviceStatusPath = 'SgGetDeviceStatus'
+    getImagePath = 'SgGetImagePath'
+
+    CAMERA_STATUS = {'ERROR': 'ERROR', 'DISCONNECTED': 'DISCONNECTED', 'BUSY': 'DOWNLOADING', 'READY': 'DOWNLOADING', 'IDLE': 'IDLE', 'INTEGRATING': 'INTEGRATING'}
 
     def __init__(self, main, app, data):
-        super().__init__()
+        # make main sources available
         self.main = main
         self.app = app
         self.data = data
 
-        self.tryConnectionCounter = 0
+        self.application = dict()
+        self.application['Available'] = False
+        self.application['Name'] = ''
+        self.application['InstallPath'] = ''
+        self.application['Status'] = ''
+        self.application['Runtime'] = 'Sequence Generator.exe'
 
-        self.host = '127.0.0.1'
-        self.port = 59590
-        self.ipSGProBase = 'http://' + self.host + ':' + str(self.port)
-        self.ipSGPro = 'http://' + self.host + ':' + str(self.port) + '/json/reply/'
-        self.captureImagePath = 'SgCaptureImage'
-        self.connectDevicePath = 'SgConnectDevicePath'
-        self.disconnectDevicePath = 'SgDisconnectDevicePath'
-        self.getCameraPropsPath = 'SgGetCameraProps'
-        self.getDeviceStatusPath = 'SgGetDeviceStatus'
-        self.enumerateDevicePath = 'SgEnumerateDevices'
-        self.getImagePath = 'SgGetImagePath'
-        self.getSolvedImageDataPath = 'SgGetSolvedImageData'
-        self.solveImagePath = 'SgSolveImage'
-
-        self.appExe = 'Sequence Generator.exe'
         if platform.system() == 'Windows':
             # sgpro only supported on local machine
-            self.data['AppAvailable'], self.data['AppName'], self.data['AppInstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
-            if self.data['AppAvailable']:
-                self.app.messageQueue.put('Found: {0}\n'.format(self.data['AppName']))
-                self.logger.info('Name: {0}, Path: {1}'.format(self.data['AppName'], self.data['AppInstallPath']))
+            self.application['Available'], self.application['Name'], self.application['InstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
+            if self.application['Available']:
+                self.app.messageQueue.put('Found: {0}\n'.format(self.application['Name']))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.application['Name'], self.application['InstallPath']))
             else:
                 self.logger.info('Application SGPro not found on computer')
 
     def getStatus(self):
         suc, state, message = self.SgGetDeviceStatus('Camera')
         if suc:
-            self.data['AppStatus'] = 'OK'
-            if state in self.CAMERASTATUS:
-                if self.CAMERASTATUS[state] == 'DISCONNECTED':
+            self.application['Status'] = 'OK'
+            if state in self.CAMERA_STATUS:
+                if self.CAMERA_STATUS[state] == 'DISCONNECTED':
                     self.data['CONNECTION']['CONNECT'] = 'Off'
                 else:
                     self.data['CONNECTION']['CONNECT'] = 'On'
             else:
                 self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
         else:
-            self.data['AppStatus'] = 'ERROR'
+            self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def getCameraProps(self):
@@ -118,35 +118,6 @@ class SGPro:
             imageParams['Imagepath'] = ''
         imageParams['Message'] = mes
         self.logger.info('SgGetImagePath: {0}'.format(imageParams['Imagepath']))
-        return imageParams
-
-    def solveImage(self, imageParams):
-        suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                           RaHint=imageParams['RaJ2000'],
-                                           DecHint=imageParams['DecJ2000'],
-                                           ScaleHint=imageParams['ScaleHint'],
-                                           BlindSolve=imageParams['Blind'],
-                                           UseFitsHeaders=False)
-        if not suc:
-            self.logger.warning('Solver no start, message: {0}'.format(mes))
-            imageParams['Message'] = mes
-        while True:
-            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
-            mes = mes.strip('\n')
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
-                self.logger.info('Imaging parameters {0}'.format(imageParams))
-                imageParams['RaJ2000Solved'] = float(ra_sol)
-                imageParams['DecJ2000Solved'] = float(dec_sol)
-                imageParams['Scale'] = float(scale)
-                imageParams['Angle'] = float(angle)
-                imageParams['TimeTS'] = float(timeTS)
-                break
-            elif mes != 'Solving':
-                break
-            else:
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
-        imageParams['Message'] = mes
         return imageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
@@ -209,31 +180,3 @@ class SGPro:
         except Exception as e:
             self.logger.error('error: {0}'.format(e))
             return False, 'Request failed'
-
-    def SgGetSolvedImageData(self, _guid):
-        # reference {"Receipt":"00000000000000000000000000000000"}
-        data = {'Receipt': _guid}
-        try:
-            result = requests.post(self.ipSGPro + self.getSolvedImageDataPath, data=bytes(json.dumps(data).encode('utf-8')))
-            result = json.loads(result.text)
-            return result['Success'], result['Message'], result['Ra'], result['Dec'], result['Scale'], result['Angle'], result['TimeToSolve']
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-            return False, 'Request failed', '', '', '', '', ''
-
-    def SgSolveImage(self, path, RaHint=None, DecHint=None, ScaleHint=None, BlindSolve=False, UseFitsHeaders=False):
-        # reference {"ImagePath":"String","RaHint":0,"DecHint":0,"ScaleHint":0,"BlindSolve":false,"UseFitsHeadersForHints":false}
-        data = {"ImagePath": path, "BlindSolve": BlindSolve, "UseFitsHeadersForHints": UseFitsHeaders}
-        if RaHint:
-            data['RaHint'] = RaHint
-        if DecHint:
-            data['DecHint'] = DecHint
-        if ScaleHint:
-            data['ScaleHint'] = ScaleHint
-        try:
-            result = requests.post(self.ipSGPro + self.solveImagePath, data=bytes(json.dumps(data).encode('utf-8')))
-            result = json.loads(result.text)
-            return result['Success'], result['Message'], result['Receipt']
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-            return False, 'Request failed', ''
