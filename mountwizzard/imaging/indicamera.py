@@ -20,6 +20,9 @@ import indi.indi_xml as indiXML
 class INDICamera:
     logger = logging.getLogger(__name__)
 
+    # timeout is 40 seconds
+    MAX_TIMEOUT = 400
+
     def __init__(self, main, app, data):
         # make main sources available
         self.main = main
@@ -49,7 +52,7 @@ class INDICamera:
 
     def setReceivedImage(self):
         self.mutexReceived.lock()
-        self.cancel = True
+        self.receivedImage = True
         self.mutexReceived.unlock()
 
     def setCancelImaging(self):
@@ -74,6 +77,8 @@ class INDICamera:
                 self.application['Status'] = 'ERROR'
         else:
             self.application['Available'] = False
+            self.main.cameraStatusText.emit('---')
+            self.main.cameraExposureTime.emit('---')
 
     def getCameraProps(self):
         self.data['Gain'] = 'High'
@@ -94,79 +99,130 @@ class INDICamera:
         imagePath = path + '/' + filename
         self.app.workerINDI.imagePath = imagePath
 
-        if self.app.workerINDI.cameraDevice != '':
-            if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'On':
-                # Enable BLOB mode.
-                self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
-                # set to raw - no compression mode
-                self.app.INDICommandQueue.put(
-                    indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CCD_COMPRESS'})],
-                                            indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.cameraDevice}))
-                # set frame type
-                self.app.INDICommandQueue.put(
-                    indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})],
-                                            indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.workerINDI.cameraDevice}))
-                # set binning
-                self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}),
-                                             indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
-                                            indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
-                # set subframe
-                self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
-                                             indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'}),
-                                             indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
-                                             indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'})],
-                                            indi_attr={'name': 'CCD_FRAME', 'device': self.app.workerINDI.cameraDevice}))
-                # Request image.
-                self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(exposure, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
-                                            indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
-
-                self.mutexReceived.lock()
-                self.receivedImage = False
-                self.mutexReceived.unlock()
-
-                while not self.receivedImage and not self.cancel:
-                    if 'CONNECTION' and 'CCD_EXPOSURE' in self.data['Camera']:
-                        if self.data['CONNECTION']['CONNECT'] == 'On':
-                            if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:
-                                if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
-                                    self.data['Camera']['Status'] = 'INTEGRATING'
-                                    self.cameraStatusText.emit('INTEGRATE')
-                                else:
-                                    self.data['Camera']['Status'] = 'DOWNLOADING'
-                                    self.cameraStatusText.emit('DOWNLOAD')
-                            elif self.data['Camera']['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
-                                if not self.receivedImage:
-                                    self.data['Camera']['Status'] = 'INTEGRATING'
-                                    self.cameraStatusText.emit('INTEGRATE')
-                                else:
-                                    self.data['Camera']['Status'] = 'IDLE'
-                                    self.cameraStatusText.emit('IDLE')
-                            elif self.data['Camera']['CCD_EXPOSURE']['state'] == 'Error':
-                                self.data['Camera']['Status'] = 'ERROR'
-                                self.cameraStatusText.emit('ERROR')
-                            self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
-                        else:
-                            self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
-                            self.data['Camera']['Status'] = 'DISCONNECTED'
-                            self.cameraStatusText.emit('DISCONN')
-                    else:
-                        self.data['Camera']['Status'] = 'ERROR'
-                        self.cameraStatusText.emit('ERROR')
-                    if 'CCD_EXPOSURE' in self.data['Camera']:
-                        self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
-                else:
-                    self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
-                    self.app.workerModelingDispatcher.signalStatusCamera.emit(1)
-                    self.cameraStatusText.emit('---')
-                    self.cameraExposureTime.emit('---')
-
-                    PyQt5.QtWidgets.QApplication.processEvents()
-            imageParams['Imagepath'] = self.app.workerINDI.imagePath
+        cam = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]
+        if self.app.workerINDI.cameraDevice != '' and cam['CONNECTION']['CONNECT'] == 'On':
+            # Enable BLOB mode.
+            self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
+            # set to raw - no compression mode
+            self.app.INDICommandQueue.put(
+                indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CCD_COMPRESS'})],
+                                        indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.cameraDevice}))
+            # set frame type
+            self.app.INDICommandQueue.put(
+                indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'FRAME_LIGHT'})],
+                                        indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.workerINDI.cameraDevice}))
+            # set binning
+            self.app.INDICommandQueue.put(
+                indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}),
+                                         indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
+                                        indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
+            # set subframe
+            self.app.INDICommandQueue.put(
+                indiXML.newNumberVector([indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
+                                         indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'}),
+                                         indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
+                                         indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'})],
+                                        indi_attr={'name': 'CCD_FRAME', 'device': self.app.workerINDI.cameraDevice}))
+            # Request image.
+            self.app.INDICommandQueue.put(
+                indiXML.newNumberVector([indiXML.oneNumber(exposure, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
+                                        indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
         else:
-            imageParams['Imagepath'] = ''
+            return
+
+        self.mutexReceived.lock()
+        self.receivedImage = False
+        self.mutexReceived.unlock()
+        timeout = 0
+
+        # waiting for start integrating
+        self.main.cameraStatusText.emit('START')
+        while not self.cancel:
+            if timeout > self.MAX_TIMEOUT:
+                self.main.cameraStatusText.emit('TIMEOUT')
+                break
+            if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
+                if cam['CONNECTION']['CONNECT'] == 'On':
+                    if cam['CCD_EXPOSURE']['state'] in ['Busy']:
+                        break
+                else:
+                    self.main.cameraStatusText.emit('DISCONN')
+            else:
+                self.main.cameraStatusText.emit('ERROR')
+            timeout += 1
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
+        # loop for integrating
+        self.main.cameraStatusText.emit('INTEGRATE')
+        while not self.cancel:
+            if timeout > self.MAX_TIMEOUT:
+                self.main.cameraStatusText.emit('TIMEOUT')
+                break
+            if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
+                if cam['CONNECTION']['CONNECT'] == 'On':
+                    if not float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
+                        break
+                else:
+                    self.main.cameraStatusText.emit('DISCONN')
+            else:
+                self.main.cameraStatusText.emit('ERROR')
+            if 'CCD_EXPOSURE' in cam:
+                self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
+            else:
+                self.main.cameraExposureTime.emit('---')
+            timeout += 1
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
+        # loop for download
+        self.main.imageIntegrated.emit()
+        self.main.cameraStatusText.emit('DOWNLOAD')
+        while not self.cancel:
+            if timeout > self.MAX_TIMEOUT:
+                self.main.cameraStatusText.emit('TIMEOUT')
+                break
+            if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
+                if cam['CONNECTION']['CONNECT'] == 'On':
+                    if cam['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
+                        break
+                    elif cam['CCD_EXPOSURE']['state'] == 'Error':
+                        self.main.cameraStatusText.emit('ERROR')
+                else:
+                    self.main.cameraStatusText.emit('DISCONN')
+            else:
+                self.main.cameraStatusText.emit('ERROR')
+            if 'CCD_EXPOSURE' in cam:
+                self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
+            else:
+                self.main.cameraExposureTime.emit('---')
+            timeout += 1
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
+        # loop for saving
+        self.main.imageDownloaded.emit()
+        self.main.cameraStatusText.emit('SAVING')
+        while not self.cancel:
+            if timeout > self.MAX_TIMEOUT:
+                self.main.cameraStatusText.emit('TIMEOUT')
+                break
+            if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
+                if self.receivedImage:
+                    break
+            else:
+                self.main.cameraStatusText.emit('ERROR')
+            timeout += 1
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
+        # finally idle
+        self.main.imageSaved.emit()
+        self.main.waitForFinished.wakeAll()
+        self.main.cameraStatusText.emit('IDLE')
+        self.main.cameraExposureTime.emit('---')
+        imageParams['Imagepath'] = self.app.workerINDI.imagePath
+        PyQt5.QtWidgets.QApplication.processEvents()
 
     def connectCamera(self):
         if self.app.workerINDI.cameraDevice != '':

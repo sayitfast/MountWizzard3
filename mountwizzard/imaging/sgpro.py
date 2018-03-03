@@ -110,19 +110,16 @@ class SGPro:
                                              height=imageParams['SizeY'])
         self.logger.info('SgCaptureImage: {0}'.format(mes))
         if suc:
-            while True:
+            while not self.cancel:
                 suc, path = self.SgGetImagePath(guid)
                 if suc:
                     break
                 else:
                     time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = path.replace('\\', '/')
         else:
             imageParams['Imagepath'] = ''
-        imageParams['Message'] = mes
         self.logger.info('SgGetImagePath: {0}'.format(imageParams['Imagepath']))
-        return imageParams
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

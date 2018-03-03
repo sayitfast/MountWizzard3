@@ -41,7 +41,7 @@ from dome import dome
 from environment import environment
 from indi import indi_client
 from astrometry import transform
-from imaging import imagingApps
+from imaging import imaging
 if platform.system() == 'Windows':
     from automation import upload
 from wakeonlan import send_magic_packet
@@ -142,7 +142,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for imaging apps
         self.threadImaging = PyQt5.QtCore.QThread()
-        self.workerImaging = imagingApps.ImagingApps(self, self.threadImaging)
+        self.workerImaging = imaging.ImagingApps(self, self.threadImaging)
         self.threadImaging.setObjectName("Imaging")
         self.workerImaging.moveToThread(self.threadImaging)
         self.threadImaging.started.connect(self.workerImaging.run)

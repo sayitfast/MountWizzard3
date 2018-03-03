@@ -45,8 +45,7 @@ class ImagingApps(PyQt5.QtCore.QObject):
     # putting status to processing
     imageIntegrated = PyQt5.QtCore.pyqtSignal()
     imageDownloaded = PyQt5.QtCore.pyqtSignal()
-    imageSaved = PyQt5.QtCore.pyqtSignal(str)  # str is the path of image
-    cameraIdle = PyQt5.QtCore.pyqtSignal()
+    imageSaved = PyQt5.QtCore.pyqtSignal()
 
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
@@ -161,7 +160,7 @@ class ImagingApps(PyQt5.QtCore.QObject):
     def captureImage(self, imageParams):
         # preparation for imaging: gathering all the informations for taking a picture from gui
         imageParams['Imagepath'] = ''
-        if data['CONNECTION']['CONNECT'] == 'Off':
+        if self.data['CONNECTION']['CONNECT'] == 'Off':
             return
         self.cameraHandler.getCameraProps()
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
@@ -174,12 +173,19 @@ class ImagingApps(PyQt5.QtCore.QObject):
         imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         if self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            imageParams['SizeX'] = int(float(camData['CCD_INFO']['CCD_MAX_X']) * scaleSubframe)
-            imageParams['SizeY'] = int(float(camData['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe)
-            imageParams['OffX'] = int((float(camData['CCD_INFO']['CCD_MAX_X']) - imageParams['SizeX']) / 2)
-            imageParams['OffY'] = int((float(camData['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
-        if 'Gain' in camData:
-            imageParams['Gain'] = camData['Gain']
+            imageParams['SizeX'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']) * scaleSubframe)
+            imageParams['SizeY'] = int(float(self.data['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe)
+            imageParams['OffX'] = int((float(self.data['CCD_INFO']['CCD_MAX_X']) - imageParams['SizeX']) / 2)
+            imageParams['OffY'] = int((float(self.data['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
+            imageParams['CanSubframe'] = True
+        else:
+            imageParams['SizeX'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']))
+            imageParams['SizeY'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']))
+            imageParams['OffX'] = 0
+            imageParams['OffY'] = 0
+            imageParams['CanSubframe'] = False
+        if 'Gain' in self.data:
+            imageParams['Gain'] = self.data['Gain']
         else:
             imageParams['Gain'] = 'NotSet'
         if self.app.ui.checkFastDownload.isChecked():

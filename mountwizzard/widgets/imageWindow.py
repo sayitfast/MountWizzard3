@@ -32,6 +32,8 @@ class ImagesWindow(widget.MwWidget):
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
         self.app = app
+        self.mutexExpose = PyQt5.QtCore.QMutex()
+
         self.showStatus = False
         self.sizeX = 10
         self.sizeY = 10
@@ -223,9 +225,8 @@ class ImagesWindow(widget.MwWidget):
 
     def exposeOnce(self):
         # link to cam and check if available
-        camData = self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']
-        if 'CONNECTION' in camData:
-            if camData['CONNECTION']['CONNECT'] == 'Off':
+        if 'CONNECTION' in self.app.workerImaging.data:
+            if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
                 return
         else:
             return
@@ -235,10 +236,14 @@ class ImagesWindow(widget.MwWidget):
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
         imageParams['Directory'] = time.strftime('/%Y-%m-%d', time.gmtime())
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.captureImage(imageParams)
+        self.app.workerImaging.captureImage(imageParams)
+
+        self.mutexExpose.lock()
         while imageParams['Imagepath'] == '':
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.mutexExpose.unlock()
+
         self.showFitsImage(imageParams['Imagepath'])
         '''
         imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams, queue=True)
