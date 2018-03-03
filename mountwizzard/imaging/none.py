@@ -23,6 +23,8 @@ class NoneCamera:
         self.main = main
         self.app = app
         self.data = data
+        self.cancel = False
+        self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.application = dict()
         self.application['Available'] = True
@@ -30,6 +32,11 @@ class NoneCamera:
         self.application['InstallPath'] = ''
         self.application['Status'] = 'OK'
         self.application['Runtime'] = 'Dummy Camera'
+
+    def setCancelImaging(self):
+        self.mutexCancel.lock()
+        self.cancel = True
+        self.mutexCancel.unlock()
 
     def getStatus(self):
         self.application['Status'] = 'OK'
@@ -41,7 +48,9 @@ class NoneCamera:
 
     @staticmethod
     def getImage(imageParams):
-        pass
+        self.mutexCancel.lock()
+        self.cancel = False
+        self.mutexCancel.unlock()
 
     @staticmethod
     def solveImage(imageParams):

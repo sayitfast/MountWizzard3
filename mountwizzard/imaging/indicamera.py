@@ -15,7 +15,6 @@ import logging
 import PyQt5
 import time
 import indi.indi_xml as indiXML
-from astrometry import astrometryClient
 
 
 class INDICamera:
@@ -26,6 +25,9 @@ class INDICamera:
         self.main = main
         self.app = app
         self.data = data
+        self.cancel = False
+        self.mutexCancel = PyQt5.QtCore.QMutex()
+        self.mutexReceived = PyQt5.QtCore.QMutex()
 
         self.application = dict()
         self.application['Available'] = False
@@ -46,40 +48,47 @@ class INDICamera:
         self.app.workerINDI.receivedImage.connect(lambda: self.setReceivedImage())
 
     def setReceivedImage(self):
-        self.receivedImage = True
+        self.mutexReceived.lock()
+        self.cancel = True
+        self.mutexReceived.unlock()
+
+    def setCancelImaging(self):
+        self.mutexCancel.lock()
+        self.cancel = True
+        self.mutexCancel.unlock()
 
     def getStatus(self):
         # check if INDIClient is running and camera device is there
-        if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
-            self.application['Name'] = self.app.workerINDI.cameraDevice
-            # check if data from INDI server already received
-            if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
-                self.data['CONNECTION']['CONNECT'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT']
+        if self.app.workerINDI.isRunning:
+            self.application['Available'] = True
+            if self.app.workerINDI.cameraDevice != '':
+                self.application['Status'] = 'OK'
+                self.application['Name'] = self.app.workerINDI.cameraDevice
+                # check if data from INDI server already received
+                if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
+                    check = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]
+                    self.data['CONNECTION']['CONNECT'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT']
+                else:
+                    self.logger.error('Unknown camera status')
             else:
-                self.logger.error('Unknown camera status')
+                self.application['Status'] = 'ERROR'
         else:
-            self.application['Status'] = 'ERROR'
+            self.application['Available'] = False
 
     def getCameraProps(self):
-        if value['Success']:
-            if 'GainValues' not in value:
-                self.data['Gain'] = ['High']
-            else:
-                self.data['Gain'] = value['GainValues'][0]
-            if value['SupportsSubframe']:
-                self.data['CCD_FRAME'] = {}
-                self.data['CCD_FRAME']['HEIGHT'] = value['NumPixelsX']
-                self.data['CCD_FRAME']['WIDTH'] = value['NumPixelsY']
-                self.data['CCD_FRAME']['X'] = 0
-                self.data['CCD_FRAME']['Y'] = 0
-            self.data['CCD_INFO'] = {}
-            self.data['CCD_INFO']['CCD_MAX_X'] = value['NumPixelsX']
-            self.data['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
+        self.data['Gain'] = 'High'
+        self.data['Speed'] = 'High'
+        self.data['CCD_INFO'] = {}
+        self.data['CCD_INFO']['CCD_MAX_X'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CCD_INFO']['CCD_MAX_X']
+        self.data['CCD_INFO']['CCD_MAX_Y'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CCD_INFO']['CCD_MAX_Y']
 
     def getImage(self, imageParams):
+        self.mutexCancel.lock()
+        self.cancel = False
+        self.mutexCancel.unlock()
+
         binning = int(float(imageParams['Binning']))
-        exposureLength = int(float(imageParams['Exposure']))
-        speed = imageParams['Speed']
+        exposure = int(float(imageParams['Exposure']))
         filename = imageParams['File']
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
@@ -99,20 +108,26 @@ class INDICamera:
                                             indi_attr={'name': 'CCD_FRAME_TYPE', 'device': self.app.workerINDI.cameraDevice}))
                 # set binning
                 self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}), indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
+                    indiXML.newNumberVector([indiXML.oneNumber(binning, indi_attr={'name': 'HOR_BIN'}),
+                                             indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
                                             indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
                 # set subframe
-                # todo set subframe
-                # set gain (necessary) ?
-                # todo: implement gain setting
+                self.app.INDICommandQueue.put(
+                    indiXML.newNumberVector([indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
+                                             indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'}),
+                                             indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
+                                             indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'})],
+                                            indi_attr={'name': 'CCD_FRAME', 'device': self.app.workerINDI.cameraDevice}))
                 # Request image.
                 self.app.INDICommandQueue.put(
-                    indiXML.newNumberVector([indiXML.oneNumber(exposureLength, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
+                    indiXML.newNumberVector([indiXML.oneNumber(exposure, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
                                             indi_attr={'name': 'CCD_EXPOSURE', 'device': self.app.workerINDI.cameraDevice}))
-                self.receivedImage = False
-                # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
-                while not self.receivedImage and self.app.workerModelingDispatcher.isRunning and not self.cancel:
 
+                self.mutexReceived.lock()
+                self.receivedImage = False
+                self.mutexReceived.unlock()
+
+                while not self.receivedImage and not self.cancel:
                     if 'CONNECTION' and 'CCD_EXPOSURE' in self.data['Camera']:
                         if self.data['CONNECTION']['CONNECT'] == 'On':
                             if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:

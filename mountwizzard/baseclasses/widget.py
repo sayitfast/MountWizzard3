@@ -261,7 +261,7 @@ class MwWidget(QWidget):
     }
     QPushButton[iconset='true'] {
         text-align: left;
-        padding-left: 10px;
+        padding-left: 5px;
     }
     QPushButton:focus {
         outline: none;
@@ -459,7 +459,7 @@ class MwWidget(QWidget):
         gui.setProperty('iconset', True)
         gui.style().unpolish(gui)
         gui.style().polish(gui)
-        gui.setIconSize(PyQt5.QtCore.QSize(32, 18))
+        gui.setIconSize(PyQt5.QtCore.QSize(16, 16))
 
     def initUI(self):
         self.setWindowFlags((self.windowFlags() | Qt.CustomizeWindowHint) & ~Qt.WindowMaximizeButtonHint)

@@ -41,6 +41,8 @@ class SGPro:
         self.main = main
         self.app = app
         self.data = data
+        self.cancel = False
+        self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.application = dict()
         self.application['Available'] = False
@@ -57,6 +59,11 @@ class SGPro:
                 self.logger.info('Name: {0}, Path: {1}'.format(self.application['Name'], self.application['InstallPath']))
             else:
                 self.logger.info('Application SGPro not found on computer')
+
+    def setCancelImaging(self):
+        self.mutexCancel.lock()
+        self.cancel = True
+        self.mutexCancel.unlock()
 
     def getStatus(self):
         suc, state, message = self.SgGetDeviceStatus('Camera')
@@ -80,17 +87,14 @@ class SGPro:
                 self.data['Gain'] = ['High']
             else:
                 self.data['Gain'] = value['GainValues'][0]
-            if value['SupportsSubframe']:
-                self.data['CCD_FRAME'] = {}
-                self.data['CCD_FRAME']['HEIGHT'] = value['NumPixelsX']
-                self.data['CCD_FRAME']['WIDTH'] = value['NumPixelsY']
-                self.data['CCD_FRAME']['X'] = 0
-                self.data['CCD_FRAME']['Y'] = 0
             self.data['CCD_INFO'] = {}
             self.data['CCD_INFO']['CCD_MAX_X'] = value['NumPixelsX']
             self.data['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
 
     def getImage(self, imageParams):
+        self.mutexCancel.lock()
+        self.cancel = False
+        self.mutexCancel.unlock()
         suc, mes, guid = self.SgCaptureImage(binningMode=imageParams['Binning'],
                                              exposureLength=imageParams['Exposure'],
                                              iso=str(imageParams['Iso']),

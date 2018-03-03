@@ -80,7 +80,9 @@ class ImagingApps(PyQt5.QtCore.QObject):
 
         # shortcuts for better usage
         self.cameraHandler = self.NoneCam
+
         # signal slot links
+        self.imagingCancel.connect(self.cameraHandler.setCancelImaging)
         self.cameraStatusText.connect(self.setCameraStatusText)
         self.cameraExposureTime.connect(self.setCameraExposureTime)
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
@@ -176,13 +178,6 @@ class ImagingApps(PyQt5.QtCore.QObject):
             imageParams['SizeY'] = int(float(camData['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe)
             imageParams['OffX'] = int((float(camData['CCD_INFO']['CCD_MAX_X']) - imageParams['SizeX']) / 2)
             imageParams['OffY'] = int((float(camData['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
-            imageParams['CanSubframe'] = True
-        else:
-            imageParams['SizeX'] = int(float(camData['CCD_INFO']['CCD_MAX_X']))
-            imageParams['SizeY'] = int(float(camData['CCD_INFO']['CCD_MAX_X']))
-            imageParams['OffX'] = 0
-            imageParams['OffY'] = 0
-            imageParams['CanSubframe'] = False
         if 'Gain' in camData:
             imageParams['Gain'] = camData['Gain']
         else:
@@ -231,4 +226,3 @@ class ImagingApps(PyQt5.QtCore.QObject):
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
-
