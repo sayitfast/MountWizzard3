@@ -18,136 +18,63 @@ import indi.indi_xml as indiXML
 from astrometry import astrometryClient
 
 
-class INDICamera(PyQt5.QtCore.QObject):
+class INDICamera:
     logger = logging.getLogger(__name__)
-    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
-    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
-    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLESTATUS = 200
-
-    def __init__(self, app, thread, commandQueue):
-        super().__init__()
+    def __init__(self, main, app, data):
+        # make main sources available
+        self.main = main
         self.app = app
-        self.thread = thread
-        self.commandQueue = commandQueue
-        self.data = {}
-        self.solver = astrometryClient.AstrometryClient(self, self.app)
-        self.isRunning = False
-        self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.data = data
 
-        self.cancel = False
+        self.application = dict()
+        self.application['Available'] = False
+        self.application['Name'] = ''
+        self.application['InstallPath'] = ''
+        self.application['Status'] = ''
+        self.application['Runtime'] = 'Sequence Generator.exe'
+
         self.counter = 0
         self.receivedImage = True
-        self.imagingStarted = False
 
-        if 'Camera' not in self.data:
-            self.data['Camera'] = {}
-        if 'Solver' not in self.data:
-            self.data['Solver'] = {}
-        self.data['Camera']['Status'] = 'DISCONNECTED'
-        self.data['Solver']['Status'] = 'DISCONNECTED'
-        self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
-        self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
-        self.data['Camera']['AppAvailable'] = True
-        self.data['Camera']['AppName'] = 'INDICamera'
-        self.data['Camera']['AppInstallPath'] = ''
-        self.data['Solver']['AppAvailable'] = False
-        self.data['Solver']['AppName'] = 'ANSRV'
-        self.data['Solver']['AppInstallPath'] = ''
+        self.application['Status'] = ''
+        self.application['CONNECTION'] = {'CONNECT': 'Off'}
+        self.application['Available'] = True
+        self.application['Name'] = 'INDICamera'
+        self.application['InstallPath'] = ''
 
         self.app.workerINDI.receivedImage.connect(lambda: self.setReceivedImage())
-
-    def run(self):
-        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        self.mutexIsRunning.lock()
-        if not self.isRunning:
-            self.isRunning = True
-        self.mutexIsRunning.unlock()
-        self.setStatus()
-        while self.isRunning:
-            if not self.commandQueue.empty():
-                command = self.commandQueue.get()
-                if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
-                elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-
-    def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
 
     def setReceivedImage(self):
         self.receivedImage = True
 
-    def setStatus(self):
+    def getStatus(self):
         # check if INDIClient is running and camera device is there
         if self.app.workerINDI.isRunning and self.app.workerINDI.cameraDevice != '':
-            self.data['Camera'].update(self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice])
-            if 'CONNECTION' and 'CCD_EXPOSURE' in self.data['Camera']:
-                if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                    if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:
-                        if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
-                            self.data['Camera']['Status'] = 'INTEGRATING'
-                            self.cameraStatusText.emit('INTEGRATE')
-                        else:
-                            self.data['Camera']['Status'] = 'DOWNLOADING'
-                            self.cameraStatusText.emit('DOWNLOAD')
-                    elif self.data['Camera']['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
-                        if not self.receivedImage:
-                            self.data['Camera']['Status'] = 'INTEGRATING'
-                            self.cameraStatusText.emit('INTEGRATE')
-                        else:
-                            self.data['Camera']['Status'] = 'IDLE'
-                            self.cameraStatusText.emit('IDLE')
-                    elif self.data['Camera']['CCD_EXPOSURE']['state'] == 'Error':
-                        self.data['Camera']['Status'] = 'ERROR'
-                        self.cameraStatusText.emit('ERROR')
-                    self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
-                else:
-                    self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
-                    self.data['Camera']['Status'] = 'DISCONNECTED'
-                    self.cameraStatusText.emit('DISCONN')
+            self.application['Name'] = self.app.workerINDI.cameraDevice
+            # check if data from INDI server already received
+            if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
+                self.data['CONNECTION']['CONNECT'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT']
             else:
-                self.data['Camera']['Status'] = 'ERROR'
-                self.cameraStatusText.emit('ERROR')
-            if 'CCD_EXPOSURE' in self.data['Camera']:
-                self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
+                self.logger.error('Unknown camera status')
         else:
-            self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(1)
-            self.cameraStatusText.emit('---')
-            self.cameraExposureTime.emit('---')
+            self.application['Status'] = 'ERROR'
 
-        # reduced status speed for astrometry
-        self.counter += 1
-        if self.counter % 5 == 0:
-            if self.app.ui.checkEnableAstrometry.isChecked():
-                self.data['Solver']['Status'] = self.solver.checkAstrometryServerRunning()
-                if self.data['Solver']['Status'] == 2:
-                    self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
-                    self.solverStatusText.emit('IDLE')
-                    self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
-                elif self.data['Solver']['Status'] == 1:
-                    self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
-                    self.solverStatusText.emit('SOLVE')
-                    self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
-                elif self.data['Solver']['Status'] == 0:
-                    self.app.workerModelingDispatcher.signalStatusSolver.emit(1)
-                    self.solverStatusText.emit('DISCONN')
-                    self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
+    def getCameraProps(self):
+        if value['Success']:
+            if 'GainValues' not in value:
+                self.data['Gain'] = ['High']
             else:
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
-                self.solverStatusText.emit('---')
-                self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
+                self.data['Gain'] = value['GainValues'][0]
+            if value['SupportsSubframe']:
+                self.data['CCD_FRAME'] = {}
+                self.data['CCD_FRAME']['HEIGHT'] = value['NumPixelsX']
+                self.data['CCD_FRAME']['WIDTH'] = value['NumPixelsY']
+                self.data['CCD_FRAME']['X'] = 0
+                self.data['CCD_FRAME']['Y'] = 0
+            self.data['CCD_INFO'] = {}
+            self.data['CCD_INFO']['CCD_MAX_X'] = value['NumPixelsX']
+            self.data['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
 
     def getImage(self, imageParams):
         binning = int(float(imageParams['Binning']))
@@ -157,7 +84,7 @@ class INDICamera(PyQt5.QtCore.QObject):
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
         self.app.workerINDI.imagePath = imagePath
-        self.cancel = False
+
         if self.app.workerINDI.cameraDevice != '':
             if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'On':
                 # Enable BLOB mode.
@@ -185,36 +112,46 @@ class INDICamera(PyQt5.QtCore.QObject):
                 self.receivedImage = False
                 # todo: transfer between indi subsystem and camera has to be with signals an to be interruptable
                 while not self.receivedImage and self.app.workerModelingDispatcher.isRunning and not self.cancel:
-                    time.sleep(0.1)
+
+                    if 'CONNECTION' and 'CCD_EXPOSURE' in self.data['Camera']:
+                        if self.data['CONNECTION']['CONNECT'] == 'On':
+                            if self.data['Camera']['CCD_EXPOSURE']['state'] in ['Busy']:
+                                if float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
+                                    self.data['Camera']['Status'] = 'INTEGRATING'
+                                    self.cameraStatusText.emit('INTEGRATE')
+                                else:
+                                    self.data['Camera']['Status'] = 'DOWNLOADING'
+                                    self.cameraStatusText.emit('DOWNLOAD')
+                            elif self.data['Camera']['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
+                                if not self.receivedImage:
+                                    self.data['Camera']['Status'] = 'INTEGRATING'
+                                    self.cameraStatusText.emit('INTEGRATE')
+                                else:
+                                    self.data['Camera']['Status'] = 'IDLE'
+                                    self.cameraStatusText.emit('IDLE')
+                            elif self.data['Camera']['CCD_EXPOSURE']['state'] == 'Error':
+                                self.data['Camera']['Status'] = 'ERROR'
+                                self.cameraStatusText.emit('ERROR')
+                            self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
+                        else:
+                            self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
+                            self.data['Camera']['Status'] = 'DISCONNECTED'
+                            self.cameraStatusText.emit('DISCONN')
+                    else:
+                        self.data['Camera']['Status'] = 'ERROR'
+                        self.cameraStatusText.emit('ERROR')
+                    if 'CCD_EXPOSURE' in self.data['Camera']:
+                        self.cameraExposureTime.emit('{0:02.0f}'.format(float(self.data['Camera']['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
+                else:
+                    self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
+                    self.app.workerModelingDispatcher.signalStatusCamera.emit(1)
+                    self.cameraStatusText.emit('---')
+                    self.cameraExposureTime.emit('---')
+
                     PyQt5.QtWidgets.QApplication.processEvents()
             imageParams['Imagepath'] = self.app.workerINDI.imagePath
-            imageParams['Message'] = 'OK'
         else:
             imageParams['Imagepath'] = ''
-            imageParams['Message'] = 'No Picture Taken'
-        return imageParams
-
-    def solveImage(self, imageParams):
-        if 'Imagepath' not in imageParams:
-            return imageParams
-        if self.app.ui.checkEnableAstrometry.isChecked():
-            if not self.solver.isSolving:
-                result = self.solver.solveImage(imageParams['Imagepath'], imageParams['RaJ2000'], imageParams['DecJ2000'], imageParams['ScaleHint'])
-                if result:
-                    if result['Message'] == 'Solve OK' and 'ra' in result:
-                        imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
-                        imageParams['DecJ2000Solved'] = result['dec']
-                        imageParams['Angle'] = result['orientation']
-                        imageParams['Scale'] = result['pixscale']
-                    imageParams['Message'] = result['Message']
-                else:
-                    imageParams['Message'] = 'Solve aborted'
-            else:
-                imageParams['Message'] = 'Solve failed because other solving process is still running'
-                self.logger.error('There is a solving process already running')
-        else:
-            self.logger.error('Astrometry is disabled')
-        return imageParams
 
     def connectCamera(self):
         if self.app.workerINDI.cameraDevice != '':

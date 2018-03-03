@@ -75,6 +75,7 @@ class ImagingApps(PyQt5.QtCore.QObject):
         # external classes
         self.transform = transform.Transform(self.app)
         self.SGPro = sgpro.SGPro(self, self.app, self.data)
+        self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
         self.NoneCam = none.NoneCamera(self, self.app, self.data)
 
         # shortcuts for better usage
@@ -92,8 +93,8 @@ class ImagingApps(PyQt5.QtCore.QObject):
 
         if self.NoneCam.application['Available']:
             self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.NoneCam.application['Name'])
-        #if self.workerINDICamera.data['AppAvailable']:
-        #    self.app.ui.pd_chooseImaging.addItem('INDI Camera')
+        if self.INDICamera.application['Available']:
+            self.app.ui.pd_chooseImaging.addItem('INDI Camera - ' + self.INDICamera.application['Name'])
         if platform.system() == 'Windows':
             if self.SGPro.application['Available']:
                 self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.application['Name'])
@@ -214,6 +215,19 @@ class ImagingApps(PyQt5.QtCore.QObject):
                 self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
             else:
                 self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
+
+        # updating camera name if possible
+        for i in range(0, self.app.ui.pd_chooseImaging.count()):
+            if self.app.ui.pd_chooseImaging.itemText(i).startswith('No Cam'):
+                pass
+            elif self.app.ui.pd_chooseImaging.itemText(i).startswith('SGPro'):
+                pass
+            elif self.app.ui.pd_chooseImaging.itemText(i).startswith('MaximDL'):
+                pass
+            elif self.app.ui.pd_chooseImaging.itemText(i).startswith('INDI'):
+                self.app.ui.pd_chooseImaging.setItemText(i,'INDI Camera - ' + self.INDICamera.application['Name'])
+            elif self.app.ui.pd_chooseImaging.itemText(i).startswith('TheSkyX'):
+                pass
 
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
