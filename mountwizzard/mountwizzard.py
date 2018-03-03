@@ -142,7 +142,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for imaging apps
         self.threadImaging = PyQt5.QtCore.QThread()
-        self.workerImaging = imaging.ImagingApps(self, self.threadImaging)
+        self.workerImaging = imaging.Imaging(self, self.threadImaging)
         self.threadImaging.setObjectName("Imaging")
         self.workerImaging.moveToThread(self.threadImaging)
         self.threadImaging.started.connect(self.workerImaging.run)

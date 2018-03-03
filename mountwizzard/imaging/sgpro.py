@@ -92,9 +92,13 @@ class SGPro:
             self.data['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
 
     def getImage(self, imageParams):
+        global path
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()
+
+        # waiting for start integrating
+        self.main.cameraStatusText.emit('START')
         suc, mes, guid = self.SgCaptureImage(binningMode=imageParams['Binning'],
                                              exposureLength=imageParams['Exposure'],
                                              iso=str(imageParams['Iso']),
@@ -109,17 +113,47 @@ class SGPro:
                                              width=imageParams['SizeX'],
                                              height=imageParams['SizeY'])
         self.logger.info('SgCaptureImage: {0}'.format(mes))
-        if suc:
-            while not self.cancel:
-                suc, path = self.SgGetImagePath(guid)
-                if suc:
-                    break
-                else:
-                    time.sleep(0.1)
-            imageParams['Imagepath'] = path.replace('\\', '/')
-        else:
+        if not suc:
             imageParams['Imagepath'] = ''
-        self.logger.info('SgGetImagePath: {0}'.format(imageParams['Imagepath']))
+            return
+
+        # loop for integrating
+        self.main.waitForIntegrate.wakeAll()
+        self.main.cameraStatusText.emit('INTEGRATE')
+        while not self.cancel:
+            suc, state, message = self.SgGetDeviceStatus('Camera')
+            if 'downloading' in message or 'ready' in message:
+                break
+            time.sleep(0.1)
+
+        # Loop for downloading
+        self.main.waitForDownload.wakeAll()
+        self.main.imageIntegrated.emit()
+        self.main.cameraStatusText.emit('DOWNLOAD')
+        while not self.cancel:
+            suc, path = self.SgGetImagePath(guid)
+            if suc:
+                break
+            else:
+                time.sleep(0.1)
+
+        # Loop for saving
+        self.main.waitForSave.wakeAll()
+        self.main.imageDownloaded.emit()
+        self.main.cameraStatusText.emit('SAVING')
+        while not self.cancel:
+            suc, state, message = self.SgGetDeviceStatus('Camera')
+            if 'ready' in message or 'idle' in message:
+                break
+            else:
+                time.sleep(0.1)
+
+        # finally idle
+        self.main.imageSaved.emit()
+        self.main.waitForFinished.wakeAll()
+        self.main.cameraStatusText.emit('IDLE')
+        self.main.cameraExposureTime.emit('---')
+        imageParams['Imagepath'] = path.replace('\\', '/')
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

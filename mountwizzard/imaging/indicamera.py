@@ -151,9 +151,9 @@ class INDICamera:
                 self.main.cameraStatusText.emit('ERROR')
             timeout += 1
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # loop for integrating
+        self.main.waitForIntegrate.wakeAll()
         self.main.cameraStatusText.emit('INTEGRATE')
         while not self.cancel:
             if timeout > self.MAX_TIMEOUT:
@@ -173,16 +173,16 @@ class INDICamera:
                 self.main.cameraExposureTime.emit('---')
             timeout += 1
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # loop for download
+        self.main.waitForDownload.wakeAll()
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
         while not self.cancel:
             if timeout > self.MAX_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
-            if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
+            if 'CCD_EXPOSURE' in cam:
                 if cam['CONNECTION']['CONNECT'] == 'On':
                     if cam['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
                         break
@@ -198,23 +198,19 @@ class INDICamera:
                 self.main.cameraExposureTime.emit('---')
             timeout += 1
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # loop for saving
+        self.main.waitForSave.wakeAll()
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
         while not self.cancel:
             if timeout > self.MAX_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
-            if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
-                if self.receivedImage:
-                    break
-            else:
-                self.main.cameraStatusText.emit('ERROR')
+            if self.receivedImage:
+                break
             timeout += 1
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # finally idle
         self.main.imageSaved.emit()
@@ -222,7 +218,6 @@ class INDICamera:
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('---')
         imageParams['Imagepath'] = self.app.workerINDI.imagePath
-        PyQt5.QtWidgets.QApplication.processEvents()
 
     def connectCamera(self):
         if self.app.workerINDI.cameraDevice != '':

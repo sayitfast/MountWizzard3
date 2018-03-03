@@ -32,7 +32,6 @@ class ImagesWindow(widget.MwWidget):
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
         self.app = app
-        self.mutexExpose = PyQt5.QtCore.QMutex()
 
         self.showStatus = False
         self.sizeX = 10
@@ -236,13 +235,11 @@ class ImagesWindow(widget.MwWidget):
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
         imageParams['Directory'] = time.strftime('/%Y-%m-%d', time.gmtime())
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
-        self.app.workerImaging.captureImage(imageParams)
+        self.app.workerImaging.imagingCommandQueue.put(imageParams)
 
-        self.mutexExpose.lock()
         while imageParams['Imagepath'] == '':
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-        self.mutexExpose.unlock()
 
         self.showFitsImage(imageParams['Imagepath'])
         '''

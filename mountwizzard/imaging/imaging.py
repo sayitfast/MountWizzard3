@@ -33,7 +33,7 @@ if platform.system() == 'Windows' or platform.system() == 'Darwin':
     from imaging import theskyx
 
 
-class ImagingApps(PyQt5.QtCore.QObject):
+class Imaging(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     # signals to be used for others
@@ -46,6 +46,12 @@ class ImagingApps(PyQt5.QtCore.QObject):
     imageIntegrated = PyQt5.QtCore.pyqtSignal()
     imageDownloaded = PyQt5.QtCore.pyqtSignal()
     imageSaved = PyQt5.QtCore.pyqtSignal()
+
+    # wait conditions used by others
+    waitForIntegrate = PyQt5.QtCore.QWaitCondition()
+    waitForDownload = PyQt5.QtCore.QWaitCondition()
+    waitForSave = PyQt5.QtCore.QWaitCondition()
+    waitForFinished = PyQt5.QtCore.QWaitCondition()
 
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
@@ -60,12 +66,6 @@ class ImagingApps(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.imagingCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
-
-        # wait conditions used by others
-        self.waitForIntegrate = PyQt5.QtCore.QWaitCondition()
-        self.waitForDownload = PyQt5.QtCore.QWaitCondition()
-        self.waitForSave = PyQt5.QtCore.QWaitCondition()
-        self.waitForFinished = PyQt5.QtCore.QWaitCondition()
 
         # class data
         self.data = dict()
