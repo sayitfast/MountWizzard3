@@ -18,7 +18,7 @@ import shutil
 import time
 import PyQt5
 # Cameras
-from modeling import imagingApps
+from camera import imagingApps
 # analyse save functions
 from analyse import analysedata
 # modelPoints

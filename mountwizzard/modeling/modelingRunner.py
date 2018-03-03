@@ -19,7 +19,6 @@ import time
 import math
 import PyQt5
 import indi.indi_xml as indiXML
-from modeling import imagingApps
 from analyse import analysedata
 from modeling import modelingPoints
 from queue import Queue
@@ -204,7 +203,6 @@ class ModelingRunner:
         self.analyseData = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.modelPoints = modelingPoints.ModelPoints(self.app)
-        self.imagingApps = imagingApps.ImagingApps(self.app)
 
         # initialize the parallel thread modeling parts
         self.threadSlewpoint = PyQt5.QtCore.QThread()
@@ -235,11 +233,9 @@ class ModelingRunner:
         self.cancel = False
 
     def initConfig(self):
-        self.imagingApps.initConfig()
         self.modelPoints.initConfig()
 
     def storeConfig(self):
-        self.imagingApps.storeConfig()
         self.modelPoints.storeConfig()
 
     def clearAlignmentModel(self):

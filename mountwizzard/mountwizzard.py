@@ -41,6 +41,7 @@ from dome import dome
 from environment import environment
 from indi import indi_client
 from astrometry import transform
+from imaging import imagingApps
 if platform.system() == 'Windows':
     from automation import upload
 from wakeonlan import send_magic_packet
@@ -139,6 +140,20 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
+        # threading for imaging apps
+        self.threadImaging = PyQt5.QtCore.QThread()
+        self.workerImaging = remoteThread.Remote(self, self.threadImaging)
+        self.threadImaging.setObjectName("Imaging")
+        self.workerImaging.moveToThread(self.threadImaging)
+        self.threadImaging.started.connect(self.workerImaging.run)
+        self.threadImaging.start()
+        # threading for astrometry apps
+        #self.threadAstrometry = PyQt5.QtCore.QThread()
+        #self.workerAstrometry = remoteThread.Remote(self, self.threadAstrometry)
+        #self.threadAstrometry.setObjectName("Astrometry")
+        #self.workerAstrometry.moveToThread(self.threadAstrometry)
+        #self.threadAstrometry.started.connect(self.workerAstrometry.run)
+        # self.threadAstrometry.start()
         # threading for updater automation
         if platform.system() == 'Windows':
             self.threadUpload = PyQt5.QtCore.QThread()
@@ -152,8 +167,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
-        self.workerModelingDispatcher.signalStatusCamera.connect(self.setStatusCamera)
-        self.workerModelingDispatcher.signalStatusSolver.connect(self.setStatusSolver)
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
         self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
@@ -512,6 +525,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerEnvironment.stop()
         if self.workerDome.isRunning:
             self.workerDome.stop()
+        if self.workerImaging.isRunning:
+            self.workerImaging.stop()
 
         self.workerINDI.initConfig()
         self.workerMountDispatcher.initConfig()
@@ -519,6 +534,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerEnvironment.initConfig()
         self.workerDome.initConfig()
         self.workerRemote.initConfig()
+        self.workerImaging.initConfig()
         if platform.system() == 'Windows':
             self.workerUpload.initConfig()
         self.hemisphereWindow.initConfig()
@@ -537,6 +553,8 @@ class MountWizzardApp(widget.MwWidget):
             self.threadEnvironment.start()
         if not self.workerDome.isRunning:
             self.threadDome.start()
+        if not self.workerImaging.isRunning:
+            self.threadImaging.start()
         if self.ui.checkEnableRemoteAccess.isChecked():
             self.threadRemote.start()
         if platform.system() == 'Windows':
@@ -899,16 +917,6 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color:black;}')
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
-
-    def setStatusCamera(self, status):
-        if status == 3:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
-        elif status == 2:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
-        elif status == 1:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        else:
-            self.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
     def setStatusSolver(self, status):
         if status == 3:
