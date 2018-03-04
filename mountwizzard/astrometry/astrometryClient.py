@@ -147,7 +147,6 @@ class AstrometryClient:
                 else:
                     self.application['Name'] = 'Local'
                 self.application['Status'] = 'OK'
-                self.main.astrometryStatusText.emit('IDLE')
                 self.data['CONNECTION']['CONNECT'] = 'On'
         except Exception as e:
             self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI), e)
@@ -165,7 +164,9 @@ class AstrometryClient:
 
         # waiting for start solving
         timeSolvingStart = time.time()
+        errorState = False
         self.main.astrometryStatusText.emit('START')
+
         # check if we have the online solver running
         if self.urlLogin != '':
             # we have to login with the api key for the online solver to get the session key
@@ -176,17 +177,22 @@ class AstrometryClient:
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem setting api key, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-                return {'Message': 'Login with api key failed'}
-
-            if 'status' in result:
-                if result['status'] == 'error':
-                    self.app.messageQueue.put('\nGet session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
-                    self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
-                elif result['status'] == 'success':
-                    self.solveData['session'] = result['session']
-                    self.app.messageQueue.put('\tSession key for ASTROMETRY.NET is [{0}]\n'.format(result['session']))
-            else:
-                return {'Message': 'Malformed result in login procedure'}
+                imageParams['Message'] = 'Login with api key failed'
+                errorState = True
+            finally:
+                pass
+            if not errorState:
+                if 'status' in result:
+                    if result['status'] == 'error':
+                        self.app.messageQueue.put('\nGet session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
+                        self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
+                        errorState = True
+                    elif result['status'] == 'success':
+                        self.solveData['session'] = result['session']
+                        self.app.messageQueue.put('\tSession key for ASTROMETRY.NET is [{0}]\n'.format(result['session']))
+                else:
+                    imageParams['Message'] = 'Malformed result in login procedure'
+                    errorState = True
         else:
             # local solve runs with dummy session key
             self.solveData['session'] = 12345
@@ -194,41 +200,44 @@ class AstrometryClient:
         # loop for upload
         self.main.waitForUpload.wakeAll()
         self.main.astrometryStatusText.emit('UPLOAD')
-
         # start uploading the data and define the parameters
         data = self.solveData
         data['scale_est'] = imageParams['ScaleHint']
-        # ra is in
+        # ra is in hours
         data['center_ra'] = imageParams['RaJ2000'] * 360 / 24
         data['center_dec'] = imageParams['DecJ2000']
-        fields = collections.OrderedDict()
-        fields['request-json'] = json.dumps(data)
-        fields['file'] = (filename, open(filename, 'rb'), 'application/octet-stream')
-        m = MultipartEncoder(fields)
-        try:
-            result = ''
-            response = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
-            result = json.loads(response.text)
-            stat = result['status']
-        except Exception as e:
-            self.logger.error('Problem upload, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-            return {'Message': 'Error upload'}
 
-        if stat != 'success':
-            self.logger.warning('Could not upload image to astrometry server')
-            return {'Message': 'Upload failed'}
-        submissionID = result['subid']
+        if not errorState:
+            fields = collections.OrderedDict()
+            fields['request-json'] = json.dumps(data)
+            fields['file'] = (imageParams['Imagepath'], open(imageParams['Imagepath'], 'rb'), 'application/octet-stream')
+            m = MultipartEncoder(fields)
+            try:
+                result = ''
+                response = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
+                result = json.loads(response.text)
+                stat = result['status']
+            except Exception as e:
+                self.logger.error('Problem upload, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                errorState = True
+                imageParams['Message'] = 'Error upload'
+            finally:
+                pass
+            if not errorState:
+                if stat != 'success':
+                    self.logger.warning('Could not upload image to astrometry server')
+                    imageParams['Message'] = 'Upload failed'
+                    errorState = True
+                else:
+                    submissionID = result['subid']
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
 
         # loop for solve
         self.main.waitForSolve.wakeAll()
-        self.main.astrometryStatusText.emit('SOLVE')
+        self.main.astrometryStatusText.emit('SOLVE-Sub')
 
         # wait for the submission = star detection algorithm to take place
-        timeoutCounter = 0
-        jobID = None
-        submissionID = None
-        while not self.cancel:
+        while not self.cancel and not errorState:
             data = {'request-json': ''}
             headers = {}
             try:
@@ -237,22 +246,28 @@ class AstrometryClient:
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                errorState = True
+                imageParams['Message'] = 'Error submissions'
                 break
+            finally:
+                pass
             jobs = result['jobs']
             if len(jobs) > 0:
                 if jobs[0] is not None:
                     jobID = jobs[0]
                     break
-            timeoutCounter += 1
-            if timeoutCounter > self.timeoutMax:
+            if time.time()-timeSolvingStart > self.timeoutMax:
                 # timeout after timeoutMax seconds
+                errorState = True
+                imageParams['Message'] = 'Timeout'
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
         # waiting for the solving results done by jobs are present
-        while not self.cancel and jobID is not None:
+        self.main.astrometryStatusText.emit('SOLVE-Job')
+        while not self.cancel and not errorState:
             data = {'request-json': ''}
             headers = {}
             try:
@@ -261,13 +276,17 @@ class AstrometryClient:
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem jobs, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-                return {'Message': 'Error Jobs'}
+                errorState = True
+                imageParams['Message'] = 'Error jobs'
+            finally:
+                pass
             stat = result['status']
             if stat == 'success':
                 break
-            timeoutCounter += 1
-            if timeoutCounter > self.timeoutMax:
+            if time.time()-timeSolvingStart > self.timeoutMax:
                 # timeout after timeoutMax seconds
+                errorState = True
+                imageParams['Message'] = 'Timeout'
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(1)
@@ -278,22 +297,23 @@ class AstrometryClient:
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
         # now get the solving data and results
-        try:
-            result = ''
-            response = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
-            result = json.loads(response.text)
-            imageParams['Solved'] = True
-            imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
-            imageParams['DecJ2000Solved'] = result['dec']
-            imageParams['Scale'] = result['pixscale']
-            imageParams['Angle'] = result['orientation']
-            imageParams['TimeTS'] = time.time()-timeSolvingStart
-            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-        except Exception as e:
-            self.logger.error('Problem get calibration data, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-            imageParams['Solved'] = False
-        finally:
-            pass
+        if not errorState:
+            try:
+                result = ''
+                response = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
+                result = json.loads(response.text)
+                imageParams['Solved'] = True
+                imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
+                imageParams['DecJ2000Solved'] = result['dec']
+                imageParams['Scale'] = result['pixscale']
+                imageParams['Angle'] = result['orientation']
+                imageParams['TimeTS'] = time.time()-timeSolvingStart
+                self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
+            except Exception as e:
+                self.logger.error('Problem get calibration data, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                imageParams['Solved'] = False
+            finally:
+                pass
 
         # finally idle
         self.main.imageDataDownloaded.emit()

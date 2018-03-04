@@ -261,10 +261,18 @@ class ImagesWindow(widget.MwWidget):
             return
         if not os.path.isfile(self.imagePath):
             return
-        imageParams = dict()
-        imageParams['Imagepath'] = self.imagePath
         self.ui.le_RaJ2000.setText('')
         self.ui.le_DecJ2000.setText('')
+
+        imageParams = dict()
+        imageParams['Imagepath'] = self.imagePath
+        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+        fitsHeader = fitsFileHandle[0].header
+        imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+        imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+        imageParams['ScaleHint'] = float(fitsHeader['PIXSCALE'])
+        fitsFileHandle.close()
+
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
         while 'Solved' not in imageParams:
             time.sleep(0.1)
