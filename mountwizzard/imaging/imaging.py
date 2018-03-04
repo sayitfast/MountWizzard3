@@ -121,19 +121,19 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexChooser.lock()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
             self.cameraHandler = self.NoneCam
-            self.logger.info('Actual camera / plate solver is None')
+            self.logger.info('Actual camera is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
             self.cameraHandler = self.SGPro
-            self.logger.info('Actual camera / plate solver is SGPro')
+            self.logger.info('Actual camera is SGPro')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
             self.cameraHandler = self.MaximDL
-            self.logger.info('Actual camera / plate solver is MaximDL')
+            self.logger.info('Actual camera is MaximDL')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
             self.cameraHandler = self.INDICamera
-            self.logger.info('Actual camera / plate solver is INDI Camera')
+            self.logger.info('Actual camera is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
             self.cameraHandler = self.TheSkyX
-            self.logger.info('Actual camera / plate solver is TheSkyX')
+            self.logger.info('Actual camera is TheSkyX')
         self.mutexChooser.unlock()
 
     def run(self):

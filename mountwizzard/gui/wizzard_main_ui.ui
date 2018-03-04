@@ -14271,7 +14271,7 @@ Window</string>
     <string>Show Messages</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_solverConnected">
+  <widget class="QPushButton" name="btn_astrometryConnected">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -14539,7 +14539,7 @@ Window</string>
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_solverStatusText">
+  <widget class="QLineEdit" name="le_astrometryStatusText">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -14685,7 +14685,7 @@ Window</string>
   <zorder>btn_driverMountConnected</zorder>
   <zorder>btn_environmentConnected</zorder>
   <zorder>btn_openMessageWindow</zorder>
-  <zorder>btn_solverConnected</zorder>
+  <zorder>btn_astrometryConnected</zorder>
   <zorder>btn_loadFrom</zorder>
   <zorder>btn_saveConfigAs</zorder>
   <zorder>le_configName</zorder>
@@ -14695,7 +14695,7 @@ Window</string>
   <zorder>btn_mountBoot</zorder>
   <zorder>btn_INDIConnected</zorder>
   <zorder>le_cameraStatusText</zorder>
-  <zorder>le_solverStatusText</zorder>
+  <zorder>le_astrometryStatusText</zorder>
   <zorder>le_domeStatusText</zorder>
   <zorder>line_30</zorder>
   <zorder>label_110</zorder>
@@ -14859,7 +14859,7 @@ Window</string>
   <tabstop>btn_driverMountConnected</tabstop>
   <tabstop>btn_domeConnected</tabstop>
   <tabstop>btn_cameraConnected</tabstop>
-  <tabstop>btn_solverConnected</tabstop>
+  <tabstop>btn_astrometryConnected</tabstop>
   <tabstop>btn_environmentConnected</tabstop>
  </tabstops>
  <resources/>

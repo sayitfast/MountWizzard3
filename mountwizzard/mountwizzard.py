@@ -919,16 +919,6 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
 
-    def setStatusSolver(self, status):
-        if status == 3:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: green;color: black;}')
-        elif status == 2:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: yellow;color: black;}')
-        elif status == 1:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: red;color: black;}')
-        else:
-            self.ui.btn_solverConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
-
     def fillMountData(self):
         for valueName in self.workerMountDispatcher.data:
             if valueName == 'Reply':
