@@ -106,6 +106,7 @@ class SGPro:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
             self.main.astrometryStatusText.emit('ERROR')
             imageParams['Imagepath'] = ''
+            imageParams['Message'] = mes
             return
 
         # loop for upload
@@ -121,14 +122,14 @@ class SGPro:
         # loop for solve
         self.main.waitForSolve.wakeAll()
         self.main.astrometryStatusText.emit('SOLVE')
-        while True:
+        while not self.cancel:
             solved, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
             if solved:
                 # solved gives the status for PinPoint
                 break
             if 'ailed' in mes:
                 # Failed or failed is in PlanWave, Astrometry
-                print(mes)
+                imageParams['Message']
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(0.1)
@@ -146,6 +147,7 @@ class SGPro:
                 imageParams['Scale'] = float(scale)
                 imageParams['Angle'] = float(angle)
                 imageParams['TimeTS'] = float(timeTS)
+                imageParams['Message'] = 'Solved'
                 time.sleep(0.1)
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             break

@@ -27,10 +27,10 @@ import astropy.io.fits as pyfits
 from imaging import noneCamera
 from imaging import indicamera
 if platform.system() == 'Windows':
-    from imaging import maximdl
+    from imaging import maximdl_image
     from imaging import sgpro_image
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
-    from imaging import theskyx
+    from imaging import theskyx_image
 
 
 class Imaging(PyQt5.QtCore.QObject):
