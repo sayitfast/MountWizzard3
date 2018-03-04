@@ -40,7 +40,8 @@ class NoneCamera:
 
     def getStatus(self):
         self.application['Status'] = 'OK'
-        self.data['CONNECTION']['CONNECT'] = 'Off'
+        self.data['CONNECTION']['CONNECT'] = 'On'
+        self.main.cameraStatusText.emit('IDLE')
 
     @staticmethod
     def getCameraProps():

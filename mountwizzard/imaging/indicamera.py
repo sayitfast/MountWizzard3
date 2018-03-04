@@ -66,10 +66,10 @@ class INDICamera:
             self.application['Available'] = True
             if self.app.workerINDI.cameraDevice != '':
                 self.application['Status'] = 'OK'
+                self.main.cameraStatusText.emit('IDLE')
                 self.application['Name'] = self.app.workerINDI.cameraDevice
                 # check if data from INDI server already received
                 if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
-                    check = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]
                     self.data['CONNECTION']['CONNECT'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT']
                 else:
                     self.logger.error('Unknown camera status')
@@ -77,8 +77,7 @@ class INDICamera:
                 self.application['Status'] = 'ERROR'
         else:
             self.application['Available'] = False
-            self.main.cameraStatusText.emit('')
-            self.main.cameraExposureTime.emit('')
+            self.main.cameraStatusText.emit('Not OK')
 
     def getCameraProps(self):
         self.data['Gain'] = 'High'

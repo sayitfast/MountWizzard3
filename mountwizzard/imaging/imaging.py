@@ -226,7 +226,7 @@ class Imaging(PyQt5.QtCore.QObject):
             elif self.app.ui.pd_chooseImaging.itemText(i).startswith('MaximDL'):
                 pass
             elif self.app.ui.pd_chooseImaging.itemText(i).startswith('INDI'):
-                self.app.ui.pd_chooseImaging.setItemText(i,'INDI Camera - ' + self.INDICamera.application['Name'])
+                self.app.ui.pd_chooseImaging.setItemText(i, 'INDI Camera - ' + self.INDICamera.application['Name'])
             elif self.app.ui.pd_chooseImaging.itemText(i).startswith('TheSkyX'):
                 pass
 

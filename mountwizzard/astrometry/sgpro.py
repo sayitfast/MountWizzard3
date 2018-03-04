@@ -70,6 +70,7 @@ class SGPro:
         suc, state, message = self.SgGetDeviceStatus('PlateSolver')
         if suc:
             self.application['Status'] = 'OK'
+            self.main.astrometryStatusText.emit('IDLE')
             if state in self.ASTROMETRY_STATUS:
                 self.data['Status'] = self.ASTROMETRY_STATUS[state]
                 if self.ASTROMETRY_STATUS[state] == 'DISCONNECTED':
@@ -79,6 +80,7 @@ class SGPro:
             else:
                 self.logger.error('Unknown solver status: {0}'.format(state))
         else:
+            self.main.astrometryStatusText.emit('Not OK')
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
