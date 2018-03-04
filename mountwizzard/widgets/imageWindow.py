@@ -270,7 +270,13 @@ class ImagesWindow(widget.MwWidget):
         fitsHeader = fitsFileHandle[0].header
         imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
         imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-        imageParams['ScaleHint'] = float(fitsHeader['PIXSCALE'])
+        if 'PIXSCALE' in fitsHeader:
+            imageParams['ScaleHint'] = float(fitsHeader['PIXSCALE'])
+        else:
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
+            if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
+                imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
         fitsFileHandle.close()
 
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
