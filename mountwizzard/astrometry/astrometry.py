@@ -19,7 +19,7 @@ import queue
 import astropy.io.fits as pyfits
 
 from astrometry import astrometryClient
-from astrometry import sgpro
+from astrometry import sgpro_solve
 from astrometry import noneSolver
 
 
@@ -60,7 +60,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
 
         # external classes
-        self.SGPro = sgpro.SGPro(self, self.app, self.data)
+        self.SGPro = sgpro_solve.SGPro(self, self.app, self.data)
         self.AstrometryClient = astrometryClient.AstrometryClient(self, self.app, self.data)
         self.NoneSolve = noneSolver.NoneSolver(self, self.app, self.data)
 
@@ -195,7 +195,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('MaximDL'):
                 pass
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('Astrometry'):
-                pass
+                self.app.ui.pd_chooseAstrometry.setItemText(i, 'Astrometry - ' + self.AstrometryClient.application['Name'])
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('TheSkyX'):
                 pass
 

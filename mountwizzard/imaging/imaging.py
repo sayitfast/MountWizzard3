@@ -28,7 +28,7 @@ from imaging import noneCamera
 from imaging import indicamera
 if platform.system() == 'Windows':
     from imaging import maximdl
-    from imaging import sgpro
+    from imaging import sgpro_image
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
     from imaging import theskyx
 
@@ -73,7 +73,7 @@ class Imaging(PyQt5.QtCore.QObject):
 
         # external classes
         self.transform = transform.Transform(self.app)
-        self.SGPro = sgpro.SGPro(self, self.app, self.data)
+        self.SGPro = sgpro_image.SGPro(self, self.app, self.data)
         self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
         self.NoneCam = noneCamera.NoneCamera(self, self.app, self.data)
 

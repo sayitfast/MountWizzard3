@@ -55,14 +55,12 @@ class AstrometryClient:
     }
 
     def __init__(self, main, app, data):
-        self.app = app
         self.main = main
+        self.app = app
         self.data = data
+        self.cancel = False
+        self.mutexCancel = PyQt5.QtCore.QMutex()
 
-        self.isRunning = False
-        self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.isSolving = False
-        self.mutexIsSolving = PyQt5.QtCore.QMutex()
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
         self.timeoutMax = 60
@@ -137,52 +135,37 @@ class AstrometryClient:
         if valid:
             self.application['ServerIP'] = value
 
-    def checkAstrometryServerRunning(self):
+    def getStatus(self):
         try:
             retValue = 0
             data = {'request-json': ''}
             headers = {}
             result = requests.post(self.urlAPI, data=data, headers=headers)
             if result.status_code > 400:
-                self.mutexIsRunning.lock()
-                self.isRunning = True
-                self.mutexIsRunning.unlock()
-                if self.isSolving:
-                    retValue = 1
+                if self.urlAPI.startswith('http://nova.astrometry.net/api'):
+                    self.application['Name'] = 'Online'
                 else:
-                    # free to get some solving part
-                    retValue = 2
-            else:
-                self.mutexIsRunning.lock()
-                self.isRunning = False
-                self.mutexIsRunning.unlock()
-                retValue = 0
+                    self.application['Name'] = 'Local'
+                self.application['Status'] = 'OK'
+                self.main.astrometryStatusText.emit('IDLE')
+                self.data['CONNECTION']['CONNECT'] = 'On'
         except Exception as e:
             self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI), e)
-            self.mutexIsRunning.lock()
-            self.isRunning = False
-            self.mutexIsRunning.unlock()
-            retValue = 0
+            self.main.astrometryStatusText.emit('Not OK')
+            self.application['Available'] = False
+            self.data['Status'] = 'ERROR'
+            self.data['CONNECTION']['CONNECT'] = 'Off'
         finally:
             return retValue
 
-    def solveImage(self, filename, ra, dec, scale):
-        # check if solving is possible
-        if self.isSolving:
-            return
-        if not self.isRunning:
-            self.logger.warning('Astrometry connection is not available')
-            return {'Message': 'Astrometry not available'}
-        if self.main.cancel:
-            return {'Message': 'Cancel'}
-        if not os.path.isfile(filename):
-            return {'Message': 'File missing'}
+    def solveImage(self, imageParams):
+        self.mutexCancel.lock()
+        self.cancel = False
+        self.mutexCancel.unlock()
 
-        # start formal solving
-        self.mutexIsSolving.lock()
-        self.isSolving = True
-        self.mutexIsSolving.unlock()
-
+        # waiting for start solving
+        timeSolvingStart = time.time()
+        self.main.astrometryStatusText.emit('START')
         # check if we have the online solver running
         if self.urlLogin != '':
             # we have to login with the api key for the online solver to get the session key
@@ -208,12 +191,16 @@ class AstrometryClient:
             # local solve runs with dummy session key
             self.solveData['session'] = 12345
 
+        # loop for upload
+        self.main.waitForUpload.wakeAll()
+        self.main.astrometryStatusText.emit('UPLOAD')
+
         # start uploading the data and define the parameters
         data = self.solveData
-        data['scale_est'] = scale
+        data['scale_est'] = imageParams['ScaleHint']
         # ra is in
-        data['center_ra'] = ra * 360 / 24
-        data['center_dec'] = dec
+        data['center_ra'] = imageParams['RaJ2000'] * 360 / 24
+        data['center_dec'] = imageParams['DecJ2000']
         fields = collections.OrderedDict()
         fields['request-json'] = json.dumps(data)
         fields['file'] = (filename, open(filename, 'rb'), 'application/octet-stream')
@@ -225,22 +212,23 @@ class AstrometryClient:
             stat = result['status']
         except Exception as e:
             self.logger.error('Problem upload, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-            self.mutexIsSolving.lock()
-            self.isSolving = False
-            self.mutexIsSolving.unlock()
             return {'Message': 'Error upload'}
 
         if stat != 'success':
-            self.mutexIsSolving.lock()
-            self.isSolving = False
-            self.mutexIsSolving.unlock()
             self.logger.warning('Could not upload image to astrometry server')
             return {'Message': 'Upload failed'}
         submissionID = result['subid']
+        self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
+
+        # loop for solve
+        self.main.waitForSolve.wakeAll()
+        self.main.astrometryStatusText.emit('SOLVE')
 
         # wait for the submission = star detection algorithm to take place
         timeoutCounter = 0
-        while self.app.workerModelingDispatcher.isRunning and not self.main.cancel:
+        jobID = None
+        submissionID = None
+        while not self.cancel:
             data = {'request-json': ''}
             headers = {}
             try:
@@ -249,11 +237,7 @@ class AstrometryClient:
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-                self.mutexIsSolving.lock()
-                self.isSolving = False
-                self.mutexIsSolving.unlock()
-                return {'Message': 'Error submission'}
-
+                break
             jobs = result['jobs']
             if len(jobs) > 0:
                 if jobs[0] is not None:
@@ -262,15 +246,13 @@ class AstrometryClient:
             timeoutCounter += 1
             if timeoutCounter > self.timeoutMax:
                 # timeout after timeoutMax seconds
-                self.mutexIsSolving.lock()
-                self.isSolving = False
-                self.mutexIsSolving.unlock()
-                return {'Message': 'Solve failed due to timeout'}
+                break
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
         # waiting for the solving results done by jobs are present
-        while self.app.workerModelingDispatcher.isRunning and not self.main.cancel:
+        while not self.cancel and jobID is not None:
             data = {'request-json': ''}
             headers = {}
             try:
@@ -279,9 +261,6 @@ class AstrometryClient:
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem jobs, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-                self.mutexIsSolving.lock()
-                self.isSolving = False
-                self.mutexIsSolving.unlock()
                 return {'Message': 'Error Jobs'}
             stat = result['status']
             if stat == 'success':
@@ -289,26 +268,37 @@ class AstrometryClient:
             timeoutCounter += 1
             if timeoutCounter > self.timeoutMax:
                 # timeout after timeoutMax seconds
-                self.mutexIsSolving.lock()
-                self.isSolving = False
-                self.mutexIsSolving.unlock()
-                return {'Message': 'Solve failed due to timeout'}
+                break
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
+        # Loop for data
+        self.main.waitForData.wakeAll()
+        self.main.imageSolved.emit()
+        self.main.astrometryStatusText.emit('GET DATA')
         # now get the solving data and results
         try:
             result = ''
             response = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
             result = json.loads(response.text)
+            imageParams['Solved'] = True
+            imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
+            imageParams['DecJ2000Solved'] = result['dec']
+            imageParams['Scale'] = result['pixscale']
+            imageParams['Angle'] = result['orientation']
+            imageParams['TimeTS'] = time.time()-timeSolvingStart
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
         except Exception as e:
             self.logger.error('Problem get calibration data, error: {0}, result: {1}, response: {2}'.format(e, result, response))
-            self.mutexIsSolving.lock()
-            self.isSolving = False
-            self.mutexIsSolving.unlock()
-            return {'Message': 'Error Jobs'}
-        result['Message'] = 'Solve OK'
-        self.mutexIsSolving.lock()
-        self.isSolving = False
-        self.mutexIsSolving.unlock()
-        return result
+            imageParams['Solved'] = False
+        finally:
+            pass
+
+        # finally idle
+        self.main.imageDataDownloaded.emit()
+        self.main.waitForFinished.wakeAll()
+        self.main.astrometryStatusText.emit('IDLE')
+        self.main.astrometrySolvingTime.emit('')
+
+

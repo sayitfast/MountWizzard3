@@ -90,7 +90,7 @@ class SGPro:
         self.mutexCancel.unlock()
 
         # waiting for start solving
-        timeSolving = 0
+        timeSolvingStart = time.time()
         self.main.astrometryStatusText.emit('START')
         if imageParams['UseFitsHeader']:
             suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
@@ -116,8 +116,7 @@ class SGPro:
             suc, state, mes = self.SgGetDeviceStatus('PlateSolver')
             if 'IDLE' in state:
                 break
-            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(timeSolving))
-            timeSolving += 0.1
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(0.1)
 
         # loop for solve
@@ -132,8 +131,7 @@ class SGPro:
                 # Failed or failed is in PlanWave, Astrometry
                 print(mes)
                 break
-            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(timeSolving))
-            timeSolving += 0.1
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         imageParams['Solved'] = solved
@@ -150,8 +148,7 @@ class SGPro:
                 imageParams['Angle'] = float(angle)
                 imageParams['TimeTS'] = float(timeTS)
                 time.sleep(0.1)
-            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(timeSolving))
-            timeSolving += 0.1
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             break
 
         # finally idle
