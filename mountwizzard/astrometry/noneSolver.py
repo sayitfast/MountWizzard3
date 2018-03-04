@@ -16,7 +16,7 @@ import logging
 import time
 
 
-class NoneCamera:
+class NoneSolver:
 
     def __init__(self, main, app, data):
         # make main sources available
@@ -28,12 +28,12 @@ class NoneCamera:
 
         self.application = dict()
         self.application['Available'] = True
-        self.application['Name'] = 'Dummy Camera'
+        self.application['Name'] = 'Dummy Solver'
         self.application['InstallPath'] = ''
         self.application['Status'] = 'OK'
-        self.application['Runtime'] = 'Dummy Camera'
+        self.application['Runtime'] = 'Dummy Solver'
 
-    def setCancelImaging(self):
+    def setCancelAstrometry(self):
         self.mutexCancel.lock()
         self.cancel = True
         self.mutexCancel.unlock()
@@ -43,15 +43,7 @@ class NoneCamera:
         self.data['CONNECTION']['CONNECT'] = 'Off'
 
     @staticmethod
-    def getCameraProps():
-        pass
-
-    @staticmethod
-    def getImage(imageParams):
+    def solveImage(imageParams):
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()
-
-    @staticmethod
-    def solveImage(imageParams):
-        pass

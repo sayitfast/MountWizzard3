@@ -9751,7 +9751,7 @@ Window</string>
         </font>
        </property>
        <property name="text">
-        <string>Solver Connection</string>
+        <string>Astrometry Connection</string>
        </property>
       </widget>
      </widget>

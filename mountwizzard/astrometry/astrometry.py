@@ -19,6 +19,7 @@ import queue
 
 from astrometry import astrometryClient
 from astrometry import sgpro
+from astrometry import noneSolver
 
 
 class Astrometry(PyQt5.QtCore.QObject):
@@ -31,13 +32,13 @@ class Astrometry(PyQt5.QtCore.QObject):
 
     # putting status to processing
     imageUploaded = PyQt5.QtCore.pyqtSignal()
-    imageImageSolved = PyQt5.QtCore.pyqtSignal()
+    imageSolved = PyQt5.QtCore.pyqtSignal()
     imageDataDownloaded = PyQt5.QtCore.pyqtSignal()
 
     # wait conditions used by others
     waitForUpload = PyQt5.QtCore.QWaitCondition()
     waitForSolve = PyQt5.QtCore.QWaitCondition()
-    waitForDownload = PyQt5.QtCore.QWaitCondition()
+    waitForData = PyQt5.QtCore.QWaitCondition()
     waitForFinished = PyQt5.QtCore.QWaitCondition()
 
     CYCLE_STATUS = 1000
@@ -57,10 +58,9 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
 
         # external classes
-        self.transform = transform.Transform(self.app)
         self.SGPro = sgpro.SGPro(self, self.app, self.data)
         self.AstrometryClient = astrometryClient.AstrometryClient(self, self.app, self.data)
-        self.NoneSolve = none.NoneSolver(self, self.app, self.data)
+        self.NoneSolve = noneSolver.NoneSolver(self, self.app, self.data)
 
         # shortcuts for better usage
         self.astrometryHandler = self.NoneSolve
@@ -71,15 +71,24 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def initConfig(self):
+        try:
+            if 'AstrometryApplication' in self.app.config:
+                self.app.ui.pd_chooseAstrometry.setCurrentIndex(int(self.app.config['AstrometryApplication']))
+        except Exception as e:
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
+        self.AstrometryClient.initConfig()
+
         # build the drop down menu
         self.app.ui.pd_chooseAstrometry.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseAstrometry.setView(view)
 
-        if self.NoneCam.application['Available']:
-            self.app.ui.pd_chooseAstrometry.addItem('No Solver - ' + self.NoneCam.application['Name'])
-        if self.INDICamera.application['Available']:
-            self.app.ui.pd_chooseAstrometry.addItem('ASTROMETRY.NET - ' + self.INDICamera.application['Name'])
+        if self.NoneSolve.application['Available']:
+            self.app.ui.pd_chooseAstrometry.addItem('No Solver - ' + self.NoneSolve.application['Name'])
+        if self.AstrometryClient.application['Available']:
+            self.app.ui.pd_chooseAstrometry.addItem('Astrometry - ' + self.AstrometryClient.application['Name'])
         if platform.system() == 'Windows':
             if self.SGPro.application['Available']:
                 self.app.ui.pd_chooseAstrometry.addItem('SGPro - ' + self.SGPro.application['Name'])
@@ -89,19 +98,14 @@ class Astrometry(PyQt5.QtCore.QObject):
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseAstrometry.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
         # load the config data
-        try:
-            if 'AstrometryApplication' in self.app.config:
-                self.app.ui.pd_chooseAstrometry.setCurrentIndex(int(self.app.config['ImagingApplication']))
-        except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
-        finally:
-            pass
-        self.chooseImaging()
+
+        self.chooseAstrometry()
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
+        self.AstrometryClient.storeConfig()
 
-    def chooseImaging(self):
+    def chooseAstrometry(self):
         self.mutexChooser.lock()
         if self.app.ui.pd_chooseAstrometry.currentText().startswith('No Solver'):
             self.astrometryHandler = self.NoneSolve
@@ -112,8 +116,8 @@ class Astrometry(PyQt5.QtCore.QObject):
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('MaximDL'):
             self.astrometryHandler = self.MaximDL
             self.logger.info('Actual plate solver is MaximDL')
-        elif self.app.ui.pd_chooseAstrometry.currentText().startswith('INDI'):
-            self.astrometryHandler = self.INDICamera
+        elif self.app.ui.pd_chooseAstrometry.currentText().startswith('Astrometry'):
+            self.astrometryHandler = self.AstrometryClient
             self.logger.info('Actual plate solver is ASTROMETRY.NET')
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('TheSkyX'):
             self.astrometryHandler = self.TheSkyX
@@ -141,6 +145,14 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.thread.quit()
         self.thread.wait()
 
+    def solveImage(self, imageParams):
+        if self.data['CONNECTION']['CONNECT'] == 'Off':
+            return
+        # imageParams['UseFitsHeaders'] = True
+        # using a queue if the calling thread is gui -> no wait
+        # if it is done through modeling -> separate thread which is calling
+        self.astrometryHandler.solveImage(imageParams)
+
     def setAstrometryStatusText(self, status):
         self.app.ui.le_astrometryStatusText.setText(status)
 
@@ -165,7 +177,7 @@ class Astrometry(PyQt5.QtCore.QObject):
                 pass
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('MaximDL'):
                 pass
-            elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('ASTROMETRY'):
+            elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('Astrometry'):
                 pass
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('TheSkyX'):
                 pass

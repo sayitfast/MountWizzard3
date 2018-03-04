@@ -44,16 +44,21 @@ class AstrometryClient:
                  'parity': 2
                  }
 
-    data = {
+    application = {
         'ServerIP': '192.168.2.161',
         'ServerPort': 3499,
         'Connected': False,
-        'APIKey': ''
+        'APIKey': '',
+        'Available': True,
+        'Name': 'ASTROMETRY.NET',
+        'Status': ''
     }
 
-    def __init__(self, parent, app):
+    def __init__(self, main, app, data):
         self.app = app
-        self.parent = parent
+        self.main = main
+        self.data = data
+
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isSolving = False
@@ -62,7 +67,7 @@ class AstrometryClient:
         self.settingsChanged = False
         self.timeoutMax = 60
         self.urlLogin = ''
-        self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
+        self.urlAPI = ''
 
     def initConfig(self):
         try:
@@ -84,6 +89,8 @@ class AstrometryClient:
             pass
         self.setIP()
         self.setPort()
+        self.urlAPI = 'http://{0}:{1}/api'.format(self.application['ServerIP'], self.application['ServerPort'])
+
         # setting changes in gui on false, because the set of the config changed them already
         self.setAstrometryNet()
         self.app.ui.le_AstrometryServerIP.textChanged.connect(self.setIP)
@@ -113,22 +120,22 @@ class AstrometryClient:
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
                 self.timeoutMax = 360
             else:
-                self.urlAPI = 'http://{0}:{1}/api'.format(self.data['ServerIP'], self.data['ServerPort'])
+                self.urlAPI = 'http://{0}:{1}/api'.format(self.application['ServerIP'], self.application['ServerPort'])
                 self.urlLogin = ''
                 self.timeoutMax = 60
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_AstrometryServerPort)
-        self.settingsChanged = (self.data['ServerPort'] != value)
+        self.settingsChanged = (self.application['ServerPort'] != value)
         if valid:
-            self.data['ServerPort'] = value
+            self.application['ServerPort'] = value
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_AstrometryServerIP)
-        self.settingsChanged = (self.data['ServerIP'] != value)
+        self.settingsChanged = (self.application['ServerIP'] != value)
         if valid:
-            self.data['ServerIP'] = value
+            self.application['ServerIP'] = value
 
     def checkAstrometryServerRunning(self):
         try:
@@ -166,7 +173,7 @@ class AstrometryClient:
         if not self.isRunning:
             self.logger.warning('Astrometry connection is not available')
             return {'Message': 'Astrometry not available'}
-        if self.parent.cancel:
+        if self.main.cancel:
             return {'Message': 'Cancel'}
         if not os.path.isfile(filename):
             return {'Message': 'File missing'}
@@ -179,10 +186,10 @@ class AstrometryClient:
         # check if we have the online solver running
         if self.urlLogin != '':
             # we have to login with the api key for the online solver to get the session key
-            self.data['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
+            self.application['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
             try:
                 result = ''
-                response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.data['APIKey']})}, headers={})
+                response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.application['APIKey']})}, headers={})
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem setting api key, error: {0}, result: {1}, response: {2}'.format(e, result, response))
@@ -233,7 +240,7 @@ class AstrometryClient:
 
         # wait for the submission = star detection algorithm to take place
         timeoutCounter = 0
-        while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
+        while self.app.workerModelingDispatcher.isRunning and not self.main.cancel:
             data = {'request-json': ''}
             headers = {}
             try:
@@ -263,7 +270,7 @@ class AstrometryClient:
             PyQt5.QtWidgets.QApplication.processEvents()
 
         # waiting for the solving results done by jobs are present
-        while self.app.workerModelingDispatcher.isRunning and not self.parent.cancel:
+        while self.app.workerModelingDispatcher.isRunning and not self.main.cancel:
             data = {'request-json': ''}
             headers = {}
             try:

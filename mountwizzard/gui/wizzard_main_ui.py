@@ -5921,7 +5921,7 @@ class Ui_MainWindow(object):
         self.pd_chooseImaging.setToolTip(_translate("MainWindow", "<html><head/><body><p>Chooses which imaging application or framework should be used for modeling.</p></body></html>"))
         self.label_143.setText(_translate("MainWindow", "Imaging Connection"))
         self.pd_chooseAstrometry.setToolTip(_translate("MainWindow", "<html><head/><body><p>Chooses which imaging application or framework should be used for modeling.</p></body></html>"))
-        self.label_149.setText(_translate("MainWindow", "Solver Connection"))
+        self.label_149.setText(_translate("MainWindow", "Astrometry Connection"))
         self.settingsTabWidget.setTabText(self.settingsTabWidget.indexOf(self.tab_12), _translate("MainWindow", "Connections"))
         self.btn_setupDomeDriver.setToolTip(_translate("MainWindow", "<html><head/><body><p>Setup the ASCOM dome driver.</p></body></html>"))
         self.btn_setupDomeDriver.setText(_translate("MainWindow", "Setup"))

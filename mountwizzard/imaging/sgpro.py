@@ -92,7 +92,7 @@ class SGPro:
             self.data['CCD_INFO']['CCD_MAX_Y'] = value['NumPixelsY']
 
     def getImage(self, imageParams):
-        global path
+        path = ''
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()
@@ -114,6 +114,7 @@ class SGPro:
                                              height=imageParams['SizeY'])
         self.logger.info('SgCaptureImage: {0}'.format(mes))
         if not suc:
+            self.logger.warning('Imaging no start, message: {0}'.format(mes))
             imageParams['Imagepath'] = ''
             return
 

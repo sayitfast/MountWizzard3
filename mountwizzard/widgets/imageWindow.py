@@ -242,13 +242,18 @@ class ImagesWindow(widget.MwWidget):
             PyQt5.QtWidgets.QApplication.processEvents()
 
         self.showFitsImage(imageParams['Imagepath'])
-        '''
-        imageParams = self.app.workerModelingDispatcher.modelingRunner.imagingApps.solveImage(imageParams, queue=True)
-        if imageParams['Success']:
-            print(imageParams['Message'])
+
+        imageParams['Imagepath'] = 'mountwizzard/astrometry/NGC7023.fit'
+        self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
+
+        while 'Solved' not in imageParams:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+
+        if imageParams['Solved']:
             print(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'])
-        self.showFitsImage('mountwizzard/astrometry/NGC7023.fit')
-        '''
+        else:
+            print('Not Solved')
 
     def exposeContinuous(self):
         pass

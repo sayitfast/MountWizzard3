@@ -42,6 +42,7 @@ from environment import environment
 from indi import indi_client
 from astrometry import transform
 from imaging import imaging
+from astrometry import astrometry
 if platform.system() == 'Windows':
     from automation import upload
 from wakeonlan import send_magic_packet
@@ -148,12 +149,12 @@ class MountWizzardApp(widget.MwWidget):
         self.threadImaging.started.connect(self.workerImaging.run)
         self.threadImaging.start()
         # threading for astrometry apps
-        #self.threadAstrometry = PyQt5.QtCore.QThread()
-        #self.workerAstrometry = remoteThread.Remote(self, self.threadAstrometry)
-        #self.threadAstrometry.setObjectName("Astrometry")
-        #self.workerAstrometry.moveToThread(self.threadAstrometry)
-        #self.threadAstrometry.started.connect(self.workerAstrometry.run)
-        # self.threadAstrometry.start()
+        self.threadAstrometry = PyQt5.QtCore.QThread()
+        self.workerAstrometry = astrometry.Astrometry(self, self.threadAstrometry)
+        self.threadAstrometry.setObjectName("Astrometry")
+        self.workerAstrometry.moveToThread(self.threadAstrometry)
+        self.threadAstrometry.started.connect(self.workerAstrometry.run)
+        self.threadAstrometry.start()
         # threading for updater automation
         if platform.system() == 'Windows':
             self.threadUpload = PyQt5.QtCore.QThread()
@@ -527,6 +528,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerDome.stop()
         if self.workerImaging.isRunning:
             self.workerImaging.stop()
+        if self.workerAstrometry.isRunning:
+            self.workerAstrometry.stop()
 
         self.workerINDI.initConfig()
         self.workerMountDispatcher.initConfig()
@@ -535,6 +538,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerDome.initConfig()
         self.workerRemote.initConfig()
         self.workerImaging.initConfig()
+        self.workerAstrometry.initConfig()
         if platform.system() == 'Windows':
             self.workerUpload.initConfig()
         self.hemisphereWindow.initConfig()
@@ -555,6 +559,8 @@ class MountWizzardApp(widget.MwWidget):
             self.threadDome.start()
         if not self.workerImaging.isRunning:
             self.threadImaging.start()
+        if not self.workerAstrometry.isRunning:
+            self.threadAstrometry.start()
         if self.ui.checkEnableRemoteAccess.isChecked():
             self.threadRemote.start()
         if platform.system() == 'Windows':
@@ -633,6 +639,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerEnvironment.storeConfig()
         self.workerDome.storeConfig()
         self.workerImaging.storeConfig()
+        self.workerAstrometry.storeConfig()
         if platform.system() == 'Windows':
             self.workerUpload.storeConfig()
         self.hemisphereWindow.storeConfig()

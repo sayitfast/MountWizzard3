@@ -24,7 +24,7 @@ import PyQt5
 import queue
 from astrometry import transform
 import astropy.io.fits as pyfits
-from imaging import none
+from imaging import noneCamera
 from imaging import indicamera
 if platform.system() == 'Windows':
     from imaging import maximdl
@@ -75,7 +75,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
         self.SGPro = sgpro.SGPro(self, self.app, self.data)
         self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
-        self.NoneCam = none.NoneCamera(self, self.app, self.data)
+        self.NoneCam = noneCamera.NoneCamera(self, self.app, self.data)
 
         # shortcuts for better usage
         self.cameraHandler = self.NoneCam
