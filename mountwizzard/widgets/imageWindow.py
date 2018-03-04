@@ -20,6 +20,7 @@ import astropy.io.fits as pyfits
 from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPercentileInterval, PowerStretch
 from matplotlib import use
 from baseclasses import widget
+from astrometry import transform
 from gui import image_dialog_ui
 use('Qt5Agg')
 # from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
@@ -32,8 +33,11 @@ class ImagesWindow(widget.MwWidget):
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
         self.app = app
-
         self.showStatus = False
+        self.imagePath = ''
+
+        self.transform = transform.Transform(self.app)
+
         self.sizeX = 10
         self.sizeY = 10
         self.imageVmin = 1
@@ -54,6 +58,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageMatplotlib.axes.set_axis_off()
 
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
+        self.ui.btn_solve.clicked.connect(self.solveOnce)
         self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
@@ -82,6 +87,11 @@ class ImagesWindow(widget.MwWidget):
                 self.move(x, y)
             if 'ImagePopupWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['ImagePopupWindowShowStatus']
+            if 'ImagePath' in self.app.config:
+                self.imagePath = self.app.config['ImagePath']
+                self.ui.le_imageFile.setText(self.imagePath)
+                if os.path.isfile(self.imagePath):
+                    self.showFitsImage(self.imagePath)
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for image window, error:{0}'.format(e))
         finally:
@@ -91,6 +101,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImagePopupWindowPositionX'] = self.pos().x()
         self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
+        self.app.config['ImagePath'] = self.imagePath
 
     def showWindow(self):
         self.showStatus = True
@@ -233,7 +244,7 @@ class ImagesWindow(widget.MwWidget):
         imageParams = dict()
         imageParams['Imagepath'] = ''
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
-        imageParams['Directory'] = time.strftime('/%Y-%m-%d', time.gmtime())
+        imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
 
@@ -241,19 +252,26 @@ class ImagesWindow(widget.MwWidget):
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
 
-        self.showFitsImage(imageParams['Imagepath'])
+        self.imagePath = imageParams['Imagepath']
+        self.showFitsImage(self.imagePath)
+        self.ui.le_imageFile.setText(imageParams['Imagepath'])
 
-        imageParams['Imagepath'] = 'mountwizzard/astrometry/NGC7023.fit'
+    def solveOnce(self):
+        if self.imagePath == '':
+            return
+        if not os.path.isfile(self.imagePath):
+            return
+        imageParams = dict()
+        imageParams['Imagepath'] = self.imagePath
+        self.ui.le_RaJ2000.setText('')
+        self.ui.le_DecJ2000.setText('')
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
-
         while 'Solved' not in imageParams:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-
         if imageParams['Solved']:
-            print(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'])
+            self.ui.le_RaJ2000.setText(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
+            self.ui.le_DecJ2000.setText(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
         else:
-            print('Not Solved')
-
-    def exposeContinuous(self):
-        pass
+            self.ui.le_RaJ2000.setText('not solved')
+            self.ui.le_DecJ2000.setText('not solved')

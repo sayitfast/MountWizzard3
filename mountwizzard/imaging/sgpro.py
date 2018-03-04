@@ -115,6 +115,7 @@ class SGPro:
         self.logger.info('SgCaptureImage: {0}'.format(mes))
         if not suc:
             self.logger.warning('Imaging no start, message: {0}'.format(mes))
+            self.main.cameraStatusText.emit('ERROR')
             imageParams['Imagepath'] = ''
             return
 
@@ -153,7 +154,7 @@ class SGPro:
         self.main.imageSaved.emit()
         self.main.waitForFinished.wakeAll()
         self.main.cameraStatusText.emit('IDLE')
-        self.main.cameraExposureTime.emit('---')
+        self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = path.replace('\\', '/')
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,

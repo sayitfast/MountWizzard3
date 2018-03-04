@@ -153,7 +153,7 @@ class Dome(PyQt5.QtCore.QObject):
             else:
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)
-                    self.domeStatusText.emit('---')
+                    self.domeStatusText.emit('')
                 else:
                     self.domeStatusText.emit('DISCONN')
                     if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':

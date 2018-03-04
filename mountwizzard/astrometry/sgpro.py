@@ -88,46 +88,59 @@ class SGPro:
         self.mutexCancel.unlock()
 
         # waiting for start solving
+        timeSolving = 0
         self.main.astrometryStatusText.emit('START')
-        suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                           RaHint=imageParams['RaJ2000'],
-                                           DecHint=imageParams['DecJ2000'],
-                                           ScaleHint=imageParams['ScaleHint'],
-                                           BlindSolve=imageParams['Blind'],
-                                           UseFitsHeaders=False)
+        if imageParams['UseFitsHeader']:
+            suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
+                                               BlindSolve=imageParams['Blind'],
+                                               UseFitsHeaders=imageParams['UseFitsHeader'])
+        else:
+            suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
+                                               RaHint=imageParams['RaJ2000'],
+                                               DecHint=imageParams['DecJ2000'],
+                                               ScaleHint=imageParams['ScaleHint'],
+                                               BlindSolve=imageParams['Blind'],
+                                               UseFitsHeaders=imageParams['UseFitsHeader'])
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
+            self.main.astrometryStatusText.emit('ERROR')
             imageParams['Imagepath'] = ''
             return
 
-        # loop for solving
-        self.main.waitForSolve.wakeAll()
-        self.main.astrometryStatusText.emit('SOLVE')
+        # loop for upload
+        self.main.waitForUpload.wakeAll()
+        self.main.astrometryStatusText.emit('UPLOAD')
         while not self.cancel:
-            suc, state, message = self.SgGetDeviceStatus('Solver')
-            print(mes)
-            if 'downloading' in message or 'ready' in message:
+            suc, state, mes = self.SgGetDeviceStatus('PlateSolver')
+            if 'IDLE' in state:
                 break
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(timeSolving))
+            timeSolving += 0.1
             time.sleep(0.1)
 
+        # loop for solve
+        self.main.waitForSolve.wakeAll()
+        self.main.astrometryStatusText.emit('SOLVE')
         while True:
-            suc, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
-            mes = mes.strip('\n')
-            if mes[:7] in ['Matched', 'Solve t', 'Valid s', 'succeed']:
-                solved = True
+            solved, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
+            if solved:
+                # solved gives the status for PinPoint
                 break
-            elif mes != 'Solving':
-                solved = False
+            if 'ailed' in mes:
+                # Failed or failed is in PlanWave, Astrometry
+                print(mes)
                 break
-            else:
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(timeSolving))
+            timeSolving += 0.1
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        imageParams['Solved'] = solved
 
         # Loop for data
         self.main.waitForData.wakeAll()
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
-        while not self.cancel:
+        while not self.cancel and solved:
             if solved:
                 imageParams['RaJ2000Solved'] = float(ra_sol)
                 imageParams['DecJ2000Solved'] = float(dec_sol)
@@ -135,13 +148,15 @@ class SGPro:
                 imageParams['Angle'] = float(angle)
                 imageParams['TimeTS'] = float(timeTS)
                 time.sleep(0.1)
-            imageParams['Solved'] = solved
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(timeSolving))
+            timeSolving += 0.1
             break
 
         # finally idle
         self.main.imageDataDownloaded.emit()
         self.main.waitForFinished.wakeAll()
         self.main.astrometryStatusText.emit('IDLE')
+        self.main.astrometrySolvingTime.emit('')
 
     def SgGetDeviceStatus(self, device):
         # reference {"Device": "Camera"}, devices are "Camera", "FilterWheel", "Focuser", "Telescope" and "PlateSolver"}

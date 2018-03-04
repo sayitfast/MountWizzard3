@@ -77,8 +77,8 @@ class INDICamera:
                 self.application['Status'] = 'ERROR'
         else:
             self.application['Available'] = False
-            self.main.cameraStatusText.emit('---')
-            self.main.cameraExposureTime.emit('---')
+            self.main.cameraStatusText.emit('')
+            self.main.cameraExposureTime.emit('')
 
     def getCameraProps(self):
         self.data['Gain'] = 'High'
@@ -170,7 +170,7 @@ class INDICamera:
             if 'CCD_EXPOSURE' in cam:
                 self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
             else:
-                self.main.cameraExposureTime.emit('---')
+                self.main.cameraExposureTime.emit('')
             timeout += 1
             time.sleep(0.1)
 
@@ -195,7 +195,7 @@ class INDICamera:
             if 'CCD_EXPOSURE' in cam:
                 self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
             else:
-                self.main.cameraExposureTime.emit('---')
+                self.main.cameraExposureTime.emit('')
             timeout += 1
             time.sleep(0.1)
 
@@ -216,7 +216,7 @@ class INDICamera:
         self.main.imageSaved.emit()
         self.main.waitForFinished.wakeAll()
         self.main.cameraStatusText.emit('IDLE')
-        self.main.cameraExposureTime.emit('---')
+        self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = self.app.workerINDI.imagePath
 
     def connectCamera(self):

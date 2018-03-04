@@ -16,6 +16,7 @@ import time
 import platform
 import PyQt5
 import queue
+import astropy.io.fits as pyfits
 
 from astrometry import astrometryClient
 from astrometry import sgpro
@@ -28,6 +29,7 @@ class Astrometry(PyQt5.QtCore.QObject):
     # signals to be used for others
     # putting status to gui
     astrometryStatusText = PyQt5.QtCore.pyqtSignal(str)
+    astrometrySolvingTime = PyQt5.QtCore.pyqtSignal(str)
     astrometryCancel = PyQt5.QtCore.pyqtSignal()
 
     # putting status to processing
@@ -68,18 +70,10 @@ class Astrometry(PyQt5.QtCore.QObject):
         # signal slot links
         self.astrometryCancel.connect(self.astrometryHandler.setCancelAstrometry)
         self.astrometryStatusText.connect(self.setAstrometryStatusText)
+        self.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
         self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def initConfig(self):
-        try:
-            if 'AstrometryApplication' in self.app.config:
-                self.app.ui.pd_chooseAstrometry.setCurrentIndex(int(self.app.config['AstrometryApplication']))
-        except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
-        finally:
-            pass
-        self.AstrometryClient.initConfig()
-
         # build the drop down menu
         self.app.ui.pd_chooseAstrometry.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -98,7 +92,14 @@ class Astrometry(PyQt5.QtCore.QObject):
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseAstrometry.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
         # load the config data
-
+        try:
+            if 'AstrometryApplication' in self.app.config:
+                self.app.ui.pd_chooseAstrometry.setCurrentIndex(int(self.app.config['AstrometryApplication']))
+        except Exception as e:
+            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+        finally:
+            pass
+        self.AstrometryClient.initConfig()
         self.chooseAstrometry()
 
     def storeConfig(self):
@@ -148,13 +149,29 @@ class Astrometry(PyQt5.QtCore.QObject):
     def solveImage(self, imageParams):
         if self.data['CONNECTION']['CONNECT'] == 'Off':
             return
-        # imageParams['UseFitsHeaders'] = True
-        # using a queue if the calling thread is gui -> no wait
-        # if it is done through modeling -> separate thread which is calling
+        # check for blind solve:
+        imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
+        # check for use of FITS data
+        imageParams['UseFitsHeader'] = self.app.ui.checkUseFitsHeader.isChecked()
+        # if fits data, check if scale hint was calculated
+        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+        fitsHeader = fitsFileHandle[0].header
+        if 'PIXSCALE' not in fitsHeader:
+            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                scaleHint = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
+            if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
+                scaleHint = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
+            fitsHeader['PIXSCALE'] = str(scaleHint)
+            fitsFileHandle.flush()
+        fitsFileHandle.close()
         self.astrometryHandler.solveImage(imageParams)
 
     def setAstrometryStatusText(self, status):
         self.app.ui.le_astrometryStatusText.setText(status)
+        self.app.imageWindow.ui.le_astrometryStatusText.setText(status)
+
+    def setAstrometrySolvingTime(self, status):
+        self.app.imageWindow.ui.le_astrometrySolvingTime.setText(status)
 
     def getStatus(self):
         self.astrometryHandler.getStatus()

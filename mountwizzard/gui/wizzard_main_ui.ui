@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4202,7 +4202,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>---</string>
+      <string/>
      </property>
      <property name="readOnly">
       <bool>false</bool>
@@ -4327,7 +4327,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>270</y>
+       <y>235</y>
        <width>16</width>
        <height>31</height>
       </rect>
@@ -4345,7 +4345,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>270</y>
+       <y>235</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4383,7 +4383,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>230</y>
+       <y>195</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -4401,7 +4401,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>170</y>
+       <y>165</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -4463,7 +4463,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>270</y>
+       <y>235</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4505,7 +4505,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>200</y>
+       <y>415</y>
        <width>191</width>
        <height>21</height>
       </rect>
@@ -4685,7 +4685,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>350</y>
+       <y>315</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -4703,7 +4703,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>350</y>
+       <y>315</y>
        <width>21</width>
        <height>31</height>
       </rect>
@@ -4721,7 +4721,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>310</y>
+       <y>275</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4755,7 +4755,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>230</y>
+       <y>195</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4793,7 +4793,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>310</y>
+       <y>275</y>
        <width>171</width>
        <height>31</height>
       </rect>
@@ -4811,7 +4811,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>350</y>
+       <y>315</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4846,7 +4846,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>310</y>
+       <y>275</y>
        <width>21</width>
        <height>31</height>
       </rect>
@@ -5017,6 +5017,51 @@ Window</string>
      </property>
      <property name="text">
       <string>Save</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseFitsHeader">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>350</y>
+       <width>246</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Use Highspeed download of CCD camera if availabe</string>
+     </property>
+     <property name="text">
+      <string>Use FITS header for solver hint data</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkUseBlindSolve">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>375</y>
+       <width>121</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>If checked, a blind solve would be made (needs internet connection)</string>
+     </property>
+     <property name="text">
+      <string>Use blind solver</string>
      </property>
     </widget>
    </widget>
@@ -6120,27 +6165,6 @@ Window</string>
       <string>TextLabel</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkUseBlindSolve">
-     <property name="geometry">
-      <rect>
-       <x>345</x>
-       <y>130</y>
-       <width>121</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Use blind solver</string>
-     </property>
-    </widget>
     <widget class="Line" name="line_66">
      <property name="geometry">
       <rect>
@@ -6288,7 +6312,7 @@ Window</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>---</string>
+      <string/>
      </property>
      <property name="readOnly">
       <bool>false</bool>
@@ -6381,7 +6405,6 @@ Window</string>
     <zorder>line_65</zorder>
     <zorder>label_207</zorder>
     <zorder>picALT</zorder>
-    <zorder>checkUseBlindSolve</zorder>
     <zorder>line_66</zorder>
     <zorder>label_208</zorder>
     <zorder>btn_showInitialModelPoints</zorder>
@@ -14530,7 +14553,7 @@ Window</string>
     <string>Status feedback from mount </string>
    </property>
    <property name="text">
-    <string>---</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -14572,7 +14595,7 @@ Window</string>
     <string>Status feedback from mount </string>
    </property>
    <property name="text">
-    <string>---</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -14614,7 +14637,7 @@ Window</string>
     <string>Status feedback from mount </string>
    </property>
    <property name="text">
-    <string>---</string>
+    <string/>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
