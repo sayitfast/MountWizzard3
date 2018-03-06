@@ -12,7 +12,7 @@ setup(
         'mountwizzard.astrometry',
         'mountwizzard.automation',
         'mountwizzard.baseclasses',
-        'mountwizzard.camera',
+        'mountwizzard.imaging',
         'mountwizzard.dome',
         'mountwizzard.environment',
         'mountwizzard.gui',

@@ -73,7 +73,8 @@ class Imaging(PyQt5.QtCore.QObject):
 
         # external classes
         self.transform = transform.Transform(self.app)
-        self.SGPro = sgpro_image.SGPro(self, self.app, self.data)
+        if platform.system() == 'Windows':
+            self.SGPro = sgpro_image.SGPro(self, self.app, self.data)
         self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
         self.NoneCam = noneCamera.NoneCamera(self, self.app, self.data)
 
