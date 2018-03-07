@@ -207,7 +207,7 @@ class AnalyseWindow(widget.MwWidget):
         axe2 = self.analyseMatplotlib.fig.add_subplot(1, 2, 2, polar=True)
         self.setStyle(axe2)
 
-        if self.ui.checkOptimized.isChecked():
+        if self.ui.checkOptimized.isChecked() and 'DecErrorOptimized' in self.data:
             valueY1 = self.data['DecErrorOptimized']
             valueY2 = self.data['RaErrorOptimized']
             valueY3 = self.data['ModelErrorOptimized']
@@ -267,7 +267,7 @@ class AnalyseWindow(widget.MwWidget):
         axe2 = self.analyseMatplotlib.fig.add_subplot(2, 1, 2)
         self.setStyle(axe2)
 
-        if self.ui.checkOptimized.isChecked():
+        if self.ui.checkOptimized.isChecked() and 'DecErrorOptimized' in self.data:
             valueY1 = self.data['DecErrorOptimized']
             valueY2 = self.data['RaErrorOptimized']
         else:
@@ -310,7 +310,7 @@ class AnalyseWindow(widget.MwWidget):
         axe4 = self.analyseMatplotlib.fig.add_subplot(2, 2, 4)
         self.setStyle(axe4)
 
-        if self.ui.checkOptimized.isChecked():
+        if self.ui.checkOptimized.isChecked() and 'DecErrorOptimized' in self.data:
             valueY1 = self.data['DecErrorOptimized']
             valueY2 = self.data['RaErrorOptimized']
         else:

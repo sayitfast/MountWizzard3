@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5064,6 +5064,141 @@ Window</string>
       <string>Use blind solver</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_openAnalyseWindow">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>230</y>
+       <width>151</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the analyse window for checking measurements and modlelling data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Open
+AnalyseWindow</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_99">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>290</y>
+       <width>191</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Analyse File</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_29">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>310</y>
+       <width>226</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="le_analyseFileName">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>320</y>
+       <width>226</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Courier</family>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Analysis file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>---</string>
+     </property>
+     <property name="readOnly">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_loadAnalyseData">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>350</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads the modeling data from file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+     <property name="text">
+      <string>Load</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="btn_runBatchModel">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>370</y>
+       <width>151</width>
+       <height>71</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run full alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Run Batch Model</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_15">
     <attribute name="title">
@@ -8234,7 +8369,7 @@ Window</string>
    </widget>
    <widget class="QWidget" name="tab_5">
     <attribute name="title">
-     <string>Analyse Model</string>
+     <string>Analyse Tests</string>
     </attribute>
     <widget class="QLabel" name="label_107">
      <property name="geometry">
@@ -8639,100 +8774,6 @@ Window</string>
      </property>
      <property name="text">
       <string>Run Hysteresis</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="le_analyseFileName">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>60</y>
-       <width>351</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Courier</family>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="mouseTracking">
-      <bool>false</bool>
-     </property>
-     <property name="acceptDrops">
-      <bool>false</bool>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Name of Analysis file, where the data ist stored.&lt;/p&gt;&lt;p&gt;Please Double Click to select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::RightToLeft</enum>
-     </property>
-     <property name="text">
-      <string>---</string>
-     </property>
-     <property name="readOnly">
-      <bool>false</bool>
-     </property>
-    </widget>
-    <widget class="Line" name="line_29">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>40</y>
-       <width>351</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_openAnalyseWindow">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>130</y>
-       <width>351</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the analyse window for checking measurements and modlelling data.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Open Analyse Window / Update Analyse Window</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_99">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>20</y>
-       <width>191</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Analyse File</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_182">
@@ -9211,50 +9252,8 @@ Window</string>
       <enum>Qt::Vertical</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadAnalyseData">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>85</y>
-       <width>71</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Loads the modeling data from file.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Load</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_runBatchModel">
-     <property name="geometry">
-      <rect>
-       <x>400</x>
-       <y>180</y>
-       <width>351</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run full alignment model.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Run Batch Model</string>
-     </property>
-    </widget>
     <zorder>line_33</zorder>
     <zorder>line_43</zorder>
-    <zorder>line_29</zorder>
-    <zorder>label_99</zorder>
     <zorder>line_52</zorder>
     <zorder>label_107</zorder>
     <zorder>btn_cancelAnalyseModel</zorder>
@@ -9273,8 +9272,6 @@ Window</string>
     <zorder>label_118</zorder>
     <zorder>line_37</zorder>
     <zorder>btn_runHystereseModel</zorder>
-    <zorder>le_analyseFileName</zorder>
-    <zorder>btn_openAnalyseWindow</zorder>
     <zorder>label_182</zorder>
     <zorder>numberRunsHysterese</zorder>
     <zorder>label_183</zorder>
@@ -9292,8 +9289,6 @@ Window</string>
     <zorder>altitudeHysterese1</zorder>
     <zorder>label_186</zorder>
     <zorder>label_187</zorder>
-    <zorder>btn_loadAnalyseData</zorder>
-    <zorder>btn_runBatchModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_9">
     <attribute name="title">
@@ -14811,8 +14806,6 @@ Window</string>
   <tabstop>delayTimeHysterese</tabstop>
   <tabstop>btn_runHystereseModel</tabstop>
   <tabstop>btn_cancelAnalyseModel</tabstop>
-  <tabstop>btn_openAnalyseWindow</tabstop>
-  <tabstop>le_analyseFileName</tabstop>
   <tabstop>btn_relay1</tabstop>
   <tabstop>btn_relay2</tabstop>
   <tabstop>btn_relay3</tabstop>
