@@ -47,12 +47,6 @@ class Imaging(PyQt5.QtCore.QObject):
     imageDownloaded = PyQt5.QtCore.pyqtSignal()
     imageSaved = PyQt5.QtCore.pyqtSignal()
 
-    # wait conditions used by others
-    waitForIntegrate = PyQt5.QtCore.QWaitCondition()
-    waitForDownload = PyQt5.QtCore.QWaitCondition()
-    waitForSave = PyQt5.QtCore.QWaitCondition()
-    waitForFinished = PyQt5.QtCore.QWaitCondition()
-
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CYCLE_STATUS = 1000
@@ -83,8 +77,6 @@ class Imaging(PyQt5.QtCore.QObject):
 
         # signal slot links
         self.imagingCancel.connect(self.cameraHandler.setCancelImaging)
-        self.cameraStatusText.connect(self.setCameraStatusText)
-        self.cameraExposureTime.connect(self.setCameraExposureTime)
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
@@ -198,13 +190,6 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         self.cameraHandler.getImage(imageParams)
 
-    def setCameraStatusText(self, status):
-        self.app.imageWindow.ui.le_cameraStatusText.setText(status)
-        self.app.ui.le_cameraStatusText.setText(status)
-
-    def setCameraExposureTime(self, status):
-        self.app.imageWindow.ui.le_cameraExposureTime.setText(status)
-
     def getStatus(self):
         self.cameraHandler.getStatus()
         # get status to gui
@@ -218,6 +203,10 @@ class Imaging(PyQt5.QtCore.QObject):
             else:
                 self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
+
+    def updateApplicationName(self):
         # updating camera name if possible
         for i in range(0, self.app.ui.pd_chooseImaging.count()):
             if self.app.ui.pd_chooseImaging.itemText(i).startswith('No Cam'):
@@ -230,6 +219,3 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.ui.pd_chooseImaging.setItemText(i, 'INDI Camera - ' + self.INDICamera.application['Name'])
             elif self.app.ui.pd_chooseImaging.itemText(i).startswith('TheSkyX'):
                 pass
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)

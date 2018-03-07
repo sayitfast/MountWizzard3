@@ -122,7 +122,6 @@ class SGPro:
             return
 
         # loop for integrating
-        self.main.waitForIntegrate.wakeAll()
         self.main.cameraStatusText.emit('INTEGRATE')
         while not self.cancel:
             suc, state, message = self.SgGetDeviceStatus('Camera')
@@ -131,7 +130,6 @@ class SGPro:
             time.sleep(0.1)
 
         # Loop for downloading
-        self.main.waitForDownload.wakeAll()
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
         while not self.cancel:
@@ -142,7 +140,6 @@ class SGPro:
                 time.sleep(0.1)
 
         # Loop for saving
-        self.main.waitForSave.wakeAll()
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
         while not self.cancel:
@@ -154,7 +151,6 @@ class SGPro:
 
         # finally idle
         self.main.imageSaved.emit()
-        self.main.waitForFinished.wakeAll()
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = path.replace('\\', '/')

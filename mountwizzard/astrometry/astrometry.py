@@ -69,8 +69,6 @@ class Astrometry(PyQt5.QtCore.QObject):
 
         # signal slot links
         self.astrometryCancel.connect(self.astrometryHandler.setCancelAstrometry)
-        self.astrometryStatusText.connect(self.setAstrometryStatusText)
-        self.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
         self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def initConfig(self):
@@ -166,13 +164,6 @@ class Astrometry(PyQt5.QtCore.QObject):
         fitsFileHandle.close()
         self.astrometryHandler.solveImage(imageParams)
 
-    def setAstrometryStatusText(self, status):
-        self.app.ui.le_astrometryStatusText.setText(status)
-        self.app.imageWindow.ui.le_astrometryStatusText.setText(status)
-
-    def setAstrometrySolvingTime(self, status):
-        self.app.imageWindow.ui.le_astrometrySolvingTime.setText(status)
-
     def getStatus(self):
         self.astrometryHandler.getStatus()
         # get status to gui
@@ -186,6 +177,10 @@ class Astrometry(PyQt5.QtCore.QObject):
             else:
                 self.app.ui.btn_astrometryConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
 
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
+
+    def updateApplicationName(self):
         # updating solver name name if possible
         for i in range(0, self.app.ui.pd_chooseAstrometry.count()):
             if self.app.ui.pd_chooseAstrometry.itemText(i).startswith('No Solve'):
@@ -198,6 +193,3 @@ class Astrometry(PyQt5.QtCore.QObject):
                 self.app.ui.pd_chooseAstrometry.setItemText(i, 'Astrometry - ' + self.AstrometryClient.application['Name'])
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('TheSkyX'):
                 pass
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)

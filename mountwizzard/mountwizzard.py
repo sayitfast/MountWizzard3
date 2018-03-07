@@ -292,6 +292,10 @@ class MountWizzardApp(widget.MwWidget):
         self.workerINDI.statusEnvironment.connect(self.setINDIStatusEnvironment)
         self.workerINDI.statusDome.connect(self.setINDIStatusDome)
         self.workerDome.domeStatusText.connect(self.setDomeStatusText)
+        self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
+        self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
+        self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
+        self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
 
     def mountBoot(self):
         import socket
@@ -1039,6 +1043,20 @@ class MountWizzardApp(widget.MwWidget):
     def setDomeStatusText(self, status):
         self.ui.le_domeStatusText.setText(status)
 
+    def setCameraStatusText(self, status):
+        self.imageWindow.ui.le_cameraStatusText.setText(status)
+        self.ui.le_cameraStatusText.setText(status)
+
+    def setCameraExposureTime(self, status):
+        self.imageWindow.ui.le_cameraExposureTime.setText(status)
+
+    def setAstrometryStatusText(self, status):
+        self.ui.le_astrometryStatusText.setText(status)
+        self.imageWindow.ui.le_astrometryStatusText.setText(status)
+
+    def setAstrometrySolvingTime(self, status):
+        self.imageWindow.ui.le_astrometrySolvingTime.setText(status)
+
     @staticmethod
     def timeStamp():
         return time.strftime('%H:%M:%S -> ', time.localtime())
@@ -1102,6 +1120,9 @@ class MountWizzardApp(widget.MwWidget):
                 self.messageWindow.ui.messages.setFontWeight(PyQt5.QtGui.QFont.Normal)
                 self.messageWindow.ui.messages.insertPlainText(textadd + text)
             self.messageWindow.ui.messages.moveCursor(PyQt5.QtGui.QTextCursor.End)
+        # update application name in pull-down menue
+        self.workerImaging.updateApplicationName()
+        self.workerAstrometry.updateApplicationName()
         PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
 
 
@@ -1109,12 +1130,10 @@ class MyApp(PyQt5.QtWidgets.QApplication):
     import traceback
 
     def notify(self, obj, event):
-        isex = False
         try:
             retValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
             return retValue
         except Exception as e:
-            isex = True
             result = traceback.format_exception(*sys.exc_info())
             logging.error('-----------------------------------------')
             logging.error('Object: {0},  Event:{1}'.format(obj, event))
