@@ -127,6 +127,7 @@ class Imaging(PyQt5.QtCore.QObject):
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
             self.cameraHandler = self.TheSkyX
             self.logger.info('Actual camera is TheSkyX')
+        self.cameraStatusText.emit('')
         self.mutexChooser.unlock()
 
     def run(self):

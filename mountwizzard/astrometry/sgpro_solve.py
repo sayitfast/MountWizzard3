@@ -80,7 +80,7 @@ class SGPro:
                 self.logger.error('Unknown solver status: {0}'.format(state))
         else:
             self.main.astrometryStatusText.emit('Not OK')
-            self.data['Status'] = 'ERROR'
+            self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def solveImage(self, imageParams):

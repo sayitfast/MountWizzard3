@@ -672,6 +672,8 @@ class MountWizzardApp(widget.MwWidget):
     def saveConfigQuit(self):
         filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
         self.saveConfigData(filepath)
+        self.workerAstrometry.astrometryCancel.emit()
+        self.workerImaging.imagingCancel.emit()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
         if self.workerEnvironment.isRunning:

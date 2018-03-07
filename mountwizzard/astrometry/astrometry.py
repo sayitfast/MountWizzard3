@@ -121,6 +121,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('TheSkyX'):
             self.astrometryHandler = self.TheSkyX
             self.logger.info('Actual plate solver is TheSkyX')
+        self.astrometryStatusText.emit('')
         self.mutexChooser.unlock()
 
     def run(self):
