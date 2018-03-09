@@ -99,20 +99,6 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_runHystereseModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
 
-        # make some items large font
-        self.ui.le_telescopeAltitude.setProperty('large', True)
-        self.ui.le_telescopeAltitude.style().unpolish(self.ui.le_telescopeAltitude)
-        self.ui.le_telescopeAltitude.style().polish(self.ui.le_telescopeAltitude)
-        self.ui.le_telescopeAzimut.setProperty('large', True)
-        self.ui.le_telescopeAzimut.style().unpolish(self.ui.le_telescopeAzimut)
-        self.ui.le_telescopeAzimut.style().polish(self.ui.le_telescopeAzimut)
-        self.ui.le_telescopeRA.setProperty('large', True)
-        self.ui.le_telescopeRA.style().unpolish(self.ui.le_telescopeRA)
-        self.ui.le_telescopeRA.style().polish(self.ui.le_telescopeRA)
-        self.ui.le_telescopeDEC.setProperty('large', True)
-        self.ui.le_telescopeDEC.style().unpolish(self.ui.le_telescopeDEC)
-        self.ui.le_telescopeDEC.style().polish(self.ui.le_telescopeDEC)
-
         # the icon picture in gui
         pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
         pixmap = pixmap.scaled(99, 99)
