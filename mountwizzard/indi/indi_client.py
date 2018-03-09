@@ -153,9 +153,9 @@ class INDIClient(PyQt5.QtCore.QObject):
             if not self.app.INDICommandQueue.empty() and self.data['Connected']:
                 indiCommand = self.app.INDICommandQueue.get()
                 self.sendMessage(indiCommand)
-            self.handleNewDevice()
             if not self.data['Connected'] and self.socket.state() == 0:
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+            self.handleNewDevice()
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != 3:
@@ -204,14 +204,12 @@ class INDIClient(PyQt5.QtCore.QObject):
                     elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                         # make a shortcut for later use
                         self.environmentDevice = device
-                        self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                     elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.TELESCOPE_INTERFACE:
                         # make a shortcut for later use
                         self.telescopeDevice = device
                     elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                         # make a shortcut for later use
                         self.domeDevice = device
-                        self.statusDome.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 else:
                     # if not ready, put it on the stack again !
                     self.newDeviceQueue.put(device)
@@ -231,9 +229,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.environmentDevice = ''
         self.domeDevice = ''
         self.telescopeDevice = ''
-        self.statusCCD.emit(False)
-        self.statusEnvironment.emit(False)
-        self.statusDome.emit(False)
         self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': '---'})
@@ -261,11 +256,11 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if name == 'CCD1':
                         if 'format' in message.getElt(0).attr:
                             if message.getElt(0).attr['format'] == '.fits':
-                                imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
+                                imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue(), ignore_missing_end=True)
                                 imageHDU.writeto(self.imagePath, overwrite=True)
                                 self.logger.info('image file is in raw fits format')
                             else:
-                                imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
+                                imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()), ignore_missing_end=True)
                                 imageHDU.writeto(self.imagePath, overwrite=True)
                                 self.logger.info('image file is not in raw fits format')
                             self.receivedImage.emit()
@@ -323,13 +318,10 @@ class INDIClient(PyQt5.QtCore.QObject):
             if 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': device})
-                    self.statusCCD.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.WEATHER_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': device})
-                    self.statusEnvironment.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': device})
-                    self.statusDome.emit(self.data['Device'][device]['CONNECTION']['CONNECT'] == 'On')
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.

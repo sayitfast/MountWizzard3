@@ -288,14 +288,13 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.hemisphereWindow.showWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
-        self.workerINDI.statusCCD.connect(self.setINDIStatusCCD)
-        self.workerINDI.statusEnvironment.connect(self.setINDIStatusEnvironment)
-        self.workerINDI.statusDome.connect(self.setINDIStatusDome)
         self.workerDome.domeStatusText.connect(self.setDomeStatusText)
         self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
         self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
         self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
+
+        self.workerMountDispatcher.workerMountStatusRunnerFast.warningStop.connect(self.mountWarning)
 
     def mountBoot(self):
         import socket
@@ -893,24 +892,6 @@ class MountWizzardApp(widget.MwWidget):
         if not self.ui.checkEnableINDI.isChecked():
             self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
 
-    def setINDIStatusCCD(self, status):
-        if status:
-            self.ui.le_INDIStatusCCD.setStyleSheet('background-color: green;')
-        else:
-            self.ui.le_INDIStatusCCD.setStyleSheet('background-color: red;')
-
-    def setINDIStatusEnvironment(self, status):
-        if status:
-            self.ui.le_INDIStatusEnvironment.setStyleSheet('background-color: green;')
-        else:
-            self.ui.le_INDIStatusEnvironment.setStyleSheet('background-color: red;')
-
-    def setINDIStatusDome(self, status):
-        if status:
-            self.ui.le_INDIStatusDome.setStyleSheet('background-color: green;')
-        else:
-            self.ui.le_INDIStatusDome.setStyleSheet('background-color: red;')
-
     def fillINDIData(self, data):
         if data['Name'] == 'CCD':
             self.ui.le_INDICCD.setText(data['value'])
@@ -1062,6 +1043,11 @@ class MountWizzardApp(widget.MwWidget):
     @staticmethod
     def timeStamp():
         return time.strftime('%H:%M:%S -> ', time.localtime())
+
+    def mountWarning(self):
+        self.messageQueue.put('\n\n')
+        self.messageQueue.put('#BR\tMOUNT STOPPED - WARNING !!!')
+        self.messageQueue.put('\n\n')
 
     def mainLoop(self):
         self.fillMountData()

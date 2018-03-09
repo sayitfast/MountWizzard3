@@ -19,6 +19,7 @@ from queue import Queue
 
 class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
+    warningStop = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_STATUS_FAST = 300
 
@@ -144,6 +145,9 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             self.data['JulianDate'] = value[5]
                             self.data['Status'] = int(value[6])
                             self.data['Slewing'] = (value[7] == '1')
+                            # if stop , emit warning
+                            if value[7] in ['1', '98', '99']:
+                                self.warningStop.emit()
                             self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
                             self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
                             self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))

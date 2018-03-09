@@ -246,6 +246,7 @@ class ImagesWindow(widget.MwWidget):
         imageParams['Exposure'] = self.app.ui.cameraExposure.value()
         imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
+        self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
 
         while imageParams['Imagepath'] == '':
@@ -255,6 +256,7 @@ class ImagesWindow(widget.MwWidget):
         self.imagePath = imageParams['Imagepath']
         self.showFitsImage(self.imagePath)
         self.ui.le_imageFile.setText(imageParams['Imagepath'])
+        self.app.messageQueue.put('#BWSave image\n')
 
     def solveOnce(self):
         if self.imagePath == '':
@@ -278,7 +280,7 @@ class ImagesWindow(widget.MwWidget):
             if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
                 imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
         fitsFileHandle.close()
-
+        self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['File']))
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
         while 'Solved' not in imageParams:
             time.sleep(0.1)
@@ -286,6 +288,8 @@ class ImagesWindow(widget.MwWidget):
         if imageParams['Solved']:
             self.ui.le_RaJ2000.setText(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
             self.ui.le_DecJ2000.setText(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+            self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
+                                                                                      self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
         else:
             self.ui.le_RaJ2000.setText('not solved')
             self.ui.le_DecJ2000.setText('not solved')
