@@ -1168,6 +1168,13 @@ if __name__ == "__main__":
     # app = PyQt5.QtWidgets.QApplication(sys.argv)
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
+
+    from PyQt5.Qt import *
+
+    app.setAttribute(Qt.AA_Use96Dpi)
+    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    app.setAttribute(Qt.AA_UseSoftwareOpenGL)
+
     splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
     splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
