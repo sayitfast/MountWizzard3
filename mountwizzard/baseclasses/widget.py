@@ -37,6 +37,28 @@ class MwWidget(QWidget):
     COLOR_BLACK = QColor(0, 0, 0)
 
     # define the basic style of the mountwizzard theme
+    MAC_STYLE = """
+        QWidget {
+        background-color: #181818;
+        font-family: Arial;
+        font-style: normal;
+        font-size: 13pt;
+    }
+    QWidget[large='true'] {
+        font-size: 36pt;
+    } 
+    """
+    NON_MAC_STYLE = """
+        QWidget {
+        background-color: #181818;
+        font-family: Arial;
+        font-style: normal;
+        font-size: 10pt;
+    }
+    QWidget[large='true'] {
+        font-size: 28pt;
+    } 
+    """
     BASIC_STYLE = """
     QToolTip {
         border-width: 2px;
@@ -45,9 +67,6 @@ class MwWidget(QWidget):
         background-color: #202020;
         color: #C0C0C0;
         padding: 5px;
-    }
-    QWidget {
-        background-color: #181818;
     }
     QLabel {
         background-color: transparent;
@@ -79,9 +98,6 @@ class MwWidget(QWidget):
         background-color: #000000;
         color: rgb(32, 144, 192);
         text-align: right;
-        font-family: Arial;
-        font-style: normal;
-        font-weight: bold;
         border-width: 1px;
         border-color: #404040;
         border-style: outset;
@@ -90,6 +106,12 @@ class MwWidget(QWidget):
     QLineEdit:disabled {
         border-width: 1px;
         border-color: #000000;
+        border-style: flat;
+        border-radius: 2px;
+    }
+    QLineEdit {
+        border-width: 1px;
+        border-color: red;
         border-style: flat;
         border-radius: 2px;
     }
@@ -139,7 +161,6 @@ class MwWidget(QWidget):
         border-color: #404040;
         padding: 2px 2px 2px 2px;
         color: #C0C0C0;
-        font: 10pt;
     }
     QGroupBox::indicator {
         border-width: 1px;
@@ -156,7 +177,6 @@ class MwWidget(QWidget):
     QRadioButton {
         color: #C0C0C0;
         background-color: transparent;
-        font: 10pt;
     }
     QRadioButton::indicator {
         border-width: 1px;
@@ -177,10 +197,7 @@ class MwWidget(QWidget):
         background-color: #101010;
         color: rgb(32, 144, 192);
         text-align: right;
-        font-family: Arial;
-        font-style: normal;
-        font-size: 10pt;
-        font-weight: bold;
+
         border-color: #404040;
         border-width: 1px;
         border-style: outset;
@@ -226,7 +243,6 @@ class MwWidget(QWidget):
         border-width: 1px;
         border-style: outset;
         border-radius: 2px;
-        font: 10pt;
         min - width: 10em;
     }
     QPushButton:pressed {
@@ -270,7 +286,6 @@ class MwWidget(QWidget):
     /* Combo Boxes */
     QComboBox {
         combobox-popup: 0;
-        text-align: right;
         color: #C0C0C0;
         border-color: #404040;
         border-width: 1px;
@@ -301,6 +316,7 @@ class MwWidget(QWidget):
         border-radius: 2px;
         color: #C0C0C0;
         background-color: #101010;
+        min-height: 60px;
     }
     QComboBox QListView::item {
         min-height: 28px;
@@ -467,7 +483,10 @@ class MwWidget(QWidget):
         # sizing in gui should be fixed, because I have a static layout
         self.setFixedSize(790, 640)
         self.setWindowIcon(QIcon(':/mw.ico'))
-        self.setStyleSheet(self.BASIC_STYLE)
+        if platform.system() == 'Darwin':
+            self.setStyleSheet(self.MAC_STYLE + self.BASIC_STYLE)
+        else:
+            self.setStyleSheet(self.NON_MAC_STYLE + self.BASIC_STYLE)
 
     @staticmethod
     def selectFile(window, title, folder, filterSet, extension, openFile=True):

@@ -99,6 +99,20 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_runHystereseModel, ':/play.ico')
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
 
+        # make some items large font
+        self.ui.le_telescopeAltitude.setProperty('large', True)
+        self.ui.le_telescopeAltitude.style().unpolish(self.ui.le_telescopeAltitude)
+        self.ui.le_telescopeAltitude.style().polish(self.ui.le_telescopeAltitude)
+        self.ui.le_telescopeAzimut.setProperty('large', True)
+        self.ui.le_telescopeAzimut.style().unpolish(self.ui.le_telescopeAzimut)
+        self.ui.le_telescopeAzimut.style().polish(self.ui.le_telescopeAzimut)
+        self.ui.le_telescopeRA.setProperty('large', True)
+        self.ui.le_telescopeRA.style().unpolish(self.ui.le_telescopeRA)
+        self.ui.le_telescopeRA.style().polish(self.ui.le_telescopeRA)
+        self.ui.le_telescopeDEC.setProperty('large', True)
+        self.ui.le_telescopeDEC.style().unpolish(self.ui.le_telescopeDEC)
+        self.ui.le_telescopeDEC.style().polish(self.ui.le_telescopeDEC)
+
         # the icon picture in gui
         pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
         pixmap = pixmap.scaled(99, 99)
@@ -1146,14 +1160,13 @@ class MyApp(PyQt5.QtWidgets.QApplication):
             return False
         finally:
             pass
-            # if isex:
-            #    self.quit()
 
 
 if __name__ == "__main__":
     import traceback
     import warnings
     import socket
+    from PyQt5.Qt import *
 
     # setting except hook to get stack traces into the log files
     def except_hook(typeException, valueException, tbackException):
@@ -1165,16 +1178,18 @@ if __name__ == "__main__":
         logging.error('-----------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
+    # config basic behaviour of gui abstraction
+    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_Use96Dpi)
+    PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
+    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
+    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+    PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontUseNativeDialogs)
+
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
     # app = PyQt5.QtWidgets.QApplication(sys.argv)
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
-
-    from PyQt5.Qt import *
-
-    app.setAttribute(Qt.AA_Use96Dpi)
-    app.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    app.setAttribute(Qt.AA_UseSoftwareOpenGL)
-
     splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
     splash = PyQt5.QtWidgets.QSplashScreen(splash_pix, PyQt5.QtCore.Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
