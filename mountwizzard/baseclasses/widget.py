@@ -37,6 +37,7 @@ class MwWidget(QWidget):
     COLOR_BLACK = QColor(0, 0, 0)
 
     # define the basic style of the mountwizzard theme
+    # rise the font size for retina displays
     MAC_STYLE = """
         QWidget {
         background-color: #181818;
@@ -347,6 +348,9 @@ class MwWidget(QWidget):
         border-radius: 2px;
         border-style: outset;
     }
+    /* needed for MAC OSX */
+    QTabWidget:tab-bar {
+        left: 0;}
     QTabBar::tab {
         background-color: #202020;
         color: #C0C0C0;
