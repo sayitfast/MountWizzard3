@@ -152,6 +152,8 @@ class Imaging(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def captureImage(self, imageParams):
+        if self.cameraHandler.application['Status'] != 'OK':
+            return
         # preparation for imaging: gathering all the informations for taking a picture from gui
         imageParams['Imagepath'] = ''
         if self.data['CONNECTION']['CONNECT'] == 'Off':

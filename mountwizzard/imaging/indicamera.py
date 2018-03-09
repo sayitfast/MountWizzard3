@@ -21,7 +21,7 @@ class INDICamera:
     logger = logging.getLogger(__name__)
 
     # timeout is 40 seconds
-    MAX_TIMEOUT = 400
+    MAX_TIMEOUT = 40
 
     def __init__(self, main, app, data):
         # make main sources available
@@ -80,6 +80,8 @@ class INDICamera:
             self.main.cameraStatusText.emit('Not OK')
 
     def getCameraProps(self):
+        if self.application['Status'] != 'OK':
+            return
         self.data['Gain'] = 'High'
         self.data['Speed'] = 'High'
         self.data['CCD_INFO'] = {}
@@ -87,6 +89,8 @@ class INDICamera:
         self.data['CCD_INFO']['CCD_MAX_Y'] = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CCD_INFO']['CCD_MAX_Y']
 
     def getImage(self, imageParams):
+        if self.application['Status'] != 'OK':
+            return
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()
@@ -104,7 +108,7 @@ class INDICamera:
             self.app.INDICommandQueue.put(indiXML.enableBLOB('Also', indi_attr={'device': self.app.workerINDI.cameraDevice}))
             # set to raw - no compression mode
             self.app.INDICommandQueue.put(
-                indiXML.newSwitchVector([indiXML.oneSwitch('Off', indi_attr={'name': 'CCD_COMPRESS'})],
+                indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CCD_COMPRESS'})],
                                         indi_attr={'name': 'CCD_COMPRESSION', 'device': self.app.workerINDI.cameraDevice}))
             # set frame type
             self.app.INDICommandQueue.put(
@@ -132,12 +136,12 @@ class INDICamera:
         self.mutexReceived.lock()
         self.receivedImage = False
         self.mutexReceived.unlock()
-        timeout = 0
+        timeStart = time.time()
 
         # waiting for start integrating
         self.main.cameraStatusText.emit('START')
         while not self.cancel:
-            if timeout > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
@@ -148,13 +152,12 @@ class INDICamera:
                     self.main.cameraStatusText.emit('DISCONN')
             else:
                 self.main.cameraStatusText.emit('ERROR')
-            timeout += 1
             time.sleep(0.1)
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
         while not self.cancel:
-            if timeout > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
@@ -169,14 +172,13 @@ class INDICamera:
                 self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
             else:
                 self.main.cameraExposureTime.emit('')
-            timeout += 1
             time.sleep(0.1)
 
         # loop for download
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
         while not self.cancel:
-            if timeout > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if 'CCD_EXPOSURE' in cam:
@@ -193,19 +195,17 @@ class INDICamera:
                 self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
             else:
                 self.main.cameraExposureTime.emit('')
-            timeout += 1
             time.sleep(0.1)
 
         # loop for saving
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
         while not self.cancel:
-            if timeout > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if self.receivedImage:
                 break
-            timeout += 1
             time.sleep(0.1)
 
         # finally idle
