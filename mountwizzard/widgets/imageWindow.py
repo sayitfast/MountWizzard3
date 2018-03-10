@@ -282,7 +282,7 @@ class ImagesWindow(widget.MwWidget):
             if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
                 imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
         fitsFileHandle.close()
-        self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['File']))
+        self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
         while 'Solved' not in imageParams:
             time.sleep(0.1)
