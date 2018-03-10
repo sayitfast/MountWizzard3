@@ -145,7 +145,7 @@ class Image(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
-        self.main.app.workerImaging.cameraAppHandler.cancel = True
+        self.main.app.workerImaging.cameraHandler.cancel = True
         self.queueImage.queue.clear()
         self.thread.quit()
         self.thread.wait()
