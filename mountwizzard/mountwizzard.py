@@ -297,7 +297,9 @@ class MountWizzardApp(widget.MwWidget):
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
         self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
         self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
-        self.workerMountDispatcher.signalWarningStop.connect(self.mountWarning)
+        self.workerMountDispatcher.signalWarningStop.connect(self.mountAlert)
+        self.workerMountDispatcher.signalSlewFinished.connect(self.slewFinished)
+        self.workerDome.signalSlewFinished.connect(self.slewFinished)
 
     def mountBoot(self):
         import socket
@@ -1051,10 +1053,14 @@ class MountWizzardApp(widget.MwWidget):
     def timeStamp():
         return time.strftime('%H:%M:%S -> ', time.localtime())
 
-    def mountWarning(self):
+    def mountAlert(self):
         if self.ui.checkPlaySound.isChecked():
             self.audioAlert.play()
         self.messageQueue.put('#BR\tMOUNT STOPPED - WARNING !!!\n')
+
+    def slewFinished(self):
+        if self.ui.checkPlaySound.isChecked():
+            self.audioBeep.play()
 
     def mainLoop(self):
         self.fillMountData()

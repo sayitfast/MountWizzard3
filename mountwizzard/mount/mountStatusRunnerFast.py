@@ -36,6 +36,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = self.app.transform
+        self.audioDone = False
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -142,13 +143,19 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             self.data['Alt'] = float(value[4])
                             self.data['JulianDate'] = value[5]
                             self.data['Status'] = int(value[6])
-                            # calculate if sleeing stopped
-                            if self.data['Slewing'] and value[7] != '1':
-                                self.app.workerMountDispatcher.signalSlewFinished.emit()
-                            self.data['Slewing'] = (value[7] == '1')
                             # if stop , emit warning
-                            if value[7] in ['1', '98', '99']:
-                                self.app.workerMountDispatcher.signalWarningStop.emit()
+                            if value[6] in ['1', '98', '99']:
+                                # only emit one time !
+                                if not self.audioDone:
+                                    self.app.workerMountDispatcher.signalWarningStop.emit()
+                                self.audioDone = True
+                            else:
+                                self.audioDone = False
+                            # calculate if slewing stopped
+                            if 'Slewing' in self.data:
+                                if self.data['Slewing'] and value[7] != '1':
+                                    self.app.workerMountDispatcher.signalSlewFinished.emit()
+                            self.data['Slewing'] = (value[7] == '1')
                             self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
                             self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
                             self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))

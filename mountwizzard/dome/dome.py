@@ -216,6 +216,8 @@ class Dome(PyQt5.QtCore.QObject):
     # noinspection PyBroadException
     def getAscomData(self):
         try:
+            if self.data['Slewing'] and not self.ascom.Slewing:
+                self.signalSlewFinished.emit()
             self.data['Slewing'] = self.ascom.Slewing
         except Exception:
             pass
