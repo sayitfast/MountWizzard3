@@ -28,5 +28,7 @@
     <file>mw3_splash.ico</file>
     <file>mount1.ico</file>
     <file>mount2.ico</file>
+    <file>beep.wav</file>
+    <file>alert.wav</file>
 </qresource>
 </RCC>

@@ -9537,7 +9537,7 @@ AnalyseWindow</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>5</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -13992,6 +13992,27 @@ AnalyseWindow</string>
        </property>
        <property name="text">
         <string>Minutes</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkPlaySound">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>245</y>
+         <width>231</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="toolTip">
+        <string>If checked, a blind solve would be made (needs internet connection)</string>
+       </property>
+       <property name="text">
+        <string>Play Sounds</string>
        </property>
       </widget>
      </widget>

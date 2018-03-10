@@ -73,6 +73,10 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
+        # define audio signals
+        self.audioBeep = PyQt5.QtMultimedia.QSound(':/beep.wav')
+        self.audioAlert = PyQt5.QtMultimedia.QSound(':/alert.wav')
+
         # show icon in main gui and add some icons for push buttons
         self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
         self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
@@ -509,6 +513,9 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.mainTabWidget.setCurrentIndex(self.config['MainTabPosition'])
             if 'SettingTabPosition' in self.config:
                 self.ui.settingsTabWidget.setCurrentIndex(self.config['SettingTabPosition'])
+            if 'CheckPlaySound' in self.config:
+                self.ui.checkPlaySound.setChecked(self.config['CheckPlaySound'])
+
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -637,6 +644,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ConfigName'] = self.ui.le_configName.text()
         self.config['MainTabPosition'] = self.ui.mainTabWidget.currentIndex()
         self.config['SettingTabPosition'] = self.ui.settingsTabWidget.currentIndex()
+        self.config['CheckPlaySound'] = self.ui.checkPlaySound.isChecked()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()
@@ -1044,9 +1052,9 @@ class MountWizzardApp(widget.MwWidget):
         return time.strftime('%H:%M:%S -> ', time.localtime())
 
     def mountWarning(self):
-        self.messageQueue.put('\n\n')
-        self.messageQueue.put('#BR\tMOUNT STOPPED - WARNING !!!')
-        self.messageQueue.put('\n\n')
+        if self.ui.checkPlaySound.isChecked():
+            self.audioAlert.play()
+        self.messageQueue.put('#BR\tMOUNT STOPPED - WARNING !!!\n')
 
     def mainLoop(self):
         self.fillMountData()

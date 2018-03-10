@@ -30,7 +30,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     statusCCD = QtCore.pyqtSignal(bool)
     statusEnvironment = QtCore.pyqtSignal(bool)
     statusDome = QtCore.pyqtSignal(bool)
-    receivedImage = QtCore.pyqtSignal()
+    receivedImage = QtCore.pyqtSignal(bool)
     processMessage = QtCore.pyqtSignal(object)
 
     # INDI device types
@@ -264,9 +264,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                                     imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
                                     imageHDU.writeto(self.imagePath, overwrite=True)
                                     self.logger.info('image file is not in raw fits format')
-                                self.receivedImage.emit()
+                                self.receivedImage.emit(True)
                             except Exception as e:
-                                pass
+                                self.receivedImage.emit(False)
                             finally:
                                 pass
 

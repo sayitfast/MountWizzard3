@@ -48,11 +48,14 @@ class INDICamera:
         self.application['Name'] = 'INDICamera'
         self.application['InstallPath'] = ''
 
-        self.app.workerINDI.receivedImage.connect(lambda: self.setReceivedImage())
+        self.app.workerINDI.receivedImage.connect(self.setReceivedImage)
 
-    def setReceivedImage(self):
+    def setReceivedImage(self, status):
         self.mutexReceived.lock()
-        self.receivedImage = True
+        if status:
+            self.receivedImage = True
+        else:
+            self.setCancelImaging()
         self.mutexReceived.unlock()
 
     def setCancelImaging(self):
