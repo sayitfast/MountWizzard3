@@ -173,7 +173,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                                 self.data['TelescopePierSide'] = 'WEST'
                             else:
                                 self.data['TelescopePierSide'] = 'EAST'
-                                self.app.workerMountDispatcher.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
+                            self.app.workerMountDispatcher.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
                         else:
                             self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(value))
                     except Exception as e:

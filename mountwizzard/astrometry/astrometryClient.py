@@ -165,6 +165,7 @@ class AstrometryClient:
         # waiting for start solving
         timeSolvingStart = time.time()
         errorState = False
+        imageParams['Message'] = ''
         self.main.astrometryStatusText.emit('START')
 
         # check if we have the online solver running
@@ -309,9 +310,11 @@ class AstrometryClient:
                 imageParams['Angle'] = result['orientation']
                 imageParams['TimeTS'] = time.time()-timeSolvingStart
                 self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
+                imageParams['Message'] = 'Solved with success'
             except Exception as e:
                 self.logger.error('Problem get calibration data, error: {0}, result: {1}, response: {2}'.format(e, result, response))
                 imageParams['Solved'] = False
+                imageParams['Message'] = 'Solve failed'
             finally:
                 pass
 

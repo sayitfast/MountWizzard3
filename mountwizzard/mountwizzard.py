@@ -167,11 +167,6 @@ class MountWizzardApp(widget.MwWidget):
             self.workerUpload.moveToThread(self.threadUpload)
             self.threadUpload.started.connect(self.workerUpload.run)
             self.threadUpload.start()
-        self.threadModelingDispatcher = PyQt5.QtCore.QThread()
-        self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
-        self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
-        self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
-        self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
         self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
@@ -184,6 +179,13 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
+        # modeling
+        self.threadModelingDispatcher = PyQt5.QtCore.QThread()
+        self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
+        self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
+        self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
+        self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
+        # prepare gui for mount status
         self.setMountStatus({})
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)

@@ -90,7 +90,17 @@ class Image(PyQt5.QtCore.QObject):
         self.main = main
         self.thread = thread
         self.isRunning = True
+        self.imageIntegrated = False
+        self.imageSaved = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.main.app.workerImaging.imageIntegrated.connect(self.setImageIntegrated)
+        self.main.app.workerImaging.imageSaved.connect(self.setImageSaved)
+
+    def setImageIntegrated(self):
+        self.imageIntegrated = True
+
+    def setImageSaved(self):
+        self.imageSaved = True
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -100,6 +110,8 @@ class Image(PyQt5.QtCore.QObject):
         while self.isRunning:
             if not self.queueImage.empty():
                 modelingData = self.queueImage.get()
+                self.imageIntegrated = False
+                self.imageSaved = False
                 modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
                 modelingData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
                 modelingData['LocalSiderealTimeFloat'] = self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
@@ -113,17 +125,15 @@ class Image(PyQt5.QtCore.QObject):
                 modelingData['Imagepath'] = ''
                 self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
                 # getting next image
-                modelingData = self.main.imagingApps.captureImage(modelingData)
-                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] not in ['INTEGRATING'] and not self.main.cancel:
-                    time.sleep(0.05)
-                    PyQt5.QtWidgets.QApplication.processEvents()
-                while self.main.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] in ['INTEGRATING'] and not self.main.cancel:
+                self.main.app.workerImaging.imagingCommandQueue.put(modelingData)
+                # wait for imaging ready
+                while not self.imageIntegrated and not self.main.cancel:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalSlewing.emit()
                 # we have to wait until image is downloaded before being able to plate solve
-                while modelingData['Imagepath'] == '' and not self.main.cancel:
+                while not self.imageSaved and not self.main.cancel:
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
@@ -135,7 +145,7 @@ class Image(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
-        self.main.imagingApps.imagingWorkerCameraAppHandler.cancel = True
+        self.main.app.workerImaging.cameraAppHandler.cancel = True
         self.queueImage.queue.clear()
         self.thread.quit()
         self.thread.wait()
@@ -151,6 +161,11 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.thread = thread
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = True
+        self.imageSolved = False
+        self.main.app.workerAstrometry.imageSolved.connect(self.setImageSolved)
+
+    def setImageSolved(self):
+        self.imageSolved = True
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -159,10 +174,15 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         while self.isRunning:
             if not self.queuePlatesolve.empty():
+                self.imageSolved = False
                 modelingData = self.queuePlatesolve.get()
                 if modelingData['Imagepath'] != '':
                     self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
-                    modelingData = self.main.imagingApps.solveImage(modelingData)
+                    self.main.app.workerAstrometry.astrometryCommandQueue.put(modelingData)
+                    # wait for solving ready
+                    while not self.imageSolved and not self.main.cancel:
+                        time.sleep(0.1)
+                        PyQt5.QtWidgets.QApplication.processEvents()
                     if 'RaJ2000Solved' in modelingData:
                         ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
                         modelingData['RaJNowSolved'] = ra_sol_Jnow
@@ -231,12 +251,24 @@ class ModelingRunner:
         self.numberPointsMax = 0
         self.numberSolvedPoints = 0
         self.cancel = False
+        self.mountSlewFinished = False
+        self.domeSlewFinished = False
+
+        # signal slot
+        self.app.workerMountDispatcher.signalSlewFinished.connect(self.setMountSlewFinished)
+        self.app.workerDome.signalSlewFinished.connect(self.setDomeSlewFinished)
 
     def initConfig(self):
         self.modelPoints.initConfig()
 
     def storeConfig(self):
         self.modelPoints.storeConfig()
+
+    def setMountSlewFinished(self):
+        self.mountSlewFinished = True
+
+    def setDomeSlewFinished(self):
+        self.domeSlewFinished = True
 
     def clearAlignmentModel(self):
         # clearing the older results, because they are invalid afterwards
@@ -248,6 +280,8 @@ class ModelingRunner:
     def slewMountDome(self, modelingData):
         altitude = modelingData['Altitude']
         azimuth = modelingData['Azimuth']
+        self.mountSlewFinished = False
+        self.domeSlewFinished = False
         # limit azimuth and altitude
         if azimuth >= 360:
             azimuth = 359.9
@@ -277,19 +311,9 @@ class ModelingRunner:
                                              indiXML.oneNumber(dec, indi_attr={'name': 'DEC'})],
                                             indi_attr={'name': 'EQUATORIAL_EOD_COORD', 'device': self.app.workerINDI.telescopeDevice}))
         # if there is a dome connected, we have to start slewing it, too
-        counterMaxWait = 0
         if modelingData['DomeIsConnected']:
             self.app.domeCommandQueue.put(('SlewAzimuth', azimuth))
-            # now we wait for both start slewing
-            while not self.app.workerMountDispatcher.data['Slewing'] and not self.app.workerDome.data['Slewing']:
-                counterMaxWait += 1
-                # there might be the situation that no slew is needed or slew time is short
-                if self.cancel or counterMaxWait == 10:
-                    self.logger.info('Modeling cancelled in loop mount and dome wait while for start slewing')
-                    break
-                time.sleep(0.2)
-            # and waiting for both to stop slewing
-            while self.app.workerMountDispatcher.data['Slewing'] or self.app.workerDome.data['Slewing']:
+            while not self.domeSlewFinished and not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
@@ -299,16 +323,7 @@ class ModelingRunner:
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
                     time.sleep(0.5)
         else:
-            # if there is no dome, we wait for the mount start slewing
-            while not self.app.workerMountDispatcher.data['Slewing']:
-                counterMaxWait += 1
-                # there might be the situation that no slew is needed or slew time is short
-                if self.cancel or counterMaxWait == 10:
-                    self.logger.info('Modeling cancelled in loop mount wait while for start slewing')
-                    break
-                time.sleep(0.2)
-            # and the mount stop slewing
-            while self.app.workerMountDispatcher.data['Slewing']:
+            while not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
@@ -394,14 +409,14 @@ class ModelingRunner:
     def runInitialModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
-        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']:
+        if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
-        if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerImaging.cameraHandler.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # solver has to be connected
-        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']:
+        if 'CONNECTION' not in self.app.workerAstrometry.astrometryHandler.data:
             return
-        if self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerAstrometry.astrometryHandler.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # telescope has to be connected
         if not self.app.workerMountDispatcher.mountStatus['Command']:
@@ -429,7 +444,8 @@ class ModelingRunner:
         modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
         modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
-        self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
+        self.app.workerImaging.cameraHandler.cancel = False
+        self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_initial'
@@ -447,14 +463,14 @@ class ModelingRunner:
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
-        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']:
+        if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
-        if self.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerImaging.cameraHandler.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # solver has to be connected
-        if 'CONNECTION' not in self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']:
+        if 'CONNECTION' not in self.app.workerAstrometry.astrometryHandler.data:
             return
-        if self.imagingApps.imagingWorkerCameraAppHandler.data['Solver']['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerAstrometry.astrometryHandler.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # telescope has to be connected
         if not self.app.workerMountDispatcher.mountStatus['Command']:
@@ -482,7 +498,8 @@ class ModelingRunner:
         modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
         modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
-        self.imagingApps.imagingWorkerCameraAppHandler.cancel = False
+        self.app.workerImaging.cameraHandler.cancel = False
+        self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_full'
