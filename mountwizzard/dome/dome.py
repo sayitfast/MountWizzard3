@@ -27,6 +27,7 @@ class Dome(PyQt5.QtCore.QObject):
 
     signalDomeConnected = PyQt5.QtCore.pyqtSignal([int])
     signalDomePointer = PyQt5.QtCore.pyqtSignal(float, bool)
+    signalSlewFinished = PyQt5.QtCore.pyqtSignal()
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLE_DATA = 1000
@@ -208,6 +209,8 @@ class Dome(PyQt5.QtCore.QObject):
                 if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['DOME_MOTION']['state'] == 'Busy':
                     self.data['Slewing'] = True
                 else:
+                    if self.data['Slewing']:
+                        self.signalSlewFinished.emit()
                     self.data['Slewing'] = False
 
     # noinspection PyBroadException

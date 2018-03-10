@@ -293,8 +293,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
         self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
         self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
-
-        self.workerMountDispatcher.workerMountStatusRunnerFast.warningStop.connect(self.mountWarning)
+        self.workerMountDispatcher.signalWarningStop.connect(self.mountWarning)
 
     def mountBoot(self):
         import socket

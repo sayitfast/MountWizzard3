@@ -20,14 +20,13 @@ from queue import Queue
 class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, app, thread, data, signalConnected, signalMountShowAlignmentModel):
+    def __init__(self, app, thread, data, signalConnected):
         super().__init__()
 
         self.app = app
         self.thread = thread
         self.data = data
         self.signalConnected = signalConnected
-        self.signalMountShowAlignmentModel = signalMountShowAlignmentModel
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.connected = False
@@ -238,7 +237,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.data['ModelAltitude'].append(alt)
                 self.data['ModelError'].append(ErrorRMS)
                 self.data['ModelErrorAngle'].append(ErrorAngle)
-            self.signalMountShowAlignmentModel.emit()
+            self.app.workerMountDispatcher.signalMountShowAlignmentModel.emit()
             self.data['ModelLoading'] = False
         except Exception as e:
             self.logger.error('Parsing GetAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))

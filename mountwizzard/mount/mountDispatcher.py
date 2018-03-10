@@ -38,6 +38,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
+    signalWarningStop = PyQt5.QtCore.pyqtSignal()
+    signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_AUTO_UPDATE = 3000
 
@@ -94,7 +96,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
         # fast status thread
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
-        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnectedFast, self.signalMountAzAltPointer)
+        self.workerMountStatusRunnerFast = mountStatusRunnerFast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnectedFast)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
@@ -118,7 +120,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedAlign, self.signalMountShowAlignmentModel)
+        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedAlign)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)

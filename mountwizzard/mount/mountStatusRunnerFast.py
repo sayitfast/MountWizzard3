@@ -19,18 +19,16 @@ from queue import Queue
 
 class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
-    warningStop = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_STATUS_FAST = 300
 
-    def __init__(self, app, thread, data, signalConnected, signalMountAzAltPointer):
+    def __init__(self, app, thread, data, signalConnected):
         super().__init__()
 
         self.app = app
         self.data = data
         self.thread = thread
         self.signalConnected = signalConnected
-        self.signalMountAzAltPointer = signalMountAzAltPointer
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.connected = False
@@ -144,10 +142,13 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             self.data['Alt'] = float(value[4])
                             self.data['JulianDate'] = value[5]
                             self.data['Status'] = int(value[6])
+                            # calculate if sleeing stopped
+                            if self.data['Slewing'] and value[7] != '1':
+                                self.app.workerMountDispatcher.signalSlewFinished.emit()
                             self.data['Slewing'] = (value[7] == '1')
                             # if stop , emit warning
                             if value[7] in ['1', '98', '99']:
-                                self.warningStop.emit()
+                                self.app.workerMountDispatcher.signalWarningStop.emit()
                             self.data['RaJ2000'], self.data['DecJ2000'] = self.transform.transformERFA(self.data['RaJNow'], self.data['DecJNow'], 2)
                             self.data['TelescopeRA'] = '{0}'.format(self.transform.decimalToDegree(self.data['RaJ2000'], False, False))
                             self.data['TelescopeDEC'] = '{0}'.format(self.transform.decimalToDegree(self.data['DecJ2000'], True, False))
@@ -158,7 +159,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                                 self.data['TelescopePierSide'] = 'WEST'
                             else:
                                 self.data['TelescopePierSide'] = 'EAST'
-                            self.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
+                                self.app.workerMountDispatcher.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
                         else:
                             self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(value))
                     except Exception as e:
