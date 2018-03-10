@@ -1,16 +1,22 @@
 ############################################################
 # -*- coding: utf-8 -*-
 #
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.5
+# Python  v3.6.4
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
-############################################################
+###########################################################
 import logging
 import time
 import PyQt5
@@ -26,6 +32,7 @@ from mount import mountGetAlignmentModel
 from mount import mountModelHandling
 from analyse import analysedata
 from baseclasses import checkParamIP
+from astrometry import transform
 
 
 class MountDispatcher(PyQt5.QtCore.QThread):
@@ -83,7 +90,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # getting all supporting classes assigned
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
-        self.transform = self.app.transform
+        self.transform = transform.Transform(self.app)
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
 

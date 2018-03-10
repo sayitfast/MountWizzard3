@@ -1,9 +1,15 @@
 ############################################################
 # -*- coding: utf-8 -*-
 #
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.5
+# Python  v3.6.4
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
@@ -15,6 +21,7 @@ import logging
 import PyQt5
 import time
 from queue import Queue
+from astrometry import transform
 
 
 class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
@@ -35,7 +42,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.socket = None
         self.messageString = ''
         self.sendCommandQueue = Queue()
-        self.transform = self.app.transform
+        self.transform = transform.Transform(self.app)
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -115,8 +122,9 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     doRefractionUpdate = True
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
-            if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerCameraAppHandler.data['Camera']['Status'] == 'IDLE':
-                doRefractionUpdate = True
+            if 'Imaging' in self.app.workerImaging.cameraHandler.data:
+                if not self.app.workerImaging.cameraHandler.data['Imaging']:
+                    doRefractionUpdate = True
         if doRefractionUpdate:
             if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
                 pressure = self.app.workerEnvironment.data['Pressure']

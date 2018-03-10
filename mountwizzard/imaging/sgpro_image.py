@@ -95,6 +95,7 @@ class SGPro:
 
     def getImage(self, imageParams):
         path = ''
+        self.data['Imaging'] = True
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()
@@ -119,7 +120,9 @@ class SGPro:
             self.logger.warning('Imaging no start, message: {0}'.format(mes))
             self.main.cameraStatusText.emit('ERROR')
             imageParams['Imagepath'] = ''
-            return
+            self.mutexCancel.lock()
+            self.cancel = True
+            self.mutexCancel.unlock()
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
@@ -154,6 +157,7 @@ class SGPro:
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = path.replace('\\', '/')
+        self.data['Imaging'] = False
 
     def SgCaptureImage(self, binningMode=1, exposureLength=1,
                        gain=None, iso=None, speed=None, frameType=None, filename=None,

@@ -176,7 +176,7 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['CanSubframe'] = True
         else:
             imageParams['SizeX'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']))
-            imageParams['SizeY'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']))
+            imageParams['SizeY'] = int(float(self.data['CCD_INFO']['CCD_MAX_Y']))
             imageParams['OffX'] = 0
             imageParams['OffY'] = 0
             imageParams['CanSubframe'] = False
