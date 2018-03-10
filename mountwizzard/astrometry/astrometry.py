@@ -37,12 +37,6 @@ class Astrometry(PyQt5.QtCore.QObject):
     imageSolved = PyQt5.QtCore.pyqtSignal()
     imageDataDownloaded = PyQt5.QtCore.pyqtSignal()
 
-    # wait conditions used by others
-    waitForUpload = PyQt5.QtCore.QWaitCondition()
-    waitForSolve = PyQt5.QtCore.QWaitCondition()
-    waitForData = PyQt5.QtCore.QWaitCondition()
-    waitForFinished = PyQt5.QtCore.QWaitCondition()
-
     CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):

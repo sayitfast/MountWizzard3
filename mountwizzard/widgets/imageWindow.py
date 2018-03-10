@@ -89,7 +89,7 @@ class ImagesWindow(widget.MwWidget):
                 self.showStatus = self.app.config['ImagePopupWindowShowStatus']
             if 'ImagePath' in self.app.config:
                 self.imagePath = self.app.config['ImagePath']
-                self.ui.le_imageFile.setText(self.imagePath)
+                self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
                 if os.path.isfile(self.imagePath):
                     self.showFitsImage(self.imagePath)
         except Exception as e:
@@ -257,7 +257,7 @@ class ImagesWindow(widget.MwWidget):
 
         self.imagePath = imageParams['Imagepath']
         self.showFitsImage(self.imagePath)
-        self.ui.le_imageFile.setText(imageParams['Imagepath'])
+        self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
         self.app.messageQueue.put('#BWSave image\n')
 
     def solveOnce(self):

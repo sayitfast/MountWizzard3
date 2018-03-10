@@ -168,6 +168,7 @@ class AstrometryClient:
         self.main.astrometryStatusText.emit('START')
 
         # check if we have the online solver running
+        self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
         if self.urlLogin != '':
             # we have to login with the api key for the online solver to get the session key
             self.application['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
@@ -197,8 +198,9 @@ class AstrometryClient:
             # local solve runs with dummy session key
             self.solveData['session'] = 12345
 
+        self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
+
         # loop for upload
-        self.main.waitForUpload.wakeAll()
         self.main.astrometryStatusText.emit('UPLOAD')
         # start uploading the data and define the parameters
         data = self.solveData
@@ -233,7 +235,6 @@ class AstrometryClient:
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
 
         # loop for solve
-        self.main.waitForSolve.wakeAll()
         self.main.astrometryStatusText.emit('SOLVE-Sub')
 
         # wait for the submission = star detection algorithm to take place
@@ -293,7 +294,6 @@ class AstrometryClient:
             PyQt5.QtWidgets.QApplication.processEvents()
 
         # Loop for data
-        self.main.waitForData.wakeAll()
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
         # now get the solving data and results
@@ -317,7 +317,6 @@ class AstrometryClient:
 
         # finally idle
         self.main.imageDataDownloaded.emit()
-        self.main.waitForFinished.wakeAll()
         self.main.astrometryStatusText.emit('IDLE')
         self.main.astrometrySolvingTime.emit('')
 

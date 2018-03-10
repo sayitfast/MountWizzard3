@@ -91,6 +91,7 @@ class SGPro:
         # waiting for start solving
         timeSolvingStart = time.time()
         self.main.astrometryStatusText.emit('START')
+        self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
         if imageParams['UseFitsHeader']:
             suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
                                                BlindSolve=imageParams['Blind'],
@@ -110,7 +111,6 @@ class SGPro:
             return
 
         # loop for upload
-        self.main.waitForUpload.wakeAll()
         self.main.astrometryStatusText.emit('UPLOAD')
         while not self.cancel:
             suc, state, mes = self.SgGetDeviceStatus('PlateSolver')
@@ -120,7 +120,6 @@ class SGPro:
             time.sleep(0.1)
 
         # loop for solve
-        self.main.waitForSolve.wakeAll()
         self.main.astrometryStatusText.emit('SOLVE')
         while not self.cancel:
             solved, mes, ra_sol, dec_sol, scale, angle, timeTS = self.SgGetSolvedImageData(guid)
@@ -137,7 +136,6 @@ class SGPro:
         imageParams['Solved'] = solved
 
         # Loop for data
-        self.main.waitForData.wakeAll()
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
         while not self.cancel and solved:
@@ -154,7 +152,6 @@ class SGPro:
 
         # finally idle
         self.main.imageDataDownloaded.emit()
-        self.main.waitForFinished.wakeAll()
         self.main.astrometryStatusText.emit('IDLE')
         self.main.astrometrySolvingTime.emit('')
 
