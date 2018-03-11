@@ -62,7 +62,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.astrometryHandler = self.NoneSolve
 
         # signal slot links
-        self.astrometryCancel.connect(self.astrometryHandler.setCancelAstrometry)
+        self.astrometryCancel.connect(self.setCancelAstrometry)
         self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def initConfig(self):
@@ -97,6 +97,11 @@ class Astrometry(PyQt5.QtCore.QObject):
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
         self.AstrometryClient.storeConfig()
+
+    def setCancelAstrometry(self):
+        self.astrometryHandler.mutexCancel.lock()
+        self.astrometryHandler.cancel = True
+        self.astrometryHandler.mutexCancel.unlock()
 
     def chooseAstrometry(self):
         self.mutexChooser.lock()

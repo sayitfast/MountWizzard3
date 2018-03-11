@@ -33,11 +33,6 @@ class NoneCamera:
         self.application['Status'] = 'OK'
         self.application['Runtime'] = 'Dummy Camera'
 
-    def setCancelImaging(self):
-        self.mutexCancel.lock()
-        self.cancel = True
-        self.mutexCancel.unlock()
-
     def getStatus(self):
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'

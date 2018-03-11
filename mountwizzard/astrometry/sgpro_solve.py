@@ -60,11 +60,6 @@ class SGPro:
             else:
                 self.logger.info('Application SGPro not found on computer')
 
-    def setCancelAstrometry(self):
-        self.mutexCancel.lock()
-        self.cancel = True
-        self.mutexCancel.unlock()
-
     def getStatus(self):
         # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
         suc, state, message = self.SgGetDeviceStatus('PlateSolver')

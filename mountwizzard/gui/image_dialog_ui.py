@@ -240,6 +240,12 @@ class Ui_ImageDialog(object):
         self.le_astrometrySolvingTime.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.le_astrometrySolvingTime.setReadOnly(False)
         self.le_astrometrySolvingTime.setObjectName("le_astrometrySolvingTime")
+        self.btn_cancel = QtWidgets.QPushButton(ImageDialog)
+        self.btn_cancel.setGeometry(QtCore.QRect(190, 70, 81, 26))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        self.btn_cancel.setFont(font)
+        self.btn_cancel.setObjectName("btn_cancel")
         self.imageBackground.raise_()
         self.image.raise_()
         self.btn_expose.raise_()
@@ -264,6 +270,7 @@ class Ui_ImageDialog(object):
         self.label_85.raise_()
         self.label_86.raise_()
         self.le_astrometrySolvingTime.raise_()
+        self.btn_cancel.raise_()
 
         self.retranslateUi(ImageDialog)
         QtCore.QMetaObject.connectSlotsByName(ImageDialog)
@@ -303,4 +310,5 @@ class Ui_ImageDialog(object):
         self.label_85.setText(_translate("ImageDialog", "RA"))
         self.label_86.setText(_translate("ImageDialog", "Dec"))
         self.le_astrometrySolvingTime.setToolTip(_translate("ImageDialog", "<html><head/><body><p>IP address of relay switch</p></body></html>"))
+        self.btn_cancel.setText(_translate("ImageDialog", "Cancel"))
 

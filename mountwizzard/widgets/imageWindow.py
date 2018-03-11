@@ -69,6 +69,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechLow.clicked.connect(self.setStrech)
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
+        self.ui.btn_cancel.clicked.connect(self.cancelAction)
         self.setVisible(False)
         self.ui.cross1.setVisible(False)
         self.ui.cross2.setVisible(False)
@@ -107,6 +108,10 @@ class ImagesWindow(widget.MwWidget):
         self.showStatus = True
         self.setVisible(True)
         self.show()
+
+    def cancelAction(self):
+        self.app.workerAstrometry.astrometryCancel.emit()
+        self.app.workerImaging.imagingCancel.emit()
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():

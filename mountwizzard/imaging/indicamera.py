@@ -58,11 +58,6 @@ class INDICamera:
             self.setCancelImaging()
         self.mutexReceived.unlock()
 
-    def setCancelImaging(self):
-        self.mutexCancel.lock()
-        self.cancel = True
-        self.mutexCancel.unlock()
-
     def getStatus(self):
         # check if INDIClient is running and camera device is there
         if self.app.workerINDI.isRunning:

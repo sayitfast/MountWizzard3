@@ -60,11 +60,6 @@ class SGPro:
             else:
                 self.logger.info('Application SGPro not found on computer')
 
-    def setCancelImaging(self):
-        self.mutexCancel.lock()
-        self.cancel = True
-        self.mutexCancel.unlock()
-
     def getStatus(self):
         suc, state, message = self.SgGetDeviceStatus('Camera')
         if suc:

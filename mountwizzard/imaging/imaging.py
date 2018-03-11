@@ -76,7 +76,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.cameraHandler = self.NoneCam
 
         # signal slot links
-        self.imagingCancel.connect(self.cameraHandler.setCancelImaging)
+        self.imagingCancel.connect(self.setCancelImaging)
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
@@ -109,6 +109,11 @@ class Imaging(PyQt5.QtCore.QObject):
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
+
+    def setCancelImaging(self):
+        self.cameraHandler.mutexCancel.lock()
+        self.cameraHandler.cancel = True
+        self.cameraHandler.mutexCancel.unlock()
 
     def chooseImaging(self):
         self.mutexChooser.lock()

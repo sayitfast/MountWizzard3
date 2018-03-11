@@ -722,6 +722,24 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_cancel">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>70</y>
+     <width>81</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
+  </widget>
   <zorder>imageBackground</zorder>
   <zorder>image</zorder>
   <zorder>btn_expose</zorder>
@@ -746,6 +764,7 @@
   <zorder>label_85</zorder>
   <zorder>label_86</zorder>
   <zorder>le_astrometrySolvingTime</zorder>
+  <zorder>btn_cancel</zorder>
  </widget>
  <resources/>
  <connections/>

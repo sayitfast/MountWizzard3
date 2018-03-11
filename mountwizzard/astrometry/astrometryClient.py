@@ -107,6 +107,12 @@ class AstrometryClient:
         self.settingsChanged = True
         self.changedAstrometryClientConnectionSettings()
 
+    def setCancelAstrometry(self):
+        print('cancel')
+        self.mutexCancel.lock()
+        self.cancel = True
+        self.mutexCancel.unlock()
+
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
@@ -166,7 +172,7 @@ class AstrometryClient:
         stat = ''
         submissionID = ''
         jobID = ''
-        headers = ''
+        headers = dict()
         imageParams['Message'] = ''
         self.main.astrometryStatusText.emit('START')
 

@@ -33,11 +33,6 @@ class NoneSolver:
         self.application['Status'] = 'OK'
         self.application['Runtime'] = 'Dummy Solver'
 
-    def setCancelAstrometry(self):
-        self.mutexCancel.lock()
-        self.cancel = True
-        self.mutexCancel.unlock()
-
     def getStatus(self):
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'
