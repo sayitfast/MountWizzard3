@@ -373,7 +373,8 @@ class ModelingRunner:
         while self.modelRun:
             # stop loop if modeling is cancelled from external
             if self.cancel:
-                self.imagingApps.imagingWorkerCameraAppHandler.cancel = True
+                self.app.workerAstrometry.astrometryCancel.emit()
+                self.app.workerImaging.imagingCancel.emit()
                 break
             # stop loop if finished
             if self.modelingHasFinished:

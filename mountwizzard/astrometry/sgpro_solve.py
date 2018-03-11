@@ -128,7 +128,7 @@ class SGPro:
                 break
             if 'ailed' in mes:
                 # Failed or failed is in PlanWave, Astrometry
-                imageParams['Message'] = 'Solve failed'
+                imageParams['Message'] = mes
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(0.1)
