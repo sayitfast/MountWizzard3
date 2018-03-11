@@ -69,7 +69,6 @@ class SGPro:
         suc, state, message = self.SgGetDeviceStatus('Camera')
         if suc:
             self.application['Status'] = 'OK'
-            self.main.cameraStatusText.emit('IDLE')
             if state in self.CAMERA_STATUS:
                 if self.CAMERA_STATUS[state] == 'DISCONNECTED':
                     self.data['CONNECTION']['CONNECT'] = 'Off'

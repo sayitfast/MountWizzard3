@@ -69,7 +69,6 @@ class INDICamera:
             self.application['Available'] = True
             if self.app.workerINDI.cameraDevice != '':
                 self.application['Status'] = 'OK'
-                self.main.cameraStatusText.emit('IDLE')
                 self.application['Name'] = self.app.workerINDI.cameraDevice
                 # check if data from INDI server already received
                 if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
