@@ -73,8 +73,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     'Worker': [
                         {
                             'Button': self.app.ui.btn_plateSolveSync,
-                            'Method': self.modelingRunner.plateSolveSync,
-                            'Parameter': ['self.app.ui.checkSimulation.isChecked()'],
+                            'Method': self.modelingRunner.plateSolveSync
                         }
                     ]
                 },

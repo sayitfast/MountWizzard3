@@ -61,6 +61,9 @@
      <pointsize>10</pointsize>
     </font>
    </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows a crosshair in front of the image&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
    <property name="text">
     <string>Crosshairs</string>
    </property>
@@ -182,6 +185,9 @@
     <font>
      <pointsize>10</pointsize>
     </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Single plate solve of the actual image&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Solve</string>
@@ -362,7 +368,7 @@
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time left for image integration&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
@@ -446,7 +452,7 @@
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>Status feedback from mount </string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Status feedback from astrometry&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string/>
@@ -488,7 +494,7 @@
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>Status feedback from mount </string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Status feedback from camera&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string/>
@@ -571,7 +577,7 @@
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>Status feedback from mount </string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Shows the solved RA of image in J2000 coordinates&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string/>
@@ -613,7 +619,7 @@
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>Status feedback from mount </string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;Shows the solved DEC of image in J2000 coordinates&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string/>
@@ -626,6 +632,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="btn_loadFits">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -704,7 +713,7 @@
     <bool>false</bool>
    </property>
    <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Time elapsed for plate solving&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="layoutDirection">
     <enum>Qt::RightToLeft</enum>
@@ -735,6 +744,9 @@
     <font>
      <pointsize>10</pointsize>
     </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Cancels an imaging or plate solving action&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
     <string>Cancel</string>

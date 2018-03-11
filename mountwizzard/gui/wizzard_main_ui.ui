@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>3</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -6119,7 +6119,7 @@ AnalyseWindow</string>
     </widget>
     <widget class="QPushButton" name="btn_plateSolveSync">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
@@ -9758,7 +9758,7 @@ AnalyseWindow</string>
         </rect>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Chooses which imaging application or framework should be used for modeling.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Chooses which astrometry / platesolving application or framework should be used for modeling.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="Line" name="line_55">
@@ -13624,6 +13624,9 @@ AnalyseWindow</string>
          <height>21</height>
         </rect>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets the audio signal to be played when mount finished slewing&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
       </widget>
       <widget class="QLabel" name="label_210">
        <property name="geometry">
@@ -13697,6 +13700,9 @@ AnalyseWindow</string>
          <height>21</height>
         </rect>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets the audio signal to be played when mount stopped in emergency case&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
       </widget>
       <widget class="QComboBox" name="soundDomeSlewFinished">
        <property name="geometry">
@@ -13706,6 +13712,9 @@ AnalyseWindow</string>
          <width>161</width>
          <height>21</height>
         </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets the audio signal to be played when dome finished slewing&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_212">
