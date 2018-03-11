@@ -45,7 +45,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runInitialModel,
                             'Method': self.modelingRunner.runInitialModel,
-                            'Cancel': self.app.ui.btn_cancelModel1
+                            'Cancel': self.app.ui.btn_cancelInitialModel
                         }
                     ]
                 },
@@ -55,7 +55,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                         {
                             'Button': self.app.ui.btn_runFullModel,
                             'Method': self.modelingRunner.runFullModel,
-                            'Cancel': self.app.ui.btn_cancelModel2
+                            'Cancel': self.app.ui.btn_cancelFullModel
                         }
                     ]
                 },
@@ -351,17 +351,25 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     self.modelingRunner.cancel = False
                 PyQt5.QtWidgets.QApplication.processEvents()
 
-    def cancelModeling(self):
+    def cancelFullModel(self):
         # cancel modeling is defined outside command Dispatcher, because when running commands, there is no chance to interrupt this process
         # from outside if I would use the event queue of this task (because the methods don't respect updating event queue and the modeling
         # processes should be modal. Therefore cancelModeling and cancelAnalyseModeling is connected to main app with it's separate event queue.
         if self.modelingRunner.modelRun:
-            self.app.ui.btn_cancelModel1.setProperty('cancel', True)
-            self.app.ui.btn_cancelModel1.style().unpolish(self.app.ui.btn_cancelModel1)
-            self.app.ui.btn_cancelModel1.style().polish(self.app.ui.btn_cancelModel1)
-            self.app.ui.btn_cancelModel2.setProperty('cancel', True)
-            self.app.ui.btn_cancelModel2.style().unpolish(self.app.ui.btn_cancelModel2)
-            self.app.ui.btn_cancelModel2.style().polish(self.app.ui.btn_cancelModel2)
+            self.app.ui.btn_cancelFullModel.setProperty('cancel', True)
+            self.app.ui.btn_cancelFullModel.style().unpolish(self.app.ui.btn_cancelFullModel)
+            self.app.ui.btn_cancelFullModel.style().polish(self.app.ui.btn_cancelFullModel)
+            self.logger.info('User canceled modeling')
+            self.modelingRunner.cancel = True
+
+    def cancelInitialModel(self):
+        # cancel modeling is defined outside command Dispatcher, because when running commands, there is no chance to interrupt this process
+        # from outside if I would use the event queue of this task (because the methods don't respect updating event queue and the modeling
+        # processes should be modal. Therefore cancelModeling and cancelAnalyseModeling is connected to main app with it's separate event queue.
+        if self.modelingRunner.modelRun:
+            self.app.ui.btn_cancelInitialModel.setProperty('cancel', True)
+            self.app.ui.btn_cancelInitialModel.style().unpolish(self.app.ui.btn_cancelInitialModel)
+            self.app.ui.btn_cancelInitialModel.style().polish(self.app.ui.btn_cancelInitialModel)
             self.logger.info('User canceled modeling')
             self.modelingRunner.cancel = True
 

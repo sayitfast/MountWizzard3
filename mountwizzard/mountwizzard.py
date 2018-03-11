@@ -90,9 +90,9 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_mountBoot, ':/computer_accept.ico')
         self.widgetIcon(self.ui.btn_mountShutdown, ':/computer_remove.ico')
         self.widgetIcon(self.ui.btn_runInitialModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_cancelModel1, ':/stop.ico')
+        self.widgetIcon(self.ui.btn_cancelFullModel, ':/stop.ico')
         self.widgetIcon(self.ui.btn_runFullModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_cancelModel2, ':/stop.ico')
+        self.widgetIcon(self.ui.btn_cancelInitialModel, ':/stop.ico')
         self.widgetIcon(self.ui.btn_generateInitialPoints, ':/process_add.ico')
         self.widgetIcon(self.ui.btn_plateSolveSync, ':/calculator_accept.ico')
         self.widgetIcon(self.ui.btn_generateGridPoints, ':/process_add.ico')
@@ -282,8 +282,8 @@ class MountWizzardApp(widget.MwWidget):
         # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
         # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
         # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
-        self.ui.btn_cancelModel1.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
-        self.ui.btn_cancelModel2.clicked.connect(lambda: self.workerModelingDispatcher.cancelModeling())
+        self.ui.btn_cancelFullModel.clicked.connect(self.workerModelingDispatcher.cancelFullModel)
+        self.ui.btn_cancelInitialModel.clicked.connect(self.workerModelingDispatcher.cancelInitialModel)
         self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)

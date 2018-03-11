@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5410,7 +5410,7 @@ AnalyseWindow</string>
       <double>50.000000000000000</double>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelModel1">
+    <widget class="QPushButton" name="btn_cancelInitialModel">
      <property name="geometry">
       <rect>
        <x>325</x>
@@ -6528,7 +6528,7 @@ AnalyseWindow</string>
     <zorder>btn_runInitialModel</zorder>
     <zorder>btn_generateInitialPoints</zorder>
     <zorder>altitudeBase</zorder>
-    <zorder>btn_cancelModel1</zorder>
+    <zorder>btn_cancelInitialModel</zorder>
     <zorder>label</zorder>
     <zorder>le_alignErrorAz</zorder>
     <zorder>le_alignErrorPosAngle</zorder>
@@ -6802,7 +6802,7 @@ AnalyseWindow</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_cancelModel2">
+    <widget class="QPushButton" name="btn_cancelFullModel">
      <property name="geometry">
       <rect>
        <x>400</x>
@@ -7551,7 +7551,7 @@ AnalyseWindow</string>
     <zorder>numberGridPointsRow</zorder>
     <zorder>numberGridPointsCol</zorder>
     <zorder>btn_runFullModel</zorder>
-    <zorder>btn_cancelModel2</zorder>
+    <zorder>btn_cancelFullModel</zorder>
     <zorder>btn_generateDSOPoints</zorder>
     <zorder>line_40</zorder>
     <zorder>numberHoursDSO</zorder>
@@ -14784,7 +14784,7 @@ AnalyseWindow</string>
   <tabstop>altitudeBase</tabstop>
   <tabstop>azimuthBase</tabstop>
   <tabstop>btn_runInitialModel</tabstop>
-  <tabstop>btn_cancelModel1</tabstop>
+  <tabstop>btn_cancelInitialModel</tabstop>
   <tabstop>btn_generateGridPoints</tabstop>
   <tabstop>numberGridPointsRow</tabstop>
   <tabstop>altitudeMin</tabstop>
@@ -14798,7 +14798,7 @@ AnalyseWindow</string>
   <tabstop>numberPointsDSO</tabstop>
   <tabstop>numberHoursPreview</tabstop>
   <tabstop>btn_runFullModel</tabstop>
-  <tabstop>btn_cancelModel2</tabstop>
+  <tabstop>btn_cancelFullModel</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
   <tabstop>btn_cancelRunTargetRMSAlignment</tabstop>
