@@ -5199,6 +5199,9 @@ AnalyseWindow</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runBatchModel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>330</x>
@@ -6115,6 +6118,9 @@ AnalyseWindow</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_plateSolveSync">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>325</x>
@@ -8407,6 +8413,9 @@ AnalyseWindow</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_cancelAnalyseModel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -8423,6 +8432,9 @@ AnalyseWindow</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runTimeChangeModel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -8776,6 +8788,9 @@ AnalyseWindow</string>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_runHystereseModel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -13620,6 +13635,158 @@ AnalyseWindow</string>
       <zorder>line_4</zorder>
       <zorder>line_22</zorder>
      </widget>
+     <widget class="QWidget" name="tab_13">
+      <attribute name="title">
+       <string>Audio Signals</string>
+      </attribute>
+      <widget class="QComboBox" name="soundMountSlewFinished">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>50</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_210">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>20</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Play audio signals</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_24">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>40</y>
+         <width>331</width>
+         <height>1</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="Line" name="line_84">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>10</y>
+         <width>21</width>
+         <height>381</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="soundMountAlert">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>110</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="soundDomeSlewFinished">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>80</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_212">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>50</y>
+         <width>136</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Mount slew finished</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_214">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>80</y>
+         <width>136</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Dome slew finished</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_215">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>110</y>
+         <width>136</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Mount alert for STOP</string>
+       </property>
+      </widget>
+     </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
        <string>Versions</string>
@@ -13992,27 +14159,6 @@ AnalyseWindow</string>
        </property>
        <property name="text">
         <string>Minutes</string>
-       </property>
-      </widget>
-      <widget class="QCheckBox" name="checkPlaySound">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>245</y>
-         <width>231</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="toolTip">
-        <string>If checked, a blind solve would be made (needs internet connection)</string>
-       </property>
-       <property name="text">
-        <string>Play Sounds</string>
        </property>
       </widget>
      </widget>

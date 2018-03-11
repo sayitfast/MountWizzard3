@@ -50,6 +50,7 @@ from wakeonlan import send_magic_packet
 
 class MountWizzardApp(widget.MwWidget):
     logger = logging.getLogger(__name__)
+    signalAudio = PyQt5.QtCore.pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -74,9 +75,9 @@ class MountWizzardApp(widget.MwWidget):
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
         # define audio signals
-        self.audioBeep = PyQt5.QtMultimedia.QSound(':/beep.wav')
-        self.audioAlert = PyQt5.QtMultimedia.QSound(':/alert.wav')
-
+        self.audioSignalsSet = dict()
+        self.guiAudioList = dict()
+        self.setupAudioSignals()
         # show icon in main gui and add some icons for push buttons
         self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
         self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
@@ -299,9 +300,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
         self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
         self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
-        self.workerMountDispatcher.signalWarningStop.connect(self.mountAlert)
-        self.workerMountDispatcher.signalSlewFinished.connect(self.slewFinished)
-        self.workerDome.signalSlewFinished.connect(self.slewFinished)
+        self.signalAudio.connect(self.playAudioSignal)
 
     def mountBoot(self):
         import socket
@@ -517,8 +516,12 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.mainTabWidget.setCurrentIndex(self.config['MainTabPosition'])
             if 'SettingTabPosition' in self.config:
                 self.ui.settingsTabWidget.setCurrentIndex(self.config['SettingTabPosition'])
-            if 'CheckPlaySound' in self.config:
-                self.ui.checkPlaySound.setChecked(self.config['CheckPlaySound'])
+            if 'PlayMountSlew' in self.config:
+                self.ui.soundMountSlewFinished.setCurrentIndex(self.config['PlayMountSlew'])
+            if 'PlayDomeSlew' in self.config:
+                self.ui.soundDomeSlewFinished.setCurrentIndex(self.config['PlayDomeSlew'])
+            if 'PlayMountAlert' in self.config:
+                self.ui.soundMountAlert.setCurrentIndex(self.config['PlayMountAlert'])
 
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
@@ -648,7 +651,9 @@ class MountWizzardApp(widget.MwWidget):
         self.config['ConfigName'] = self.ui.le_configName.text()
         self.config['MainTabPosition'] = self.ui.mainTabWidget.currentIndex()
         self.config['SettingTabPosition'] = self.ui.settingsTabWidget.currentIndex()
-        self.config['CheckPlaySound'] = self.ui.checkPlaySound.isChecked()
+        self.config['PlayMountSlew'] = self.ui.soundMountSlewFinished.currentIndex()
+        self.config['PlayDomeSlew'] = self.ui.soundDomeSlewFinished.currentIndex()
+        self.config['PlayMountAlert'] = self.ui.soundMountAlert.currentIndex()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()
@@ -1055,14 +1060,24 @@ class MountWizzardApp(widget.MwWidget):
     def timeStamp():
         return time.strftime('%H:%M:%S -> ', time.localtime())
 
-    def mountAlert(self):
-        if self.ui.checkPlaySound.isChecked():
-            self.audioAlert.play()
-        self.messageQueue.put('#BR\tMOUNT STOPPED - WARNING !!!\n')
+    def setupAudioSignals(self):
+        # load the sounds available
+        self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
+        self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
+        # adding the possible sounds to drop down menu
+        self.guiAudioList['MountSlew'] = self.ui.soundMountSlewFinished
+        self.guiAudioList['DomeSlew'] = self.ui.soundDomeSlewFinished
+        self.guiAudioList['MountAlert'] = self.ui.soundMountAlert
+        for itemKey, itemValue in self.guiAudioList.items():
+            self.guiAudioList[itemKey].addItem('None')
+            self.guiAudioList[itemKey].addItem('Beep')
+            self.guiAudioList[itemKey].addItem('Alert')
 
-    def slewFinished(self):
-        if self.ui.checkPlaySound.isChecked():
-            self.audioBeep.play()
+    def playAudioSignal(self, value):
+        if value in self.guiAudioList:
+            sound = self.guiAudioList[value].currentText()
+            if sound in self.audioSignalsSet:
+                self.audioSignalsSet[sound].play()
 
     def mainLoop(self):
         self.fillMountData()

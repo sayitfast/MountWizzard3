@@ -45,7 +45,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
-    signalWarningStop = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_AUTO_UPDATE = 3000

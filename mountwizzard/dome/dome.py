@@ -211,6 +211,7 @@ class Dome(PyQt5.QtCore.QObject):
                 else:
                     if self.data['Slewing']:
                         self.signalSlewFinished.emit()
+                        self.app.signalAudio.emit('DomeSlew')
                     self.data['Slewing'] = False
 
     # noinspection PyBroadException
@@ -218,6 +219,7 @@ class Dome(PyQt5.QtCore.QObject):
         try:
             if self.data['Slewing'] and not self.ascom.Slewing:
                 self.signalSlewFinished.emit()
+                self.app.signalAudio.emit('DomeSlew')
             self.data['Slewing'] = self.ascom.Slewing
         except Exception:
             pass
