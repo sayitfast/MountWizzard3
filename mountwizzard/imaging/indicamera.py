@@ -119,10 +119,10 @@ class INDICamera:
                                         indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
             # set subframe
             self.app.INDICommandQueue.put(
-                indiXML.newNumberVector([indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
-                                         indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'}),
-                                         indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
-                                         indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'})],
+                indiXML.newNumberVector([indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
+                                         indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'}),
+                                         indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
+                                         indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'})],
                                         indi_attr={'name': 'CCD_FRAME', 'device': self.app.workerINDI.cameraDevice}))
             # Request image.
             self.app.INDICommandQueue.put(
