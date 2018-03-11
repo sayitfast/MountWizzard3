@@ -161,11 +161,11 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.thread = thread
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = True
-        self.imageSolved = False
-        self.main.app.workerAstrometry.imageSolved.connect(self.setImageSolved)
+        self.imageDataDownloaded = False
+        self.main.app.workerAstrometry.imageDataDownloaded.connect(self.setImageDataDownloaded)
 
-    def setImageSolved(self):
-        self.imageSolved = True
+    def setImageDataDownloaded(self):
+        self.imageDataDownloaded = True
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -174,13 +174,13 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         while self.isRunning:
             if not self.queuePlatesolve.empty():
-                self.imageSolved = False
+                self.imageDataDownloaded = False
                 modelingData = self.queuePlatesolve.get()
                 if modelingData['Imagepath'] != '':
                     self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
                     self.main.app.workerAstrometry.astrometryCommandQueue.put(modelingData)
                     # wait for solving ready
-                    while not self.imageSolved and not self.main.cancel:
+                    while not self.imageDataDownloaded and not self.main.cancel:
                         time.sleep(0.1)
                         PyQt5.QtWidgets.QApplication.processEvents()
                     if 'RaJ2000Solved' in modelingData:

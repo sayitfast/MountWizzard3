@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -462,8 +462,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -507,8 +507,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -588,8 +588,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -675,8 +675,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -741,8 +741,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -1333,8 +1333,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -1423,8 +1423,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -1489,8 +1489,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -1615,8 +1615,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -1678,8 +1678,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -1950,8 +1950,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2019,8 +2019,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2079,8 +2079,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2318,8 +2318,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2414,8 +2414,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2582,8 +2582,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2630,8 +2630,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2678,8 +2678,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2774,8 +2774,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2846,8 +2846,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3050,8 +3050,8 @@
       <font>
        <family>Courier</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3098,8 +3098,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3170,8 +3170,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3218,8 +3218,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3547,8 +3547,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3659,8 +3659,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -3719,8 +3719,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -9552,7 +9552,7 @@ AnalyseWindow</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -14554,8 +14554,8 @@ AnalyseWindow</string>
     <font>
      <family>Arial</family>
      <pointsize>8</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -14596,8 +14596,8 @@ AnalyseWindow</string>
     <font>
      <family>Arial</family>
      <pointsize>8</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -14638,8 +14638,8 @@ AnalyseWindow</string>
     <font>
      <family>Arial</family>
      <pointsize>8</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">
