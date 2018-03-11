@@ -55,7 +55,7 @@ class INDICamera:
         if status:
             self.receivedImage = True
         else:
-            self.setCancelImaging()
+            self.app.workerImaging.imagingCancel.emit()
         self.mutexReceived.unlock()
 
     def getStatus(self):
@@ -118,12 +118,12 @@ class INDICamera:
                                          indiXML.oneNumber(binning, indi_attr={'name': 'VER_BIN'})],
                                         indi_attr={'name': 'CCD_BINNING', 'device': self.app.workerINDI.cameraDevice}))
             # set subframe
-            #self.app.INDICommandQueue.put(
-            #    indiXML.newNumberVector([indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
-            #                             indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'}),
-            #                             indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
-            #                             indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'})],
-            #                            indi_attr={'name': 'CCD_FRAME', 'device': self.app.workerINDI.cameraDevice}))
+            self.app.INDICommandQueue.put(
+                indiXML.newNumberVector([indiXML.oneNumber(imageParams['SizeX'], indi_attr={'name': 'WIDTH'}),
+                                         indiXML.oneNumber(imageParams['SizeY'], indi_attr={'name': 'HEIGHT'}),
+                                         indiXML.oneNumber(imageParams['OffX'], indi_attr={'name': 'X'}),
+                                         indiXML.oneNumber(imageParams['OffY'], indi_attr={'name': 'Y'})],
+                                        indi_attr={'name': 'CCD_FRAME', 'device': self.app.workerINDI.cameraDevice}))
             # Request image.
             self.app.INDICommandQueue.put(
                 indiXML.newNumberVector([indiXML.oneNumber(exposure, indi_attr={'name': 'CCD_EXPOSURE_VALUE'})],
