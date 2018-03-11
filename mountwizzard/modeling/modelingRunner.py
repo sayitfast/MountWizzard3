@@ -318,19 +318,25 @@ class ModelingRunner:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
                 time.sleep(0.2)
-            if modelingData['Simulation']:
-                # wait for
-                while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
-                    time.sleep(0.5)
+                if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
+                    # wait for dome
+                    while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
+                        if self.cancel:
+                            self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
+                            break
+                        time.sleep(0.2)
         else:
             while not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
                 time.sleep(0.2)
-            if modelingData['Simulation']:
-                # wait for
+            if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
+                # wait for dome
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
+                    if self.cancel:
+                        self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
+                        break
                     time.sleep(0.2)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
@@ -443,7 +449,11 @@ class ModelingRunner:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
         modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
-        modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        # simulation only works with indi
+        if self.app.workerINDI.telescopeDevice != '':
+            modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        else:
+            modelingData['Simulation'] = False
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
@@ -497,7 +507,11 @@ class ModelingRunner:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
         modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
-        modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        # simulation only works with indi
+        if self.app.workerINDI.telescopeDevice != '':
+            modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
+        else:
+            modelingData['Simulation'] = False
         modelingData['KeepImages'] = self.app.ui.checkKeepImages.isChecked()
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
