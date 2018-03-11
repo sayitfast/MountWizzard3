@@ -41,7 +41,6 @@ class NoneSolver:
     def getStatus(self):
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'
-        self.main.astrometryStatusText.emit('IDLE')
 
     @staticmethod
     def solveImage(imageParams):

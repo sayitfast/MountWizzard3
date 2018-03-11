@@ -69,8 +69,6 @@ class AstrometryClient:
 
     def initConfig(self):
         try:
-            if 'CheckEnableAstrometry' in self.app.config:
-                self.app.ui.checkEnableAstrometry.setChecked(self.app.config['CheckEnableAstrometry'])
             if 'CheckUseOnlineSolver' in self.app.config:
                 self.app.ui.rb_useOnlineSolver.setChecked(self.app.config['CheckUseOnlineSolver'])
             if 'CheckUseLocalSolver' in self.app.config:
@@ -102,7 +100,6 @@ class AstrometryClient:
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
         self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
         self.app.config['AstrometryServerAPIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
-        self.app.config['CheckEnableAstrometry'] = self.app.ui.checkEnableAstrometry.isChecked()
         self.app.config['CheckUseOnlineSolver'] = self.app.ui.rb_useOnlineSolver.isChecked()
         self.app.config['CheckUseLocalSolver'] = self.app.ui.rb_useLocalSolver.isChecked()
 
@@ -179,7 +176,6 @@ class AstrometryClient:
             # we have to login with the api key for the online solver to get the session key
             self.application['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
             try:
-
                 response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.application['APIKey']})}, headers={})
                 result = json.loads(response.text)
             except Exception as e:
