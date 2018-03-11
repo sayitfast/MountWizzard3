@@ -48,6 +48,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':SRTMP': 1,
                       ':Sz': 1,
                       ':Sa': 1,
+                      ':Sr': 1,
+                      ':Sd': 1,
                       ':MA#': 1,
                       ':MS#': 1,
                       ':shutdown': 1,
@@ -64,7 +66,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':Gd#': 12,
                       ':newalig#': 1,
                       ':endalig#': 1,
-                      ':newalpt': 1
+                      ':newalpt': 1,
+                      ':CMCFG': 1
     }
 
     def __init__(self, app, thread, data, signalConnected):

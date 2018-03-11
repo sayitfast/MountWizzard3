@@ -113,6 +113,7 @@ class HemisphereWindow(widget.MwWidget):
 
     def drawCanvas(self):
         if not self.lockDrawCanvas.tryLock():
+            print('delayed')
             return
         self.hemisphereMatplotlib.fig.canvas.draw()
         self.lockDrawCanvas.unlock()

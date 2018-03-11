@@ -656,7 +656,9 @@ class ModelingRunner:
             self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
                                                                                       self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
             ra_sol_Jnow, dec_sol_Jnow = self.transform.transformERFA(imageParams['RaJ2000Solved'], imageParams['DecJ2000Solved'], 3)
-            success = self.app.workerMountDispatcher.syncMountModel(ra_sol_Jnow, dec_sol_Jnow)
+            ra_form = self.transform.decimalToDegree(ra_sol_Jnow, False, False)
+            dec_form = self.transform.decimalToDegree(dec_sol_Jnow, True, False)
+            success = self.app.workerMountDispatcher.syncMountModel(ra_form, dec_form)
             if success:
                 self.app.messageQueue.put('\tMount Model Synced\n')
             else:
