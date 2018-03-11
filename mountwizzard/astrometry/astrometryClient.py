@@ -137,7 +137,6 @@ class AstrometryClient:
 
     def getStatus(self):
         try:
-            retValue = 0
             data = {'request-json': ''}
             headers = {}
             result = requests.post(self.urlAPI, data=data, headers=headers)
@@ -149,13 +148,13 @@ class AstrometryClient:
                 self.application['Status'] = 'OK'
                 self.data['CONNECTION']['CONNECT'] = 'On'
         except Exception as e:
-            self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI), e)
+            self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI, e))
             self.main.astrometryStatusText.emit('Not OK')
             self.application['Available'] = False
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
         finally:
-            return retValue
+            pass
 
     def solveImage(self, imageParams):
         self.mutexCancel.lock()
@@ -165,6 +164,12 @@ class AstrometryClient:
         # waiting for start solving
         timeSolvingStart = time.time()
         errorState = False
+        result = ''
+        response = ''
+        stat = ''
+        submissionID = ''
+        jobID = ''
+        headers = ''
         imageParams['Message'] = ''
         self.main.astrometryStatusText.emit('START')
 
@@ -174,7 +179,7 @@ class AstrometryClient:
             # we have to login with the api key for the online solver to get the session key
             self.application['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
             try:
-                result = ''
+
                 response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.application['APIKey']})}, headers={})
                 result = json.loads(response.text)
             except Exception as e:
@@ -322,5 +327,4 @@ class AstrometryClient:
         self.main.imageDataDownloaded.emit()
         self.main.astrometryStatusText.emit('IDLE')
         self.main.astrometrySolvingTime.emit('')
-
-
+        PyQt5.QtWidgets.QApplication.processEvents()
