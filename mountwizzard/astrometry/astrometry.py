@@ -154,6 +154,8 @@ class Astrometry(PyQt5.QtCore.QObject):
     def solveImage(self, imageParams):
         if self.data['CONNECTION']['CONNECT'] == 'Off':
             return
+        # reset message
+        imageParams['Message'] = 'Cancelled'
         # check for blind solve:
         imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
         # check for use of FITS data
