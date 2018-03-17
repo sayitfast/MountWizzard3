@@ -37,8 +37,7 @@ class NoneSolver:
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'
 
-    @staticmethod
-    def solveImage(imageParams):
+    def solveImage(self, imageParams):
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()
