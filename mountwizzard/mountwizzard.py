@@ -1138,7 +1138,7 @@ class MountWizzardApp(widget.MwWidget):
                 self.messageWindow.ui.messages.setFontWeight(PyQt5.QtGui.QFont.Normal)
                 self.messageWindow.ui.messages.insertPlainText(textadd + text)
             self.messageWindow.ui.messages.moveCursor(PyQt5.QtGui.QTextCursor.End)
-        # update application name in pull-down menue
+        # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
         PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
@@ -1181,11 +1181,11 @@ if __name__ == "__main__":
         sys.__excepthook__(typeException, valueException, tbackException)
 
     # config basic behaviour of gui abstraction
-    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_Use96Dpi)
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_Use96Dpi)
     PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
-    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    #PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
     PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontUseNativeDialogs)
 
     # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)

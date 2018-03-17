@@ -16,6 +16,7 @@ import time
 import platform
 import PyQt5
 import queue
+import os
 import astropy.io.fits as pyfits
 
 from astrometry import astrometryClient
@@ -80,7 +81,7 @@ class Astrometry(PyQt5.QtCore.QObject):
                 self.app.ui.pd_chooseAstrometry.addItem('SGPro - ' + self.SGPro.application['Name'])
         #    if self.workerMaximDL.data['AppAvailable']:
         #        self.app.ui.pd_chooseAstrometry.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
-        #if platform.system() == 'Windows' or platform.system() == 'Darwin':
+        # if platform.system() == 'Windows' or platform.system() == 'Darwin':
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseAstrometry.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
         # load the config data
@@ -157,6 +158,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
         fitsHeader = fitsFileHandle[0].header
         if 'PIXSCALE' not in fitsHeader:
+            scaleHint = 1
             if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
                 scaleHint = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
             if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:

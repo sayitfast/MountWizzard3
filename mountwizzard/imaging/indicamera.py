@@ -74,11 +74,8 @@ class INDICamera:
                 self.application['Status'] = 'ERROR'
         else:
             self.application['Available'] = False
-            self.main.cameraStatusText.emit('Not OK')
 
     def getCameraProps(self):
-        if self.application['Status'] != 'OK':
-            return
         self.data['Gain'] = 'High'
         self.data['Speed'] = 'High'
         self.data['CCD_INFO'] = {}

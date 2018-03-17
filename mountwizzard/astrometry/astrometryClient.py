@@ -323,6 +323,8 @@ class AstrometryClient:
                 imageParams['Message'] = 'Solve failed'
             finally:
                 pass
+        else:
+            imageParams['Solved'] = False
 
         # finally idle
         self.main.imageDataDownloaded.emit()
