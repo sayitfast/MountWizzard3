@@ -96,7 +96,8 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.setIP()
         self.setPort()
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = False
+        self.settingsChanged = True
+        self.changedINDIClientConnectionSettings()
         self.status.emit(0)
 
     def storeConfig(self):

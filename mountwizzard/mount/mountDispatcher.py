@@ -363,10 +363,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.setIP()
-        self.setMAC()
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = False
+        self.settingsChanged = True
+        self.changedMountConnectionSettings()
 
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
