@@ -111,21 +111,22 @@ class INDIClient(PyQt5.QtCore.QObject):
             if self.app.ui.checkEnableINDI.isChecked():
                 self.ipChangeLock.acquire()
                 self.stop()
-                time.sleep(1)
+                valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+                if valid:
+                    self.data['ServerIP'] = value
+                valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
+                if valid:
+                    self.data['ServerPort'] = value
                 self.app.threadINDI.start()
                 self.ipChangeLock.release()
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
         self.settingsChanged = (self.data['ServerPort'] != value)
-        if valid:
-            self.data['ServerPort'] = value
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
         self.settingsChanged = (self.data['ServerIP'] != value)
-        if valid:
-            self.data['ServerIP'] = value
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():
