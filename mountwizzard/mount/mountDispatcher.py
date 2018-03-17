@@ -20,7 +20,6 @@
 import logging
 import time
 import PyQt5
-import threading
 import queue
 import math
 from mount import mountCommandRunner
@@ -84,7 +83,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.thread = thread
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.ipChangeLock = threading.Lock()
+        self.mutexIPChange = PyQt5.QtCore.QMutex()
         self.commandDispatcherQueue = queue.Queue()
         # getting all supporting classes assigned
         self.mountModelHandling = mountModelHandling.MountModelHandling(self.app, self.data)
@@ -376,7 +375,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def changedMountConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            self.ipChangeLock.acquire()
+            self.mutexIPChange.lock()
             # stopping all interaction
             if self.isRunning:
                 # stopping thread for chang of parameters
@@ -389,7 +388,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
                 if valid:
                     self.data['MountIP'] = value
-                self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
+                valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
+                if valid:
+                    self.data['MountMAC'] = value
                 # and restarting for using new parameters
                 self.threadMountStatusRunnerOnce.start()
                 self.threadMountStatusRunnerSlow.start()
@@ -397,7 +398,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.threadMountStatusRunnerFast.start()
                 self.threadMountCommandRunner.start()
                 self.threadMountGetAlignmentModel.start()
-            self.ipChangeLock.release()
+            else:
+                valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+                if valid:
+                    self.data['MountIP'] = value
+                valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
+                if valid:
+                    self.data['MountMAC'] = value
+            self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
+            self.mutexIPChange.unlock()
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
@@ -405,8 +414,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def setMAC(self):
         valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-        if valid:
-            self.data['mountMAC'] = value
+        self.settingsChanged = (self.data['MountMAC'] != value)
 
     def run(self):
         self.mutexIsRunning.lock()

@@ -30,7 +30,7 @@ class Remote(PyQt5.QtCore.QObject):
         super().__init__()
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.ipChangeLock = threading.Lock()
+        self.mutexIPChanged = PyQt5.QtCore.QMutex()
 
         self.app = app
         self.thread = thread
@@ -67,17 +67,17 @@ class Remote(PyQt5.QtCore.QObject):
     def changedRemoteConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address/port for remote access: {0}\n'.format(self.data['RemotePort']))
             if self.app.ui.checkEnableRemoteAccess.isChecked():
                 # stopping thread
-                self.ipChangeLock.acquire()
+                self.mutexIPChanged.lock()
                 self.stop()
                 # change to new values
                 valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)
                 if valid:
                     self.data['RemotePort'] = value
                 self.app.threadRemote.start()
-                self.ipChangeLock.release()
+                self.mutexIPChanged.unlock()
+                self.app.messageQueue.put('Setting IP address/port for remote access: {0}\n'.format(self.data['RemotePort']))
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)

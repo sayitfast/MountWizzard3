@@ -55,7 +55,7 @@ class SGPro:
             # sgpro only supported on local machine
             self.application['Available'], self.application['Name'], self.application['InstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
             if self.application['Available']:
-                self.app.messageQueue.put('Found: {0}\n'.format(self.application['Name']))
+                self.app.messageQueue.put('Found Imaging: {0}\n'.format(self.application['Name']))
                 self.logger.info('Name: {0}, Path: {1}'.format(self.application['Name'], self.application['InstallPath']))
             else:
                 self.logger.info('Application SGPro not found on computer')

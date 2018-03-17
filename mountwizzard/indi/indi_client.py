@@ -13,7 +13,6 @@
 ############################################################
 import logging
 import time
-import threading
 import zlib
 import queue
 from xml.etree import ElementTree
@@ -62,7 +61,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.isRunning = False
-        self.ipChangeLock = threading.Lock()
+        self.mutexIPChange = PyQt5.QtCore.QMutex()
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.checkIP = checkParamIP.CheckIP()
         self.socket = None
@@ -108,18 +107,26 @@ class INDIClient(PyQt5.QtCore.QObject):
     def changedINDIClientConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address/port for INDI client: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
             if self.app.ui.checkEnableINDI.isChecked():
-                self.ipChangeLock.acquire()
-                self.stop()
-                valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-                if valid:
-                    self.data['ServerIP'] = value
-                valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-                if valid:
-                    self.data['ServerPort'] = value
-                self.app.threadINDI.start()
-                self.ipChangeLock.release()
+                if self.isRunning:
+                    self.mutexIPChange.lock()
+                    self.stop()
+                    valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+                    if valid:
+                        self.data['ServerIP'] = value
+                    valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
+                    if valid:
+                        self.data['ServerPort'] = value
+                    self.app.threadINDI.start()
+                else:
+                    valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+                    if valid:
+                        self.data['ServerIP'] = value
+                    valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
+                    if valid:
+                        self.data['ServerPort'] = value
+                self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
+                self.mutexIPChange.unlock()
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)

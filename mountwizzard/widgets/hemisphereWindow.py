@@ -271,7 +271,7 @@ class HemisphereWindow(widget.MwWidget):
         y.insert(0, 0)
         y.append(0)
         self.maskPlotFill,  = self.hemisphereMatplotlib.axes.fill(x, y, color='#002000', zorder=-20)
-        self.maskPlotMarker,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3)
+        self.maskPlotMarker,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3, picker='None')
         if self.ui.btn_editHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
             self.maskPlotMarker.set_color('#FF00FF')
@@ -280,19 +280,19 @@ class HemisphereWindow(widget.MwWidget):
         self.offy = 2
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         # draw points in two colors
-        self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, color='#00A000')
-        self.pointsPlotSmall,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=3, color='#E0E000')
+        self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, color='#00A000', picker='None')
+        self.pointsPlotSmall,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=3, color='#E0E000', picker='None')
         if self.ui.btn_editModelPoints.isChecked():
             self.pointsPlotBig.set_color('#FF00FF')
         # add text to points
         for i in range(0, len(points)):
-            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] - self.offx, points[i][1] - self.offy), color='#E0E0E0'))
+            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] - self.offx, points[i][1] - self.offy), color='#E0E0E0', picker='None'))
         # adding the pointer of mount
-        self.pointerAzAlt1,  = self.hemisphereMatplotlib.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False)
-        self.pointerAzAlt2,  = self.hemisphereMatplotlib.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False)
+        self.pointerAzAlt1,  = self.hemisphereMatplotlib.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False, picker='None')
+        self.pointerAzAlt2,  = self.hemisphereMatplotlib.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False, picker='None')
         # adding pointer of dome if dome is present
-        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True, visible=False)
-        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False, visible=False)
+        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True, visible=False, picker='None')
+        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False, visible=False, picker='None')
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
         self.drawCanvas()
