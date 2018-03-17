@@ -28,6 +28,7 @@ import astropy.io.fits as pyfits
 from astrometry import astrometryClient
 from astrometry import sgpro_solve
 from astrometry import noneSolver
+from astrometry import transform
 
 
 class Astrometry(PyQt5.QtCore.QObject):
@@ -55,6 +56,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.astrometryCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
+        self.transform = transform.Transform()
 
         # class data
         self.data = dict()
@@ -160,20 +162,26 @@ class Astrometry(PyQt5.QtCore.QObject):
         imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
         # check for use of FITS data
         imageParams['UseFitsHeader'] = self.app.ui.checkUseFitsHeader.isChecked()
-        # if fits data, check if scale hint was calculated
-        if not os.path.isfile(imageParams['Imagepath']):
-            return
-        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
-        fitsHeader = fitsFileHandle[0].header
-        if 'PIXSCALE' not in fitsHeader:
-            scaleHint = 1
-            if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-                scaleHint = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN'])
-            if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
-                scaleHint = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
-            fitsHeader['PIXSCALE'] = str(scaleHint)
-            fitsFileHandle.flush()
-        fitsFileHandle.close()
+        if not imageParams['UseFitsHeader']:
+            # if fits data, check if scale hint was calculated
+            if not os.path.isfile(imageParams['Imagepath']):
+                return
+            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+            fitsHeader = fitsFileHandle[0].header
+            if 'PIXSCALE' not in fitsHeader:
+                scaleHint = 1
+                if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
+                    scaleHint = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
+                if 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
+                    scaleHint = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
+                fitsHeader['PIXSCALE'] = str(scaleHint)
+                fitsFileHandle.flush()
+            imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+            imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+            fitsFileHandle.close()
+        else:
+            imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value() * 206.6 / float(self.app.ui.focalLength.value()) * float(self.app.ui.cameraBin.value()) )
+
         self.astrometryHandler.solveImage(imageParams)
 
     def getStatus(self):
