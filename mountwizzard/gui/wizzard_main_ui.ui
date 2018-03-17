@@ -10812,7 +10812,7 @@ AnalyseWindow</string>
       <widget class="QLineEdit" name="le_INDIServerIP">
        <property name="geometry">
         <rect>
-         <x>530</x>
+         <x>525</x>
          <y>70</y>
          <width>131</width>
          <height>21</height>
@@ -11105,7 +11105,7 @@ AnalyseWindow</string>
        <property name="geometry">
         <rect>
          <x>400</x>
-         <y>260</y>
+         <y>255</y>
          <width>341</width>
          <height>131</height>
         </rect>
@@ -11182,9 +11182,9 @@ AnalyseWindow</string>
        <widget class="QLineEdit" name="le_AstrometryServerPort">
         <property name="geometry">
          <rect>
-          <x>180</x>
+          <x>190</x>
           <y>50</y>
-          <width>56</width>
+          <width>46</width>
           <height>21</height>
          </rect>
         </property>
@@ -11329,9 +11329,9 @@ AnalyseWindow</string>
        <widget class="QLineEdit" name="le_timeoutOnline">
         <property name="geometry">
          <rect>
-          <x>295</x>
+          <x>300</x>
           <y>105</y>
-          <width>36</width>
+          <width>31</width>
           <height>21</height>
          </rect>
         </property>
@@ -11371,9 +11371,9 @@ AnalyseWindow</string>
        <widget class="QLineEdit" name="le_timeoutLocal">
         <property name="geometry">
          <rect>
-          <x>295</x>
+          <x>300</x>
           <y>50</y>
-          <width>36</width>
+          <width>31</width>
           <height>21</height>
          </rect>
         </property>
@@ -11446,6 +11446,42 @@ AnalyseWindow</string>
          <string>IP / Port</string>
         </property>
        </widget>
+       <widget class="QLabel" name="label_mountIP_9">
+        <property name="geometry">
+         <rect>
+          <x>180</x>
+          <y>50</y>
+          <width>16</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>/</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QLabel" name="label_mountIP_10">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>70</y>
+         <width>16</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>/</string>
+       </property>
       </widget>
      </widget>
      <widget class="QWidget" name="tab_7">

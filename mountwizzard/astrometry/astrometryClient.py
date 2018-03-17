@@ -114,7 +114,7 @@ class AstrometryClient:
         self.app.config['CheckUseOnlineSolver'] = self.app.ui.rb_useOnlineSolver.isChecked()
         self.app.config['CheckUseLocalSolver'] = self.app.ui.rb_useLocalSolver.isChecked()
         self.app.config['OnlineSolverTimeout'] = self.app.ui.le_timeoutOnline.text()
-        self.app.config['LocalSolverTimeout'] = self.app.ui.le_timeoutOnline.text()
+        self.app.config['LocalSolverTimeout'] = self.app.ui.le_timeoutLocal.text()
 
     def setAstrometryNet(self):
         self.settingsChanged = True

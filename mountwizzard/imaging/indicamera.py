@@ -156,6 +156,7 @@ class INDICamera:
             else:
                 self.main.cameraStatusText.emit('ERROR')
             time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
@@ -176,6 +177,7 @@ class INDICamera:
             else:
                 self.main.cameraExposureTime.emit('')
             time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
         # loop for download
         self.main.imageIntegrated.emit()
@@ -199,6 +201,7 @@ class INDICamera:
             else:
                 self.main.cameraExposureTime.emit('')
             time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
         # loop for saving
         self.main.imageDownloaded.emit()
@@ -210,6 +213,7 @@ class INDICamera:
             if self.receivedImage:
                 break
             time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
         # finally idle
         self.main.imageSaved.emit()

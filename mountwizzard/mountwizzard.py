@@ -1148,7 +1148,7 @@ class MountWizzardApp(widget.MwWidget):
         # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
-        PyQt5.QtCore.QTimer.singleShot(100, self.mainLoop)
+        PyQt5.QtCore.QTimer.singleShot(200, self.mainLoop)
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):
@@ -1205,7 +1205,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0 alpha 11'
+    BUILD_NO = '3.0 alpha 12'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

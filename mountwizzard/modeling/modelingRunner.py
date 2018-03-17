@@ -201,8 +201,10 @@ class Platesolve(PyQt5.QtCore.QObject):
                         self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                         self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
                         self.main.solvedPointsQueue.put(copy.copy(modelingData))
-                    else:
+                    elif 'Index' in modelingData:
                         self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:95]))
+                    else:
+                        self.main.app.messageQueue.put('\tCancel Modeling')
                 self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
