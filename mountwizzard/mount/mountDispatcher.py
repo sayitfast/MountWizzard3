@@ -609,7 +609,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]
-        self.app.messageQueue.put('Deleting Point {0:02d}  -> Az: {1:05.1f}  Alt: {2:04.1f}  Err: {3:05.1f} ...'.format(worstPointIndex + 1,
+        self.app.messageQueue.put('Deleting Point {0:02d}  -> Az: {1:05.1f}  Alt: {2:04.1f}  Err: {3:05.1f} ...\n'.format(worstPointIndex + 1,
                                                                                                                         self.data['ModelAzimuth'][worstPointIndex],
                                                                                                                         self.data['ModelAltitude'][worstPointIndex],
                                                                                                                         maxError))
@@ -623,9 +623,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             # point could be deleted, feedback from mount ok
             self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
             # get new calculated alignment model from mount
-            self.app.messageQueue.put('\n')
+            self.app.messageQueue.put('\t Point deleted\n')
         else:
-            self.app.messageQueue.put(' Point could not be deleted \n')
+            self.app.messageQueue.put('#BR\tPoint could not be deleted \n')
             self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
         self.workerMountGetAlignmentModel.getAlignmentModel()
         # wait form alignment model to be downloaded
