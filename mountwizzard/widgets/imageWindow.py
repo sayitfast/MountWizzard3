@@ -255,11 +255,12 @@ class ImagesWindow(widget.MwWidget):
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
         self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
-
         while imageParams['Imagepath'] == '':
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
-
+        if not os.path.isfile(imageParams['Imagepath']):
+            self.app.messageQueue.put('#BWImaging failed\n')
+            return
         self.imagePath = imageParams['Imagepath']
         self.showFitsImage(self.imagePath)
         self.ui.le_imageFile.setText(os.path.basename(self.imagePath))

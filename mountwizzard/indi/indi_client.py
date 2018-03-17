@@ -334,7 +334,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.messageString = "<data>"
         # Get message from socket.
         while self.socket.bytesAvailable():
-            tmp = str(self.socket.read(100000), "ascii")
+            tmp = self.socket.read(100000).decode()
             self.messageString += tmp
             PyQt5.QtWidgets.QApplication.processEvents()
         # Add closing tag.

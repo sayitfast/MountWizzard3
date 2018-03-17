@@ -157,13 +157,17 @@ class Imaging(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def captureImage(self, imageParams):
+        imageParams['Imagepath'] = ''
         if self.cameraHandler.application['Status'] != 'OK':
+            imageParams['Imagepath'] = 'False'
             return
         # preparation for imaging: gathering all the informations for taking a picture from gui
         imageParams['Imagepath'] = ''
         if self.data['CONNECTION']['CONNECT'] == 'Off':
+            imageParams['Imagepath'] = 'False'
             return
         if 'CCD_INFO' not in self.data:
+            imageParams['Imagepath'] = 'False'
             return
         self.cameraHandler.getCameraProps()
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
