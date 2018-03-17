@@ -202,9 +202,6 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['Speed'] = 'HiSpeed'
         else:
             imageParams['Speed'] = 'Normal'
-        #if 'Binning' in imageParams:
-        #    imageParams['SizeX'] = int(imageParams['SizeX'] / imageParams['Binning'])
-        #    imageParams['SizeY'] = int(imageParams['SizeY'] / imageParams['Binning'])
         self.cameraHandler.getImage(imageParams)
 
     def getStatus(self):

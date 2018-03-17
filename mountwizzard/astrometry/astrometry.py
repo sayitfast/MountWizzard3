@@ -56,7 +56,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.astrometryCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
-        self.transform = transform.Transform()
+        self.transform = transform.Transform(self.app)
 
         # class data
         self.data = dict()
