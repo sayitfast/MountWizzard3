@@ -80,6 +80,10 @@ class AstrometryClient:
                 self.app.ui.rb_useOnlineSolver.setChecked(self.app.config['CheckUseOnlineSolver'])
             if 'CheckUseLocalSolver' in self.app.config:
                 self.app.ui.rb_useLocalSolver.setChecked(self.app.config['CheckUseLocalSolver'])
+            if 'OnlineSolverTimeout' in self.app.config:
+                self.app.ui.le_timeoutOnline.setText(self.app.config['OnlineSolverTimeout'])
+            if 'LocalSolverTimeout' in self.app.config:
+                self.app.ui.le_timeoutLocal.setText(self.app.config['LocalSolverTimeout'])
             if 'AstrometryServerPort' in self.app.config:
                 self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
             if 'AstrometryServerIP' in self.app.config:
@@ -109,6 +113,8 @@ class AstrometryClient:
         self.app.config['AstrometryServerAPIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
         self.app.config['CheckUseOnlineSolver'] = self.app.ui.rb_useOnlineSolver.isChecked()
         self.app.config['CheckUseLocalSolver'] = self.app.ui.rb_useLocalSolver.isChecked()
+        self.app.config['OnlineSolverTimeout'] = self.app.ui.le_timeoutOnline.text()
+        self.app.config['LocalSolverTimeout'] = self.app.ui.le_timeoutOnline.text()
 
     def setAstrometryNet(self):
         self.settingsChanged = True
@@ -125,11 +131,11 @@ class AstrometryClient:
             if self.app.ui.rb_useOnlineSolver.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
-                self.timeoutMax = 360
+                self.timeoutMax = float(self.app.ui.le_timeoutOnline.text())
             else:
                 self.urlAPI = 'http://{0}:{1}/api'.format(self.application['ServerIP'], self.application['ServerPort'])
                 self.urlLogin = ''
-                self.timeoutMax = 60
+                self.timeoutMax = float(self.app.ui.le_timeoutLocal.text())
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
     def setPort(self):
@@ -216,6 +222,7 @@ class AstrometryClient:
 
         # loop for upload
         self.main.astrometryStatusText.emit('UPLOAD')
+        PyQt5.QtWidgets.QApplication.processEvents()
         # start uploading the data and define the parameters
         data = self.solveData
         data['scale_est'] = imageParams['ScaleHint']
@@ -250,7 +257,7 @@ class AstrometryClient:
 
         # loop for solve
         self.main.astrometryStatusText.emit('SOLVE-Sub')
-
+        PyQt5.QtWidgets.QApplication.processEvents()
         # wait for the submission = star detection algorithm to take place
         while not self.cancel and not errorState:
             data = {'request-json': ''}
@@ -310,6 +317,7 @@ class AstrometryClient:
         # Loop for data
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
+        PyQt5.QtWidgets.QApplication.processEvents()
         # now get the solving data and results
         if not errorState:
             try:
