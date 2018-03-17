@@ -37,7 +37,9 @@ class HemisphereWindow(widget.MwWidget):
         super(HemisphereWindow, self).__init__()
         self.app = app
         self.transform = transform.Transform(self.app)
-        self.lockDrawCanvas = PyQt5.QtCore.QMutex()
+        self.mutexDrawCanvas = PyQt5.QtCore.QMutex()
+        self.mutexDrawCanvasMoving = PyQt5.QtCore.QMutex()
+
         self.pointerAzAlt1 = None
         self.pointerAzAlt2 = None
         self.pointerDome1 = None
@@ -56,8 +58,20 @@ class HemisphereWindow(widget.MwWidget):
         self.initConfig()
         # setup the plot styles
         self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)
+        # making background looking transparent
+        self.hemisphereMatplotlib.fig.patch.set_facecolor('none')
+        background = self.hemisphereMatplotlib.fig.canvas.parentWidget()
+        background.setStyleSheet("background-color: transparent;")
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
         self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+        # for the fast moving parts
+        self.hemisphereMatplotlibMoving = widget.IntegrateMatplotlib(self.ui.hemisphereMoving)
+        # making background looking transparent
+        self.hemisphereMatplotlibMoving.fig.patch.set_facecolor('none')
+        background = self.hemisphereMatplotlibMoving.fig.canvas.parentWidget()
+        background.setStyleSheet("background-color: transparent;")
+        self.hemisphereMatplotlibMoving.axes = self.hemisphereMatplotlibMoving.fig.add_subplot(111)
+        self.hemisphereMatplotlibMoving.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
         # signal connections
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
@@ -118,11 +132,19 @@ class HemisphereWindow(widget.MwWidget):
         self.drawHemisphere()
 
     def drawCanvas(self):
-        if not self.lockDrawCanvas.tryLock():
+        if not self.mutexDrawCanvas.tryLock():
             print('delayed')
             return
         self.hemisphereMatplotlib.fig.canvas.draw()
-        self.lockDrawCanvas.unlock()
+        self.mutexDrawCanvas.unlock()
+        PyQt5.QtWidgets.QApplication.processEvents()
+
+    def drawCanvasMoving(self):
+        if not self.mutexDrawCanvasMoving.tryLock():
+            print('delayed')
+            return
+        self.hemisphereMatplotlibMoving.fig.canvas.draw()
+        self.mutexDrawCanvasMoving.unlock()
         PyQt5.QtWidgets.QApplication.processEvents()
 
     def setAzAltPointer(self, az, alt):
@@ -131,7 +153,7 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerAzAlt2.set_data((az, alt))
             self.pointerAzAlt1.set_visible(True)
             self.pointerAzAlt2.set_visible(True)
-            self.drawCanvas()
+            self.drawCanvasMoving()
 
     def setDomePointer(self, az, stat):
         if self.showStatus:
@@ -139,7 +161,7 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerDome2.set_visible(stat)
             self.pointerDome1.set_xy((az - 15, 1))
             self.pointerDome2.set_xy((az - 15, 1))
-            self.drawCanvas()
+            self.drawCanvasMoving()
 
     def plotImagedPoint(self, az, alt):
         self.hemisphereMatplotlib.axes.plot(az, alt, 'X', color='#FF00FF', zorder=5, markersize=9)
@@ -150,16 +172,19 @@ class HemisphereWindow(widget.MwWidget):
             self.maskPlotMarker.set_marker('None')
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#00A000')
+            self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
 
         elif self.ui.btn_editModelPoints.isChecked():
             self.maskPlotMarker.set_marker('None')
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#FF00FF')
+            self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
 
         elif self.ui.btn_editHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
             self.pointsPlotBig.set_color('#00A000')
             self.maskPlotMarker.set_color('#FF00FF')
+            self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
         else:
             pass
         self.drawCanvas()
@@ -249,6 +274,13 @@ class HemisphereWindow(widget.MwWidget):
         for i in range(0, len(self.annotate)):
             self.annotate[i].remove()
         self.annotate = list()
+        self.hemisphereMatplotlibMoving.axes.cla()
+        # set face color transparent
+        self.hemisphereMatplotlibMoving.axes.set_facecolor((0, 0, 0, 0))
+        self.hemisphereMatplotlibMoving.axes.set_xlim(0, 360)
+        self.hemisphereMatplotlibMoving.axes.set_ylim(0, 90)
+        self.hemisphereMatplotlibMoving.axes.set_axis_off()
+
         self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlib.axes.cla()
         self.hemisphereMatplotlib.axes.spines['bottom'].set_color('#2090C0')
@@ -256,7 +288,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlib.axes.spines['left'].set_color('#2090C0')
         self.hemisphereMatplotlib.axes.spines['right'].set_color('#2090C0')
         self.hemisphereMatplotlib.axes.grid(True, color='#404040')
-        self.hemisphereMatplotlib.axes.set_facecolor((32 / 256, 32 / 256, 32 / 256))
+        self.hemisphereMatplotlib.axes.set_facecolor((0, 0, 0, 0))
         self.hemisphereMatplotlib.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
         self.hemisphereMatplotlib.axes.set_xlim(0, 360)
         self.hemisphereMatplotlib.axes.set_xticks(numpy.arange(0, 361, 30))
@@ -293,12 +325,14 @@ class HemisphereWindow(widget.MwWidget):
         # add text to points
         for i in range(0, len(points)):
             self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] - self.offx, points[i][1] - self.offy), color='#E0E0E0', picker='None'))
-        # adding the pointer of mount
-        self.pointerAzAlt1,  = self.hemisphereMatplotlib.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False, picker='None')
-        self.pointerAzAlt2,  = self.hemisphereMatplotlib.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False, picker='None')
+        # now to the second widget on top of the first one
+        # adding the pointer of mount to hemisphereMoving plot
+        self.pointerAzAlt1,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False, picker='None')
+        self.pointerAzAlt2,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False, picker='None')
         # adding pointer of dome if dome is present
-        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#404040', lw=3, fill=True, visible=False, picker='None')
-        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#808080', lw=3, fill=False, visible=False, picker='None')
-        self.hemisphereMatplotlib.axes.add_patch(self.pointerDome1)
-        self.hemisphereMatplotlib.axes.add_patch(self.pointerDome2)
+        self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#40404080', lw=3, fill=True, visible=False, picker='None')
+        self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#80808080', lw=3, fill=False, visible=False, picker='None')
+        self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome1)
+        self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome2)
         self.drawCanvas()
+        self.drawCanvasMoving()

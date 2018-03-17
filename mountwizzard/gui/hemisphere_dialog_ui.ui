@@ -604,8 +604,26 @@ Model Points</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
+  <widget class="QWidget" name="hemisphereMoving" native="true">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>105</y>
+     <width>771</width>
+     <height>526</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+  </widget>
   <zorder>hemisphereBackground</zorder>
-  <zorder>hemisphere</zorder>
   <zorder>btn_deletePoints</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>bar_numberPointsProcessed</zorder>
@@ -624,6 +642,8 @@ Model Points</string>
   <zorder>label_59</zorder>
   <zorder>label_149</zorder>
   <zorder>line_78</zorder>
+  <zorder>hemisphere</zorder>
+  <zorder>hemisphereMoving</zorder>
  </widget>
  <resources/>
  <connections/>
