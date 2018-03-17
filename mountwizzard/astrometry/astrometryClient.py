@@ -1,26 +1,33 @@
 ############################################################
 # -*- coding: utf-8 -*-
 #
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.5
+# Python  v3.6.4
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
-############################################################
+###########################################################
 import logging
 import os
-import requests
-import json
-import time
-import PyQt5
-import collections
-from requests_toolbelt import MultipartEncoder
 import io
 import sys
+import time
+import PyQt5
+import requests
+from requests_toolbelt import MultipartEncoder
+import json
+import collections
+
 from baseclasses import checkParamIP
 
 

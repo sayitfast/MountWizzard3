@@ -1,22 +1,29 @@
 ############################################################
 # -*- coding: utf-8 -*-
 #
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.5
+# Python  v3.6.4
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
-############################################################
+###########################################################
 import os
 import logging
+import time
 import PyQt5
-import urllib.request as urllib2
+import requests
+import queue
 import comtypes.client
-comtypes.client.gen_dir = None
 from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
@@ -55,6 +62,8 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
 
         self.app = app
         self.thread = thread
+        self.commandDispatcherQueue = queue.Queue()
+
         self.appAvailable = False
         self.appName = ''
         self.appInstallPath = ''
@@ -222,16 +231,16 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         self.checkApplication()
         self.TARGET_DIR = self.appInstallPath
         # signal slot
-        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcher('EARTHROTATION'))
-        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcher('SPACESTATIONS'))
-        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcher('SATBRIGHTEST'))
-        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_MPC5000'))
-        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_NEA'))
-        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_PHA'))
-        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.commandDispatcher('ASTEROIDS_TNO'))
-        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.commandDispatcher('COMETS'))
-        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.commandDispatcher('ALL'))
-        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.commandDispatcher('UPLOADMOUNT'))
+        self.app.ui.btn_downloadEarthrotation.clicked.connect(lambda: self.commandDispatcherQueue.put('EARTHROTATION'))
+        self.app.ui.btn_downloadSpacestations.clicked.connect(lambda: self.commandDispatcherQueue.put('SPACESTATIONS'))
+        self.app.ui.btn_downloadSatbrighest.clicked.connect(lambda: self.commandDispatcherQueue.put('SATBRIGHTEST'))
+        self.app.ui.btn_downloadAsteroidsMPC5000.clicked.connect(lambda: self.commandDispatcherQueue.put('ASTEROIDS_MPC5000'))
+        self.app.ui.btn_downloadAsteroidsNEA.clicked.connect(lambda: self.commandDispatcherQueue.put('ASTEROIDS_NEA'))
+        self.app.ui.btn_downloadAsteroidsPHA.clicked.connect(lambda: self.commandDispatcherQueue.put('ASTEROIDS_PHA'))
+        self.app.ui.btn_downloadAsteroidsTNO.clicked.connect(lambda: self.commandDispatcherQueue.put('ASTEROIDS_TNO'))
+        self.app.ui.btn_downloadComets.clicked.connect(lambda: self.commandDispatcherQueue.put('COMETS'))
+        self.app.ui.btn_downloadAll.clicked.connect(lambda: self.commandDispatcherQueue.put('ALL'))
+        self.app.ui.btn_uploadMount.clicked.connect(lambda: self.commandDispatcherQueue.put('UPLOADMOUNT'))
 
     def initConfig(self):
         try:
@@ -262,6 +271,12 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        while self.isRunning:
+            if not self.commandDispatcherQueue.empty():
+                command = self.commandDispatcherQueue.get()
+                self.commandDispatcher(command)
+            time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -314,24 +329,14 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
 
     def downloadFile(self, url, filename):
         try:
-            u = urllib2.urlopen(url)
-            with open(filename, 'wb') as f:
-                meta = u.info()
-                meta_func = meta.getheaders if hasattr(meta, 'getheaders') else meta.get_all
-                meta_length = meta_func("Content-Length")
-                file_size = None
-                if meta_length:
-                    file_size = int(meta_length[0])
-                self.app.messageQueue.put('{0}\n'.format(url))
-                file_size_dl = 0
-                block_sz = 8192
-                while True:
-                    buffer = u.read(block_sz)
-                    if not buffer:
-                        break
-                    file_size_dl += len(buffer)
-                    f.write(buffer)
-            self.app.messageQueue.put('Downloaded {0} Bytes\n'.format(file_size))
+            r = requests.get(url, stream=True)
+            if r.status_code == 200:
+                numberOfChunks = 0
+                with open(filename, 'wb') as f:
+                    for chunk in r.iter_content(128):
+                        numberOfChunks += 1
+                        f.write(chunk)
+            self.app.messageQueue.put('Downloaded {0} Bytes\n'.format(128 * numberOfChunks))
         except Exception as e:
             self.logger.error('Download of {0} failed, error{1}'.format(url, e))
             self.app.messageQueue.put('#BRDownload Error {0}\n'.format(e))
