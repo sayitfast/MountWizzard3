@@ -163,6 +163,8 @@ class Imaging(PyQt5.QtCore.QObject):
         imageParams['Imagepath'] = ''
         if self.data['CONNECTION']['CONNECT'] == 'Off':
             return
+        if 'CCD_INFO' not in self.data:
+            return
         self.cameraHandler.getCameraProps()
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
         if not os.path.isdir(imageParams['BaseDirImages']):
