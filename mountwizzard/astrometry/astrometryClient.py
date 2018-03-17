@@ -108,7 +108,6 @@ class AstrometryClient:
         self.changedAstrometryClientConnectionSettings()
 
     def setCancelAstrometry(self):
-        print('cancel')
         self.mutexCancel.lock()
         self.cancel = True
         self.mutexCancel.unlock()
