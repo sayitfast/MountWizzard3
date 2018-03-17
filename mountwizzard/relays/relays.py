@@ -1,26 +1,31 @@
 ############################################################
 # -*- coding: utf-8 -*-
 #
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.5
+# Python  v3.6.4
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
-############################################################
+###########################################################
 import logging
 import time
 import PyQt5
 import requests
-import urllib
 from baseclasses import checkParamIP
 
 
 class Relays:
-    logger = logging.getLogger(__name__)                                                                                    # logging enabling
+    logger = logging.getLogger(__name__)
 
     def __init__(self, app):
         self.app = app
