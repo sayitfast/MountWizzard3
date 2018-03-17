@@ -14,7 +14,6 @@
 import logging
 import PyQt5
 import threading
-import socket
 import time
 from baseclasses import checkParamIP
 
@@ -37,7 +36,9 @@ class Remote(PyQt5.QtCore.QObject):
         self.thread = thread
         self.checkIP = checkParamIP.CheckIP()
         self.settingsChanged = False
-        self.remotePort = 0
+        self.data = dict()
+        self.data['RemotePort'] = 0
+        self.data['RemoteIP'] = '127.0.0.1'
         self.tcpServer = None
         self.clientConnection = None
         # signal slot
@@ -55,36 +56,38 @@ class Remote(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.setPort()
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = False
+        self.settingsChanged = True
+        self.changedRemoteConnectionSettings()
 
     def storeConfig(self):
         self.app.config['RemotePort'] = self.app.ui.le_remotePort.text()
         self.app.config['CheckRemoteAccess'] = self.app.ui.checkEnableRemoteAccess.isChecked()
 
     def changedRemoteConnectionSettings(self):
-        print('indi restart')
         if self.settingsChanged:
-            print('changed')
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address/port for remote access: {0}\n'.format(self.remotePort))
+            self.app.messageQueue.put('Setting IP address/port for remote access: {0}\n'.format(self.data['RemotePort']))
             if self.app.ui.checkEnableRemoteAccess.isChecked():
+                # stopping thread
                 self.ipChangeLock.acquire()
                 self.stop()
-                time.sleep(0.2)
+                # change to new values
+                valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)
+                if valid:
+                    self.data['RemotePort'] = value
                 self.app.threadRemote.start()
                 self.ipChangeLock.release()
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_remotePort)
-        if valid:
-            self.remotePort = value
+        self.settingsChanged = (self.data['RemotePort'] != value)
 
     def enableDisableRemoteAccess(self):
         if self.app.ui.checkEnableRemoteAccess.isChecked():
             self.app.messageQueue.put('Remote Access enabled\n')
-            self.app.threadRemote.start()
+            if not self.isRunning:
+                self.app.threadRemote.start()
             # waiting to tcp server to start otherwise no setup for remote
             while not self.tcpServer:
                 time.sleep(0.2)
@@ -92,6 +95,9 @@ class Remote(PyQt5.QtCore.QObject):
         else:
             self.app.messageQueue.put('Remote Access disabled\n')
             if self.isRunning:
+                while not self.tcpServer.isListening():
+                    time.sleep(0.2)
+                    PyQt5.QtWidgets.QApplication.processEvents()
                 self.stop()
 
     def run(self):
@@ -100,37 +106,28 @@ class Remote(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        result = 0
-        testPortSocket = None
-        try:
-            testPortSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = testPortSocket.connect_ex((self.TCP_IP, self.remotePort))
-        except Exception as e1:
-            self.logger.warning('Error in socket {0}'.format(e1))
-        finally:
-            if testPortSocket:
-                testPortSocket.close()
-            if result == 0:
-                portFree = False
-            else:
-                portFree = True
-        if portFree:
+        self.tcpServer = PyQt5.QtNetwork.QTcpServer(self)
+        if self.tcpServer.listen(PyQt5.QtNetwork.QHostAddress(self.data['RemoteIP']), self.data['RemotePort']):
             # there is no other listening socket
-            self.tcpServer = PyQt5.QtNetwork.QTcpServer(self)
-            self.tcpServer.listen(PyQt5.QtNetwork.QHostAddress(self.TCP_IP), self.remotePort)
-            self.logger.info('MountWizzard started listening on port {0}'.format(self.remotePort))
+            self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
             self.tcpServer.newConnection.connect(self.addConnection)
+            while self.isRunning:
+                time.sleep(0.2)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            self.tcpServer.newConnection.disconnect(self.addConnection)
+            self.tcpServer.close()
+            if self.clientConnection:
+                self.clientConnection.close()
+            self.tcpServer = None
+            self.clientConnection = None
         else:
-            self.logger.warning('port {0} is already in use'.format(self.remotePort))
+            self.logger.warning('port {0} is already in use'.format(self.data['RemotePort']))
 
     def stop(self):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
-        self.tcpServer.close()
-        self.tcpServer = None
-        self.clientConnection = None
-        self.logger.info('MountWizzard Remote Server is shut down'.format(self.remotePort))
+        self.logger.info('MountWizzard Remote Server is shut down'.format(self.data['RemotePort']))
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.thread.quit()
         self.thread.wait()
@@ -151,6 +148,7 @@ class Remote(PyQt5.QtCore.QObject):
                 self.signalRemoteShutdown.emit(True)
 
     def removeConnection(self):
+        self.clientConnection.close()
         self.logger.info('Connection to MountWizzard from {0} removed'.format(self.clientConnection.peerAddress().toString()))
 
     def socketError(self):
