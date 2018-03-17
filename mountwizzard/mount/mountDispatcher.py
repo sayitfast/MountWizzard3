@@ -377,17 +377,21 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def changedMountConnectionSettings(self):
         if self.settingsChanged:
             self.settingsChanged = False
-            self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
             self.ipChangeLock.acquire()
             # stopping all interaction
             if self.isRunning:
+                # stopping thread for chang of parameters
                 self.workerMountCommandRunner.stop()
                 self.workerMountGetAlignmentModel.stop()
                 self.workerMountStatusRunnerOnce.stop()
                 self.workerMountStatusRunnerSlow.stop()
                 self.workerMountStatusRunnerMedium.stop()
                 self.workerMountStatusRunnerFast.stop()
-
+                valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+                if valid:
+                    self.data['MountIP'] = value
+                self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
+                # and restarting for using new parameters
                 self.threadMountStatusRunnerOnce.start()
                 self.threadMountStatusRunnerSlow.start()
                 self.threadMountStatusRunnerMedium.start()
@@ -399,8 +403,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
         self.settingsChanged = (self.data['MountIP'] != value)
-        if valid:
-            self.data['MountIP'] = value
 
     def setMAC(self):
         valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
