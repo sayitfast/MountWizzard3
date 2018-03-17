@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>8</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -5896,7 +5896,7 @@ AnalyseWindow</string>
       </font>
      </property>
      <property name="text">
-      <string>Aligment Info from Mount Computer</string>
+      <string>Alignment Info from Mount Computer</string>
      </property>
     </widget>
     <widget class="QLineEdit" name="le_alignErrorOrtho">
@@ -9552,7 +9552,7 @@ AnalyseWindow</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -10138,7 +10138,7 @@ AnalyseWindow</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of mount&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of mount, &lt;/span&gt;ip address only, no host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -10222,7 +10222,7 @@ AnalyseWindow</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of relay switch&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of relay switch, &lt;/span&gt;ip address only, no host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -10833,7 +10833,7 @@ AnalyseWindow</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server, &lt;/span&gt;ip address only, no host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -11128,7 +11128,7 @@ AnalyseWindow</string>
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose local solver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Use local solver</string>
@@ -11161,7 +11161,7 @@ AnalyseWindow</string>
          <bool>false</bool>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server, ip address only, no host names!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="layoutDirection">
          <enum>Qt::RightToLeft</enum>
@@ -11239,7 +11239,7 @@ AnalyseWindow</string>
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Enable / disable the INDI subsystem.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose online solver nova.astrometry.net as solver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="text">
          <string>Use online solver (astrometry.net)</string>

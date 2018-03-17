@@ -152,6 +152,8 @@ class Astrometry(PyQt5.QtCore.QObject):
         # check for use of FITS data
         imageParams['UseFitsHeader'] = self.app.ui.checkUseFitsHeader.isChecked()
         # if fits data, check if scale hint was calculated
+        if not os.path.isfile(imageParams['Imagepath']):
+            return
         fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
         fitsHeader = fitsFileHandle[0].header
         if 'PIXSCALE' not in fitsHeader:

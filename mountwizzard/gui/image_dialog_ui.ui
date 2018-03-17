@@ -142,7 +142,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>25%</string>
+     <string>1x</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="btn_size50">
@@ -155,7 +155,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>50%</string>
+     <string>2x</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="btn_size100">
@@ -168,7 +168,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>100%</string>
+     <string>4x</string>
     </property>
    </widget>
   </widget>
