@@ -1,19 +1,24 @@
 ############################################################
 # -*- coding: utf-8 -*-
 #
+#       #   #  #   #   #  ####
+#      ##  ##  #  ##  #     #
+#     # # # #  # # # #     ###
+#    #  ##  #  ##  ##        #
+#   #   #   #  #   #     ####
+#
 # Python-based Tool for interaction with the 10micron mounts
 # GUI with PyQT5 for python
-# Python  v3.5
+# Python  v3.6.4
 #
 # Michael Würtenberger
 # (c) 2016, 2017, 2018
 #
 # Licence APL2.0
 #
-############################################################
+###########################################################
 import logging
 import platform
-import threading
 import PyQt5
 import time
 import indi.indi_xml as indiXML
@@ -36,6 +41,7 @@ class Dome(PyQt5.QtCore.QObject):
         super().__init__()
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.mutexChooser = PyQt5.QtCore.QMutex()
 
         self.app = app
         self.thread = thread
@@ -45,7 +51,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.ascom = None
         self.ascomChooser = None
         self.ascomDriverName = ''
-        self.chooserLock = threading.Lock()
+
         # connect change in dome to the subroutine of setting it up
         self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
 
@@ -101,7 +107,7 @@ class Dome(PyQt5.QtCore.QObject):
             self.ascom = None
 
     def chooserDome(self):
-        self.chooserLock.acquire()
+        self.mutexChooser.lock()
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.stopAscom()
             self.data['Connected'] = False
@@ -118,7 +124,7 @@ class Dome(PyQt5.QtCore.QObject):
             self.logger.info('Actual dome is INDI')
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.signalDomeConnected.emit(0)
-        self.chooserLock.release()
+        self.mutexChooser.unlock()
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
