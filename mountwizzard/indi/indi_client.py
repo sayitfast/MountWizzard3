@@ -84,7 +84,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
-        self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
+        self.app.ui.checkEnableINDI.stateChanged.connect(lambda: self.enableDisableINDI())
 
     def initConfig(self):
         try:
@@ -98,8 +98,6 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.setIP()
-        self.setPort()
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = True
         self.changedINDIClientConnectionSettings()
@@ -124,6 +122,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if valid:
                         self.data['ServerPort'] = value
                     self.app.threadINDI.start()
+                    self.mutexIPChange.unlock()
                 else:
                     valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
                     if valid:
@@ -132,7 +131,6 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if valid:
                         self.data['ServerPort'] = value
                 self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
-                self.mutexIPChange.unlock()
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)

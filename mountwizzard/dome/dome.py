@@ -144,19 +144,20 @@ class Dome(PyQt5.QtCore.QObject):
                     self.data['Connected'] = False
             if self.data['Connected']:
                 self.signalDomeConnected.emit(3)
-                if self.data['Slewing']:
-                    self.domeStatusText.emit('SLEW')
-                else:
-                    self.domeStatusText.emit('IDLE')
-                if not self.app.domeCommandQueue.empty():
-                    command, value = self.app.domeCommandQueue.get()
-                    if command == 'SlewAzimuth':
-                        if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                            self.app.INDICommandQueue.put(
-                                indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
-                                                        indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
-                        else:
-                            self.ascom.SlewToAzimuth(float(value))
+                if 'Slewing' in self.data:
+                    if self.data['Slewing']:
+                        self.domeStatusText.emit('SLEW')
+                    else:
+                        self.domeStatusText.emit('IDLE')
+                    if not self.app.domeCommandQueue.empty():
+                        command, value = self.app.domeCommandQueue.get()
+                        if command == 'SlewAzimuth':
+                            if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
+                                self.app.INDICommandQueue.put(
+                                    indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
+                                                            indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
+                            else:
+                                self.ascom.SlewToAzimuth(float(value))
             else:
                 if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
                     self.signalDomeConnected.emit(0)
