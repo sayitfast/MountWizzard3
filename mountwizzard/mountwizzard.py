@@ -475,6 +475,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkUseBlindSolve.setChecked(self.config['CheckUseBlindSolve'])
             if 'CheckUseFitsHeader' in self.config:
                 self.ui.checkUseFitsHeader.setChecked(self.config['CheckUseFitsHeader'])
+            if 'CheckNotUseFitsHeader' in self.config:
+                self.ui.checkNotUseFitsHeader.setChecked(self.config['CheckNotUseFitsHeader'])
             if 'TargetRMS' in self.config:
                 self.ui.targetRMS.setValue(self.config['TargetRMS'])
             if 'PixelSize' in self.config:
@@ -636,6 +638,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['SettlingTime'] = self.ui.settlingTime.value()
         self.config['CheckUseBlindSolve'] = self.ui.checkUseBlindSolve.isChecked()
         self.config['CheckUseFitsHeader'] = self.ui.checkUseFitsHeader.isChecked()
+        self.config['CheckNotUseFitsHeader'] = self.ui.checkNotUseFitsHeader.isChecked()
         self.config['TargetRMS'] = self.ui.targetRMS.value()
         self.config['PixelSize'] = self.ui.pixelSize.value()
         self.config['FocalLength'] = self.ui.focalLength.value()

@@ -142,7 +142,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4342,7 +4342,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>235</y>
+       <y>220</y>
        <width>16</width>
        <height>31</height>
       </rect>
@@ -4360,7 +4360,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>235</y>
+       <y>220</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4398,7 +4398,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>195</y>
+       <y>185</y>
        <width>181</width>
        <height>31</height>
       </rect>
@@ -4416,7 +4416,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>165</y>
+       <y>160</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -4440,7 +4440,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>90</y>
+       <y>85</y>
        <width>131</width>
        <height>31</height>
       </rect>
@@ -4478,7 +4478,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>235</y>
+       <y>220</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4496,7 +4496,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>130</y>
+       <y>120</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -4519,9 +4519,9 @@ Window</string>
     <widget class="QCheckBox" name="checkKeepImages">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>190</x>
        <y>415</y>
-       <width>191</width>
+       <width>106</width>
        <height>21</height>
       </rect>
      </property>
@@ -4537,7 +4537,7 @@ Window</string>
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Keep Images in File System</string>
+      <string>Keep Images</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -4568,7 +4568,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>90</y>
+       <y>85</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4606,7 +4606,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>130</y>
+       <y>120</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4682,7 +4682,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>270</x>
-       <y>130</y>
+       <y>120</y>
        <width>16</width>
        <height>31</height>
       </rect>
@@ -4696,81 +4696,11 @@ Window</string>
       <string>%</string>
      </property>
     </widget>
-    <widget class="QLabel" name="label_168">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>315</y>
-       <width>181</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Focal Length of Telescope</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_169">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>315</y>
-       <width>21</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>mm</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="pixelSize">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>275</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Pixel size of camera</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="decimals">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <double>25.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
-     </property>
-     <property name="value">
-      <double>3.700000000000000</double>
-     </property>
-    </widget>
     <widget class="QDoubleSpinBox" name="isoSetting">
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>195</y>
+       <y>185</y>
        <width>71</width>
        <height>31</height>
       </rect>
@@ -4802,77 +4732,6 @@ Window</string>
      </property>
      <property name="value">
       <double>800.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_166">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>275</y>
-       <width>171</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>Pixel Size x/y for Camera</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="focalLength">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>315</y>
-       <width>71</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>resulting focal length - please think of reducers etc.</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-     <property name="decimals">
-      <number>0</number>
-     </property>
-     <property name="maximum">
-      <double>5000.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="value">
-      <double>582.000000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_167">
-     <property name="geometry">
-      <rect>
-       <x>270</x>
-       <y>275</y>
-       <width>21</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="text">
-      <string>um</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_39">
@@ -5034,35 +4893,11 @@ Window</string>
       <string>Save</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkUseFitsHeader">
-     <property name="geometry">
-      <rect>
-       <x>40</x>
-       <y>350</y>
-       <width>246</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>Use Highspeed download of CCD camera if availabe</string>
-     </property>
-     <property name="text">
-      <string>Use FITS header for solver hint data</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkUseBlindSolve">
      <property name="geometry">
       <rect>
-       <x>40</x>
-       <y>375</y>
+       <x>20</x>
+       <y>415</y>
        <width>121</width>
        <height>20</height>
       </rect>
@@ -5168,7 +5003,7 @@ AnalyseWindow</string>
       <enum>Qt::RightToLeft</enum>
      </property>
      <property name="text">
-      <string>---</string>
+      <string/>
      </property>
      <property name="readOnly">
       <bool>false</bool>
@@ -5216,6 +5051,208 @@ AnalyseWindow</string>
      <property name="text">
       <string>Run Batch Model</string>
      </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>265</y>
+       <width>286</width>
+       <height>141</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Solver hint data</string>
+     </property>
+     <widget class="QRadioButton" name="checkNotUseFitsHeader">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>50</y>
+        <width>176</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose online solver nova.astrometry.net as solver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="text">
+       <string>Use MountWizzard config</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_166">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>75</y>
+        <width>171</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Pixel Size x/y for Camera</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_168">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>105</y>
+        <width>156</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Focal Length of Telescope</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="pixelSize">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>75</y>
+        <width>71</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Pixel size of camera</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="decimals">
+       <number>1</number>
+      </property>
+      <property name="maximum">
+       <double>25.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>0.100000000000000</double>
+      </property>
+      <property name="value">
+       <double>3.700000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_167">
+      <property name="geometry">
+       <rect>
+        <x>255</x>
+        <y>75</y>
+        <width>21</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>um</string>
+      </property>
+     </widget>
+     <widget class="QDoubleSpinBox" name="focalLength">
+      <property name="geometry">
+       <rect>
+        <x>180</x>
+        <y>105</y>
+        <width>71</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Arial</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>resulting focal length - please think of reducers etc.</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+      <property name="decimals">
+       <number>0</number>
+      </property>
+      <property name="maximum">
+       <double>5000.000000000000000</double>
+      </property>
+      <property name="singleStep">
+       <double>1.000000000000000</double>
+      </property>
+      <property name="value">
+       <double>582.000000000000000</double>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_169">
+      <property name="geometry">
+       <rect>
+        <x>255</x>
+        <y>105</y>
+        <width>21</width>
+        <height>26</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>mm</string>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="checkUseFitsHeader">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>25</y>
+        <width>121</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>Use Highspeed download of CCD camera if availabe</string>
+      </property>
+      <property name="text">
+       <string>Use FITS header</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_15">
@@ -9552,7 +9589,7 @@ AnalyseWindow</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>6</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -10647,7 +10684,7 @@ AnalyseWindow</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>---</string>
+        <string/>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -10728,7 +10765,7 @@ AnalyseWindow</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>---</string>
+        <string/>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -10922,7 +10959,7 @@ AnalyseWindow</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>---</string>
+        <string/>
        </property>
        <property name="maxLength">
         <number>15</number>
@@ -11048,7 +11085,7 @@ AnalyseWindow</string>
         <enum>Qt::RightToLeft</enum>
        </property>
        <property name="text">
-        <string>---</string>
+        <string/>
        </property>
        <property name="maxLength">
         <number>15</number>
