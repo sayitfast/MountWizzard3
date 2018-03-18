@@ -292,6 +292,8 @@ class ImagesWindow(widget.MwWidget):
             imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN'])
         else:
             imageParams['ScaleHint'] = self.app.ui.pixelSize.value() * 206.6 / self.app.ui.focalLength.value()
+        fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
+        fitsFileHandle.flush()
         fitsFileHandle.close()
         self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
