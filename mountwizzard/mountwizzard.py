@@ -525,6 +525,8 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.soundDomeSlewFinished.setCurrentIndex(self.config['PlayDomeSlew'])
             if 'PlayMountAlert' in self.config:
                 self.ui.soundMountAlert.setCurrentIndex(self.config['PlayMountAlert'])
+            if 'PlayModelingFinished' in self.config:
+                self.ui.soundModelingFinished.setCurrentIndex(self.config['PlayModelingFinished'])
 
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
@@ -655,6 +657,7 @@ class MountWizzardApp(widget.MwWidget):
         self.config['PlayMountSlew'] = self.ui.soundMountSlewFinished.currentIndex()
         self.config['PlayDomeSlew'] = self.ui.soundDomeSlewFinished.currentIndex()
         self.config['PlayMountAlert'] = self.ui.soundMountAlert.currentIndex()
+        self.config['PlayModelingFinished'] = self.ui.soundModelingFinished.currentIndex()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()
@@ -1065,13 +1068,20 @@ class MountWizzardApp(widget.MwWidget):
         # load the sounds available
         self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
         self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
+        self.audioSignalsSet['Horn'] = PyQt5.QtMultimedia.QSound(':/horn.wav')
+        self.audioSignalsSet['Beep1'] = PyQt5.QtMultimedia.QSound(':/beep1.wav')
+        self.audioSignalsSet['Alarm'] = PyQt5.QtMultimedia.QSound(':/alarm.wav')
         # adding the possible sounds to drop down menu
         self.guiAudioList['MountSlew'] = self.ui.soundMountSlewFinished
         self.guiAudioList['DomeSlew'] = self.ui.soundDomeSlewFinished
         self.guiAudioList['MountAlert'] = self.ui.soundMountAlert
+        self.guiAudioList['ModelingFinished'] = self.ui.soundModelingFinished
         for itemKey, itemValue in self.guiAudioList.items():
             self.guiAudioList[itemKey].addItem('None')
             self.guiAudioList[itemKey].addItem('Beep')
+            self.guiAudioList[itemKey].addItem('Horn')
+            self.guiAudioList[itemKey].addItem('Beep1')
+            self.guiAudioList[itemKey].addItem('Alarm')
             self.guiAudioList[itemKey].addItem('Alert')
 
     def playAudioSignal(self, value):
@@ -1097,7 +1107,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.hemisphereWindow.ui.le_numberPointsSlewed.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
                     self.hemisphereWindow.ui.bar_numberPointsSlewed.setValue(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
-
             elif text.startswith('Imaged>'):
                 self.hemisphereWindow.ui.le_numberPointsImaged.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:

@@ -1891,8 +1891,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -2199,8 +2199,8 @@
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -4201,8 +4201,8 @@ Window</string>
       <font>
        <family>Courier</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -6096,7 +6096,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>120</x>
-       <y>225</y>
+       <y>220</y>
        <width>101</width>
        <height>26</height>
       </rect>
@@ -6114,7 +6114,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>230</x>
-       <y>225</y>
+       <y>220</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6407,8 +6407,8 @@ AnalyseWindow</string>
       <font>
        <family>Courier</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -6606,7 +6606,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>135</x>
-       <y>295</y>
+       <y>290</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6622,7 +6622,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>295</y>
+       <y>290</y>
        <width>116</width>
        <height>31</height>
       </rect>
@@ -6835,7 +6835,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>285</y>
+       <y>280</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7019,7 +7019,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>220</y>
+       <y>215</y>
        <width>101</width>
        <height>26</height>
       </rect>
@@ -7037,7 +7037,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>220</y>
+       <y>215</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7075,7 +7075,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>220</y>
+       <y>215</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7113,7 +7113,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>220</y>
+       <y>215</y>
        <width>91</width>
        <height>26</height>
       </rect>
@@ -7227,7 +7227,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>295</y>
+       <y>290</y>
        <width>106</width>
        <height>31</height>
       </rect>
@@ -7297,7 +7297,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>265</y>
+       <y>260</y>
        <width>311</width>
        <height>21</height>
       </rect>
@@ -7369,8 +7369,8 @@ AnalyseWindow</string>
       <font>
        <family>Courier</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -7494,6 +7494,157 @@ AnalyseWindow</string>
       <string>Load</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="le_modelingStatusTime">
+     <property name="geometry">
+      <rect>
+       <x>520</x>
+       <y>175</y>
+       <width>41</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="layoutDirection">
+      <enum>Qt::RightToLeft</enum>
+     </property>
+     <property name="text">
+      <string>00:00</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_35">
+     <property name="geometry">
+      <rect>
+       <x>405</x>
+       <y>175</y>
+       <width>111</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Estimated Finish in </string>
+     </property>
+    </widget>
+    <widget class="QProgressBar" name="bar_modelingStatusPercent">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>205</y>
+       <width>351</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+     <property name="value">
+      <number>0</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
+     </property>
+     <property name="textVisible">
+      <bool>false</bool>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="invertedAppearance">
+      <bool>false</bool>
+     </property>
+     <property name="textDirection">
+      <enum>QProgressBar::TopToBottom</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_29">
+     <property name="geometry">
+      <rect>
+       <x>570</x>
+       <y>175</y>
+       <width>116</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>MS Shell Dlg 2</family>
+       <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Minutes : Seconds</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_216">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>145</y>
+       <width>121</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Modeling Progress</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_45">
+     <property name="geometry">
+      <rect>
+       <x>400</x>
+       <y>165</y>
+       <width>351</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
     <zorder>line_42</zorder>
     <zorder>line_28</zorder>
     <zorder>line_34</zorder>
@@ -7536,6 +7687,12 @@ AnalyseWindow</string>
     <zorder>btn_saveFullModelPoints</zorder>
     <zorder>btn_saveFullModelPointsAs</zorder>
     <zorder>btn_loadFullModelPoints</zorder>
+    <zorder>le_modelingStatusTime</zorder>
+    <zorder>label_35</zorder>
+    <zorder>bar_modelingStatusPercent</zorder>
+    <zorder>label_29</zorder>
+    <zorder>label_216</zorder>
+    <zorder>line_45</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
@@ -13903,6 +14060,37 @@ AnalyseWindow</string>
         <string>Mount alert for STOP</string>
        </property>
       </widget>
+      <widget class="QLabel" name="label_217">
+       <property name="geometry">
+        <rect>
+         <x>20</x>
+         <y>140</y>
+         <width>136</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Modeling finished</string>
+       </property>
+      </widget>
+      <widget class="QComboBox" name="soundModelingFinished">
+       <property name="geometry">
+        <rect>
+         <x>190</x>
+         <y>140</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets the audio signal to be played when mount stopped in emergency case&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </widget>
      <widget class="QWidget" name="tab_11">
       <attribute name="title">
@@ -14173,109 +14361,6 @@ AnalyseWindow</string>
        </property>
        <property name="text">
         <string>Run in simulation mode</string>
-       </property>
-      </widget>
-      <widget class="QProgressBar" name="bar_modelingStatusPercent">
-       <property name="geometry">
-        <rect>
-         <x>25</x>
-         <y>330</y>
-         <width>351</width>
-         <height>23</height>
-        </rect>
-       </property>
-       <property name="maximum">
-        <number>1000</number>
-       </property>
-       <property name="value">
-        <number>1</number>
-       </property>
-       <property name="textVisible">
-        <bool>false</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_35">
-       <property name="geometry">
-        <rect>
-         <x>30</x>
-         <y>300</y>
-         <width>111</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>MS Shell Dlg 2</family>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Estimated Finish in </string>
-       </property>
-      </widget>
-      <widget class="QLineEdit" name="le_modelingStatusTime">
-       <property name="geometry">
-        <rect>
-         <x>145</x>
-         <y>300</y>
-         <width>41</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>Arial</family>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="mouseTracking">
-        <bool>false</bool>
-       </property>
-       <property name="focusPolicy">
-        <enum>Qt::NoFocus</enum>
-       </property>
-       <property name="acceptDrops">
-        <bool>false</bool>
-       </property>
-       <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-       </property>
-       <property name="layoutDirection">
-        <enum>Qt::RightToLeft</enum>
-       </property>
-       <property name="text">
-        <string>00:00</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label_29">
-       <property name="geometry">
-        <rect>
-         <x>195</x>
-         <y>300</y>
-         <width>51</width>
-         <height>21</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <family>MS Shell Dlg 2</family>
-         <pointsize>10</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Minutes</string>
        </property>
       </widget>
      </widget>

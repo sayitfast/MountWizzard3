@@ -201,11 +201,22 @@ class Platesolve(PyQt5.QtCore.QObject):
                         self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
                         self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
                         self.main.solvedPointsQueue.put(copy.copy(modelingData))
-                    elif 'Index' in modelingData:
-                        self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:95]))
                     else:
-                        self.main.app.messageQueue.put('\tCancel Modeling')
+                        if 'Message' in modelingData:
+                            self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:95]))
+                        else:
+                            self.main.app.messageQueue.put('\tSolving canceled')
+                # write progress to hemisphere windows
                 self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
+                # write progress estimation to main gui
+                modelingDone = (modelingData['Index'] + 1) / modelingData['NumberPoints']
+                timeDone = time.time() - self.main.timeStart
+                if modelingDone != 0:
+                    timeEstimation = (1 / modelingDone * timeDone) * (1 - modelingDone)
+                else:
+                    timeEstimation = 0
+                self.main.app.messageQueue.put('percent{0:4.3f}'.format(modelingDone))
+                self.main.app.messageQueue.put('timeleft{0}'.format(time.strftime('%M:%S', time.gmtime(timeEstimation))))
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                     self.main.modelingHasFinished = True
@@ -366,6 +377,7 @@ class ModelingRunner:
         self.app.mountCommandQueue.put(':PO#')
         self.app.mountCommandQueue.put(':AP#')
         self.modelRun = True
+        self.timeStart = time.time()
         # starting the necessary threads
         self.threadSlewpoint.start()
         self.threadImage.start()
@@ -479,6 +491,7 @@ class ModelingRunner:
             self.app.ui.le_analyseFileName.setText(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
+            self.app.signalAudio.emit('ModelingFinished')
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -537,6 +550,7 @@ class ModelingRunner:
             self.app.ui.le_analyseFileName.setText(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
+            self.app.signalAudio.emit('ModelingFinished')
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():

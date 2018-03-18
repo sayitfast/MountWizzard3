@@ -30,5 +30,8 @@
     <file>mount2.ico</file>
     <file>beep.wav</file>
     <file>alert.wav</file>
+    <file>alarm.wav</file>
+    <file>beep1.wav</file>
+    <file>horn.wav</file>
 </qresource>
 </RCC>
