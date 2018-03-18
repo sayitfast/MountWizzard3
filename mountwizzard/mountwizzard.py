@@ -471,12 +471,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.checkFastDownload.setChecked(self.config['CheckFastDownload'])
             if 'SettlingTime' in self.config:
                 self.ui.settlingTime.setValue(self.config['SettlingTime'])
-            if 'CheckUseBlindSolve' in self.config:
-                self.ui.checkUseBlindSolve.setChecked(self.config['CheckUseBlindSolve'])
-            if 'CheckUseFitsHeader' in self.config:
-                self.ui.checkUseFitsHeader.setChecked(self.config['CheckUseFitsHeader'])
-            if 'CheckNotUseFitsHeader' in self.config:
-                self.ui.checkNotUseFitsHeader.setChecked(self.config['CheckNotUseFitsHeader'])
             if 'TargetRMS' in self.config:
                 self.ui.targetRMS.setValue(self.config['TargetRMS'])
             if 'PixelSize' in self.config:
@@ -636,9 +630,6 @@ class MountWizzardApp(widget.MwWidget):
         self.config['CheckFastDownload'] = self.ui.checkFastDownload.isChecked()
         self.config['ISOSetting'] = self.ui.isoSetting.value()
         self.config['SettlingTime'] = self.ui.settlingTime.value()
-        self.config['CheckUseBlindSolve'] = self.ui.checkUseBlindSolve.isChecked()
-        self.config['CheckUseFitsHeader'] = self.ui.checkUseFitsHeader.isChecked()
-        self.config['CheckNotUseFitsHeader'] = self.ui.checkNotUseFitsHeader.isChecked()
         self.config['TargetRMS'] = self.ui.targetRMS.value()
         self.config['PixelSize'] = self.ui.pixelSize.value()
         self.config['FocalLength'] = self.ui.focalLength.value()

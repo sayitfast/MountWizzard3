@@ -92,17 +92,9 @@ class SGPro:
         timeSolvingStart = time.time()
         self.main.astrometryStatusText.emit('START')
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
-        if imageParams['UseFitsHeader']:
-            suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                               BlindSolve=imageParams['Blind'],
-                                               UseFitsHeaders=imageParams['UseFitsHeader'])
-        else:
-            suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
-                                               RaHint=imageParams['RaJ2000'],
-                                               DecHint=imageParams['DecJ2000'],
-                                               ScaleHint=imageParams['ScaleHint'],
-                                               BlindSolve=imageParams['Blind'],
-                                               UseFitsHeaders=imageParams['UseFitsHeader'])
+        suc, mes, guid = self.SgSolveImage(imageParams['Imagepath'],
+                                           BlindSolve=False,
+                                           UseFitsHeaders=True)
         if not suc:
             self.logger.warning('Solver no start, message: {0}'.format(mes))
             self.main.astrometryStatusText.emit('ERROR')

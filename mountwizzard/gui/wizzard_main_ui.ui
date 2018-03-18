@@ -82,9 +82,8 @@
    <property name="font">
     <font>
      <family>Arial</family>
-     <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -130,6 +129,8 @@
    <property name="font">
     <font>
      <pointsize>10</pointsize>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="toolTip">
@@ -142,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4326,7 +4327,7 @@ Window</string>
        <x>270</x>
        <y>50</y>
        <width>16</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4344,7 +4345,7 @@ Window</string>
        <x>270</x>
        <y>220</y>
        <width>16</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4362,14 +4363,14 @@ Window</string>
        <x>190</x>
        <y>220</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -4400,7 +4401,7 @@ Window</string>
        <x>20</x>
        <y>185</y>
        <width>181</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4416,7 +4417,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>40</x>
-       <y>160</y>
+       <y>155</y>
        <width>171</width>
        <height>20</height>
       </rect>
@@ -4442,7 +4443,7 @@ Window</string>
        <x>20</x>
        <y>85</y>
        <width>131</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4480,7 +4481,7 @@ Window</string>
        <x>20</x>
        <y>220</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4498,7 +4499,7 @@ Window</string>
        <x>20</x>
        <y>120</y>
        <width>111</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4519,9 +4520,9 @@ Window</string>
     <widget class="QCheckBox" name="checkKeepImages">
      <property name="geometry">
       <rect>
-       <x>190</x>
-       <y>415</y>
-       <width>106</width>
+       <x>20</x>
+       <y>325</y>
+       <width>206</width>
        <height>21</height>
       </rect>
      </property>
@@ -4537,7 +4538,7 @@ Window</string>
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Keep Images</string>
+      <string>Keep Images from modeling</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -4570,14 +4571,14 @@ Window</string>
        <x>190</x>
        <y>85</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -4608,14 +4609,14 @@ Window</string>
        <x>190</x>
        <y>120</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -4646,14 +4647,14 @@ Window</string>
        <x>190</x>
        <y>50</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -4684,7 +4685,7 @@ Window</string>
        <x>270</x>
        <y>120</y>
        <width>16</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4702,14 +4703,14 @@ Window</string>
        <x>190</x>
        <y>185</y>
        <width>71</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -4740,7 +4741,7 @@ Window</string>
        <x>20</x>
        <y>50</y>
        <width>161</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4893,27 +4894,6 @@ Window</string>
       <string>Save</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkUseBlindSolve">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>415</y>
-       <width>121</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>If checked, a blind solve would be made (needs internet connection)</string>
-     </property>
-     <property name="text">
-      <string>Use blind solver</string>
-     </property>
-    </widget>
     <widget class="QPushButton" name="btn_openAnalyseWindow">
      <property name="geometry">
       <rect>
@@ -5052,207 +5032,146 @@ AnalyseWindow</string>
       <string>Run Batch Model</string>
      </property>
     </widget>
-    <widget class="QGroupBox" name="groupBox_2">
+    <widget class="QLabel" name="label_166">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>265</y>
-       <width>286</width>
-       <height>141</height>
+       <x>20</x>
+       <y>255</y>
+       <width>171</width>
+       <height>26</height>
       </rect>
      </property>
-     <property name="title">
-      <string>Solver hint data</string>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
      </property>
-     <widget class="QRadioButton" name="checkNotUseFitsHeader">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>176</width>
-        <height>21</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Choose online solver nova.astrometry.net as solver&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-      <property name="text">
-       <string>Use MountWizzard config</string>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_166">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>75</y>
-        <width>171</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Pixel Size x/y for Camera</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_168">
-      <property name="geometry">
-       <rect>
-        <x>20</x>
-        <y>105</y>
-        <width>156</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>Focal Length of Telescope</string>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="pixelSize">
-      <property name="geometry">
-       <rect>
-        <x>180</x>
-        <y>75</y>
-        <width>71</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Pixel size of camera</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="decimals">
-       <number>1</number>
-      </property>
-      <property name="maximum">
-       <double>25.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>0.100000000000000</double>
-      </property>
-      <property name="value">
-       <double>3.700000000000000</double>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_167">
-      <property name="geometry">
-       <rect>
-        <x>255</x>
-        <y>75</y>
-        <width>21</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>um</string>
-      </property>
-     </widget>
-     <widget class="QDoubleSpinBox" name="focalLength">
-      <property name="geometry">
-       <rect>
-        <x>180</x>
-        <y>105</y>
-        <width>71</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <family>Arial</family>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>resulting focal length - please think of reducers etc.</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-      <property name="decimals">
-       <number>0</number>
-      </property>
-      <property name="maximum">
-       <double>5000.000000000000000</double>
-      </property>
-      <property name="singleStep">
-       <double>1.000000000000000</double>
-      </property>
-      <property name="value">
-       <double>582.000000000000000</double>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_169">
-      <property name="geometry">
-       <rect>
-        <x>255</x>
-        <y>105</y>
-        <width>21</width>
-        <height>26</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="text">
-       <string>mm</string>
-      </property>
-     </widget>
-     <widget class="QRadioButton" name="checkUseFitsHeader">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>25</y>
-        <width>121</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <property name="toolTip">
-       <string>Use Highspeed download of CCD camera if availabe</string>
-      </property>
-      <property name="text">
-       <string>Use FITS header</string>
-      </property>
-      <property name="checked">
-       <bool>false</bool>
-      </property>
-     </widget>
+     <property name="text">
+      <string>Pixel Size x/y for Camera</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="pixelSize">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>255</y>
+       <width>71</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Pixel size of camera</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <double>25.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+     <property name="value">
+      <double>3.700000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_167">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>255</y>
+       <width>21</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>um</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_168">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>290</y>
+       <width>156</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Focal Length of Telescope</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="focalLength">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>290</y>
+       <width>71</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>resulting focal length - please think of reducers etc.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <double>5000.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>582.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_169">
+     <property name="geometry">
+      <rect>
+       <x>265</x>
+       <y>290</y>
+       <width>26</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>mm</string>
+     </property>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_15">
@@ -5285,7 +5204,7 @@ AnalyseWindow</string>
        <x>170</x>
        <y>190</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -5303,7 +5222,7 @@ AnalyseWindow</string>
        <x>15</x>
        <y>190</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -5337,14 +5256,14 @@ AnalyseWindow</string>
        <x>230</x>
        <y>190</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -5417,15 +5336,15 @@ AnalyseWindow</string>
        <x>65</x>
        <y>190</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -5500,8 +5419,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5545,8 +5464,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5590,8 +5509,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5635,8 +5554,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5716,8 +5635,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5761,8 +5680,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5842,8 +5761,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5887,8 +5806,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -5952,8 +5871,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -6033,8 +5952,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -6179,7 +6098,7 @@ AnalyseWindow</string>
        <x>120</x>
        <y>225</y>
        <width>101</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6197,14 +6116,14 @@ AnalyseWindow</string>
        <x>230</x>
        <y>225</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -6727,8 +6646,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -6781,8 +6700,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -6940,8 +6859,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -7014,8 +6933,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -7070,8 +6989,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -7126,8 +7045,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -7164,8 +7083,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -7668,8 +7587,8 @@ AnalyseWindow</string>
      <property name="font">
       <font>
        <family>Arial</family>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8182,8 +8101,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -8261,8 +8180,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -8324,8 +8243,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="mouseTracking">
@@ -8527,15 +8446,15 @@ AnalyseWindow</string>
        <x>290</x>
        <y>50</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8560,7 +8479,7 @@ AnalyseWindow</string>
        <x>220</x>
        <y>50</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8578,15 +8497,15 @@ AnalyseWindow</string>
        <x>130</x>
        <y>50</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8612,9 +8531,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>85</y>
        <width>101</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8630,17 +8549,17 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>90</y>
+       <y>85</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8668,7 +8587,7 @@ AnalyseWindow</string>
        <x>340</x>
        <y>50</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8692,7 +8611,7 @@ AnalyseWindow</string>
        <x>180</x>
        <y>50</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8714,9 +8633,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>90</y>
+       <y>85</y>
        <width>41</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8732,17 +8651,17 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>90</y>
+       <y>85</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8768,9 +8687,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>90</y>
+       <y>85</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8847,9 +8766,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>250</y>
+       <y>245</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8865,17 +8784,17 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>290</y>
+       <y>280</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8901,9 +8820,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>290</y>
+       <y>280</y>
        <width>91</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8919,9 +8838,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>220</x>
-       <y>290</y>
+       <y>280</y>
        <width>41</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -8937,17 +8856,17 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>290</y>
+       <y>280</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -8973,17 +8892,17 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>250</y>
+       <y>245</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -9006,9 +8925,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>290</y>
+       <y>280</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9030,9 +8949,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>240</y>
+       <y>245</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9054,17 +8973,17 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>130</x>
-       <y>250</y>
+       <y>245</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -9090,9 +9009,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>250</y>
+       <y>245</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9116,7 +9035,7 @@ AnalyseWindow</string>
        <x>10</x>
        <y>210</y>
        <width>101</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9134,7 +9053,7 @@ AnalyseWindow</string>
        <x>180</x>
        <y>210</y>
        <width>21</width>
-       <height>20</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9158,7 +9077,7 @@ AnalyseWindow</string>
        <x>340</x>
        <y>210</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9182,15 +9101,15 @@ AnalyseWindow</string>
        <x>290</x>
        <y>210</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -9215,15 +9134,15 @@ AnalyseWindow</string>
        <x>130</x>
        <y>210</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="alignment">
@@ -9251,7 +9170,7 @@ AnalyseWindow</string>
        <x>220</x>
        <y>210</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9283,9 +9202,9 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>250</y>
+       <y>245</y>
        <width>101</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -9571,6 +9490,8 @@ AnalyseWindow</string>
       <font>
        <family>Arial</family>
        <pointsize>10</pointsize>
+       <weight>50</weight>
+       <bold>false</bold>
       </font>
      </property>
      <property name="toolTip">
@@ -9589,7 +9510,7 @@ AnalyseWindow</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -10164,8 +10085,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10206,8 +10127,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10248,8 +10169,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10290,8 +10211,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10409,8 +10330,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10451,8 +10372,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10667,8 +10588,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10748,8 +10669,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10814,8 +10735,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10859,8 +10780,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -10942,8 +10863,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -11068,8 +10989,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -11187,8 +11108,8 @@ AnalyseWindow</string>
          <font>
           <family>Courier</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="mouseTracking">
@@ -11229,8 +11150,8 @@ AnalyseWindow</string>
          <font>
           <family>Courier</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="mouseTracking">
@@ -11298,8 +11219,8 @@ AnalyseWindow</string>
          <font>
           <family>Courier</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="mouseTracking">
@@ -11376,8 +11297,8 @@ AnalyseWindow</string>
          <font>
           <family>Courier</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="mouseTracking">
@@ -11418,8 +11339,8 @@ AnalyseWindow</string>
          <font>
           <family>Courier</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
+          <weight>50</weight>
+          <bold>false</bold>
          </font>
         </property>
         <property name="mouseTracking">
@@ -11910,8 +11831,8 @@ AnalyseWindow</string>
         <font>
          <family>Courier</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12032,8 +11953,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12071,8 +11992,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12110,8 +12031,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12203,8 +12124,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12242,8 +12163,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12281,8 +12202,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12338,8 +12259,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12377,8 +12298,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12434,8 +12355,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12527,8 +12448,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12623,8 +12544,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12698,8 +12619,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12755,8 +12676,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12812,8 +12733,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12905,8 +12826,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12944,8 +12865,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -12983,8 +12904,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13058,8 +12979,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13137,8 +13058,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13214,8 +13135,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13286,8 +13207,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13355,8 +13276,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13489,8 +13410,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13528,8 +13449,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13621,8 +13542,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -13696,8 +13617,8 @@ AnalyseWindow</string>
         <font>
          <family>Arial</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="mouseTracking">
@@ -14305,7 +14226,7 @@ AnalyseWindow</string>
        </property>
        <property name="font">
         <font>
-         <family>MS Shell Dlg 2</family>
+         <family>Arial</family>
          <pointsize>10</pointsize>
          <weight>50</weight>
          <bold>false</bold>
@@ -14620,8 +14541,8 @@ AnalyseWindow</string>
     <font>
      <family>Arial</family>
      <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">

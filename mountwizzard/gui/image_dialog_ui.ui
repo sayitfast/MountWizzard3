@@ -521,7 +521,7 @@
    <property name="font">
     <font>
      <family>Arial</family>
-     <pointsize>8</pointsize>
+     <pointsize>10</pointsize>
      <weight>50</weight>
      <bold>false</bold>
     </font>
@@ -563,8 +563,8 @@
    <property name="font">
     <font>
      <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">
@@ -605,8 +605,8 @@
     <font>
      <family>Arial</family>
      <pointsize>10</pointsize>
-     <weight>75</weight>
-     <bold>true</bold>
+     <weight>50</weight>
+     <bold>false</bold>
     </font>
    </property>
    <property name="mouseTracking">

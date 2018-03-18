@@ -179,8 +179,6 @@ class Imaging(PyQt5.QtCore.QObject):
         imageParams['Binning'] = int(float(self.app.ui.cameraBin.value()))
         imageParams['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
         imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
-        imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
-        imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value()) * imageParams['Binning'] * 206.6 / float(self.app.ui.focalLength.value())
         if self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
             imageParams['SizeX'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']) * scaleSubframe)
