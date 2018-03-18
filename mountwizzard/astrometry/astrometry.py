@@ -162,24 +162,22 @@ class Astrometry(PyQt5.QtCore.QObject):
         imageParams['Blind'] = self.app.ui.checkUseBlindSolve.isChecked()
         # check for use of FITS data
         imageParams['UseFitsHeader'] = self.app.ui.checkUseFitsHeader.isChecked()
-        if not os.path.isfile(imageParams['Imagepath']):
-            return
-        fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
-        fitsHeader = fitsFileHandle[0].header
         if imageParams['UseFitsHeader']:
+            if not os.path.isfile(imageParams['Imagepath']):
+                return
+            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='read')
+            fitsHeader = fitsFileHandle[0].header
             if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:
-                scaleHint = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
+                imageParams['ScaleHint'] = float(fitsHeader['XPIXSZ']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
             elif 'FOCALLEN' in fitsHeader and 'PIXSIZE1' in fitsHeader:
-                scaleHint = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
+                imageParams['ScaleHint'] = float(fitsHeader['PIXSIZE1']) * 206.6 / float(fitsHeader['FOCALLEN']) * float(fitsHeader['XBINNING'])
             else:
-                scaleHint = 1
-            fitsHeader['PIXSCALE'] = str(scaleHint)
-        else:
+                imageParams['ScaleHint'] = 1
             imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
             imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+            fitsFileHandle.close()
+        else:
             imageParams['ScaleHint'] = float(self.app.ui.pixelSize.value() * 206.6 / float(self.app.ui.focalLength.value()) * float(self.app.ui.cameraBin.value()) )
-        fitsFileHandle.flush()
-        fitsFileHandle.close()
         self.astrometryHandler.solveImage(imageParams)
 
     def getStatus(self):
