@@ -90,6 +90,8 @@ class AstrometryClient:
                 self.app.ui.le_AstrometryServerIP.setText(self.app.config['AstrometryServerIP'])
             if 'AstrometryServerAPIKey' in self.app.config:
                 self.app.ui.le_AstrometryServerAPIKey.setText(self.app.config['AstrometryServerAPIKey'])
+            if 'AstrometryDownsample' in self.app.config:
+                self.app.ui.astrometryDownsampling.setValue(self.app.config['AstrometryDownsample'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -115,6 +117,7 @@ class AstrometryClient:
         self.app.config['CheckUseLocalSolver'] = self.app.ui.rb_useLocalSolver.isChecked()
         self.app.config['OnlineSolverTimeout'] = self.app.ui.le_timeoutOnline.text()
         self.app.config['LocalSolverTimeout'] = self.app.ui.le_timeoutLocal.text()
+        self.app.config['AstrometryDownsample'] = self.app.ui.astrometryDownsampling.value()
 
     def setAstrometryNet(self):
         self.settingsChanged = True
@@ -176,8 +179,10 @@ class AstrometryClient:
         self.cancel = False
         self.mutexCancel.unlock()
 
+        downsampleFactor = self.app.ui.astrometryDownsampling.value()
         # waiting for start solving
         timeSolvingStart = time.time()
+        # defining start values
         errorState = False
         result = ''
         response = ''
@@ -186,8 +191,8 @@ class AstrometryClient:
         jobID = ''
         headers = dict()
         imageParams['Message'] = ''
-        self.main.astrometryStatusText.emit('START')
 
+        self.main.astrometryStatusText.emit('START')
         # check if we have the online solver running
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
         if self.urlLogin != '':
@@ -225,6 +230,7 @@ class AstrometryClient:
         PyQt5.QtWidgets.QApplication.processEvents()
         # start uploading the data and define the parameters
         data = self.solveData
+        data['downsample_factor'] = downsampleFactor
         data['scale_est'] = imageParams['ScaleHint']
         # ra is in hours
         data['center_ra'] = imageParams['RaJ2000'] * 360 / 24

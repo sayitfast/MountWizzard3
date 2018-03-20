@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4521,7 +4521,7 @@ Window</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>325</y>
+       <y>255</y>
        <width>206</width>
        <height>21</height>
       </rect>
@@ -5036,7 +5036,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>255</y>
+       <y>340</y>
        <width>171</width>
        <height>26</height>
       </rect>
@@ -5054,7 +5054,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>255</y>
+       <y>340</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -5087,8 +5087,8 @@ AnalyseWindow</string>
     <widget class="QLabel" name="label_167">
      <property name="geometry">
       <rect>
-       <x>270</x>
-       <y>255</y>
+       <x>265</x>
+       <y>340</y>
        <width>21</width>
        <height>26</height>
       </rect>
@@ -5106,7 +5106,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>290</y>
+       <y>375</y>
        <width>156</width>
        <height>26</height>
       </rect>
@@ -5124,7 +5124,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>290</y>
+       <y>375</y>
        <width>71</width>
        <height>26</height>
       </rect>
@@ -5159,7 +5159,7 @@ AnalyseWindow</string>
      <property name="geometry">
       <rect>
        <x>265</x>
-       <y>290</y>
+       <y>375</y>
        <width>26</width>
        <height>26</height>
       </rect>
@@ -5171,6 +5171,103 @@ AnalyseWindow</string>
      </property>
      <property name="text">
       <string>mm</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_218">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>310</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Imaging Configuration for Modeling</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_36">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>330</y>
+       <width>241</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="astrometryDownsampling">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>410</y>
+       <width>71</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Arial</family>
+       <weight>50</weight>
+       <bold>false</bold>
+      </font>
+     </property>
+     <property name="toolTip">
+      <string>Sets the time to wait after mount stop before imaging</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+     <property name="decimals">
+      <number>0</number>
+     </property>
+     <property name="minimum">
+      <double>2.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>6.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>2.000000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_219">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>410</y>
+       <width>156</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>Astrometry Downsample Factor</string>
      </property>
     </widget>
    </widget>
