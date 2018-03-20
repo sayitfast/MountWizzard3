@@ -1254,18 +1254,18 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/config')
 
     # start logging with basic system data
-    logging.info('-----------------------------------------')
-    logging.info('MountWizzard v ' + BUILD_NO + ' started !')
-    logging.info('-----------------------------------------')
-    logging.info('Platform : ' + platform.system())
-    logging.info('Release  : ' + platform.release())
-    logging.info('Version  : ' + platform.version())
-    logging.info('Machine  : ' + platform.machine())
+    logging.debug('-----------------------------------------')
+    logging.debug('MountWizzard v ' + BUILD_NO + ' started !')
+    logging.debug('-----------------------------------------')
+    logging.debug('Platform : ' + platform.system())
+    logging.debug('Release  : ' + platform.release())
+    logging.debug('Version  : ' + platform.version())
+    logging.debug('Machine  : ' + platform.machine())
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
-        logging.info('Computer IP address: ' + host[i])
+        logging.debug('Computer IP address: ' + host[i])
     # generating the necessary folders
-    logging.info('working directory: {0}'.format(os.getcwd()))
+    logging.debug('working directory: {0}'.format(os.getcwd()))
     if not os.access(os.getcwd(), os.W_OK):
         logging.error('no write access to workdir')
     if not os.access(os.getcwd() + '/images', os.W_OK):
@@ -1279,7 +1279,7 @@ if __name__ == "__main__":
     sys.excepthook = except_hook
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
     mountApp = MountWizzardApp()
-    logging.info('Screensize: {0} x {1}'.format(mountApp.screenSizeX, mountApp.screenSizeY))
+    logging.debug('Screensize: {0} x {1}'.format(mountApp.screenSizeX, mountApp.screenSizeY))
     mountApp.show()
     # end of splash screen
     splash.finish(mountApp)
