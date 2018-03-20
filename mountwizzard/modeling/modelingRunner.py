@@ -35,7 +35,7 @@ import astropy.io.fits as pyfits
 class Slewpoint(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     queuePoint = Queue()
-    signalSlewing = PyQt5.QtCore.pyqtSignal()
+    signalStartSlewing = PyQt5.QtCore.pyqtSignal()
     signalPointImaged = PyQt5.QtCore.pyqtSignal(float, float)
 
     def __init__(self, main, thread):
