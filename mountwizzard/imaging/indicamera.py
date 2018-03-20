@@ -61,7 +61,7 @@ class INDICamera:
         if status:
             self.receivedImage = True
         else:
-            self.app.workerImaging.imagingCancel.emit()
+            self.receivedImage = False
         self.mutexReceived.unlock()
 
     def getStatus(self):
