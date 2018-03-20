@@ -94,7 +94,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.logger.info('Mount RunnerOnce connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
-        self.logger.error('Mount RunnerOnce connection fault: {0}'.format(self.socket.errorString()))
+        self.logger.warning('Mount RunnerOnce connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
         self.logger.info('Mount RunnerOnce connection has state: {0}'.format(self.socket.state()))
