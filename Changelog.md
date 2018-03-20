@@ -1,11 +1,9 @@
 3.0 todo
-- check SGPro
 - check TSX
 - check MaximDL
 - show best polar alignment star (south, closed to eclipse)
 - show directions
-- make imaging window work
-- code cleanup
-    - astrometry.net
-    - mutex() for common used variables
-
+- show upload for astrometry.net progress
+- get stored models from mount in list
+- make model from data
+- set loglevel from gui
