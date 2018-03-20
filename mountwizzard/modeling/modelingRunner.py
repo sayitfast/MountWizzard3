@@ -46,9 +46,9 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.mutexTakeNextPoint = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.takeNextPoint = False
-        self.signalSlewing.connect(self.slewing)
+        self.signalStartSlewing.connect(self.startSlewing)
 
-    def slewing(self):
+    def startSlewing(self):
         self.mutexTakeNextPoint.lock()
         self.takeNextPoint = True
         self.mutexTakeNextPoint.unlock()
@@ -68,10 +68,11 @@ class Slewpoint(PyQt5.QtCore.QObject):
                 self.main.slewMountDome(modelingData)
                 self.main.app.messageQueue.put('\tWait mount settling / delay time:  {0:02d} sec\n'.format(modelingData['SettlingTime']))
                 self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
-                timeCounter = modelingData['SettlingTime']
+                timeCounter = modelingData['SettlingTime'] * 10
                 while timeCounter > 0:
-                    time.sleep(1)
                     timeCounter -= 1
+                    time.sleep(0.1)
+                    PyQt5.QtWidgets.QApplication.processEvents()
                 self.main.workerImage.queueImage.put(modelingData)
                 # make signal for hemisphere that point is imaged
                 self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
@@ -100,14 +101,20 @@ class Image(PyQt5.QtCore.QObject):
         self.imageIntegrated = False
         self.imageSaved = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.mutexImageIntegrated = PyQt5.QtCore.QMutex()
+        self.mutexImageSaved = PyQt5.QtCore.QMutex()
         self.main.app.workerImaging.imageIntegrated.connect(self.setImageIntegrated)
         self.main.app.workerImaging.imageSaved.connect(self.setImageSaved)
 
     def setImageIntegrated(self):
+        self.mutexImageIntegrated.lock()
         self.imageIntegrated = True
+        self.mutexImageIntegrated.unlock()
 
     def setImageSaved(self):
+        self.mutexImageSaved.lock()
         self.imageSaved = True
+        self.mutexImageSaved.unlock()
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -117,8 +124,12 @@ class Image(PyQt5.QtCore.QObject):
         while self.isRunning:
             if not self.queueImage.empty():
                 modelingData = self.queueImage.get()
-                self.imageIntegrated = False
+                self.mutexImageSaved.lock()
                 self.imageSaved = False
+                self.mutexImageSaved.unlock()
+                self.mutexImageIntegrated.lock()
+                self.imageIntegrated = False
+                self.mutexImageIntegrated.unlock()
                 modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
                 modelingData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
                 modelingData['LocalSiderealTimeFloat'] = self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
@@ -138,7 +149,7 @@ class Image(PyQt5.QtCore.QObject):
                     time.sleep(0.1)
                     PyQt5.QtWidgets.QApplication.processEvents()
                 # next point after integrating but during downloading if possible or after IDLE
-                self.main.workerSlewpoint.signalSlewing.emit()
+                self.main.workerSlewpoint.signalStartSlewing.emit()
                 # we have to wait until image is downloaded before being able to plate solve
                 while not self.imageSaved and not self.main.cancel:
                     time.sleep(0.1)
@@ -167,12 +178,15 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.main = main
         self.thread = thread
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.mutexImageDataDownloaded = PyQt5.QtCore.QMutex()
         self.isRunning = True
         self.imageDataDownloaded = False
         self.main.app.workerAstrometry.imageDataDownloaded.connect(self.setImageDataDownloaded)
 
     def setImageDataDownloaded(self):
+        self.mutexImageDataDownloaded.lock()
         self.imageDataDownloaded = True
+        self.mutexImageDataDownloaded.unlock()
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -180,8 +194,10 @@ class Platesolve(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            if not self.queuePlatesolve.empty():
+            if not self.queuePlatesolve.empty()
+                self.mutexImageDataDownloaded.lock()
                 self.imageDataDownloaded = False
+                self.mutexImageDataDownloaded.unlock()
                 modelingData = self.queuePlatesolve.get()
                 if modelingData['Imagepath'] != '':
                     self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
