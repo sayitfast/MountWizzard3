@@ -165,6 +165,12 @@ class AstrometryClient:
                     self.application['Name'] = 'Local'
                 self.application['Status'] = 'OK'
                 self.data['CONNECTION']['CONNECT'] = 'On'
+        except requests.exceptions.ConnectionError:
+            self.logger.error('Connection to {0} not possible, connection refused')
+            self.main.astrometryStatusText.emit('Not OK')
+            self.application['Available'] = False
+            self.data['Status'] = 'ERROR'
+            self.data['CONNECTION']['CONNECT'] = 'Off'
         except Exception as e:
             self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI, e))
             self.main.astrometryStatusText.emit('Not OK')
