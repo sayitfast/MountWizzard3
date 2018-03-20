@@ -21,7 +21,7 @@ import logging
 import math
 import datetime
 import PyQt5
-from astropy import _erfa as erfa_astro
+from astropy import _erfa
 
 
 class Transform:
@@ -29,12 +29,12 @@ class Transform:
 
     def __init__(self, app):
         self.app = app
-        self.ERFA = erfa_astro
-        self.transformationLockERFA = PyQt5.QtCore.QMutex()
-        self.conversionLock = PyQt5.QtCore.QMutex()
+        self.ERFA = _erfa
+        self.mutexERFA = PyQt5.QtCore.QMutex()
+        self.mutexTopocetric = PyQt5.QtCore.QMutex()
 
     def topocentricToAzAlt(self, ra, dec):
-        self.conversionLock.lock()
+        self.mutexTopocetric.lock()
         LAT = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
@@ -48,7 +48,7 @@ class Transform:
             az = 360.0 - A
         else:
             az = A
-        self.conversionLock.unlock()
+        self.mutexTopocetric.unlock()
         return az, alt
 
     def degStringToDecimal(self, value, splitter=':'):
@@ -97,7 +97,7 @@ class Transform:
         return returnValue
 
     def transformERFA(self, ra, dec, transform=1):
-        self.transformationLockERFA.lock()
+        self.mutexERFA.lock()
         SiteElevation = float(self.app.workerMountDispatcher.data['SiteHeight'])
         SiteLatitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         SiteLongitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLongitude'])
@@ -158,5 +158,5 @@ class Transform:
         else:
             val1 = ra
             val2 = dec
-        self.transformationLockERFA.unlock()
+        self.mutexERFA.unlock()
         return val1, val2
