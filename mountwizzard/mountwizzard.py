@@ -1159,8 +1159,7 @@ class MyApp(PyQt5.QtWidgets.QApplication):
 
     def notify(self, obj, event):
         try:
-            retValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
-            return retValue
+            returnValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
         except Exception as e:
             result = traceback.format_exception(*sys.exc_info())
             logging.error('-----------------------------------------')
@@ -1169,9 +1168,10 @@ class MyApp(PyQt5.QtWidgets.QApplication):
             for i in range(0, len(result)):
                 logging.error(result[i].replace('\n', ''))
             logging.error('-----------------------------------------')
-            return False
+            returnValue = False
         finally:
             pass
+        return returnValue
 
 
 if __name__ == "__main__":
@@ -1192,11 +1192,11 @@ if __name__ == "__main__":
 
     # config basic behaviour of gui abstraction
     # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_Use96Dpi)
-    PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
     # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
     # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
-    PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontUseNativeDialogs)
+    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontUseNativeDialogs)
 
     # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
     # app = PyQt5.QtWidgets.QApplication(sys.argv)
