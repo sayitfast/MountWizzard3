@@ -204,6 +204,7 @@ class MountWizzardApp(widget.MwWidget):
         self.loadConfigData()
         # init config starts necessary threads
         self.initConfig()
+        self.setLoggingLevel()
         # starting the threads
         self.threadModelingDispatcher.start()
         self.threadMountDispatcher.start()
@@ -308,6 +309,11 @@ class MountWizzardApp(widget.MwWidget):
         self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
         self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
         self.signalAudio.connect(self.playAudioSignal)
+        self.ui.loglevelDebug.clicked.connect(self.setLoggingLevel)
+        self.ui.loglevelInfo.clicked.connect(self.setLoggingLevel)
+        self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
+        self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
+
 
     def mountBoot(self):
         import socket
@@ -527,6 +533,14 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.soundMountAlert.setCurrentIndex(self.config['PlayMountAlert'])
             if 'PlayModelingFinished' in self.config:
                 self.ui.soundModelingFinished.setCurrentIndex(self.config['PlayModelingFinished'])
+            if 'CheckLoglevelDebug' in self.config:
+                self.ui.loglevelDebug.setChecked(self.config['CheckLoglevelDebug'])
+            if 'CheckLoglevelInfo' in self.config:
+                self.ui.loglevelInfo.setChecked(self.config['CheckLoglevelInfo'])
+            if 'CheckLoglevelWarning' in self.config:
+                self.ui.loglevelWarning.setChecked(self.config['CheckLoglevelWarning'])
+            if 'CheckLoglevelError' in self.config:
+                self.ui.loglevelError.setChecked(self.config['CheckLoglevelError'])
 
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
@@ -658,6 +672,10 @@ class MountWizzardApp(widget.MwWidget):
         self.config['PlayDomeSlew'] = self.ui.soundDomeSlewFinished.currentIndex()
         self.config['PlayMountAlert'] = self.ui.soundMountAlert.currentIndex()
         self.config['PlayModelingFinished'] = self.ui.soundModelingFinished.currentIndex()
+        self.config['CheckLoglevelDebug'] = self.ui.loglevelDebug.isChecked()
+        self.config['CheckLoglevelInfo'] = self.ui.loglevelInfo.isChecked()
+        self.config['CheckLoglevelWarning'] = self.ui.loglevelWarning.isChecked()
+        self.config['CheckLoglevelError'] = self.ui.loglevelError.isChecked()
 
         # store config in all submodules
         self.workerMountDispatcher.storeConfig()
@@ -1060,6 +1078,16 @@ class MountWizzardApp(widget.MwWidget):
     def setAstrometrySolvingTime(self, status):
         self.imageWindow.ui.le_astrometrySolvingTime.setText(status)
 
+    def setLoggingLevel(self):
+        if self.ui.loglevelDebug.isChecked():
+            logging.getLogger().setLevel(logging.DEBUG)
+        elif self.ui.loglevelInfo.isChecked():
+            logging.getLogger().setLevel(logging.INFO)
+        elif self.ui.loglevelWarning.isChecked():
+            logging.getLogger().setLevel(logging.WARNING)
+        elif self.ui.loglevelError.isChecked():
+            logging.getLogger().setLevel(logging.ERROR)
+
     @staticmethod
     def timeStamp():
         return time.strftime('%H:%M:%S -> ', time.localtime())
@@ -1208,7 +1236,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
-    BUILD_NO = '3.0 alpha 12'
+    BUILD_NO = '3.0 alpha 13'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
