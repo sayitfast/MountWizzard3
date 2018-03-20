@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -9764,7 +9764,7 @@ AnalyseWindow</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -14442,8 +14442,8 @@ AnalyseWindow</string>
       <widget class="QCheckBox" name="checkSimulation">
        <property name="geometry">
         <rect>
-         <x>20</x>
-         <y>220</y>
+         <x>415</x>
+         <y>205</y>
          <width>231</width>
          <height>20</height>
         </rect>
@@ -14463,8 +14463,8 @@ AnalyseWindow</string>
       <widget class="QGroupBox" name="logginLevel">
        <property name="geometry">
         <rect>
-         <x>390</x>
-         <y>30</y>
+         <x>410</x>
+         <y>25</y>
          <width>176</width>
          <height>151</height>
         </rect>
@@ -14568,6 +14568,28 @@ AnalyseWindow</string>
          <bool>false</bool>
         </property>
        </widget>
+      </widget>
+      <widget class="Line" name="line_57">
+       <property name="geometry">
+        <rect>
+         <x>370</x>
+         <y>10</y>
+         <width>21</width>
+         <height>381</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>2</number>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
       </widget>
      </widget>
     </widget>
