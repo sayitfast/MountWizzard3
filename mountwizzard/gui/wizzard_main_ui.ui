@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -11424,7 +11424,7 @@ AnalyseWindow</string>
          <string>99999</string>
         </property>
         <property name="text">
-         <string>3499</string>
+         <string>8080</string>
         </property>
         <property name="maxLength">
          <number>5</number>

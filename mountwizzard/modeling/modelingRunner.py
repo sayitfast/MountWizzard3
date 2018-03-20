@@ -194,7 +194,7 @@ class Platesolve(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            if not self.queuePlatesolve.empty()
+            if not self.queuePlatesolve.empty():
                 self.mutexImageDataDownloaded.lock()
                 self.imageDataDownloaded = False
                 self.mutexImageDataDownloaded.unlock()

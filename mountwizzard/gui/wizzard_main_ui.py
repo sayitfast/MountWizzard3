@@ -5446,7 +5446,7 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(2)
+        self.mainTabWidget.setCurrentIndex(0)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -6122,7 +6122,7 @@ class Ui_MainWindow(object):
         self.le_AstrometryServerIP.setText(_translate("MainWindow", "127.0.0.1"))
         self.le_AstrometryServerPort.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:400;\">Port address of INDI server</span></p></body></html>"))
         self.le_AstrometryServerPort.setInputMask(_translate("MainWindow", "99999"))
-        self.le_AstrometryServerPort.setText(_translate("MainWindow", "3499"))
+        self.le_AstrometryServerPort.setText(_translate("MainWindow", "8080"))
         self.rb_useOnlineSolver.setToolTip(_translate("MainWindow", "<html><head/><body><p>Choose online solver nova.astrometry.net as solver</p></body></html>"))
         self.rb_useOnlineSolver.setText(_translate("MainWindow", "Use online solver (astrometry.net)"))
         self.le_AstrometryServerAPIKey.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:400;\">IP address of INDI server</span></p></body></html>"))
