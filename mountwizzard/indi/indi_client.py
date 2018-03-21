@@ -287,6 +287,14 @@ class INDIClient(PyQt5.QtCore.QObject):
                                 self.logger.debug('Could not receive Image, error:{0}'.format(e))
                             finally:
                                 pass
+                        else:
+                            self.logger.debug('Could not find format in message from device: {0}'.format(device))
+                    else:
+                        self.logger.debug('Got BLOB from device: {0}, name: {1}'.format(device, name))
+                else:
+                    self.logger.debug('Got unexspected BLOB from device: {0}'.format(device))
+            else:
+                self.logger.debug('Did not find device: {0} in device list'.format(device))
 
         # deleting properties from devices
         elif isinstance(message, indiXML.DelProperty):
