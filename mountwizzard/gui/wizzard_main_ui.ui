@@ -4658,7 +4658,7 @@ Window</string>
       </font>
      </property>
      <property name="toolTip">
-      <string>Sets the time to wait after mount stop before imaging</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Sets the exposure time&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

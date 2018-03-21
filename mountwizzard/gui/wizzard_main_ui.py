@@ -5846,7 +5846,7 @@ class Ui_MainWindow(object):
         self.checkKeepImages.setText(_translate("MainWindow", "Keep Images from modeling"))
         self.cameraBin.setToolTip(_translate("MainWindow", "<html><head/><body><p>Sets the binning for the camera</p></body></html>"))
         self.scaleSubframe.setToolTip(_translate("MainWindow", "<html><head/><body><p>sets the percentage of frame size for subframe </p></body></html>"))
-        self.cameraExposure.setToolTip(_translate("MainWindow", "Sets the time to wait after mount stop before imaging"))
+        self.cameraExposure.setToolTip(_translate("MainWindow", "<html><head/><body><p>Sets the exposure time</p></body></html>"))
         self.label_173.setText(_translate("MainWindow", "%"))
         self.isoSetting.setToolTip(_translate("MainWindow", "Sets the iso setting"))
         self.label_39.setText(_translate("MainWindow", "Exposure Time of Camera"))
