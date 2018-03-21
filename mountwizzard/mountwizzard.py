@@ -1240,7 +1240,7 @@ if __name__ == "__main__":
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
-    logging.basicConfig(level=logging.DEBUG,
+    logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s [%(levelname)7s][%(filename)30s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
