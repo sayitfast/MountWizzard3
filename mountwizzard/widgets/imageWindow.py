@@ -160,7 +160,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechMid(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(25, 99.8)
+        interval = AsymmetricPercentileInterval(25, 99.9)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
