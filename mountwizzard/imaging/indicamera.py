@@ -101,6 +101,7 @@ class INDICamera:
         filename = imageParams['File']
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename
+        # setting image path in INDI client to know where to store the image
         self.app.workerINDI.imagePath = imagePath
 
         cam = self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]

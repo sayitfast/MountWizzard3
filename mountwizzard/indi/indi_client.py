@@ -266,9 +266,13 @@ class INDIClient(PyQt5.QtCore.QObject):
             if device in self.data['Device']:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     name = message.attr['name']
+                    # ccd1 is the main camera in INDI
                     if name == 'CCD1':
+                        # format tells me raw or compressed format
                         if 'format' in message.getElt(0).attr:
                             try:
+                                # todo: image should be stored in indicamera, only data should be transferred via signal
+                                # todo: therefore imageHDU has to be a class variable to not be garbage collected
                                 if message.getElt(0).attr['format'] == '.fits':
                                     imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
                                     imageHDU.writeto(self.imagePath, overwrite=True)
