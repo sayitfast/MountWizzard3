@@ -127,7 +127,7 @@ class SGPro:
         self.main.cameraStatusText.emit('INTEGRATE')
         while not self.cancel:
             suc, state, message = self.SgGetDeviceStatus('Camera')
-            if 'downloading' in message or 'ready' in message:
+            if 'downloading' in message or 'ready' in message or 'idle' in message:
                 break
             time.sleep(0.1)
 

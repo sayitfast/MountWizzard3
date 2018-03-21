@@ -35,7 +35,7 @@ use('Qt5Agg')
 class ImagesWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
     BASENAME = 'exposure-'
-    signalShowFitsImage = PyQt5.QtCore.pyqtSignal()
+    signalShowFitsImage = PyQt5.QtCore.pyqtSignal(object)
 
     def __init__(self, app):
         super(ImagesWindow, self).__init__()

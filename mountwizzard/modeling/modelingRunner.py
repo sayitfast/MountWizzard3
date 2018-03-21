@@ -412,7 +412,7 @@ class ModelingRunner:
         # start process
         self.modelingHasFinished = False
         self.timeStart = time.time()
-        self.workerSlewpoint.signalStartSlewings.emit()
+        self.workerSlewpoint.signalStartSlewing.emit()
         while self.modelRun:
             # stop loop if modeling is cancelled from external
             if self.cancel:
