@@ -244,9 +244,8 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.data['ModelAltitude'].append(alt)
                 self.data['ModelError'].append(ErrorRMS)
                 self.data['ModelErrorAngle'].append(ErrorAngle)
-            self.app.workerMountDispatcher.signalMountShowAlignmentModel.emit()
             self.data['ModelLoading'] = False
         except Exception as e:
             self.logger.error('Parsing GetAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
-            pass
+            self.app.workerMountDispatcher.signalMountShowAlignmentModel.emit()

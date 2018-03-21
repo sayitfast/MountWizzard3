@@ -205,12 +205,12 @@ class MountWizzardApp(widget.MwWidget):
         # init config starts necessary threads
         self.initConfig()
         self.setLoggingLevel()
+        # map all the button to functions for gui
+        self.mappingFunctions()
         # starting the threads
         self.threadModelingDispatcher.start()
         self.threadMountDispatcher.start()
         self.checkASCOM()
-        # map all the button to functions for gui
-        self.mappingFunctions()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
         # print('Thread ID:',int(PyQt5.QtCore.QThread.currentThreadId()))
@@ -254,6 +254,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.wait()
 
     def mappingFunctions(self):
+        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
         self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
         self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
@@ -302,7 +303,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
         self.ui.btn_openModelingPlotWindow.clicked.connect(self.hemisphereWindow.showWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
-        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
         self.workerDome.domeStatusText.connect(self.setDomeStatusText)
         self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
         self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
@@ -313,7 +313,6 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelInfo.clicked.connect(self.setLoggingLevel)
         self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
-
 
     def mountBoot(self):
         import socket
