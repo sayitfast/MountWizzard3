@@ -41,7 +41,12 @@ class Transform:
         ra = math.radians(ra)
         lat = math.radians(LAT)
         alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
-        A = math.acos((math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat)))
+        value = (math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat))
+        if value > 1:
+            value = 1
+        elif value < -1:
+            value = -1
+        A = math.acos(value)
         A = math.degrees(A)
         alt = math.degrees(alt)
         if math.sin(ra) >= 0.0:

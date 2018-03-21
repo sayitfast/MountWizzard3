@@ -330,14 +330,14 @@ class ModelPoints:
     def generateMaxPoints(self, limitByHorizonMask, doSortingPoints):
         west = []
         east = []
-        for dec in range(-10, 90, 10):
+        for dec in range(-15, 90, 10):
             if dec < 30:
-                step = -15
+                step = 10
             elif dec < 70:
-                step = -10
+                step = 10
             else:
-                step = -30
-            for ha in range(120, -120, step):
+                step = 30
+            for ha in range(-65, 60, step):
                 az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
@@ -357,11 +357,11 @@ class ModelPoints:
         east = []
         for dec in range(-15, 90, 15):
             if dec < 60:
-                step = -10
+                step = 10
             else:
-                step = -20
-            for ha in range(120, -120, step):
-                az, alt = self.transform.transformERFA(ha / 10, dec, 1)
+                step = 20
+            for ha in range(-65, 60, step):
+                az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
                         east.append((az, alt))
@@ -380,11 +380,11 @@ class ModelPoints:
         east = list()
         for dec in range(-15, 90, 15):
             if dec < 60:
-                step = -15
+                step = 15
             else:
-                step = -30
-            for ha in range(120, -120, step):
-                az, alt = self.transform.transformERFA(ha / 10, dec, 1)
+                step = 30
+            for ha in range(-65, 60, step):
+                az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
                         east.append((az, alt))
