@@ -192,7 +192,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
-        self.logger.info('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
+        self.logger.debug('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)

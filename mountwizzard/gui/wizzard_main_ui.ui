@@ -14442,8 +14442,8 @@ AnalyseWindow</string>
       <widget class="QCheckBox" name="checkSimulation">
        <property name="geometry">
         <rect>
-         <x>415</x>
-         <y>205</y>
+         <x>405</x>
+         <y>230</y>
          <width>231</width>
          <height>20</height>
         </rect>
@@ -14463,8 +14463,8 @@ AnalyseWindow</string>
       <widget class="QGroupBox" name="logginLevel">
        <property name="geometry">
         <rect>
-         <x>410</x>
-         <y>25</y>
+         <x>400</x>
+         <y>60</y>
          <width>176</width>
          <height>151</height>
         </rect>
@@ -14589,6 +14589,48 @@ AnalyseWindow</string>
        </property>
        <property name="orientation">
         <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+      <widget class="Line" name="line_9">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>40</y>
+         <width>331</width>
+         <height>1</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label_59">
+       <property name="geometry">
+        <rect>
+         <x>400</x>
+         <y>20</y>
+         <width>161</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Arial</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Misc Settings</string>
        </property>
       </widget>
      </widget>

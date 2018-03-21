@@ -85,7 +85,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
-        self.logger.info('Mount RunnerMedium found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.debug('Mount RunnerMedium found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
@@ -98,7 +98,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.logger.warning('Mount RunnerMedium connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
-        self.logger.info('Mount RunnerMedium connection has state: {0}'.format(self.socket.state()))
+        self.logger.debug('Mount RunnerMedium connection has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('Mount RunnerMedium connection is disconnected from host')

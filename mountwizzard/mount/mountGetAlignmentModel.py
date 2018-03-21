@@ -84,7 +84,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
-        self.logger.info('Mount GetAlignmentModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.logger.debug('Mount GetAlignmentModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
@@ -97,7 +97,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.logger.warning('Mount GetAlignmentModel connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
-        self.logger.info('Mount GetAlignmentModel connection has state: {0}'.format(self.socket.state()))
+        self.logger.debug('Mount GetAlignmentModel connection has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('Mount GetAlignmentModel connection is disconnected from host')
