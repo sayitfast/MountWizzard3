@@ -201,6 +201,8 @@ class Imaging(PyQt5.QtCore.QObject):
         else:
             imageParams['Speed'] = 'Normal'
         self.cameraHandler.getImage(imageParams)
+        # if we got an image, than show it
+        self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
 
     def getStatus(self):
         self.cameraHandler.getStatus()

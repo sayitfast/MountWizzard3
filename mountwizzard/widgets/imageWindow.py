@@ -35,6 +35,7 @@ use('Qt5Agg')
 class ImagesWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
     BASENAME = 'exposure-'
+    signalShowFitsImage = PyQt5.QtCore.pyqtSignal()
 
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
@@ -81,6 +82,8 @@ class ImagesWindow(widget.MwWidget):
         self.ui.cross2.setVisible(False)
         self.ui.cross3.setVisible(False)
         self.ui.cross4.setVisible(False)
+        # define the signals
+        self.signalShowFitsImage.connect(self.showFitsImage)
 
     def initConfig(self):
         try:
@@ -214,8 +217,14 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.draw()
 
     def showFitsImage(self, filename):
+        # fits file ahs to be there
         if not os.path.isfile(filename):
             return
+        # image window has to be present
+        if not self.showStatus:
+            return
+        self.imagePath = filename
+        self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
         hdulist = pyfits.open(filename)
         self.image = hdulist[0].data
         self.sizeY, self.sizeX = self.image.shape
@@ -267,10 +276,7 @@ class ImagesWindow(widget.MwWidget):
         if not os.path.isfile(imageParams['Imagepath']):
             self.app.messageQueue.put('#BWImaging failed\n')
             return
-        self.imagePath = imageParams['Imagepath']
-        self.showFitsImage(self.imagePath)
-        self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
-        self.app.messageQueue.put('#BWSave image\n')
+        self.signalShowFitsImage.emit(imageParams['Imagepath'])
 
     def solveOnce(self):
         if self.imagePath == '':
