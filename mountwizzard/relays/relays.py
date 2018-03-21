@@ -199,7 +199,7 @@ class Relays:
                 else:
                     self.logger.error('connection error: {0}'.format(e))
             except urllib.request.URLError:
-                self.logger.info('there is no relaybox present under ip: {0}'.format(self.relayIP))
+                self.logger.warning('there is no relaybox present under ip: {0}'.format(self.relayIP))
             except Exception as e:
                 self.logger.error('connection error: {0}'.format(e))
             finally:
@@ -207,7 +207,7 @@ class Relays:
                     self.requestStatus()
                 return connected
         else:
-            self.logger.info('there is no ip given for relaybox')
+            self.logger.debug('there is no ip given for relaybox')
 
     def setStatus(self, response):
         lines = response.splitlines()
