@@ -272,14 +272,15 @@ class INDIClient(PyQt5.QtCore.QObject):
                                 if message.getElt(0).attr['format'] == '.fits':
                                     imageHDU = pyfits.HDUList.fromstring(message.getElt(0).getValue())
                                     imageHDU.writeto(self.imagePath, overwrite=True)
-                                    self.logger.info('image file is in raw fits format')
+                                    self.logger.debug('Image BLOB is in raw fits format')
                                 else:
                                     imageHDU = pyfits.HDUList.fromstring(zlib.decompress(message.getElt(0).getValue()))
                                     imageHDU.writeto(self.imagePath, overwrite=True)
-                                    self.logger.info('image file is not in raw fits format')
+                                    self.logger.debug('Image BLOB is compressed fits format')
                                 self.receivedImage.emit(True)
                             except Exception as e:
                                 self.receivedImage.emit(False)
+                                self.logger.debug('Could not receive Image, error:{0}'.format(e))
                             finally:
                                 pass
 
