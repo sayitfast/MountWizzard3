@@ -31,10 +31,10 @@ class Transform:
         self.app = app
         self.ERFA = _erfa
         self.mutexERFA = PyQt5.QtCore.QMutex()
-        self.mutexTopocetric = PyQt5.QtCore.QMutex()
+        self.mutexTopocentric = PyQt5.QtCore.QMutex()
 
     def topocentricToAzAlt(self, ra, dec):
-        self.mutexTopocetric.lock()
+        self.mutexTopocentric.lock()
         LAT = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
@@ -48,7 +48,7 @@ class Transform:
             az = 360.0 - A
         else:
             az = A
-        self.mutexTopocetric.unlock()
+        self.mutexTopocentric.unlock()
         return az, alt
 
     def degStringToDecimal(self, value, splitter=':'):

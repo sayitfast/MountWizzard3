@@ -338,7 +338,7 @@ class ModelPoints:
             else:
                 step = -30
             for ha in range(120, -120, step):
-                az, alt = self.transform.transformERFA(ha / 10, dec, 1)
+                az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
                         east.append((az, alt))
