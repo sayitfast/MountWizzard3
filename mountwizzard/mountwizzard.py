@@ -67,6 +67,7 @@ class MountWizzardApp(widget.MwWidget):
     sharedAstrometryDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedImagingDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedMountDataLock = PyQt5.QtCore.QReadWriteLock()
+    sharedModelingDataLock = PyQt5.QtCore.QReadWriteLock()
 
     def __init__(self):
         super().__init__()
