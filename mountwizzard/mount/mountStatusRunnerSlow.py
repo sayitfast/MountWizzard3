@@ -141,10 +141,11 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.messageString = self.messageString[31:]
         # Try and parse the message.
         try:
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             if len(messageToProcess) == 0:
                 return
+            if 'FW' not in self.data:
+                self.data['FW'] = 0
+            self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
             #  +029.8# 1 0 1 +90# +00# V,2018-03-24#
             # all parameters are delivered
@@ -167,5 +168,6 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('Parsing Status Slow combined command got error:{0}'.format(e))
         finally:
+            self.app.sharedMountDataLock.unlock()
             if self.isRunning:
                 PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_SLOW, self.getStatusSlow)

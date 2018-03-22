@@ -131,6 +131,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         try:
             if len(messageToProcess) == 0:
                 return
+            self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
             # +0580.9#-011:42:17.3#+48:02:01.6#Oct 25 2017#2.15.8#10micron GM1000HPS#16:58:31#Q-TYPE2012#
             # all parameters are delivered
@@ -171,4 +172,5 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         except Exception as e:
             pass
         finally:
-            pass
+            self.app.sharedMountDataLock.unlock()
+

@@ -132,6 +132,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         try:
             if len(messageToProcess) == 0:
                 return
+            self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
             # first the GS command
             if len(valueList) == 2:
@@ -188,6 +189,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('Parsing GS-Ginfo combined command got error:{0}'.format(e))
         finally:
+            self.app.sharedMountDataLock.unlock()
             if self.isRunning:
                 PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_FAST, self.getStatusFast)
 

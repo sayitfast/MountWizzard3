@@ -151,10 +151,11 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             self.messageString = self.messageString[28:]
         # Try and parse the message.
         try:
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             if len(messageToProcess) == 0:
                 return
+            self.app.sharedMountDataLock.lockForWrite()
+            if 'FW' not in self.data:
+                self.data['FW'] = 0
             valueList = messageToProcess.strip('#').split('#')
             # print(valueList)
             # all parameters are delivered
@@ -177,5 +178,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('Parsing Status Medium combined command got error:{0}'.format(e))
         finally:
+            self.app.sharedMountDataLock.unlock()
             if self.isRunning:
                 PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_MEDIUM, self.getStatusMedium)

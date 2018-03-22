@@ -144,10 +144,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             messageToProcess = messageToProcess.lstrip('E#')
         # now transfer the model data
         try:
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             if len(messageToProcess) == 0:
                 return
+            self.app.sharedMountDataLock.lockForWrite()
+            if 'FW' not in self.data:
+                self.data['FW'] = 0
             valueList = messageToProcess.strip('#').split('#')
             # now the first part of the command cluster
             numberStars = int(float(valueList[0]))
@@ -248,4 +249,5 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         except Exception as e:
             self.logger.error('Parsing GetAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
+            self.app.sharedMountDataLock.unlock()
             self.app.workerMountDispatcher.signalMountShowAlignmentModel.emit()
