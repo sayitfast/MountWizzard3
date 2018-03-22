@@ -84,7 +84,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
-        self.app.ui.checkEnableINDI.stateChanged.connect(lambda: self.enableDisableINDI())
+        self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
     def initConfig(self):
         try:
@@ -141,9 +141,17 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.settingsChanged = (self.data['ServerIP'] != value)
 
     def enableDisableINDI(self):
+        print(self.app.ui.checkEnableINDI.isChecked())
         if self.app.ui.checkEnableINDI.isChecked():
-            if not self.isRunning:
-                self.app.threadINDI.start()
+            self.mutexIPChange.lock()
+            valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+            if valid:
+                self.data['ServerIP'] = value
+            valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
+            if valid:
+                self.data['ServerPort'] = value
+            self.app.threadINDI.start()
+            self.mutexIPChange.unlock()
         else:
             if self.isRunning:
                 self.stop()
