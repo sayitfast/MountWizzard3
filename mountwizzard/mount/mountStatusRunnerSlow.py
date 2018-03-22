@@ -85,14 +85,18 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.debug('Mount RunnerSlow found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Slow': True})
         self.getStatusSlow()
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerSlow connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerSlow connection fault: {0}'.format(self.socket.errorString()))
@@ -114,12 +118,14 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
                 self.logger.warning('Socket RunnerSlow not connected')
 
     def getStatusSlow(self):
+        self.app.sharedMountDataLock.lockForRead()
         if 'FW' not in self.data:
             self.data['FW'] = 0
         if self.data['FW'] < 21500:
             self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#')
         else:
             self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
+        self.app.sharedMountDataLock.unlock()
 
     def handleReadyRead(self):
         # Get message from socket.

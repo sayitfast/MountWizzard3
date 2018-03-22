@@ -86,14 +86,18 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.debug('Mount RunnerFast found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Fast': True})
         self.getStatusFast()
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerFast connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerFast connection fault: {0}'.format(self.socket.errorString()))

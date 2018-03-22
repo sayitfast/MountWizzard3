@@ -69,6 +69,8 @@ class MountWizzardApp(widget.MwWidget):
     sharedImagingDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedMountDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedModelingDataLock = PyQt5.QtCore.QReadWriteLock()
+    sharedEnvironmentDataLock = PyQt5.QtCore.QReadWriteLock()
+    sharedDomeDataLock = PyQt5.QtCore.QReadWriteLock()
 
     def __init__(self):
         super().__init__()

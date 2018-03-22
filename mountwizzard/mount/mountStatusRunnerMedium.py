@@ -85,14 +85,18 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.debug('Mount RunnerMedium found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Medium': True})
         self.getStatusMedium()
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerMedium connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerMedium connection fault: {0}'.format(self.socket.errorString()))
@@ -117,15 +121,18 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         doRefractionUpdate = False
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
             # if there is no tracking, than updating is good
+            self.app.sharedMountDataLock.lockForRead()
             if 'Status' in self.data:
                 if self.data['Status'] != '0':
                     doRefractionUpdate = True
+            self.app.sharedMountDataLock.unlock()
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
             if 'Imaging' in self.app.workerImaging.cameraHandler.data:
                 if not self.app.workerImaging.cameraHandler.data['Imaging']:
                     doRefractionUpdate = True
         if doRefractionUpdate:
+            self.app.sharedEnvironmentDataLock.lockForRead()
             if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
                 pressure = self.app.workerEnvironment.data['Pressure']
                 temperature = self.app.workerEnvironment.data['Temperature']
@@ -135,6 +142,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                         self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
                     else:
                         self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
+            self.app.sharedEnvironmentDataLock.unlock()
         self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
 
     def handleReadyRead(self):
