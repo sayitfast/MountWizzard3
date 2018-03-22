@@ -32,14 +32,23 @@ class Transform:
         self.ERFA = _erfa
         self.mutexERFA = PyQt5.QtCore.QMutex()
         self.mutexTopocentric = PyQt5.QtCore.QMutex()
+        self.siteLat = 0
+        self.siteLon = 0
+        self.siteHeight = 0
+        # connect data transfer
+        self.app.signalMountSiteData.connect(self.setSiteData)
+
+    def setSiteData(self, lat, lon, height):
+        self.siteLat = lat
+        self.siteLon = lon
+        self.siteHeight = height
 
     def topocentricToAzAlt(self, ra, dec):
         self.mutexTopocentric.lock()
-        LAT = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
         ra = (ra * 360 / 24 + 360.0) % 360.0
         dec = math.radians(dec)
         ra = math.radians(ra)
-        lat = math.radians(LAT)
+        lat = math.radians(self.siteLat)
         alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
         value = (math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat))
         if value > 1:
@@ -103,9 +112,6 @@ class Transform:
 
     def transformERFA(self, ra, dec, transform=1):
         self.mutexERFA.lock()
-        SiteElevation = float(self.app.workerMountDispatcher.data['SiteHeight'])
-        SiteLatitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLatitude'])
-        SiteLongitude = self.degStringToDecimal(self.app.workerMountDispatcher.data['SiteLongitude'])
         ts = datetime.datetime.utcnow()
         dut1_prev = self.ERFA.dat(ts.year, ts.month, ts.day, 0)
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
@@ -129,9 +135,9 @@ class Transform:
                                                            date1 + date2,
                                                            0.0,
                                                            dut1,
-                                                           SiteLongitude * self.ERFA.DD2R,
-                                                           SiteLatitude * self.ERFA.DD2R,
-                                                           SiteElevation,
+                                                           self.siteLon * self.ERFA.DD2R,
+                                                           self.siteLat * self.ERFA.DD2R,
+                                                           self.siteHeight,
                                                            0.0,
                                                            0.0,
                                                            0.0,

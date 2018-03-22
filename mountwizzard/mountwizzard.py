@@ -59,6 +59,9 @@ class MountWizzardApp(widget.MwWidget):
     logger = logging.getLogger(__name__)
     signalAudio = PyQt5.QtCore.pyqtSignal(str)
 
+    # general signals
+    signalMountSiteData = PyQt5.QtCore.pyqtSignal([float, float, float])
+
     def __init__(self):
         super().__init__()
         self.config = {}
@@ -123,9 +126,21 @@ class MountWizzardApp(widget.MwWidget):
         # enable a matplotlib figure polar plot in main gui
         self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
         # instantiating all subclasses and connecting thread signals
-        self.transform = transform.Transform(self)
         self.relays = relays.Relays(self)
         # runtime threads
+        # mount class
+        self.threadMountDispatcher = PyQt5.QtCore.QThread()
+        self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
+        self.threadMountDispatcher.setObjectName("MountDispatcher")
+        self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
+        self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
+        self.workerMountDispatcher.signalMountConnectedFast.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedAlign.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
+        # INDI client framework
         self.threadINDI = PyQt5.QtCore.QThread()
         self.workerINDI = indi_client.INDIClient(self, self.threadINDI)
         self.threadINDI.setObjectName("INDI")
@@ -175,18 +190,6 @@ class MountWizzardApp(widget.MwWidget):
             self.workerUpload.moveToThread(self.threadUpload)
             self.threadUpload.started.connect(self.workerUpload.run)
             # self.threadUpload.start()
-        # mount class
-        self.threadMountDispatcher = PyQt5.QtCore.QThread()
-        self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
-        self.threadMountDispatcher.setObjectName("MountDispatcher")
-        self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
-        self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
-        self.workerMountDispatcher.signalMountConnectedFast.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedAlign.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
         self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
