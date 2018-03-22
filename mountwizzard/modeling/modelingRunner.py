@@ -504,7 +504,7 @@ class ModelingRunner:
             self.app.messageQueue.put('Syncing actual alignment model and modeling data\n')
             self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData)
             self.analyseData.saveData(self.modelAlignmentData, name)
-            self.app.ui.le_analyseFileName.setText(name)
+            self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
@@ -563,7 +563,7 @@ class ModelingRunner:
             self.app.messageQueue.put('Syncing actual alignment model and modeling data\n')
             self.app.workerMountDispatcher.retrofitMountData(self.modelAlignmentData)
             self.analyseData.saveData(self.modelAlignmentData, name)
-            self.app.ui.le_analyseFileName.setText(name)
+            self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
