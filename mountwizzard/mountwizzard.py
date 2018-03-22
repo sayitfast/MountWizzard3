@@ -845,40 +845,40 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.data['RefractionStatus'] = _value
 
     def mountPosition1(self):
-        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
-        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos1.text())))                                     # set az
-        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos1.text())))                                   # set alt
-        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos1.text())))
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos1.text())))
+        self.mountCommandQueue.put(':MA#')
 
     def mountPosition2(self):
-        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
-        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos2.text())))                                     # set az
-        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos2.text())))                                   # set alt
-        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos2.text())))
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos2.text())))
+        self.mountCommandQueue.put(':MA#')
 
     def mountPosition3(self):
-        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
-        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos3.text())))                                     # set az
-        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos3.text())))                                   # set alt
-        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos3.text())))
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos3.text())))
+        self.mountCommandQueue.put(':MA#')
 
     def mountPosition4(self):
-        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
-        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos4.text())))                                     # set az
-        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos4.text())))                                   # set alt
-        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos4.text())))
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos4.text())))
+        self.mountCommandQueue.put(':MA#')
 
     def mountPosition5(self):
-        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
-        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos5.text())))                                     # set az
-        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos5.text())))                                   # set alt
-        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos5.text())))
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos5.text())))
+        self.mountCommandQueue.put(':MA#')
 
     def mountPosition6(self):
-        self.mountCommandQueue.put(':PO#')                                                                                         # unpark first
-        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
-        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
-        self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+        self.mountCommandQueue.put(':PO#')
+        self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos6.text())))
+        self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos6.text())))
+        self.mountCommandQueue.put(':MA#')
 
     def cancelFullModel(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
