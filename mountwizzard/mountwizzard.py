@@ -181,14 +181,12 @@ class MountWizzardApp(widget.MwWidget):
         self.threadImaging.setObjectName("Imaging")
         self.workerImaging.moveToThread(self.threadImaging)
         self.threadImaging.started.connect(self.workerImaging.run)
-        # self.threadImaging.start()
         # threading for astrometry apps
         self.threadAstrometry = PyQt5.QtCore.QThread()
         self.workerAstrometry = astrometry.Astrometry(self, self.threadAstrometry)
         self.threadAstrometry.setObjectName("Astrometry")
         self.workerAstrometry.moveToThread(self.threadAstrometry)
         self.threadAstrometry.started.connect(self.workerAstrometry.run)
-        # self.threadAstrometry.start()
         # threading for updater automation
         if platform.system() == 'Windows':
             self.threadUpload = PyQt5.QtCore.QThread()
@@ -196,7 +194,6 @@ class MountWizzardApp(widget.MwWidget):
             self.threadUpload.setObjectName("Upload")
             self.workerUpload.moveToThread(self.threadUpload)
             self.threadUpload.started.connect(self.workerUpload.run)
-            # self.threadUpload.start()
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
         self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
@@ -217,9 +214,6 @@ class MountWizzardApp(widget.MwWidget):
         self.setLoggingLevel()
         # map all the button to functions for gui
         self.mappingFunctions()
-        # starting the threads
-        self.threadModelingDispatcher.start()
-        self.threadMountDispatcher.start()
         self.checkASCOM()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
