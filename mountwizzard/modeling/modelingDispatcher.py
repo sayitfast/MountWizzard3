@@ -302,7 +302,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.config['AltitudeMax'] = self.app.ui.altitudeMax.value()
         self.app.config['NumberPointsDSO'] = self.app.ui.numberPointsDSO.value()
         self.app.config['NumberHoursDSO'] = self.app.ui.numberHoursDSO.value()
-
+        # and calling the underlying calsses as well
         self.modelingRunner.storeConfig()
 
     def run(self):
@@ -332,11 +332,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             # running through all necessary commands
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
-
                 if 'Button' in work:
-                    work['Button'].setProperty('running', True)
-                    work['Button'].style().unpolish(work['Button'])
-                    work['Button'].style().polish(work['Button'])
+                    self.app.signalChangeStylesheet.emit(work['Button'], 'running', True)
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -346,12 +343,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     work['Method']()
                 time.sleep(0.2)
                 if 'Button' in work:
-                    work['Button'].setProperty('running', False)
-                    work['Button'].style().unpolish(work['Button'])
-                    work['Button'].style().polish(work['Button'])
+                    self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:
-                    work['Cancel'].setProperty('cancel', False)
-                    work['Cancel'].style().unpolish(work['Cancel'])
-                    work['Cancel'].style().polish(work['Cancel'])
+                    self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
                     self.modelingRunner.cancel = False
                 PyQt5.QtWidgets.QApplication.processEvents()

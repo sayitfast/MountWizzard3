@@ -63,6 +63,7 @@ class MountWizzardApp(widget.MwWidget):
     signalMountSiteData = PyQt5.QtCore.pyqtSignal([str, str, str])
     signalJulianDate = PyQt5.QtCore.pyqtSignal(float)
     signalSetAnalyseFilename = PyQt5.QtCore.pyqtSignal(str)
+    signalChangeStylesheet = PyQt5.QtCore.pyqtSignal(object, str, object)
 
     # Locks for accessing shared  data
     sharedAstrometryDataLock = PyQt5.QtCore.QReadWriteLock()
@@ -320,6 +321,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
+        self.signalChangeStylesheet.connect(self.changeStylesheet)
 
     def mountBoot(self):
         import socket
@@ -917,6 +919,11 @@ class MountWizzardApp(widget.MwWidget):
 
     def setAnalyseFilename(self, filename):
         self.app.ui.le_analyseFileName.setText(filename)
+
+    def changeStylesheet(self, ui, item, value):
+        ui.setProperty(item, value)
+        ui.style().unpolish(ui)
+        ui.style().polish(ui)
 
     def setEnvironmentStatus(self, status):
         if status == 0:

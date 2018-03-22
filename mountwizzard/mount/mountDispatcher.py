@@ -461,9 +461,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             for work in self.commandDispatch[command]['Worker']:
                 # if we want to color a button, which one
                 if 'Button' in work:
-                    work['Button'].setProperty('running', True)
-                    work['Button'].style().unpolish(work['Button'])
-                    work['Button'].style().polish(work['Button'])
+                    self.app.signalChangeStylesheet.emit(work['Button'], 'running', True)
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -473,13 +471,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     work['Method']()
                 time.sleep(0.2)
                 if 'Button' in work:
-                    work['Button'].setProperty('running', False)
-                    work['Button'].style().unpolish(work['Button'])
-                    work['Button'].style().polish(work['Button'])
+                    self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:
-                    work['Cancel'].setProperty('cancel', False)
-                    work['Cancel'].style().unpolish(work['Cancel'])
-                    work['Cancel'].style().polish(work['Cancel'])
+                    self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
                 PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):
@@ -584,6 +578,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         condition = ('Number' not in self.data or self.data['Number'] < 4)
         self.app.sharedMountDataLock.unlock()
         if condition:
+            self.runTargetRMS = False
             return
         while True:
             self.app.sharedMountDataLock.lockForRead()
