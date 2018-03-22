@@ -455,12 +455,12 @@ class ModelingRunner:
         # imaging has to be connected
         if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
             return
-        if self.app.workerImaging.cameraHandler.data['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # solver has to be connected
         if 'CONNECTION' not in self.app.workerAstrometry.astrometryHandler.data:
             return
-        if self.app.workerAstrometry.astrometryHandler.data['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerAstrometry.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # telescope has to be connected
         if not self.app.workerMountDispatcher.mountStatus['Command']:
@@ -512,14 +512,14 @@ class ModelingRunner:
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
         # imaging has to be connected
-        if 'CONNECTION' not in self.app.workerImaging.cameraHandler.data:
+        if 'CONNECTION' not in self.app.workerImaging.data:
             return
-        if self.app.workerImaging.cameraHandler.data['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # solver has to be connected
-        if 'CONNECTION' not in self.app.workerAstrometry.astrometryHandler.data:
+        if 'CONNECTION' not in self.app.workerAstrometry.data:
             return
-        if self.app.workerAstrometry.astrometryHandler.data['CONNECTION']['CONNECT'] == 'Off':
+        if self.app.workerAstrometry.data['CONNECTION']['CONNECT'] == 'Off':
             return
         # telescope has to be connected
         if not self.app.workerMountDispatcher.mountStatus['Command']:
