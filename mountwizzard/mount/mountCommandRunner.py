@@ -109,7 +109,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 else:
                     self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
             if not self.connected and self.socket.state() == 0:
+                self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+                self.app.sharedMountDataLock.unlock()
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != 3:
@@ -132,13 +134,17 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def handleHostFound(self):
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.debug('Mount RunnerCommand found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
         self.signalConnected.emit({'Command': True})
+        self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerCommand connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
+        self.app.sharedMountDataLock.unlock()
 
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerCommand connection fault: {0}'.format(self.socket.errorString()))
