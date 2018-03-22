@@ -41,9 +41,9 @@ class Transform:
         self.app.signalJulianDate.connect(self.setJulianDate)
 
     def setSiteData(self, lat, lon, height):
-        self.siteLat = lat
-        self.siteLon = lon
-        self.siteHeight = height
+        self.siteLat = self.degStringToDecimal(lat)
+        self.siteLon = self.degStringToDecimal(lon)
+        self.siteHeight = float(height)
 
     def setJulianDate(self, jd):
         self.julianDate = jd

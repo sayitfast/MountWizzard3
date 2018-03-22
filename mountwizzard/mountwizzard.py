@@ -60,7 +60,7 @@ class MountWizzardApp(widget.MwWidget):
     signalAudio = PyQt5.QtCore.pyqtSignal(str)
 
     # general signals
-    signalMountSiteData = PyQt5.QtCore.pyqtSignal([float, float, float])
+    signalMountSiteData = PyQt5.QtCore.pyqtSignal([str, str, str])
     signalJulianDate = PyQt5.QtCore.pyqtSignal(float)
     signalSetAnalyseFilename = PyQt5.QtCore.pyqtSignal(str)
 
