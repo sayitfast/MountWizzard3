@@ -141,7 +141,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.settingsChanged = (self.data['ServerIP'] != value)
 
     def enableDisableINDI(self):
-        print(self.app.ui.checkEnableINDI.isChecked())
         if self.app.ui.checkEnableINDI.isChecked():
             self.mutexIPChange.lock()
             valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
