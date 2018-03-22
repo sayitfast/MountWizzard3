@@ -170,13 +170,14 @@ class Dome(PyQt5.QtCore.QObject):
                         self.signalDomeConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
 
     def stop(self):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
+        self.stopAscom()
+        if platform.system() == 'Windows':
+            pythoncom.CoUninitialize()
         self.stopAscom()
         self.thread.quit()
         self.thread.wait()

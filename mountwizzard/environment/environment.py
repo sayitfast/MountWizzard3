@@ -148,16 +148,14 @@ class Environment(PyQt5.QtCore.QObject):
                         self.signalEnvironmentConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
 
     def stop(self):
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
         self.stopAscom()
+        if platform.system() == 'Windows':
+            pythoncom.CoUninitialize()
         self.thread.quit()
         self.thread.wait()
 
