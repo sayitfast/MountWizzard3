@@ -292,13 +292,12 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
         self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
         self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
-        # setting lambda make the signal / slot a dedicated call. So if you press cancel without lambda, the thread affinity is to modeling,
-        # because the signal is passed to the event queue of modeling and handled there. If you press cancel with lambda, the thread
-        # affinity is in main, because you don't transfer it to the other event queue, but you leave it to gui event queue.
-        self.ui.btn_cancelFullModel.clicked.connect(self.workerModelingDispatcher.cancelFullModel)
-        self.ui.btn_cancelInitialModel.clicked.connect(self.workerModelingDispatcher.cancelInitialModel)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(lambda: self.workerModelingDispatcher.cancelAnalyseModeling())
-        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(lambda: self.workerMountDispatcher.cancelRunTargetRMSFunction())
+
+        self.ui.btn_cancelFullModel.clicked.connect(self.cancelFullModel)
+        self.ui.btn_cancelInitialModel.clicked.connect(self.cancelInitialModel)
+        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModeling)
+        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.cancelRunTargetRMSFunction)
+
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
@@ -880,6 +879,37 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put(':Sz{0:03d}*00#'.format(int(self.ui.le_azParkPos6.text())))                                     # set az
         self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos6.text())))                                   # set alt
         self.mountCommandQueue.put(':MA#')                                                                                         # start Slewing
+
+    def cancelFullModel(self):
+        if self.workerModelingDispatcher.modelingRunner.modelRun:
+            self.ui.btn_cancelFullModel.setProperty('cancel', True)
+            self.ui.btn_cancelFullModel.style().unpolish(self.ui.btn_cancelFullModel)
+            self.ui.btn_cancelFullModel.style().polish(self.ui.btn_cancelFullModel)
+            self.logger.info('User canceled modeling')
+            self.modelingRunner.cancel = True
+
+    def cancelInitialModel(self):
+        if self.workerModelingDispatcher.modelingRunner.modelRun:
+            self.ui.btn_cancelInitialModel.setProperty('cancel', True)
+            self.ui.btn_cancelInitialModel.style().unpolish(self.ui.btn_cancelInitialModel)
+            self.ui.btn_cancelInitialModel.style().polish(self.ui.btn_cancelInitialModel)
+            self.logger.info('User canceled modeling')
+            self.modelingRunner.cancel = True
+
+    def cancelAnalyseModeling(self):
+        if self.workerModelingDispatcher.modelingRunner.modelRun:
+            self.ui.btn_cancelAnalyseModel.setProperty('cancel', True)
+            self.ui.btn_cancelAnalyseModel.style().unpolish(self.ui.btn_cancelAnalyseModel)
+            self.ui.btn_cancelAnalyseModel.style().polish(self.ui.btn_cancelAnalyseModel)
+            self.logger.info('User canceled analyse modeling')
+            self.modelingRunner.cancel = True
+
+    def cancelRunTargetRMSFunction(self):
+        if self.workerMountDispatcher.runTargetRMS:
+            self.ui.btn_cancelRunTargetRMSAlignment.setProperty('cancel', True)
+            self.ui.btn_cancelRunTargetRMSAlignment.style().unpolish(self.ui.btn_cancelRunTargetRMSAlignment)
+            self.ui.btn_cancelRunTargetRMSAlignment.style().polish(self.ui.btn_cancelRunTargetRMSAlignment)
+            self.cancelRunTargetRMS = True
 
     def setEnvironmentStatus(self, status):
         if status == 0:

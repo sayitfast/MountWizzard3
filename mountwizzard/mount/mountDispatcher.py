@@ -593,13 +593,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         while self.data['ModelLoading']:
             time.sleep(0.2)
 
-    def cancelRunTargetRMSFunction(self):
-        if self.runTargetRMS:
-            self.app.ui.btn_cancelRunTargetRMSAlignment.setProperty('cancel', True)
-            self.app.ui.btn_cancelRunTargetRMSAlignment.style().unpolish(self.app.ui.btn_cancelRunTargetRMSAlignment)
-            self.app.ui.btn_cancelRunTargetRMSAlignment.style().polish(self.app.ui.btn_cancelRunTargetRMSAlignment)
-            self.cancelRunTargetRMS = True
-
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
         if self.data['Number'] < 4:
