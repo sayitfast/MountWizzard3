@@ -61,6 +61,7 @@ class MountWizzardApp(widget.MwWidget):
 
     # general signals
     signalMountSiteData = PyQt5.QtCore.pyqtSignal([float, float, float])
+    signalJulianDate = PyQt5.QtCore.pyqtSignal(float)
 
     def __init__(self):
         super().__init__()

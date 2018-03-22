@@ -35,13 +35,18 @@ class Transform:
         self.siteLat = 0
         self.siteLon = 0
         self.siteHeight = 0
+        self.julianDate = 2458096.5
         # connect data transfer
         self.app.signalMountSiteData.connect(self.setSiteData)
+        self.app.signalJulianDate.connect(self.setJulianDate)
 
     def setSiteData(self, lat, lon, height):
         self.siteLat = lat
         self.siteLon = lon
         self.siteHeight = height
+
+    def setJulianDate(self, jd):
+        self.julianDate = jd
 
     def topocentricToAzAlt(self, ra, dec):
         self.mutexTopocentric.lock()
@@ -115,9 +120,8 @@ class Transform:
         ts = datetime.datetime.utcnow()
         dut1_prev = self.ERFA.dat(ts.year, ts.month, ts.day, 0)
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
-        jd = float(self.app.workerMountDispatcher.data['JulianDate'])
         # suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
-        tai1, tai2 = self.ERFA.utctai(jd, 0)
+        tai1, tai2 = self.ERFA.utctai(self.julianDate, 0)
         # tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
         tt1, tt2 = self.ERFA.taitt(tai1, tai2)
         jdtt = tt1 + tt2
