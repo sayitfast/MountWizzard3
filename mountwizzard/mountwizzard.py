@@ -63,6 +63,11 @@ class MountWizzardApp(widget.MwWidget):
     signalMountSiteData = PyQt5.QtCore.pyqtSignal([float, float, float])
     signalJulianDate = PyQt5.QtCore.pyqtSignal(float)
 
+    # Locks for accessing shared  data
+    sharedAstrometryDataLock = PyQt5.QtCore.QReadWriteLock()
+    sharedImagingDataLock = PyQt5.QtCore.QReadWriteLock()
+    sharedMountDataLock = PyQt5.QtCore.QReadWriteLock()
+
     def __init__(self):
         super().__init__()
         self.config = {}

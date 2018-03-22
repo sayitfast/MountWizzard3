@@ -36,17 +36,19 @@ from astrometry import transform
 
 class MountDispatcher(PyQt5.QtCore.QThread):
     logger = logging.getLogger(__name__)
+
+    # needed signals for mount connections
     signalMountConnectedOnce = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedSlow = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedMedium = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedFast = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
+
+    # signals for data transfer to other threads
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
-
-    CYCLE_AUTO_UPDATE = 3000
 
     statusReference = {
         '0': 'Tracking',
