@@ -128,9 +128,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             self.app.sharedMountDataLock.unlock()
         if self.app.ui.checkAutoRefractionCamera.isChecked():
             # the same is good if the camera is not in integrating
-            if 'Imaging' in self.app.workerImaging.cameraHandler.data:
-                if not self.app.workerImaging.cameraHandler.data['Imaging']:
-                    doRefractionUpdate = True
+            # todo here we need a better signal if camera is integrating not finished
+            doRefractionUpdate = False
         if doRefractionUpdate:
             self.app.sharedEnvironmentDataLock.lockForRead()
             if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
