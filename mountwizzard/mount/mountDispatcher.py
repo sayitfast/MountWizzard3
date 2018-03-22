@@ -412,11 +412,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+        self.app.sharedMountDataLock.lockForRead()
         self.settingsChanged = (self.data['MountIP'] != value)
+        self.app.sharedMountDataLock.unlock()
 
     def setMAC(self):
         valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
+        self.app.sharedMountDataLock.lockForRead()
         self.settingsChanged = (self.data['MountMAC'] != value)
+        self.app.sharedMountDataLock.unlock()
 
     def run(self):
         self.mutexIsRunning.lock()
@@ -545,12 +549,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         commandSet = {'command': ':newalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         for i in range(0, len(data['Index'])):
+            self.app.sharedMountDataLock.lockForRead()
             command = ':newalpt{0},{1},{2},{3},{4},{5}#'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
                                                                 self.transform.decimalToDegree(data['DecJNow'][i], True, False),
                                                                 data['Pierside'][i],
                                                                 self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
                                                                 self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
                                                                 self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
+            self.app.sharedMountDataLock.unlock()
             commandSet = {'command': command, 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
@@ -574,11 +580,17 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.runTargetRMS = True
         self.cancelRunTargetRMS = False
         self.app.messageQueue.put('#BWTarget RMS Run started\n')
-        if 'Number' not in self.data:
+        self.app.sharedMountDataLock.lockForRead()
+        condition = ('Number' not in self.data or self.data['Number'] < 4)
+        self.app.sharedMountDataLock.unlock()
+        if condition:
             return
-        if self.data['Number'] < 4:
-            return
-        while self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelRunTargetRMS:
+        while True:
+            self.app.sharedMountDataLock.lockForRead()
+            condition = self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelRunTargetRMS
+            self.app.sharedMountDataLock.unlock()
+            if condition:
+                break
             if self.deleteWorstPoint():
                 break
         if self.cancelRunTargetRMS:
@@ -590,11 +602,15 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def reloadAlignmentModel(self):
         self.workerMountGetAlignmentModel.getAlignmentModel()
         # wait form alignment model to be downloaded
-        while self.data['ModelLoading']:
+        while True:
+            self.app.sharedMountDataLock.lockForRead()
+            condition = self.data['ModelLoading']
+            self.app.sharedMountDataLock.unlock()
             time.sleep(0.2)
 
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
+        self.app.sharedMountDataLock.lockForRead()
         if self.data['Number'] < 4:
             return True
         # find worst point
@@ -608,7 +624,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                                                                                                                         self.data['ModelAzimuth'][worstPointIndex],
                                                                                                                         self.data['ModelAltitude'][worstPointIndex],
                                                                                                                         maxError))
-
+        self.app.sharedMountDataLock.unlock()
         commandSet = {'command': ':delalst{0:d}#'.format(worstPointIndex + 1), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
@@ -624,11 +640,16 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
         self.workerMountGetAlignmentModel.getAlignmentModel()
         # wait form alignment model to be downloaded
-        while self.data['ModelLoading']:
+        while True:
+            self.app.sharedMountDataLock.lockForRead()
+            condition = self.data['ModelLoading']
+            self.app.sharedMountDataLock.unlock()
             time.sleep(0.2)
         return False
 
     def retrofitMountData(self, modelingData):
+        self.app.sharedMountDataLock.lockForRead()
+        self.app.sharedModelingDataLock.lockForWrite()
         if len(self.data['ModelError']) == len(modelingData['Index']):
             modelingData['ModelErrorOptimized'] = list()
             modelingData['RaErrorOptimized'] = list()
@@ -642,4 +663,5 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('Size mount modeling {0} and modeling data {1} do not fit !'.format(len(modelingData), len(self.data['ModelError'])))
             self.app.messageQueue.put('Mount Model and Model Data could not be synced\n')
             self.app.messageQueue.put('Error data sync mismatch!\n')
-        return
+        self.app.sharedMountDataLock.unlock()
+        self.app.sharedModelingDataLock.unlock()
