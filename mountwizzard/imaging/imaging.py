@@ -207,6 +207,7 @@ class Imaging(PyQt5.QtCore.QObject):
     def getStatus(self):
         self.cameraHandler.getStatus()
         # get status to gui
+        # todo: move it to main thread
         if not self.cameraHandler.application['Available']:
             self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
         elif self.cameraHandler.application['Status'] == 'ERROR':
@@ -216,7 +217,6 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
             else:
                 self.app.ui.btn_cameraConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
-
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
 

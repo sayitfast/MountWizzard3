@@ -28,8 +28,6 @@ from modeling import modelingRunner
 class ModelingDispatcher(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    signalStatusCamera = PyQt5.QtCore.pyqtSignal(int)
-    signalStatusSolver = PyQt5.QtCore.pyqtSignal(int)
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
 
     CYCLESTATUS = 5000
@@ -306,11 +304,10 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner.storeConfig()
 
     def run(self):
+        self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
-        # TODO: it's not Model Connected, but imaging app connected
-        self.signalStatusCamera.emit(0)
-        self.signalStatusSolver.emit(0)
+        self.mutexIsRunning.unlock()
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         while self.isRunning:
             if not self.commandDispatcherQueue.empty():
