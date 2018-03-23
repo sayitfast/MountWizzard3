@@ -101,7 +101,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         # setting changes in gui on false, because the set of the config changed them already
         self.settingsChanged = True
         self.changedINDIClientConnectionSettings()
-        self.status.emit(0)
 
     def storeConfig(self):
         self.app.config['INDIServerPort'] = self.app.ui.le_INDIServerPort.text()
@@ -146,19 +145,9 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():
-            self.mutexIPChange.lock()
-            valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-            if valid:
-                self.app.sharedMountDataLock.lockForWrite()
-                self.data['ServerIP'] = value
-                self.app.sharedMountDataLock.unlock()
-            valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-            if valid:
-                self.app.sharedMountDataLock.lockForWrite()
-                self.data['ServerPort'] = value
-                self.app.sharedMountDataLock.unlock()
+            self.settingsChanged = True
+            self.changedINDIClientConnectionSettings()
             self.app.threadINDI.start()
-            self.mutexIPChange.unlock()
         else:
             if self.isRunning:
                 self.stop()

@@ -214,11 +214,12 @@ class MountWizzardApp(widget.MwWidget):
         self.messageWindow = messageWindow.MessageWindow(self)
         # loading config data - will be config.cfg
         self.loadConfigData()
+        # map all the button to functions for gui
+        self.mappingFunctions()
         # init config starts necessary threads
         self.initConfig()
         self.setLoggingLevel()
-        # map all the button to functions for gui
-        self.mappingFunctions()
+        # get ascom state
         self.checkASCOM()
         # starting loop for cyclic data to gui from threads
         self.mainLoop()
