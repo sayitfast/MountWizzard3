@@ -599,9 +599,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # wait form alignment model to be downloaded
         while True:
             self.app.sharedMountDataLock.lockForRead()
-            condition = self.data['ModelLoading']
+            condition = not self.data['ModelLoading']
             self.app.sharedMountDataLock.unlock()
+            if condition:
+                break
             time.sleep(0.2)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
@@ -615,10 +618,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]
-        self.app.messageQueue.put('Deleting Point {0:02d}  -> Az: {1:05.1f}  Alt: {2:04.1f}  Err: {3:05.1f} ...\n'.format(worstPointIndex + 1,
-                                                                                                                        self.data['ModelAzimuth'][worstPointIndex],
-                                                                                                                        self.data['ModelAltitude'][worstPointIndex],
-                                                                                                                        maxError))
+        self.app.messageQueue.put('Deleting Point {0:02d}  -> Az: {1:05.1f}  Alt: {2:04.1f}  Err: {3:05.1f} ...\n'
+                                  .format(worstPointIndex + 1,
+                                          self.data['ModelAzimuth'][worstPointIndex],
+                                          self.data['ModelAltitude'][worstPointIndex],
+                                          maxError))
         self.app.sharedMountDataLock.unlock()
         commandSet = {'command': ':delalst{0:d}#'.format(worstPointIndex + 1), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
@@ -637,10 +641,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # wait form alignment model to be downloaded
         while True:
             self.app.sharedMountDataLock.lockForRead()
-            condition = self.data['ModelLoading']
+            condition = not self.data['ModelLoading']
             self.app.sharedMountDataLock.unlock()
+            if condition:
+                break
             time.sleep(0.2)
-        return False
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def retrofitMountData(self, modelingData):
         self.app.sharedMountDataLock.lockForRead()
