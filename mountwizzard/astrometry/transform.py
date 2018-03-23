@@ -120,12 +120,12 @@ class Transform:
         ts = datetime.datetime.utcnow()
         dut1_prev = self.ERFA.dat(ts.year, ts.month, ts.day, 0)
         dut1 = 37 + 4023.0 / 125.0 - dut1_prev
-        # suc, tai1, tai2 = self.ERFA.eraUtctai(jd, 0)
+        # suc, tai1, tai2 = self.ERFA.eraUtctai(self.julianDate, 0)
         tai1, tai2 = self.ERFA.utctai(self.julianDate, 0)
         # tt1, tt2 = self.ERFA.eraTaitt(tai1, tai2)
         tt1, tt2 = self.ERFA.taitt(tai1, tai2)
         jdtt = tt1 + tt2
-        date1 = jd
+        date1 = self.julianDate
         date2 = 0
 
         if transform == 1:  # J2000 to Topo Az /Alt
