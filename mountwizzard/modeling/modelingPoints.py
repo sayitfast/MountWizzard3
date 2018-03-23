@@ -337,7 +337,7 @@ class ModelPoints:
                 step = 10
             else:
                 step = 30
-            for ha in range(-65, 60, step):
+            for ha in range(-95, 90, step):
                 az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
@@ -360,7 +360,7 @@ class ModelPoints:
                 step = 10
             else:
                 step = 20
-            for ha in range(-65, 60, step):
+            for ha in range(-95, 90, step):
                 az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
@@ -383,7 +383,7 @@ class ModelPoints:
                 step = 15
             else:
                 step = 30
-            for ha in range(-65, 60, step):
+            for ha in range(-95, 90, step):
                 az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                 if alt > 0:
                     if az > 180:
