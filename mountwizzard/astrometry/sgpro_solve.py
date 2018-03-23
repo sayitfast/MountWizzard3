@@ -66,7 +66,6 @@ class SGPro:
                 self.logger.info('Application SGPro not found on computer')
 
     def getStatus(self):
-        # todo: SGPro does not report the status of the solver right. Even if not set in SGPro I get positive feedback and IDLE
         suc, state, message = self.SgGetDeviceStatus('PlateSolver')
         if suc:
             self.application['Status'] = 'OK'

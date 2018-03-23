@@ -119,6 +119,15 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
 
     def getStatusMedium(self):
         doRefractionUpdate = False
+        pressure = 950
+        temperature = 10
+        if self.app.ui.checkAutoRefractionContinous.isChecked():
+            doRefractionUpdate = True
+            self.app.sharedEnvironmentDataLock.lockForRead()
+            if 'MovingAverageTemperature' in self.app.workerEnvironment.data and 'MovingAveragePressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
+                pressure = self.app.workerEnvironment.data['MovingAveragePressure']
+                temperature = self.app.workerEnvironment.data['MovingAverageTemperature']
+            self.app.sharedEnvironmentDataLock.unlock()
         if self.app.ui.checkAutoRefractionNotTracking.isChecked():
             # if there is no tracking, than updating is good
             self.app.sharedMountDataLock.lockForRead()
@@ -126,22 +135,18 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 if self.data['Status'] != '0':
                     doRefractionUpdate = True
             self.app.sharedMountDataLock.unlock()
-        if self.app.ui.checkAutoRefractionCamera.isChecked():
-            # the same is good if the camera is not in integrating
-            # todo here we need a better signal if camera is integrating not finished
-            doRefractionUpdate = False
-        if doRefractionUpdate:
             self.app.sharedEnvironmentDataLock.lockForRead()
             if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
                 pressure = self.app.workerEnvironment.data['Pressure']
                 temperature = self.app.workerEnvironment.data['Temperature']
-                if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
-                    self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
-                    if temperature > 0:
-                        self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
-                    else:
-                        self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
             self.app.sharedEnvironmentDataLock.unlock()
+        if doRefractionUpdate:
+            if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
+                self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
+                if temperature > 0:
+                    self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
+                else:
+                    self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
         self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
 
     def handleReadyRead(self):

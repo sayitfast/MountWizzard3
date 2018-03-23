@@ -43,6 +43,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.data = {
             'Connected': False
         }
+        self.movingAverageTemperature = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.movingAveragePressure = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.ascom = None
         self.ascomChooser = None
         self.ascomDriverName = ''
@@ -173,13 +175,22 @@ class Environment(PyQt5.QtCore.QObject):
             elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
                 if self.app.workerINDI.data['Connected']:
                     self.getINDIData()
+            # calculating moving average of temp and pressure for refraction
+            self.movingAverageTemperature.append(self.data['Temperature'])
+            self.movingAverageTemperature.pop(0)
+            self.movingAveragePressure.append(self.data['Pressure'])
+            self.movingAveragePressure.pop(0)
+            self.data['MovingAverageTemperature'] = sum(self.movingAverageTemperature) / len(self.movingAverageTemperature)
+            self.data['MovingAveragePressure'] = sum(self.movingAveragePressure) / len(self.movingAveragePressure)
         else:
             self.data = {
                 'Connected': False,
                 'DewPoint': 0.0,
                 'Temperature': 0.0,
+                'MovingAverageTemperature': 0.0,
                 'Humidity': 0,
                 'Pressure': 0,
+                'MovingAveragePressure': 0,
                 'CloudCover': 0,
                 'RainRate': 0,
                 'WindSpeed': 0,

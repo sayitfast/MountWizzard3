@@ -356,8 +356,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.app.ui.le_mountIP.setText(self.app.config['MountIP'])
             if 'MountMAC' in self.app.config:
                 self.app.ui.le_mountMAC.setText(self.app.config['MountMAC'])
-            if 'CheckAutoRefractionCamera' in self.app.config:
-                self.app.ui.checkAutoRefractionCamera.setChecked(self.app.config['CheckAutoRefractionCamera'])
+            if 'CheckAutoRefractionContinous' in self.app.config:
+                self.app.ui.checkAutoRefractionContinous.setChecked(self.app.config['CheckAutoRefractionContinous'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
                 self.app.ui.checkAutoRefractionNotTracking.setChecked(self.app.config['CheckAutoRefractionNotTracking'])
         except Exception as e:
@@ -371,7 +371,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     def storeConfig(self):
         self.app.config['MountIP'] = self.app.ui.le_mountIP.text()
         self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
-        self.app.config['CheckAutoRefractionCamera'] = self.app.ui.checkAutoRefractionCamera.isChecked()
+        self.app.config['CheckAutoRefractionContinous'] = self.app.ui.checkAutoRefractionContinous.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
 
     def changedMountConnectionSettings(self):
