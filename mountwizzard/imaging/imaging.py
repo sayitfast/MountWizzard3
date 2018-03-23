@@ -207,7 +207,6 @@ class Imaging(PyQt5.QtCore.QObject):
     def getStatus(self):
         self.cameraHandler.getStatus()
         # get status to gui
-        # todo: move it to main thread
         if not self.cameraHandler.application['Available']:
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'gray')
         elif self.cameraHandler.application['Status'] == 'ERROR':

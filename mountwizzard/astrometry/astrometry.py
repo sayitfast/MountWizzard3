@@ -182,7 +182,6 @@ class Astrometry(PyQt5.QtCore.QObject):
     def getStatus(self):
         self.astrometryHandler.getStatus()
         # get status to gui
-        # todo: move it to main thread
         if not self.astrometryHandler.application['Available']:
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'gray')
         elif self.astrometryHandler.application['Status'] == 'ERROR':
