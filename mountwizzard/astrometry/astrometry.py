@@ -184,14 +184,14 @@ class Astrometry(PyQt5.QtCore.QObject):
         # get status to gui
         # todo: move it to main thread
         if not self.astrometryHandler.application['Available']:
-            self.app.ui.btn_astrometryConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+            self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'gray')
         elif self.astrometryHandler.application['Status'] == 'ERROR':
-            self.app.ui.btn_astrometryConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
+            self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
         elif self.astrometryHandler.application['Status'] == 'OK':
             if self.data['CONNECTION']['CONNECT'] == 'Off':
-                self.app.ui.btn_astrometryConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+                self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'yellow')
             else:
-                self.app.ui.btn_astrometryConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
+                self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
 

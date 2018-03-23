@@ -246,21 +246,13 @@ class MountWizzardApp(widget.MwWidget):
 
     def setDomeStatus(self, status):
         if status == 0:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'gray')
         elif status == 1:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: red;color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'red')
         elif status == 2:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: yellow;color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'yellow')
         elif status == 3:
-            self.ui.btn_domeConnected.setStyleSheet('QPushButton {background-color: green;color: black;}')
-
-    def workerModelingDispatcherStop(self):
-        self.threadModelingDispatcher.quit()
-        self.threadModelingDispatcher.wait()
-
-    def workerMountDispatcherStop(self):
-        self.threadMountDispatcher.quit()
-        self.threadMountDispatcher.wait()
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'green')
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -893,7 +885,7 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_cancelFullModel.style().unpolish(self.ui.btn_cancelFullModel)
             self.ui.btn_cancelFullModel.style().polish(self.ui.btn_cancelFullModel)
             self.logger.info('User canceled modeling')
-            self.modelingRunner.cancel = True
+            self.workerModelingDispatcher.modelingRunner.cancel = True
 
     def cancelInitialModel(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
@@ -901,7 +893,7 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_cancelInitialModel.style().unpolish(self.ui.btn_cancelInitialModel)
             self.ui.btn_cancelInitialModel.style().polish(self.ui.btn_cancelInitialModel)
             self.logger.info('User canceled modeling')
-            self.modelingRunner.cancel = True
+            self.workerMountDispatcher.modelingRunner.cancel = True
 
     def cancelAnalyseModeling(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
@@ -909,32 +901,33 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_cancelAnalyseModel.style().unpolish(self.ui.btn_cancelAnalyseModel)
             self.ui.btn_cancelAnalyseModel.style().polish(self.ui.btn_cancelAnalyseModel)
             self.logger.info('User canceled analyse modeling')
-            self.modelingRunner.cancel = True
+            self.workerModelingDispatcher.modelingRunner.cancel = True
 
     def cancelRunTargetRMSFunction(self):
         if self.workerMountDispatcher.runTargetRMS:
             self.ui.btn_cancelRunTargetRMSAlignment.setProperty('cancel', True)
             self.ui.btn_cancelRunTargetRMSAlignment.style().unpolish(self.ui.btn_cancelRunTargetRMSAlignment)
             self.ui.btn_cancelRunTargetRMSAlignment.style().polish(self.ui.btn_cancelRunTargetRMSAlignment)
-            self.cancelRunTargetRMS = True
+            self.workerMountDispatcher.cancelRunTargetRMS = True
 
     def setAnalyseFilename(self, filename):
         self.app.ui.le_analyseFileName.setText(filename)
 
-    def changeStylesheet(self, ui, item, value):
+    @staticmethod
+    def changeStylesheet(ui, item, value):
         ui.setProperty(item, value)
         ui.style().unpolish(ui)
         ui.style().polish(ui)
 
     def setEnvironmentStatus(self, status):
         if status == 0:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_environmentConnected, 'color', 'gray')
         elif status == 1:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_environmentConnected, 'color', 'red')
         elif status == 2:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_environmentConnected, 'color', 'yellow')
         elif status == 3:
-            self.ui.btn_environmentConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_environmentConnected, 'color', 'green')
 
     def fillEnvironmentData(self):
         for valueName in self.workerEnvironment.data:
@@ -960,23 +953,23 @@ class MountWizzardApp(widget.MwWidget):
     def setINDIStatus(self, status):
         if status == 0:
             self.ui.le_INDIStatus.setText('UnconnectedState')
-            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'red')
         elif status == 1:
             self.ui.le_INDIStatus.setText('HostLookupState')
-            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
         elif status == 2:
             self.ui.le_INDIStatus.setText('ConnectingState')
-            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
         elif status == 3:
             self.ui.le_INDIStatus.setText('ConnectedState')
-            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: green; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'green')
         elif status == 6:
             self.ui.le_INDIStatus.setText('ClosingState')
-            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
         else:
             self.ui.le_INDIStatus.setText('Error')
         if not self.ui.checkEnableINDI.isChecked():
-            self.ui.btn_INDIConnected.setStyleSheet('QPushButton {background-color: gray;color: black;}')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'gray')
 
     def fillINDIData(self, data):
         if data['Name'] == 'CCD':
@@ -1266,15 +1259,6 @@ if __name__ == "__main__":
         logging.error('-----------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
-    # config basic behaviour of gui abstraction
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_Use96Dpi)
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps)
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontCreateNativeWidgetSiblings)
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_DontUseNativeDialogs)
-
-    # PyQt5.QtWidgets.QApplication.setAttribute(Qt.AA_UseSoftwareOpenGL)
     # app = PyQt5.QtWidgets.QApplication(sys.argv)
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)

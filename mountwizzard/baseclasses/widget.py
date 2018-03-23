@@ -266,6 +266,22 @@ class MwWidget(QWidget):
         border-style: outset;
         border-radius: 2px;
     }
+    QPushButton[color='gray'] {
+        background-color: gray;
+        color: #000000;
+    }
+    QPushButton[color='red'] {
+        background-color: red;
+        color: #000000;
+    }
+    QPushButton[color='yellow'] {
+        background-color: yellow;
+        color: #000000;
+    }
+    QPushButton[color='green'] {
+        background-color: green;
+        color: #000000;
+    }
     QPushButton[running='true'] {
         background-color: rgb(32, 144, 192);
         color: #000000;

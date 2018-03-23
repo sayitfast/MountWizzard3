@@ -77,7 +77,6 @@ class SGPro:
             else:
                 self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
         else:
-            self.main.cameraStatusText.emit('Not OK')
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
