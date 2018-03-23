@@ -180,9 +180,12 @@ class Environment(PyQt5.QtCore.QObject):
             self.movingAverageTemperature.pop(0)
             self.movingAveragePressure.append(self.data['Pressure'])
             self.movingAveragePressure.pop(0)
+            self.app.sharedEnvironmentDataLock.lockForWrite()
             self.data['MovingAverageTemperature'] = sum(self.movingAverageTemperature) / len(self.movingAverageTemperature)
             self.data['MovingAveragePressure'] = sum(self.movingAveragePressure) / len(self.movingAveragePressure)
+            self.app.sharedEnvironmentDataLock.unlock()
         else:
+            self.app.sharedEnvironmentDataLock.lockForWrite()
             self.data = {
                 'Connected': False,
                 'DewPoint': 0.0,
@@ -197,6 +200,7 @@ class Environment(PyQt5.QtCore.QObject):
                 'WindDirection': 0,
                 'SQR': 0
             }
+            self.app.sharedEnvironmentDataLock.unlock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
@@ -206,13 +210,16 @@ class Environment(PyQt5.QtCore.QObject):
             # and device is connected
             if self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
+                self.app.sharedEnvironmentDataLock.lockForWrite()
                 self.data['DewPoint'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_DEWPOINT'])
                 self.data['Temperature'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_TEMPERATURE'])
                 self.data['Humidity'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_HUMIDITY'])
                 self.data['Pressure'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['WEATHER_PARAMETERS']['WEATHER_BAROMETER'])
+                self.app.sharedEnvironmentDataLock.unlock()
 
     # noinspection PyBroadException
     def getAscomData(self):
+        self.app.sharedEnvironmentDataLock.lockForWrite()
         try:
             self.data['DewPoint'] = self.ascom.DewPoint
         finally:
@@ -249,6 +256,7 @@ class Environment(PyQt5.QtCore.QObject):
             self.data['WindDirection'] = self.ascom.WindDirection
         finally:
             pass
+        self.app.sharedEnvironmentDataLock.unlock()
 
     def setupDriver(self):
         try:

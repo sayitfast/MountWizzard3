@@ -196,14 +196,18 @@ class Dome(PyQt5.QtCore.QObject):
             elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
                 self.getINDIData()
         else:
+            self.app.sharedDomeDataLock.lockForWrite()
             self.data = {
                 'Connected': False,
                 'Slewing': False,
                 'Azimuth': 0.0,
                 'Altitude': 0.0,
             }
+            self.app.sharedDomeDataLock.unlock()
+        self.app.sharedDomeDataLock.lockForRead()
         if 'Azimuth' in self.data:
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
+        self.app.sharedDomeDataLock.unlock()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
 
@@ -213,6 +217,7 @@ class Dome(PyQt5.QtCore.QObject):
             # and device is connected
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data
+                self.app.sharedDomeDataLock.lockForWrite()
                 self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
                 if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['DOME_MOTION']['state'] == 'Busy':
                     self.data['Slewing'] = True
@@ -221,30 +226,27 @@ class Dome(PyQt5.QtCore.QObject):
                         self.signalSlewFinished.emit()
                         self.app.signalAudio.emit('DomeSlew')
                     self.data['Slewing'] = False
+                self.app.sharedDomeDataLock.unlock()
 
     # noinspection PyBroadException
     def getAscomData(self):
+        self.app.sharedDomeDataLock.lockForWrite()
         try:
             if self.data['Slewing'] and not self.ascom.Slewing:
                 self.signalSlewFinished.emit()
                 self.app.signalAudio.emit('DomeSlew')
             self.data['Slewing'] = self.ascom.Slewing
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['Azimuth'] = self.ascom.Azimuth
-        except Exception:
-            pass
         finally:
             pass
         try:
             self.data['Altitude'] = self.ascom.Altitude
-        except Exception:
-            pass
         finally:
             pass
+        self.app.sharedDomeDataLock.unlock()
 
     def setupDriver(self):
         try:
