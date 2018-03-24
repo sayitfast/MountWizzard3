@@ -344,4 +344,3 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                 if 'Cancel' in work:
                     self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
                     self.modelingRunner.cancel = False
-                PyQt5.QtWidgets.QApplication.processEvents()

@@ -295,7 +295,6 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                     work['Button'].setProperty('running', True)
                     work['Button'].style().unpolish(work['Button'])
                     work['Button'].style().polish(work['Button'])
-                PyQt5.QtWidgets.QApplication.processEvents()
                 if 'Parameter' in work:
                     parameter = []
                     for p in work['Parameter']:
@@ -309,7 +308,6 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
                     work['Button'].setProperty('running', False)
                     work['Button'].style().unpolish(work['Button'])
                     work['Button'].style().polish(work['Button'])
-                PyQt5.QtWidgets.QApplication.processEvents()
 
     def filterFileMPC(self, directory, filename, expression, start, end):
         numberEntry = 0

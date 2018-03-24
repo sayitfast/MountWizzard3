@@ -386,7 +386,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = self.socket.read(100000).decode()
             self.messageString += tmp
-            PyQt5.QtWidgets.QApplication.processEvents()
         # Add closing tag.
         self.messageString += "</data>"
         # Try and parse the message.
@@ -404,6 +403,5 @@ class INDIClient(PyQt5.QtCore.QObject):
         if self.socket.state() == QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.write(indiCommand.toXML() + b'\n')
             self.socket.flush()
-            PyQt5.QtWidgets.QApplication.processEvents()
         else:
             self.logger.warning('Socket not connected')

@@ -474,7 +474,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:
                     self.app.signalChangeStylesheet.emit(work['Cancel'], 'cancel', False)
-                PyQt5.QtWidgets.QApplication.processEvents()
 
     def mountShutdown(self):
         commandSet = {'command': ':shutdown#', 'reply': ''}
@@ -604,7 +603,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if condition:
                 break
             time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
@@ -646,7 +644,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if condition:
                 break
             time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
     def retrofitMountData(self, modelingData):
         self.app.sharedMountDataLock.lockForRead()

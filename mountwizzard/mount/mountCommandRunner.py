@@ -172,11 +172,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 if numberBytesToReceive > -1:
                     self.socket.write(bytes(command + '\r', encoding='ascii'))
                     self.socket.flush()
-                    PyQt5.QtWidgets.QApplication.processEvents()
                     counter = 0
                     while self.socket.bytesAvailable() < numberBytesToReceive:
                         time.sleep(0.1)
-                        PyQt5.QtWidgets.QApplication.processEvents()
                         counter += 1
                         if counter == 50:
                             break

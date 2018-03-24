@@ -125,7 +125,6 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             tmp = str(self.socket.read(4000), "ascii")
             self.messageString += tmp
-            PyQt5.QtWidgets.QApplication.processEvents()
             if len(self.messageString.strip('#').split('#')) != 8:
                 return
             else:
