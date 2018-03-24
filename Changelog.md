@@ -6,4 +6,11 @@
 - show upload for astrometry.net progress
 - get stored models from mount in list
 - make model from data
-- set loglevel from gui
+- sometimes start slewing while integrating
+- omit ProcessEvents()
+- Image Window: image calculations to separat thread (threadpool)
+- Analyse window: ylable positions if labels are extended
+- function clear message window
+- possible bug in cancle full model run
+- still some deleted c++ methode from python wrapper
+

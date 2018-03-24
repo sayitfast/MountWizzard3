@@ -307,10 +307,10 @@ class ImagesWindow(widget.MwWidget):
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         if imageParams['Solved']:
-            self.ui.le_RaJ2000.setText(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
-            self.ui.le_DecJ2000.setText(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+            self.app.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
+            self.app.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
             self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
                                                                                       self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
         else:
-            self.ui.le_RaJ2000.setText('not solved')
-            self.ui.le_DecJ2000.setText('not solved')
+            self.app.signalSetRaSolved.emit('not solved')
+            self.app.signalSetDecSolved.emit('not solved')
