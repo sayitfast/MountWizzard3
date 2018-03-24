@@ -171,9 +171,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             imageParams['ScaleHint'] = imageParams['ScaleHint'] = self.app.ui.pixelSize.value() * 206.6 / self.app.ui.focalLength.value()
         fitsHeader['PIXSCALE'] = str(imageParams['ScaleHint'])
         # if no telescope connected, we get no object data
-        if 'RaJ2000' not in imageParams:
-            return
-        if 'RaJ2000' in imageParams:
+        if 'OBJCTRA' in fitsHeader:
             imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
             imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
             fitsFileHandle.flush()
