@@ -36,6 +36,8 @@ class ImagesWindow(widget.MwWidget):
     logger = logging.getLogger(__name__)
     BASENAME = 'exposure-'
     signalShowFitsImage = PyQt5.QtCore.pyqtSignal(object)
+    signalSetRaSolved = PyQt5.QtCore.pyqtSignal(str)
+    signalSetDecSolved = PyQt5.QtCore.pyqtSignal(str)
 
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
@@ -84,6 +86,8 @@ class ImagesWindow(widget.MwWidget):
         self.ui.cross4.setVisible(False)
         # define the signals
         self.signalShowFitsImage.connect(self.showFitsImage)
+        self.signalSetRaSolved.connect(self.setRaSolved)
+        self.signalSetDecSolved.connect(self.setDecSolved)
 
     def initConfig(self):
         try:
@@ -121,6 +125,12 @@ class ImagesWindow(widget.MwWidget):
     def cancelAction(self):
         self.app.workerAstrometry.astrometryCancel.emit()
         self.app.workerImaging.imagingCancel.emit()
+
+    def setRaSolved(self, text):
+        self.ui.le_RaJ2000.setText(text)
+
+    def setDecSolved(self, text):
+        self.ui.le_DecJ2000.setText(text)
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
@@ -307,10 +317,10 @@ class ImagesWindow(widget.MwWidget):
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         if imageParams['Solved']:
-            self.app.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
-            self.app.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+            self.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
+            self.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
             self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
                                                                                       self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
         else:
-            self.app.signalSetRaSolved.emit('not solved')
-            self.app.signalSetDecSolved.emit('not solved')
+            self.signalSetRaSolved.emit('not solved')
+            self.signalSetDecSolved.emit('not solved')
