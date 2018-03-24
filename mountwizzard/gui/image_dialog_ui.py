@@ -209,7 +209,7 @@ class Ui_ImageDialog(object):
         self.le_DecJ2000.setReadOnly(True)
         self.le_DecJ2000.setObjectName("le_DecJ2000")
         self.btn_loadFits = QtWidgets.QPushButton(ImageDialog)
-        self.btn_loadFits.setEnabled(False)
+        self.btn_loadFits.setEnabled(True)
         self.btn_loadFits.setGeometry(QtCore.QRect(10, 70, 81, 26))
         self.btn_loadFits.setObjectName("btn_loadFits")
         self.label_85 = QtWidgets.QLabel(ImageDialog)

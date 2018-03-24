@@ -88,6 +88,7 @@ class ImagesWindow(widget.MwWidget):
         self.signalShowFitsImage.connect(self.showFitsImage)
         self.signalSetRaSolved.connect(self.setRaSolved)
         self.signalSetDecSolved.connect(self.setDecSolved)
+        self.ui.btn_loadFits.clicked.connect(self.loadFitsFileFrom)
 
     def initConfig(self):
         try:
@@ -132,6 +133,30 @@ class ImagesWindow(widget.MwWidget):
     def setDecSolved(self, text):
         self.ui.le_DecJ2000.setText(text)
 
+    def loadFitsFileFrom(self):
+        value = self.selectFile(self, 'Open FITS file', '/images', 'FITS files (*.fit)', '.fit', True)
+        if value != '':
+            self.signalShowFitsImage.emit(value + '.fit')
+        else:
+            self.logger.warning('No Fits file file selected')
+
+    def showFitsImage(self, filename):
+        # fits file ahs to be there
+        if not os.path.isfile(filename):
+            return
+        # image window has to be present
+        if not self.showStatus:
+            return
+        self.signalSetRaSolved.emit('')
+        self.signalSetDecSolved.emit('')
+        self.imagePath = filename
+        self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
+        hdulist = pyfits.open(filename)
+        self.image = hdulist[0].data
+        self.sizeY, self.sizeX = self.image.shape
+        self.setStrech()
+        self.setZoom()
+
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
             self.setColorCool()
@@ -160,7 +185,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechLow(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(25, 99.99)
+        interval = AsymmetricPercentileInterval(98, 99.995)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -170,7 +195,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechMid(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(25, 99.9)
+        interval = AsymmetricPercentileInterval(25, 99.995)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -180,7 +205,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechHigh(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(25, 99.5)
+        interval = AsymmetricPercentileInterval(1, 99.995)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -225,21 +250,6 @@ class ImagesWindow(widget.MwWidget):
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
             self.imageMatplotlib.draw()
-
-    def showFitsImage(self, filename):
-        # fits file ahs to be there
-        if not os.path.isfile(filename):
-            return
-        # image window has to be present
-        if not self.showStatus:
-            return
-        self.imagePath = filename
-        self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
-        hdulist = pyfits.open(filename)
-        self.image = hdulist[0].data
-        self.sizeY, self.sizeX = self.image.shape
-        self.setStrech()
-        self.setZoom()
 
     def disableExposures(self):
         self.ui.btn_expose.setEnabled(False)
@@ -300,6 +310,10 @@ class ImagesWindow(widget.MwWidget):
         imageParams['Imagepath'] = self.imagePath
         fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
         fitsHeader = fitsFileHandle[0].header
+        if 'OBJCTRA' not in fitsHeader:
+            fitsFileHandle.close()
+            self.app.messageQueue.put('No coordinate in FITS file')
+            return
         imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
         imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
         if 'FOCALLEN' in fitsHeader and 'XPIXSZ' in fitsHeader:

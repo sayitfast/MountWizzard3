@@ -2,7 +2,7 @@
 - check TSX
 - check MaximDL
 - show best polar alignment star (south, closed to eclipse)
-- show directions
+- show directions how to turn know for polar alignment
 - show upload for astrometry.net progress
 - get stored models from mount in list
 - make model from data
@@ -13,4 +13,3 @@
 - function clear message window
 - possible bug in cancle full model run
 - still some deleted c++ methode from python wrapper
-
