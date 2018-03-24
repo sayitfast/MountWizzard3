@@ -96,13 +96,11 @@ class Remote(PyQt5.QtCore.QObject):
             # waiting to tcp server to start otherwise no setup for remote
             while not self.tcpServer:
                 time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
         else:
             self.app.messageQueue.put('Remote Access disabled\n')
             if self.isRunning:
                 while not self.tcpServer.isListening():
                     time.sleep(0.2)
-                    PyQt5.QtWidgets.QApplication.processEvents()
                 self.stop()
 
     def run(self):
