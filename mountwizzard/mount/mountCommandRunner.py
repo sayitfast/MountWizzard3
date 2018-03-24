@@ -86,20 +86,18 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.commandSet = dict()
         self.sendLock = False
 
+    def run(self):
+        self.mutexIsRunning.lock()
+        if not self.isRunning:
+            self.isRunning = True
+        self.mutexIsRunning.unlock()
         self.socket = PyQt5.QtNetwork.QTcpSocket()
-        # signals
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
-
-    def run(self):
-        self.mutexIsRunning.lock()
-        if not self.isRunning:
-            self.isRunning = True
-        self.mutexIsRunning.unlock()
         while self.isRunning:
             while not self.app.mountCommandQueue.empty() and self.connected and not self.sendLock:
                 rawCommand = self.app.mountCommandQueue.get()
@@ -137,7 +135,14 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             self.socket.abort()
         else:
             self.socket.disconnectFromHost()
-        # self.socket.close()
+        self.socket.hostFound.disconnect(self.handleHostFound)
+        self.socket.connected.disconnect(self.handleConnected)
+        self.socket.stateChanged.disconnect(self.handleStateChanged)
+        self.socket.disconnected.disconnect(self.handleDisconnect)
+        self.socket.error.disconnect(self.handleError)
+        self.socket.readyRead.disconnect(self.handleReadyRead)
+
+        self.socket.close()
 
     def stop(self):
         self.mutexIsRunning.lock()

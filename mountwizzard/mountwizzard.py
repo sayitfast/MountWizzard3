@@ -894,7 +894,7 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_cancelInitialModel.style().unpolish(self.ui.btn_cancelInitialModel)
             self.ui.btn_cancelInitialModel.style().polish(self.ui.btn_cancelInitialModel)
             self.logger.info('User canceled modeling')
-            self.workerMountDispatcher.modelingRunner.cancel = True
+            self.workerModelingDispatcher.modelingRunner.cancel = True
 
     def cancelAnalyseModeling(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
