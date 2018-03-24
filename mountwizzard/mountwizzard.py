@@ -912,7 +912,7 @@ class MountWizzardApp(widget.MwWidget):
             self.workerMountDispatcher.cancelRunTargetRMS = True
 
     def setAnalyseFilename(self, filename):
-        self.app.ui.le_analyseFileName.setText(filename)
+        self.ui.le_analyseFileName.setText(filename)
 
     @staticmethod
     def changeStylesheet(ui, item, value):

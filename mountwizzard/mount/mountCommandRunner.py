@@ -20,6 +20,7 @@
 import logging
 import PyQt5
 import time
+import copy
 import threading
 
 
@@ -67,8 +68,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                       ':newalig#': 1,
                       ':endalig#': 1,
                       ':newalpt': 1,
-                      ':CMCFG': 1
-    }
+                      ':CMCFG': 1}
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -82,32 +82,51 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.connected = False
         self.socket = None
         self.messageString = ''
-        self.sendLock = threading.Lock()
+        self.numberBytesToReceive = -1
+        self.commandSet = dict()
+        self.sendLock = False
 
-    def run(self):
-        self.mutexIsRunning.lock()
-        if not self.isRunning:
-            self.isRunning = True
-        self.mutexIsRunning.unlock()
         self.socket = PyQt5.QtNetwork.QTcpSocket()
+        # signals
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
+
+    def run(self):
+        self.mutexIsRunning.lock()
+        if not self.isRunning:
+            self.isRunning = True
+        self.mutexIsRunning.unlock()
         while self.isRunning:
-            while not self.app.mountCommandQueue.empty() and self.connected:
-                commandSet = self.app.mountCommandQueue.get()
-                if isinstance(commandSet, str):
+            while not self.app.mountCommandQueue.empty() and self.connected and not self.sendLock:
+                rawCommand = self.app.mountCommandQueue.get()
+                if isinstance(rawCommand, str):
                     # only a single command without return needed
-                    self.sendCommand(commandSet)
-                elif isinstance(commandSet, dict):
-                    command = commandSet['command']
-                    reply = self.sendCommand(command).rstrip('#')
-                    commandSet['reply'] = reply
+                    command = rawCommand
+                elif isinstance(rawCommand, dict):
+                    self.commandSet = rawCommand
+                    command = rawCommand['command']
                 else:
+                    command = ''
                     self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
+                if len(command) > 0:
+                    # determine how many bytes to receive
+                    self.numberBytesToReceive = -1
+                    for key in self.COMMAND_RETURN:
+                        if command.startswith(key):
+                            self.numberBytesToReceive = self.COMMAND_RETURN[key]
+                            break
+                    if self.numberBytesToReceive == -1:
+                        self.logger.error('Command >(0)< not known'.format(command))
+                    elif self.numberBytesToReceive > 0:
+                        self.sendLock = True
+                        self.sendCommand(command)
+                    else:
+                        self.sendLock = False
+                        self.sendCommand(command)
             if not self.connected and self.socket.state() == 0:
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
@@ -118,13 +137,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             self.socket.abort()
         else:
             self.socket.disconnectFromHost()
-        self.socket.hostFound.disconnect(self.handleHostFound)
-        self.socket.connected.disconnect(self.handleConnected)
-        self.socket.stateChanged.disconnect(self.handleStateChanged)
-        self.socket.disconnected.disconnect(self.handleDisconnect)
-        self.socket.readyRead.disconnect(self.handleReadyRead)
-        self.socket.error.disconnect(self.handleError)
-        self.socket.close()
+        # self.socket.close()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -146,7 +159,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.logger.info('Mount RunnerCommand connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
 
-    def handleError(self, socketError):
+    def handleError(self):
         self.logger.warning('Mount RunnerCommand connection fault: {0}'.format(self.socket.errorString()))
 
     def handleStateChanged(self):
@@ -158,41 +171,20 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.connected = False
 
     def handleReadyRead(self):
-        pass
+        self.messageString = ''
+        while len(self.messageString) < self.numberBytesToReceive:
+            tmp = self.socket.read(1024).decode()
+            self.messageString += tmp
+            # print(len(self.messageString), self.messageString)
+        self.commandSet['reply'] = self.messageString.rstrip('#')
+        self.sendLock = False
+        # print('To Receive: {0}, received: >{1}<'.format(self.numberBytesToReceive, self.messageString))
 
     def sendCommand(self, command):
-        self.sendLock.acquire()
-        messageToProcess = ''
         if self.connected and self.isRunning:
-            print('Command: {0}'.format(command))
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                numberBytesToReceive = -1
-                for key in self.COMMAND_RETURN:
-                    if command.startswith(key):
-                        numberBytesToReceive = self.COMMAND_RETURN[key]
-                if numberBytesToReceive > -1:
-                    self.socket.write(bytes(command + '\r', encoding='ascii'))
-                    self.socket.flush()
-                    counter = 0
-                    while self.socket.bytesAvailable() < numberBytesToReceive:
-                        time.sleep(0.1)
-                        counter += 1
-                        if counter == 50:
-                            break
-                        # now we got some data
-                    while self.socket.bytesAvailable():
-                        tmp = str(self.socket.read(1000), "ascii")
-                        self.messageString += tmp
-                    messageToProcess = self.messageString[:numberBytesToReceive].rstrip('#')
-                    # reset it, no storage of additional data
-                    self.messageString = ''
-                    # self.messageString = self.messageString[numberBytesToReceive:]
-                    print('Command: {0}, return value: {1}'.format(command, messageToProcess))
-                else:
-                    self.logger.error('Command: ->{0}<- not known'.format(command))
+                self.socket.write(bytes(command + '\r', encoding='ascii'))
+                self.socket.flush()
             else:
-                self.logger.warning('Socket RunnerCommand not connected')
-        self.sendLock.release()
-        return messageToProcess
-
-
+                self.sendLock = False
+                self.logger.warning('Socket CommandRunner not connected')

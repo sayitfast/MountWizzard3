@@ -173,11 +173,14 @@ class Astrometry(PyQt5.QtCore.QObject):
         # if no telescope connected, we get no object data
         if 'RaJ2000' not in imageParams:
             return
-        imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
-        imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
-        fitsFileHandle.flush()
-        fitsFileHandle.close()
-        self.astrometryHandler.solveImage(imageParams)
+        if 'RaJ2000' in imageParams:
+            imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
+            imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
+            fitsFileHandle.flush()
+            fitsFileHandle.close()
+            self.astrometryHandler.solveImage(imageParams)
+        else:
+            fitsFileHandle.close()
 
     def getStatus(self):
         self.astrometryHandler.getStatus()
