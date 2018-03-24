@@ -1235,8 +1235,9 @@ class MyApp(PyQt5.QtWidgets.QApplication):
             logging.error('-----------------------------------------')
             logging.error('Object: {0},  Event:{1}'.format(obj, event))
             logging.error('Exception error in event loop: {0}'.format(e))
-            for i in range(0, len(result)):
-                logging.error(result[i].replace('\n', ''))
+            logging.error('Object Name: {0}'.format(obj.objectName()))
+            logging.error('Object Dump: {0}'.format(obj.dumpObjectInfo()))
+            logging.error('Object Tree: {0}'.format(obj.dumpObjectTree()))
             logging.error('-----------------------------------------')
             returnValue = False
         finally:
