@@ -300,7 +300,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.config['AltitudeMax'] = self.app.ui.altitudeMax.value()
         self.app.config['NumberPointsDSO'] = self.app.ui.numberPointsDSO.value()
         self.app.config['NumberHoursDSO'] = self.app.ui.numberHoursDSO.value()
-        # and calling the underlying calsses as well
+        # and calling the underlying classes as well
         self.modelingRunner.storeConfig()
 
     def run(self):

@@ -130,6 +130,8 @@ class INDIClient(PyQt5.QtCore.QObject):
                     if valid:
                         self.data['ServerPort'] = value
                 self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
+            else:
+                self.status.emit(0)
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)

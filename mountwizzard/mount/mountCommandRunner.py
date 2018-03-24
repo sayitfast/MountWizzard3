@@ -164,6 +164,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.sendLock.acquire()
         messageToProcess = ''
         if self.connected and self.isRunning:
+            print('Command: {0}'.format(command))
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                 numberBytesToReceive = -1
                 for key in self.COMMAND_RETURN:
@@ -186,9 +187,9 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                     # reset it, no storage of additional data
                     self.messageString = ''
                     # self.messageString = self.messageString[numberBytesToReceive:]
-                    # print('Command: {0}, return value: {1}'.format(command, messageToProcess))
+                    print('Command: {0}, return value: {1}'.format(command, messageToProcess))
                 else:
-                    print('Command: ->{0}<- not known'.format(command))
+                    self.logger.error('Command: ->{0}<- not known'.format(command))
             else:
                 self.logger.warning('Socket RunnerCommand not connected')
         self.sendLock.release()
