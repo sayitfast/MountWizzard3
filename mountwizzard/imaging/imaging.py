@@ -100,7 +100,7 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.application['Name'])
         #    if self.workerMaximDL.data['AppAvailable']:
         #        self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
-        #if platform.system() == 'Windows' or platform.system() == 'Darwin':
+        # if platform.system() == 'Windows' or platform.system() == 'Darwin':
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
         # load the config data

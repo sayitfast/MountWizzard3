@@ -123,7 +123,6 @@ class SGPro:
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
         imageParams['Solved'] = solved
 
         # Loop for data

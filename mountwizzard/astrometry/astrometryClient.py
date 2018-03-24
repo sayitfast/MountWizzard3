@@ -232,7 +232,6 @@ class AstrometryClient:
 
         # loop for upload
         self.main.astrometryStatusText.emit('UPLOAD')
-        PyQt5.QtWidgets.QApplication.processEvents()
         # start uploading the data and define the parameters
         data = self.solveData
         data['downsample_factor'] = downsampleFactor
@@ -268,7 +267,6 @@ class AstrometryClient:
 
         # loop for solve
         self.main.astrometryStatusText.emit('SOLVE-Sub')
-        PyQt5.QtWidgets.QApplication.processEvents()
         # wait for the submission = star detection algorithm to take place
         while not self.cancel and not errorState:
             data = {'request-json': ''}
@@ -296,7 +294,6 @@ class AstrometryClient:
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # waiting for the solving results done by jobs are present
         self.main.astrometryStatusText.emit('SOLVE-Job')
@@ -323,12 +320,10 @@ class AstrometryClient:
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             time.sleep(1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # Loop for data
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
-        PyQt5.QtWidgets.QApplication.processEvents()
         # now get the solving data and results
         if not errorState:
             try:
@@ -356,4 +351,3 @@ class AstrometryClient:
         self.main.imageDataDownloaded.emit()
         self.main.astrometryStatusText.emit('IDLE')
         self.main.astrometrySolvingTime.emit('')
-        PyQt5.QtWidgets.QApplication.processEvents()

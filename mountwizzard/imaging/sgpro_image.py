@@ -130,14 +130,12 @@ class SGPro:
             if 'integrating' in message:
                 break
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
         # bow for the duration
         while not self.cancel:
             suc, state, message = self.SgGetDeviceStatus('Camera')
             if 'downloading' in message or 'ready' in message or 'idle' in message:
                 break
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # Loop for downloading
         self.main.imageIntegrated.emit()
@@ -147,7 +145,6 @@ class SGPro:
             if suc:
                 break
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # Loop for saving
         self.main.imageDownloaded.emit()
@@ -157,7 +154,6 @@ class SGPro:
             if 'ready' in message or 'idle' in message:
                 break
             time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
         # finally idle
         self.main.imageSaved.emit()
