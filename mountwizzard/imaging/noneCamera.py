@@ -43,9 +43,11 @@ class NoneCamera:
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'
 
-    @staticmethod
-    def getCameraProps():
-        pass
+    def getCameraProps(self):
+        self.data['CCD_INFO'] = {}
+        self.data['CCD_INFO']['CCD_MAX_X'] = 1024
+        self.data['CCD_INFO']['CCD_MAX_Y'] = 768
+        self.data['Gain'] = 'High'
 
     @staticmethod
     def getImage(imageParams):
