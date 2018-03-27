@@ -259,6 +259,7 @@ class Ui_HemisphereDialog(object):
         self.btn_deletePoints.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p>Delete all points on coordinate window including Base / Model</p></body></html>"))
         self.btn_deletePoints.setText(_translate("HemisphereDialog", "Clear\n"
 "Model Points"))
+        self.hemisphereBackground.setProperty("color", _translate("HemisphereDialog", "blue"))
         self.groupBox_2.setTitle(_translate("HemisphereDialog", "Edit"))
         self.btn_editNone.setText(_translate("HemisphereDialog", "Nothing"))
         self.btn_editModelPoints.setText(_translate("HemisphereDialog", "Model Points"))

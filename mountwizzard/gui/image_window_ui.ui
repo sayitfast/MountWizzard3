@@ -74,7 +74,7 @@
      <x>710</x>
      <y>10</y>
      <width>71</width>
-     <height>81</height>
+     <height>86</height>
     </rect>
    </property>
    <property name="title">
@@ -126,7 +126,7 @@
      <x>630</x>
      <y>10</y>
      <width>71</width>
-     <height>81</height>
+     <height>86</height>
     </rect>
    </property>
    <property name="title">
@@ -199,7 +199,7 @@
      <x>540</x>
      <y>10</y>
      <width>81</width>
-     <height>81</height>
+     <height>86</height>
     </rect>
    </property>
    <property name="title">
@@ -339,6 +339,9 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="color" stdset="0">
+    <string>blue</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="le_cameraExposureTime">

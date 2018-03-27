@@ -97,6 +97,7 @@ class Ui_AnalyseDialog(object):
         self.btn_errorTime.setText(_translate("AnalyseDialog", "Error over time"))
         self.btn_errorOverview.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Shows an overview of the aligment model error from data.</p></body></html>"))
         self.btn_errorOverview.setText(_translate("AnalyseDialog", "Error overview"))
+        self.analyseBackground.setProperty("color", _translate("AnalyseDialog", "blue"))
         self.btn_errorAzAlt.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Shows the Az Alt error of the aligment model from data.</p></body></html>"))
         self.btn_errorAzAlt.setText(_translate("AnalyseDialog", "Error over Az/Alt"))
         self.checkWinsorize.setToolTip(_translate("AnalyseDialog", "<html><head/><body><p>Cuts outlayers by using winsorize method with the given limit.</p></body></html>"))

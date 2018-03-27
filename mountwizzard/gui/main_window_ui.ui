@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -6282,6 +6282,9 @@ AnalyseWindow</string>
      <property name="text">
       <string>TextLabel</string>
      </property>
+     <property name="iconpicture" stdset="0">
+      <bool>true</bool>
+     </property>
     </widget>
     <widget class="Line" name="line_62">
      <property name="geometry">
@@ -6372,6 +6375,9 @@ AnalyseWindow</string>
      </property>
      <property name="text">
       <string>TextLabel</string>
+     </property>
+     <property name="iconpicture" stdset="0">
+      <bool>true</bool>
      </property>
     </widget>
     <widget class="Line" name="line_66">
@@ -14934,6 +14940,9 @@ AnalyseWindow</string>
    <property name="text">
     <string>TextLabel</string>
    </property>
+   <property name="iconpicture" stdset="0">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QLabel" name="label_102">
    <property name="geometry">
@@ -15008,6 +15017,9 @@ AnalyseWindow</string>
    </property>
    <property name="text">
     <string/>
+   </property>
+   <property name="color" stdset="0">
+    <string>blue</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_INDIConnected">

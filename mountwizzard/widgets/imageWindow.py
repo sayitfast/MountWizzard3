@@ -44,9 +44,7 @@ class ImagesWindow(widget.MwWidget):
         self.app = app
         self.showStatus = False
         self.imagePath = ''
-
         self.transform = transform.Transform(self.app)
-
         self.sizeX = 10
         self.sizeY = 10
         self.imageVmin = 1

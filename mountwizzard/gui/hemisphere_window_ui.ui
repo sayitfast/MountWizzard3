@@ -71,6 +71,9 @@ Model Points</string>
    <property name="text">
     <string/>
    </property>
+   <property name="color" stdset="0">
+    <string>blue</string>
+   </property>
   </widget>
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">

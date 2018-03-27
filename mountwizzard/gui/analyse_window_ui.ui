@@ -85,6 +85,9 @@
    <property name="text">
     <string/>
    </property>
+   <property name="color" stdset="0">
+    <string>blue</string>
+   </property>
   </widget>
   <widget class="QPushButton" name="btn_errorAzAlt">
    <property name="geometry">

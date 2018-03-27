@@ -79,21 +79,14 @@ class MwWidget(QWidget):
         background-color: transparent;
         color: #C0C0C0;
     }
-    QLabel#mainBackground {
+    QLabel[color='blue'] {
         border-width: 3px;
         border-color: rgb(16, 72, 96);
         border-style: outset;
         border-radius: 2px;
-        background-color: rgb(6, 27, 32);
+        background-color: rgb(9, 36, 48);
     }
-    QLabel#hemisphereBackground, QLabel#analyseBackground, QLabel#imageBackground {
-        border-width: 3px;
-        border-color: rgb(16, 72, 96);
-        border-style: outset;
-        border-radius: 2px;
-        background-color: #181818;
-    }
-    QLabel#picALT, QLabel#picAZ, QLabel#mainicon {
+    QLabel[iconpicture='true'] {
         border-width: 2px;
         border-color: #404040;
         border-style: outset;
