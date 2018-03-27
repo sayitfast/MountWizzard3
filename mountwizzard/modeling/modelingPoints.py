@@ -330,6 +330,8 @@ class ModelPoints:
     def generateMaxPoints(self, limitByHorizonMask, doSortingPoints):
         west = []
         east = []
+        off = -5
+        i = 0
         for dec in range(-15, 90, 10):
             if dec < 30:
                 step = 10
@@ -337,13 +339,23 @@ class ModelPoints:
                 step = 10
             else:
                 step = 30
-            for ha in range(-95, 90, step):
-                az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
-                if alt > 0:
-                    if az > 180:
-                        east.append((az, alt))
-                    else:
-                        west.append((az, alt))
+            if i % 2:
+                for ha in range(120 + off, -120 + off, -step):
+                    az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
+                    if alt > 0:
+                        if az > 180:
+                            east.append((az, alt))
+                        else:
+                            west.append((az, alt))
+            else:
+                for ha in range(-120 + off, 120 + off, step):
+                    az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
+                    if alt > 0:
+                        if az > 180:
+                            east.append((az, alt))
+                        else:
+                            west.append((az, alt))
+            i += 1
         self.modelPoints = west + east
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
