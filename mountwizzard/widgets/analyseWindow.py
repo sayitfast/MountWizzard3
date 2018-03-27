@@ -22,7 +22,7 @@ import math
 import numpy
 from analyse import analysedata
 from baseclasses import widget
-from gui import analyse_dialog_ui
+from gui import analyse_window_ui
 # matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -39,7 +39,7 @@ class AnalyseWindow(widget.MwWidget):
         self.analyseView = 1
 
         self.analyse = analysedata.Analyse(self.app)
-        self.ui = analyse_dialog_ui.Ui_AnalyseDialog()
+        self.ui = analyse_window_ui.Ui_AnalyseDialog()
         self.ui.setupUi(self)
         self.initUI()
         self.initConfig()

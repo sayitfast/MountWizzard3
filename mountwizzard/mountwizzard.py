@@ -39,7 +39,7 @@ from widgets import hemisphereWindow
 from widgets import imageWindow
 from widgets import analyseWindow
 from widgets import messageWindow
-from gui import wizzard_main_ui
+from gui import main_window_ui
 from modeling import modelingDispatcher
 from mount import mountDispatcher
 from relays import relays
@@ -87,7 +87,7 @@ class MountWizzardApp(widget.MwWidget):
         self.INDICommandQueue = Queue()
         self.INDIStatusQueue = Queue()
         # initializing the gui from file generated from qt creator
-        self.ui = wizzard_main_ui.Ui_MainWindow()
+        self.ui = main_window_ui.Ui_MainWindow()
         self.ui.setupUi(self)
         self.initUI()
         self.checkPlatformDependableMenus()

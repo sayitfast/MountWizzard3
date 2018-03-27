@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'hemisphere_dialog_ui.ui'
+# Form implementation generated from reading ui file 'hemisphere_window_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.10
 #
@@ -224,7 +224,7 @@ class Ui_HemisphereDialog(object):
         self.line_78.setObjectName("line_78")
         self.hemisphereMoving = QtWidgets.QWidget(HemisphereDialog)
         self.hemisphereMoving.setEnabled(True)
-        self.hemisphereMoving.setGeometry(QtCore.QRect(10, 105, 771, 526))
+        self.hemisphereMoving.setGeometry(QtCore.QRect(10, 115, 771, 516))
         self.hemisphereMoving.setAutoFillBackground(False)
         self.hemisphereMoving.setStyleSheet("")
         self.hemisphereMoving.setObjectName("hemisphereMoving")

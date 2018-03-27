@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'analyse_dialog_ui.ui'
+# Form implementation generated from reading ui file 'analyse_window_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.10
 #
@@ -13,7 +13,7 @@ class Ui_AnalyseDialog(object):
         AnalyseDialog.setObjectName("AnalyseDialog")
         AnalyseDialog.resize(791, 641)
         self.analyse = QtWidgets.QWidget(AnalyseDialog)
-        self.analyse.setGeometry(QtCore.QRect(10, 105, 771, 526))
+        self.analyse.setGeometry(QtCore.QRect(10, 115, 771, 516))
         font = QtGui.QFont()
         font.setFamily("Arial")
         self.analyse.setFont(font)
@@ -32,7 +32,7 @@ class Ui_AnalyseDialog(object):
         self.btn_errorOverview.setFont(font)
         self.btn_errorOverview.setObjectName("btn_errorOverview")
         self.analyseBackground = QtWidgets.QLabel(AnalyseDialog)
-        self.analyseBackground.setGeometry(QtCore.QRect(0, 0, 790, 96))
+        self.analyseBackground.setGeometry(QtCore.QRect(0, 0, 790, 106))
         self.analyseBackground.setText("")
         self.analyseBackground.setObjectName("analyseBackground")
         self.btn_errorAzAlt = QtWidgets.QPushButton(AnalyseDialog)

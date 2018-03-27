@@ -27,7 +27,7 @@ import numpy
 import matplotlib
 import itertools
 import bisect
-from gui import hemisphere_dialog_ui
+from gui import hemisphere_window_ui
 
 
 class HemisphereWindow(widget.MwWidget):
@@ -53,7 +53,7 @@ class HemisphereWindow(widget.MwWidget):
         self.annotate = list()
         self.offx = 0
         self.offy = 0
-        self.ui = hemisphere_dialog_ui.Ui_HemisphereDialog()
+        self.ui = hemisphere_window_ui.Ui_HemisphereDialog()
         self.ui.setupUi(self)
         self.initUI()
         self.initConfig()

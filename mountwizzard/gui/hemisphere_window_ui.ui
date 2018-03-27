@@ -611,9 +611,9 @@ Model Points</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>105</y>
+     <y>115</y>
      <width>771</width>
-     <height>526</height>
+     <height>516</height>
     </rect>
    </property>
    <property name="autoFillBackground">

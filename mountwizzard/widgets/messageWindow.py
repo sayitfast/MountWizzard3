@@ -20,7 +20,7 @@
 import logging
 from baseclasses import widget
 import PyQt5
-from gui import message_dialog_ui
+from gui import message_window_ui
 
 
 class MessageWindow(widget.MwWidget):
@@ -30,7 +30,7 @@ class MessageWindow(widget.MwWidget):
         super(MessageWindow, self).__init__()
         self.app = app
         self.showStatus = False
-        self.ui = message_dialog_ui.Ui_MessageDialog()
+        self.ui = message_window_ui.Ui_MessageDialog()
         self.ui.setupUi(self)
         self.initUI()
         self.setSizePolicy(PyQt5.QtWidgets.QSizePolicy.Fixed, PyQt5.QtWidgets.QSizePolicy.Ignored)

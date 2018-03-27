@@ -27,7 +27,7 @@ from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPerc
 from matplotlib import use
 from baseclasses import widget
 from astrometry import transform
-from gui import image_dialog_ui
+from gui import image_window_ui
 use('Qt5Agg')
 # from matplotlib.colors import LogNorm, SymLogNorm, PowerNorm
 
@@ -53,7 +53,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageVmax = 65535
         self.image = numpy.random.randint(low=5, high=100, size=(20, 20))
         self.cmapColor = 'gray'
-        self.ui = image_dialog_ui.Ui_ImageDialog()
+        self.ui = image_window_ui.Ui_ImageDialog()
         self.ui.setupUi(self)
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)

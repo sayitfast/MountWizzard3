@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'image_dialog_ui.ui'
+# Form implementation generated from reading ui file 'image_window_ui.ui'
 #
 # Created by: PyQt5 UI code generator 5.10
 #
@@ -315,4 +315,14 @@ class Ui_ImageDialog(object):
         self.le_astrometrySolvingTime.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Time elapsed for plate solving</p></body></html>"))
         self.btn_cancel.setToolTip(_translate("ImageDialog", "<html><head/><body><p>Cancels an imaging or plate solving action</p></body></html>"))
         self.btn_cancel.setText(_translate("ImageDialog", "Cancel"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    ImageDialog = QtWidgets.QWidget()
+    ui = Ui_ImageDialog()
+    ui.setupUi(ImageDialog)
+    ImageDialog.show()
+    sys.exit(app.exec_())
 
