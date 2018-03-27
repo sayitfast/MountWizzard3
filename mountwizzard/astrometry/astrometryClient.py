@@ -34,7 +34,7 @@ from baseclasses import checkParamIP
 class AstrometryClient:
     logger = logging.getLogger(__name__)
 
-    solveData = {'session': 12345,
+    solveData = {'session': '12345',
                  'allow_commercial_use': 'd',
                  'allow_modifications': 'd',
                  'publicly_visible': 'n',
@@ -134,10 +134,12 @@ class AstrometryClient:
             if self.app.ui.rb_useOnlineSolver.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
+                self.application['Name'] = 'Online'
                 self.timeoutMax = float(self.app.ui.le_timeoutOnline.text())
             else:
                 self.urlAPI = 'http://{0}:{1}/api'.format(self.application['ServerIP'], self.application['ServerPort'])
                 self.urlLogin = ''
+                self.application['Name'] = 'Local'
                 self.timeoutMax = float(self.app.ui.le_timeoutLocal.text())
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
 
@@ -155,19 +157,13 @@ class AstrometryClient:
 
     def getStatus(self):
         try:
-            data = {'request-json': ''}
-            headers = {}
-            result = requests.post(self.urlAPI, data=data, headers=headers)
-            if result.status_code > 400:
-                if self.urlAPI.startswith('http://nova.astrometry.net/api'):
-                    self.application['Name'] = 'Online'
-                else:
-                    self.application['Name'] = 'Local'
+            result = requests.head(self.urlAPI)
+            if result.status_code == 200:
+                self.application['Available'] = True
                 self.application['Status'] = 'OK'
                 self.data['CONNECTION']['CONNECT'] = 'On'
         except requests.exceptions.ConnectionError:
             self.logger.error('Connection to {0} not possible, connection refused')
-            self.main.astrometryStatusText.emit('Not OK')
             self.application['Available'] = False
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
@@ -226,7 +222,7 @@ class AstrometryClient:
                     errorState = True
         else:
             # local solve runs with dummy session key
-            self.solveData['session'] = 12345
+            self.solveData['session'] = '12345'
 
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
 

@@ -130,6 +130,10 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.astrometryHandler = self.TheSkyX
             self.logger.info('Actual plate solver is TheSkyX')
         self.astrometryStatusText.emit('')
+        if not self.astrometryHandler.application['Available']:
+            self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'gray')
+        else:
+            self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
         self.mutexChooser.unlock()
 
     def run(self):
@@ -185,13 +189,17 @@ class Astrometry(PyQt5.QtCore.QObject):
         # get status to gui
         if not self.astrometryHandler.application['Available']:
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'gray')
-        elif self.astrometryHandler.application['Status'] == 'ERROR':
-            self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
-        elif self.astrometryHandler.application['Status'] == 'OK':
-            if self.data['CONNECTION']['CONNECT'] == 'Off':
-                self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'yellow')
+        else:
+            if self.astrometryHandler.application['Status'] == 'ERROR':
+                self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
             else:
-                self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
+                if self.astrometryHandler.application['Status'] == 'OK':
+                    if self.data['CONNECTION']['CONNECT'] == 'Off':
+                        self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'yellow')
+                    else:
+                        self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
+                else:
+                    self.logger.warning('This state is undefined')
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
 
