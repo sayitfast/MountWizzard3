@@ -66,7 +66,6 @@ class ImagesWindow(widget.MwWidget):
 
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_solve.clicked.connect(self.solveOnce)
-        self.ui.btn_crosshair.clicked.connect(self.crosshairOnOff)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)
         self.ui.btn_colorCool.clicked.connect(self.setColor)
         self.ui.btn_colorRainbow.clicked.connect(self.setColor)
@@ -77,6 +76,7 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechMid.clicked.connect(self.setStrech)
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
         self.ui.btn_cancel.clicked.connect(self.cancelAction)
+        self.ui.checkShowCrosshairs.stateChanged.connect(self.setCrosshairOnOff)
         self.setVisible(False)
         self.ui.cross1.setVisible(False)
         self.ui.cross2.setVisible(False)
@@ -105,6 +105,9 @@ class ImagesWindow(widget.MwWidget):
                 self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
                 if os.path.isfile(self.imagePath):
                     self.showFitsImage(self.imagePath)
+            if 'CheckShowCrosshairs' in self.app.config:
+                self.ui.checkShowCrosshairs.setChecked(self.app.config['CheckShowCrosshairs'])
+
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for image window, error:{0}'.format(e))
         finally:
@@ -115,6 +118,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.config['ImagePopupWindowPositionY'] = self.pos().y()
         self.app.config['ImagePopupWindowShowStatus'] = self.showStatus
         self.app.config['ImagePath'] = self.imagePath
+        self.app.config['CheckShowCrosshairs'] = self.ui.checkShowCrosshairs.isChecked()
 
     def showWindow(self):
         self.showStatus = True
@@ -261,17 +265,17 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_stopContExposures.setEnabled(True)
         self.setWindowTitle('Image Window')
 
-    def crosshairOnOff(self):
-        if self.ui.cross1.isVisible():
-            self.ui.cross1.setVisible(False)
-            self.ui.cross2.setVisible(False)
-            self.ui.cross3.setVisible(False)
-            self.ui.cross4.setVisible(False)
-        else:
+    def setCrosshairOnOff(self):
+        if self.ui.checkShowCrosshairs.isChecked():
             self.ui.cross1.setVisible(True)
             self.ui.cross2.setVisible(True)
             self.ui.cross3.setVisible(True)
             self.ui.cross4.setVisible(True)
+        else:
+            self.ui.cross1.setVisible(False)
+            self.ui.cross2.setVisible(False)
+            self.ui.cross3.setVisible(False)
+            self.ui.cross4.setVisible(False)
 
     def exposeOnce(self):
         # link to cam and check if available

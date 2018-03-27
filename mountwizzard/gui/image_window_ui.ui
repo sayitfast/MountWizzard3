@@ -47,27 +47,6 @@
     <string>Expose One</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_crosshair">
-   <property name="geometry">
-    <rect>
-     <x>100</x>
-     <y>70</y>
-     <width>81</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-    </font>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Shows a crosshair in front of the image&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="text">
-    <string>Crosshairs</string>
-   </property>
-  </widget>
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
@@ -640,7 +619,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>125</x>
      <y>70</y>
      <width>81</width>
      <height>26</height>
@@ -737,7 +716,7 @@
   <widget class="QPushButton" name="btn_cancel">
    <property name="geometry">
     <rect>
-     <x>190</x>
+     <x>10</x>
      <y>70</y>
      <width>81</width>
      <height>26</height>
@@ -755,10 +734,33 @@
     <string>Cancel</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="checkShowCrosshairs">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>75</y>
+     <width>86</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>Use Highspeed download of CCD camera if availabe</string>
+   </property>
+   <property name="text">
+    <string>Crosshairs</string>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
   <zorder>imageBackground</zorder>
   <zorder>image</zorder>
   <zorder>btn_expose</zorder>
-  <zorder>btn_crosshair</zorder>
   <zorder>groupBox_2</zorder>
   <zorder>groupBox_3</zorder>
   <zorder>btn_solve</zorder>
@@ -780,6 +782,7 @@
   <zorder>label_86</zorder>
   <zorder>le_astrometrySolvingTime</zorder>
   <zorder>btn_cancel</zorder>
+  <zorder>checkShowCrosshairs</zorder>
  </widget>
  <resources/>
  <connections/>

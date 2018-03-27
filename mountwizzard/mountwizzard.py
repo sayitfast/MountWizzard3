@@ -290,12 +290,10 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
         self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
         self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
-
         self.ui.btn_cancelFullModel.clicked.connect(self.cancelFullModel)
         self.ui.btn_cancelInitialModel.clicked.connect(self.cancelInitialModel)
         self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModeling)
         self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.cancelRunTargetRMSFunction)
-
         self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
         self.ui.checkUseFileHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
         self.ui.altitudeMinimumHorizon.valueChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
