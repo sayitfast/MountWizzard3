@@ -32,7 +32,7 @@ class Transform:
         self.ERFA = _erfa
         self.mutexERFA = PyQt5.QtCore.QMutex()
         self.mutexTopocentric = PyQt5.QtCore.QMutex()
-        self.siteLat = 49
+        self.siteLat = -20
         self.siteLon = -11
         self.siteHeight = 0
         self.julianDate = 2458096.5
@@ -56,6 +56,7 @@ class Transform:
         lat = math.radians(self.siteLat)
         alt = math.asin(math.sin(dec) * math.sin(lat) + math.cos(dec) * math.cos(lat) * math.cos(ra))
         value = (math.sin(dec) - math.sin(alt) * math.sin(lat)) / (math.cos(alt) * math.cos(lat))
+        # we have to check for rounding error, which could happen
         if value > 1:
             value = 1
         elif value < -1:

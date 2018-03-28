@@ -150,7 +150,8 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedAlign.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedProgAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
         # INDI client framework
         self.threadINDI = PyQt5.QtCore.QThread()
@@ -989,7 +990,7 @@ class MountWizzardApp(widget.MwWidget):
                 stat += 1
         if stat == 0:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        elif stat == 6:
+        elif stat == len(self.workerMountDispatcher.mountStatus):
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color:black;}')
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')

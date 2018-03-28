@@ -42,7 +42,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedSlow = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedMedium = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedFast = PyQt5.QtCore.pyqtSignal(dict)
-    signalMountConnectedAlign = PyQt5.QtCore.pyqtSignal(dict)
+    signalMountConnectedGetAlign = PyQt5.QtCore.pyqtSignal(dict)
+    signalMountConnectedProgAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
 
     # signals for data transfer to other threads
@@ -127,16 +128,23 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
-        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedAlign)
+        self.workerMountGetAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedGetAlign)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
+        # program alignment model
+        self.threadMountProgramAlignmentModel = PyQt5.QtCore.QThread()
+        self.workerMountProgramAlignmentModel = mountGetAlignmentModel.MountGetAlignmentModel(self.app, self.threadMountProgramAlignmentModel, self.data, self.signalMountConnectedProgAlign)
+        self.threadMountProgramAlignmentModel.setObjectName("MountGetAlignmentModel")
+        self.workerMountProgramAlignmentModel.moveToThread(self.threadMountProgramAlignmentModel)
+        self.threadMountProgramAlignmentModel.started.connect(self.workerMountProgramAlignmentModel.run)
 
         self.mountStatus = {'Fast': False,
                             'Medium': False,
                             'Slow': False,
                             'Once': False,
-                            'Align': False,
+                            'GetAlign': False,
+                            'ProgAlign': False,
                             'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
