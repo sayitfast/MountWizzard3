@@ -5015,12 +5015,12 @@ AnalyseWindow</string>
     </widget>
     <widget class="QPushButton" name="btn_runBatchModel">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="geometry">
       <rect>
        <x>330</x>
-       <y>370</y>
+       <y>320</y>
        <width>151</width>
        <height>71</height>
       </rect>
