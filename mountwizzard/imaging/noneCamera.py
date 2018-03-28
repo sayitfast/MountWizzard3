@@ -49,8 +49,7 @@ class NoneCamera:
         self.data['CCD_INFO']['CCD_MAX_Y'] = 768
         self.data['Gain'] = 'High'
 
-    @staticmethod
-    def getImage(imageParams):
+    def getImage(self, imageParams):
         self.mutexCancel.lock()
         self.cancel = False
         self.mutexCancel.unlock()

@@ -5504,7 +5504,7 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(0)
+        self.mainTabWidget.setCurrentIndex(2)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -5885,7 +5885,8 @@ class Ui_MainWindow(object):
         self.btn_loadAnalyseData.setToolTip(_translate("MainWindow", "<html><head/><body><p>Loads the modeling data from file.</p></body></html>"))
         self.btn_loadAnalyseData.setText(_translate("MainWindow", "Load"))
         self.btn_runBatchModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Run full alignment model.</p></body></html>"))
-        self.btn_runBatchModel.setText(_translate("MainWindow", "Run Batch Model"))
+        self.btn_runBatchModel.setText(_translate("MainWindow", "Make Model from\n"
+"Analyse File"))
         self.label_166.setText(_translate("MainWindow", "Pixel Size x/y for Camera"))
         self.pixelSize.setToolTip(_translate("MainWindow", "Pixel size of camera"))
         self.label_167.setText(_translate("MainWindow", "um"))
