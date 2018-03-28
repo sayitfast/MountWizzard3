@@ -176,12 +176,13 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.connected = False
 
     def handleReadyRead(self):
-        self.messageString = ''
         while len(self.messageString) < self.numberBytesToReceive:
             tmp = self.socket.read(1024).decode()
             self.messageString += tmp
             # print(len(self.messageString), self.messageString)
-        self.commandSet['reply'] = self.messageString.rstrip('#')
+        messageToProcess = self.messageString
+        self.messageString = ''
+        self.commandSet['reply'] = self.messageToProcess.rstrip('#')
         self.sendLock = False
         # print('To Receive: {0}, received: >{1}<'.format(self.numberBytesToReceive, self.messageString))
 

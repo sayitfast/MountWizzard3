@@ -39,6 +39,8 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
         self.connected = False
         self.socket = None
         self.messageString = ''
+        self.sendLock = False
+        self.numberBytesToReceive = 0
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
 
@@ -55,7 +57,7 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         while self.isRunning:
-            if not self.sendCommandQueue.empty() and self.connected:
+            if not self.sendCommandQueue.empty() and self.connected and not self.sendLock:
                 command = self.sendCommandQueue.get()
                 self.sendCommand(command)
             if not self.connected and self.socket.state() == 0:
@@ -109,10 +111,12 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
+                self.sendLock = True
             else:
+                self.sendLock = False
                 self.logger.warning('Socket ProgramAlignmentModel not connected')
 
-    def ProgramAlignmentModel(self, modelingData):
+    def programAlignmentModel(self, modelingData):
         self.data['ModelLoading'] = True
         if 'FW' not in self.data:
             self.data['FW'] = 0
@@ -131,33 +135,31 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
                                                                 self.transform.decimalToDegree(modelingData['LocalSiderealTimeFloat'][i], False, True))
             self.app.sharedMountDataLock.unlock()
             # end the programming
-            command += ':endalig#'
-            self.sendCommandQueue.put(command)
+        command += ':endalig#'
+        # we exspect E# or V# as response for each command
+        self.numberBytesToReceive = 4 + 2 * len(modelingData)
+        self.sendCommandQueue.put(command)
 
     def handleReadyRead(self):
         # Get message from socket.
         # print('handle')
-        while self.socket.bytesAvailable():
+        while len(self.messageString) < self.numberBytesToReceive:
             tmp = self.socket.read(1024).decode()
             self.messageString += tmp
-        # if the last characters are not E#, there are more points to receive
-        if not self.messageString.endswith('E#'):
-            return
-        else:
-            messageToProcess = self.messageString
-            self.messageString = ''
+        messageToProcess = self.messageString
+        self.messageString = ''
         # now getting feedback from programming
         try:
-            if len(messageToProcess) == 0:
-                return
-            self.app.sharedMountDataLock.lockForWrite()
             valueList = messageToProcess.strip('#').split('#')
             # here we have more data in
-            if len(valueList[0]) > 3:
-                self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
+            if len(valueList[0]) == self.numberBytesToReceive / 2:
+                if valueList[len(valueList) - 1] == 'V':
+                    self.app.workerMountDispatcher.signalMountConnectedProgAlignSuccess.emit(True)
+                else:
+                    self.app.workerMountDispatcher.signalMountConnectedProgAlignSuccess.emit(False)
             else:
-                self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
+                self.logger.error('Receive error program alignment command content: {0}'.format(valueList[0]))
         except Exception as e:
             self.logger.error('Parsing ProgramAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
-            self.app.sharedMountDataLock.unlock()
+            self.sendLock = False

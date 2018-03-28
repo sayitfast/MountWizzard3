@@ -44,6 +44,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedFast = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedGetAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedProgAlign = PyQt5.QtCore.pyqtSignal(dict)
+    signalMountConnectedProgAlignSuccess = PyQt5.QtCore.pyqtSignal(bool)
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
 
     # signals for data transfer to other threads
@@ -148,6 +149,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
+        self.programAlignmentModelStatus = None
         self.commandDispatch = {
             'RunTargetRMSAlignment':
                 {
@@ -357,6 +359,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_loadDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO2Model'))
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
         self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
+        self.signalMountConnectedProgAlignSuccess.connect(self.setProgramAlignmentModelStatus)
 
     def initConfig(self):
         try:
@@ -523,7 +526,22 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('error in sync mount modeling')
             return False
 
+    def setProgramAlignmentModelStatus(self, status):
+        self.programAlignmentModelStatus = status
+
     def programBatchData(self, data):
+        self.programAlignmentModelStatus = None
+        self.workerMountProgramAlignmentModel.programAlignmentModel(data)
+        while self.programAlignmentModelStatus is None:
+            time.sleep(0.1)
+        if self.programAlignmentModelStatus:
+            self.logger.info('Model successful finished!')
+            self.app.messageQueue.put('#BWProgrammed alignment model with {0} points\n'.format(len(data['Index'])))
+        else:
+            self.logger.warning('Model could not be calculated with current data!')
+            self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
+
+    def programBatchDataOld(self, data):
         self.app.messageQueue.put('#BWProgramming alignment model data\n')
         commandSet = {'command': ':newalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
