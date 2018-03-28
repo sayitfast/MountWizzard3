@@ -523,28 +523,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('error in sync mount modeling')
             return False
 
-    def addRefinementStar(self, ra, dec):
-        self.logger.info('ra:{0} dec:{1}'.format(ra, dec))
-        self.app.mountCommandQueue.put(':Sr{0}#'.format(ra))
-        self.app.mountCommandQueue.put(':Sd{0}#'.format(dec))
-        starNumber = self.numberModelStars()
-        commandSet = {'command': ':CMS#', 'reply': ''}
-        self.app.mountCommandQueue.put(commandSet)
-        while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
-        starAdded = self.numberModelStars() - starNumber
-        if commandSet['reply'] == 'E':
-            # 'E' says star could not be added
-            if starAdded == 1:
-                self.logger.error('star added, but return value was E')
-                return True
-            else:
-                self.logger.error('error adding star')
-                return False
-        else:
-            self.logger.info('refinement star added')
-            return True
-
     def programBatchData(self, data):
         self.app.messageQueue.put('#BWProgramming alignment model data\n')
         commandSet = {'command': ':newalig#', 'reply': ''}
