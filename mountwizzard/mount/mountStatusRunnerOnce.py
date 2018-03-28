@@ -123,7 +123,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         messageToProcess = ''
         # Get message from socket.
         while self.socket.bytesAvailable():
-            tmp = str(self.socket.read(4000), "ascii")
+            tmp = self.socket.read(1024).decode()
             self.messageString += tmp
             if len(self.messageString.strip('#').split('#')) != 8:
                 return

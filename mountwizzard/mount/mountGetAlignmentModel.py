@@ -129,7 +129,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         # Get message from socket.
         # print('handle')
         while self.socket.bytesAvailable():
-            tmp = str(self.socket.read(4000), "ascii")
+            tmp = self.socket.read(4000).decode()
             self.messageString += tmp
         # if the last characters are not E#, there are more points to receive
         if not self.messageString.endswith('E#'):

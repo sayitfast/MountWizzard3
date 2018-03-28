@@ -138,7 +138,7 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
         # Get message from socket.
         # print('handle')
         while self.socket.bytesAvailable():
-            tmp = str(self.socket.read(4000), "ascii")
+            tmp = self.socket.read(1024).decode()
             self.messageString += tmp
         # if the last characters are not E#, there are more points to receive
         if not self.messageString.endswith('E#'):
@@ -146,114 +146,17 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
         else:
             messageToProcess = self.messageString
             self.messageString = ''
-        while messageToProcess.endswith('E#'):
-            messageToProcess = messageToProcess.rstrip('E#')
-        while messageToProcess.startswith('E#'):
-            messageToProcess = messageToProcess.lstrip('E#')
-        # now transfer the model data
+        # now getting feedback from programming
         try:
             if len(messageToProcess) == 0:
                 return
             self.app.sharedMountDataLock.lockForWrite()
-            if 'FW' not in self.data:
-                self.data['FW'] = 0
             valueList = messageToProcess.strip('#').split('#')
-            # now the first part of the command cluster
-            numberStars = int(float(valueList[0]))
-            self.data['NumberAlignmentStars'] = numberStars
-            self.data['Number'] = numberStars
-            del valueList[0]
-            if numberStars < 3:
-                valueList = ['E,E,E,E,E,E,E,E,E']
-            # now the second part of the command cluster. it is related to firmware feature
-            if self.data['FW'] > 21500:
-                if numberStars < 3:
-                    valueList = ['E,E,E,E,E,E,E,E,E']
-                # here we have more data in
-                if len(valueList[0]) > 3:
-                    a1, a2, a3, a4, a5, a6, a7, a8, a9 = valueList[0].split(',')
-                    # 'E' could be sent if not calculable or no value available
-                    if a1 != 'E':
-                        self.data['ModelErrorAzimuth'] = float(a1)
-                    else:
-                        self.data['ModelErrorAzimuth'] = 0
-                    if a2 != 'E':
-                        self.data['ModelErrorAltitude'] = float(a2)
-                    else:
-                        self.data['ModelErrorAltitude'] = 0
-                    if a3 != 'E':
-                        self.data['PolarError'] = float(a3)
-                    else:
-                        self.data['PolarError'] = 0
-                    if a4 != 'E':
-                        self.data['PosAngle'] = float(a4)
-                    else:
-                        self.data['PosAngle'] = 0
-                    if a5 != 'E':
-                        self.data['OrthoError'] = float(a5)
-                    else:
-                        self.data['OrthoError'] = 0
-                    if a6 != 'E':
-                        self.data['AzimuthKnobs'] = float(a6)
-                    else:
-                        self.data['AzimuthKnobs'] = 0
-                    if a7 != 'E':
-                        self.data['AltitudeKnobs'] = float(a7)
-                    else:
-                        self.data['AltitudeKnobs'] = 0
-                    if a8 != 'E':
-                        self.data['Terms'] = int(float(a8))
-                    else:
-                        self.data['Terms'] = 0
-                    if a9 != 'E':
-                        self.data['RMS'] = float(a9)
-                    else:
-                        self.data['RMS'] = 0
-                    self.data['ModelRMSError'] = '{0:3.1f}'.format(self.data['RMS'])
-                    self.data['ModelErrorPosAngle'] = '{0:3.1f}'.format(self.data['PosAngle'])
-                    self.data['ModelPolarError'] = '{0}'.format(self.transform.decimalToDegree(self.data['PolarError']))
-                    self.data['ModelOrthoError'] = '{0}'.format(self.transform.decimalToDegree(self.data['OrthoError']))
-                    self.data['ModelErrorAz'] = '{0}'.format(self.transform.decimalToDegree(self.data['ModelErrorAzimuth']))
-                    self.data['ModelErrorAlt'] = '{0}'.format(self.transform.decimalToDegree(self.data['ModelErrorAltitude']))
-                    self.data['ModelTerms'] = '{0:2d}'.format(self.data['Terms'])
-                    if self.data['AzimuthKnobs'] > 0:
-                        value = '{0:2.2f} left'.format(abs(self.data['AzimuthKnobs']))
-                    else:
-                        value = '{0:2.2f} right'.format(abs(self.data['AzimuthKnobs']))
-                    self.data['ModelKnobTurnAz'] = '{0}'.format(value)
-                    if self.data['AltitudeKnobs'] > 0:
-                        value = '{0:2.2f} down'.format(abs(self.data['AltitudeKnobs']))
-                    else:
-                        value = '{0:2.2f} up'.format(abs(self.data['AltitudeKnobs']))
-                    self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
-                else:
-                    self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
-                # remove the first remaining element in list if it was there
-                del valueList[0]
-            # now the third part of the command cluster
-            self.data['ModelIndex'] = list()
-            self.data['ModelAzimuth'] = list()
-            self.data['ModelAltitude'] = list()
-            self.data['ModelError'] = list()
-            self.data['ModelErrorAngle'] = list()
-            # we start every time with index 0, because if the first parsing took place, the first list element will be deleted
-            for i in range(0, len(valueList)):
-                values = valueList[i].split(',')
-                ha = values[0]
-                dec = values[1]
-                ErrorRMS = float(values[2])
-                ErrorAngle = float(values[3])
-                dec = dec.replace('*', ':')
-                RaJNow = self.transform.degStringToDecimal(ha)
-                DecJNow = self.transform.degStringToDecimal(dec)
-                az, alt = self.transform.topocentricToAzAlt(RaJNow, DecJNow)
-                # index should start with 0, but numbering in mount starts with 1
-                self.data['ModelIndex'].append(i)
-                self.data['ModelAzimuth'].append(az)
-                self.data['ModelAltitude'].append(alt)
-                self.data['ModelError'].append(ErrorRMS)
-                self.data['ModelErrorAngle'].append(ErrorAngle)
-            self.data['ModelLoading'] = False
+            # here we have more data in
+            if len(valueList[0]) > 3:
+                self.data['ModelKnobTurnAlt'] = '{0}'.format(value)
+            else:
+                self.logger.error('Receive error getain command content: {0}'.format(valueList[0]))
         except Exception as e:
             self.logger.error('Parsing ProgramAlignmentModel got error:{0}, values:{1}'.format(e, messageToProcess))
         finally:
