@@ -1,3 +1,6 @@
+x.x todo
+- make processing data a on step process
+
 3.2 todo
 - check for suthern hemisphere and latitudes < 0
 
@@ -11,12 +14,10 @@
 - get stored models from mount in list
 
 3.0 todo
-- make model from data
-- make processing data a on step process
+
 - sometimes start slewing while integrating
 - omit ProcessEvents()
 - Image Window: image calculations to separat thread (threadpool)
 - Analyse window: ylable positions if labels are extended
 - possible bug in cancle full model run
 - still some deleted c++ methode from python wrapper
-- problem when loading LAT to late for mount model !

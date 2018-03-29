@@ -266,7 +266,7 @@ class Ui_HemisphereDialog(object):
         self.btn_editHorizonMask.setText(_translate("HemisphereDialog", "Horizon Mask"))
         self.le_numberPointsProcessed.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
         self.le_numberPointsProcessed.setText(_translate("HemisphereDialog", "00"))
-        self.label_81.setText(_translate("HemisphereDialog", "Prog\'d:"))
+        self.label_81.setText(_translate("HemisphereDialog", "Program:"))
         self.le_numberPointsSolved.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
         self.le_numberPointsSolved.setText(_translate("HemisphereDialog", "00"))
         self.label_28.setText(_translate("HemisphereDialog", "Solved:"))

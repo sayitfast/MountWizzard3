@@ -227,7 +227,7 @@ Model Points</string>
     </font>
    </property>
    <property name="text">
-    <string>Prog'd:</string>
+    <string>Program:</string>
    </property>
   </widget>
   <widget class="QProgressBar" name="bar_numberPointsSolved">
