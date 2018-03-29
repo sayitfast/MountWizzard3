@@ -1230,7 +1230,7 @@ class MyApp(PyQt5.QtWidgets.QApplication):
             returnValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
         except Exception as e:
             logging.error('-----------------------------------------')
-            logging.error('Event:{0}}'.format(event))
+            logging.error('Event:{0}'.format(event))
             logging.error('EventType{0}'.format(event.type()))
             logging.error('Event Thread:{0}'.format(event.thread().currentThreadId()))
             logging.error('Exception error in event loop: {0}'.format(e))

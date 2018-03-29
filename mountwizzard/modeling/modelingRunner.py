@@ -642,6 +642,7 @@ class ModelingRunner:
             self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
             self.app.messageQueue.put('Time and Pierside missing\n')
             return
+        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
         self.app.workerMountDispatcher.programBatchData(data)
 
     def plateSolveSync(self):

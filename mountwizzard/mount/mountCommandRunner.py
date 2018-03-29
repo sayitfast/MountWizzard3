@@ -182,7 +182,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
             # print(len(self.messageString), self.messageString)
         messageToProcess = self.messageString
         self.messageString = ''
-        self.commandSet['reply'] = self.messageToProcess.rstrip('#')
+        self.commandSet['reply'] = messageToProcess.rstrip('#')
         self.sendLock = False
         # print('To Receive: {0}, received: >{1}<'.format(self.numberBytesToReceive, self.messageString))
 
