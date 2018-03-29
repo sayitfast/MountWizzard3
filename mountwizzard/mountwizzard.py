@@ -1224,19 +1224,16 @@ class MountWizzardApp(widget.MwWidget):
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):
-    import traceback
 
     def notify(self, obj, event):
         try:
             returnValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
         except Exception as e:
-            result = traceback.format_exception(*sys.exc_info())
             logging.error('-----------------------------------------')
-            logging.error('Object: {0},  Event:{1}'.format(obj, event))
+            logging.error('Event:{0}}'.format(event))
+            logging.error('EventType{0}'.format(event.type()))
+            logging.error('Event Thread:{0}'.format(event.thread().currentThreadId()))
             logging.error('Exception error in event loop: {0}'.format(e))
-            logging.error('Object Name: {0}'.format(obj.objectName()))
-            logging.error('Object Dump: {0}'.format(obj.dumpObjectInfo()))
-            logging.error('Object Tree: {0}'.format(obj.dumpObjectTree()))
             logging.error('-----------------------------------------')
             returnValue = False
         finally:
