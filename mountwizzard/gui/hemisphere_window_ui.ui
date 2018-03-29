@@ -25,9 +25,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>105</y>
+     <y>115</y>
      <width>771</width>
-     <height>526</height>
+     <height>516</height>
     </rect>
    </property>
    <property name="autoFillBackground">
@@ -65,7 +65,7 @@ Model Points</string>
      <x>0</x>
      <y>0</y>
      <width>790</width>
-     <height>96</height>
+     <height>106</height>
     </rect>
    </property>
    <property name="text">

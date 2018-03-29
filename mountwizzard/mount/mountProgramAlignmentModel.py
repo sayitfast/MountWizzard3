@@ -91,8 +91,7 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.connected = True
-        self.signalConnected.emit({'Align': True})
-        self.ProgramAlignmentModel()
+        self.signalConnected.emit({'ProgAlign': True})
         self.logger.info('Mount ProgramAlignmentModel connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
 
     def handleError(self, socketError):
@@ -103,7 +102,7 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('Mount ProgramAlignmentModel connection is disconnected from host')
-        self.signalConnected.emit({'Align': False})
+        self.signalConnected.emit({'ProgAlign': False})
         self.connected = False
 
     def sendCommand(self, command):
@@ -136,7 +135,7 @@ class MountProgramAlignmentModel(PyQt5.QtCore.QObject):
             self.app.sharedMountDataLock.unlock()
             # end the programming
         command += ':endalig#'
-        # we exspect E# or V# as response for each command
+        # we expect E# or V# as response for each command
         self.numberBytesToReceive = 4 + 2 * len(modelingData)
         self.sendCommandQueue.put(command)
 

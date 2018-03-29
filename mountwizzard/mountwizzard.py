@@ -990,7 +990,7 @@ class MountWizzardApp(widget.MwWidget):
                 stat += 1
         if stat == 0:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        elif stat == len(self.workerMountDispatcher.mountStatus):
+        elif stat == (len(self.workerMountDispatcher.mountStatus) - 1):
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color:black;}')
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')

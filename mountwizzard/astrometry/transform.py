@@ -32,7 +32,7 @@ class Transform:
         self.ERFA = _erfa
         self.mutexERFA = PyQt5.QtCore.QMutex()
         self.mutexTopocentric = PyQt5.QtCore.QMutex()
-        self.siteLat = -20
+        self.siteLat = 49
         self.siteLon = -11
         self.siteHeight = 0
         self.julianDate = 2458096.5
