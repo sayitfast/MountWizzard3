@@ -20,107 +20,160 @@
 import logging
 import time
 import PyQt5
+import platform
 # import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 import pythoncom
 
 
-class MaximDLCamera(PyQt5.QtCore.QObject):
+class MaximDL:
     logger = logging.getLogger(__name__)
-    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
-    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
-    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLESTATUS = 200
-    CYCLEPROPS = 3000
+    CAMERA_STATUS = {'1': 'DISCONN', '0': 'DISCONN', '5': 'DOWNLOAD', '2': 'IDLE', '3': 'INTEGRATE'}
 
-    SOLVERSTATUS = {'2': 'SOLVED', '3': 'SOLVING', '1': 'IDLE', }
-    CAMERASTATUS = {'1': 'DISCONN', '0': 'DISCONN', '5': 'DOWNLOAD', '2': 'IDLE', '3': 'INTEGRATE'}
-
-    def __init__(self, app, thread, commandQueue):
-        super().__init__()
+    def __init__(self, main, app, data):
+        self.main = main
         self.app = app
-        self.thread = thread
-        self.commandQueue = commandQueue
-        self.isRunning = False
-        self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.data = {'Camera': {}, 'Solver': {}}
+        self.data = data
+        self.cancel = False
+        self.mutexCancel = PyQt5.QtCore.QMutex()
+
+        self.application = dict()
+        self.application['Available'] = False
+        self.application['Name'] = ''
+        self.application['InstallPath'] = ''
+        self.application['Status'] = ''
+        self.application['Runtime'] = 'MaxIm_DL.exe'
 
         self.driverNameCamera = 'MaxIm.CCDCamera'
-        self.driverNameDocument = 'MaxIm.Document'
         self.maximCamera = None
-        self.maximDocument = None
 
-        self.data['Camera']['AppAvailable'] = True
-        self.data['Camera']['AppName'] = 'None'
-        self.data['Camera']['AppInstallPath'] = 'None'
-        self.data['Solver']['AppAvailable'] = True
-        self.data['Solver']['AppName'] = 'None'
-        self.data['Solver']['AppInstallPath'] = 'None'
-        self.data['Camera']['Status'] = '---'
-        self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
-        self.data['Solver']['Status'] = '---'
-        self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
+        if platform.system() == 'Windows':
+            # sgpro only supported on local machine
+            self.application['Available'], self.application['Name'], self.application['InstallPath'] = self.app.checkRegistrationKeys('MaxIm DL')
+            if self.application['Available']:
+                self.app.messageQueue.put('Found Imaging: {0}\n'.format(self.application['Name']))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.application['Name'], self.application['InstallPath']))
+            else:
+                self.logger.info('Application MaximDL not found on computer')
 
-        self.appExe = 'MaxIm_DL.exe'
-
-        self.data['Camera']['AppAvailable'], self.data['Camera']['AppName'], self.data['Camera']['AppInstallPath'] = self.app.checkRegistrationKeys('MaxIm DL')
-        if self.data['Camera']['AppAvailable']:
-            self.app.messageQueue.put('Found: {0}\n'.format(self.data['Camera']['AppName']))
-            self.logger.info('Name: {0}, Path: {1}'.format(self.data['Camera']['AppName'], self.data['Camera']['AppInstallPath']))
-        else:
-            self.logger.info('Application MaxIm DL not found on computer')
-        self.data['Solver']['AppAvailable'] = self.data['Camera']['AppAvailable']
-        self.data['Solver']['AppName'] = self.data['Camera']['AppName']
-        self.data['Solver']['AppInstallPath'] = self.data['Camera']['AppInstallPath']
-
-    def run(self):
-        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        self.mutexIsRunning.lock()
-        if not self.isRunning:
-            self.isRunning = True
-        self.mutexIsRunning.unlock()
-        if self.driverNameCamera != '' and self.driverNameDocument != '':
-            pythoncom.CoInitialize()
-            try:
-                if not self.maximCamera:
-                    self.maximCamera = Dispatch(self.driverNameCamera)
-                if not self.maximDocument:
-                    self.maximDocument = Dispatch(self.driverNameDocument)
-                if not self.maximCamera.LinkEnabled:
-                    self.maximCamera.LinkEnabled = True
-                self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
-                self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
-                self.setCameraProps()
-            except Exception as e:
-                self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
-                self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
-                self.logger.error('error: {0}'.format(e))
-                self.isRunning = False
-            finally:
-                if self.isRunning:
-                    self.setStatus()
-                    self.setCameraProps()
-        while self.isRunning:
-            if not self.commandQueue.empty():
-                command = self.commandQueue.get()
-                if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
-                elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.maximCamera.LinkEnabled = False
-        self.maximCamera = None
-        self.maximDocument = None
+    def startMaxim(self):
         pythoncom.CoUninitialize()
+        try:
+            self.maximCamera
+            self.maximCamera.LinkEnabled = True
+            self.data['CONNECTION']['CONNECT'] = 'Off'
+            self.logger.info('Maxim started')
+        except Exception as e:
+            self.logger.info('Maxim could not be started, error:{0}'.format(e))
+        finally:
+            pass
 
-    def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
+    def stopMaxim(self):
+        try:
+            if self.maximCamera:
+                self.maximCamera.LinkEnabled = False
+                self.maximCamera = None
+                pythoncom.CoUninitialize()
+        except Exception as e:
+            self.logger.error('Could not stop maxim')
+        finally:
+            self.data['CONNECTION']['CONNECT'] = 'Off'
+            self.maximCamera = None
+
+    def getStatus(self):
+        if self.maximCamera:
+            status = self.maximCamera.CameraStatus
+            if status in [0, 1]:
+                self.data['CONNECTION']['CONNECT'] = 'Off'
+            elif status in [2, 3, 5]:
+                self.data['CONNECTION']['CONNECT'] = 'On'
+            else:
+                self.logger.error('Unknown camera status: {0}'.format(status))
+        else:
+            self.application['Status'] = 'ERROR'
+            self.data['CONNECTION']['CONNECT'] = 'Off'
+
+    def getCameraProps(self):
+        if self.maximCamera:
+            self.data['Gain'] = ['High']
+            self.data['CCD_INFO'] = {}
+            self.data['CCD_INFO']['CCD_MAX_X'] = self.maximCamera.CameraXSize
+            self.data['CCD_INFO']['CCD_MAX_Y'] = self.maximCamera.CameraYSize
+        else:
+            self.application['Status'] = 'ERROR'
+            self.data['CONNECTION']['CONNECT'] = 'Off'
+
+    def getImage(self, imageParams):
+        path = ''
+        self.data['Imaging'] = True
+        self.mutexCancel.lock()
+        self.cancel = False
+        self.mutexCancel.unlock()
+
+        # waiting for start integrating
+        self.main.cameraStatusText.emit('START')
+        suc, mes, guid = self.SgCaptureImage(binningMode=imageParams['Binning'],
+                                             exposureLength=imageParams['Exposure'],
+                                             iso=str(imageParams['Iso']),
+                                             gain=imageParams['Gain'],
+                                             speed=imageParams['Speed'],
+                                             frameType='Light',
+                                             filename=imageParams['File'],
+                                             path=imageParams['BaseDirImages'],
+                                             useSubframe=imageParams['CanSubframe'],
+                                             posX=imageParams['OffX'],
+                                             posY=imageParams['OffY'],
+                                             width=imageParams['SizeX'],
+                                             height=imageParams['SizeY'])
+        self.logger.info('SgCaptureImage: {0}'.format(mes))
+        if not suc:
+            self.logger.warning('Imaging no start, message: {0}'.format(mes))
+            self.main.cameraStatusText.emit('ERROR')
+            imageParams['Imagepath'] = ''
+            self.mutexCancel.lock()
+            self.cancel = True
+            self.mutexCancel.unlock()
+
+        # loop for integrating
+        self.main.cameraStatusText.emit('INTEGRATE')
+        # wait for start integrating
+        while not self.cancel:
+            suc, state, message = self.SgGetDeviceStatus('Camera')
+            if 'integrating' in message:
+                break
+            time.sleep(0.1)
+        # bow for the duration
+        while not self.cancel:
+            suc, state, message = self.SgGetDeviceStatus('Camera')
+            if 'downloading' in message or 'ready' in message or 'idle' in message:
+                break
+            time.sleep(0.1)
+
+        # Loop for downloading
+        self.main.imageIntegrated.emit()
+        self.main.cameraStatusText.emit('DOWNLOAD')
+        while not self.cancel:
+            suc, path = self.SgGetImagePath(guid)
+            if suc:
+                break
+            time.sleep(0.1)
+
+        # Loop for saving
+        self.main.imageDownloaded.emit()
+        self.main.cameraStatusText.emit('SAVING')
+        while not self.cancel:
+            suc, state, message = self.SgGetDeviceStatus('Camera')
+            if 'ready' in message or 'idle' in message:
+                break
+            time.sleep(0.1)
+
+        # finally idle
+        self.main.imageSaved.emit()
+        self.main.cameraStatusText.emit('IDLE')
+        self.main.cameraExposureTime.emit('')
+        imageParams['Imagepath'] = path.replace('\\', '/')
+        self.data['Imaging'] = False
 
     def setStatus(self):
         if self.maximCamera:
@@ -169,24 +222,6 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
-    def setCameraProps(self):
-        if self.maximCamera:
-            if 'CONNECTION' in self.data['Camera']:
-                if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                    self.data['Camera']['Gain'] = 'Not Set'
-                    if False:
-                        self.data['Camera']['CCD_FRAME'] = {}
-                        self.data['Camera']['CCD_FRAME']['HEIGHT'] = self.maximCamera.CameraXSize
-                        self.data['Camera']['CCD_FRAME']['WIDTH'] = self.maximCamera.CameraYSize
-                        self.data['Camera']['CCD_FRAME']['X'] = 0
-                        self.data['Camera']['CCD_FRAME']['Y'] = 0
-                    self.data['Camera']['CCD_INFO'] = {}
-                    self.data['Camera']['CCD_INFO']['CCD_MAX_X'] = self.maximCamera.CameraXSize
-                    self.data['Camera']['CCD_INFO']['CCD_MAX_Y'] = self.maximCamera.CameraYSize
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.setCameraProps)
-
     def getImage(self, imageParams):
         suc = False
         mes = ''
@@ -218,54 +253,4 @@ class MaximDLCamera(PyQt5.QtCore.QObject):
                 imageParams['Message'] = mes
         else:
             imageParams['Message'] = 'Camera not Connected'
-        return imageParams
-
-    def solveImage(self, imageParams):
-        startTime = time.time()
-        self.maximDocument.OpenFile(imageParams['Imagepath'].replace('/', '\\'))
-        ra = self.app.mount.transform.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTRA'), ' ')
-        dec = self.app.mount.transform.degStringToDecimal(self.maximDocument.GetFITSKey('OBJCTDEC'), ' ')
-        hint = self.maximDocument.GetFITSKey('CDELT1')
-        if not hint:
-            xpixsz = self.maximDocument.GetFITSKey('XPIXSZ')
-            focallen = self.maximDocument.GetFITSKey('FOCALLEN')
-            hint = float(xpixsz) * 206.6 / float(focallen)
-        else:
-            hint = float(hint)
-        self.logger.info('solving pinpoint with ra:{0}, dec:{1}, hint:{2}'.format(ra, dec, hint))
-        self.maximDocument.PinPointSolve(ra, dec, hint, hint)
-        while True:
-            try:
-                status = self.maximDocument.PinPointStatus
-                if status != 3:
-                    # 3 means solving
-                    break
-            except Exception as e:
-                # the request throws exception for reason of failing plate solve
-                if e.excepinfo[2] == 'The time limit for plate solving has expired':
-                    self.logger.warning('time limit from pinpoint has expired')
-                    self.logger.warning('solving message: {0}'.format(e))
-                else:
-                    self.logger.error('error: {0}'.format(e))
-            finally:
-                pass
-            time.sleep(0.25)
-        stopTime = time.time()
-        timeTS = (stopTime - startTime) / 1000
-        if status == 1:
-            self.logger.info('no start {0}'.format(status))
-            success = self.maximDocument.Close
-            if not success:
-                self.logger.error('document {0} could not be closed'.format(imageParams['Imagepath']))
-                imageParams['Message'] = 'Problem closing document in MaximDL'
-            else:
-                imageParams['Message'] = 'The time limit for plate solving has expired'
-        elif status == 2:
-            imageParams['RaJ2000Solved'] = self.maximDocument.CenterRA
-            imageParams['DecJ2000Solved'] = self.maximDocument.CenterDec
-            imageParams['Scale'] = self.maximDocument.ImageScale
-            imageParams['Angle'] = self.maximDocument.PositionAngle
-            imageParams['TimeTS'] = timeTS
-            self.logger.info('imageParams {0}'.format(imageParams))
-            imageParams['Message'] = 'Solved'
         return imageParams

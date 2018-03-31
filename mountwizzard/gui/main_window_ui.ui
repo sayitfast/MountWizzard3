@@ -134,7 +134,7 @@
     </font>
    </property>
    <property name="toolTip">
-    <string/>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Tabs for the main functions of model making&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="tabPosition">
     <enum>QTabWidget::North</enum>

@@ -75,6 +75,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
         if platform.system() == 'Windows':
             self.SGPro = sgpro_image.SGPro(self, self.app, self.data)
+            self.MaximDL = maximdl_image.MaximDL(self, self.app, self.data)
         self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
         self.NoneCam = noneCamera.NoneCamera(self, self.app, self.data)
 
@@ -98,8 +99,8 @@ class Imaging(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             if self.SGPro.application['Available']:
                 self.app.ui.pd_chooseImaging.addItem('SGPro - ' + self.SGPro.application['Name'])
-        #    if self.workerMaximDL.data['AppAvailable']:
-        #        self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
+            if self.MaximDL.application['Available']:
+                self.app.ui.pd_chooseImaging.addItem('MaximDL - ' + self.MaximDL.application['Name'])
         # if platform.system() == 'Windows' or platform.system() == 'Darwin':
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
@@ -124,18 +125,23 @@ class Imaging(PyQt5.QtCore.QObject):
     def chooseImaging(self):
         self.mutexChooser.lock()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
+            self.MaximDL.stopMaxim()
             self.cameraHandler = self.NoneCam
             self.logger.info('Actual camera is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
+            self.MaximDL.stopMaxim()
             self.cameraHandler = self.SGPro
             self.logger.info('Actual camera is SGPro')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
             self.cameraHandler = self.MaximDL
+            self.MaximDL.startMaxim()
             self.logger.info('Actual camera is MaximDL')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
+            self.MaximDL.stopMaxim()
             self.cameraHandler = self.INDICamera
             self.logger.info('Actual camera is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
+            self.MaximDL.stopMaxim()
             self.cameraHandler = self.TheSkyX
             self.logger.info('Actual camera is TheSkyX')
         self.cameraStatusText.emit('')
