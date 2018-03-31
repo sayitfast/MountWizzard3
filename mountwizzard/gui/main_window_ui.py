@@ -5504,7 +5504,7 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(2)
+        self.mainTabWidget.setCurrentIndex(0)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -5884,7 +5884,7 @@ class Ui_MainWindow(object):
         self.le_analyseFileName.setToolTip(_translate("MainWindow", "<html><head/><body><p>Name of Analysis file, where the data ist stored.</p><p>Please Double Click to select.</p></body></html>"))
         self.btn_loadAnalyseData.setToolTip(_translate("MainWindow", "<html><head/><body><p>Loads the modeling data from file.</p></body></html>"))
         self.btn_loadAnalyseData.setText(_translate("MainWindow", "Load"))
-        self.btn_runBatchModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Run full alignment model.</p></body></html>"))
+        self.btn_runBatchModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Run model making from a data file stored as analyse file</p></body></html>"))
         self.btn_runBatchModel.setText(_translate("MainWindow", "Make Model from\n"
 "Analyse File"))
         self.label_166.setText(_translate("MainWindow", "Pixel Size x/y for Camera"))
@@ -6387,14 +6387,4 @@ class Ui_MainWindow(object):
         self.le_astrometryStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.le_domeStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.label_110.setText(_translate("MainWindow", "Status"))
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QWidget()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
 
