@@ -230,6 +230,7 @@ class AnalyseWindow(widget.MwWidget):
 
         axe1.set_title('Model error', color='white', fontweight='bold')
         axe1.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
+        axe1.yaxis.set_label_position('right')
         axe1.set_xlabel('RA error (arcsec)', color='#C0C0C0')
         axe1.plot(valueY2, valueY1, color='#181818', zorder=-10)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
@@ -287,6 +288,7 @@ class AnalyseWindow(widget.MwWidget):
 
         axe1.set_title('Model error over modeled stars', color='white', fontweight='bold')
         axe1.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
+        axe1.yaxis.set_label_position('right')
         axe1.set_xlim(1, len(self.data['Index']))
         axe1.plot(self.data['Index'], valueY1, color='#181818', zorder=-10)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
@@ -294,6 +296,7 @@ class AnalyseWindow(widget.MwWidget):
 
         axe2.set_xlabel('Number of modeled point', color='white', fontweight='bold')
         axe2.set_ylabel('RA error (arcsec)', color='#C0C0C0')
+        axe2.yaxis.set_label_position('right')
         axe2.set_xlim(1, len(self.data['Index']))
         axe2.plot(self.data['Index'], valueY2, color='#181818', zorder=-10)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
@@ -330,23 +333,27 @@ class AnalyseWindow(widget.MwWidget):
 
         axe1.set_title('Model error over Azimuth', color='white', fontweight='bold')
         axe1.set_ylabel('RA error (arcsec)', color='#C0C0C0')
+        axe1.yaxis.set_label_position('right')
         axe1.set_xlim(0, 360)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
         axe1.scatter(self.data['Azimuth'], valueY2, marker='o', c=colors, s=30, zorder=10)
 
         axe2.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
         axe2.set_xlabel('Azimuth', color='white', fontweight='bold')
+        axe2.yaxis.set_label_position('right')
         axe2.set_xlim(0, 360)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
         axe2.scatter(self.data['Azimuth'], valueY1, marker='D', c=colors, s=30, zorder=10)
 
         axe3.set_title('Model error over Altitude', color='white', fontweight='bold')
         axe3.set_ylabel('RA error (arcsec)', color='#C0C0C0')
+        axe3.yaxis.set_label_position('right')
         axe3.set_xlim(0, 90)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
         axe3.scatter(self.data['Altitude'], valueY2, marker='o', c=colors, s=30, zorder=10)
         axe4.set_xlabel('Altitude', color='white', fontweight='bold')
         axe4.set_ylabel('DEC error (arcsec)', color='#C0C0C0')
+        axe4.yaxis.set_label_position('right')
         axe4.set_xlim(0, 90)
         colors = numpy.asarray(['blue' if x > 180 else 'green' for x in self.data['Azimuth']])
         axe4.scatter(self.data['Altitude'], valueY1, marker='D', c=colors, s=30, zorder=10)

@@ -12,12 +12,11 @@ x.x todo
 - show directions how to turn know for polar alignment
 - show upload for astrometry.net progress
 - get stored models from mount in list
+- Image Window: image calculations to separat thread (threadpool)
 
 3.0 todo
 
 - sometimes start slewing while integrating
 - omit ProcessEvents()
-- Image Window: image calculations to separat thread (threadpool)
-- Analyse window: ylable positions if labels are extended
 - possible bug in cancle full model run
 - still some deleted c++ methode from python wrapper
