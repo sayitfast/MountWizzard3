@@ -315,6 +315,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
         self.signalChangeStylesheet.connect(self.changeStylesheet)
+        self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
 
     def mountBoot(self):
         import socket
@@ -776,6 +777,29 @@ class MountWizzardApp(widget.MwWidget):
             self.analyseWindow.showWindow()
         else:
             self.logger.warning('no file selected')
+
+    def runBatchModel(self):
+        value = self.selectFile(self, 'Open analyse file for model programming', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
+        if value == '':
+            self.logger.warning('No file selected')
+            return
+        nameDataFile = value
+        self.logger.info('Modeling from {0}'.format(nameDataFile))
+        data = self.analyseData.loadData(nameDataFile)
+        if not('RaJNow' in data and 'DecJNow' in data):
+            self.logger.warning('RaJNow or DecJNow not in data file')
+            self.messageQueue.put('Mount coordinates missing\n')
+            return
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
+            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
+            self.messageQueue.put('Solved data missing\n')
+            return
+        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
+            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
+            self.messageQueue.put('Time and Pierside missing\n')
+            return
+        self.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
+        self.workerMountDispatcher.programBatchData(data)
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()

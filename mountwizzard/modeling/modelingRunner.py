@@ -626,25 +626,6 @@ class ModelingRunner:
             self.app.ui.le_analyseFileName.setText(name)
             self.analyseData.saveData(self.modelingResultData, name)
 
-    def runBatchModel(self):
-        nameDataFile = self.app.ui.le_analyseFileName.text()
-        self.logger.info('Modeling from {0}'.format(nameDataFile))
-        data = self.analyseData.loadData(nameDataFile)
-        if not('RaJNow' in data and 'DecJNow' in data):
-            self.logger.warning('RaJNow or DecJNow not in data file')
-            self.app.messageQueue.put('Mount coordinates missing\n')
-            return
-        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
-            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
-            self.app.messageQueue.put('Solved data missing\n')
-            return
-        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
-            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
-            self.app.messageQueue.put('Time and Pierside missing\n')
-            return
-        self.app.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
-        self.app.workerMountDispatcher.programBatchData(data)
-
     def plateSolveSync(self):
         self.app.messageQueue.put('#BWStart Sync Mount Model\n')
 
