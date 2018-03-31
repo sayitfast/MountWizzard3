@@ -18,6 +18,18 @@ extracting will take some seconds to start.
 MountWizzard supports tooltips. So hopefully if you don't get an idea, whats is going to happen,
 just put you mouse above a field or button and you will see the tooltip!
 
+###New Features since MountWizzard2.6
+- Support for profiles. Profile store everything which is customizable
+- Image making and solving
+- Multi Plattform support. MountWizzard runs now on Windows, MacOSX and Linux
+- Support for INDI framework (CCD, Telescope, Environment)
+- Support for Astrometry.Net Solver framework (Local and Online solver)
+- Editing / Load / Save of model points and horizon mask
+- New processes for model building
+- Performance improvements (faster model making)
+- Always showing actual model data
+
+
 ### Overview
 To get a first impression after start, please have a look to the [main screens and the gui](overview.md)
 MountWizzard is using and which windows you will experience from the beginning on.
