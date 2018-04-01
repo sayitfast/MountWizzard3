@@ -131,7 +131,6 @@ class MaximDL:
 
         # waiting for start integrating
         self.main.cameraStatusText.emit('START')
-        print('start')
         try:
             self.maximCamera.BinX = int(imageParams['Binning'])
             self.maximCamera.BinY = int(imageParams['Binning'])
@@ -151,6 +150,7 @@ class MaximDL:
                 self.mutexCancel.lock()
                 self.cancel = True
                 self.mutexCancel.unlock()
+                # wait for start integrating
                 while not self.cancel:
                     status = self.maximCamera.CameraStatus
                     if status not in [2]:
@@ -163,7 +163,6 @@ class MaximDL:
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
-        print('Integrate')
         # wait for start integrating
         while not self.cancel:
             status = self.maximCamera.CameraStatus
@@ -174,7 +173,6 @@ class MaximDL:
         # Loop for downloading
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
-        print('Download')
         while not self.cancel:
             status = self.maximCamera.CameraStatus
             if status in [2]:
@@ -184,9 +182,9 @@ class MaximDL:
         # Loop for saving
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
-        print('save')
         while not self.cancel:
-            self.maximCamera.SaveImage(path)
+            imageParams['Imagepath'] = imageParams['BaseDirImages'] + '/' + imageParams['File']
+            self.maximCamera.SaveImage(imageParams['Imagepath'])
             time.sleep(0.1)
             break
 
@@ -194,5 +192,4 @@ class MaximDL:
         self.main.imageSaved.emit()
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
-        imageParams['Imagepath'] = path.replace('\\', '/')
         self.data['Imaging'] = False
