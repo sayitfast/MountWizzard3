@@ -56,6 +56,7 @@ class MaximDL:
                 self.logger.info('Application MaximDL not found on computer')
 
     def start(self):
+        print('maxim start')
         pythoncom.CoInitialize()
         try:
             self.maximCamera = Dispatch('MaxIm.CCDCamera')
@@ -70,17 +71,18 @@ class MaximDL:
             pass
 
     def stop(self):
+        print('maxim stop')
         try:
             if self.maximCamera:
                 self.data['CONNECTION']['CONNECT'] = 'Off'
                 self.maximCamera.LinkEnabled = False
                 self.maximCamera = None
-                pythoncom.CoUninitialize()
         except Exception as e:
             self.logger.error('Could not stop maxim')
         finally:
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.maximCamera = None
+            pythoncom.CoUninitialize()
 
     def getStatus(self):
         if self.maximCamera and self.data['CONNECTION']['CONNECT'] == 'On':

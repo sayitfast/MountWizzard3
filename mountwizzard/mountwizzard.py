@@ -151,7 +151,6 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
-        self.workerMountDispatcher.signalMountConnectedProgAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
         # INDI client framework
         self.threadINDI = PyQt5.QtCore.QThread()
@@ -223,8 +222,8 @@ class MountWizzardApp(widget.MwWidget):
         # get ascom state
         self.checkASCOM()
         # starting loop for cyclic data to gui from threads
+        # print('Thread ID Main:', int(PyQt5.QtCore.QThread.currentThreadId()))
         self.mainLoop()
-        # print('Thread ID:',int(PyQt5.QtCore.QThread.currentThreadId()))
 
     def workerAscomEnvironmentSetup(self):
         if platform.system() != 'Windows':

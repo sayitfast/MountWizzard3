@@ -75,7 +75,6 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def initConfig(self):
-        self.app.ui.pd_chooseAstrometry.currentIndexChanged.disconnect(self.chooseAstrometry)
         # build the drop down menu
         self.app.ui.pd_chooseAstrometry.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -102,8 +101,6 @@ class Astrometry(PyQt5.QtCore.QObject):
         finally:
             pass
         self.AstrometryClient.initConfig()
-        self.chooseAstrometry()
-        self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
@@ -116,6 +113,7 @@ class Astrometry(PyQt5.QtCore.QObject):
 
     def chooseAstrometry(self):
         self.mutexChooser.lock()
+        self.stop()
         if self.app.ui.pd_chooseAstrometry.currentText().startswith('No Solver'):
             self.astrometryHandler = self.NoneSolve
             self.logger.info('Actual plate solver is None')
@@ -136,6 +134,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'gray')
         else:
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
+        self.thread.start()
         self.mutexChooser.unlock()
 
     def run(self):

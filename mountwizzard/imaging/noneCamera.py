@@ -40,9 +40,11 @@ class NoneCamera:
         self.application['Runtime'] = 'Dummy Camera'
 
     def start(self):
+        print('start none')
         pass
 
     def stop(self):
+        print('stop none')
         pass
 
     def getStatus(self):

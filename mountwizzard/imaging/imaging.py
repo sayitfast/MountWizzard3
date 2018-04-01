@@ -80,7 +80,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
         self.NoneCam = noneCamera.NoneCamera(self, self.app, self.data)
 
-        # shortcuts for better usage
+        # set the camera handler to default position
         self.cameraHandler = self.NoneCam
 
         # signal slot links
@@ -88,7 +88,6 @@ class Imaging(PyQt5.QtCore.QObject):
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
-        self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect(self.chooseImaging)
         # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -114,8 +113,6 @@ class Imaging(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
-        self.chooseImaging()
-        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
@@ -164,11 +161,12 @@ class Imaging(PyQt5.QtCore.QObject):
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.cameraHandler.stop()
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.cameraHandler.stop()
-        self.thread.quit()
-        self.thread.wait()
 
     def captureImage(self, imageParams):
         imageParams['Imagepath'] = ''
