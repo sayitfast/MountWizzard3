@@ -123,8 +123,8 @@ class Astrometry(PyQt5.QtCore.QObject):
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('SGPro'):
             self.astrometryHandler = self.SGPro
             self.logger.info('Actual plate solver is SGPro')
-        elif self.app.ui.pd_chooseAstrometry.currentText().startswith('MaximDL'):
-            self.astrometryHandler = self.MaximDL
+        elif self.app.ui.pd_chooseAstrometry.currentText().startswith('PinPoint'):
+            self.astrometryHandler = self.PinPoint
             self.logger.info('Actual plate solver is MaximDL')
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('Astrometry'):
             self.astrometryHandler = self.AstrometryClient

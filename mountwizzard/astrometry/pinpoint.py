@@ -17,6 +17,7 @@ import logging
 import numpy
 import astropy.io.fits as pyfits
 from win32com.client.dynamic import Dispatch
+import pythoncom
 
 
 class PinPoint:
@@ -70,22 +71,34 @@ class PinPoint:
             self.pinpoint = None
             pythoncom.CoUninitialize()
 
-    def solveImage(self, modelData):
+    def getStatus(self):
+        if self.pinpoint:
+            self.data['CONNECTION']['CONNECT'] = 'On'
+            self.application['Status'] = 'OK'
+        else:
+            self.application['Status'] = 'ERROR'
+            self.data['CONNECTION']['CONNECT'] = 'Off'
+
+    def solveImage(self, imageParams):
         try:
-            self.pinpoint.AttachFITS(modelData['imagepath'])
-            self.pinpoint.ArcsecPerPixelHoriz = modelData['scaleHint']
-            self.pinpoint.ArcsecPerPixelVert = modelData['scaleHint']
+            self.pinpoint.AttachFITS(imageParams['Imagepath'])
+            self.pinpoint.ArcsecPerPixelHoriz = imageParams['ScaleHint']
+            self.pinpoint.ArcsecPerPixelVert = imageParams['ScaleHint']
             self.pinpoint.RightAscension = self.pinpoint.TargetRightAscension
             self.pinpoint.Declination = self.pinpoint.TargetDeclination
             self.pinpoint.Solve()
             self.pinpoint.DetachFITS()
-            modelData['dec_sol'] = float(self.pinpoint.Declination)
-            modelData['ra_sol'] = float(self.pinpoint.RightAscension)
-            modelData['scale'] = float(self.pinpoint.ArcsecPerPixelHoriz)
-            modelData['angle'] = float(self.pinpoint.RollAngle)
-            modelData['timeTS'] = 2.0
+            imageParams['DecJ2000Solved'] = float(self.pinpoint.Declination)
+            imageParams['RaJ2000Solved'] = float(self.pinpoint.RightAscension)
+            imageParams['Scale'] = float(self.pinpoint.ArcsecPerPixelHoriz)
+            imageParams['Angle'] = float(self.pinpoint.RollAngle)
+            imageParams['TimeTS'] = 2.0
+            imageParams['Solved'] = True
+            imageParams['Message'] = 'OK'
         except Exception as e:
             self.pinpoint.DetachFITS()
+            imageParams['Solved'] = False
+            imageParams['Message'] = 'Solve failed'
             self.logger.error('PinPoint solving error -> error: {0}'.format(e))
         finally:
             pass
