@@ -136,6 +136,8 @@ class AstrometryClient:
 
     def changedAstrometryClientConnectionSettings(self):
         if self.settingsChanged:
+            self.data['Status'] = 'ERROR'
+            self.data['CONNECTION']['CONNECT'] = 'Off'
             self.settingsChanged = False
             if self.app.ui.rb_useOnlineSolver.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
@@ -163,11 +165,15 @@ class AstrometryClient:
 
     def getStatus(self):
         try:
-            result = requests.head(self.urlAPI)
-            if result.status_code == 200:
+            result = requests.post(self.urlAPI)
+            if result.status_code in [200, 404]:
                 self.application['Available'] = True
                 self.application['Status'] = 'OK'
                 self.data['CONNECTION']['CONNECT'] = 'On'
+            else:
+                self.application['Available'] = True
+                self.data['Status'] = 'ERROR'
+                self.data['CONNECTION']['CONNECT'] = 'Off'
         except requests.exceptions.ConnectionError:
             self.logger.error('Connection to {0} not possible, connection refused')
             self.application['Available'] = False

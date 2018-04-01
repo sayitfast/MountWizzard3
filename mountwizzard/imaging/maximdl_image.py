@@ -28,6 +28,7 @@ import pythoncom
 
 class MaximDL:
     logger = logging.getLogger(__name__)
+    TIMEOUT = 5
 
     def __init__(self, main, app, data):
         self.main = main
@@ -42,8 +43,6 @@ class MaximDL:
         self.application['InstallPath'] = ''
         self.application['Status'] = ''
         self.application['Runtime'] = 'MaxIm_DL.exe'
-
-        self.driverNameCamera = 'MaxIm.CCDCamera'
         self.maximCamera = None
 
         if platform.system() == 'Windows':
@@ -79,7 +78,8 @@ class MaximDL:
             if self.maximCamera:
                 self.data['CONNECTION']['CONNECT'] = 'Off'
                 self.maximCamera.LinkEnabled = False
-                while self.maximCamera.LinkEnabled:
+                timeStart = time.time()
+                while self.maximCamera.LinkEnabled and (time.time() - timeStart) < self.TIMEOUT:
                     time.sleep(0.1)
                 self.maximCamera = None
         except Exception as e:
@@ -123,7 +123,6 @@ class MaximDL:
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def getImage(self, imageParams):
-        path = ''
         self.data['Imaging'] = True
         self.mutexCancel.lock()
         self.cancel = False

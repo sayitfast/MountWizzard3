@@ -27,6 +27,7 @@ import astropy.io.fits as pyfits
 
 from astrometry import astrometryClient
 from astrometry import sgpro_solve
+from astrometry import pinpoint
 from astrometry import noneSolver
 from astrometry import transform
 
@@ -65,6 +66,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         # external classes
         self.SGPro = sgpro_solve.SGPro(self, self.app, self.data)
         self.AstrometryClient = astrometryClient.AstrometryClient(self, self.app, self.data)
+        self.PinPoint = pinpoint.PinPoint(self, self.app, self.data)
         self.NoneSolve = noneSolver.NoneSolver(self, self.app, self.data)
 
         # set handler to default position
@@ -87,11 +89,12 @@ class Astrometry(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             if self.SGPro.application['Available']:
                 self.app.ui.pd_chooseAstrometry.addItem('SGPro - ' + self.SGPro.application['Name'])
-        #    if self.workerMaximDL.data['AppAvailable']:
-        #        self.app.ui.pd_chooseAstrometry.addItem('MaximDL - ' + self.workerMaximDL.data['AppName'])
+            if self.PinPoint.application['Available']:
+                self.app.ui.pd_chooseAstrometry.addItem('PinPoint - ' + self.PinPoint.application['Name'])
         # if platform.system() == 'Windows' or platform.system() == 'Darwin':
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseAstrometry.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
+
         # load the config data
         try:
             if 'AstrometryApplication' in self.app.config:
@@ -196,14 +199,13 @@ class Astrometry(PyQt5.QtCore.QObject):
         else:
             if self.astrometryHandler.application['Status'] == 'ERROR':
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
-            else:
-                if self.astrometryHandler.application['Status'] == 'OK':
-                    if self.data['CONNECTION']['CONNECT'] == 'Off':
-                        self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'yellow')
-                    else:
-                        self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
+            elif self.astrometryHandler.application['Status'] in ['OK', '']:
+                if self.data['CONNECTION']['CONNECT'] == 'Off':
+                    self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'yellow')
                 else:
-                    self.logger.warning('This state is undefined')
+                    self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
+            else:
+                self.logger.warning('This state is undefined')
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
 
