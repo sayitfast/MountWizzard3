@@ -56,6 +56,12 @@ class INDICamera:
 
         self.app.workerINDI.receivedImage.connect(self.setReceivedImage)
 
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
     def setReceivedImage(self, status):
         self.mutexReceived.lock()
         if status:

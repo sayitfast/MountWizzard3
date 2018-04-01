@@ -29,8 +29,6 @@ import pythoncom
 class MaximDL:
     logger = logging.getLogger(__name__)
 
-    CAMERA_STATUS = {'1': 'DISCONN', '0': 'DISCONN', '5': 'DOWNLOAD', '2': 'IDLE', '3': 'INTEGRATE'}
-
     def __init__(self, main, app, data):
         self.main = main
         self.app = app
@@ -57,21 +55,25 @@ class MaximDL:
             else:
                 self.logger.info('Application MaximDL not found on computer')
 
-    def startMaxim(self):
-        pythoncom.CoUninitialize()
+    def start(self):
+        print('start maxim')
+        pythoncom.CoInitialize()
         try:
-            self.maximCamera
+            self.maximCamera = Dispatch('MaxIm.CCDCamera')
             self.maximCamera.LinkEnabled = True
-            self.data['CONNECTION']['CONNECT'] = 'Off'
+            self.data['CONNECTION']['CONNECT'] = 'On'
             self.logger.info('Maxim started')
+            self.application['Status'] = 'OK'
         except Exception as e:
             self.logger.info('Maxim could not be started, error:{0}'.format(e))
+            self.application['Status'] = 'ERROR'
         finally:
             pass
 
-    def stopMaxim(self):
+    def stop(self):
         try:
             if self.maximCamera:
+                self.data['CONNECTION']['CONNECT'] = 'Off'
                 self.maximCamera.LinkEnabled = False
                 self.maximCamera = None
                 pythoncom.CoUninitialize()
@@ -82,7 +84,7 @@ class MaximDL:
             self.maximCamera = None
 
     def getStatus(self):
-        if self.maximCamera:
+        if self.maximCamera and self.data['CONNECTION']['CONNECT'] == 'On':
             status = self.maximCamera.CameraStatus
             if status in [0, 1]:
                 self.data['CONNECTION']['CONNECT'] = 'Off'
@@ -95,7 +97,7 @@ class MaximDL:
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def getCameraProps(self):
-        if self.maximCamera:
+        if self.maximCamera and self.data['CONNECTION']['CONNECT'] == 'On':
             self.data['Gain'] = ['High']
             self.data['CCD_INFO'] = {}
             self.data['CCD_INFO']['CCD_MAX_X'] = self.maximCamera.CameraXSize
@@ -105,6 +107,8 @@ class MaximDL:
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def getImage(self, imageParams):
+        if not self.maximCamera or self.data['CONNECTION']['CONNECT'] == 'Off':
+            return
         path = ''
         self.data['Imaging'] = True
         self.mutexCancel.lock()

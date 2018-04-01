@@ -75,6 +75,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def initConfig(self):
+        self.app.ui.pd_chooseAstrometry.currentIndexChanged.disconnect(self.chooseAstrometry)
         # build the drop down menu
         self.app.ui.pd_chooseAstrometry.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -102,6 +103,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             pass
         self.AstrometryClient.initConfig()
         self.chooseAstrometry()
+        self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()

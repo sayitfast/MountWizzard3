@@ -39,6 +39,12 @@ class NoneCamera:
         self.application['Status'] = 'OK'
         self.application['Runtime'] = 'Dummy Camera'
 
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
     def getStatus(self):
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'

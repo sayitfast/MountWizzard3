@@ -65,6 +65,12 @@ class SGPro:
             else:
                 self.logger.info('Application SGPro not found on computer')
 
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
     def getStatus(self):
         suc, state, message = self.SgGetDeviceStatus('Camera')
         if suc:

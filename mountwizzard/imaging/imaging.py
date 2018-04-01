@@ -66,6 +66,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.imagingCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
+        self.mutexData = PyQt5.QtCore.QMutex()
 
         # class data
         self.data = dict()
@@ -87,6 +88,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def initConfig(self):
+        self.app.ui.pd_chooseImaging.currentIndexChanged.disconnect(self.chooseImaging)
         # build the drop down menu
         self.app.ui.pd_chooseImaging.clear()
         view = PyQt5.QtWidgets.QListView()
@@ -113,6 +115,7 @@ class Imaging(PyQt5.QtCore.QObject):
         finally:
             pass
         self.chooseImaging()
+        self.app.ui.pd_chooseImaging.currentIndexChanged.connect(self.chooseImaging)
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
@@ -124,27 +127,24 @@ class Imaging(PyQt5.QtCore.QObject):
 
     def chooseImaging(self):
         self.mutexChooser.lock()
+        self.cameraHandler.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
-            self.MaximDL.stopMaxim()
             self.cameraHandler = self.NoneCam
             self.logger.info('Actual camera is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
-            self.MaximDL.stopMaxim()
             self.cameraHandler = self.SGPro
             self.logger.info('Actual camera is SGPro')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('MaximDL'):
             self.cameraHandler = self.MaximDL
-            self.MaximDL.startMaxim()
             self.logger.info('Actual camera is MaximDL')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('INDI'):
-            self.MaximDL.stopMaxim()
             self.cameraHandler = self.INDICamera
             self.logger.info('Actual camera is INDI Camera')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('TheSkyX'):
-            self.MaximDL.stopMaxim()
             self.cameraHandler = self.TheSkyX
             self.logger.info('Actual camera is TheSkyX')
         self.cameraStatusText.emit('')
+        self.cameraHandler.start()
         self.mutexChooser.unlock()
 
     def run(self):
