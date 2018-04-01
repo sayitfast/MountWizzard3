@@ -487,6 +487,8 @@ class MwWidget(QWidget):
 
     def closeEvent(self, closeEvent):
         self.showStatus = False
+        if self.windowTitle().startswith('MountWizzard'):
+            self.quit()
 
     @staticmethod
     def widgetIcon(gui, icon):

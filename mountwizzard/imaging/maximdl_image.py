@@ -56,7 +56,6 @@ class MaximDL:
                 self.logger.info('Application MaximDL not found on computer')
 
     def start(self):
-        print('start maxim')
         pythoncom.CoInitialize()
         try:
             self.maximCamera = Dispatch('MaxIm.CCDCamera')
@@ -85,13 +84,14 @@ class MaximDL:
 
     def getStatus(self):
         if self.maximCamera and self.data['CONNECTION']['CONNECT'] == 'On':
-            status = self.maximCamera.CameraStatus
-            if status in [0, 1]:
-                self.data['CONNECTION']['CONNECT'] = 'Off'
-            elif status in [2, 3, 5]:
-                self.data['CONNECTION']['CONNECT'] = 'On'
-            else:
-                self.logger.error('Unknown camera status: {0}'.format(status))
+            if self.maximCamera.LinkEnabled:
+                status = self.maximCamera.CameraStatus
+                if status in [0, 1]:
+                    self.data['CONNECTION']['CONNECT'] = 'Off'
+                elif status in [2, 3, 5]:
+                    self.data['CONNECTION']['CONNECT'] = 'On'
+                else:
+                    self.logger.error('Unknown camera status: {0}'.format(status))
         else:
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
@@ -107,8 +107,6 @@ class MaximDL:
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def getImage(self, imageParams):
-        if not self.maximCamera or self.data['CONNECTION']['CONNECT'] == 'Off':
-            return
         path = ''
         self.data['Imaging'] = True
         self.mutexCancel.lock()
@@ -117,40 +115,37 @@ class MaximDL:
 
         # waiting for start integrating
         self.main.cameraStatusText.emit('START')
-        suc, mes, guid = self.SgCaptureImage(binningMode=imageParams['Binning'],
-                                             exposureLength=imageParams['Exposure'],
-                                             iso=str(imageParams['Iso']),
-                                             gain=imageParams['Gain'],
-                                             speed=imageParams['Speed'],
-                                             frameType='Light',
-                                             filename=imageParams['File'],
-                                             path=imageParams['BaseDirImages'],
-                                             useSubframe=imageParams['CanSubframe'],
-                                             posX=imageParams['OffX'],
-                                             posY=imageParams['OffY'],
-                                             width=imageParams['SizeX'],
-                                             height=imageParams['SizeY'])
-        self.logger.info('SgCaptureImage: {0}'.format(mes))
-        if not suc:
-            self.logger.warning('Imaging no start, message: {0}'.format(mes))
-            self.main.cameraStatusText.emit('ERROR')
-            imageParams['Imagepath'] = ''
-            self.mutexCancel.lock()
-            self.cancel = True
-            self.mutexCancel.unlock()
+        try:
+            self.maximCamera.BinX = int(imageParams['Binning'])
+            self.maximCamera.BinY = int(imageParams['Binning'])
+            self.maximCamera.NumX = int(imageParams['SizeX'])
+            self.maximCamera.NumY = int(imageParams['SizeY'])
+            self.maximCamera.StartX = int(imageParams['OffX'])
+            self.maximCamera.StartY = int(imageParams['OffY'])
+            if imageParams['Speed'] == 'HiSpeed':
+                self.maximCamera.FastReadout = True
+            else:
+                self.maximCamera.FastReadout = False
+            suc = self.maximCamera.Expose(imageParams['Exposure'], 1)
+            if not suc:
+                self.logger.warning('Imaging no start, message: {0}'.format(mes))
+                self.main.cameraStatusText.emit('ERROR')
+                imageParams['Imagepath'] = ''
+                self.mutexCancel.lock()
+                self.cancel = True
+                self.mutexCancel.unlock()
+        except Exception as e:
+            self.logger.error('Could not start imaging, error: {0}'.format(e))
+        finally:
+            pass
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
         # wait for start integrating
         while not self.cancel:
-            suc, state, message = self.SgGetDeviceStatus('Camera')
-            if 'integrating' in message:
-                break
-            time.sleep(0.1)
-        # bow for the duration
-        while not self.cancel:
-            suc, state, message = self.SgGetDeviceStatus('Camera')
-            if 'downloading' in message or 'ready' in message or 'idle' in message:
+            status = self.maximCamera.CameraStatus
+            print('loop integrating', status)
+            if status in [4, 5, 6, 8]:
                 break
             time.sleep(0.1)
 
@@ -158,8 +153,9 @@ class MaximDL:
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
         while not self.cancel:
-            suc, path = self.SgGetImagePath(guid)
-            if suc:
+            status = self.maximCamera.CameraStatus
+            print('loop download', status)
+            if status in [2]:
                 break
             time.sleep(0.1)
 
@@ -167,10 +163,10 @@ class MaximDL:
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
         while not self.cancel:
-            suc, state, message = self.SgGetDeviceStatus('Camera')
-            if 'ready' in message or 'idle' in message:
-                break
+            print('loop save', status)
+            self.maximCamera.SaveImage(path)
             time.sleep(0.1)
+            break
 
         # finally idle
         self.main.imageSaved.emit()
@@ -178,53 +174,6 @@ class MaximDL:
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = path.replace('\\', '/')
         self.data['Imaging'] = False
-
-    def setStatus(self):
-        if self.maximCamera:
-            mes = str(self.maximCamera.CameraStatus)
-            if mes in self.CAMERASTATUS:
-                self.data['Camera']['CONNECTION']['CONNECT'] = 'On'
-                self.cameraStatusText.emit(self.CAMERASTATUS[mes])
-                self.data['Camera']['Status'] = self.CAMERASTATUS[mes]
-                if self.data['Camera']['Status'] == 'DISCONN':
-                    self.data['Camera']['CONNECTION']['CONNECT'] = 'Off'
-                    self.cameraStatusText.emit('DISCONN')
-            else:
-                self.logger.error('Unknown camera status: {0}'.format(mes))
-                self.cameraStatusText.emit(self.data['Camera']['Status'])
-                self.cameraExposureTime.emit('---')
-
-        if self.maximDocument:
-            mes = str(self.maximDocument.PinPointStatus)
-            if mes in self.SOLVERSTATUS:
-                self.data['Solver']['CONNECTION']['CONNECT'] = 'On'
-                self.solverStatusText.emit(self.SOLVERSTATUS[mes])
-                self.data['Solver']['Status'] = self.SOLVERSTATUS[mes]
-                if self.data['Camera']['Status'] == 'DISCONN':
-                    self.data['Solver']['CONNECTION']['CONNECT'] = 'Off'
-                    self.solverStatusText.emit('DISCONN')
-            else:
-                self.logger.error('Unknown camera status: {0}'.format(mes))
-                self.solverStatusText.emit(self.data['Solver']['Status'])
-
-        if 'CONNECTION' in self.data['Camera']:
-            if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
-                self.app.workerModelingDispatcher.signalStatusCamera.emit(3)
-            else:
-                self.app.workerModelingDispatcher.signalStatusCamera.emit(2)
-        else:
-            self.app.workerModelingDispatcher.signalStatusCamera.emit(0)
-
-        if 'CONNECTION' in self.data['Solver']:
-            if self.data['Solver']['CONNECTION']['CONNECT'] == 'On':
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(3)
-            else:
-                self.app.workerModelingDispatcher.signalStatusSolver.emit(2)
-        else:
-            self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
 
     def getImage(self, imageParams):
         suc = False

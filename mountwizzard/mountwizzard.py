@@ -730,6 +730,26 @@ class MountWizzardApp(widget.MwWidget):
             self.workerINDI.stop()
         PyQt5.QtCore.QCoreApplication.quit()
 
+    def quit(self):
+        self.workerAstrometry.astrometryCancel.emit()
+        self.workerImaging.imagingCancel.emit()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
+        if platform.system() == 'Windows':
+            if self.workerUpload.isRunning:
+                self.workerUpload.stop()
+        if self.workerRemote.isRunning:
+            self.workerRemote.stop()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
+        if self.workerMountDispatcher.isRunning:
+            self.workerMountDispatcher.stop()
+        if self.workerINDI.isRunning:
+            self.workerINDI.stop()
+        PyQt5.QtCore.QCoreApplication.quit()
+
     def saveConfigData(self, filepath=''):
         self.storeConfig()
         try:
@@ -1254,9 +1274,8 @@ class MyApp(PyQt5.QtWidgets.QApplication):
             returnValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
         except Exception as e:
             logging.error('-----------------------------------------')
-            logging.error('Event:{0}'.format(event))
-            logging.error('EventType{0}'.format(event.type()))
-            logging.error('Event Thread:{0}'.format(event.thread().currentThreadId()))
+            logging.error('Event: {0}'.format(event))
+            logging.error('EventType: {0}'.format(event.type()))
             logging.error('Exception error in event loop: {0}'.format(e))
             logging.error('-----------------------------------------')
             returnValue = False

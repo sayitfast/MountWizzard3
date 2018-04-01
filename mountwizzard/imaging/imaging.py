@@ -127,7 +127,7 @@ class Imaging(PyQt5.QtCore.QObject):
 
     def chooseImaging(self):
         self.mutexChooser.lock()
-        self.cameraHandler.stop()
+        self.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
             self.cameraHandler = self.NoneCam
             self.logger.info('Actual camera is None')
@@ -144,7 +144,7 @@ class Imaging(PyQt5.QtCore.QObject):
             self.cameraHandler = self.TheSkyX
             self.logger.info('Actual camera is TheSkyX')
         self.cameraStatusText.emit('')
-        self.cameraHandler.start()
+        self.thread.start()
         self.mutexChooser.unlock()
 
     def run(self):
@@ -153,6 +153,7 @@ class Imaging(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.cameraHandler.start()
         self.getStatus()
         while self.isRunning:
             if not self.imagingCommandQueue.empty():
@@ -165,6 +166,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
+        self.cameraHandler.stop()
         self.thread.quit()
         self.thread.wait()
 
