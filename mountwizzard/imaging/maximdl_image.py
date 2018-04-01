@@ -79,10 +79,12 @@ class MaximDL:
             if self.maximCamera:
                 self.data['CONNECTION']['CONNECT'] = 'Off'
                 self.maximCamera.LinkEnabled = False
-                time.sleep(0.1)
+                while self.maximCamera.LinkEnabled:
+                    time.sleep(0.1)
                 self.maximCamera = None
         except Exception as e:
             self.logger.error('Could not stop maxim, error: {0}'.format(e))
+            self.application['Status'] = 'ERROR'
         finally:
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.maximCamera = None
@@ -90,17 +92,22 @@ class MaximDL:
 
     def getStatus(self):
         if self.maximCamera:
-            if self.maximCamera.LinkEnabled:
-                status = self.maximCamera.CameraStatus
-                if status in [0, 1]:
-                    self.data['CONNECTION']['CONNECT'] = 'Off'
-                    self.application['Status'] = 'OK'
-                elif status in [2, 3, 5]:
-                    self.data['CONNECTION']['CONNECT'] = 'On'
-                    self.application['Status'] = 'OK'
-                else:
-                    self.logger.error('Unknown camera status: {0}'.format(status))
-                    self.application['Status'] = 'ERROR'
+            try:
+                if self.maximCamera.LinkEnabled:
+                    status = self.maximCamera.CameraStatus
+                    if status in [0, 1]:
+                        self.data['CONNECTION']['CONNECT'] = 'Off'
+                        self.application['Status'] = 'OK'
+                    elif status in [2, 3, 5]:
+                        self.data['CONNECTION']['CONNECT'] = 'On'
+                        self.application['Status'] = 'OK'
+                    else:
+                        self.logger.error('Unknown camera status: {0}'.format(status))
+                        self.application['Status'] = 'ERROR'
+            except Exception as e:
+                self.stop()
+            finally:
+                pass
         else:
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
@@ -124,6 +131,7 @@ class MaximDL:
 
         # waiting for start integrating
         self.main.cameraStatusText.emit('START')
+        print('start')
         try:
             self.maximCamera.BinX = int(imageParams['Binning'])
             self.maximCamera.BinY = int(imageParams['Binning'])
@@ -143,6 +151,11 @@ class MaximDL:
                 self.mutexCancel.lock()
                 self.cancel = True
                 self.mutexCancel.unlock()
+                while not self.cancel:
+                    status = self.maximCamera.CameraStatus
+                    if status not in [2]:
+                        break
+                    time.sleep(0.1)
         except Exception as e:
             self.logger.error('Could not start imaging, error: {0}'.format(e))
         finally:
@@ -150,10 +163,10 @@ class MaximDL:
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
+        print('Integrate')
         # wait for start integrating
         while not self.cancel:
             status = self.maximCamera.CameraStatus
-            print('loop integrating', status)
             if status in [4, 5, 6, 8]:
                 break
             time.sleep(0.1)
@@ -161,9 +174,9 @@ class MaximDL:
         # Loop for downloading
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
+        print('Download')
         while not self.cancel:
             status = self.maximCamera.CameraStatus
-            print('loop download', status)
             if status in [2]:
                 break
             time.sleep(0.1)
@@ -171,8 +184,8 @@ class MaximDL:
         # Loop for saving
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
+        print('save')
         while not self.cancel:
-            print('loop save', status)
             self.maximCamera.SaveImage(path)
             time.sleep(0.1)
             break
@@ -183,36 +196,3 @@ class MaximDL:
         self.main.cameraExposureTime.emit('')
         imageParams['Imagepath'] = path.replace('\\', '/')
         self.data['Imaging'] = False
-
-    def getImage(self, imageParams):
-        suc = False
-        mes = ''
-        if self.maximCamera:
-            try:
-                self.maximCamera.BinX = int(imageParams['Binning'])
-                self.maximCamera.BinY = int(imageParams['Binning'])
-                self.maximCamera.NumX = int(imageParams['SizeX'])
-                self.maximCamera.NumY = int(imageParams['SizeY'])
-                self.maximCamera.StartX = int(imageParams['OffX'])
-                self.maximCamera.StartY = int(imageParams['OffY'])
-                if imageParams['Speed'] == 'HiSpeed':
-                    self.maximCamera.FastReadout = True
-                else:
-                    self.maximCamera.FastReadout = False
-                suc = self.maximCamera.Expose(imageParams['Exposure'], 1)
-                if not suc:
-                    self.logger.error('could not start exposure')
-                while not self.maximCamera.ImageReady:
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
-                path = imageParams['BaseDirImages'] + '/' + imageParams['File']
-                self.maximCamera.SaveImage(path)
-                imageParams['Imagepath'] = path
-                mes = 'Image integrated'
-            except Exception as e:
-                self.logger.error('error: {0}'.format(e))
-            finally:
-                imageParams['Message'] = mes
-        else:
-            imageParams['Message'] = 'Camera not Connected'
-        return imageParams
