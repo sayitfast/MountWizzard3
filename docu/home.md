@@ -3,7 +3,7 @@
 MountWizzard is a open source software for adding features and functions for astronomers,
 who are using a 10micron mount. MountWizzard is written in python and uses some other astronomy
 and utility packages (e.g. PyQt5, astropy,...). As python and Qt is available on multiple platforms,
-so does MountWizzard. Actually with python 3.6.4 and PyQt5.10 you could use Mountwizzard on Windows,
+so does MountWizzard. Actually with python 3.6.5 and PyQt5.10.1 you could use Mountwizzard on Windows,
 Linux and Mac OS.
 
 The straight forward way of doing the install for experienced users is to have python installed on

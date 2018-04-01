@@ -67,7 +67,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.AstrometryClient = astrometryClient.AstrometryClient(self, self.app, self.data)
         self.NoneSolve = noneSolver.NoneSolver(self, self.app, self.data)
 
-        # shortcuts for better usage
+        # set handler to default position
         self.astrometryHandler = self.NoneSolve
 
         # signal slot links
@@ -143,6 +143,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.astrometryHandler.start()
         self.getStatus()
         while self.isRunning:
             if not self.astrometryCommandQueue.empty():
@@ -153,10 +154,12 @@ class Astrometry(PyQt5.QtCore.QObject):
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.astrometryHandler.stop()
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
 
     def solveImage(self, imageParams):
         if self.data['CONNECTION']['CONNECT'] == 'Off':

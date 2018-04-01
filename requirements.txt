@@ -1,7 +1,7 @@
 comtypes==1.1.1
 pywinauto==0.6.4
 pypiwin32==220
-PyQt5==5.10
+PyQt5==5.10.1
 matplotlib==2.1.2
 wakeonlan==1.0.0
 numpy==1.14.0

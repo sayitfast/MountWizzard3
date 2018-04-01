@@ -37,6 +37,12 @@ class NoneSolver:
         self.application['Status'] = 'OK'
         self.application['Runtime'] = 'Dummy Solver'
 
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
     def getStatus(self):
         self.application['Status'] = 'OK'
         self.data['CONNECTION']['CONNECT'] = 'On'

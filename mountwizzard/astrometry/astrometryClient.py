@@ -119,6 +119,12 @@ class AstrometryClient:
         self.app.config['LocalSolverTimeout'] = self.app.ui.le_timeoutLocal.text()
         self.app.config['AstrometryDownsample'] = self.app.ui.astrometryDownsampling.value()
 
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
     def setAstrometryNet(self):
         self.settingsChanged = True
         self.changedAstrometryClientConnectionSettings()
