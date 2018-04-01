@@ -56,14 +56,18 @@ class MaximDL:
                 self.logger.info('Application MaximDL not found on computer')
 
     def start(self):
-        print('maxim start')
         pythoncom.CoInitialize()
         try:
             self.maximCamera = Dispatch('MaxIm.CCDCamera')
             self.maximCamera.LinkEnabled = True
-            self.data['CONNECTION']['CONNECT'] = 'On'
-            self.logger.info('Maxim started')
-            self.application['Status'] = 'OK'
+            # test if link established
+            if self.maximCamera.LinkEnabled:
+                self.data['CONNECTION']['CONNECT'] = 'On'
+                self.logger.info('Maxim started')
+                self.application['Status'] = 'OK'
+            else:
+                self.logger.info('Maxim could not be started, error:{0}'.format(e))
+                self.application['Status'] = 'ERROR'
         except Exception as e:
             self.logger.info('Maxim could not be started, error:{0}'.format(e))
             self.application['Status'] = 'ERROR'
@@ -71,29 +75,32 @@ class MaximDL:
             pass
 
     def stop(self):
-        print('maxim stop')
         try:
             if self.maximCamera:
                 self.data['CONNECTION']['CONNECT'] = 'Off'
                 self.maximCamera.LinkEnabled = False
+                time.sleep(0.1)
                 self.maximCamera = None
         except Exception as e:
-            self.logger.error('Could not stop maxim')
+            self.logger.error('Could not stop maxim, error: {0}'.format(e))
         finally:
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.maximCamera = None
             pythoncom.CoUninitialize()
 
     def getStatus(self):
-        if self.maximCamera and self.data['CONNECTION']['CONNECT'] == 'On':
+        if self.maximCamera:
             if self.maximCamera.LinkEnabled:
                 status = self.maximCamera.CameraStatus
                 if status in [0, 1]:
                     self.data['CONNECTION']['CONNECT'] = 'Off'
+                    self.application['Status'] = 'OK'
                 elif status in [2, 3, 5]:
                     self.data['CONNECTION']['CONNECT'] = 'On'
+                    self.application['Status'] = 'OK'
                 else:
                     self.logger.error('Unknown camera status: {0}'.format(status))
+                    self.application['Status'] = 'ERROR'
         else:
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
