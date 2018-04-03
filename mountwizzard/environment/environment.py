@@ -33,6 +33,7 @@ class Environment(PyQt5.QtCore.QObject):
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_DATA = 2000
+    START_ENVIRONMENT_TIMEOUT = 4
 
     def __init__(self, app, thread):
         super().__init__()
@@ -167,6 +168,15 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
 
     def connect(self):
+        timeStart = time.time()
+        while True:
+            if time.time() - timeStart > self.START_ENVIRONMENT_TIMEOUT:
+                self.app.messageQueue.put('Timeout connect environment device\n')
+                break
+            if self.app.workerINDI.environmentDevice:
+                if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]:
+                    break
+            time.sleep(0.1)
         if self.app.workerINDI.environmentDevice != '':
             if self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'Off':
                 self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.environmentDevice}))

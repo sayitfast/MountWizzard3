@@ -36,6 +36,7 @@ class Dome(PyQt5.QtCore.QObject):
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLE_DATA = 1000
+    START_DOME_TIMEOUT = 4
 
     def __init__(self, app, thread):
         super().__init__()
@@ -186,6 +187,15 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
 
     def connect(self):
+        timeStart = time.time()
+        while True:
+            if time.time() - timeStart > self.START_DOME_TIMEOUT:
+                self.app.messageQueue.put('Timeout connect dome device\n')
+                break
+            if self.app.workerINDI.domeDevice:
+                if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]:
+                    break
+            time.sleep(0.1)
         if self.app.workerINDI.domeDevice != '':
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'Off':
                 self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.domeDevice}))

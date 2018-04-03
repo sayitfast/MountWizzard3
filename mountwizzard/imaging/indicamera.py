@@ -28,6 +28,7 @@ class INDICamera:
 
     # timeout is 40 seconds
     MAX_TIMEOUT = 40
+    START_CAMERA_TIMEOUT = 3
 
     def __init__(self, main, app, data):
         # make main sources available
@@ -58,6 +59,15 @@ class INDICamera:
 
     def start(self):
         # connect the camera if not present
+        timeStart = time.time()
+        while True:
+            if time.time() - timeStart > self.START_CAMERA_TIMEOUT:
+                self.app.messageQueue.put('Timeout connect camera\n')
+                break
+            if self.app.workerINDI.cameraDevice:
+                if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
+                    break
+            time.sleep(0.1)
         self.connect()
 
     def stop(self):
