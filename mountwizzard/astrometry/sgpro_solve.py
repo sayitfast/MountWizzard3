@@ -84,7 +84,6 @@ class SGPro:
             else:
                 self.logger.error('Unknown solver status: {0}'.format(state))
         else:
-            self.main.astrometryStatusText.emit('Not OK')
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
