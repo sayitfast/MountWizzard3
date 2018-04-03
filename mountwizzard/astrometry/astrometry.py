@@ -196,6 +196,13 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.astrometryHandler.solveImage(imageParams)
         else:
             fitsFileHandle.close()
+        if self.app.imageWindow.showStatus:
+            if imageParams['Solved']:
+                self.app.imageWindow.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
+                self.app.imageWindow.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+            else:
+                self.app.imageWindow.signalSetRaSolved.emit('not solved')
+                self.app.imageWindow.signalSetDecSolved.emit('not solved')
 
     def getStatus(self):
         self.astrometryHandler.getStatus()

@@ -221,7 +221,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                         if 'Message' in modelingData:
                             self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:95]))
                         else:
-                            self.main.app.messageQueue.put('\tSolving canceled')
+                            self.main.app.messageQueue.put('\tSolving canceled\n')
                 # write progress to hemisphere windows
                 self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
                 # write progress estimation to main gui

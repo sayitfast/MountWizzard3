@@ -81,7 +81,7 @@ class PinPoint:
             self.logger.info('Pinpoint could not be started, error:{0}'.format(e))
             self.application['Status'] = 'ERROR'
         finally:
-            self.app.messageQueue.put('catalogue: {0}, number: {1}'.format(self.app.ui.le_pinpointCatalogue.text(), cat))
+            self.app.messageQueue.put('Catalogue path: {0}, number scheme PinPoint: {1}'.format(self.app.ui.le_pinpointCatalogue.text(), cat))
             pass
 
     def stop(self):
