@@ -93,7 +93,7 @@ class AstrometryClient:
             if 'AstrometryDownsample' in self.app.config:
                 self.app.ui.astrometryDownsampling.setValue(self.app.config['AstrometryDownsample'])
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg for astrometry client could not be initialized, error:{0}'.format(e))
         finally:
             pass
         self.setIP()

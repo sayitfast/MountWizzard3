@@ -47,16 +47,41 @@ class PinPoint:
             else:
                 self.logger.info('Application PinPoint not found on computer')
 
+        # slots:
+        self.app.ui.btn_selectCatalogue.clicked.connect(self.setCatalogue)
+
+    def setCatalogue(self):
+        value = self.app.selectDir(self.app, 'Set PinPoint Star Catalogue', '/')
+        if value != '':
+            self.app.ui.le_pinpointCatalogue.setText(value)
+        else:
+            self.logger.warning('No catalogue file selected')
+
     def start(self):
         pythoncom.CoInitialize()
         try:
+            if self.app.ui.le_pinpointCatalogue.text() != '':
+                if 'UCAC4' in self.app.ui.le_pinpointCatalogue.text():
+                    cat = 11
+                elif 'GSC' in self.app.ui.le_pinpointCatalogue.text():
+                    cat = 3
+                elif 'UCAC3' in self.app.ui.le_pinpointCatalogue.text():
+                    cat = 10
+                elif 'USNO' in self.app.ui.le_pinpointCatalogue.text():
+                    cat = 7
+                else:
+                    self.logger.info('Pinpoint catalogue could not be configured')
+                    self.application['Status'] = 'ERROR'
+                    self.app.messageQueue.put('Pinpoint catalogue could not be configured')
+                    return
             self.pinpoint = Dispatch('PinPoint.Plate')
-            self.pinpoint.Catalog = 11
-            self.pinpoint.CatalogPath = 'C:/UCAC4'
+            self.pinpoint.Catalog = cat
+            self.pinpoint.CatalogPath = self.app.ui.le_pinpointCatalogue.text()
         except Exception as e:
             self.logger.info('Pinpoint could not be started, error:{0}'.format(e))
             self.application['Status'] = 'ERROR'
         finally:
+            self.app.messageQueue.put('catalogue: {0}, number: {1}'.format(self.app.ui.le_pinpointCatalogue.text(), cat))
             pass
 
     def stop(self):
@@ -81,7 +106,8 @@ class PinPoint:
 
     def solveImage(self, imageParams):
         try:
-            self.pinpoint.AttachFITS(imageParams['Imagepath'])
+            if not self.pinpoint.AttachFITS(imageParams['Imagepath']):
+                return
             self.pinpoint.ArcsecPerPixelHoriz = imageParams['ScaleHint']
             self.pinpoint.ArcsecPerPixelVert = imageParams['ScaleHint']
             self.pinpoint.RightAscension = self.pinpoint.TargetRightAscension
@@ -96,7 +122,6 @@ class PinPoint:
             imageParams['Solved'] = True
             imageParams['Message'] = 'OK'
         except Exception as e:
-            self.pinpoint.DetachFITS()
             imageParams['Solved'] = False
             imageParams['Message'] = 'Solve failed'
             self.logger.error('PinPoint solving error -> error: {0}'.format(e))

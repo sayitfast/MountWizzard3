@@ -533,6 +533,22 @@ class MwWidget(QWidget):
             name = name[:-len(extension)]
         return name
 
+    @staticmethod
+    def selectDir(window, title, folder):
+        dlg = PyQt5.QtWidgets.QFileDialog()
+        dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
+        dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
+        dlg.setViewMode(PyQt5.QtWidgets.QFileDialog.List)
+        dlg.setModal(True)
+        ph = window.geometry().height()
+        px = window.geometry().x()
+        py = window.geometry().y()
+        dw = window.width()
+        dh = window.height()
+        dlg.setGeometry(px, py + ph - dh, dw, dh)
+        value = dlg.getExistingDirectory(dlg, title, folder, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
+        return value
+
 
 # class for embed the matplotlib in pyqt5 framework
 class IntegrateMatplotlib(FigureCanvasQTAgg):

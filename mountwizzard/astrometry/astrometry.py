@@ -97,17 +97,20 @@ class Astrometry(PyQt5.QtCore.QObject):
         #        self.app.ui.pd_chooseAstrometry.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
         self.dropDownBuildFinished = True
         # load the config data
+        if 'PinPointCatalogue' in self.app.config:
+            self.app.ui.le_pinpointCatalogue.setText(self.app.config['PinPointCatalogue'])
         try:
             if 'AstrometryApplication' in self.app.config:
                 self.app.ui.pd_chooseAstrometry.setCurrentIndex(int(self.app.config['AstrometryApplication']))
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg for astrometry could not be initialized, error:{0}'.format(e))
         finally:
             pass
         self.AstrometryClient.initConfig()
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
+        self.app.config['PinPointCatalogue'] = self.app.ui.le_pinpointCatalogue.text()
         self.AstrometryClient.storeConfig()
 
     def setCancelAstrometry(self):
@@ -128,7 +131,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.logger.info('Actual plate solver is SGPro')
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('PinPoint'):
             self.astrometryHandler = self.PinPoint
-            self.logger.info('Actual plate solver is MaximDL')
+            self.logger.info('Actual plate solver is PinPoint')
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('Astrometry'):
             self.astrometryHandler = self.AstrometryClient
             self.logger.info('Actual plate solver is ASTROMETRY.NET')
