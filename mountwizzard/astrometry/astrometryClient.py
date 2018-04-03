@@ -164,6 +164,8 @@ class AstrometryClient:
             self.application['ServerIP'] = value
 
     def getStatus(self):
+        if self.urlAPI == '':
+            return
         try:
             result = requests.post(self.urlAPI)
             if result.status_code in [200, 404]:

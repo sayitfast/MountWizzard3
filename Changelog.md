@@ -9,10 +9,10 @@ x.x todo
 - function clear message window
 - get stored models from mount in list
 - show directions how to turn know for polar alignment
+- rewrite envoriment and dome to imaging and astrometry chooser
 
 3.1 todo
 - check TSX
-- check MaximDL
 - show best polar alignment star (south, closed to eclipse)
 - show upload for astrometry.net progress
 - Image Window: image calculations to separat thread (threadpool)

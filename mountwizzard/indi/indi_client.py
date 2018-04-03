@@ -335,7 +335,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     setVector = message.attr['name']
                     if setVector not in self.data['Device'][device]:
                         self.data['Device'][device][setVector] = {}
-                        self.logger.warning('Unknown SetVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
+                        self.logger.warning('SetVector before DefVector in INDI protocol, device: {0}, vector: {1}'.format(device, setVector))
                     if 'state' in message.attr:
                         self.data['Device'][device][setVector]['state'] = message.attr['state']
                     if 'timeout' in message.attr:
