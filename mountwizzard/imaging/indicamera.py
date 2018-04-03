@@ -57,7 +57,8 @@ class INDICamera:
         self.app.workerINDI.receivedImage.connect(self.setReceivedImage)
 
     def start(self):
-        pass
+        # connect the camera if not present
+        self.connectCamera()
 
     def stop(self):
         pass
