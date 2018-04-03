@@ -21,6 +21,7 @@ import logging
 import platform
 import PyQt5
 import time
+import indi.indi_xml as indiXML
 if platform.system() == 'Windows':
     from win32com.client.dynamic import Dispatch
     import pythoncom
@@ -40,6 +41,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.app = app
         self.thread = thread
+        self.dropDownBuildFinished = False
         self.data = {
             'Connected': False
         }
@@ -53,6 +55,7 @@ class Environment(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         # first build the pull down menu
+        self.dropDownBuildFinished = False
         self.app.ui.pd_chooseEnvironment.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseEnvironment.setView(view)
@@ -60,6 +63,7 @@ class Environment(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseEnvironment.addItem('ASCOM')
         self.app.ui.pd_chooseEnvironment.addItem('INDI')
+        self.dropDownBuildFinished = True
         # load the config including pull down setup
         try:
             if 'EnvironmentAscomDriverName' in self.app.config:
@@ -68,7 +72,7 @@ class Environment(PyQt5.QtCore.QObject):
             if 'Environment' in self.app.config:
                 self.app.ui.pd_chooseEnvironment.setCurrentIndex(int(self.app.config['Environment']))
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg for environment could not be initialized, error:{0}'.format(e))
         finally:
             pass
 
@@ -103,23 +107,24 @@ class Environment(PyQt5.QtCore.QObject):
             self.ascom = None
 
     def chooserEnvironment(self):
+        if not self.dropDownBuildFinished:
+            return
         self.mutexChooser.lock()
+        self.stop()
+        self.data['Connected'] = False
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
             self.stopAscom()
-            self.data['Connected'] = False
             self.logger.info('Actual environment is None')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('ASCOM'):
             self.startAscom()
             self.logger.info('Actual environment is ASCOM')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
             self.stopAscom()
-            if self.app.workerINDI.environmentDevice != '':
-                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
-            else:
-                self.data['Connected'] = False
+            self.connect()
             self.logger.info('Actual environment is INDI')
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
             self.signalEnvironmentConnected.emit(0)
+        self.thread.start()
         self.mutexChooser.unlock()
 
     def run(self):
@@ -130,7 +135,6 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         if platform.system() == 'Windows':
             pythoncom.CoInitialize()
-        self.chooserEnvironment()
         self.getData()
         while self.isRunning:
             if self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
@@ -153,13 +157,19 @@ class Environment(PyQt5.QtCore.QObject):
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.stopAscom()
+            if platform.system() == 'Windows':
+                pythoncom.CoUninitialize()
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.stopAscom()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
-        self.thread.quit()
-        self.thread.wait()
+
+    def connect(self):
+        if self.app.workerINDI.environmentDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'Off':
+                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.environmentDevice}))
 
     def getData(self):
         if self.data['Connected']:

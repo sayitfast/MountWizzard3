@@ -63,6 +63,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.isRunning = False
+        self.dropDownBuildFinished = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.imagingCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
@@ -89,10 +90,10 @@ class Imaging(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         # build the drop down menu
+        self.dropDownBuildFinished = False
         self.app.ui.pd_chooseImaging.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseImaging.setView(view)
-
         if self.NoneCam.application['Available']:
             self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.NoneCam.application['Name'])
         if self.INDICamera.application['Available']:
@@ -105,6 +106,7 @@ class Imaging(PyQt5.QtCore.QObject):
         # if platform.system() == 'Windows' or platform.system() == 'Darwin':
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseImaging.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
+        self.dropDownBuildFinished = True
         # load the config data
         try:
             if 'ImagingApplication' in self.app.config:
@@ -123,6 +125,8 @@ class Imaging(PyQt5.QtCore.QObject):
         self.cameraHandler.mutexCancel.unlock()
 
     def chooseImaging(self):
+        if not self.dropDownBuildFinished:
+            return
         self.mutexChooser.lock()
         self.stop()
         if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):

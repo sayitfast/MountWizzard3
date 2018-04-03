@@ -40,6 +40,7 @@ class Dome(PyQt5.QtCore.QObject):
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
+        self.dropDownBuildFinished = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexChooser = PyQt5.QtCore.QMutex()
 
@@ -57,6 +58,7 @@ class Dome(PyQt5.QtCore.QObject):
 
     def initConfig(self):
         # first build the pull down menu
+        self.dropDownBuildFinished = False
         self.app.ui.pd_chooseDome.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseDome.setView(view)
@@ -64,6 +66,7 @@ class Dome(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseDome.addItem('ASCOM')
         self.app.ui.pd_chooseDome.addItem('INDI')
+        self.dropDownBuildFinished = True
         # load the config including pull down setup
         try:
             if 'DomeAscomDriverName' in self.app.config:
@@ -72,7 +75,7 @@ class Dome(PyQt5.QtCore.QObject):
             if 'Dome' in self.app.config:
                 self.app.ui.pd_chooseDome.setCurrentIndex(int(self.app.config['Dome']))
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg for dome could not be initialized, error:{0}'.format(e))
         finally:
             pass
 
@@ -107,23 +110,24 @@ class Dome(PyQt5.QtCore.QObject):
             self.ascom = None
 
     def chooserDome(self):
+        if not self.dropDownBuildFinished:
+            return
         self.mutexChooser.lock()
+        self.stop()
+        self.data['Connected'] = False
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.stopAscom()
-            self.data['Connected'] = False
             self.logger.info('Actual dome is None')
         elif self.app.ui.pd_chooseDome.currentText().startswith('ASCOM'):
             self.startAscom()
             self.logger.info('Actual dome is ASCOM')
         elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
             self.stopAscom()
-            if self.app.workerINDI.domeDevice != '':
-                self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
-            else:
-                self.data['Connected'] = False
+            self.connect()
             self.logger.info('Actual dome is INDI')
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.signalDomeConnected.emit(0)
+        self.thread.start()
         self.mutexChooser.unlock()
 
     def run(self):
@@ -134,7 +138,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         if platform.system() == 'Windows':
             pythoncom.CoInitialize()
-        self.chooserDome()
         self.getData()
         while self.isRunning:
             if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
@@ -173,14 +176,19 @@ class Dome(PyQt5.QtCore.QObject):
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.stopAscom()
+            if platform.system() == 'Windows':
+                pythoncom.CoUninitialize()
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.stopAscom()
-        if platform.system() == 'Windows':
-            pythoncom.CoUninitialize()
-        self.stopAscom()
-        self.thread.quit()
-        self.thread.wait()
+
+    def connect(self):
+        if self.app.workerINDI.domeDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'Off':
+                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.domeDevice}))
 
     def getData(self):
         if self.data['Connected']:
