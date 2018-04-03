@@ -14,7 +14,7 @@
 import PyQt5
 import platform
 import logging
-import numpy
+import time
 import astropy.io.fits as pyfits
 from win32com.client.dynamic import Dispatch
 import pythoncom
@@ -81,7 +81,7 @@ class PinPoint:
             self.logger.info('Pinpoint could not be started, error:{0}'.format(e))
             self.application['Status'] = 'ERROR'
         finally:
-            self.app.messageQueue.put('Catalogue path: {0}, number scheme PinPoint: {1}'.format(self.app.ui.le_pinpointCatalogue.text(), cat))
+            self.app.messageQueue.put('Catalogue path: {0}, number scheme PinPoint: {1}\n'.format(self.app.ui.le_pinpointCatalogue.text(), cat))
             pass
 
     def stop(self):
@@ -105,14 +105,27 @@ class PinPoint:
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
     def solveImage(self, imageParams):
+
         try:
+            # waiting for start solving
+            timeSolvingStart = time.time()
+            self.main.astrometryStatusText.emit('START')
             if not self.pinpoint.AttachFITS(imageParams['Imagepath']):
                 return
             self.pinpoint.ArcsecPerPixelHoriz = imageParams['ScaleHint']
             self.pinpoint.ArcsecPerPixelVert = imageParams['ScaleHint']
             self.pinpoint.RightAscension = self.pinpoint.TargetRightAscension
             self.pinpoint.Declination = self.pinpoint.TargetDeclination
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
+
+            # loop for solve
+            self.main.astrometryStatusText.emit('SOLVE')
             self.pinpoint.Solve()
+            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
+            self.main.imageSolved.emit()
+
+            # loop for get data
+            self.main.astrometryStatusText.emit('GET DATA')
             self.pinpoint.DetachFITS()
             imageParams['DecJ2000Solved'] = float(self.pinpoint.Declination)
             imageParams['RaJ2000Solved'] = float(self.pinpoint.RightAscension)
@@ -121,6 +134,12 @@ class PinPoint:
             imageParams['TimeTS'] = 2.0
             imageParams['Solved'] = True
             imageParams['Message'] = 'OK'
+
+            # finally idle
+            self.main.imageDataDownloaded.emit()
+            self.main.astrometryStatusText.emit('IDLE')
+            self.main.astrometrySolvingTime.emit('')
+
         except Exception as e:
             imageParams['Solved'] = False
             imageParams['Message'] = 'Solve failed'
