@@ -93,7 +93,7 @@ class Imaging(PyQt5.QtCore.QObject):
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseImaging.setView(view)
         if self.NoneCam.application['Available']:
-            self.app.ui.pd_chooseImaging.addItem('No Cam - ' + self.NoneCam.application['Name'])
+            self.app.ui.pd_chooseImaging.addItem('No Camera - ' + self.NoneCam.application['Name'])
         if self.INDICamera.application['Available']:
             self.app.ui.pd_chooseImaging.addItem('INDI Camera - ' + self.INDICamera.application['Name'])
         if platform.system() == 'Windows':
@@ -124,7 +124,7 @@ class Imaging(PyQt5.QtCore.QObject):
     def chooseImaging(self):
         self.mutexChooser.lock()
         self.stop()
-        if self.app.ui.pd_chooseImaging.currentText().startswith('No Cam'):
+        if self.app.ui.pd_chooseImaging.currentText().startswith('No Camera'):
             self.cameraHandler = self.NoneCam
             self.logger.info('Actual camera is None')
         elif self.app.ui.pd_chooseImaging.currentText().startswith('SGPro'):
@@ -227,7 +227,7 @@ class Imaging(PyQt5.QtCore.QObject):
     def updateApplicationName(self):
         # updating camera name if possible
         for i in range(0, self.app.ui.pd_chooseImaging.count()):
-            if self.app.ui.pd_chooseImaging.itemText(i).startswith('No Cam'):
+            if self.app.ui.pd_chooseImaging.itemText(i).startswith('No Camera'):
                 pass
             elif self.app.ui.pd_chooseImaging.itemText(i).startswith('SGPro'):
                 pass

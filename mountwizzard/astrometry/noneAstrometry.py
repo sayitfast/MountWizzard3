@@ -32,10 +32,10 @@ class NoneAstrometry:
 
         self.application = dict()
         self.application['Available'] = True
-        self.application['Name'] = 'Dummy Astronomy'
+        self.application['Name'] = 'Dummy Solver'
         self.application['InstallPath'] = ''
         self.application['Status'] = 'OK'
-        self.application['Runtime'] = 'Dummy Astronomy'
+        self.application['Runtime'] = 'Dummy Solver'
 
     def start(self):
         pass

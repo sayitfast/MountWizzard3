@@ -82,7 +82,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseAstrometry.setView(view)
         if self.NoneSolve.application['Available']:
-            self.app.ui.pd_chooseAstrometry.addItem('No Solver - ' + self.NoneSolve.application['Name'])
+            self.app.ui.pd_chooseAstrometry.addItem('No Astrometry - ' + self.NoneSolve.application['Name'])
         if self.AstrometryClient.application['Available']:
             self.app.ui.pd_chooseAstrometry.addItem('Astrometry - ' + self.AstrometryClient.application['Name'])
         if platform.system() == 'Windows':
@@ -118,7 +118,7 @@ class Astrometry(PyQt5.QtCore.QObject):
     def chooseAstrometry(self):
         self.mutexChooser.lock()
         self.stop()
-        if self.app.ui.pd_chooseAstrometry.currentText().startswith('No Solver'):
+        if self.app.ui.pd_chooseAstrometry.currentText().startswith('No Astrometry'):
             self.astrometryHandler = self.NoneSolve
             self.logger.info('Actual plate solver is None')
         elif self.app.ui.pd_chooseAstrometry.currentText().startswith('SGPro'):
@@ -220,7 +220,7 @@ class Astrometry(PyQt5.QtCore.QObject):
     def updateApplicationName(self):
         # updating solver name name if possible
         for i in range(0, self.app.ui.pd_chooseAstrometry.count()):
-            if self.app.ui.pd_chooseAstrometry.itemText(i).startswith('No Solve'):
+            if self.app.ui.pd_chooseAstrometry.itemText(i).startswith('No Astrometry'):
                 pass
             elif self.app.ui.pd_chooseAstrometry.itemText(i).startswith('SGPro'):
                 pass
