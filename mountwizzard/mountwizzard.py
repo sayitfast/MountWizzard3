@@ -104,7 +104,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
         self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
         self.widgetIcon(self.ui.btn_openImageWindow, ':/image.ico')
-        self.widgetIcon(self.ui.btn_openModelingPlotWindow, ':/processes.ico')
+        self.widgetIcon(self.ui.btn_openHemisphereWindow, ':/processes.ico')
         self.widgetIcon(self.ui.btn_saveConfigAs, ':/database_down.ico')
         self.widgetIcon(self.ui.btn_loadFrom, ':/database_up.ico')
         self.widgetIcon(self.ui.btn_saveConfig, ':/floppy_disc.ico')
@@ -217,7 +217,8 @@ class MountWizzardApp(widget.MwWidget):
         # map all the button to functions for gui
         self.mappingFunctions()
         # init config starts necessary threads
-        self.initConfig()
+        self.initConfigMain()
+        # setting loglevel
         self.setLoggingLevel()
         # get ascom state
         self.checkASCOM()
@@ -288,7 +289,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.le_slewRate.textEdited.connect(self.setSlewRate)
         self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
         self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupDomeDriver.clicked.connect(self.workerAscomDomeSetup)
+        self.ui.btn_setupAscomDomeDriver.clicked.connect(self.workerAscomDomeSetup)
         self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
         self.ui.btn_cancelFullModel.clicked.connect(self.cancelFullModel)
         self.ui.btn_cancelInitialModel.clicked.connect(self.cancelInitialModel)
@@ -300,7 +301,7 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.btn_loadAnalyseData.clicked.connect(self.selectAnalyseFileName)
         self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showWindow)
         self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
-        self.ui.btn_openModelingPlotWindow.clicked.connect(self.hemisphereWindow.showWindow)
+        self.ui.btn_openHemisphereWindow.clicked.connect(self.hemisphereWindow.showWindow)
         self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
         self.workerDome.domeStatusText.connect(self.setDomeStatusText)
         self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
@@ -313,8 +314,9 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
         self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
         self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
-        self.signalChangeStylesheet.connect(self.changeStylesheet)
         self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
+        # setting up stylesheet change for buttons
+        self.signalChangeStylesheet.connect(self.changeStylesheet)
 
     def mountBoot(self):
         import socket
@@ -425,6 +427,7 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.settingsTabWidget.removeTab(1)
 
     def initConfig(self):
+        # now try to set the right values in class
         try:
             if 'ParkPosText1' in self.config:
                 self.ui.le_parkPos1Text.setText(self.config['ParkPosText1'])
@@ -544,10 +547,11 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.loglevelError.setChecked(self.config['CheckLoglevelError'])
 
         except Exception as e:
-            self.logger.error('Item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg for main window could not be initialized, error:{0}'.format(e))
         finally:
             pass
 
+    def initConfigMain(self):
         # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
         if platform.system() == 'Windows':
             if self.workerUpload.isRunning:
@@ -568,7 +572,11 @@ class MountWizzardApp(widget.MwWidget):
             self.workerModelingDispatcher.stop()
         if self.workerINDI.isRunning:
             self.workerINDI.stop()
+
         # update the configuration
+        if 'ConfigName' in self.config:
+            self.logger.info('Setting up new configuration: {0}'.format(self.config['ConfigName']))
+        self.initConfig()
         self.workerINDI.initConfig()
         self.workerMountDispatcher.initConfig()
         self.workerModelingDispatcher.initConfig()
@@ -774,7 +782,7 @@ class MountWizzardApp(widget.MwWidget):
             try:
                 with open(value + '.cfg', 'r') as data_file:
                     self.config = json.load(data_file)
-                    self.initConfig()
+                    self.initConfigMain()
             except Exception as e:
                 self.messageQueue.put('#BRConfig.cfg could not be loaded !\n')
                 self.logger.error('Item in config.cfg not loaded error:{0}'.format(e))

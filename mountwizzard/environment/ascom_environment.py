@@ -43,7 +43,6 @@ class AscomEnvironment:
         self.application['Status'] = ''
 
     def start(self):
-        print('start')
         pythoncom.CoInitialize()
         if self.driverName != '' and self.ascom is None:
             try:
@@ -64,11 +63,9 @@ class AscomEnvironment:
             self.logger.info('ASCOM Environment could not be started')
 
     def stop(self):
-        print('stop')
         try:
             if self.ascom:
                 self.ascom.connected = False
-            self.logger.info('ASCOM Environment stopped')
         except Exception as e:
             self.logger.error('Could not stop driver: {0} and close it, error: {1}'.format(self.driverName, e))
         finally:
@@ -76,6 +73,7 @@ class AscomEnvironment:
             self.data['Connected'] = False
             self.app.sharedEnvironmentDataLock.unlock()
             self.ascom = None
+            self.logger.info('ASCOM Environment stopped')
             pythoncom.CoUninitialize()
 
     def getStatus(self):

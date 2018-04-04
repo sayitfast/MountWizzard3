@@ -134,7 +134,7 @@ class HemisphereWindow(widget.MwWidget):
 
     def drawCanvas(self):
         if not self.mutexDrawCanvas.tryLock():
-            print('delayed')
+            self.logger.warning('Performance issue in drawing')
             return
         self.hemisphereMatplotlib.fig.canvas.draw()
         self.mutexDrawCanvas.unlock()
@@ -142,7 +142,7 @@ class HemisphereWindow(widget.MwWidget):
 
     def drawCanvasMoving(self):
         if not self.mutexDrawCanvasMoving.tryLock():
-            print('delayed')
+            self.logger.warning('Performance issue in drawing')
             return
         self.hemisphereMatplotlibMoving.fig.canvas.draw()
         self.mutexDrawCanvasMoving.unlock()
@@ -157,6 +157,7 @@ class HemisphereWindow(widget.MwWidget):
             self.drawCanvasMoving()
 
     def setDomePointer(self, az, stat):
+        print('dome widget, status ', stat)
         if self.showStatus:
             self.pointerDome1.set_visible(stat)
             self.pointerDome2.set_visible(stat)

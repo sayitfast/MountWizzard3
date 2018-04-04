@@ -57,15 +57,16 @@ class Environment(PyQt5.QtCore.QObject):
         self.none = none_environment.NoneEnvironment(self, self.app, self.data)
         # set handler to none
         self.environmentHandler = self.none
-
+        # setting default for moving average filtering
         self.movingAverageTemperature = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.movingAveragePressure = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         # connect change in environment to the subroutine of setting it up
-        self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
+        #self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
 
     def initConfig(self):
         # first build the pull down menu
         self.dropDownBuildFinished = False
+        #self.app.ui.pd_chooseEnvironment.currentIndexChanged.disconnect(self.chooserEnvironment)
         self.app.ui.pd_chooseEnvironment.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseEnvironment.setView(view)
@@ -73,6 +74,7 @@ class Environment(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseEnvironment.addItem('ASCOM')
         self.app.ui.pd_chooseEnvironment.addItem('INDI')
+        #self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
         self.dropDownBuildFinished = True
         # load the config including pull down setup
         try:
@@ -86,6 +88,7 @@ class Environment(PyQt5.QtCore.QObject):
             self.logger.error('Item in config.cfg for environment could not be initialized, error:{0}'.format(e))
         finally:
             pass
+        self.chooserEnvironment()
 
     def storeConfig(self):
         self.app.config['EnvironmentAscomDriverName'] = self.ascom.driverName
@@ -93,14 +96,15 @@ class Environment(PyQt5.QtCore.QObject):
 
     def chooserEnvironment(self):
         if not self.dropDownBuildFinished:
-            return
+            print('rejected')
+            # return
         self.mutexChooser.lock()
         self.stop()
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
             self.environmentHandler = self.none
             self.logger.info('Actual environment is None')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('ASCOM'):
-            self.environmentHandler= self.ascom
+            self.environmentHandler = self.ascom
             self.logger.info('Actual environment is ASCOM')
         elif self.app.ui.pd_chooseEnvironment.currentText().startswith('INDI'):
             self.environmentHandler = self.indi
@@ -133,8 +137,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def getStatusFromDevice(self):
-        if not self.isRunning:
-            return
+
         self.environmentHandler.getStatus()
         # get status to gui
         if not self.environmentHandler.application['Available']:
@@ -151,8 +154,7 @@ class Environment(PyQt5.QtCore.QObject):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def getDataFromDevice(self):
-        if not self.isRunning:
-            return
+
         if self.data['Connected']:
             self.environmentHandler.getData()
             # calculating moving average of temp and pressure for refraction
@@ -166,20 +168,17 @@ class Environment(PyQt5.QtCore.QObject):
             self.app.sharedEnvironmentDataLock.unlock()
         else:
             self.app.sharedEnvironmentDataLock.lockForWrite()
-            self.data = {
-                'Connected': False,
-                'DewPoint': 0.0,
-                'Temperature': 0.0,
-                'MovingAverageTemperature': 0.0,
-                'Humidity': 0,
-                'Pressure': 1000,
-                'MovingAveragePressure': 0,
-                'CloudCover': 0,
-                'RainRate': 0,
-                'WindSpeed': 0,
-                'WindDirection': 0,
-                'SQR': 0
-            }
+            self.data['DewPoint'] = 0.0
+            self.data['Temperature'] = 0.0
+            self.data['MovingAverageTemperature'] = 0.0
+            self.data['Pressure'] = 0.0
+            self.data['MovingAveragePressure'] = 0.0
+            self.data['Humidity'] = 0.0
+            self.data['CloudCover'] = 0.0
+            self.data['RainRate'] = 0.0
+            self.data['WindSpeed'] = 0.0
+            self.data['WindDirection'] = 0.0
+            self.data['SQR'] = 0.0
             self.app.sharedEnvironmentDataLock.unlock()
         # loop
         if self.isRunning:

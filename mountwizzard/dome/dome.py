@@ -62,7 +62,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.domeHandler = self.none
 
         # connect change in dome to the subroutine of setting it up
-        self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
+        #self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
 
     def initConfig(self):
         # first build the pull down menu
@@ -86,6 +86,7 @@ class Dome(PyQt5.QtCore.QObject):
             self.logger.error('Item in config.cfg for dome could not be initialized, error:{0}'.format(e))
         finally:
             pass
+        self.chooserDome()
 
     def storeConfig(self):
         self.app.config['DomeAscomDriverName'] = self.ascom.driverName
@@ -93,7 +94,8 @@ class Dome(PyQt5.QtCore.QObject):
 
     def chooserDome(self):
         if not self.dropDownBuildFinished:
-            return
+            pass
+            # return
         self.mutexChooser.lock()
         self.stop()
         self.data['Connected'] = False
@@ -113,6 +115,7 @@ class Dome(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
+        self.logger.info('dome thread running')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -158,15 +161,13 @@ class Dome(PyQt5.QtCore.QObject):
             self.domeHandler.getData()
         else:
             self.app.sharedDomeDataLock.lockForWrite()
-            self.data = {
-                'Connected': False,
-                'Slewing': False,
-                'Azimuth': 0.0,
-                'Altitude': 0.0,
-            }
+            self.data['Slewing'] = False
+            self.data['Azimuth'] = 0.0
+            self.data['Altitude'] = 0.0
             self.app.sharedDomeDataLock.unlock()
         # signaling
         self.app.sharedDomeDataLock.lockForRead()
+        print(self.data)
         if 'Azimuth' in self.data:
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         self.app.sharedDomeDataLock.unlock()

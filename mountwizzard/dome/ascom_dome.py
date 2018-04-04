@@ -50,6 +50,9 @@ class AscomDome:
                 self.ascom.connected = True
                 self.logger.info('Driver chosen:{0}'.format(self.driverName))
                 self.application['Status'] = 'OK'
+                self.app.sharedDomeDataLock.lockForWrite()
+                self.data['Connected'] = True
+                self.app.sharedDomeDataLock.unlock()
                 self.logger.info('ASCOM dome started')
             except Exception as e:
                 self.application['Status'] = 'ERROR'
@@ -66,7 +69,6 @@ class AscomDome:
         try:
             if self.ascom:
                 self.ascom.connected = False
-            self.logger.info('ASCOM Dome stopped')
         except Exception as e:
             self.logger.error('Could not stop driver: {0} and close it, error: {1}'.format(self.driverName, e))
         finally:
@@ -74,6 +76,7 @@ class AscomDome:
             self.data['Connected'] = False
             self.app.sharedDomeDataLock.unlock()
             self.ascom = None
+            self.logger.info('ASCOM Dome stopped')
             pythoncom.CoUninitialize()
 
     def getStatus(self):
@@ -101,6 +104,12 @@ class AscomDome:
             pass
 
     def getData(self):
+        if not self.ascom:
+            print('not ready')
+            return
+        if not self.ascom.connected:
+            print('not ready')
+            return
         self.app.sharedDomeDataLock.lockForWrite()
         try:
             if self.data['Slewing'] and not self.ascom.Slewing:

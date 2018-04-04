@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4043,7 +4043,7 @@ Image
 Window</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_openModelingPlotWindow">
+    <widget class="QPushButton" name="btn_openHemisphereWindow">
      <property name="geometry">
       <rect>
        <x>330</x>
@@ -10026,7 +10026,7 @@ Analyse File</string>
       <attribute name="title">
        <string>ASCOM / Win32 Drivers</string>
       </attribute>
-      <widget class="QPushButton" name="btn_setupDomeDriver">
+      <widget class="QPushButton" name="btn_setupAscomDomeDriver">
        <property name="geometry">
         <rect>
          <x>20</x>
@@ -15473,7 +15473,7 @@ Analyse File</string>
   <tabstop>pd_chooseImaging</tabstop>
   <tabstop>pd_chooseEnvironment</tabstop>
   <tabstop>pd_chooseDome</tabstop>
-  <tabstop>btn_setupDomeDriver</tabstop>
+  <tabstop>btn_setupAscomDomeDriver</tabstop>
   <tabstop>le_ascomDomeDriverName</tabstop>
   <tabstop>btn_setupAscomEnvironmentDriver</tabstop>
   <tabstop>le_ascomEnvironmentDriverName</tabstop>
