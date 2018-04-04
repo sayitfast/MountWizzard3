@@ -132,8 +132,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def getStatusFromDevice(self):
-        if not self.isRunning:
-            return
         self.domeHandler.getStatus()
         # get status to gui
         if not self.domeHandler.application['Available']:
@@ -150,8 +148,6 @@ class Dome(PyQt5.QtCore.QObject):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def getDataFromDevice(self):
-        if not self.isRunning:
-            return
         if self.data['Connected']:
             self.domeHandler.getData()
         else:

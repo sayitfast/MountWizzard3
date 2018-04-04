@@ -129,7 +129,6 @@ class Environment(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def getStatusFromDevice(self):
-
         self.environmentHandler.getStatus()
         # get status to gui
         if not self.environmentHandler.application['Available']:
@@ -146,7 +145,6 @@ class Environment(PyQt5.QtCore.QObject):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def getDataFromDevice(self):
-
         if self.data['Connected']:
             self.environmentHandler.getData()
             # calculating moving average of temp and pressure for refraction
