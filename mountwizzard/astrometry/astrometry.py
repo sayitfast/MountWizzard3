@@ -160,12 +160,12 @@ class Astrometry(PyQt5.QtCore.QObject):
                 self.solveImage(imageParams)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.astrometryHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
-            self.astrometryHandler.stop()
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
