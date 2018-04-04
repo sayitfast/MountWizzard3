@@ -1371,7 +1371,6 @@ if __name__ == "__main__":
     logging.info('Node     : ' + platform.node())
     logging.info('Workdir. : ' + os.getcwd())
     # todo: screen size
-    # todo: pyqt5 version
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
 
