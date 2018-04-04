@@ -1309,7 +1309,9 @@ if __name__ == "__main__":
     import traceback
     import warnings
     import socket
-    from PyQt5.Qt import *
+    import PyQt5
+    from PyQt5.QtCore import PYQT_VERSION_STR
+    from PyQt5.QtCore import QT_VERSION_STR
 
     # setting except hook to get stack traces into the log files
     def except_hook(typeException, valueException, tbackException):
@@ -1361,6 +1363,8 @@ if __name__ == "__main__":
     logging.info('Machine  : ' + platform.machine())
     logging.info('CPU      : ' + platform.processor())
     logging.info('Python   : ' + platform.python_version())
+    logging.info('PyQt5    : ' + PYQT_VERSION_STR)
+    logging.info('Qt       : ' + QT_VERSION_STR)
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
         logging.info('IP addr. : ' + host[i])
