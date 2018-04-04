@@ -117,12 +117,12 @@ class AscomDome:
             self.logger.error('Problem getting data, error: {0}'.format(e))
         finally:
             pass
-        try:
-            self.data['Altitude'] = self.ascom.Altitude
-        except Exception as e:
-            self.logger.error('Problem getting data, error: {0}'.format(e))
-        finally:
-            pass
+        #try:
+        #    self.data['Altitude'] = self.ascom.Altitude
+        #except Exception as e:
+        #    self.logger.error('Problem getting data, error: {0}'.format(e))
+        #finally:
+        #    pass
         self.app.sharedDomeDataLock.unlock()
 
     def setupDriver(self):
