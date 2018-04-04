@@ -1337,7 +1337,7 @@ if __name__ == "__main__":
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
     handler = logging.handlers.RotatingFileHandler(name, backupCount=3)
     logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s [%(levelname)7s][%(filename)30s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
+                        format='%(asctime)s [%(levelname)7s][%(filename)22s][%(lineno)5s][%(funcName)20s][%(threadName)10s] - %(message)s',
                         handlers=[handler], datefmt='%Y-%m-%d %H:%M:%S')
 
     # population the working directory with necessary subdir
@@ -1349,6 +1349,9 @@ if __name__ == "__main__":
         os.makedirs(os.getcwd() + '/config')
 
     # start logging with basic system data for information
+    logging.info('')
+    logging.info('')
+    logging.info('')
     logging.info('----------------------------------------------------------------------------------')
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')
     logging.info('----------------------------------------------------------------------------------')
@@ -1362,10 +1365,11 @@ if __name__ == "__main__":
     for i in range(0, len(host)):
         logging.info('IP addr. : ' + host[i])
     logging.info('Node     : ' + platform.node())
-    logging.info('working directory: {0}'.format(os.getcwd()))
+    logging.info('Workdir. : ' + os.getcwd())
     # todo: screen size
     # todo: pyqt5 version
     logging.info('----------------------------------------------------------------------------------')
+    logging.info('')
 
     # generating the necessary folders
     if not os.access(os.getcwd(), os.W_OK):

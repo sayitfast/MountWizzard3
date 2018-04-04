@@ -110,7 +110,6 @@ class Dome(PyQt5.QtCore.QObject):
 
     def run(self):
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
-        self.logger.info('dome thread running')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
