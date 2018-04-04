@@ -157,7 +157,6 @@ class HemisphereWindow(widget.MwWidget):
             self.drawCanvasMoving()
 
     def setDomePointer(self, az, stat):
-        print('dome widget, status ', stat)
         if self.showStatus:
             self.pointerDome1.set_visible(stat)
             self.pointerDome2.set_visible(stat)
