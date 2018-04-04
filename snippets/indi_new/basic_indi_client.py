@@ -77,7 +77,6 @@ class BasicIndiClient(object):
         """
         This will block until all messages are received.
 
-        FIXME: Add maximum wait time / attempts?
         """
         messages = self.getMessages()
         while messages is None:

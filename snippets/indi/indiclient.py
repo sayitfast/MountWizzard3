@@ -1862,7 +1862,6 @@ class bigindiclient:
         self.output_block = False
 
         # def set_verbose(self):
-        # FIXME
         # Does not work in the threaded version
         # solution: add queue from indiclient to thread
 

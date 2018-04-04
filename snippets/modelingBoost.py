@@ -57,7 +57,6 @@
                         break
             self.app.workerModeling.modelBoost.workerSlewpoint.signalSlewing.emit()
             # waiting for downloading and storing the image as fits file
-            # todo: what if there is no fits file ?
             while True:
                 PyQt5.QtWidgets.QApplication.processEvents()
                 suc, modelData['ImagePath'] = self.app.workerModeling.SGPro.SgGetImagePath(guid)

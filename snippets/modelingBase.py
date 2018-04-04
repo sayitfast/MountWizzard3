@@ -261,7 +261,6 @@ class ModelingBase:
             modelData['Azimuth'] = p_az
             modelData['Altitude'] = p_alt
             if p_item.isVisible():
-                # todo: put the code to multi thread modeling
                 if self.cancel:
                     self.app.messageQueue.put('#BW{0} -\t {1} Model canceled !\n'.format(self.timeStamp(), modeltype))
                     # tracking should be on after canceling the modeling
