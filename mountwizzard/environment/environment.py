@@ -90,7 +90,6 @@ class Environment(PyQt5.QtCore.QObject):
         self.app.config['Environment'] = self.app.ui.pd_chooseEnvironment.currentIndex()
 
     def chooserEnvironment(self):
-        print('chooser')
         self.mutexChooser.lock()
         self.stop()
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
