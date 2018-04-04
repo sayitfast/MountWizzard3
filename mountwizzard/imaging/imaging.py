@@ -168,10 +168,9 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
-
-            self.thread.quit()
-            self.thread.wait()
         self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def captureImage(self, imageParams):
         imageParams['Imagepath'] = ''

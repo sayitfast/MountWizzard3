@@ -166,9 +166,9 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
-            self.thread.quit()
-            self.thread.wait()
         self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
     def solveImage(self, imageParams):
         if self.data['CONNECTION']['CONNECT'] == 'Off':
