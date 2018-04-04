@@ -25,6 +25,9 @@ import indi.indi_xml as indiXML
 if platform.system() == 'Windows':
     from win32com.client.dynamic import Dispatch
     import pythoncom
+    from dome import ascom_dome
+from dome import indi_dome
+from dome import none_dome
 
 
 class Dome(PyQt5.QtCore.QObject):
@@ -36,23 +39,27 @@ class Dome(PyQt5.QtCore.QObject):
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLE_DATA = 1000
+    CYCLE_STATUS = 1000
     START_DOME_TIMEOUT = 4
 
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
-        self.dropDownBuildFinished = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexChooser = PyQt5.QtCore.QMutex()
 
         self.app = app
         self.thread = thread
+        self.dropDownBuildFinished = False
         self.data = {
             'Connected': False
         }
-        self.ascom = None
-        self.ascomChooser = None
-        self.ascomDriverName = ''
+        # get supporting handlers
+        self.ascom = ascom_dome.AscomDome(self, self.app, self.data)
+        self.indi = indi_dome.INDIDome(self, self.app, self.data)
+        self.none = none_dome.NoneDome(self, self.app, self.data)
+        # set handler to none
+        self.domeHandler = self.none
 
         # connect change in dome to the subroutine of setting it up
         self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
@@ -71,7 +78,7 @@ class Dome(PyQt5.QtCore.QObject):
         # load the config including pull down setup
         try:
             if 'DomeAscomDriverName' in self.app.config:
-                self.ascomDriverName = self.app.config['DomeAscomDriverName']
+                self.ascom.driverName = self.app.config['DomeAscomDriverName']
                 self.app.ui.le_ascomDomeDriverName.setText(self.app.config['DomeAscomDriverName'])
             if 'Dome' in self.app.config:
                 self.app.ui.pd_chooseDome.setCurrentIndex(int(self.app.config['Dome']))
@@ -81,34 +88,8 @@ class Dome(PyQt5.QtCore.QObject):
             pass
 
     def storeConfig(self):
-        self.app.config['DomeAscomDriverName'] = self.ascomDriverName
+        self.app.config['DomeAscomDriverName'] = self.ascom.driverName
         self.app.config['Dome'] = self.app.ui.pd_chooseDome.currentIndex()
-
-    def startAscom(self):
-        if self.ascomDriverName != '' and self.ascom is None:
-            try:
-                self.ascom = Dispatch(self.ascomDriverName)
-                self.ascom.connected = True
-                self.logger.info('Driver chosen:{0}'.format(self.ascomDriverName))
-                # connection made
-                self.data['Connected'] = True
-            except Exception as e:
-                self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.ascomDriverName, e))
-            finally:
-                pass
-        elif self.ascomDriverName == '':
-            # no connection made
-            self.data['Connected'] = False
-
-    def stopAscom(self):
-        try:
-            if self.ascom:
-                self.ascom.connected = False
-        except Exception as e:
-            self.logger.error('Could not stop driver: {0} and close it, error: {1}'.format(self.ascomDriverName, e))
-        finally:
-            self.data['Connected'] = False
-            self.ascom = None
 
     def chooserDome(self):
         if not self.dropDownBuildFinished:
@@ -117,14 +98,13 @@ class Dome(PyQt5.QtCore.QObject):
         self.stop()
         self.data['Connected'] = False
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
-            self.stopAscom()
+            self.domeHandler = self.none
             self.logger.info('Actual dome is None')
         elif self.app.ui.pd_chooseDome.currentText().startswith('ASCOM'):
-            self.startAscom()
+            self.domeHandler = self.ascom
             self.logger.info('Actual dome is ASCOM')
         elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-            self.stopAscom()
-            self.connect()
+            self.domeHandler = self.indi
             self.logger.info('Actual dome is INDI')
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.signalDomeConnected.emit(0)
@@ -137,82 +117,45 @@ class Dome(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        if platform.system() == 'Windows':
-            pythoncom.CoInitialize()
-        self.getData()
+        self.domeHandler.start()
+        self.getDataFromDevice()
+        self.getStatusFromDevice()
         while self.isRunning:
-            if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
-                    self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
-                else:
-                    self.data['Connected'] = False
-            if self.data['Connected']:
-                self.signalDomeConnected.emit(3)
-                if 'Slewing' in self.data:
-                    if self.data['Slewing']:
-                        self.domeStatusText.emit('SLEW')
-                    else:
-                        self.domeStatusText.emit('IDLE')
-                    if not self.app.domeCommandQueue.empty():
-                        command, value = self.app.domeCommandQueue.get()
-                        if command == 'SlewAzimuth':
-                            if self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                                self.app.INDICommandQueue.put(
-                                    indiXML.newNumberVector([indiXML.oneNumber(value, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
-                                                            indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
-                            else:
-                                self.ascom.SlewToAzimuth(float(value))
-            else:
-                if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
-                    self.signalDomeConnected.emit(0)
-                    self.domeStatusText.emit('')
-                else:
-                    self.domeStatusText.emit('DISCONN')
-                    if self.app.ui.pd_chooseDome.currentText().startswith('INDI') and self.app.workerINDI.domeDevice != '':
-                        self.signalDomeConnected.emit(2)
-                    else:
-                        self.signalDomeConnected.emit(1)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.domeHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
-            self.stopAscom()
-            if platform.system() == 'Windows':
-                pythoncom.CoUninitialize()
-            self.thread.quit()
-            self.thread.wait()
         self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
 
-    def connect(self):
-        timeStart = time.time()
-        while True:
-            if time.time() - timeStart > self.START_DOME_TIMEOUT:
-                self.app.messageQueue.put('Timeout connect dome device\n')
-                break
-            if self.app.workerINDI.domeDevice:
-                if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]:
-                    break
-            time.sleep(0.1)
-        if self.app.workerINDI.domeDevice != '':
-            if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'Off':
-                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.domeDevice}))
+    def getStatusFromDevice(self):
+        if not self.isRunning:
+            return
+        self.domeHandler.getStatus()
+        # get status to gui
+        if not self.domeHandler.application['Available']:
+            self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'gray')
+        elif self.domeHandler.application['Status'] == 'ERROR':
+            self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'red')
+        elif self.domeHandler.application['Status'] == 'OK':
+            if self.data['Connected'] == 'Off':
+                self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'yellow')
+            else:
+                self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
-    def getData(self):
+    def getDataFromDevice(self):
+        if not self.isRunning:
+            return
         if self.data['Connected']:
-            if self.app.ui.pd_chooseDome.currentText().startswith('ASCOM'):
-                try:
-                    if self.ascom:
-                        if self.ascom.connected:
-                            self.getAscomData()
-                except Exception as e:
-                    self.logger.error('Problem accessing ASCOm driver, error: {0}'.format(e))
-                finally:
-                    pass
-            elif self.app.ui.pd_chooseDome.currentText().startswith('INDI'):
-                self.getINDIData()
+            self.domeHandler.getData()
         else:
             self.app.sharedDomeDataLock.lockForWrite()
             self.data = {
@@ -222,59 +165,11 @@ class Dome(PyQt5.QtCore.QObject):
                 'Altitude': 0.0,
             }
             self.app.sharedDomeDataLock.unlock()
+        # signaling
         self.app.sharedDomeDataLock.lockForRead()
         if 'Azimuth' in self.data:
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         self.app.sharedDomeDataLock.unlock()
+        # loop
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getData)
-
-    def getINDIData(self):
-        # check if client has device found
-        if self.app.workerINDI.domeDevice != '':
-            # and device is connected
-            if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
-                # than get the data
-                self.app.sharedDomeDataLock.lockForWrite()
-                self.data['Azimuth'] = float(self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['ABS_DOME_POSITION']['DOME_ABSOLUTE_POSITION'])
-                if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['DOME_MOTION']['state'] == 'Busy':
-                    self.data['Slewing'] = True
-                else:
-                    if self.data['Slewing']:
-                        self.signalSlewFinished.emit()
-                        self.app.signalAudio.emit('DomeSlew')
-                    self.data['Slewing'] = False
-                self.app.sharedDomeDataLock.unlock()
-
-    # noinspection PyBroadException
-    def getAscomData(self):
-        self.app.sharedDomeDataLock.lockForWrite()
-        try:
-            if self.data['Slewing'] and not self.ascom.Slewing:
-                self.signalSlewFinished.emit()
-                self.app.signalAudio.emit('DomeSlew')
-            self.data['Slewing'] = self.ascom.Slewing
-        finally:
-            pass
-        try:
-            self.data['Azimuth'] = self.ascom.Azimuth
-        finally:
-            pass
-        try:
-            self.data['Altitude'] = self.ascom.Altitude
-        finally:
-            pass
-        self.app.sharedDomeDataLock.unlock()
-
-    def setupDriver(self):
-        try:
-            self.ascomChooser = Dispatch('ASCOM.Utilities.Chooser')
-            self.ascomChooser.DeviceType = 'Dome'
-            self.ascomDriverName = self.ascomChooser.Choose(self.ascomDriverName)
-            self.app.messageQueue.put('Driver chosen:{0}\n'.format(self.ascomDriverName))
-            self.logger.info('Driver chosen:{0}'.format(self.ascomDriverName))
-        except Exception as e:
-            self.app.messageQueue.put('#BRDriver error in Setup Driver\n')
-            self.logger.error('General error:{0}'.format(e))
-        finally:
-            pass
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getDataFromDevice)

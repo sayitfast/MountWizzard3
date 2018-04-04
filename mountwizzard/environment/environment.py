@@ -37,13 +37,14 @@ class Environment(PyQt5.QtCore.QObject):
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_DATA = 2000
-    CYCLE_STATUS = 2000
+    CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexChooser = PyQt5.QtCore.QMutex()
+
         self.app = app
         self.thread = thread
         self.dropDownBuildFinished = False
@@ -115,21 +116,17 @@ class Environment(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        print('environ thread started')
         self.environmentHandler.start()
         self.getDataFromDevice()
         self.getStatusFromDevice()
         while self.isRunning:
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
-        print('environ loop stopped')
         self.environmentHandler.stop()
-        print('environ stopped')
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
-            print('stop environ')
             self.isRunning = False
         self.mutexIsRunning.unlock()
         self.thread.quit()
