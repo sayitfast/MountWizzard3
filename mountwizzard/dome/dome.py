@@ -50,7 +50,6 @@ class Dome(PyQt5.QtCore.QObject):
 
         self.app = app
         self.thread = thread
-        self.dropDownBuildFinished = False
         self.data = {
             'Connected': False,
             'Slewing': False
@@ -63,11 +62,10 @@ class Dome(PyQt5.QtCore.QObject):
         self.domeHandler = self.none
 
         # connect change in dome to the subroutine of setting it up
-        #self.app.ui.pd_chooseDome.currentIndexChanged.connect(self.chooserDome)
+        self.app.ui.pd_chooseDome.activated.connect(self.chooserDome)
 
     def initConfig(self):
         # first build the pull down menu
-        self.dropDownBuildFinished = False
         self.app.ui.pd_chooseDome.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseDome.setView(view)
@@ -75,7 +73,6 @@ class Dome(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseDome.addItem('ASCOM')
         self.app.ui.pd_chooseDome.addItem('INDI')
-        self.dropDownBuildFinished = True
         # load the config including pull down setup
         try:
             if 'DomeAscomDriverName' in self.app.config:
@@ -94,9 +91,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.app.config['Dome'] = self.app.ui.pd_chooseDome.currentIndex()
 
     def chooserDome(self):
-        if not self.dropDownBuildFinished:
-            pass
-            # return
         self.mutexChooser.lock()
         self.stop()
         self.data['Connected'] = False

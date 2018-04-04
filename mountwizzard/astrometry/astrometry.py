@@ -54,7 +54,6 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.isRunning = False
-        self.dropDownBuildFinished = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.astrometryCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
@@ -75,11 +74,10 @@ class Astrometry(PyQt5.QtCore.QObject):
 
         # signal slot links
         self.astrometryCancel.connect(self.setCancelAstrometry)
-        self.app.ui.pd_chooseAstrometry.currentIndexChanged.connect(self.chooseAstrometry)
+        self.app.ui.pd_chooseAstrometry.activated.connect(self.chooseAstrometry)
 
     def initConfig(self):
         # build the drop down menu
-        self.dropDownBuildFinished = False
         self.app.ui.pd_chooseAstrometry.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseAstrometry.setView(view)
@@ -95,7 +93,6 @@ class Astrometry(PyQt5.QtCore.QObject):
         # if platform.system() == 'Windows' or platform.system() == 'Darwin':
         #    if self.workerTheSkyX.data['AppAvailable']:
         #        self.app.ui.pd_chooseAstrometry.addItem('TheSkyX - ' + self.workerTheSkyX.data['AppName'])
-        self.dropDownBuildFinished = True
         # load the config data
         if 'PinPointCatalogue' in self.app.config:
             self.app.ui.le_pinpointCatalogue.setText(self.app.config['PinPointCatalogue'])
@@ -119,8 +116,6 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.astrometryHandler.mutexCancel.unlock()
 
     def chooseAstrometry(self):
-        if not self.dropDownBuildFinished:
-            return
         self.mutexChooser.lock()
         self.stop()
         if self.app.ui.pd_chooseAstrometry.currentText().startswith('No Solver'):

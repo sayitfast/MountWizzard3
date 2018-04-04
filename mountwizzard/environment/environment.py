@@ -47,7 +47,6 @@ class Environment(PyQt5.QtCore.QObject):
 
         self.app = app
         self.thread = thread
-        self.dropDownBuildFinished = False
         self.data = {
             'Connected': False
         }
@@ -61,12 +60,10 @@ class Environment(PyQt5.QtCore.QObject):
         self.movingAverageTemperature = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.movingAveragePressure = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         # connect change in environment to the subroutine of setting it up
-        # self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
+        self.app.ui.pd_chooseEnvironment.activated.connect(self.chooserEnvironment)
 
     def initConfig(self):
         # first build the pull down menu
-        self.dropDownBuildFinished = False
-        #self.app.ui.pd_chooseEnvironment.currentIndexChanged.disconnect(self.chooserEnvironment)
         self.app.ui.pd_chooseEnvironment.clear()
         view = PyQt5.QtWidgets.QListView()
         self.app.ui.pd_chooseEnvironment.setView(view)
@@ -74,8 +71,6 @@ class Environment(PyQt5.QtCore.QObject):
         if platform.system() == 'Windows':
             self.app.ui.pd_chooseEnvironment.addItem('ASCOM')
         self.app.ui.pd_chooseEnvironment.addItem('INDI')
-        #self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
-        self.dropDownBuildFinished = True
         # load the config including pull down setup
         try:
             if platform.system() == 'Windows':
@@ -95,9 +90,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.app.config['Environment'] = self.app.ui.pd_chooseEnvironment.currentIndex()
 
     def chooserEnvironment(self):
-        if not self.dropDownBuildFinished:
-            print('rejected')
-            #return
+        print('chooser')
         self.mutexChooser.lock()
         self.stop()
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
