@@ -385,6 +385,88 @@ class MountWizzardApp(widget.MwWidget):
             if sound in self.audioSignalsSet:
                 self.audioSignalsSet[sound].play()
 
+    def initConfigMain(self):
+        # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
+        if platform.system() == 'Windows':
+            if self.workerUpload.isRunning:
+                self.workerUpload.stop()
+        if self.workerRemote.isRunning:
+            self.workerRemote.stop()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
+        if self.workerAstrometry.isRunning:
+            self.workerAstrometry.stop()
+        if self.workerImaging.isRunning:
+            self.workerImaging.stop()
+        if self.workerMountDispatcher.isRunning:
+            self.workerMountDispatcher.stop()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
+        if self.workerINDI.isRunning:
+            self.workerINDI.stop()
+
+        # update the configuration
+        if 'ConfigName' in self.config:
+            self.logger.info('Setting up new configuration with name: [{0}]'.format(self.config['ConfigName']))
+            self.messageQueue.put('Setting up new configuration with name: [{0}]\n'.format(self.config['ConfigName']))
+        self.initConfig()
+        self.workerINDI.initConfig()
+        self.workerMountDispatcher.initConfig()
+        self.workerModelingDispatcher.initConfig()
+        self.workerEnvironment.initConfig()
+        self.workerDome.initConfig()
+        self.workerRemote.initConfig()
+        self.workerImaging.initConfig()
+        self.workerAstrometry.initConfig()
+        if platform.system() == 'Windows':
+            self.workerUpload.initConfig()
+        # now the window config
+        self.hemisphereWindow.initConfig()
+        self.imageWindow.initConfig()
+        self.analyseWindow.initConfig()
+        self.messageWindow.initConfig()
+        self.relays.initConfig()
+
+        if self.ui.checkEnableINDI.isChecked():
+            self.threadINDI.start()
+        if self.ui.checkEnableRemoteAccess.isChecked():
+            self.threadRemote.start()
+        if platform.system() == 'Windows':
+            self.threadUpload.start()
+        if not self.workerMountDispatcher.isRunning:
+            self.threadMountDispatcher.start()
+        if not self.workerEnvironment.isRunning:
+            self.threadEnvironment.start()
+        if not self.workerDome.isRunning:
+            self.threadDome.start()
+        if not self.workerAstrometry.isRunning:
+            self.threadAstrometry.start()
+        if not self.workerImaging.isRunning:
+            self.threadImaging.start()
+        if not self.workerModelingDispatcher.isRunning:
+            self.threadModelingDispatcher.start()
+
+        # make windows visible, if they were on the desktop depending on their show status
+        if self.hemisphereWindow.showStatus:
+            self.hemisphereWindow.showWindow()
+            self.hemisphereWindow.drawHemisphere()
+        else:
+            self.hemisphereWindow.setVisible(False)
+        if self.imageWindow.showStatus:
+            self.imageWindow.showWindow()
+        else:
+            self.imageWindow.setVisible(False)
+        if self.analyseWindow.showStatus:
+            self.analyseWindow.showWindow()
+        else:
+            self.analyseWindow.setVisible(False)
+        if self.messageWindow.showStatus:
+            self.messageWindow.showWindow()
+        else:
+            self.messageWindow.setVisible(False)
+
     def initConfig(self):
         # now try to set the right values in class
         try:
@@ -509,87 +591,6 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.error('Item in config.cfg for main window could not be initialized, error:{0}'.format(e))
         finally:
             pass
-
-    def initConfigMain(self):
-        # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
-        if platform.system() == 'Windows':
-            if self.workerUpload.isRunning:
-                self.workerUpload.stop()
-        if self.workerRemote.isRunning:
-            self.workerRemote.stop()
-        if self.workerEnvironment.isRunning:
-            self.workerEnvironment.stop()
-        if self.workerDome.isRunning:
-            self.workerDome.stop()
-        if self.workerAstrometry.isRunning:
-            self.workerAstrometry.stop()
-        if self.workerImaging.isRunning:
-            self.workerImaging.stop()
-        if self.workerMountDispatcher.isRunning:
-            self.workerMountDispatcher.stop()
-        if self.workerModelingDispatcher.isRunning:
-            self.workerModelingDispatcher.stop()
-        if self.workerINDI.isRunning:
-            self.workerINDI.stop()
-
-        # update the configuration
-        if 'ConfigName' in self.config:
-            self.logger.info('Setting up new configuration: {0}'.format(self.config['ConfigName']))
-        self.initConfig()
-        self.workerINDI.initConfig()
-        self.workerMountDispatcher.initConfig()
-        self.workerModelingDispatcher.initConfig()
-        self.workerEnvironment.initConfig()
-        self.workerDome.initConfig()
-        self.workerRemote.initConfig()
-        self.workerImaging.initConfig()
-        self.workerAstrometry.initConfig()
-        if platform.system() == 'Windows':
-            self.workerUpload.initConfig()
-        # now the window config
-        self.hemisphereWindow.initConfig()
-        self.imageWindow.initConfig()
-        self.analyseWindow.initConfig()
-        self.messageWindow.initConfig()
-        self.relays.initConfig()
-
-        if self.ui.checkEnableINDI.isChecked():
-            self.threadINDI.start()
-        if self.ui.checkEnableRemoteAccess.isChecked():
-            self.threadRemote.start()
-        if platform.system() == 'Windows':
-            self.threadUpload.start()
-        if not self.workerMountDispatcher.isRunning:
-            self.threadMountDispatcher.start()
-        if not self.workerEnvironment.isRunning:
-            self.threadEnvironment.start()
-        if not self.workerDome.isRunning:
-            self.threadDome.start()
-        if not self.workerAstrometry.isRunning:
-            self.threadAstrometry.start()
-        if not self.workerImaging.isRunning:
-            self.threadImaging.start()
-        if not self.workerModelingDispatcher.isRunning:
-            self.threadModelingDispatcher.start()
-
-        # make windows visible, if they were on the desktop depending on their show status
-        if self.hemisphereWindow.showStatus:
-            self.hemisphereWindow.showWindow()
-            self.hemisphereWindow.drawHemisphere()
-        else:
-            self.hemisphereWindow.setVisible(False)
-        if self.imageWindow.showStatus:
-            self.imageWindow.showWindow()
-        else:
-            self.imageWindow.setVisible(False)
-        if self.analyseWindow.showStatus:
-            self.analyseWindow.showWindow()
-        else:
-            self.analyseWindow.setVisible(False)
-        if self.messageWindow.showStatus:
-            self.messageWindow.showWindow()
-        else:
-            self.messageWindow.setVisible(False)
 
     def storeConfig(self):
         self.config['ParkPosText1'] = self.ui.le_parkPos1Text.text()
@@ -1355,11 +1356,15 @@ if __name__ == "__main__":
     logging.info('Release  : ' + platform.release())
     logging.info('Version  : ' + platform.version())
     logging.info('Machine  : ' + platform.machine())
-    logging.info('Python   : ' + sys.version)
+    logging.info('CPU      : ' + platform.processor())
+    logging.info('Python   : ' + platform.python_version())
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
         logging.info('IP addr. : ' + host[i])
+    logging.info('Node     : ' + platform.node())
     logging.info('working directory: {0}'.format(os.getcwd()))
+    # todo: screen size
+    # todo: pyqt5 version
     logging.info('----------------------------------------------------------------------------------')
 
     # generating the necessary folders
@@ -1376,7 +1381,6 @@ if __name__ == "__main__":
     sys.excepthook = except_hook
     app.setWindowIcon(PyQt5.QtGui.QIcon('mw.ico'))
     mountApp = MountWizzardApp()
-    logging.info('Screensize: {0} x {1}'.format(mountApp.screenSizeX, mountApp.screenSizeY))
     mountApp.show()
 
     # end of splash screen
