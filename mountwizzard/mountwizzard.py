@@ -1301,11 +1301,12 @@ if __name__ == "__main__":
     # setting except hook to get stack traces into the log files
     def except_hook(typeException, valueException, tbackException):
         result = traceback.format_exception(typeException, valueException, tbackException)
-        logging.error('-----------------------------------------')
+        logging.error('----------------------------------------------------------------------------------')
         logging.error('Logging an uncatched Exception')
+        logging.error('----------------------------------------------------------------------------------')
         for i in range(0, len(result)):
             logging.error(result[i].replace('\n', ''))
-        logging.error('-----------------------------------------')
+        logging.error('----------------------------------------------------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
     # app = PyQt5.QtWidgets.QApplication(sys.argv)
@@ -1334,19 +1335,22 @@ if __name__ == "__main__":
     if not os.path.isdir(os.getcwd() + '/config'):
         os.makedirs(os.getcwd() + '/config')
 
-    # start logging with basic system data
-    logging.info('-----------------------------------------')
+    # start logging with basic system data for information
+    logging.info('----------------------------------------------------------------------------------')
     logging.info('MountWizzard v ' + BUILD_NO + ' started !')
-    logging.info('-----------------------------------------')
+    logging.info('----------------------------------------------------------------------------------')
     logging.info('Platform : ' + platform.system())
     logging.info('Release  : ' + platform.release())
     logging.info('Version  : ' + platform.version())
     logging.info('Machine  : ' + platform.machine())
+    logging.info('Python   : ' + sys.version)
     host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
     for i in range(0, len(host)):
-        logging.info('Computer IP address: ' + host[i])
-    # generating the necessary folders
+        logging.info('IP addr. : ' + host[i])
     logging.info('working directory: {0}'.format(os.getcwd()))
+    logging.info('----------------------------------------------------------------------------------')
+
+    # generating the necessary folders
     if not os.access(os.getcwd(), os.W_OK):
         logging.error('no write access to workdir')
     if not os.access(os.getcwd() + '/images', os.W_OK):
