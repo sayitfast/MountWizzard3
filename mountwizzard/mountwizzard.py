@@ -78,7 +78,8 @@ class MountWizzardApp(widget.MwWidget):
         super().__init__()
         self.config = {}
         self.setObjectName("Main")
-        # commands to the mount
+
+        # setting up the queues for communication between the threads
         self.mountCommandQueue = Queue()
         self.domeCommandQueue = Queue()
         self.modelCommandQueue = Queue()
@@ -86,60 +87,35 @@ class MountWizzardApp(widget.MwWidget):
         self.imageQueue = Queue()
         self.INDICommandQueue = Queue()
         self.INDIStatusQueue = Queue()
+
         # initializing the gui from file generated from qt creator
         self.ui = main_window_ui.Ui_MainWindow()
         self.ui.setupUi(self)
         self.initUI()
         self.checkPlatformDependableMenus()
         self.setWindowTitle('MountWizzard ' + BUILD_NO)
+        # enable a matplotlib figure polar plot in main gui
+        self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
+        # finalize gui with icons
+        self.setupIcons()
+
+        # putting header to message window
         self.messageQueue.put('#BWMountWizzard v {0} started \n'.format(BUILD_NO))
         self.messageQueue.put('#BWPlatform : {}\n'.format(platform.system()))
         self.messageQueue.put('#BWRelease  : {}\n'.format(platform.release()))
         self.messageQueue.put('#BWMachine  : {}\n\n'.format(platform.machine()))
+
         # define audio signals
         self.audioSignalsSet = dict()
         self.guiAudioList = dict()
         self.setupAudioSignals()
-        # show icon in main gui and add some icons for push buttons
-        self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
-        self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
-        self.widgetIcon(self.ui.btn_openImageWindow, ':/image.ico')
-        self.widgetIcon(self.ui.btn_openHemisphereWindow, ':/processes.ico')
-        self.widgetIcon(self.ui.btn_saveConfigAs, ':/database_down.ico')
-        self.widgetIcon(self.ui.btn_loadFrom, ':/database_up.ico')
-        self.widgetIcon(self.ui.btn_saveConfig, ':/floppy_disc.ico')
-        self.widgetIcon(self.ui.btn_saveConfigQuit, ':/eject.ico')
-        self.widgetIcon(self.ui.btn_mountBoot, ':/computer_accept.ico')
-        self.widgetIcon(self.ui.btn_mountShutdown, ':/computer_remove.ico')
-        self.widgetIcon(self.ui.btn_runInitialModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_cancelFullModel, ':/stop.ico')
-        self.widgetIcon(self.ui.btn_runFullModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_cancelInitialModel, ':/stop.ico')
-        self.widgetIcon(self.ui.btn_generateInitialPoints, ':/process_add.ico')
-        self.widgetIcon(self.ui.btn_plateSolveSync, ':/calculator_accept.ico')
-        self.widgetIcon(self.ui.btn_generateGridPoints, ':/process_add.ico')
-        self.widgetIcon(self.ui.btn_generateMaxPoints, ':/process_add.ico')
-        self.widgetIcon(self.ui.btn_generateNormalPoints, ':/process_add.ico')
-        self.widgetIcon(self.ui.btn_generateMinPoints, ':/process_add.ico')
-        self.widgetIcon(self.ui.btn_generateDSOPoints, ':/favorite_add.ico')
-        self.widgetIcon(self.ui.btn_runTimeChangeModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_runHystereseModel, ':/play.ico')
-        self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
 
-        # the icon picture in gui
-        pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
-        pixmap = pixmap.scaled(99, 99)
-        self.ui.mainicon.setPixmap(pixmap)
-        pixmap = PyQt5.QtGui.QPixmap(':/azimuth1.png')
-        self.ui.picAZ.setPixmap(pixmap)
-        pixmap = PyQt5.QtGui.QPixmap(':/altitude1.png')
-        self.ui.picALT.setPixmap(pixmap)
+        # get ascom state
+        self.checkASCOM()
 
-        # enable a matplotlib figure polar plot in main gui
-        self.modelWidget = widget.IntegrateMatplotlib(self.ui.model)
         # instantiating all subclasses and connecting thread signals
+        # relay class
         self.relays = relays.Relays(self)
-        # runtime threads
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
         self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
@@ -152,6 +128,8 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
+        # prepare setup for mount status
+        self.setMountStatus({})
         # INDI client framework
         self.threadINDI = PyQt5.QtCore.QThread()
         self.workerINDI = indi_client.INDIClient(self, self.threadINDI)
@@ -205,23 +183,20 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
-        # prepare gui for mount status
-        self.setMountStatus({})
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.hemisphereWindow = hemisphereWindow.HemisphereWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
         self.messageWindow = messageWindow.MessageWindow(self)
-        # loading config data - will be config.cfg
-        self.loadConfigData()
         # map all the button to functions for gui
         self.mappingFunctions()
+
+        # loading config data - will be config.cfg
+        self.loadConfigData()
         # init config starts necessary threads
         self.initConfigMain()
         # setting loglevel
         self.setLoggingLevel()
-        # get ascom state
-        self.checkASCOM()
         # starting loop for cyclic data to gui from threads
         # print('Thread ID Main:', int(PyQt5.QtCore.QThread.currentThreadId()))
         self.mainLoop()
@@ -255,6 +230,41 @@ class MountWizzardApp(widget.MwWidget):
             self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'yellow')
         elif status == 3:
             self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'green')
+
+    def setupIcons(self):
+        # show icon in main gui and add some icons for push buttons
+        self.widgetIcon(self.ui.btn_openMessageWindow, ':/note_accept.ico')
+        self.widgetIcon(self.ui.btn_openAnalyseWindow, ':/chart.ico')
+        self.widgetIcon(self.ui.btn_openImageWindow, ':/image.ico')
+        self.widgetIcon(self.ui.btn_openHemisphereWindow, ':/processes.ico')
+        self.widgetIcon(self.ui.btn_saveConfigAs, ':/database_down.ico')
+        self.widgetIcon(self.ui.btn_loadFrom, ':/database_up.ico')
+        self.widgetIcon(self.ui.btn_saveConfig, ':/floppy_disc.ico')
+        self.widgetIcon(self.ui.btn_saveConfigQuit, ':/eject.ico')
+        self.widgetIcon(self.ui.btn_mountBoot, ':/computer_accept.ico')
+        self.widgetIcon(self.ui.btn_mountShutdown, ':/computer_remove.ico')
+        self.widgetIcon(self.ui.btn_runInitialModel, ':/play.ico')
+        self.widgetIcon(self.ui.btn_cancelFullModel, ':/stop.ico')
+        self.widgetIcon(self.ui.btn_runFullModel, ':/play.ico')
+        self.widgetIcon(self.ui.btn_cancelInitialModel, ':/stop.ico')
+        self.widgetIcon(self.ui.btn_generateInitialPoints, ':/process_add.ico')
+        self.widgetIcon(self.ui.btn_plateSolveSync, ':/calculator_accept.ico')
+        self.widgetIcon(self.ui.btn_generateGridPoints, ':/process_add.ico')
+        self.widgetIcon(self.ui.btn_generateMaxPoints, ':/process_add.ico')
+        self.widgetIcon(self.ui.btn_generateNormalPoints, ':/process_add.ico')
+        self.widgetIcon(self.ui.btn_generateMinPoints, ':/process_add.ico')
+        self.widgetIcon(self.ui.btn_generateDSOPoints, ':/favorite_add.ico')
+        self.widgetIcon(self.ui.btn_runTimeChangeModel, ':/play.ico')
+        self.widgetIcon(self.ui.btn_runHystereseModel, ':/play.ico')
+        self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
+        # the icon picture in gui
+        pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
+        pixmap = pixmap.scaled(99, 99)
+        self.ui.mainicon.setPixmap(pixmap)
+        pixmap = PyQt5.QtGui.QPixmap(':/azimuth1.png')
+        self.ui.picAZ.setPixmap(pixmap)
+        pixmap = PyQt5.QtGui.QPixmap(':/altitude1.png')
+        self.ui.picALT.setPixmap(pixmap)
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -1309,7 +1319,6 @@ if __name__ == "__main__":
         logging.error('----------------------------------------------------------------------------------')
         sys.__excepthook__(typeException, valueException, tbackException)
 
-    # app = PyQt5.QtWidgets.QApplication(sys.argv)
     # implement notify different to catch exception from event handler
     app = MyApp(sys.argv)
     splash_pix = PyQt5.QtGui.QPixmap(':/mw3_splash.ico')
@@ -1318,6 +1327,7 @@ if __name__ == "__main__":
     splash.show()
     app.processEvents()
 
+    # defining build no
     BUILD_NO = '3.0 alpha 18'
 
     warnings.filterwarnings("ignore")
@@ -1366,6 +1376,7 @@ if __name__ == "__main__":
     mountApp = MountWizzardApp()
     logging.info('Screensize: {0} x {1}'.format(mountApp.screenSizeX, mountApp.screenSizeY))
     mountApp.show()
+
     # end of splash screen
     splash.finish(mountApp)
     sys.exit(app.exec_())

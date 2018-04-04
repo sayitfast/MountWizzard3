@@ -147,8 +147,6 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():
-            self.settingsChanged = True
-            self.changedINDIClientConnectionSettings()
             self.app.threadINDI.start()
         else:
             if self.isRunning:
@@ -240,11 +238,11 @@ class INDIClient(PyQt5.QtCore.QObject):
             self.app.sharedMountDataLock.unlock()
 
     def handleError(self, socketError):
-        self.logger.error('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
+        self.logger.warning('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
     def handleStateChanged(self):
         self.status.emit(self.socket.state())
-        self.logger.info('INDI client connection has state: {0}'.format(self.socket.state()))
+        self.logger.debug('INDI client connection has state: {0}'.format(self.socket.state()))
 
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
