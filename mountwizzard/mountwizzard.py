@@ -200,9 +200,80 @@ class MountWizzardApp(widget.MwWidget):
 
         # setting loglevel
         self.setLoggingLevel()
-        # starting loop for cyclic data to gui from threads
-        # print('Thread ID Main:', int(PyQt5.QtCore.QThread.currentThreadId()))
+        # starting loop for cyclic data queues to gui from threads
         self.mainLoop()
+
+    def mappingFunctions(self):
+        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
+        self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
+        self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
+        self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
+        self.ui.btn_loadFrom.clicked.connect(self.loadConfigDataFrom)
+        self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
+        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#:hP#'))
+        self.ui.btn_mountUnpark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#'))
+        self.ui.btn_startTracking.clicked.connect(lambda: self.mountCommandQueue.put(':PO#:AP#'))
+        self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put(':RT9#'))
+        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.mountCommandQueue.put(':RT0#'))
+        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.mountCommandQueue.put(':RT1#'))
+        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.mountCommandQueue.put(':RT2#'))
+        self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
+        self.ui.btn_stop.clicked.connect(lambda: self.mountCommandQueue.put(':STOP#'))
+        self.ui.btn_mountPos1.clicked.connect(self.mountPosition1)
+        self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
+        self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
+        self.ui.btn_mountPos4.clicked.connect(self.mountPosition4)
+        self.ui.btn_mountPos5.clicked.connect(self.mountPosition5)
+        self.ui.btn_mountPos6.clicked.connect(self.mountPosition6)
+        self.ui.le_parkPos1Text.textEdited.connect(lambda: self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text()))
+        self.ui.le_parkPos2Text.textEdited.connect(lambda: self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text()))
+        self.ui.le_parkPos3Text.textEdited.connect(lambda: self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text()))
+        self.ui.le_parkPos4Text.textEdited.connect(lambda: self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text()))
+        self.ui.le_parkPos5Text.textEdited.connect(lambda: self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text()))
+        self.ui.le_parkPos6Text.textEdited.connect(lambda: self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text()))
+        self.ui.le_horizonLimitHigh.textEdited.connect(self.setHorizonLimitHigh)
+        self.ui.le_horizonLimitLow.textEdited.connect(self.setHorizonLimitLow)
+        self.ui.le_slewRate.textEdited.connect(self.setSlewRate)
+        self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
+        self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
+        self.ui.btn_setupAscomDomeDriver.clicked.connect(self.workerAscomDomeSetup)
+        self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
+        self.ui.btn_cancelFullModel.clicked.connect(self.cancelFullModel)
+        self.ui.btn_cancelInitialModel.clicked.connect(self.cancelInitialModel)
+        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModeling)
+        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.cancelRunTargetRMSFunction)
+        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
+        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
+        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
+        self.ui.btn_loadAnalyseData.clicked.connect(self.selectAnalyseFileName)
+        self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showWindow)
+        self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
+        self.ui.btn_openHemisphereWindow.clicked.connect(self.hemisphereWindow.showWindow)
+        self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
+        self.workerDome.domeStatusText.connect(self.setDomeStatusText)
+        self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
+        self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
+        self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
+        self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
+        self.signalAudio.connect(self.playAudioSignal)
+        self.ui.loglevelDebug.clicked.connect(self.setLoggingLevel)
+        self.ui.loglevelInfo.clicked.connect(self.setLoggingLevel)
+        self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
+        self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
+        self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
+        self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
+        # setting up stylesheet change for buttons
+        self.signalChangeStylesheet.connect(self.changeStylesheet)
+
+    @staticmethod
+    def timeStamp():
+        return time.strftime('%H:%M:%S -> ', time.localtime())
+
+    @staticmethod
+    def changeStylesheet(ui, item, value):
+        ui.setProperty(item, value)
+        ui.style().unpolish(ui)
+        ui.style().polish(ui)
 
     def setupIcons(self):
         # show icon in main gui and add some icons for push buttons
@@ -278,73 +349,41 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.settingsTabWidget.removeTab(3)
             self.ui.settingsTabWidget.removeTab(1)
 
-    def mappingFunctions(self):
-        self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
-        self.ui.btn_saveConfigQuit.clicked.connect(self.saveConfigQuit)
-        self.ui.btn_saveConfig.clicked.connect(self.saveConfig)
-        self.ui.btn_saveConfigAs.clicked.connect(self.saveConfigAs)
-        self.ui.btn_loadFrom.clicked.connect(self.loadConfigDataFrom)
-        self.ui.btn_mountBoot.clicked.connect(self.mountBoot)
-        self.ui.btn_mountPark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#:hP#'))
-        self.ui.btn_mountUnpark.clicked.connect(lambda: self.mountCommandQueue.put(':PO#'))
-        self.ui.btn_startTracking.clicked.connect(lambda: self.mountCommandQueue.put(':PO#:AP#'))
-        self.ui.btn_stopTracking.clicked.connect(lambda: self.mountCommandQueue.put(':RT9#'))
-        self.ui.btn_setTrackingLunar.clicked.connect(lambda: self.mountCommandQueue.put(':RT0#'))
-        self.ui.btn_setTrackingSolar.clicked.connect(lambda: self.mountCommandQueue.put(':RT1#'))
-        self.ui.btn_setTrackingSideral.clicked.connect(lambda: self.mountCommandQueue.put(':RT2#'))
-        self.ui.btn_setRefractionCorrection.clicked.connect(self.setRefractionCorrection)
-        self.ui.btn_stop.clicked.connect(lambda: self.mountCommandQueue.put(':STOP#'))
-        self.ui.btn_mountPos1.clicked.connect(self.mountPosition1)
-        self.ui.btn_mountPos2.clicked.connect(self.mountPosition2)
-        self.ui.btn_mountPos3.clicked.connect(self.mountPosition3)
-        self.ui.btn_mountPos4.clicked.connect(self.mountPosition4)
-        self.ui.btn_mountPos5.clicked.connect(self.mountPosition5)
-        self.ui.btn_mountPos6.clicked.connect(self.mountPosition6)
-        self.ui.le_parkPos1Text.textEdited.connect(lambda: self.ui.btn_mountPos1.setText(self.ui.le_parkPos1Text.text()))
-        self.ui.le_parkPos2Text.textEdited.connect(lambda: self.ui.btn_mountPos2.setText(self.ui.le_parkPos2Text.text()))
-        self.ui.le_parkPos3Text.textEdited.connect(lambda: self.ui.btn_mountPos3.setText(self.ui.le_parkPos3Text.text()))
-        self.ui.le_parkPos4Text.textEdited.connect(lambda: self.ui.btn_mountPos4.setText(self.ui.le_parkPos4Text.text()))
-        self.ui.le_parkPos5Text.textEdited.connect(lambda: self.ui.btn_mountPos5.setText(self.ui.le_parkPos5Text.text()))
-        self.ui.le_parkPos6Text.textEdited.connect(lambda: self.ui.btn_mountPos6.setText(self.ui.le_parkPos6Text.text()))
-        self.ui.le_horizonLimitHigh.textEdited.connect(self.setHorizonLimitHigh)
-        self.ui.le_horizonLimitLow.textEdited.connect(self.setHorizonLimitLow)
-        self.ui.le_slewRate.textEdited.connect(self.setSlewRate)
-        self.ui.btn_setDualTracking.clicked.connect(self.setDualTracking)
-        self.ui.btn_setUnattendedFlip.clicked.connect(self.setUnattendedFlip)
-        self.ui.btn_setupAscomDomeDriver.clicked.connect(self.workerAscomDomeSetup)
-        self.ui.btn_setupAscomEnvironmentDriver.clicked.connect(self.workerAscomEnvironmentSetup)
-        self.ui.btn_cancelFullModel.clicked.connect(self.cancelFullModel)
-        self.ui.btn_cancelInitialModel.clicked.connect(self.cancelInitialModel)
-        self.ui.btn_cancelAnalyseModel.clicked.connect(self.cancelAnalyseModeling)
-        self.ui.btn_cancelRunTargetRMSAlignment.clicked.connect(self.cancelRunTargetRMSFunction)
-        self.ui.checkUseMinimumHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
-        self.ui.checkUseFileHorizonLine.stateChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
-        self.ui.altitudeMinimumHorizon.valueChanged.connect(self.hemisphereWindow.selectHorizonPointsMode)
-        self.ui.btn_loadAnalyseData.clicked.connect(self.selectAnalyseFileName)
-        self.ui.btn_openAnalyseWindow.clicked.connect(self.analyseWindow.showWindow)
-        self.ui.btn_openMessageWindow.clicked.connect(self.messageWindow.showWindow)
-        self.ui.btn_openHemisphereWindow.clicked.connect(self.hemisphereWindow.showWindow)
-        self.ui.btn_openImageWindow.clicked.connect(self.imageWindow.showWindow)
-        self.workerDome.domeStatusText.connect(self.setDomeStatusText)
-        self.workerImaging.cameraStatusText.connect(self.setCameraStatusText)
-        self.workerImaging.cameraExposureTime.connect(self.setCameraExposureTime)
-        self.workerAstrometry.astrometryStatusText.connect(self.setAstrometryStatusText)
-        self.workerAstrometry.astrometrySolvingTime.connect(self.setAstrometrySolvingTime)
-        self.signalAudio.connect(self.playAudioSignal)
-        self.ui.loglevelDebug.clicked.connect(self.setLoggingLevel)
-        self.ui.loglevelInfo.clicked.connect(self.setLoggingLevel)
-        self.ui.loglevelWarning.clicked.connect(self.setLoggingLevel)
-        self.ui.loglevelError.clicked.connect(self.setLoggingLevel)
-        self.signalSetAnalyseFilename.connect(self.setAnalyseFilename)
-        self.ui.btn_runBatchModel.clicked.connect(self.runBatchModel)
-        # setting up stylesheet change for buttons
-        self.signalChangeStylesheet.connect(self.changeStylesheet)
+    def setLoggingLevel(self):
+        if self.ui.loglevelDebug.isChecked():
+            logging.getLogger().setLevel(logging.DEBUG)
+        elif self.ui.loglevelInfo.isChecked():
+            logging.getLogger().setLevel(logging.INFO)
+        elif self.ui.loglevelWarning.isChecked():
+            logging.getLogger().setLevel(logging.WARNING)
+        elif self.ui.loglevelError.isChecked():
+            logging.getLogger().setLevel(logging.ERROR)
 
-    @staticmethod
-    def changeStylesheet(ui, item, value):
-        ui.setProperty(item, value)
-        ui.style().unpolish(ui)
-        ui.style().polish(ui)
+    def setupAudioSignals(self):
+        # load the sounds available
+        self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
+        self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
+        self.audioSignalsSet['Horn'] = PyQt5.QtMultimedia.QSound(':/horn.wav')
+        self.audioSignalsSet['Beep1'] = PyQt5.QtMultimedia.QSound(':/beep1.wav')
+        self.audioSignalsSet['Alarm'] = PyQt5.QtMultimedia.QSound(':/alarm.wav')
+        # adding the possible sounds to drop down menu
+        self.guiAudioList['MountSlew'] = self.ui.soundMountSlewFinished
+        self.guiAudioList['DomeSlew'] = self.ui.soundDomeSlewFinished
+        self.guiAudioList['MountAlert'] = self.ui.soundMountAlert
+        self.guiAudioList['ModelingFinished'] = self.ui.soundModelingFinished
+        for itemKey, itemValue in self.guiAudioList.items():
+            self.guiAudioList[itemKey].addItem('None')
+            self.guiAudioList[itemKey].addItem('Beep')
+            self.guiAudioList[itemKey].addItem('Horn')
+            self.guiAudioList[itemKey].addItem('Beep1')
+            self.guiAudioList[itemKey].addItem('Alarm')
+            self.guiAudioList[itemKey].addItem('Alert')
+
+    def playAudioSignal(self, value):
+        if value in self.guiAudioList:
+            sound = self.guiAudioList[value].currentText()
+            if sound in self.audioSignalsSet:
+                self.audioSignalsSet[sound].play()
 
     def initConfig(self):
         # now try to set the right values in class
@@ -1183,46 +1222,6 @@ class MountWizzardApp(widget.MwWidget):
 
     def setAstrometrySolvingTime(self, status):
         self.imageWindow.ui.le_astrometrySolvingTime.setText(status)
-
-    def setLoggingLevel(self):
-        if self.ui.loglevelDebug.isChecked():
-            logging.getLogger().setLevel(logging.DEBUG)
-        elif self.ui.loglevelInfo.isChecked():
-            logging.getLogger().setLevel(logging.INFO)
-        elif self.ui.loglevelWarning.isChecked():
-            logging.getLogger().setLevel(logging.WARNING)
-        elif self.ui.loglevelError.isChecked():
-            logging.getLogger().setLevel(logging.ERROR)
-
-    @staticmethod
-    def timeStamp():
-        return time.strftime('%H:%M:%S -> ', time.localtime())
-
-    def setupAudioSignals(self):
-        # load the sounds available
-        self.audioSignalsSet['Beep'] = PyQt5.QtMultimedia.QSound(':/beep.wav')
-        self.audioSignalsSet['Alert'] = PyQt5.QtMultimedia.QSound(':/alert.wav')
-        self.audioSignalsSet['Horn'] = PyQt5.QtMultimedia.QSound(':/horn.wav')
-        self.audioSignalsSet['Beep1'] = PyQt5.QtMultimedia.QSound(':/beep1.wav')
-        self.audioSignalsSet['Alarm'] = PyQt5.QtMultimedia.QSound(':/alarm.wav')
-        # adding the possible sounds to drop down menu
-        self.guiAudioList['MountSlew'] = self.ui.soundMountSlewFinished
-        self.guiAudioList['DomeSlew'] = self.ui.soundDomeSlewFinished
-        self.guiAudioList['MountAlert'] = self.ui.soundMountAlert
-        self.guiAudioList['ModelingFinished'] = self.ui.soundModelingFinished
-        for itemKey, itemValue in self.guiAudioList.items():
-            self.guiAudioList[itemKey].addItem('None')
-            self.guiAudioList[itemKey].addItem('Beep')
-            self.guiAudioList[itemKey].addItem('Horn')
-            self.guiAudioList[itemKey].addItem('Beep1')
-            self.guiAudioList[itemKey].addItem('Alarm')
-            self.guiAudioList[itemKey].addItem('Alert')
-
-    def playAudioSignal(self, value):
-        if value in self.guiAudioList:
-            sound = self.guiAudioList[value].currentText()
-            if sound in self.audioSignalsSet:
-                self.audioSignalsSet[sound].play()
 
     def mainLoop(self):
         self.fillMountData()
