@@ -183,11 +183,13 @@ class MountWizzardApp(widget.MwWidget):
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
+
         # gui for additional windows
         self.analyseWindow = analyseWindow.AnalyseWindow(self)
         self.hemisphereWindow = hemisphereWindow.HemisphereWindow(self)
         self.imageWindow = imageWindow.ImagesWindow(self)
         self.messageWindow = messageWindow.MessageWindow(self)
+
         # map all the button to functions for gui
         self.mappingFunctions()
 
@@ -195,41 +197,12 @@ class MountWizzardApp(widget.MwWidget):
         self.loadConfigData()
         # init config starts necessary threads
         self.initConfigMain()
+
         # setting loglevel
         self.setLoggingLevel()
         # starting loop for cyclic data to gui from threads
         # print('Thread ID Main:', int(PyQt5.QtCore.QThread.currentThreadId()))
         self.mainLoop()
-
-    def workerAscomEnvironmentSetup(self):
-        if platform.system() != 'Windows':
-            return
-        # first stopping the thread for environment, than setting up, than starting the thread
-        if self.workerEnvironment.isRunning:
-            self.workerEnvironment.stop()
-        self.workerEnvironment.ascom.setupDriver()
-        self.ui.le_ascomEnvironmentDriverName.setText(self.workerEnvironment.ascom.driverName)
-        self.threadEnvironment.start()
-
-    def workerAscomDomeSetup(self):
-        if platform.system() != 'Windows':
-            return
-        # first stopping the thread for environment, than setting up, than starting the thread
-        if self.workerDome.isRunning:
-            self.workerDome.stop()
-        self.workerDome.ascom.setupDriver()
-        self.ui.le_ascomDomeDriverName.setText(self.workerDome.ascom.driverName)
-        self.threadDome.start()
-
-    def setDomeStatus(self, status):
-        if status == 0:
-            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'gray')
-        elif status == 1:
-            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'red')
-        elif status == 2:
-            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'yellow')
-        elif status == 3:
-            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'green')
 
     def setupIcons(self):
         # show icon in main gui and add some icons for push buttons
@@ -265,6 +238,45 @@ class MountWizzardApp(widget.MwWidget):
         self.ui.picAZ.setPixmap(pixmap)
         pixmap = PyQt5.QtGui.QPixmap(':/altitude1.png')
         self.ui.picALT.setPixmap(pixmap)
+
+    def showModelErrorPolar(self, widget):
+        widget.fig.clf()
+        widget.axes = widget.fig.add_subplot(1, 1, 1, polar=True)
+        widget.axes.grid(True, color='#404040')
+        widget.axes.set_title('Actual Mount Model', color='white', fontweight='bold', y=1.15)
+        widget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
+        widget.axes.set_facecolor((32/256, 32/256, 32/256))
+        widget.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
+        widget.axes.tick_params(axis='y', colors='#2090C0', labelsize=12)
+        widget.axes.set_theta_zero_location('N')
+        widget.axes.set_theta_direction(-1)
+        widget.axes.set_yticks(range(0, 90, 10))
+        yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
+        widget.axes.set_yticklabels(yLabel, color='white')
+        if len(self.workerMountDispatcher.data['ModelIndex']) != 0:
+            azimuth = numpy.asarray(self.workerMountDispatcher.data['ModelAzimuth'])
+            altitude = numpy.asarray(self.workerMountDispatcher.data['ModelAltitude'])
+            cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
+            colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
+            scaleErrorMax = max(colors)
+            scaleErrorMin = min(colors)
+            area = [150 if x >= max(colors) else 40 for x in self.workerMountDispatcher.data['ModelError']]
+            theta = azimuth / 180.0 * math.pi
+            r = 90 - altitude
+            scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm)
+            scatter.set_alpha(0.75)
+            colorbar = widget.fig.colorbar(scatter, pad=0.1)
+            colorbar.set_label('Error [arcsec]', color='white')
+            matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
+        widget.axes.set_rmax(90)
+        widget.axes.set_rmin(0)
+        widget.draw()
+
+    def checkPlatformDependableMenus(self):
+        if platform.system() != 'Windows':
+            # you have to remove the higher number first to keep the ordering number (otherwise everything is already shifted)
+            self.ui.settingsTabWidget.removeTab(3)
+            self.ui.settingsTabWidget.removeTab(1)
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -328,113 +340,11 @@ class MountWizzardApp(widget.MwWidget):
         # setting up stylesheet change for buttons
         self.signalChangeStylesheet.connect(self.changeStylesheet)
 
-    def mountBoot(self):
-        import socket
-        host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
-        if len(host) > 1:
-            self.messageQueue.put('Cannot send WOL because there are multiple computer IP addresses configured\n')
-            self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
-            return
-        addressComputer = host[0].split('.')
-        addressMount = self.ui.le_mountIP.text().split('.')
-        if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
-            self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
-            self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
-            return
-        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(True))
-        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
-        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
-        PyQt5.QtWidgets.QApplication.processEvents()
-        send_magic_packet(self.ui.le_mountMAC.text().strip())
-        time.sleep(1)
-        self.messageQueue.put('Send WOL and boot mount\n')
-        self.logger.debug('Send WOL packet and boot Mount')
-        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(False))
-        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
-        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
-
-    def showModelErrorPolar(self, widget):
-        widget.fig.clf()
-        widget.axes = widget.fig.add_subplot(1, 1, 1, polar=True)
-        widget.axes.grid(True, color='#404040')
-        widget.axes.set_title('Actual Mount Model', color='white', fontweight='bold', y=1.15)
-        widget.fig.subplots_adjust(left=0.075, right=0.975, bottom=0.075, top=0.925)
-        widget.axes.set_facecolor((32/256, 32/256, 32/256))
-        widget.axes.tick_params(axis='x', colors='#2090C0', labelsize=12)
-        widget.axes.tick_params(axis='y', colors='#2090C0', labelsize=12)
-        widget.axes.set_theta_zero_location('N')
-        widget.axes.set_theta_direction(-1)
-        widget.axes.set_yticks(range(0, 90, 10))
-        yLabel = ['', '80', '', '60', '', '40', '', '20', '', '0']
-        widget.axes.set_yticklabels(yLabel, color='white')
-        if len(self.workerMountDispatcher.data['ModelIndex']) != 0:
-            azimuth = numpy.asarray(self.workerMountDispatcher.data['ModelAzimuth'])
-            altitude = numpy.asarray(self.workerMountDispatcher.data['ModelAltitude'])
-            cm = matplotlib.pyplot.cm.get_cmap('RdYlGn_r')
-            colors = numpy.asarray(self.workerMountDispatcher.data['ModelError'])
-            scaleErrorMax = max(colors)
-            scaleErrorMin = min(colors)
-            area = [150 if x >= max(colors) else 40 for x in self.workerMountDispatcher.data['ModelError']]
-            theta = azimuth / 180.0 * math.pi
-            r = 90 - altitude
-            scatter = widget.axes.scatter(theta, r, c=colors, vmin=scaleErrorMin, vmax=scaleErrorMax, s=area, cmap=cm)
-            scatter.set_alpha(0.75)
-            colorbar = widget.fig.colorbar(scatter, pad=0.1)
-            colorbar.set_label('Error [arcsec]', color='white')
-            matplotlib.pyplot.setp(matplotlib.pyplot.getp(colorbar.ax.axes, 'yticklabels'), color='white')
-        widget.axes.set_rmax(90)
-        widget.axes.set_rmin(0)
-        widget.draw()
-
-    def checkASCOM(self):
-        if platform.system() != 'Windows':
-            return
-        appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
-        if appAvailable:
-            self.messageQueue.put('Found: {0}\n'.format(appName))
-            self.logger.info('Name: {0}, Path: {1}'.format(appName, appInstallPath))
-        else:
-            self.logger.warning('Application ASCOM not found on computer')
-
-    def checkRegistrationKeys(self, appSearchName):
-        if platform.machine().endswith('64'):
-            regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                # regpath for 64 bit windows
-        else:
-            regPath = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                             # regpath for 32 bit windows
-        appInstallPath = ''
-        appInstalled = False
-        appName = ''
-        try:
-            key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
-            for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
-                name = EnumKey(key, i)                                                                                      # get registry names of applications
-                subkey = OpenKey(key, name)                                                                                 # open subkeys of applications
-                for j in range(0, QueryInfoKey(subkey)[1]):                                                                 # run through all subkeys
-                    values = EnumValue(subkey, j)
-                    if values[0] == 'DisplayName':
-                        appName = values[1]
-                    if values[0] == 'InstallLocation':
-                        appInstallPath = values[1]
-                if appSearchName in appName:
-                    appInstalled = True
-                    CloseKey(subkey)
-                    break
-                else:
-                    CloseKey(subkey)                                                                                        # closing the subkey for later usage
-            CloseKey(key)                                                                                                   # closing main key for later usage
-            if not appInstalled:
-                appInstallPath = ''
-                appName = ''
-        except Exception as e:
-            self.logger.debug('Name: {0}, Path: {1}, error: {2}'.format(appName, appInstallPath, e))
-        finally:
-            return appInstalled, appName, appInstallPath
-
-    def checkPlatformDependableMenus(self):
-        if platform.system() != 'Windows':
-            # you have to remove the higher number first to keep the ordering number (otherwise everything is already shifted)
-            self.ui.settingsTabWidget.removeTab(3)
-            self.ui.settingsTabWidget.removeTab(1)
+    @staticmethod
+    def changeStylesheet(ui, item, value):
+        ui.setProperty(item, value)
+        ui.style().unpolish(ui)
+        ui.style().polish(ui)
 
     def initConfig(self):
         # now try to set the right values in class
@@ -808,6 +718,50 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.logger.warning('No config file selected')
 
+    def checkASCOM(self):
+        if platform.system() != 'Windows':
+            return
+        appAvailable, appName, appInstallPath = self.checkRegistrationKeys('ASCOM Platform')
+        if appAvailable:
+            self.messageQueue.put('Found: {0}\n'.format(appName))
+            self.logger.info('Name: {0}, Path: {1}'.format(appName, appInstallPath))
+        else:
+            self.logger.warning('Application ASCOM not found on computer')
+
+    def checkRegistrationKeys(self, appSearchName):
+        if platform.machine().endswith('64'):
+            regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                # regpath for 64 bit windows
+        else:
+            regPath = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                             # regpath for 32 bit windows
+        appInstallPath = ''
+        appInstalled = False
+        appName = ''
+        try:
+            key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
+            for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
+                name = EnumKey(key, i)                                                                                      # get registry names of applications
+                subkey = OpenKey(key, name)                                                                                 # open subkeys of applications
+                for j in range(0, QueryInfoKey(subkey)[1]):                                                                 # run through all subkeys
+                    values = EnumValue(subkey, j)
+                    if values[0] == 'DisplayName':
+                        appName = values[1]
+                    if values[0] == 'InstallLocation':
+                        appInstallPath = values[1]
+                if appSearchName in appName:
+                    appInstalled = True
+                    CloseKey(subkey)
+                    break
+                else:
+                    CloseKey(subkey)                                                                                        # closing the subkey for later usage
+            CloseKey(key)                                                                                                   # closing main key for later usage
+            if not appInstalled:
+                appInstallPath = ''
+                appName = ''
+        except Exception as e:
+            self.logger.debug('Name: {0}, Path: {1}, error: {2}'.format(appName, appInstallPath, e))
+        finally:
+            return appInstalled, appName, appInstallPath
+
     def selectAnalyseFileName(self):
         value = self.selectFile(self, 'Open analyse file', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
         if value != '':
@@ -816,28 +770,30 @@ class MountWizzardApp(widget.MwWidget):
         else:
             self.logger.warning('no file selected')
 
-    def runBatchModel(self):
-        value = self.selectFile(self, 'Open analyse file for model programming', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
-        if value == '':
-            self.logger.warning('No file selected')
+    def mountBoot(self):
+        import socket
+        host = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if not ip.startswith('127.')][: 1]
+        if len(host) > 1:
+            self.messageQueue.put('Cannot send WOL because there are multiple computer IP addresses configured\n')
+            self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
             return
-        nameDataFile = value
-        self.logger.info('Modeling from {0}'.format(nameDataFile))
-        data = self.analyseData.loadData(nameDataFile)
-        if not('RaJNow' in data and 'DecJNow' in data):
-            self.logger.warning('RaJNow or DecJNow not in data file')
-            self.messageQueue.put('Mount coordinates missing\n')
+        addressComputer = host[0].split('.')
+        addressMount = self.ui.le_mountIP.text().split('.')
+        if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
+            self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
+            self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
             return
-        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
-            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
-            self.messageQueue.put('Solved data missing\n')
-            return
-        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
-            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
-            self.messageQueue.put('Time and Pierside missing\n')
-            return
-        self.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
-        self.workerMountDispatcher.programBatchData(data)
+        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(True))
+        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
+        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
+        PyQt5.QtWidgets.QApplication.processEvents()
+        send_magic_packet(self.ui.le_mountMAC.text().strip())
+        time.sleep(1)
+        self.messageQueue.put('Send WOL and boot mount\n')
+        self.logger.debug('Send WOL packet and boot Mount')
+        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(False))
+        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
+        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()
@@ -941,6 +897,49 @@ class MountWizzardApp(widget.MwWidget):
         self.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(int(self.ui.le_altParkPos6.text())))
         self.mountCommandQueue.put(':MA#')
 
+    def workerAscomEnvironmentSetup(self):
+        if platform.system() != 'Windows':
+            return
+        # first stopping the thread for environment, than setting up, than starting the thread
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        self.workerEnvironment.ascom.setupDriver()
+        self.ui.le_ascomEnvironmentDriverName.setText(self.workerEnvironment.ascom.driverName)
+        self.threadEnvironment.start()
+
+    def workerAscomDomeSetup(self):
+        if platform.system() != 'Windows':
+            return
+        # first stopping the thread for environment, than setting up, than starting the thread
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
+        self.workerDome.ascom.setupDriver()
+        self.ui.le_ascomDomeDriverName.setText(self.workerDome.ascom.driverName)
+        self.threadDome.start()
+
+    def runBatchModel(self):
+        value = self.selectFile(self, 'Open analyse file for model programming', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
+        if value == '':
+            self.logger.warning('No file selected')
+            return
+        nameDataFile = value
+        self.logger.info('Modeling from {0}'.format(nameDataFile))
+        data = self.analyseData.loadData(nameDataFile)
+        if not('RaJNow' in data and 'DecJNow' in data):
+            self.logger.warning('RaJNow or DecJNow not in data file')
+            self.messageQueue.put('Mount coordinates missing\n')
+            return
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
+            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
+            self.messageQueue.put('Solved data missing\n')
+            return
+        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
+            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
+            self.messageQueue.put('Time and Pierside missing\n')
+            return
+        self.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
+        self.workerMountDispatcher.programBatchData(data)
+
     def cancelFullModel(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
             self.ui.btn_cancelFullModel.setProperty('cancel', True)
@@ -975,12 +974,6 @@ class MountWizzardApp(widget.MwWidget):
     def setAnalyseFilename(self, filename):
         self.ui.le_analyseFileName.setText(filename)
 
-    @staticmethod
-    def changeStylesheet(ui, item, value):
-        ui.setProperty(item, value)
-        ui.style().unpolish(ui)
-        ui.style().polish(ui)
-
     def setEnvironmentStatus(self, status):
         if status == 0:
             self.signalChangeStylesheet.emit(self.ui.btn_environmentConnected, 'color', 'gray')
@@ -1011,27 +1004,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.ui.le_windDirection.setText('{0:4.1f}'.format(self.workerEnvironment.data[valueName]))
             elif valueName == 'SQR':
                 self.ui.le_SQR.setText('{0:4.2f}'.format(self.workerEnvironment.data[valueName]))
-
-    def setINDIStatus(self, status):
-        if status == 0:
-            self.ui.le_INDIStatus.setText('UnconnectedState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'red')
-        elif status == 1:
-            self.ui.le_INDIStatus.setText('HostLookupState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
-        elif status == 2:
-            self.ui.le_INDIStatus.setText('ConnectingState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
-        elif status == 3:
-            self.ui.le_INDIStatus.setText('ConnectedState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'green')
-        elif status == 6:
-            self.ui.le_INDIStatus.setText('ClosingState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
-        else:
-            self.ui.le_INDIStatus.setText('Error')
-        if not self.ui.checkEnableINDI.isChecked():
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'gray')
 
     def fillINDIData(self, data):
         if data['Name'] == 'CCD':
@@ -1163,6 +1135,37 @@ class MountWizzardApp(widget.MwWidget):
                     self.ui.le_UTCDataValid.setText('INVALID')
             if valueName == 'UTCDataExpirationDate':
                 self.ui.le_UTCDataExpirationDate.setText(str(self.workerMountDispatcher.data[valueName]))
+
+    def setDomeStatus(self, status):
+        if status == 0:
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'gray')
+        elif status == 1:
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'red')
+        elif status == 2:
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'yellow')
+        elif status == 3:
+            self.signalChangeStylesheet.emit(self.ui.btn_domeConnected, 'color', 'green')
+
+    def setINDIStatus(self, status):
+        if status == 0:
+            self.ui.le_INDIStatus.setText('UnconnectedState')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'red')
+        elif status == 1:
+            self.ui.le_INDIStatus.setText('HostLookupState')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
+        elif status == 2:
+            self.ui.le_INDIStatus.setText('ConnectingState')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
+        elif status == 3:
+            self.ui.le_INDIStatus.setText('ConnectedState')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'green')
+        elif status == 6:
+            self.ui.le_INDIStatus.setText('ClosingState')
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
+        else:
+            self.ui.le_INDIStatus.setText('Error')
+        if not self.ui.checkEnableINDI.isChecked():
+            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'gray')
 
     def setDomeStatusText(self, status):
         self.ui.le_domeStatusText.setText(status)
