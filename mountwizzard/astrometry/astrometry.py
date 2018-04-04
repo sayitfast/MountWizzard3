@@ -153,7 +153,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.astrometryHandler.start()
-        self.getStatus()
+        self.getDeviceStatus()
         while self.isRunning:
             if not self.astrometryCommandQueue.empty():
                 imageParams = self.astrometryCommandQueue.get()
@@ -204,7 +204,7 @@ class Astrometry(PyQt5.QtCore.QObject):
                 self.app.imageWindow.signalSetRaSolved.emit('not solved')
                 self.app.imageWindow.signalSetDecSolved.emit('not solved')
 
-    def getStatus(self):
+    def getDeviceStatus(self):
         self.astrometryHandler.getStatus()
         # get status to gui
         if not self.astrometryHandler.application['Available']:
@@ -220,7 +220,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             else:
                 self.logger.warning('This state is undefined')
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDeviceStatus)
 
     def updateApplicationName(self):
         # updating solver name name if possible

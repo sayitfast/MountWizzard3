@@ -117,8 +117,8 @@ class Environment(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.environmentHandler.start()
-        self.getDataFromDevice()
         self.getStatusFromDevice()
+        self.getDataFromDevice()
         while self.isRunning:
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
@@ -172,7 +172,7 @@ class Environment(PyQt5.QtCore.QObject):
                 'Temperature': 0.0,
                 'MovingAverageTemperature': 0.0,
                 'Humidity': 0,
-                'Pressure': 0,
+                'Pressure': 1000,
                 'MovingAveragePressure': 0,
                 'CloudCover': 0,
                 'RainRate': 0,

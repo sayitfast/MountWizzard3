@@ -77,21 +77,28 @@ class AscomEnvironment:
             pythoncom.CoUninitialize()
 
     def getStatus(self):
-        self.app.sharedEnvironmentDataLock.lockForWrite()
         try:
             if self.ascom:
                 if self.ascom.connected:
+                    self.app.sharedEnvironmentDataLock.lockForWrite()
                     self.data['Connected'] = True
+                    self.app.sharedEnvironmentDataLock.unlock()
                 else:
+                    self.app.sharedEnvironmentDataLock.lockForWrite()
                     self.data['Connected'] = False
+                    self.app.sharedEnvironmentDataLock.unlock()
             else:
+                self.app.sharedEnvironmentDataLock.lockForWrite()
                 self.data['Connected'] = False
+                self.app.sharedEnvironmentDataLock.unlock()
         except Exception as e:
             self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.driverName, e))
+            self.app.sharedEnvironmentDataLock.lockForWrite()
             self.data['Connected'] = False
+            self.app.sharedEnvironmentDataLock.unlock()
             self.application['Status'] = 'ERROR'
         finally:
-            self.app.sharedEnvironmentDataLock.unlock()
+            pass
 
     def getData(self):
         self.app.sharedEnvironmentDataLock.lockForWrite()

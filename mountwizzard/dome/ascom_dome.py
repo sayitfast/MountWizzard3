@@ -77,21 +77,28 @@ class AscomDome:
             pythoncom.CoUninitialize()
 
     def getStatus(self):
-        self.app.sharedDomeDataLock.lockForWrite()
         try:
             if self.ascom:
                 if self.ascom.connected:
+                    self.app.sharedDomeDataLock.lockForWrite()
                     self.data['Connected'] = True
+                    self.app.sharedDomeDataLock.unlock()
                 else:
+                    self.app.sharedDomeDataLock.lockForWrite()
                     self.data['Connected'] = False
+                    self.app.sharedDomeDataLock.unlock()
             else:
+                self.app.sharedDomeDataLock.lockForWrite()
                 self.data['Connected'] = False
+                self.app.sharedDomeDataLock.unlock()
         except Exception as e:
             self.logger.error('Could not dispatch driver: {0} and connect it, error: {1}'.format(self.driverName, e))
+            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Connected'] = False
+            self.app.sharedDomeDataLock.unlock()
             self.application['Status'] = 'ERROR'
         finally:
-            self.app.sharedDomeDataLock.unlock()
+            pass
 
     def getData(self):
         self.app.sharedDomeDataLock.lockForWrite()

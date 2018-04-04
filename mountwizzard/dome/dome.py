@@ -118,8 +118,8 @@ class Dome(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.domeHandler.start()
-        self.getDataFromDevice()
         self.getStatusFromDevice()
+        self.getDataFromDevice()
         while self.isRunning:
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()

@@ -11,7 +11,7 @@ int numY
 int
 connect()
 disconnect()
-getStatus()
+getDeviceStatus()
 _getProps()
 downloadImage()
 expose()

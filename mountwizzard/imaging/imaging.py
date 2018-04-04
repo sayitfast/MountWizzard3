@@ -155,7 +155,7 @@ class Imaging(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.cameraHandler.start()
-        self.getStatus()
+        self.getDeviceStatus()
         while self.isRunning:
             if not self.imagingCommandQueue.empty():
                 imageParams = self.imagingCommandQueue.get()
@@ -214,7 +214,7 @@ class Imaging(PyQt5.QtCore.QObject):
         # if we got an image, than show it
         self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
 
-    def getStatus(self):
+    def getDeviceStatus(self):
         self.cameraHandler.getStatus()
         # get status to gui
         if not self.cameraHandler.application['Available']:
@@ -227,7 +227,7 @@ class Imaging(PyQt5.QtCore.QObject):
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'green')
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatus)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDeviceStatus)
 
     def updateApplicationName(self):
         # updating camera name if possible
