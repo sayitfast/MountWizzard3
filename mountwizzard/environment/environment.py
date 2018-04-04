@@ -61,7 +61,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.movingAverageTemperature = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.movingAveragePressure = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         # connect change in environment to the subroutine of setting it up
-        #self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
+        # self.app.ui.pd_chooseEnvironment.currentIndexChanged.connect(self.chooserEnvironment)
 
     def initConfig(self):
         # first build the pull down menu
@@ -97,7 +97,7 @@ class Environment(PyQt5.QtCore.QObject):
     def chooserEnvironment(self):
         if not self.dropDownBuildFinished:
             print('rejected')
-            # return
+            #return
         self.mutexChooser.lock()
         self.stop()
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):

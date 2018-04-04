@@ -52,7 +52,8 @@ class Dome(PyQt5.QtCore.QObject):
         self.thread = thread
         self.dropDownBuildFinished = False
         self.data = {
-            'Connected': False
+            'Connected': False,
+            'Slewing': False
         }
         # get supporting handlers
         self.ascom = ascom_dome.AscomDome(self, self.app, self.data)
