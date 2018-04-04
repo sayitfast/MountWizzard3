@@ -337,5 +337,3 @@ class HemisphereWindow(widget.MwWidget):
         self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#80808080', lw=3, fill=False, visible=False, picker='None')
         self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome1)
         self.hemisphereMatplotlibMoving.axes.add_patch(self.pointerDome2)
-        self.drawCanvas()
-        self.drawCanvasMoving()
