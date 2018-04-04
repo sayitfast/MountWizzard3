@@ -568,7 +568,7 @@ class MountWizzardApp(widget.MwWidget):
             self.workerModelingDispatcher.stop()
         if self.workerINDI.isRunning:
             self.workerINDI.stop()
-
+        # update the configuration
         self.workerINDI.initConfig()
         self.workerMountDispatcher.initConfig()
         self.workerModelingDispatcher.initConfig()
@@ -579,6 +579,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerAstrometry.initConfig()
         if platform.system() == 'Windows':
             self.workerUpload.initConfig()
+        # now the window config
         self.hemisphereWindow.initConfig()
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()

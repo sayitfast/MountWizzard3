@@ -20,7 +20,7 @@
 import PyQt5
 
 
-class NoneSolver:
+class NoneAstrometry:
 
     def __init__(self, main, app, data):
         # make main sources available
@@ -31,7 +31,7 @@ class NoneSolver:
         self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.application = dict()
-        self.application['Available'] = True
+        self.application['Available'] = False
         self.application['Name'] = 'Dummy Solver'
         self.application['InstallPath'] = ''
         self.application['Status'] = 'OK'

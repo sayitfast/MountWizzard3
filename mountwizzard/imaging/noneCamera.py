@@ -33,7 +33,7 @@ class NoneCamera:
         self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.application = dict()
-        self.application['Available'] = True
+        self.application['Available'] = False
         self.application['Name'] = 'Dummy Camera'
         self.application['InstallPath'] = ''
         self.application['Status'] = 'OK'
