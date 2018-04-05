@@ -128,6 +128,7 @@ class MwWidget(QWidget):
     QCheckBox {
         color: #C0C0C0;
         spacing: 8px;
+        background-color: transparent;
     }
     QCheckBox::indicator {
         border-width: 1px;

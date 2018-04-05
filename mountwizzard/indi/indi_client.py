@@ -54,6 +54,8 @@ class INDIClient(PyQt5.QtCore.QObject):
     DETECTOR_INTERFACE = (1 << 11)
     AUX_INTERFACE = (1 << 15)
 
+    CYCLE_COMMAND = 200
+
     data = {
         'ServerIP': '',
         'ServerPort': 7624,
@@ -165,16 +167,9 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
+        self.doCommandQueue()
         # self.mainLoop()
         while self.isRunning:
-            self.app.sharedMountDataLock.lockForRead()
-            if not self.app.INDICommandQueue.empty() and self.data['Connected']:
-                indiCommand = self.app.INDICommandQueue.get()
-                self.sendMessage(indiCommand)
-            if not self.data['Connected'] and self.socket.state() == 0:
-                self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-            self.app.sharedMountDataLock.unlock()
-            self.handleNewDevice()
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != 3:
@@ -196,6 +191,19 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        self.app.sharedMountDataLock.lockForRead()
+        if not self.app.INDICommandQueue.empty() and self.data['Connected']:
+            indiCommand = self.app.INDICommandQueue.get()
+            self.sendMessage(indiCommand)
+        if not self.data['Connected'] and self.socket.state() == 0:
+            self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
+        self.app.sharedMountDataLock.unlock()
+        self.handleNewDevice()
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def handleHostFound(self):
         self.logger.debug('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
