@@ -104,6 +104,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         finally:
             pass
         self.AstrometryClient.initConfig()
+        self.chooseAstrometry()
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
