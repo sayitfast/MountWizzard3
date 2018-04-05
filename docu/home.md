@@ -18,7 +18,7 @@ extracting will take some seconds to start.
 MountWizzard supports tooltips. So hopefully if you don't get an idea, whats is going to happen,
 just put you mouse above a field or button and you will see the tooltip!
 
-###New Features since MountWizzard2.6
+### New Features since MountWizzard2.6
 - Support for profiles. Profile store everything which is customizable
 - Image making and solving
 - Multi Plattform support. MountWizzard runs now on Windows, MacOSX and Linux
