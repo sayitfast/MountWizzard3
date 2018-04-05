@@ -40,6 +40,7 @@ class Dome(PyQt5.QtCore.QObject):
 
     CYCLE_DATA = 1000
     CYCLE_STATUS = 1000
+    CYCLE_COMMAND = 200
     START_DOME_TIMEOUT = 4
 
     def __init__(self, app, thread):
@@ -117,11 +118,8 @@ class Dome(PyQt5.QtCore.QObject):
         self.domeHandler.start()
         self.getStatusFromDevice()
         self.getDataFromDevice()
+        self.doCommandQueue()
         while self.isRunning:
-            if not self.app.domeCommandQueue.empty():
-                command, value = self.app.domeCommandQueue.get()
-                if command == 'SlewAzimuth':
-                    self.domeHandler.slewToAzimuth(value)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.domeHandler.stop()
@@ -133,6 +131,15 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.app.domeCommandQueue.empty():
+            command, value = self.app.domeCommandQueue.get()
+            if command == 'SlewAzimuth':
+                self.domeHandler.slewToAzimuth(value)
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def getStatusFromDevice(self):
         self.domeHandler.getStatus()
