@@ -118,8 +118,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.getStatusFromDevice()
         self.getDataFromDevice()
         while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepPyQt(200)
         self.domeHandler.stop()
 
     def stop(self):
