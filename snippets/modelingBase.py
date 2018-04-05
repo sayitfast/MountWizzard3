@@ -22,7 +22,7 @@ from camera import imagingApps
 # analyse save functions
 from analyse import analysedata
 # modelPoints
-from modeling import modelingPoints
+from modeling import model_points
 # transformations
 from astrometry import transform
 from queue import Queue
@@ -64,7 +64,7 @@ class ModelingBase:
         self.analyseData = analysedata.Analyse(self.app)
         # assign support classes
         self.transform = transform.Transform(self.app)
-        self.modelPoints = modelingPoints.ModelPoints(self.app)
+        self.modelPoints = model_points.ModelPoints(self.app)
         self.imagingApps = imagingApps.ImagingApps(self.app)
 
     def initConfig(self):

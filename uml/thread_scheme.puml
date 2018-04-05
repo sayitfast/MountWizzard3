@@ -20,13 +20,13 @@ package "Mount" {
 }
 
 package "Modeling"{
-[ModelingDispatcher] -> [ModelingRunner]
-[ModelingRunner] ---> [ImagingApps]
-[ModelingRunner] ---> [Analyse]
-[ModelingRunner] ---> [ModelPoints]
-[ModelingRunner] ---> [WorkerSlewPoint]
-[ModelingRunner] ---> [WorkerImage]
-[ModelingRunner] ---> [WorkerPlateSolve]
+[ModelingDispatcher] -> [ModelingBuild]
+[ModelingBuild] ---> [ImagingApps]
+[ModelingBuild] ---> [Analyse]
+[ModelingBuild] ---> [ModelPoints]
+[ModelingBuild] ---> [WorkerSlewPoint]
+[ModelingBuild] ---> [WorkerImage]
+[ModelingBuild] ---> [WorkerPlateSolve]
 }
 
 package "Camera"{

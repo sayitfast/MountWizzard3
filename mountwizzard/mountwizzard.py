@@ -35,15 +35,15 @@ from PyQt5 import QtMultimedia
 import matplotlib
 matplotlib.use('Qt5Agg')
 from baseclasses import widget
-from widgets import hemisphereWindow
-from widgets import imageWindow
-from widgets import analyseWindow
-from widgets import messageWindow
+from widgets import hemisphere_window
+from widgets import image_window
+from widgets import analyse_window
+from widgets import message_window
 from gui import main_window_ui
-from modeling import modelingDispatcher
-from mount import mountDispatcher
+from modeling import model_dispatcher
+from mount import mount_dispatcher
 from relays import relays
-from remote import remoteThread
+from remote import remote
 from dome import dome
 from environment import environment
 from indi import indi_client
@@ -51,7 +51,7 @@ from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
 if platform.system() == 'Windows':
-    from automation import upload
+    from automation import automation
 from wakeonlan import send_magic_packet
 
 
@@ -118,7 +118,7 @@ class MountWizzardApp(widget.MwWidget):
         self.relays = relays.Relays(self)
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
-        self.workerMountDispatcher = mountDispatcher.MountDispatcher(self, self.threadMountDispatcher)
+        self.workerMountDispatcher = mount_dispatcher.MountDispatcher(self, self.threadMountDispatcher)
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
@@ -153,7 +153,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerDome.signalDomeConnected.connect(self.setDomeStatus)
         # threading for remote shutdown
         self.threadRemote = PyQt5.QtCore.QThread()
-        self.workerRemote = remoteThread.Remote(self, self.threadRemote)
+        self.workerRemote = remote.Remote(self, self.threadRemote)
         self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
@@ -173,22 +173,22 @@ class MountWizzardApp(widget.MwWidget):
         # threading for updater automation
         if platform.system() == 'Windows':
             self.threadUpload = PyQt5.QtCore.QThread()
-            self.workerUpload = upload.UpdaterAuto(self, self.threadUpload)
+            self.workerUpload = automation.Automation(self, self.threadUpload)
             self.threadUpload.setObjectName("Upload")
             self.workerUpload.moveToThread(self.threadUpload)
             self.threadUpload.started.connect(self.workerUpload.run)
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
-        self.workerModelingDispatcher = modelingDispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
+        self.workerModelingDispatcher = model_dispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
 
         # gui for additional windows
-        self.analyseWindow = analyseWindow.AnalyseWindow(self)
-        self.hemisphereWindow = hemisphereWindow.HemisphereWindow(self)
-        self.imageWindow = imageWindow.ImagesWindow(self)
-        self.messageWindow = messageWindow.MessageWindow(self)
+        self.analyseWindow = analyse_window.AnalyseWindow(self)
+        self.hemisphereWindow = hemisphere_window.HemisphereWindow(self)
+        self.imageWindow = image_window.ImagesWindow(self)
+        self.messageWindow = message_window.MessageWindow(self)
 
         # map all the button to functions for gui
         self.mappingFunctions()

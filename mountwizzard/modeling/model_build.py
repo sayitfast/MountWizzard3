@@ -26,7 +26,7 @@ import math
 import PyQt5
 import indi.indi_xml as indiXML
 from analyse import analysedata
-from modeling import modelingPoints
+from modeling import model_points
 from queue import Queue
 from astrometry import transform
 import astropy.io.fits as pyfits
@@ -248,7 +248,7 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.thread.wait()
 
 
-class ModelingRunner:
+class ModelingBuild:
     logger = logging.getLogger(__name__)
 
     def __init__(self, app):
@@ -258,7 +258,7 @@ class ModelingRunner:
         # assign support classes
         self.analyseData = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
-        self.modelPoints = modelingPoints.ModelPoints(self.app)
+        self.modelPoints = model_points.ModelPoints(self.app)
 
         # initialize the parallel thread modeling parts
         self.threadSlewpoint = PyQt5.QtCore.QThread()

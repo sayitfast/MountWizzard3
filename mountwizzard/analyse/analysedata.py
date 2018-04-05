@@ -196,7 +196,7 @@ class Analyse:
 
 if __name__ == "__main__":
     logger = getLogger(__name__)
-    from mount.mountDispatcher import Mount
+    from mount.mount_dispatcher import Mount
     filename = '10micron_model.dat'
     m = Mount
     a = Analyse(m)

@@ -22,7 +22,7 @@ import time
 import PyQt5
 import queue
 # workers
-from modeling import modelingRunner
+from modeling import model_build
 
 
 class ModelingDispatcher(PyQt5.QtCore.QObject):
@@ -40,7 +40,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app = app
         self.thread = thread
         self.commandDispatcherQueue = queue.Queue()
-        self.modelingRunner = modelingRunner.ModelingRunner(self.app)
+        self.modelingRunner = model_build.ModelingBuild(self.app)
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
             'RunInitialModel':

@@ -28,7 +28,7 @@ from pywinauto import Application, timings, findwindows, application
 from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 
 
-class UpdaterAuto(PyQt5.QtCore.QObject):
+class Automation(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
