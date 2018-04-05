@@ -139,7 +139,7 @@ class Relays:
             if 'CheckEnableRelay' in self.app.config:
                 self.app.ui.checkEnableRelay.setChecked(self.app.config['CheckEnableRelay'])
         except Exception as e:
-            self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
+            self.logger.error('Item in config.cfg for relay could not be initialized, error:{0}'.format(e))
         finally:
             pass
         self.setIP()
@@ -194,20 +194,20 @@ class Relays:
                 connected = True
             except urllib.error.HTTPError as e:
                 if e.code == 401:
-                    self.logger.info('relaybox present under ip: {0}'.format(self.relayIP))
+                    self.logger.info('Relaybox present under ip: {0}'.format(self.relayIP))
                     connected = True
                 else:
-                    self.logger.error('connection error: {0}'.format(e))
+                    self.logger.error('Connection error: {0}'.format(e))
             except urllib.request.URLError:
-                self.logger.warning('there is no relaybox present under ip: {0}'.format(self.relayIP))
+                self.logger.warning('There is no relaybox present under ip: {0}'.format(self.relayIP))
             except Exception as e:
-                self.logger.error('connection error: {0}'.format(e))
+                self.logger.error('Connection error: {0}'.format(e))
             finally:
                 if connected:
                     self.requestStatus()
                 return connected
         else:
-            self.logger.debug('there is no ip given for relaybox')
+            self.logger.debug('There is no ip given for relaybox')
 
     def setStatus(self, response):
         lines = response.splitlines()
@@ -289,10 +289,8 @@ class Relays:
     def runRelay(self, relayNumber):
         if relayNumber == 1:
             if self.app.ui.relay1Function.currentIndex() == 0:
-                print('switch')
                 self.switch(relayNumber)
             else:
-                print('pulse')
                 self.pulse(relayNumber)
         if relayNumber == 2:
             if self.app.ui.relay2Function.currentIndex() == 0:
@@ -341,7 +339,7 @@ class Relays:
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}00'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
-            self.logger.error('relay:{0}, error:{1}'.format(relayNumber, e))
+            self.logger.error('Relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
             pass
 
@@ -350,7 +348,7 @@ class Relays:
             self.geturl('http://' + self.relayIP + '/relays.cgi?relay={0:1d}'.format(relayNumber))
             self.requestStatus()
         except Exception as e:
-            self.logger.error('relay:{0}, error:{1}'.format(relayNumber, e))
+            self.logger.error('Relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
             pass
 
@@ -359,7 +357,7 @@ class Relays:
             result = self.geturl('http://' + self.relayIP + '/status.xml')
             self.setStatus(result.content.decode())
         except Exception as e:
-            self.logger.error('error {0}'.format(e))
+            self.logger.error('Status error {0}'.format(e))
         finally:
             pass
 
@@ -368,6 +366,6 @@ class Relays:
             self.geturl('http://' + self.relayIP + '/FFE000')
             self.requestStatus()
         except Exception as e:
-            self.logger.error('error {0}'.format(e))
+            self.logger.error('Switch all error {0}'.format(e))
         finally:
             pass
