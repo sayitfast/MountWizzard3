@@ -303,7 +303,7 @@ class AstrometryClient:
                 imageParams['Message'] = 'Timeout'
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-            time.sleep(1)
+            self.app.sleepQT(1000)
 
         # waiting for the solving results done by jobs are present
         self.main.astrometryStatusText.emit('SOLVE-Job')
@@ -329,7 +329,7 @@ class AstrometryClient:
                 imageParams['Message'] = 'Timeout'
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-            time.sleep(1)
+            self.app.sleepQT(1000)
 
         # Loop for data
         self.main.imageSolved.emit()

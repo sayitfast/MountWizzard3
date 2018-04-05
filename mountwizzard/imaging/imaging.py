@@ -112,6 +112,7 @@ class Imaging(PyQt5.QtCore.QObject):
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
             pass
+        self.chooseImaging()
 
     def storeConfig(self):
         self.app.config['ImagingApplication'] = self.app.ui.pd_chooseImaging.currentIndex()
@@ -155,8 +156,7 @@ class Imaging(PyQt5.QtCore.QObject):
             if not self.imagingCommandQueue.empty():
                 imageParams = self.imagingCommandQueue.get()
                 self.captureImage(imageParams)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         self.cameraHandler.stop()
 
     def stop(self):

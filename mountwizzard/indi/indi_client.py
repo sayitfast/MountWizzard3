@@ -175,8 +175,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
             self.app.sharedMountDataLock.unlock()
             self.handleNewDevice()
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if self.socket.state() != 3:
             self.socket.abort()
         else:

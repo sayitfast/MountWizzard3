@@ -270,7 +270,7 @@ class MountWizzardApp(widget.MwWidget):
         return time.strftime('%H:%M:%S -> ', time.localtime())
 
     @staticmethod
-    def sleepPyQt(time):
+    def sleepQT(time):
         loop = PyQt5.QtCore.QEventLoop()
         PyQt5.QtCore.QTimer.singleShot(time, loop.quit)
         loop.exec_()

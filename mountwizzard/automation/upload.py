@@ -275,8 +275,7 @@ class UpdaterAuto(PyQt5.QtCore.QObject):
             if not self.commandDispatcherQueue.empty():
                 command = self.commandDispatcherQueue.get()
                 self.commandDispatcher(command)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
 
     def stop(self):
         self.mutexIsRunning.lock()

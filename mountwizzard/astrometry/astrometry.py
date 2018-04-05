@@ -104,6 +104,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         finally:
             pass
         self.AstrometryClient.initConfig()
+        self.chooseAstrometry()
 
     def storeConfig(self):
         self.app.config['AstrometryApplication'] = self.app.ui.pd_chooseAstrometry.currentIndex()
@@ -153,8 +154,7 @@ class Astrometry(PyQt5.QtCore.QObject):
             if not self.astrometryCommandQueue.empty():
                 imageParams = self.astrometryCommandQueue.get()
                 self.solveImage(imageParams)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         self.astrometryHandler.stop()
 
     def stop(self):

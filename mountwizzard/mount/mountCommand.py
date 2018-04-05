@@ -129,8 +129,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 self.app.sharedMountDataLock.lockForRead()
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.app.sharedMountDataLock.unlock()
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if self.socket.state() != 3:
             self.socket.abort()
         else:

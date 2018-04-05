@@ -335,7 +335,7 @@ class Relays:
     def pulse(self, relayNumber):
         try:
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}01'.format(relayNumber))
-            time.sleep(1)
+            self.app.sleepQT(1000)
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}00'.format(relayNumber))
             self.requestStatus()
         except Exception as e:

@@ -135,13 +135,13 @@ class SGPro:
             suc, state, message = self.SgGetDeviceStatus('Camera')
             if 'integrating' in message:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         # bow for the duration
         while not self.cancel:
             suc, state, message = self.SgGetDeviceStatus('Camera')
             if 'downloading' in message or 'ready' in message or 'idle' in message:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # Loop for downloading
         self.main.imageIntegrated.emit()
@@ -150,7 +150,7 @@ class SGPro:
             suc, path = self.SgGetImagePath(guid)
             if suc:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # Loop for saving
         self.main.imageDownloaded.emit()
@@ -159,7 +159,7 @@ class SGPro:
             suc, state, message = self.SgGetDeviceStatus('Camera')
             if 'ready' in message or 'idle' in message:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # finally idle
         self.main.imageSaved.emit()

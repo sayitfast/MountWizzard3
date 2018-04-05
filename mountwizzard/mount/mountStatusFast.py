@@ -64,8 +64,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
             if not self.connected and self.socket.state() == 0:
                 self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
                 self.sendCommandQueue.queue.clear()
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if self.socket.state() != 3:
             self.socket.abort()
         else:

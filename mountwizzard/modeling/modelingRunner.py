@@ -71,12 +71,11 @@ class Slewpoint(PyQt5.QtCore.QObject):
                 timeCounter = modelingData['SettlingTime'] * 10
                 while timeCounter > 0:
                     timeCounter -= 1
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
+                    self.main.app.sleepQT(100)
                 self.main.workerImage.queueImage.put(modelingData)
                 # make signal for hemisphere that point is imaged
                 self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
-            time.sleep(0.2)
+            self.main.app.sleepQT(200)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
@@ -146,17 +145,15 @@ class Image(PyQt5.QtCore.QObject):
                 self.main.app.workerImaging.imagingCommandQueue.put(modelingData)
                 # wait for imaging ready
                 while not self.imageIntegrated and not self.main.cancel:
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
+                    self.main.app.sleepQT(100)
                 # next point after integrating but during downloading if possible or after IDLE
                 self.main.workerSlewpoint.signalStartSlewing.emit()
                 # we have to wait until image is downloaded before being able to plate solve
                 while not self.imageSaved and not self.main.cancel:
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
+                    self.main.app.sleepQT(100)
                 self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
                 self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
-            time.sleep(0.2)
+            self.main.app.sleepQT(200)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
@@ -204,8 +201,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                     self.main.app.workerAstrometry.astrometryCommandQueue.put(modelingData)
                     # wait for solving ready
                     while not self.imageDataDownloaded and not self.main.cancel:
-                        time.sleep(0.1)
-                        PyQt5.QtWidgets.QApplication.processEvents()
+                        self.main.app.sleepQT(100)
                     if 'RaJ2000Solved' in modelingData:
                         ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
                         modelingData['RaJNowSolved'] = ra_sol_Jnow
@@ -236,8 +232,7 @@ class Platesolve(PyQt5.QtCore.QObject):
                 # we come to an end
                 if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                     self.main.modelingHasFinished = True
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.main.app.sleepQT(200)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -311,7 +306,7 @@ class ModelingRunner:
         self.modelingResultData = []
         # clearing the mount model and wait 4 seconds for the mount computer to recover (I don't know why, but Per Frejval did it)
         self.app.mountCommandQueue.put(':delalig#')
-        time.sleep(4)
+        self.main.app.sleepQT(4000)
 
     def slewMountDome(self, modelingData):
         altitude = modelingData['Altitude']
@@ -332,13 +327,13 @@ class ModelingRunner:
             commandSet = {'command': ':Gd#', 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
-                time.sleep(0.1)
+                self.app.sleepQT(100)
             dec = self.transform.degStringToDecimal(commandSet['reply'], ':')
             # print(commandSet['reply'], dec)
             commandSet = {'command': ':Gr#', 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
-                time.sleep(0.1)
+                self.app.sleepQT(100)
             ra = self.transform.degStringToDecimal(commandSet['reply'], ':')
             # print(commandSet['reply'], ra)
             if self.app.workerINDI.telescopeDevice != '':
@@ -353,27 +348,27 @@ class ModelingRunner:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount and dome wait while for stop slewing')
                     break
-                time.sleep(0.2)
+                self.app.sleepQT(100)
                 if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
                     # wait for dome
                     while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
                         if self.cancel:
                             self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                             break
-                        time.sleep(0.2)
+                        self.main.app.sleepQT(100)
         else:
             while not self.mountSlewFinished:
                 if self.cancel:
                     self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                     break
-                time.sleep(0.2)
+                self.app.sleepQT(100)
             if modelingData['Simulation'] and self.app.workerINDI.telescopeDevice != '':
                 # wait for dome
                 while self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['EQUATORIAL_EOD_COORD']['state'] == 'Busy':
                     if self.cancel:
                         self.logger.info('Modeling cancelled in loop mount wait while for stop slewing')
                         break
-                    time.sleep(0.2)
+                    self.app.sleepQT(100)
 
     def runModelCore(self, messageQueue, runPoints, modelingData):
         # start clearing hemisphere window
@@ -400,7 +395,7 @@ class ModelingRunner:
         self.threadPlatesolve.start()
         # wait until threads started
         while not self.workerImage.isRunning and not self.workerPlatesolve.isRunning and not self.workerSlewpoint.isRunning:
-            time.sleep(0.2)
+            self.app.sleepQT(100)
         # loading the point to the queue
         for i, (p_az, p_alt) in enumerate(runPoints):
             modelingData['Index'] = i
@@ -422,8 +417,7 @@ class ModelingRunner:
             # stop loop if finished
             if self.modelingHasFinished:
                 break
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if self.cancel:
             # clearing the gui
             messageQueue.put('percent0')
@@ -437,8 +431,7 @@ class ModelingRunner:
             modelingData = self.solvedPointsQueue.get()
             # clean up intermediate data
             results.append(copy.copy(modelingData))
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
@@ -480,7 +473,7 @@ class ModelingRunner:
             self.logger.warning('There are no modeling points to process')
             return
         # if dome is present, it has to be connected, too
-        if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
+        if not self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             domeIsConnected = self.app.workerDome.data['Connected']
         else:
             domeIsConnected = False
@@ -648,8 +641,7 @@ class ModelingRunner:
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
 
         while imageParams['Imagepath'] == '':
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
 
         fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
         fitsHeader = fitsFileHandle[0].header
@@ -669,8 +661,7 @@ class ModelingRunner:
 
         # wait for solving
         while 'Solved' not in imageParams:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
 
         if imageParams['Solved']:
             self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),

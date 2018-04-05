@@ -439,8 +439,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if not self.commandDispatcherQueue.empty():
                 command = self.commandDispatcherQueue.get()
                 self.commandDispatcher(command)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -471,7 +470,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                     work['Method'](*parameter)
                 else:
                     work['Method']()
-                time.sleep(0.2)
+                self.app.sleepQT(100)
                 if 'Button' in work:
                     self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:
@@ -481,10 +480,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         commandSet = {'command': ':shutdown#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         if commandSet['reply'] == '1':
             self.workerMountCommandRunner.connected = False
-            time.sleep(1)
+            self.app.sleepQT(1000)
             self.logger.info('Shutdown mount manually')
             self.app.messageQueue.put('Shutting mount down !\n')
         else:
@@ -495,7 +494,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         commandSet = {'command': ':FLIP#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         if commandSet['reply'] == '0':
             self.app.messageQueue.put('#BRFlip Mount could not be executed\n')
             self.logger.error('error: {0}'.format(commandSet['reply']))
@@ -509,7 +508,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         commandSet = {'command': ':CM#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         if commandSet['reply'][:5] == 'Coord':
             self.logger.info('mount modeling synced')
             return True
@@ -533,7 +532,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             commandSet = {'command': command, 'reply': ''}
             self.app.mountCommandQueue.put(commandSet)
             while len(commandSet['reply']) == 0:
-                time.sleep(0.1)
+                self.app.sleepQT(100)
             if commandSet['reply'] == 'E':
                 self.app.messageQueue.put('Point {0:02d} could not be added\n'.format(i + 1))
             else:
@@ -541,7 +540,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         commandSet = {'command': ':endalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         if commandSet['reply'] == 'V':
             self.logger.info('Model successful finished!')
             self.app.messageQueue.put('#BWProgrammed alignment model with {0} points\n'.format(len(data['Index'])))
@@ -582,7 +581,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.sharedMountDataLock.unlock()
             if condition:
                 break
-            time.sleep(0.2)
+            self.app.sleepQT(100)
 
     def deleteWorstPoint(self):
         # if there are less than 4 point, optimization can't take place
@@ -605,8 +604,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         commandSet = {'command': ':delalst{0:d}#'.format(worstPointIndex + 1), 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
-        time.sleep(0.2)
+            self.app.sleepQT(100)
         if commandSet['reply'] == '1':
             # point could be deleted, feedback from mount ok
             self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
@@ -623,7 +621,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.sharedMountDataLock.unlock()
             if condition:
                 break
-            time.sleep(0.2)
+            self.app.sleepQT(100)
 
     def retrofitMountData(self, modelingData):
         self.app.sharedMountDataLock.lockForRead()

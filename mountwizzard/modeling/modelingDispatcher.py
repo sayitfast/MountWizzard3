@@ -303,8 +303,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             if not self.commandDispatcherQueue.empty():
                 command = self.commandDispatcherQueue.get()
                 self.commandDispatcher(command)
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -328,7 +327,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                     work['Method'](*parameter)
                 else:
                     work['Method']()
-                time.sleep(0.2)
+                self.app.sleepQT(100)
                 if 'Button' in work:
                     self.app.signalChangeStylesheet.emit(work['Button'], 'running', False)
                 if 'Cancel' in work:

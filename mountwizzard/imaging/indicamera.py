@@ -67,7 +67,7 @@ class INDICamera:
             if self.app.workerINDI.cameraDevice:
                 if 'CONNECTION' in self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]:
                     break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         self.connect()
 
     def stop(self):
@@ -173,7 +173,7 @@ class INDICamera:
                     self.main.cameraStatusText.emit('DISCONN')
             else:
                 self.main.cameraStatusText.emit('ERROR')
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
@@ -193,7 +193,7 @@ class INDICamera:
                 self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
             else:
                 self.main.cameraExposureTime.emit('')
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # loop for download
         self.main.imageIntegrated.emit()
@@ -216,7 +216,7 @@ class INDICamera:
                 self.main.cameraExposureTime.emit('{0:02.0f}'.format(float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE'])))
             else:
                 self.main.cameraExposureTime.emit('')
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # loop for saving
         self.main.imageDownloaded.emit()
@@ -227,7 +227,7 @@ class INDICamera:
                 break
             if self.receivedImage:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # finally idle
         self.main.imageSaved.emit()

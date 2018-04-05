@@ -80,7 +80,7 @@ class MaximDL:
                 self.maximCamera.LinkEnabled = False
                 timeStart = time.time()
                 while self.maximCamera.LinkEnabled and (time.time() - timeStart) < self.TIMEOUT:
-                    time.sleep(0.1)
+                    self.app.sleepQT(100)
                 self.maximCamera = None
         except Exception as e:
             self.logger.error('Could not stop maxim, error: {0}'.format(e))
@@ -154,7 +154,7 @@ class MaximDL:
                     status = self.maximCamera.CameraStatus
                     if status not in [2]:
                         break
-                    time.sleep(0.1)
+                    self.app.sleepQT(100)
         except Exception as e:
             self.logger.error('Could not start imaging, error: {0}'.format(e))
         finally:
@@ -167,7 +167,7 @@ class MaximDL:
             status = self.maximCamera.CameraStatus
             if status in [4, 5, 6, 8]:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # Loop for downloading
         self.main.imageIntegrated.emit()
@@ -176,7 +176,7 @@ class MaximDL:
             status = self.maximCamera.CameraStatus
             if status in [2]:
                 break
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # Loop for saving
         self.main.imageDownloaded.emit()
@@ -184,7 +184,7 @@ class MaximDL:
         while not self.cancel:
             imageParams['Imagepath'] = imageParams['BaseDirImages'] + '/' + imageParams['File']
             self.maximCamera.SaveImage(imageParams['Imagepath'])
-            time.sleep(0.1)
+            self.app.sleepQT(100)
             break
 
         # finally idle

@@ -95,12 +95,12 @@ class Remote(PyQt5.QtCore.QObject):
                 self.app.threadRemote.start()
             # waiting to tcp server to start otherwise no setup for remote
             while not self.tcpServer:
-                time.sleep(0.2)
+                self.app.sleepQT(100)
         else:
             self.app.messageQueue.put('Remote Access disabled\n')
             if self.isRunning:
                 while not self.tcpServer.isListening():
-                    time.sleep(0.2)
+                    self.app.sleepQT(100)
                 self.stop()
 
     def run(self):
@@ -115,8 +115,7 @@ class Remote(PyQt5.QtCore.QObject):
             self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
             self.tcpServer.newConnection.connect(self.addConnection)
             while self.isRunning:
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
+                self.app.sleepQT(100)
             self.tcpServer.newConnection.disconnect(self.addConnection)
             self.tcpServer.close()
             if self.clientConnection:

@@ -113,7 +113,7 @@ class SGPro:
             if 'IDLE' in state:
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-            time.sleep(0.1)
+            self.app.sleepQT(100)
 
         # loop for solve
         self.main.astrometryStatusText.emit('SOLVE')
@@ -127,7 +127,7 @@ class SGPro:
                 imageParams['Message'] = mes
                 break
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-            time.sleep(0.1)
+            self.app.sleepQT(100)
         imageParams['Solved'] = solved
 
         # Loop for data
@@ -141,7 +141,7 @@ class SGPro:
                 imageParams['Angle'] = float(angle)
                 imageParams['TimeTS'] = float(timeTS)
                 imageParams['Message'] = 'Solved'
-                time.sleep(0.1)
+                self.app.sleepQT(100)
             self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
             break
 

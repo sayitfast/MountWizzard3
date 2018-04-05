@@ -116,7 +116,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.getStatusFromDevice()
         self.getDataFromDevice()
         while self.isRunning:
-            self.app.sleepPyQt(200)
+            self.app.sleepQT(200)
         self.environmentHandler.stop()
 
     def stop(self):

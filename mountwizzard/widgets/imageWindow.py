@@ -293,8 +293,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
         while imageParams['Imagepath'] == '':
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if not os.path.isfile(imageParams['Imagepath']):
             self.app.messageQueue.put('#BWImaging failed\n')
             return
@@ -330,8 +329,7 @@ class ImagesWindow(widget.MwWidget):
         self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
         while 'Solved' not in imageParams:
-            time.sleep(0.1)
-            PyQt5.QtWidgets.QApplication.processEvents()
+            self.app.sleepQT(100)
         if imageParams['Solved']:
             self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
                                                                                       self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
