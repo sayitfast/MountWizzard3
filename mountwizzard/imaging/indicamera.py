@@ -237,9 +237,14 @@ class INDICamera:
         self.data['Imaging'] = False
 
     def connect(self):
+        # connect the camera
         if self.app.workerINDI.cameraDevice != '':
             if self.app.workerINDI.data['Device'][self.app.workerINDI.cameraDevice]['CONNECTION']['CONNECT'] == 'Off':
                 self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.cameraDevice}))
+        # if the telescope
+        if self.app.workerINDI.telescopeDevice != '':
+            if self.app.workerINDI.data['Device'][self.app.workerINDI.telescopeDevice]['CONNECTION']['CONNECT'] == 'Off':
+                self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.telescopeDevice}))
 
     def disconnect(self):
         if self.app.workerINDI.cameraDevice != '':
