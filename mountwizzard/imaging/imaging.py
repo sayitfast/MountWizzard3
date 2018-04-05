@@ -30,13 +30,13 @@ import PyQt5
 import queue
 from astrometry import transform
 import astropy.io.fits as pyfits
-from imaging import noneCamera
-from imaging import indicamera
+from imaging import none_camera
+from imaging import indi_camera
 if platform.system() == 'Windows':
-    from imaging import maximdl_image
-    from imaging import sgpro_image
+    from imaging import maximdl_camera
+    from imaging import sgpro_camera
 if platform.system() == 'Windows' or platform.system() == 'Darwin':
-    from imaging import theskyx_image
+    from imaging import theskyx_camera
 
 
 class Imaging(PyQt5.QtCore.QObject):
@@ -75,10 +75,10 @@ class Imaging(PyQt5.QtCore.QObject):
         # external classes
         self.transform = transform.Transform(self.app)
         if platform.system() == 'Windows':
-            self.SGPro = sgpro_image.SGPro(self, self.app, self.data)
-            self.MaximDL = maximdl_image.MaximDL(self, self.app, self.data)
-        self.INDICamera = indicamera.INDICamera(self, self.app, self.data)
-        self.NoneCam = noneCamera.NoneCamera(self, self.app, self.data)
+            self.SGPro = sgpro_camera.SGPro(self, self.app, self.data)
+            self.MaximDL = maximdl_camera.MaximDL(self, self.app, self.data)
+        self.INDICamera = indi_camera.INDICamera(self, self.app, self.data)
+        self.NoneCam = none_camera.NoneCamera(self, self.app, self.data)
 
         # set the camera handler to default position
         self.cameraHandler = self.NoneCam

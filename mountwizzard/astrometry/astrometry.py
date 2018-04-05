@@ -25,10 +25,10 @@ import queue
 import os
 import astropy.io.fits as pyfits
 
-from astrometry import astrometryClient
-from astrometry import sgpro_solve
-from astrometry import pinpoint
-from astrometry import noneAstrometry
+from astrometry import client_astrometry
+from astrometry import sgpro_astrometry
+from astrometry import pinpoint_astrometry
+from astrometry import none_astrometry
 from astrometry import transform
 
 
@@ -64,10 +64,10 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
 
         # external classes
-        self.SGPro = sgpro_solve.SGPro(self, self.app, self.data)
-        self.AstrometryClient = astrometryClient.AstrometryClient(self, self.app, self.data)
-        self.PinPoint = pinpoint.PinPoint(self, self.app, self.data)
-        self.NoneSolve = noneAstrometry.NoneAstrometry(self, self.app, self.data)
+        self.SGPro = sgpro_astrometry.SGPro(self, self.app, self.data)
+        self.AstrometryClient = client_astrometry.AstrometryClient(self, self.app, self.data)
+        self.PinPoint = pinpoint_astrometry.PinPoint(self, self.app, self.data)
+        self.NoneSolve = none_astrometry.NoneAstrometry(self, self.app, self.data)
 
         # set handler to default position
         self.astrometryHandler = self.NoneSolve
