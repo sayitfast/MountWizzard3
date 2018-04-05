@@ -1370,7 +1370,6 @@ if __name__ == "__main__":
         logging.info('IP addr. : ' + host[i])
     logging.info('Node     : ' + platform.node())
     logging.info('Workdir. : ' + os.getcwd())
-    # todo: screen size
     logging.info('----------------------------------------------------------------------------------')
     logging.info('')
 
