@@ -47,6 +47,7 @@ class Astrometry(PyQt5.QtCore.QObject):
     imageDataDownloaded = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_STATUS = 1000
+    CYCLE_COMMAND = 200
 
     def __init__(self, app, thread):
         super().__init__()
@@ -150,10 +151,8 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.astrometryHandler.start()
         self.getDeviceStatus()
+        self.doCommandQueue()
         while self.isRunning:
-            if not self.astrometryCommandQueue.empty():
-                imageParams = self.astrometryCommandQueue.get()
-                self.solveImage(imageParams)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.astrometryHandler.stop()
@@ -165,6 +164,14 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.astrometryCommandQueue.empty():
+            imageParams = self.astrometryCommandQueue.get()
+            self.solveImage(imageParams)
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def solveImage(self, imageParams):
         if self.data['CONNECTION']['CONNECT'] == 'Off':

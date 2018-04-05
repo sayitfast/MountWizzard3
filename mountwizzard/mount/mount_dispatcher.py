@@ -51,6 +51,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
+    CYCLE_COMMAND = 200
+
     statusReference = {
         '0': 'Tracking',
         '1': 'Stopped after STOP',
@@ -435,10 +437,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerFast.start()
         self.threadMountCommandRunner.start()
         self.threadMountGetAlignmentModel.start()
+        self.doCommandQueue()
         while self.isRunning:
-            if not self.commandDispatcherQueue.empty():
-                command = self.commandDispatcherQueue.get()
-                self.commandDispatcher(command)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -455,6 +455,14 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountStatusRunnerFast.stop()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.commandDispatcherQueue.empty():
+            command = self.commandDispatcherQueue.get()
+            self.commandDispatcher(command)
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

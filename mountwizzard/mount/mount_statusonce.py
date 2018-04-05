@@ -27,6 +27,8 @@ from astrometry import transform
 class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
+    CYCLE_COMMAND = 200
+
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
 
@@ -54,13 +56,8 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
+        self.doCommandQueue()
         while self.isRunning:
-            if not self.sendCommandQueue.empty() and self.connected:
-                command = self.sendCommandQueue.get()
-                self.sendCommand(command)
-            if not self.connected and self.socket.state() == 0:
-                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.sendCommandQueue.queue.clear()
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != 3:
@@ -79,9 +76,19 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.mutexIsRunning.lock()
         self.isRunning = False
         self.mutexIsRunning.unlock()
-
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.sendCommandQueue.empty() and self.connected:
+            command = self.sendCommandQueue.get()
+            self.sendCommand(command)
+        if not self.connected and self.socket.state() == 0:
+            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+            self.sendCommandQueue.queue.clear()
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def handleHostFound(self):
         self.app.sharedMountDataLock.lockForRead()

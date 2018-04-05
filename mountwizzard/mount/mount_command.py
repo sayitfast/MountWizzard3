@@ -27,6 +27,7 @@ import threading
 class MountCommandRunner(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
+    CYCLE_COMMAND = 200
     # define the number of bytes for the return bytes in case of not having them in bulk mode
     # this is needed, because the mount computer  doesn't support a transaction base like number of
     # bytes to be expected. it's just plain data and i have to find out myself how much it is.
@@ -98,37 +99,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
+        self.doCommandQueue()
         while self.isRunning:
-            while not self.app.mountCommandQueue.empty() and self.connected and not self.sendLock:
-                rawCommand = self.app.mountCommandQueue.get()
-                if isinstance(rawCommand, str):
-                    # only a single command without return needed
-                    command = rawCommand
-                elif isinstance(rawCommand, dict):
-                    self.commandSet = rawCommand
-                    command = rawCommand['command']
-                else:
-                    command = ''
-                    self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
-                if len(command) > 0:
-                    # determine how many bytes to receive
-                    self.numberBytesToReceive = -1
-                    for key in self.COMMAND_RETURN:
-                        if command.startswith(key):
-                            self.numberBytesToReceive = self.COMMAND_RETURN[key]
-                            break
-                    if self.numberBytesToReceive == -1:
-                        self.logger.error('Command >(0)< not known'.format(command))
-                    elif self.numberBytesToReceive > 0:
-                        self.sendLock = True
-                        self.sendCommand(command)
-                    else:
-                        self.sendLock = False
-                        self.sendCommand(command)
-            if not self.connected and self.socket.state() == 0:
-                self.app.sharedMountDataLock.lockForRead()
-                self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
-                self.app.sharedMountDataLock.unlock()
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != 3:
@@ -141,7 +113,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.disconnected.disconnect(self.handleDisconnect)
         self.socket.error.disconnect(self.handleError)
         self.socket.readyRead.disconnect(self.handleReadyRead)
-
         self.socket.close()
 
     def stop(self):
@@ -150,6 +121,41 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        while not self.app.mountCommandQueue.empty() and self.connected and not self.sendLock:
+            rawCommand = self.app.mountCommandQueue.get()
+            if isinstance(rawCommand, str):
+                # only a single command without return needed
+                command = rawCommand
+            elif isinstance(rawCommand, dict):
+                self.commandSet = rawCommand
+                command = rawCommand['command']
+            else:
+                command = ''
+                self.logger.error('Mount RunnerCommand received command {0} wrong type: {1}'.format(commandSet, type(commandSet)))
+            if len(command) > 0:
+                # determine how many bytes to receive
+                self.numberBytesToReceive = -1
+                for key in self.COMMAND_RETURN:
+                    if command.startswith(key):
+                        self.numberBytesToReceive = self.COMMAND_RETURN[key]
+                        break
+                if self.numberBytesToReceive == -1:
+                    self.logger.error('Command >(0)< not known'.format(command))
+                elif self.numberBytesToReceive > 0:
+                    self.sendLock = True
+                    self.sendCommand(command)
+                else:
+                    self.sendLock = False
+                    self.sendCommand(command)
+        if not self.connected and self.socket.state() == 0:
+            self.app.sharedMountDataLock.lockForRead()
+            self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+            self.app.sharedMountDataLock.unlock()
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def handleHostFound(self):
         self.app.sharedMountDataLock.lockForRead()

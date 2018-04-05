@@ -30,7 +30,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
 
-    CYCLESTATUS = 5000
+    CYCLE_STATUS = 5000
+    CYCLE_COMMAND = 200
 
     def __init__(self, app, thread):
         super().__init__()
@@ -298,11 +299,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.doCommandQueue()
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         while self.isRunning:
-            if not self.commandDispatcherQueue.empty():
-                command = self.commandDispatcherQueue.get()
-                self.commandDispatcher(command)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -312,6 +311,14 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.commandDispatcherQueue.empty():
+            command = self.commandDispatcherQueue.get()
+            self.commandDispatcher(command)
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

@@ -56,6 +56,7 @@ class Imaging(PyQt5.QtCore.QObject):
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CYCLE_STATUS = 1000
+    CYCLE_COMMAND = 200
 
     def __init__(self, app, thread):
         super().__init__()
@@ -152,10 +153,8 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.cameraHandler.start()
         self.getDeviceStatus()
+        self.doCommandQueue()
         while self.isRunning:
-            if not self.imagingCommandQueue.empty():
-                imageParams = self.imagingCommandQueue.get()
-                self.captureImage(imageParams)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.cameraHandler.stop()
@@ -167,6 +166,14 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.imagingCommandQueue.empty():
+            imageParams = self.imagingCommandQueue.get()
+            self.captureImage(imageParams)
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def captureImage(self, imageParams):
         imageParams['Imagepath'] = ''
