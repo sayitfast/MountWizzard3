@@ -57,6 +57,11 @@ class INDIDome:
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'Off':
                 self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.domeDevice}))
 
+    def slewToAzimuth(self, azimuth):
+        self.app.INDICommandQueue.put(
+            indiXML.newNumberVector([indiXML.oneNumber(azimuth, indi_attr={'name': 'DOME_ABSOLUTE_POSITION'})],
+                                    indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
+
     def getStatus(self):
         self.app.sharedDomeDataLock.lockForWrite()
         if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:

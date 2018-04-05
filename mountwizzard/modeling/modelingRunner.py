@@ -480,11 +480,12 @@ class ModelingRunner:
             self.logger.warning('There are no modeling points to process')
             return
         # if dome is present, it has to be connected, too
-        if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
+        if not self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             domeIsConnected = self.app.workerDome.data['Connected']
         else:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
+        print(modelingData)
         modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
         # simulation only works with indi
         if self.app.workerINDI.telescopeDevice != '':
@@ -539,7 +540,7 @@ class ModelingRunner:
             self.logger.warning('There are no modeling points to process')
             return
         # if dome is present, it has to be connected, too
-        if not self.app.ui.pd_chooseDome.currentText().startswith('NONE'):
+        if not self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             domeIsConnected = self.app.workerDome.data['Connected']
         else:
             domeIsConnected = False

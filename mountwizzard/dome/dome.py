@@ -118,6 +118,10 @@ class Dome(PyQt5.QtCore.QObject):
         self.getStatusFromDevice()
         self.getDataFromDevice()
         while self.isRunning:
+            if not self.app.domeCommandQueue.empty():
+                command, value = self.app.domeCommandQueue.get()
+                if command == 'SlewAzimuth':
+                    self.domeHandler.slewToAzimuth(value)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.domeHandler.stop()

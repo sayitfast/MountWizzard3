@@ -79,6 +79,18 @@ class AscomDome:
             self.logger.info('ASCOM Dome stopped')
             pythoncom.CoUninitialize()
 
+    def slewToAzimuth(self, azimuth):
+        if not self.ascom:
+            return
+        if not self.ascom.connected:
+            return
+        try:
+            self.ascom.SlewToAzimuth(float(azimuth))
+        except Exception as e:
+            self.logger.error('Problem slewing azimuth, error: {0}'.format(e))
+        finally:
+            pass
+
     def getStatus(self):
         try:
             if self.ascom:
@@ -105,10 +117,8 @@ class AscomDome:
 
     def getData(self):
         if not self.ascom:
-            print('not ready')
             return
         if not self.ascom.connected:
-            print('not ready')
             return
         self.app.sharedDomeDataLock.lockForWrite()
         try:

@@ -38,6 +38,9 @@ class NoneDome:
     def stop(self):
         pass
 
+    def slewToAzimuth(self, azimuth):
+        pass
+
     def getData(self):
         pass
 
