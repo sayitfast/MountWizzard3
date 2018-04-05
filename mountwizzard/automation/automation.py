@@ -31,6 +31,8 @@ from pywinauto.controls.win32_controls import ButtonWrapper, EditWrapper
 class Automation(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
+    CYCLE_COMMAND = 200
+
     UTC_1 = 'http://maia.usno.navy.mil/ser7/finals.data'
     UTC_2 = 'http://maia.usno.navy.mil/ser7/tai-utc.dat'
     COMETS = 'http://www.minorplanetcenter.net/iau/MPCORB/CometEls.txt'
@@ -271,10 +273,8 @@ class Automation(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.doCommandQueue()
         while self.isRunning:
-            if not self.commandDispatcherQueue.empty():
-                command = self.commandDispatcherQueue.get()
-                self.commandDispatcher(command)
             time.sleep(0.2)
             PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -284,6 +284,14 @@ class Automation(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def doCommandQueue(self):
+        if not self.commandDispatcherQueue.empty():
+            command = self.commandDispatcherQueue.get()
+            self.commandDispatcher(command)
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher
