@@ -86,7 +86,9 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             command = self.sendCommandQueue.get()
             self.sendCommand(command)
         if not self.connected and self.socket.state() == 0:
+            self.app.sharedMountDataLock.lockForRead()
             self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
+            self.app.sharedMountDataLock.unlock()
             self.sendCommandQueue.queue.clear()
         # loop
         if self.isRunning:
