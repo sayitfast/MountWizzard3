@@ -49,7 +49,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        self.socket = PyQt5.QtNetwork.QTcpSocket()
+        self.socket = PyQt5.QtNetwork.QTcpSocket(self)
         self.socket.hostFound.connect(self.handleHostFound)
         self.socket.connected.connect(self.handleConnected)
         self.socket.stateChanged.connect(self.handleStateChanged)
