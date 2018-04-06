@@ -990,25 +990,19 @@ class MountWizzardApp(widget.MwWidget):
 
     def cancelFullModel(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
-            self.ui.btn_cancelFullModel.setProperty('cancel', True)
-            self.ui.btn_cancelFullModel.style().unpolish(self.ui.btn_cancelFullModel)
-            self.ui.btn_cancelFullModel.style().polish(self.ui.btn_cancelFullModel)
+            self.changeStylesheet(self.ui.btn_cancelFullModel, 'cancel', True)
             self.logger.info('User canceled modeling')
             self.workerModelingDispatcher.modelingRunner.cancel = True
 
     def cancelInitialModel(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
-            self.ui.btn_cancelInitialModel.setProperty('cancel', True)
-            self.ui.btn_cancelInitialModel.style().unpolish(self.ui.btn_cancelInitialModel)
-            self.ui.btn_cancelInitialModel.style().polish(self.ui.btn_cancelInitialModel)
+            self.changeStylesheet(self.ui.btn_cancelInitialModel, 'cancel', True)
             self.logger.info('User canceled modeling')
             self.workerModelingDispatcher.modelingRunner.cancel = True
 
     def cancelAnalyseModeling(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
-            self.ui.btn_cancelAnalyseModel.setProperty('cancel', True)
-            self.ui.btn_cancelAnalyseModel.style().unpolish(self.ui.btn_cancelAnalyseModel)
-            self.ui.btn_cancelAnalyseModel.style().polish(self.ui.btn_cancelAnalyseModel)
+            self.changeStylesheet(self.ui.btn_cancelAnalyseModel, 'cancel', True)
             self.logger.info('User canceled analyse modeling')
             self.workerModelingDispatcher.modelingRunner.cancel = True
 

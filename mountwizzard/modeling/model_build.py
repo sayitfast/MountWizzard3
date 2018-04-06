@@ -84,11 +84,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
             self.main.slewMountDome(modelingData)
             self.main.app.messageQueue.put('\tWait mount settling / delay time:  {0:02d} sec\n'.format(modelingData['SettlingTime']))
             self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
-            timeCounter = modelingData['SettlingTime'] * 10
-            while timeCounter > 0:
-                timeCounter -= 1
-                time.sleep(0.1)
-                PyQt5.QtWidgets.QApplication.processEvents()
+            time.sleep(modelingData['SettlingTime'])
             self.main.workerImage.queueImage.put(modelingData)
             # make signal for hemisphere that point is imaged
             self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
