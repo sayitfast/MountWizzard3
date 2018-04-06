@@ -47,6 +47,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.audioDone = False
 
     def run(self):
+        self.logger.info('mount fast started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

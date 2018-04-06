@@ -155,6 +155,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.stop()
 
     def run(self):
+        self.logger.info('indi started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

@@ -88,6 +88,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.sendLock = False
 
     def run(self):
+        self.logger.info('mount command started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

@@ -45,6 +45,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
 
     def run(self):
+        self.logger.info('mount once started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

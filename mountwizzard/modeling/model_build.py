@@ -56,6 +56,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.mutexTakeNextPoint.unlock()
 
     def run(self):
+        self.logger.info('model build slewpoint started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -127,6 +128,7 @@ class Image(PyQt5.QtCore.QObject):
         self.mutexImageSaved.unlock()
 
     def run(self):
+        self.logger.info('model build imaging started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -207,6 +209,7 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.mutexImageDataDownloaded.unlock()
 
     def run(self):
+        self.logger.info('model build solving started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

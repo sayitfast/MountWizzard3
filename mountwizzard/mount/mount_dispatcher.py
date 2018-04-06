@@ -391,12 +391,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             # stopping all interaction
             if self.isRunning:
                 # stopping thread for chang of parameters
-                self.workerMountCommandRunner.stop()
-                self.workerMountGetAlignmentModel.stop()
-                self.workerMountStatusRunnerOnce.stop()
-                self.workerMountStatusRunnerSlow.stop()
-                self.workerMountStatusRunnerMedium.stop()
                 self.workerMountStatusRunnerFast.stop()
+                self.workerMountStatusRunnerMedium.stop()
+                self.workerMountStatusRunnerSlow.stop()
+                self.workerMountStatusRunnerOnce.stop()
+                self.workerMountGetAlignmentModel.stop()
+                self.workerMountCommandRunner.stop()
                 valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
                 if valid:
                     self.data['MountIP'] = value
@@ -404,12 +404,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 if valid:
                     self.data['MountMAC'] = value
                 # and restarting for using new parameters
+                self.threadMountCommandRunner.start()
+                self.threadMountGetAlignmentModel.start()
                 self.threadMountStatusRunnerOnce.start()
                 self.threadMountStatusRunnerSlow.start()
                 self.threadMountStatusRunnerMedium.start()
                 self.threadMountStatusRunnerFast.start()
-                self.threadMountCommandRunner.start()
-                self.threadMountGetAlignmentModel.start()
             else:
                 valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
                 if valid:
@@ -433,16 +433,17 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.sharedMountDataLock.unlock()
 
     def run(self):
+        self.logger.info('mount dispatcher started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        self.threadMountCommandRunner.start()
+        self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
-        self.threadMountCommandRunner.start()
-        self.threadMountGetAlignmentModel.start()
         self.doCommandQueue()
 
     def stop(self):
@@ -450,12 +451,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.isRunning = False
         self.mutexIsRunning.unlock()
         # stopping all interaction
-        self.workerMountCommandRunner.stop()
-        self.workerMountGetAlignmentModel.stop()
-        self.workerMountStatusRunnerOnce.stop()
-        self.workerMountStatusRunnerSlow.stop()
-        self.workerMountStatusRunnerMedium.stop()
         self.workerMountStatusRunnerFast.stop()
+        self.workerMountStatusRunnerMedium.stop()
+        self.workerMountStatusRunnerSlow.stop()
+        self.workerMountStatusRunnerOnce.stop()
+        self.workerMountGetAlignmentModel.stop()
+        self.workerMountCommandRunner.stop()
         self.thread.quit()
         self.thread.wait()
 

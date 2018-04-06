@@ -108,6 +108,7 @@ class Remote(PyQt5.QtCore.QObject):
             self.logger.warning('port {0} is already in use'.format(self.data['RemotePort']))
             return
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop
+        self.logger.info('remote started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

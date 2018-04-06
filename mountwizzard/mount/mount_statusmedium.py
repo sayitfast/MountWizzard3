@@ -46,6 +46,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
 
     def run(self):
+        self.logger.info('mount medium started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

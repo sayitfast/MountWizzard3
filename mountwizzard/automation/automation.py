@@ -268,6 +268,7 @@ class Automation(PyQt5.QtCore.QObject):
             self.logger.info('Application 10micron Updater  not found on computer')
 
     def run(self):
+        self.logger.info('automation started')
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         self.mutexIsRunning.lock()
         if not self.isRunning:

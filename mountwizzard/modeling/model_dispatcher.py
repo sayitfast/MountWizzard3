@@ -295,6 +295,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner.storeConfig()
 
     def run(self):
+        self.logger.info('model dispatcher started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True

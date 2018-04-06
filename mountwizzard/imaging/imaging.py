@@ -146,6 +146,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexChooser.unlock()
 
     def run(self):
+        self.logger.info('imaging started')
         # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
         self.mutexIsRunning.lock()
         if not self.isRunning:

@@ -77,9 +77,10 @@ class Dome(PyQt5.QtCore.QObject):
         self.app.ui.pd_chooseDome.addItem('INDI')
         # load the config including pull down setup
         try:
-            if 'DomeAscomDriverName' in self.app.config:
-                self.ascom.driverName = self.app.config['DomeAscomDriverName']
-                self.app.ui.le_ascomDomeDriverName.setText(self.app.config['DomeAscomDriverName'])
+            if platform.system() == 'Windows':
+                if 'DomeAscomDriverName' in self.app.config:
+                    self.ascom.driverName = self.app.config['DomeAscomDriverName']
+                    self.app.ui.le_ascomDomeDriverName.setText(self.app.config['DomeAscomDriverName'])
             if 'Dome' in self.app.config:
                 self.app.ui.pd_chooseDome.setCurrentIndex(int(self.app.config['Dome']))
         except Exception as e:
@@ -89,7 +90,8 @@ class Dome(PyQt5.QtCore.QObject):
         self.chooserDome()
 
     def storeConfig(self):
-        self.app.config['DomeAscomDriverName'] = self.ascom.driverName
+        if platform.system() == 'Windows':
+            self.app.config['DomeAscomDriverName'] = self.ascom.driverName
         self.app.config['Dome'] = self.app.ui.pd_chooseDome.currentIndex()
 
     def chooserDome(self):
@@ -111,6 +113,7 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexChooser.unlock()
 
     def run(self):
+        self.logger.info('dome started')
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         self.mutexIsRunning.lock()
         if not self.isRunning:
@@ -149,10 +152,12 @@ class Dome(PyQt5.QtCore.QObject):
         elif self.domeHandler.application['Status'] == 'ERROR':
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'red')
         elif self.domeHandler.application['Status'] == 'OK':
+            self.app.sharedDomeDataLock.lockForRead()
             if self.data['Connected'] == 'Off':
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')
+            self.app.sharedDomeDataLock.unlock()
         # loop
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)

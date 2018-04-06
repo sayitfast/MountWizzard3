@@ -75,9 +75,10 @@ class Environment(PyQt5.QtCore.QObject):
         # load the config including pull down setup
         try:
             if platform.system() == 'Windows':
-                if 'EnvironmentAscomDriverName' in self.app.config:
-                    self.ascom.driverName = self.app.config['EnvironmentAscomDriverName']
-                    self.app.ui.le_ascomEnvironmentDriverName.setText(self.app.config['EnvironmentAscomDriverName'])
+                if platform.system() == 'Windows':
+                    if 'EnvironmentAscomDriverName' in self.app.config:
+                        self.ascom.driverName = self.app.config['EnvironmentAscomDriverName']
+                        self.app.ui.le_ascomEnvironmentDriverName.setText(self.app.config['EnvironmentAscomDriverName'])
             if 'Environment' in self.app.config:
                 self.app.ui.pd_chooseEnvironment.setCurrentIndex(int(self.app.config['Environment']))
         except Exception as e:
@@ -87,7 +88,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.chooserEnvironment()
 
     def storeConfig(self):
-        self.app.config['EnvironmentAscomDriverName'] = self.ascom.driverName
+        if platform.system() == 'Windows':
+            self.app.config['EnvironmentAscomDriverName'] = self.ascom.driverName
         self.app.config['Environment'] = self.app.ui.pd_chooseEnvironment.currentIndex()
 
     def chooserEnvironment(self):
@@ -108,6 +110,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexChooser.unlock()
 
     def run(self):
+        self.logger.info('environment started')
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop.
         self.mutexIsRunning.lock()
         if not self.isRunning:

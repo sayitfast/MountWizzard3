@@ -46,6 +46,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
 
     def run(self):
+        self.logger.info('mount slow started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
