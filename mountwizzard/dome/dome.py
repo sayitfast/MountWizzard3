@@ -39,7 +39,7 @@ class Dome(PyQt5.QtCore.QObject):
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
 
     CYCLE_DATA = 1000
-    CYCLE_STATUS = 1000
+    CYCLE_STATUS = 500
     CYCLE_COMMAND = 200
     START_DOME_TIMEOUT = 4
 

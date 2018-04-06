@@ -38,6 +38,8 @@ class Slewpoint(PyQt5.QtCore.QObject):
     signalStartSlewing = PyQt5.QtCore.pyqtSignal()
     signalPointImaged = PyQt5.QtCore.pyqtSignal(float, float)
 
+    CYCLE_COMMAND = 200
+
     def __init__(self, main, thread):
         super().__init__()
         self.main = main
@@ -58,26 +60,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            if self.takeNextPoint and not self.queuePoint.empty():
-                self.mutexTakeNextPoint.lock()
-                self.takeNextPoint = False
-                self.mutexTakeNextPoint.unlock()
-                modelingData = self.queuePoint.get()
-                self.main.app.messageQueue.put('#BGSlewing to point {0:2d}  @ Az: {1:3.0f}\xb0 Alt: {2:2.0f}\xb0\n'.format(modelingData['Index'] + 1, modelingData['Azimuth'], modelingData['Altitude']))
-                self.main.slewMountDome(modelingData)
-                self.main.app.messageQueue.put('\tWait mount settling / delay time:  {0:02d} sec\n'.format(modelingData['SettlingTime']))
-                self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
-                timeCounter = modelingData['SettlingTime'] * 10
-                while timeCounter > 0:
-                    timeCounter -= 1
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
-                self.main.workerImage.queueImage.put(modelingData)
-                # make signal for hemisphere that point is imaged
-                self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.doCommandLoop()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -87,11 +70,38 @@ class Slewpoint(PyQt5.QtCore.QObject):
         self.thread.quit()
         self.thread.wait()
 
+    def destruct(self):
+        pass
+
+    def doCommandLoop(self):
+        if self.takeNextPoint and not self.queuePoint.empty():
+            self.mutexTakeNextPoint.lock()
+            self.takeNextPoint = False
+            self.mutexTakeNextPoint.unlock()
+            modelingData = self.queuePoint.get()
+            self.main.app.messageQueue.put('#BGSlewing to point {0:2d}  @ Az: {1:3.0f}\xb0 Alt: {2:2.0f}\xb0\n'.format(modelingData['Index'] + 1, modelingData['Azimuth'], modelingData['Altitude']))
+            self.main.slewMountDome(modelingData)
+            self.main.app.messageQueue.put('\tWait mount settling / delay time:  {0:02d} sec\n'.format(modelingData['SettlingTime']))
+            self.main.app.messageQueue.put('Slewed>{0:02d}'.format(modelingData['Index'] + 1))
+            timeCounter = modelingData['SettlingTime'] * 10
+            while timeCounter > 0:
+                timeCounter -= 1
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            self.main.workerImage.queueImage.put(modelingData)
+            # make signal for hemisphere that point is imaged
+            self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandLoop)
+
 
 class Image(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     queueImage = Queue()
     signalImaging = PyQt5.QtCore.pyqtSignal()
+
+    CYCLE_COMMAND = 200
 
     def __init__(self, main, thread):
         super().__init__()
@@ -121,43 +131,7 @@ class Image(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            if not self.queueImage.empty():
-                modelingData = self.queueImage.get()
-                self.mutexImageSaved.lock()
-                self.imageSaved = False
-                self.mutexImageSaved.unlock()
-                self.mutexImageIntegrated.lock()
-                self.imageIntegrated = False
-                self.mutexImageIntegrated.unlock()
-                modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
-                modelingData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
-                modelingData['LocalSiderealTimeFloat'] = self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
-                modelingData['RaJ2000'] = self.main.app.workerMountDispatcher.data['RaJ2000']
-                modelingData['DecJ2000'] = self.main.app.workerMountDispatcher.data['DecJ2000']
-                modelingData['RaJNow'] = self.main.app.workerMountDispatcher.data['RaJNow']
-                modelingData['DecJNow'] = self.main.app.workerMountDispatcher.data['DecJNow']
-                modelingData['Pierside'] = self.main.app.workerMountDispatcher.data['Pierside']
-                modelingData['RefractionTemperature'] = self.main.app.workerMountDispatcher.data['RefractionTemperature']
-                modelingData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
-                modelingData['Imagepath'] = ''
-                self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
-                # getting next image
-                self.main.app.workerImaging.imagingCommandQueue.put(modelingData)
-                # wait for imaging ready
-                while not self.imageIntegrated and not self.main.cancel:
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
-                # next point after integrating but during downloading if possible or after IDLE
-                self.main.workerSlewpoint.signalStartSlewing.emit()
-                # we have to wait until image is downloaded before being able to plate solve
-                while not self.imageSaved and not self.main.cancel:
-                    time.sleep(0.1)
-                    PyQt5.QtWidgets.QApplication.processEvents()
-                self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
-                self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.doCommandLoop()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -168,10 +142,54 @@ class Image(PyQt5.QtCore.QObject):
         self.thread.quit()
         self.thread.wait()
 
+    def destruct(self):
+        pass
+
+    def doCommandLoop(self):
+        if not self.queueImage.empty():
+            modelingData = self.queueImage.get()
+            self.mutexImageSaved.lock()
+            self.imageSaved = False
+            self.mutexImageSaved.unlock()
+            self.mutexImageIntegrated.lock()
+            self.imageIntegrated = False
+            self.mutexImageIntegrated.unlock()
+            modelingData['File'] = 'Model_Image_' + '{0:03d}'.format(modelingData['Index']) + '.fit'
+            modelingData['LocalSiderealTime'] = self.main.app.workerMountDispatcher.data['LocalSiderealTime']
+            modelingData['LocalSiderealTimeFloat'] = self.main.transform.degStringToDecimal(self.main.app.workerMountDispatcher.data['LocalSiderealTime'][0:9])
+            modelingData['RaJ2000'] = self.main.app.workerMountDispatcher.data['RaJ2000']
+            modelingData['DecJ2000'] = self.main.app.workerMountDispatcher.data['DecJ2000']
+            modelingData['RaJNow'] = self.main.app.workerMountDispatcher.data['RaJNow']
+            modelingData['DecJNow'] = self.main.app.workerMountDispatcher.data['DecJNow']
+            modelingData['Pierside'] = self.main.app.workerMountDispatcher.data['Pierside']
+            modelingData['RefractionTemperature'] = self.main.app.workerMountDispatcher.data['RefractionTemperature']
+            modelingData['RefractionPressure'] = self.main.app.workerMountDispatcher.data['RefractionPressure']
+            modelingData['Imagepath'] = ''
+            self.main.app.messageQueue.put('\tCapturing image for model point {0:2d}\n'.format(modelingData['Index'] + 1))
+            # getting next image
+            self.main.app.workerImaging.imagingCommandQueue.put(modelingData)
+            # wait for imaging ready
+            while not self.imageIntegrated and not self.main.cancel:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            # next point after integrating but during downloading if possible or after IDLE
+            self.main.workerSlewpoint.signalStartSlewing.emit()
+            # we have to wait until image is downloaded before being able to plate solve
+            while not self.imageSaved and not self.main.cancel:
+                time.sleep(0.1)
+                PyQt5.QtWidgets.QApplication.processEvents()
+            self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
+            self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandLoop)
+
 
 class Platesolve(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     queuePlatesolve = Queue()
+
+    CYCLE_COMMAND = 200
 
     def __init__(self, main, thread):
         super().__init__()
@@ -193,51 +211,7 @@ class Platesolve(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        while self.isRunning:
-            if not self.queuePlatesolve.empty():
-                self.mutexImageDataDownloaded.lock()
-                self.imageDataDownloaded = False
-                self.mutexImageDataDownloaded.unlock()
-                modelingData = self.queuePlatesolve.get()
-                if modelingData['Imagepath'] != '':
-                    self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
-                    self.main.app.workerAstrometry.astrometryCommandQueue.put(modelingData)
-                    # wait for solving ready
-                    while not self.imageDataDownloaded and not self.main.cancel:
-                        time.sleep(0.1)
-                        PyQt5.QtWidgets.QApplication.processEvents()
-                    if 'RaJ2000Solved' in modelingData:
-                        ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
-                        modelingData['RaJNowSolved'] = ra_sol_Jnow
-                        modelingData['DecJNowSolved'] = dec_sol_Jnow
-                        modelingData['RaError'] = (modelingData['RaJ2000Solved'] - modelingData['RaJ2000']) * 3600
-                        modelingData['DecError'] = (modelingData['DecJ2000Solved'] - modelingData['DecJ2000']) * 3600
-                        modelingData['ModelError'] = math.sqrt(modelingData['RaError'] * modelingData['RaError'] + modelingData['DecError'] * modelingData['DecError'])
-                        modelingData['Message'] = 'OK - solved'
-                        self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
-                        self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
-                        self.main.solvedPointsQueue.put(copy.copy(modelingData))
-                    else:
-                        if 'Message' in modelingData:
-                            self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:95]))
-                        else:
-                            self.main.app.messageQueue.put('\tSolving canceled\n')
-                # write progress to hemisphere windows
-                self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
-                # write progress estimation to main gui
-                modelingDone = (modelingData['Index'] + 1) / modelingData['NumberPoints']
-                timeDone = time.time() - self.main.timeStart
-                if modelingDone != 0:
-                    timeEstimation = (1 / modelingDone * timeDone) * (1 - modelingDone)
-                else:
-                    timeEstimation = 0
-                self.main.app.messageQueue.put('percent{0:4.3f}'.format(modelingDone))
-                self.main.app.messageQueue.put('timeleft{0}'.format(time.strftime('%M:%S', time.gmtime(timeEstimation))))
-                # we come to an end
-                if modelingData['NumberPoints'] == modelingData['Index'] + 1:
-                    self.main.modelingHasFinished = True
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        self.doCommandLoop()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -246,6 +220,56 @@ class Platesolve(PyQt5.QtCore.QObject):
         self.queuePlatesolve.queue.clear()
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        pass
+
+    def doCommandLoop(self):
+        if not self.queuePlatesolve.empty():
+            self.mutexImageDataDownloaded.lock()
+            self.imageDataDownloaded = False
+            self.mutexImageDataDownloaded.unlock()
+            modelingData = self.queuePlatesolve.get()
+            if modelingData['Imagepath'] != '':
+                self.main.app.messageQueue.put('\tSolving image for model point {0}\n'.format(modelingData['Index'] + 1))
+                self.main.app.workerAstrometry.astrometryCommandQueue.put(modelingData)
+                # wait for solving ready
+                while not self.imageDataDownloaded and not self.main.cancel:
+                    time.sleep(0.1)
+                    PyQt5.QtWidgets.QApplication.processEvents()
+                if 'RaJ2000Solved' in modelingData:
+                    ra_sol_Jnow, dec_sol_Jnow = self.main.transform.transformERFA(modelingData['RaJ2000Solved'], modelingData['DecJ2000Solved'], 3)
+                    modelingData['RaJNowSolved'] = ra_sol_Jnow
+                    modelingData['DecJNowSolved'] = dec_sol_Jnow
+                    modelingData['RaError'] = (modelingData['RaJ2000Solved'] - modelingData['RaJ2000']) * 3600
+                    modelingData['DecError'] = (modelingData['DecJ2000Solved'] - modelingData['DecJ2000']) * 3600
+                    modelingData['ModelError'] = math.sqrt(modelingData['RaError'] * modelingData['RaError'] + modelingData['DecError'] * modelingData['DecError'])
+                    modelingData['Message'] = 'OK - solved'
+                    self.main.app.messageQueue.put('\tImage path: {0}\n'.format(modelingData['Imagepath']))
+                    self.main.app.messageQueue.put('\tRA_diff:  {0:2.1f}    DEC_diff: {1:2.1f}\n'.format(modelingData['RaError'], modelingData['DecError']))
+                    self.main.solvedPointsQueue.put(copy.copy(modelingData))
+                else:
+                    if 'Message' in modelingData:
+                        self.main.app.messageQueue.put('\tSolving error for point {0}: {1}\n'.format(modelingData['Index'] + 1, modelingData['Message'][:95]))
+                    else:
+                        self.main.app.messageQueue.put('\tSolving canceled\n')
+            # write progress to hemisphere windows
+            self.main.app.messageQueue.put('Solved>{0:02d}'.format(modelingData['Index'] + 1))
+            # write progress estimation to main gui
+            modelingDone = (modelingData['Index'] + 1) / modelingData['NumberPoints']
+            timeDone = time.time() - self.main.timeStart
+            if modelingDone != 0:
+                timeEstimation = (1 / modelingDone * timeDone) * (1 - modelingDone)
+            else:
+                timeEstimation = 0
+            self.main.app.messageQueue.put('percent{0:4.3f}'.format(modelingDone))
+            self.main.app.messageQueue.put('timeleft{0}'.format(time.strftime('%M:%S', time.gmtime(timeEstimation))))
+            # we come to an end
+            if modelingData['NumberPoints'] == modelingData['Index'] + 1:
+                self.main.modelingHasFinished = True
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandLoop)
 
 
 class ModelingBuild:
@@ -265,16 +289,19 @@ class ModelingBuild:
         self.workerSlewpoint = Slewpoint(self, self.threadSlewpoint)
         self.workerSlewpoint.moveToThread(self.threadSlewpoint)
         self.threadSlewpoint.started.connect(self.workerSlewpoint.run)
+        self.threadSlewpoint.finished.connect(self.workerSlewpoint.destruct)
 
         self.threadImage = PyQt5.QtCore.QThread()
         self.workerImage = Image(self, self.threadImage)
         self.workerImage.moveToThread(self.threadImage)
         self.threadImage.started.connect(self.workerImage.run)
+        self.threadImage.finished.connect(self.workerImage.destruct)
 
         self.threadPlatesolve = PyQt5.QtCore.QThread()
         self.workerPlatesolve = Platesolve(self, self.threadPlatesolve)
         self.workerPlatesolve.moveToThread(self.threadPlatesolve)
         self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
+        self.threadPlatesolve.finished.connect(self.workerPlatesolve.destruct)
 
         # class variables
         self.solvedPointsQueue = Queue()

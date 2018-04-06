@@ -63,8 +63,12 @@ class INDIDome:
                                     indi_attr={'name': 'ABS_DOME_POSITION', 'device': self.app.workerINDI.domeDevice}))
 
     def getStatus(self):
+        if self.app.workerINDI.domeDevice != '':
+            self.application['Available'] = True
+        else:
+            self.application['Available'] = False
         self.app.sharedDomeDataLock.lockForWrite()
-        if self.app.workerINDI.domeDevice != '' and self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
+        if self.app.workerINDI.domeDevice in self.app.workerINDI.data['Device']:
             self.application['Status'] = 'OK'
             self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On'
         else:
@@ -74,7 +78,7 @@ class INDIDome:
 
     def getData(self):
         # check if client has device found
-        if self.app.workerINDI.environmentDevice != '':
+        if self.app.workerINDI.domeDevice != '':
             # and device is connected
             if self.app.workerINDI.data['Device'][self.app.workerINDI.domeDevice]['CONNECTION']['CONNECT'] == 'On':
                 # than get the data

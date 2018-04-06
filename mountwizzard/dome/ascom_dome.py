@@ -102,6 +102,7 @@ class AscomDome:
                     self.app.sharedDomeDataLock.lockForWrite()
                     self.data['Connected'] = False
                     self.app.sharedDomeDataLock.unlock()
+                self.application['Status'] = 'OK'
             else:
                 self.app.sharedDomeDataLock.lockForWrite()
                 self.data['Connected'] = False

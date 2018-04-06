@@ -58,8 +58,12 @@ class INDIEnvironment:
                 self.app.INDICommandQueue.put(indiXML.newSwitchVector([indiXML.oneSwitch('On', indi_attr={'name': 'CONNECT'})], indi_attr={'name': 'CONNECTION', 'device': self.app.workerINDI.environmentDevice}))
 
     def getStatus(self):
+        if self.app.workerINDI.environmentDevice != '':
+            self.application['Available'] = True
+        else:
+            self.application['Available'] = False
         self.app.sharedEnvironmentDataLock.lockForWrite()
-        if self.app.workerINDI.environmentDevice != '' and self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
+        if self.app.workerINDI.environmentDevice in self.app.workerINDI.data['Device']:
             self.application['Status'] = 'OK'
             self.data['Connected'] = self.app.workerINDI.data['Device'][self.app.workerINDI.environmentDevice]['CONNECTION']['CONNECT'] == 'On'
         else:

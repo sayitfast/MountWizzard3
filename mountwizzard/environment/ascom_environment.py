@@ -87,6 +87,7 @@ class AscomEnvironment:
                     self.app.sharedEnvironmentDataLock.lockForWrite()
                     self.data['Connected'] = False
                     self.app.sharedEnvironmentDataLock.unlock()
+                self.application['Status'] = 'OK'
             else:
                 self.app.sharedEnvironmentDataLock.lockForWrite()
                 self.data['Connected'] = False
