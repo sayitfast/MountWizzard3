@@ -71,6 +71,13 @@ class AstrometryClient:
         self.urlLogin = ''
         self.urlAPI = ''
 
+        self.app.ui.le_AstrometryServerIP.textChanged.connect(self.setIP)
+        self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
+        self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.rb_useOnlineSolver.clicked.connect(self.setAstrometryNet)
+        self.app.ui.rb_useLocalSolver.clicked.connect(self.setAstrometryNet)
+
     def initConfig(self):
         try:
             if 'CheckUseOnlineSolver' in self.app.config:
@@ -99,12 +106,6 @@ class AstrometryClient:
 
         # setting changes in gui on false, because the set of the config changed them already
         self.setAstrometryNet()
-        self.app.ui.le_AstrometryServerIP.textChanged.connect(self.setIP)
-        self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
-        self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.rb_useOnlineSolver.clicked.connect(self.setAstrometryNet)
-        self.app.ui.rb_useLocalSolver.clicked.connect(self.setAstrometryNet)
 
     def storeConfig(self):
         self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
@@ -165,7 +166,7 @@ class AstrometryClient:
             return
         try:
             result = requests.post(self.urlAPI)
-            if result.status_code in [200, 404]:
+            if result.status_code in [200, 403, 404]:
                 self.application['Available'] = True
                 self.application['Status'] = 'OK'
                 self.data['CONNECTION']['CONNECT'] = 'On'

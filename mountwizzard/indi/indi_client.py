@@ -178,7 +178,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.thread.wait()
 
     def destruct(self):
-        if self.socket.state() != 3:
+        if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
             self.socket.disconnectFromHost()
