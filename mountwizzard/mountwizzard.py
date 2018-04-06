@@ -124,6 +124,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
+        self.threadMountDispatcher.finished.connect(self.workerMountDispatcher.destruct)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
