@@ -1293,6 +1293,7 @@ class MountWizzardApp(widget.MwWidget):
         # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
+        PyQt5.QtWidgets.QApplication.processEvents()
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(200, self.mainLoop)
 
