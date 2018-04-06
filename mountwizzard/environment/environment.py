@@ -51,7 +51,8 @@ class Environment(PyQt5.QtCore.QObject):
             'Connected': False
         }
         # get supporting handlers
-        self.ascom = ascom_environment.AscomEnvironment(self, self.app, self.data)
+        if platform.system() == 'Windows':
+            self.ascom = ascom_environment.AscomEnvironment(self, self.app, self.data)
         self.indi = indi_environment.INDIEnvironment(self, self.app, self.data)
         self.none = none_environment.NoneEnvironment(self, self.app, self.data)
         # set handler to none

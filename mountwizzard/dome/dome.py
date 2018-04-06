@@ -56,7 +56,8 @@ class Dome(PyQt5.QtCore.QObject):
             'Slewing': False
         }
         # get supporting handlers
-        self.ascom = ascom_dome.AscomDome(self, self.app, self.data)
+        if platform.system() == 'Windows':
+            self.ascom = ascom_dome.AscomDome(self, self.app, self.data)
         self.indi = indi_dome.INDIDome(self, self.app, self.data)
         self.none = none_dome.NoneDome(self, self.app, self.data)
         # set handler to none
