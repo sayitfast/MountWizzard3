@@ -59,7 +59,6 @@ class INDIClient(PyQt5.QtCore.QObject):
     data = {
         'ServerIP': '',
         'ServerPort': 7624,
-        'Connected': False,
         'Device': {}
     }
 
@@ -137,15 +136,15 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def setPort(self):
         valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-        self.app.sharedMountDataLock.lockForRead()
+        self.app.sharedINDIDataLock.lockForRead()
         self.settingsChanged = (self.data['ServerPort'] != value)
-        self.app.sharedMountDataLock.unlock()
+        self.app.sharedINDIDataLock.unlock()
 
     def setIP(self):
         valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-        self.app.sharedMountDataLock.lockForRead()
+        self.app.sharedINDIDataLock.lockForRead()
         self.settingsChanged = (self.data['ServerIP'] != value)
-        self.app.sharedMountDataLock.unlock()
+        self.app.sharedINDIDataLock.unlock()
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():
@@ -192,27 +191,30 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.close()
 
     def doCommandQueue(self):
-        self.app.sharedMountDataLock.lockForRead()
-        if not self.app.INDICommandQueue.empty() and self.data['Connected']:
+        self.app.sharedINDIDataLock.lockForRead()
+        if not self.app.INDICommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             indiCommand = self.app.INDICommandQueue.get()
             self.sendMessage(indiCommand)
-        if not self.data['Connected'] and self.socket.state() == 0:
+        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
             self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
-        self.app.sharedMountDataLock.unlock()
+        self.app.sharedINDIDataLock.unlock()
         self.handleNewDevice()
         # loop
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def handleHostFound(self):
+        self.app.sharedINDIDataLock.lockForRead()
         self.logger.debug('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
+        self.app.sharedINDIDataLock.unlock()
 
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
-        self.app.sharedMountDataLock.lockForWrite()
+        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
+        self.app.sharedINDIDataLock.lockForWrite()
         self.data['Connected'] = True
         self.logger.info('INDI Server connected at {0}:{1}'.format(self.data['ServerIP'], self.data['ServerPort']))
-        self.app.sharedMountDataLock.unlock()
+        self.app.sharedINDIDataLock.unlock()
         # get all informations about existing devices on the choosen indi server
         self.app.INDICommandQueue.put(indiXML.clientGetProperties(indi_attr={'version': '1.7'}))
 
@@ -221,7 +223,7 @@ class INDIClient(PyQt5.QtCore.QObject):
             device = self.newDeviceQueue.get()
             # now place the information about accessible devices in the gui and set the connection status
             # and configure the new devices adequately
-            self.app.sharedMountDataLock.lockForRead()
+            self.app.sharedINDIDataLock.lockForRead()
             if device in self.data['Device']:
                 if 'DRIVER_INFO' in self.data['Device'][device]:
                     if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
@@ -242,7 +244,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                 else:
                     # if not ready, put it on the stack again !
                     self.newDeviceQueue.put(device)
-            self.app.sharedMountDataLock.unlock()
+            self.app.sharedINDIDataLock.unlock()
 
     def handleError(self, socketError):
         self.logger.warning('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
@@ -253,10 +255,9 @@ class INDIClient(PyQt5.QtCore.QObject):
 
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
-        self.app.sharedMountDataLock.lockForWrite()
-        self.data['Connected'] = False
+        self.app.sharedINDIDataLock.lockForWrite()
         self.data['Device'] = {}
-        self.app.sharedMountDataLock.unlock()
+        self.app.sharedINDIDataLock.unlock()
         self.cameraDevice = ''
         self.environmentDevice = ''
         self.domeDevice = ''
@@ -271,7 +272,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         device = message.attr['device']
         # receiving all definitions for vectors in indi and building them up in self.data['Device']
         if isinstance(message, indiXML.DefBLOBVector):
-            self.app.sharedMountDataLock.lockForWrite()
+            self.app.sharedINDIDataLock.lockForWrite()
             if device not in self.data['Device']:
                 self.data['Device'][device] = {}
             if device in self.data['Device']:
@@ -281,10 +282,10 @@ class INDIClient(PyQt5.QtCore.QObject):
                         self.data['Device'][device][defVector] = {}
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = ''
-            self.app.sharedMountDataLock.unlock()
+            self.app.sharedINDIDataLock.unlock()
 
         elif isinstance(message, indiXML.SetBLOBVector):
-            self.app.sharedMountDataLock.lockForRead()
+            self.app.sharedINDIDataLock.lockForRead()
             if device in self.data['Device']:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
                     name = message.attr['name']
@@ -317,24 +318,24 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.logger.debug('Got unexpected BLOB from device: {0}'.format(device))
             else:
                 self.logger.debug('Did not find device: {0} in device list'.format(device))
-            self.app.sharedMountDataLock.unlock()
+            self.app.sharedINDIDataLock.unlock()
 
         # deleting properties from devices
         elif isinstance(message, indiXML.DelProperty):
-            self.app.sharedMountDataLock.lockForWrite()
+            self.app.sharedINDIDataLock.lockForWrite()
             if device in self.data['Device']:
                 if 'name' in message.attr:
                     delVector = message.attr['name']
                     if delVector in self.data['Device'][device]:
                         del self.data['Device'][device][delVector]
-            self.app.sharedMountDataLock.unlock()
+            self.app.sharedINDIDataLock.unlock()
 
         # receiving changes from vectors and updating them ins self.data['Device]
         elif isinstance(message, indiXML.SetSwitchVector) or \
                 isinstance(message, indiXML.SetTextVector) or \
                 isinstance(message, indiXML.SetLightVector) or \
                 isinstance(message, indiXML.SetNumberVector):
-            self.app.sharedMountDataLock.lockForWrite()
+            self.app.sharedINDIDataLock.lockForWrite()
             if device in self.data['Device']:
                 if 'name' in message.attr:
                     setVector = message.attr['name']
@@ -347,14 +348,14 @@ class INDIClient(PyQt5.QtCore.QObject):
                         self.data['Device'][device][setVector]['timeout'] = message.attr['timeout']
                     for elt in message.elt_list:
                         self.data['Device'][device][setVector][elt.attr['name']] = elt.getValue()
-            self.app.sharedMountDataLock.unlock()
+            self.app.sharedINDIDataLock.unlock()
 
         # receiving all definitions for vectors in indi and building them up in self.data['Device']
         elif isinstance(message, indiXML.DefSwitchVector) or \
                 isinstance(message, indiXML.DefTextVector) or \
                 isinstance(message, indiXML.DefLightVector) or \
                 isinstance(message, indiXML.DefNumberVector):
-            self.app.sharedMountDataLock.lockForWrite()
+            self.app.sharedINDIDataLock.lockForWrite()
             if device not in self.data['Device']:
                 # new device !
                 self.data['Device'][device] = {}
@@ -372,9 +373,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                         self.data['Device'][device][defVector]['timeout'] = message.attr['timeout']
                     for elt in message.elt_list:
                         self.data['Device'][device][defVector][elt.attr['name']] = elt.getValue()
-            self.app.sharedMountDataLock.unlock()
+            self.app.sharedINDIDataLock.unlock()
 
-        self.app.sharedMountDataLock.lockForRead()
+        self.app.sharedINDIDataLock.lockForRead()
         if device in self.data['Device']:
             if 'DRIVER_INFO' in self.data['Device'][device]:
                 if int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.CCD_INTERFACE:
@@ -383,7 +384,7 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDIStatusQueue.put({'Name': 'Environment', 'value': device})
                 elif int(self.data['Device'][device]['DRIVER_INFO']['DRIVER_INTERFACE']) & self.DOME_INTERFACE:
                     self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': device})
-        self.app.sharedMountDataLock.unlock()
+        self.app.sharedINDIDataLock.unlock()
 
     def handleReadyRead(self):
         # Add starting tag if this is new message.
