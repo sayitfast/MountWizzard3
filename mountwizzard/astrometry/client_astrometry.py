@@ -166,6 +166,7 @@ class AstrometryClient:
             return
         try:
             result = requests.post(self.urlAPI)
+            # todo: still not the right checking if available.
             if result.status_code in [200, 403, 404]:
                 self.application['Available'] = True
                 self.application['Status'] = 'OK'
