@@ -100,9 +100,15 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.doCommandQueue()
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+
+    def stop(self):
+        self.mutexIsRunning.lock()
+        self.isRunning = False
+        self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
+
+    def destruct(self):
         if self.socket.state() != 3:
             self.socket.abort()
         else:
@@ -114,13 +120,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.error.disconnect(self.handleError)
         self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.close()
-
-    def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
 
     def doCommandQueue(self):
         while not self.app.mountCommandQueue.empty() and self.connected and not self.sendLock:

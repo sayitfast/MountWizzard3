@@ -57,9 +57,16 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.doCommandQueue()
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+
+    def stop(self):
+        # if I leave the loop, I close the connection to remote host
+        self.mutexIsRunning.lock()
+        self.isRunning = False
+        self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
+
+    def destruct(self):
         if self.socket.state() != 3:
             self.socket.abort()
         else:
@@ -71,14 +78,6 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.readyRead.disconnect(self.handleReadyRead)
         self.socket.error.disconnect(self.handleError)
         self.socket.close()
-
-    def stop(self):
-        # if I leave the loop, I close the connection to remote host
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
 
     def doCommandQueue(self):
         if not self.sendCommandQueue.empty() and self.connected:

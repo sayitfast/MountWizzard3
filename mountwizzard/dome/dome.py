@@ -119,10 +119,6 @@ class Dome(PyQt5.QtCore.QObject):
         self.getStatusFromDevice()
         self.getDataFromDevice()
         self.doCommandQueue()
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.domeHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -131,6 +127,9 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        self.domeHandler.stop()
 
     def doCommandQueue(self):
         if not self.app.domeCommandQueue.empty():

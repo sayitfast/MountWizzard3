@@ -104,27 +104,17 @@ class Remote(PyQt5.QtCore.QObject):
                 self.stop()
 
     def run(self):
+        if not self.tcpServer.listen(PyQt5.QtNetwork.QHostAddress(self.data['RemoteIP']), self.data['RemotePort']):
+            self.logger.warning('port {0} is already in use'.format(self.data['RemotePort']))
+            return
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.tcpServer = PyQt5.QtNetwork.QTcpServer(self)
-        if self.tcpServer.listen(PyQt5.QtNetwork.QHostAddress(self.data['RemoteIP']), self.data['RemotePort']):
-            # there is no other listening socket
-            self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
-            self.tcpServer.newConnection.connect(self.addConnection)
-            while self.isRunning:
-                time.sleep(0.2)
-                PyQt5.QtWidgets.QApplication.processEvents()
-            self.tcpServer.newConnection.disconnect(self.addConnection)
-            self.tcpServer.close()
-            if self.clientConnection:
-                self.clientConnection.close()
-            self.tcpServer = None
-            self.clientConnection = None
-        else:
-            self.logger.warning('port {0} is already in use'.format(self.data['RemotePort']))
+        self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
+        self.tcpServer.newConnection.connect(self.addConnection)
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -134,6 +124,14 @@ class Remote(PyQt5.QtCore.QObject):
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        self.tcpServer.newConnection.disconnect(self.addConnection)
+        self.tcpServer.close()
+        if self.clientConnection:
+            self.clientConnection.close()
+        self.tcpServer = None
+        self.clientConnection = None
 
     def addConnection(self):
         self.clientConnection = self.tcpServer.nextPendingConnection()

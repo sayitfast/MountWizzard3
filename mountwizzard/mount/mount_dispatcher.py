@@ -104,36 +104,42 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
+        self.threadMountCommandRunner.finished.connect(self.workerMountCommandRunner.destruct)
         # fast status thread
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnectedFast)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
+        self.threadMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFast.destruct)
         # medium status thread
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnectedMedium)
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
         self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
+        self.threadMountStatusRunnerMedium.finished.connect(self.workerMountStatusRunnerMedium.destruct)
         # slow status thread
         self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnectedSlow)
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
+        self.threadMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlow.destruct)
         # once status thread
         self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnectedOnce)
         self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
         self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
+        self.threadMountStatusRunnerOnce.finished.connect(self.workerMountStatusRunnerOnce.destruct)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
         self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedGetAlign)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
+        self.threadMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModel.destruct)
 
         self.mountStatus = {'Fast': False,
                             'Medium': False,
@@ -438,9 +444,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountCommandRunner.start()
         self.threadMountGetAlignmentModel.start()
         self.doCommandQueue()
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -455,6 +458,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountStatusRunnerFast.stop()
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        pass
 
     def doCommandQueue(self):
         if not self.commandDispatcherQueue.empty():

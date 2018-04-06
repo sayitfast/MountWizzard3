@@ -115,10 +115,6 @@ class Environment(PyQt5.QtCore.QObject):
         self.environmentHandler.start()
         self.getStatusFromDevice()
         self.getDataFromDevice()
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.environmentHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -127,6 +123,9 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        self.environmentHandler.stop()
 
     def getStatusFromDevice(self):
         self.environmentHandler.getStatus()

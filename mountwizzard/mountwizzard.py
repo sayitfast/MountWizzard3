@@ -136,6 +136,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadINDI.setObjectName("INDI")
         self.workerINDI.moveToThread(self.threadINDI)
         self.threadINDI.started.connect(self.workerINDI.run)
+        self.threadINDI.finished.connect(self.workerINDI.destruct)
         self.workerINDI.status.connect(self.setINDIStatus)
         # threading for environment data
         self.threadEnvironment = PyQt5.QtCore.QThread()
@@ -143,6 +144,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadEnvironment.setObjectName("Environment")
         self.workerEnvironment.moveToThread(self.threadEnvironment)
         self.threadEnvironment.started.connect(self.workerEnvironment.run)
+        self.threadEnvironment.finished.connect(self.workerEnvironment.destruct)
         self.workerEnvironment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
         # threading for ascom dome data
         self.threadDome = PyQt5.QtCore.QThread()
@@ -150,6 +152,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadDome.setObjectName("Dome")
         self.workerDome.moveToThread(self.threadDome)
         self.threadDome.started.connect(self.workerDome.run)
+        self.threadDome.finished.connect(self.workerDome.destruct)
         self.workerDome.signalDomeConnected.connect(self.setDomeStatus)
         # threading for remote shutdown
         self.threadRemote = PyQt5.QtCore.QThread()
@@ -157,6 +160,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
+        self.threadRemote.finished.connect(self.workerRemote.destruct)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for imaging apps
         self.threadImaging = PyQt5.QtCore.QThread()
@@ -164,25 +168,29 @@ class MountWizzardApp(widget.MwWidget):
         self.threadImaging.setObjectName("Imaging")
         self.workerImaging.moveToThread(self.threadImaging)
         self.threadImaging.started.connect(self.workerImaging.run)
+        self.threadImaging.finished.connect(self.workerImaging.destruct)
         # threading for astrometry apps
         self.threadAstrometry = PyQt5.QtCore.QThread()
         self.workerAstrometry = astrometry.Astrometry(self, self.threadAstrometry)
         self.threadAstrometry.setObjectName("Astrometry")
         self.workerAstrometry.moveToThread(self.threadAstrometry)
         self.threadAstrometry.started.connect(self.workerAstrometry.run)
+        self.threadAstrometry.finished.connect(self.workerAstrometry.destruct)
         # threading for updater automation
         if platform.system() == 'Windows':
-            self.threadUpload = PyQt5.QtCore.QThread()
-            self.workerUpload = automation.Automation(self, self.threadUpload)
-            self.threadUpload.setObjectName("Upload")
-            self.workerUpload.moveToThread(self.threadUpload)
-            self.threadUpload.started.connect(self.workerUpload.run)
+            self.threadAutomation = PyQt5.QtCore.QThread()
+            self.workerAutomation = automation.Automation(self, self.threadAutomation)
+            self.threadAutomation.setObjectName("Automation")
+            self.workerAutomation.moveToThread(self.threadAutomation)
+            self.threadAutomation.started.connect(self.workerAutomation.run)
+            self.threadAutomation.finished.connect(self.workerAutomation.destruct)
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
         self.workerModelingDispatcher = model_dispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
+        self.threadModelingDispatcher.finished.connect(self.workerModelingDispatcher.destruct)
 
         # gui for additional windows
         self.analyseWindow = analyse_window.AnalyseWindow(self)
@@ -388,8 +396,8 @@ class MountWizzardApp(widget.MwWidget):
     def initConfigMain(self):
         # initialize all configs in submodules, if necessary stop thread and restart thread for loading the desired driver
         if platform.system() == 'Windows':
-            if self.workerUpload.isRunning:
-                self.workerUpload.stop()
+            if self.workerAutomation.isRunning:
+                self.workerAutomation.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
         if self.workerEnvironment.isRunning:
@@ -421,7 +429,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerImaging.initConfig()
         self.workerAstrometry.initConfig()
         if platform.system() == 'Windows':
-            self.workerUpload.initConfig()
+            self.workerAutomation.initConfig()
         # now the window config
         self.hemisphereWindow.initConfig()
         self.imageWindow.initConfig()
@@ -434,7 +442,7 @@ class MountWizzardApp(widget.MwWidget):
         if self.ui.checkEnableRemoteAccess.isChecked():
             self.threadRemote.start()
         if platform.system() == 'Windows':
-            self.threadUpload.start()
+            self.threadAutomation.start()
         if not self.workerMountDispatcher.isRunning:
             self.threadMountDispatcher.start()
         if not self.workerEnvironment.isRunning:
@@ -655,7 +663,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerImaging.storeConfig()
         self.workerAstrometry.storeConfig()
         if platform.system() == 'Windows':
-            self.workerUpload.storeConfig()
+            self.workerAutomation.storeConfig()
         self.hemisphereWindow.storeConfig()
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
@@ -686,8 +694,8 @@ class MountWizzardApp(widget.MwWidget):
         if self.workerDome.isRunning:
             self.workerDome.stop()
         if platform.system() == 'Windows':
-            if self.workerUpload.isRunning:
-                self.workerUpload.stop()
+            if self.workerAutomation.isRunning:
+                self.workerAutomation.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
         if self.workerModelingDispatcher.isRunning:
@@ -706,8 +714,8 @@ class MountWizzardApp(widget.MwWidget):
         if self.workerDome.isRunning:
             self.workerDome.stop()
         if platform.system() == 'Windows':
-            if self.workerUpload.isRunning:
-                self.workerUpload.stop()
+            if self.workerAutomation.isRunning:
+                self.workerAutomation.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
         if self.workerModelingDispatcher.isRunning:

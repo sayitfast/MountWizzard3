@@ -300,10 +300,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.doCommandQueue()
-        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -311,6 +307,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        pass
 
     def doCommandQueue(self):
         if not self.commandDispatcherQueue.empty():

@@ -154,10 +154,6 @@ class Imaging(PyQt5.QtCore.QObject):
         self.cameraHandler.start()
         self.getDeviceStatus()
         self.doCommandQueue()
-        while self.isRunning:
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
-        self.cameraHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -166,6 +162,9 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+
+    def destruct(self):
+        self.cameraHandler.stop()
 
     def doCommandQueue(self):
         if not self.imagingCommandQueue.empty():
