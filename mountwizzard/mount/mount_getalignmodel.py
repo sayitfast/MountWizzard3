@@ -66,6 +66,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('mount align stopped')
 
     def destruct(self):
         if self.socket.state() != 3:

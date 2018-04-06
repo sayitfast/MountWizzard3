@@ -66,6 +66,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('mount slow stopped')
 
     def destruct(self):
         if self.socket.state() != 3:

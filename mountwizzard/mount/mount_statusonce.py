@@ -65,6 +65,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('mount once stopped')
 
     def destruct(self):
         if self.socket.state() != 3:

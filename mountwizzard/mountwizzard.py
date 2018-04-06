@@ -76,6 +76,8 @@ class MountWizzardApp(widget.MwWidget):
 
     def __init__(self):
         super().__init__()
+
+        self.isRunning = True
         self.config = {}
         self.setObjectName("Main")
 
@@ -685,6 +687,7 @@ class MountWizzardApp(widget.MwWidget):
         self.saveConfigData(filepath)
 
     def saveConfigQuit(self):
+        self.isRunning = False
         filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
         self.saveConfigData(filepath)
         self.workerAstrometry.astrometryCancel.emit()
@@ -698,6 +701,10 @@ class MountWizzardApp(widget.MwWidget):
                 self.workerAutomation.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
+        if self.workerImaging.isRunning:
+            self.workerImaging.stop()
+        if self.workerAstrometry.isRunning:
+            self.workerAstrometry.stop()
         if self.workerModelingDispatcher.isRunning:
             self.workerModelingDispatcher.stop()
         if self.workerMountDispatcher.isRunning:
@@ -707,6 +714,9 @@ class MountWizzardApp(widget.MwWidget):
         PyQt5.QtCore.QCoreApplication.quit()
 
     def quit(self):
+        self.isRunning = False
+        self.workerAstrometry.astrometryCancel.emit()
+        self.workerImaging.imagingCancel.emit()
         self.workerAstrometry.astrometryCancel.emit()
         self.workerImaging.imagingCancel.emit()
         if self.workerEnvironment.isRunning:
@@ -718,6 +728,10 @@ class MountWizzardApp(widget.MwWidget):
                 self.workerAutomation.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
+        if self.workerImaging.isRunning:
+            self.workerImaging.stop()
+        if self.workerAstrometry.isRunning:
+            self.workerAstrometry.stop()
         if self.workerModelingDispatcher.isRunning:
             self.workerModelingDispatcher.stop()
         if self.workerMountDispatcher.isRunning:
@@ -1287,7 +1301,8 @@ class MountWizzardApp(widget.MwWidget):
         # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
-        PyQt5.QtCore.QTimer.singleShot(200, self.mainLoop)
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(200, self.mainLoop)
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):

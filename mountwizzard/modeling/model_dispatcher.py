@@ -308,6 +308,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('model dispatcher stopped')
 
     def destruct(self):
         pass

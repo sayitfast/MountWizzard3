@@ -163,6 +163,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('astrometry stopped')
 
     def destruct(self):
         self.astrometryHandler.stop()

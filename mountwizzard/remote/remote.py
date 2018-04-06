@@ -125,6 +125,7 @@ class Remote(PyQt5.QtCore.QObject):
         # when the worker thread finished, it emit the finished signal to the parent to clean up
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('remote stopped')
 
     def destruct(self):
         self.tcpServer.newConnection.disconnect(self.addConnection)

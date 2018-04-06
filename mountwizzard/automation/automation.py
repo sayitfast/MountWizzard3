@@ -282,6 +282,7 @@ class Automation(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('automation stopped')
 
     def destruct(self):
         pass

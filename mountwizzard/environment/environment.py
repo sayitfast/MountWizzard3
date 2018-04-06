@@ -127,6 +127,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('environment stopped')
 
     def destruct(self):
         self.environmentHandler.stop()

@@ -459,6 +459,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.workerMountCommandRunner.stop()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('mount dispatcher stopped')
 
     def destruct(self):
         pass

@@ -163,6 +163,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.thread.quit()
         self.thread.wait()
+        self.logger.info('imaging stopped')
 
     def destruct(self):
         self.cameraHandler.stop()
