@@ -18,9 +18,6 @@
 #
 ###########################################################
 import logging
-import os
-import io
-import sys
 import time
 import PyQt5
 import requests

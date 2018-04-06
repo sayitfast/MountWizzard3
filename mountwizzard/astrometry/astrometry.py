@@ -18,7 +18,6 @@
 #
 ###########################################################
 import logging
-import time
 import platform
 import PyQt5
 import queue

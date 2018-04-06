@@ -20,8 +20,6 @@
 import logging
 import platform
 import PyQt5
-import time
-import indi.indi_xml as indiXML
 if platform.system() == 'Windows':
     from win32com.client.dynamic import Dispatch
     import pythoncom
