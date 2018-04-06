@@ -1207,18 +1207,9 @@ class MountWizzardApp(widget.MwWidget):
         if status == 0:
             self.ui.le_INDIStatus.setText('UnconnectedState')
             self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'red')
-        elif status == 1:
-            self.ui.le_INDIStatus.setText('HostLookupState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
-        elif status == 2:
-            self.ui.le_INDIStatus.setText('ConnectingState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
         elif status == 3:
             self.ui.le_INDIStatus.setText('ConnectedState')
             self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'green')
-        elif status == 6:
-            self.ui.le_INDIStatus.setText('ClosingState')
-            self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'yellow')
         else:
             self.ui.le_INDIStatus.setText('Error')
         if not self.ui.checkEnableINDI.isChecked():

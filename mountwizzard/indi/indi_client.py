@@ -212,7 +212,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.app.sharedINDIDataLock.lockForWrite()
-        self.data['Connected'] = True
         self.logger.info('INDI Server connected at {0}:{1}'.format(self.data['ServerIP'], self.data['ServerPort']))
         self.app.sharedINDIDataLock.unlock()
         # get all informations about existing devices on the choosen indi server

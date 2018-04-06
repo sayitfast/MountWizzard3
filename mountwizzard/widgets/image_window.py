@@ -254,14 +254,10 @@ class ImagesWindow(widget.MwWidget):
 
     def disableExposures(self):
         self.ui.btn_expose.setEnabled(False)
-        #self.ui.btn_startContExposures.setEnabled(False)
-        #self.ui.btn_stopContExposures.setEnabled(False)
         self.setWindowTitle('Image Window - Modeling running - No manual exposures possible')
 
     def enableExposures(self):
         self.ui.btn_expose.setEnabled(True)
-        #self.ui.btn_startContExposures.setEnabled(True)
-        #self.ui.btn_stopContExposures.setEnabled(True)
         self.setWindowTitle('Image Window')
 
     def setCrosshairOnOff(self):
