@@ -26,8 +26,9 @@ import os
 import astropy.io.fits as pyfits
 
 from astrometry import client_astrometry
-from astrometry import sgpro_astrometry
-from astrometry import pinpoint_astrometry
+if platform.system() == 'Windows':
+    from astrometry import sgpro_astrometry
+    from astrometry import pinpoint_astrometry
 from astrometry import none_astrometry
 from astrometry import transform
 
@@ -65,9 +66,10 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
 
         # external classes
-        self.SGPro = sgpro_astrometry.SGPro(self, self.app, self.data)
         self.AstrometryClient = client_astrometry.AstrometryClient(self, self.app, self.data)
-        self.PinPoint = pinpoint_astrometry.PinPoint(self, self.app, self.data)
+        if platform.system() == 'Windows':
+            self.SGPro = sgpro_astrometry.SGPro(self, self.app, self.data)
+            self.PinPoint = pinpoint_astrometry.PinPoint(self, self.app, self.data)
         self.NoneSolve = none_astrometry.NoneAstrometry(self, self.app, self.data)
 
         # set handler to default position

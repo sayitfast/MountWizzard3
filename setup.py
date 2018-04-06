@@ -26,7 +26,7 @@ setup(
     ],
     python_requires='~=3.5',
     install_requires=[
-        'PyQt5==5.10',
+        'PyQt5==5.10.1',
         'matplotlib==2.1.2',
         'wakeonlan>=1.0.0',
         'requests==2.18.4',
