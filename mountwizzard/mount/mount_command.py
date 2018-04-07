@@ -197,7 +197,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     def sendCommand(self, command):
         if self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
-                self.sendLock = True
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
