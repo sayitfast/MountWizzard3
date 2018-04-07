@@ -275,7 +275,7 @@ class Automation(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            self.doCommandQueue()
+            self.doCommand()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
 
