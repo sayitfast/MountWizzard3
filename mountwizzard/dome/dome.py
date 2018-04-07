@@ -161,7 +161,10 @@ class Dome(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def getDataFromDevice(self):
-        if self.data['Connected']:
+        self.app.sharedDomeDataLock.lockForRead()
+        connected = self.data['Connected']
+        self.app.sharedDomeDataLock.unlock()
+        if connected:
             self.domeHandler.getData()
         else:
             self.app.sharedDomeDataLock.lockForWrite()

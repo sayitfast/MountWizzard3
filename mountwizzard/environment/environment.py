@@ -149,7 +149,10 @@ class Environment(PyQt5.QtCore.QObject):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def getDataFromDevice(self):
-        if self.data['Connected']:
+        self.app.sharedEnvironmentDataLock.lockForRead()
+        connected = self.data['Connected']
+        self.app.sharedEnvironmentDataLock.unlock()
+        if connected:
             self.environmentHandler.getData()
             # calculating moving average of temp and pressure for refraction
             self.movingAverageTemperature.append(self.data['Temperature'])
