@@ -1295,11 +1295,11 @@ class MyApp(PyQt5.QtWidgets.QApplication):
         try:
             returnValue = PyQt5.QtWidgets.QApplication.notify(self, obj, event)
         except Exception as e:
-            logging.debug('-----------------------------------------')
-            logging.debug('Event: {0}'.format(event))
-            logging.debug('EventType: {0}'.format(event.type()))
-            logging.debug('Exception error in event loop: {0}'.format(e))
-            logging.debug('-----------------------------------------')
+            logging.error('-----------------------------------------')
+            logging.error('Event: {0}'.format(event))
+            logging.error('EventType: {0}'.format(event.type()))
+            logging.error('Exception error in event loop: {0}'.format(e))
+            logging.error('-----------------------------------------')
             returnValue = False
         finally:
             pass
