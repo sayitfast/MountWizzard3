@@ -292,9 +292,6 @@ class Automation(PyQt5.QtCore.QObject):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher
