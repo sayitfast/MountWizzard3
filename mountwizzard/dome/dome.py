@@ -156,6 +156,7 @@ class Dome(PyQt5.QtCore.QObject):
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')
             self.app.sharedDomeDataLock.unlock()
+        # loop
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
@@ -174,5 +175,6 @@ class Dome(PyQt5.QtCore.QObject):
         if 'Azimuth' in self.data:
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         self.app.sharedDomeDataLock.unlock()
+        # loop
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDataFromDevice)
