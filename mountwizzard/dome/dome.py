@@ -39,7 +39,6 @@ class Dome(PyQt5.QtCore.QObject):
 
     CYCLE_COMMAND = 0.2
     CYCLE_STATUS = 500
-    START_DOME_TIMEOUT = 3
 
     def __init__(self, app, thread):
         super().__init__()
