@@ -143,7 +143,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 for key in self.COMMAND_RETURN:
                     if command.startswith(key):
                         self.numberBytesToReceive = self.COMMAND_RETURN[key]
-                        print(command, self.numberBytesToReceive)
                         break
                 if self.numberBytesToReceive == -1:
                     self.logger.error('Command >(0)< not known'.format(command))
