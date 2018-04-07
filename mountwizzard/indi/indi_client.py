@@ -54,7 +54,7 @@ class INDIClient(PyQt5.QtCore.QObject):
     DETECTOR_INTERFACE = (1 << 11)
     AUX_INTERFACE = (1 << 15)
 
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 500
 
     data = {
         'ServerIP': '',
@@ -167,17 +167,12 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
         self.processMessage.connect(self.handleReceived)
-        self.doCommandQueue()
 
-    def stop(self):
-        # if I leave the loop, I close the connection to remote host
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
-
-    def destruct(self):
+        while self.isRunning:
+            self.doCommand()
+            self.doReconnect()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -190,24 +185,36 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.socket.error.disconnect(self.handleError)
         self.socket.close()
 
-    def doCommandQueue(self):
+    def stop(self):
+        # if I leave the loop, I close the connection to remote host
+        self.mutexIsRunning.lock()
+        self.isRunning = False
+        self.mutexIsRunning.unlock()
+        self.thread.quit()
+        self.thread.wait()
+
+    def doCommand(self):
         self.app.sharedINDIDataLock.lockForRead()
         if not self.app.INDICommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             indiCommand = self.app.INDICommandQueue.get()
             self.sendMessage(indiCommand)
+        self.app.sharedINDIDataLock.lockForRead()
+
+
+    def doReconnect(self):
+        self.app.sharedINDIDataLock.lockForRead()
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
             self.socket.connectToHost(self.data['ServerIP'], self.data['ServerPort'])
         self.app.sharedINDIDataLock.unlock()
         self.handleNewDevice()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
         self.app.sharedINDIDataLock.lockForRead()
         self.logger.debug('INDI Server found at {}:{}'.format(self.data['ServerIP'], self.data['ServerPort']))
         self.app.sharedINDIDataLock.unlock()
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
@@ -248,10 +255,12 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleError(self, socketError):
         self.logger.warning('INDI client connection fault: {0}, error: {1}'.format(self.socket.errorString(), socketError))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
         self.status.emit(self.socket.state())
         self.logger.debug('INDI client connection has state: {0}'.format(self.socket.state()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('INDI client connection is disconnected from host')
         self.app.sharedINDIDataLock.lockForWrite()
@@ -265,6 +274,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.INDIStatusQueue.put({'Name': 'CCD', 'value': '---'})
         self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': '---'})
 
+    @PyQt5.QtCore.pyqtSlot(object)
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
         # data to mountwizzard
@@ -385,14 +395,14 @@ class INDIClient(PyQt5.QtCore.QObject):
                     self.app.INDIStatusQueue.put({'Name': 'Dome', 'value': device})
         self.app.sharedINDIDataLock.unlock()
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Add starting tag if this is new message.
         if len(self.messageString) == 0:
             self.messageString = "<data>"
         # Get message from socket.
         while self.socket.bytesAvailable():
-            tmp = self.socket.read(100000).decode()
-            self.messageString += tmp
+            self.messageString += self.socket.read(100000).decode()
         # Add closing tag.
         self.messageString += "</data>"
         # Try and parse the message.

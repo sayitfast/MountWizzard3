@@ -28,7 +28,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_STATUS_MEDIUM = 3000
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -40,6 +40,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.socket = None
+        self.sendLock = False
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
@@ -57,18 +58,11 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        self.doCommandQueue()
-
-    def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
-        self.logger.info('mount medium stopped')
-
-    def destruct(self):
-        # we have to close the socket nicely
+        while self.isRunning:
+            self.doCommand()
+            self.doReconnect()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -81,24 +75,35 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.socket.error.disconnect(self.handleError)
         self.socket.close()
 
-    def doCommandQueue(self):
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('mount medium stopped')
+
+    def doCommand(self):
         if not self.sendCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             command = self.sendCommandQueue.get()
-            self.sendCommand(command)
+            if not self.sendLock:
+                self.sendCommand(command)
+
+    def doReconnect(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
             self.app.sharedMountDataLock.lockForRead()
             self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
             self.app.sharedMountDataLock.unlock()
             self.sendCommandQueue.queue.clear()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
         self.app.sharedMountDataLock.lockForRead()
         self.logger.debug('Mount RunnerMedium found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
@@ -111,9 +116,11 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerMedium connection fault: {0}'.format(self.socket.errorString()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
         self.logger.debug('Mount RunnerMedium connection has state: {0}'.format(self.socket.state()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('Mount RunnerMedium connection is disconnected from host')
         self.signalConnected.emit({'Medium': False})
@@ -121,48 +128,55 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
     def sendCommand(self, command):
         if self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                self.sendLock = True
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
+                self.sendLock = False
                 self.logger.warning('Socket RunnerMedium not connected')
 
+    @PyQt5.QtCore.pyqtSlot()
     def getStatusMedium(self):
-        doRefractionUpdate = False
-        pressure = 950
-        temperature = 10
-        if self.app.ui.checkAutoRefractionContinous.isChecked():
-            doRefractionUpdate = True
-            self.app.sharedEnvironmentDataLock.lockForRead()
-            if 'MovingAverageTemperature' in self.app.workerEnvironment.data and 'MovingAveragePressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
-                pressure = self.app.workerEnvironment.data['MovingAveragePressure']
-                temperature = self.app.workerEnvironment.data['MovingAverageTemperature']
-            self.app.sharedEnvironmentDataLock.unlock()
-        if self.app.ui.checkAutoRefractionNotTracking.isChecked():
-            # if there is no tracking, than updating is good
-            self.app.sharedMountDataLock.lockForRead()
-            if 'Status' in self.data:
-                if self.data['Status'] != '0':
-                    doRefractionUpdate = True
-            self.app.sharedMountDataLock.unlock()
-            self.app.sharedEnvironmentDataLock.lockForRead()
-            if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
-                pressure = self.app.workerEnvironment.data['Pressure']
-                temperature = self.app.workerEnvironment.data['Temperature']
-            self.app.sharedEnvironmentDataLock.unlock()
-        if doRefractionUpdate:
-            if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
-                self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
-                if temperature > 0:
-                    self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
-                else:
-                    self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
-        self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
+        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+            doRefractionUpdate = False
+            pressure = 950
+            temperature = 10
+            if self.app.ui.checkAutoRefractionContinous.isChecked():
+                doRefractionUpdate = True
+                self.app.sharedEnvironmentDataLock.lockForRead()
+                if 'MovingAverageTemperature' in self.app.workerEnvironment.data and 'MovingAveragePressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
+                    pressure = self.app.workerEnvironment.data['MovingAveragePressure']
+                    temperature = self.app.workerEnvironment.data['MovingAverageTemperature']
+                self.app.sharedEnvironmentDataLock.unlock()
+            if self.app.ui.checkAutoRefractionNotTracking.isChecked():
+                # if there is no tracking, than updating is good
+                self.app.sharedMountDataLock.lockForRead()
+                if 'Status' in self.data:
+                    if self.data['Status'] != '0':
+                        doRefractionUpdate = True
+                self.app.sharedMountDataLock.unlock()
+                self.app.sharedEnvironmentDataLock.lockForRead()
+                if 'Temperature' in self.app.workerEnvironment.data and 'Pressure' in self.app.workerEnvironment.data and self.app.workerEnvironment.isRunning:
+                    pressure = self.app.workerEnvironment.data['Pressure']
+                    temperature = self.app.workerEnvironment.data['Temperature']
+                self.app.sharedEnvironmentDataLock.unlock()
+            if doRefractionUpdate:
+                if (900.0 < pressure < 1100.0) and (-30.0 < temperature < 35.0):
+                    self.app.mountCommandQueue.put(':SRPRS{0:04.1f}#'.format(pressure))
+                    if temperature > 0:
+                        self.app.mountCommandQueue.put(':SRTMP+{0:03.1f}#'.format(temperature))
+                    else:
+                        self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
+            self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
 
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_MEDIUM, self.getStatusMedium)
+
+    @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
         while self.socket.bytesAvailable():
-            tmp = self.socket.read(1024).decode()
-            self.messageString += tmp
+            self.messageString += self.socket.read(1024).decode()
             # print(self.messageString)
         if len(self.messageString) < 28:
             return
@@ -199,5 +213,4 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             self.logger.error('Parsing Status Medium combined command got error:{0}'.format(e))
         finally:
             self.app.sharedMountDataLock.unlock()
-            if self.isRunning:
-                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_MEDIUM, self.getStatusMedium)
+        self.sendLock = False

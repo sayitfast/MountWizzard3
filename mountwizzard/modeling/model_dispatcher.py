@@ -30,8 +30,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_STATUS = 5000
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, app, thread):
         super().__init__()
@@ -300,26 +299,27 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        self.doCommandQueue()
+        while self.isRunning:
+            if not self.doCommand():
+                time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
         self.logger.info('model dispatcher stopped')
 
-    def destruct(self):
-        pass
-
-    def doCommandQueue(self):
+    def doCommand(self):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
+            return True
+        else:
+            return False
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

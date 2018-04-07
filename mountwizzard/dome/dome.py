@@ -19,6 +19,7 @@
 ###########################################################
 import logging
 import platform
+import time
 import PyQt5
 if platform.system() == 'Windows':
     from win32com.client.dynamic import Dispatch
@@ -36,10 +37,8 @@ class Dome(PyQt5.QtCore.QObject):
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
     domeStatusText = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLE_DATA = 1000
-    CYCLE_STATUS = 500
-    CYCLE_COMMAND = 200
-    START_DOME_TIMEOUT = 4
+    CYCLE_COMMAND = 0.5
+    START_DOME_TIMEOUT = 3
 
     def __init__(self, app, thread):
         super().__init__()
@@ -118,30 +117,28 @@ class Dome(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.domeHandler.start()
-        self.getStatusFromDevice()
-        self.getDataFromDevice()
-        self.doCommandQueue()
+        while self.isRunning:
+            self.doCommand()
+            self.getStatusFromDevice()
+            self.getDataFromDevice()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.domeHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
         self.logger.info('dome stopped')
 
-    def destruct(self):
-        self.domeHandler.stop()
-
-    def doCommandQueue(self):
+    def doCommand(self):
         if not self.app.domeCommandQueue.empty():
             command, value = self.app.domeCommandQueue.get()
             if command == 'SlewAzimuth':
                 self.domeHandler.slewToAzimuth(value)
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def getStatusFromDevice(self):
         self.domeHandler.getStatus()
@@ -157,9 +154,6 @@ class Dome(PyQt5.QtCore.QObject):
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')
             self.app.sharedDomeDataLock.unlock()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def getDataFromDevice(self):
         if self.data['Connected']:
@@ -175,6 +169,3 @@ class Dome(PyQt5.QtCore.QObject):
         if 'Azimuth' in self.data:
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         self.app.sharedDomeDataLock.unlock()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getDataFromDevice)

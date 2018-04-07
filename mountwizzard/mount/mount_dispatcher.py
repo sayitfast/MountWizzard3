@@ -47,11 +47,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
 
     # signals for data transfer to other threads
-    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal([float, float])
+    signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal(float, float)
     signalMountShowAlignmentModel = PyQt5.QtCore.pyqtSignal()
     signalSlewFinished = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     statusReference = {
         '0': 'Tracking',
@@ -104,42 +104,36 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountCommandRunner.setObjectName("MountCommandRunner")
         self.workerMountCommandRunner.moveToThread(self.threadMountCommandRunner)
         self.threadMountCommandRunner.started.connect(self.workerMountCommandRunner.run)
-        self.threadMountCommandRunner.finished.connect(self.workerMountCommandRunner.destruct)
         # fast status thread
         self.threadMountStatusRunnerFast = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerFast = mount_statusfast.MountStatusRunnerFast(self.app, self.threadMountStatusRunnerFast, self.data, self.signalMountConnectedFast)
         self.threadMountStatusRunnerFast.setObjectName("MountStatusRunnerFast")
         self.workerMountStatusRunnerFast.moveToThread(self.threadMountStatusRunnerFast)
         self.threadMountStatusRunnerFast.started.connect(self.workerMountStatusRunnerFast.run)
-        self.threadMountStatusRunnerFast.finished.connect(self.workerMountStatusRunnerFast.destruct)
         # medium status thread
         self.threadMountStatusRunnerMedium = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerMedium = mount_statusmedium.MountStatusRunnerMedium(self.app, self.threadMountStatusRunnerMedium, self.data, self.signalMountConnectedMedium)
         self.threadMountStatusRunnerMedium.setObjectName("MountStatusRunnerMedium")
         self.workerMountStatusRunnerMedium.moveToThread(self.threadMountStatusRunnerMedium)
         self.threadMountStatusRunnerMedium.started.connect(self.workerMountStatusRunnerMedium.run)
-        self.threadMountStatusRunnerMedium.finished.connect(self.workerMountStatusRunnerMedium.destruct)
         # slow status thread
         self.threadMountStatusRunnerSlow = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerSlow = mount_statusslow.MountStatusRunnerSlow(self.app, self.threadMountStatusRunnerSlow, self.data, self.signalMountConnectedSlow)
         self.threadMountStatusRunnerSlow.setObjectName("MountStatusRunnerSlow")
         self.workerMountStatusRunnerSlow.moveToThread(self.threadMountStatusRunnerSlow)
         self.threadMountStatusRunnerSlow.started.connect(self.workerMountStatusRunnerSlow.run)
-        self.threadMountStatusRunnerSlow.finished.connect(self.workerMountStatusRunnerSlow.destruct)
         # once status thread
         self.threadMountStatusRunnerOnce = PyQt5.QtCore.QThread()
         self.workerMountStatusRunnerOnce = mount_statusonce.MountStatusRunnerOnce(self.app, self.threadMountStatusRunnerOnce, self.data, self.signalMountConnectedOnce)
         self.threadMountStatusRunnerOnce.setObjectName("MountStatusRunnerOnce")
         self.workerMountStatusRunnerOnce.moveToThread(self.threadMountStatusRunnerOnce)
         self.threadMountStatusRunnerOnce.started.connect(self.workerMountStatusRunnerOnce.run)
-        self.threadMountStatusRunnerOnce.finished.connect(self.workerMountStatusRunnerOnce.destruct)
         # get alignment model
         self.threadMountGetAlignmentModel = PyQt5.QtCore.QThread()
         self.workerMountGetAlignmentModel = mount_getalignmodel.MountGetAlignmentModel(self.app, self.threadMountGetAlignmentModel, self.data, self.signalMountConnectedGetAlign)
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
-        self.threadMountGetAlignmentModel.finished.connect(self.workerMountGetAlignmentModel.destruct)
 
         self.mountStatus = {'Fast': False,
                             'Medium': False,
@@ -444,33 +438,34 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerSlow.start()
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
-        self.doCommandQueue()
+        while self.isRunning:
+            if not self.doCommand():
+                time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.workerMountStatusRunnerFast.stop()
+            self.workerMountStatusRunnerMedium.stop()
+            self.workerMountStatusRunnerSlow.stop()
+            self.workerMountStatusRunnerOnce.stop()
+            self.workerMountGetAlignmentModel.stop()
+            self.workerMountCommandRunner.stop()
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
         # stopping all interaction
-        self.workerMountStatusRunnerFast.stop()
-        self.workerMountStatusRunnerMedium.stop()
-        self.workerMountStatusRunnerSlow.stop()
-        self.workerMountStatusRunnerOnce.stop()
-        self.workerMountGetAlignmentModel.stop()
-        self.workerMountCommandRunner.stop()
-        self.thread.quit()
-        self.thread.wait()
         self.logger.info('mount dispatcher stopped')
 
-    def destruct(self):
-        pass
-
-    def doCommandQueue(self):
+    def doCommand(self):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
+            return True
+        else:
+            return False
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

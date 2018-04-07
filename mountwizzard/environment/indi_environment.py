@@ -25,7 +25,7 @@ import indi.indi_xml as indiXML
 
 class INDIEnvironment:
     logger = logging.getLogger(__name__)
-    START_ENVIRONMENT_TIMEOUT = 4
+    START_ENVIRONMENT_TIMEOUT = 3
 
     def __init__(self, main, app, data):
         # make main sources available

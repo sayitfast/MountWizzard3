@@ -27,8 +27,8 @@ from astrometry import transform
 class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_STATUS_FAST = 300
-    CYCLE_COMMAND = 200
+    CYCLE_STATUS_FAST = 400
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -40,6 +40,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.socket = None
+        self.sendLock = False
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
@@ -58,17 +59,11 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        self.doCommandQueue()
-
-    def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
-        self.logger.info('mount fast stopped')
-
-    def destruct(self):
+        while self.isRunning:
+            self.doCommand()
+            self.doReconnect()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -81,24 +76,35 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.socket.error.disconnect(self.handleError)
         self.socket.close()
 
-    def doCommandQueue(self):
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('mount fast stopped')
+
+    def doCommand(self):
         if not self.sendCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             command = self.sendCommandQueue.get()
-            self.sendCommand(command)
+            if not self.sendLock:
+                self.sendCommand(command)
+
+    def doReconnect(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
             self.app.sharedMountDataLock.lockForRead()
             self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
             self.app.sharedMountDataLock.unlock()
             self.sendCommandQueue.queue.clear()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
         self.app.sharedMountDataLock.lockForRead()
         self.logger.debug('Mount RunnerFast found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
@@ -111,9 +117,11 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     def handleError(self, socketError):
         self.logger.warning('Mount RunnerFast connection fault: {0}'.format(self.socket.errorString()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
         self.logger.debug('Mount RunnerFast connection has state: {0}'.format(self.socket.state()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('Mount RunnerFast connection is disconnected from host')
         self.signalConnected.emit({'Fast': False})
@@ -121,19 +129,25 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     def sendCommand(self, command):
         if self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                self.sendLock = True
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
+                self.sendLock = False
                 self.logger.warning('Socket RunnerFast not connected')
 
+    @PyQt5.QtCore.pyqtSlot()
     def getStatusFast(self):
-        self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
+        if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+            self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_FAST, self.getStatusFast)
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
         while self.socket.bytesAvailable():
-            tmp = self.socket.read(1024).decode()
-            self.messageString += tmp
+            self.messageString += self.socket.read(1024).decode()
         if len(self.messageString) < 71:
             return
         else:
@@ -201,6 +215,4 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
             self.logger.error('Parsing GS-Ginfo combined command got error:{0}'.format(e))
         finally:
             self.app.sharedMountDataLock.unlock()
-            if self.isRunning:
-                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_FAST, self.getStatusFast)
-
+        self.sendLock = False

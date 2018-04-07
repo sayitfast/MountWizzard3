@@ -25,7 +25,7 @@ import indi.indi_xml as indiXML
 
 class INDIDome:
     logger = logging.getLogger(__name__)
-    START_DOME_TIMEOUT = 4
+    START_DOME_TIMEOUT = 3
 
     def __init__(self, main, app, data):
         # make main sources available

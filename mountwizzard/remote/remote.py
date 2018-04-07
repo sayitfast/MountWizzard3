@@ -31,6 +31,8 @@ class Remote(PyQt5.QtCore.QObject):
     TCP_IP = '127.0.0.1'
     SIZEOF_UINT16 = 2
 
+    CYCLE_COMMAND = 0.2
+
     def __init__(self, app, thread):
         super().__init__()
         self.isRunning = False
@@ -116,6 +118,15 @@ class Remote(PyQt5.QtCore.QObject):
         self.tcpServer = PyQt5.QtNetwork.QTcpServer(self)
         self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
         self.tcpServer.newConnection.connect(self.addConnection)
+        while self.isRunning:
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.tcpServer.newConnection.disconnect(self.addConnection)
+        self.tcpServer.close()
+        if self.clientConnection:
+            self.clientConnection.close()
+        self.tcpServer = None
+        self.clientConnection = None
 
     def stop(self):
         self.mutexIsRunning.lock()
@@ -127,14 +138,7 @@ class Remote(PyQt5.QtCore.QObject):
         self.thread.wait()
         self.logger.info('remote stopped')
 
-    def destruct(self):
-        self.tcpServer.newConnection.disconnect(self.addConnection)
-        self.tcpServer.close()
-        if self.clientConnection:
-            self.clientConnection.close()
-        self.tcpServer = None
-        self.clientConnection = None
-
+    @PyQt5.QtCore.pyqtSlot()
     def addConnection(self):
         self.clientConnection = self.tcpServer.nextPendingConnection()
         self.clientConnection.nextBlockSize = 0
@@ -143,6 +147,7 @@ class Remote(PyQt5.QtCore.QObject):
         self.clientConnection.error.connect(self.socketError)
         self.logger.info('Connection to MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def receiveMessage(self):
         if self.clientConnection.bytesAvailable() > 0:
             message = str(self.clientConnection.read(100), "ascii")
@@ -150,9 +155,10 @@ class Remote(PyQt5.QtCore.QObject):
                 self.logger.info('Shutdown MountWizzard from {0}'.format(self.clientConnection.peerAddress().toString()))
                 self.signalRemoteShutdown.emit(True)
 
+    @PyQt5.QtCore.pyqtSlot()
     def removeConnection(self):
         self.clientConnection.close()
         self.logger.info('Connection to MountWizzard from {0} removed'.format(self.clientConnection.peerAddress().toString()))
 
-    def socketError(self):
+    def socketError(self, socketError):
         self.logger.error('Connection to MountWizzard from {0} failed'.format(self.clientConnection.peerAddress().toString()))

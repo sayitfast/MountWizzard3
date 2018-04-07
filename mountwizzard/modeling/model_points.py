@@ -19,6 +19,7 @@
 ###########################################################
 import logging
 import os
+import PyQt5
 import time
 import copy
 import operator

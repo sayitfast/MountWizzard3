@@ -55,8 +55,7 @@ class Imaging(PyQt5.QtCore.QObject):
 
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
-    CYCLE_STATUS = 1000
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, app, thread):
         super().__init__()
@@ -153,28 +152,29 @@ class Imaging(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.cameraHandler.start()
-        self.getDeviceStatus()
-        self.doCommandQueue()
+        while self.isRunning:
+            if not self.doCommand():
+                self.getDeviceStatus()
+                time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.cameraHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
         self.logger.info('imaging stopped')
 
-    def destruct(self):
-        self.cameraHandler.stop()
-
-    def doCommandQueue(self):
+    def doCommand(self):
         if not self.imagingCommandQueue.empty():
             imageParams = self.imagingCommandQueue.get()
             self.captureImage(imageParams)
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
+            return True
+        else:
+            return False
 
     def captureImage(self, imageParams):
         imageParams['Imagepath'] = ''
@@ -230,8 +230,6 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'green')
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDeviceStatus)
 
     def updateApplicationName(self):
         # updating camera name if possible

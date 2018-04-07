@@ -124,7 +124,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.setObjectName("MountDispatcher")
         self.workerMountDispatcher.moveToThread(self.threadMountDispatcher)
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
-        self.threadMountDispatcher.finished.connect(self.workerMountDispatcher.destruct)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
@@ -139,7 +138,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadINDI.setObjectName("INDI")
         self.workerINDI.moveToThread(self.threadINDI)
         self.threadINDI.started.connect(self.workerINDI.run)
-        self.threadINDI.finished.connect(self.workerINDI.destruct)
         self.workerINDI.status.connect(self.setINDIStatus)
         # threading for environment data
         self.threadEnvironment = PyQt5.QtCore.QThread()
@@ -147,7 +145,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadEnvironment.setObjectName("Environment")
         self.workerEnvironment.moveToThread(self.threadEnvironment)
         self.threadEnvironment.started.connect(self.workerEnvironment.run)
-        self.threadEnvironment.finished.connect(self.workerEnvironment.destruct)
         self.workerEnvironment.signalEnvironmentConnected.connect(self.setEnvironmentStatus)
         # threading for ascom dome data
         self.threadDome = PyQt5.QtCore.QThread()
@@ -155,7 +152,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadDome.setObjectName("Dome")
         self.workerDome.moveToThread(self.threadDome)
         self.threadDome.started.connect(self.workerDome.run)
-        self.threadDome.finished.connect(self.workerDome.destruct)
         self.workerDome.signalDomeConnected.connect(self.setDomeStatus)
         # threading for remote shutdown
         self.threadRemote = PyQt5.QtCore.QThread()
@@ -163,7 +159,6 @@ class MountWizzardApp(widget.MwWidget):
         self.threadRemote.setObjectName("Remote")
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
-        self.threadRemote.finished.connect(self.workerRemote.destruct)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for imaging apps
         self.threadImaging = PyQt5.QtCore.QThread()
@@ -171,14 +166,12 @@ class MountWizzardApp(widget.MwWidget):
         self.threadImaging.setObjectName("Imaging")
         self.workerImaging.moveToThread(self.threadImaging)
         self.threadImaging.started.connect(self.workerImaging.run)
-        self.threadImaging.finished.connect(self.workerImaging.destruct)
         # threading for astrometry apps
         self.threadAstrometry = PyQt5.QtCore.QThread()
         self.workerAstrometry = astrometry.Astrometry(self, self.threadAstrometry)
         self.threadAstrometry.setObjectName("Astrometry")
         self.workerAstrometry.moveToThread(self.threadAstrometry)
         self.threadAstrometry.started.connect(self.workerAstrometry.run)
-        self.threadAstrometry.finished.connect(self.workerAstrometry.destruct)
         # threading for updater automation
         if platform.system() == 'Windows':
             self.threadAutomation = PyQt5.QtCore.QThread()
@@ -186,14 +179,12 @@ class MountWizzardApp(widget.MwWidget):
             self.threadAutomation.setObjectName("Automation")
             self.workerAutomation.moveToThread(self.threadAutomation)
             self.threadAutomation.started.connect(self.workerAutomation.run)
-            self.threadAutomation.finished.connect(self.workerAutomation.destruct)
         # modeling
         self.threadModelingDispatcher = PyQt5.QtCore.QThread()
         self.workerModelingDispatcher = model_dispatcher.ModelingDispatcher(self, self.threadModelingDispatcher)
         self.threadModelingDispatcher.setObjectName("ModelingDispatcher")
         self.workerModelingDispatcher.moveToThread(self.threadModelingDispatcher)
         self.threadModelingDispatcher.started.connect(self.workerModelingDispatcher.run)
-        self.threadModelingDispatcher.finished.connect(self.workerModelingDispatcher.destruct)
 
         # gui for additional windows
         self.analyseWindow = analyse_window.AnalyseWindow(self)
@@ -1343,7 +1334,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # defining build no
-    BUILD_NO = '3.0 alpha 18'
+    BUILD_NO = '3.0 alpha 19'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

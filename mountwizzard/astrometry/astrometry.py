@@ -20,6 +20,7 @@
 import logging
 import platform
 import PyQt5
+import time
 import queue
 import os
 import astropy.io.fits as pyfits
@@ -46,8 +47,7 @@ class Astrometry(PyQt5.QtCore.QObject):
     imageSolved = PyQt5.QtCore.pyqtSignal()
     imageDataDownloaded = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_STATUS = 1000
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.5
 
     def __init__(self, app, thread):
         super().__init__()
@@ -152,28 +152,26 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.astrometryHandler.start()
-        self.getDeviceStatus()
-        self.doCommandQueue()
+        while self.isRunning:
+            self.doCommand()
+            self.getDeviceStatus()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.astrometryHandler.stop()
 
     def stop(self):
         self.mutexIsRunning.lock()
         if self.isRunning:
             self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
         self.logger.info('astrometry stopped')
 
-    def destruct(self):
-        self.astrometryHandler.stop()
-
-    def doCommandQueue(self):
+    def doCommand(self):
         if not self.astrometryCommandQueue.empty():
             imageParams = self.astrometryCommandQueue.get()
             self.solveImage(imageParams)
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
     def solveImage(self, imageParams):
         if self.data['CONNECTION']['CONNECT'] == 'Off':
@@ -224,8 +222,6 @@ class Astrometry(PyQt5.QtCore.QObject):
                     self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
             else:
                 self.logger.warning('This state is undefined')
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDeviceStatus)
 
     def updateApplicationName(self):
         # updating solver name name if possible

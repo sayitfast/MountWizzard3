@@ -38,7 +38,7 @@ class Slewpoint(PyQt5.QtCore.QObject):
     signalStartSlewing = PyQt5.QtCore.pyqtSignal()
     signalPointImaged = PyQt5.QtCore.pyqtSignal(float, float)
 
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, main, thread):
         super().__init__()
@@ -61,20 +61,21 @@ class Slewpoint(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        self.doCommandLoop()
+        while self.isRunning:
+            if not self.doCommand():
+                time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
         self.queuePoint.queue.clear()
-        self.thread.quit()
-        self.thread.wait()
 
-    def destruct(self):
-        pass
-
-    def doCommandLoop(self):
+    def doCommand(self):
         if self.takeNextPoint and not self.queuePoint.empty():
             self.mutexTakeNextPoint.lock()
             self.takeNextPoint = False
@@ -88,9 +89,6 @@ class Slewpoint(PyQt5.QtCore.QObject):
             self.main.workerImage.queueImage.put(modelingData)
             # make signal for hemisphere that point is imaged
             self.signalPointImaged.emit(modelingData['Azimuth'], modelingData['Altitude'])
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandLoop)
 
 
 class Image(PyQt5.QtCore.QObject):
@@ -98,7 +96,7 @@ class Image(PyQt5.QtCore.QObject):
     queueImage = Queue()
     signalImaging = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, main, thread):
         super().__init__()
@@ -129,21 +127,22 @@ class Image(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        self.doCommandLoop()
+        while self.isRunning:
+            if not self.doCommand():
+                time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.main.app.workerImaging.cameraHandler.cancel = True
+        # self.main.app.workerImaging.cameraHandler.cancel = True
         self.queueImage.queue.clear()
-        self.thread.quit()
-        self.thread.wait()
 
-    def destruct(self):
-        pass
-
-    def doCommandLoop(self):
+    def doCommand(self):
         if not self.queueImage.empty():
             modelingData = self.queueImage.get()
             self.mutexImageSaved.lock()
@@ -178,16 +177,13 @@ class Image(PyQt5.QtCore.QObject):
                 PyQt5.QtWidgets.QApplication.processEvents()
             self.main.app.messageQueue.put('Imaged>{0:02d}'.format(modelingData['Index'] + 1))
             self.main.workerPlatesolve.queuePlatesolve.put(copy.copy(modelingData))
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandLoop)
 
 
 class Platesolve(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
     queuePlatesolve = Queue()
 
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, main, thread):
         super().__init__()
@@ -210,20 +206,21 @@ class Platesolve(PyQt5.QtCore.QObject):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
-        self.doCommandLoop()
+        while self.isRunning:
+            if not self.doCommand():
+                time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
         self.queuePlatesolve.queue.clear()
-        self.thread.quit()
-        self.thread.wait()
 
-    def destruct(self):
-        pass
-
-    def doCommandLoop(self):
+    def doCommand(self):
         if not self.queuePlatesolve.empty():
             self.mutexImageDataDownloaded.lock()
             self.imageDataDownloaded = False
@@ -266,9 +263,6 @@ class Platesolve(PyQt5.QtCore.QObject):
             # we come to an end
             if modelingData['NumberPoints'] == modelingData['Index'] + 1:
                 self.main.modelingHasFinished = True
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandLoop)
 
 
 class ModelingBuild:
@@ -288,19 +282,16 @@ class ModelingBuild:
         self.workerSlewpoint = Slewpoint(self, self.threadSlewpoint)
         self.workerSlewpoint.moveToThread(self.threadSlewpoint)
         self.threadSlewpoint.started.connect(self.workerSlewpoint.run)
-        self.threadSlewpoint.finished.connect(self.workerSlewpoint.destruct)
 
         self.threadImage = PyQt5.QtCore.QThread()
         self.workerImage = Image(self, self.threadImage)
         self.workerImage.moveToThread(self.threadImage)
         self.threadImage.started.connect(self.workerImage.run)
-        self.threadImage.finished.connect(self.workerImage.destruct)
 
         self.threadPlatesolve = PyQt5.QtCore.QThread()
         self.workerPlatesolve = Platesolve(self, self.threadPlatesolve)
         self.workerPlatesolve.moveToThread(self.threadPlatesolve)
         self.threadPlatesolve.started.connect(self.workerPlatesolve.run)
-        self.threadPlatesolve.finished.connect(self.workerPlatesolve.destruct)
 
         # class variables
         self.solvedPointsQueue = Queue()
@@ -416,6 +407,9 @@ class ModelingBuild:
         # start tracking
         self.app.mountCommandQueue.put(':PO#')
         self.app.mountCommandQueue.put(':AP#')
+        self.mutexTakeNextPoint.lock()
+        self.workerSlewpoint.takeNextPoint = false
+        self.mutexTakeNextPoint.unlock()
         self.modelRun = True
         self.timeStart = time.time()
         # starting the necessary threads

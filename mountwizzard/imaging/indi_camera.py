@@ -73,6 +73,7 @@ class INDICamera:
     def stop(self):
         pass
 
+    # @PyQt5.QtCore.pyqtSlot(bool)
     def setReceivedImage(self, status):
         self.mutexReceived.lock()
         if status:

@@ -27,7 +27,7 @@ from astrometry import transform
 class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_COMMAND = 200
+    CYCLE_COMMAND = 0.2
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -39,6 +39,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.isRunning = False
         self.socket = None
+        self.sendLock = False
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
@@ -56,17 +57,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
-        self.doCommandQueue()
-
-    def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
-        self.logger.info('mount align stopped')
-
-    def destruct(self):
+        while self.isRunning:
+            self.doCommand()
+            self.doReconnect()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -79,22 +74,33 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.socket.error.disconnect(self.handleError)
         self.socket.close()
 
-    def doCommandQueue(self):
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        self.logger.info('mount align stopped')
+
+    def doCommand(self):
         if not self.sendCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):
             command = self.sendCommandQueue.get()
-            self.sendCommand(command)
+            if not self.sendLock:
+                self.sendCommand(command)
+
+    def doReconnect(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.UnconnectedState:
             self.app.sharedMountDataLock.lockForRead()
             self.socket.connectToHost(self.data['MountIP'], self.data['MountPort'])
             self.app.sharedMountDataLock.unlock()
             self.sendCommandQueue.queue.clear()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.doCommandQueue)
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleHostFound(self):
         self.logger.debug('Mount GetAlignmentModel found at {}:{}'.format(self.data['MountIP'], self.data['MountPort']))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
@@ -105,9 +111,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     def handleError(self, socketError):
         self.logger.warning('Mount GetAlignmentModel connection fault: {0}'.format(self.socket.errorString()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleStateChanged(self):
         self.logger.debug('Mount GetAlignmentModel connection has state: {0}'.format(self.socket.state()))
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleDisconnect(self):
         self.logger.info('Mount GetAlignmentModel connection is disconnected from host')
         self.signalConnected.emit({'Align': False})
@@ -115,9 +123,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
     def sendCommand(self, command):
         if self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
+                self.sendLock = True
                 self.socket.write(bytes(command + '\r', encoding='ascii'))
                 self.socket.flush()
             else:
+                self.sendLock = False
                 self.logger.warning('Socket GetAlignmentModel not connected')
 
     def getAlignmentModel(self):
@@ -133,12 +143,11 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             command += (':getalp{0:d}#'.format(i))
         self.sendCommandQueue.put(command)
 
+    @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
         # Get message from socket.
-        # print('handle')
         while self.socket.bytesAvailable():
-            tmp = self.socket.read(4000).decode()
-            self.messageString += tmp
+            self.messageString += self.socket.read(4000).decode()
         # if the last characters are not E#, there are more points to receive
         if not self.messageString.endswith('E#'):
             return
@@ -258,3 +267,4 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         finally:
             self.app.sharedMountDataLock.unlock()
             self.app.workerMountDispatcher.signalMountShowAlignmentModel.emit()
+        self.sendLock = False
