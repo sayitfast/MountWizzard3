@@ -37,6 +37,7 @@ class Environment(PyQt5.QtCore.QObject):
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_COMMAND = 0.5
+    CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
         super().__init__()
@@ -116,9 +117,9 @@ class Environment(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.environmentHandler.start()
+        self.getStatusFromDevice()
+        self.getDataFromDevice()
         while self.isRunning:
-            self.getStatusFromDevice()
-            self.getDataFromDevice()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.environmentHandler.stop()
@@ -144,6 +145,8 @@ class Environment(PyQt5.QtCore.QObject):
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'green')
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def getDataFromDevice(self):
         if self.data['Connected']:
@@ -171,3 +174,5 @@ class Environment(PyQt5.QtCore.QObject):
             self.data['WindDirection'] = 0.0
             self.data['SQR'] = 0.0
             self.app.sharedEnvironmentDataLock.unlock()
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDataFromDevice)

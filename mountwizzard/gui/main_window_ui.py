@@ -5546,7 +5546,7 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(2)
+        self.mainTabWidget.setCurrentIndex(5)
         self.settingsTabWidget.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -6072,8 +6072,8 @@ class Ui_MainWindow(object):
         self.btn_saveBaseModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Saves actual alignment model under name &quot;BASE&quot; in mount.</p></body></html>"))
         self.btn_saveBaseModel.setText(_translate("MainWindow", "Save"))
         self.label_126.setText(_translate("MainWindow", "BACKUP"))
-        self.label_127.setText(_translate("MainWindow", "BASE"))
-        self.label_128.setText(_translate("MainWindow", "SIMPLE"))
+        self.label_127.setText(_translate("MainWindow", "INITIAL"))
+        self.label_128.setText(_translate("MainWindow", "FULL 2"))
         self.btn_saveDSO1Model.setToolTip(_translate("MainWindow", "<html><head/><body><p>Saves actual alignment model under name &quot;DSO1&quot; in mount.</p></body></html>"))
         self.btn_saveDSO1Model.setText(_translate("MainWindow", "Save"))
         self.btn_loadDSO1Model.setToolTip(_translate("MainWindow", "<html><head/><body><p>Loads actual alignment model from &quot;DSO1&quot; in mount.</p></body></html>"))
@@ -6086,7 +6086,7 @@ class Ui_MainWindow(object):
         self.label_130.setText(_translate("MainWindow", "DSO 2"))
         self.btn_saveRefinementModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Saves actual alignment model under name &quot;REFINE&quot; in mount.</p></body></html>"))
         self.btn_saveRefinementModel.setText(_translate("MainWindow", "Save"))
-        self.label_133.setText(_translate("MainWindow", "REFINE"))
+        self.label_133.setText(_translate("MainWindow", "FULL 1"))
         self.btn_loadRefinementModel.setToolTip(_translate("MainWindow", "<html><head/><body><p>Loads actual alignment model from &quot;REFINE&quot; in mount.</p></body></html>"))
         self.btn_loadRefinementModel.setText(_translate("MainWindow", "Load"))
         self.btn_cancelRunTargetRMSAlignment.setToolTip(_translate("MainWindow", "<html><head/><body><p>Cancels the optimise run.</p></body></html>"))
@@ -6436,4 +6436,14 @@ class Ui_MainWindow(object):
         self.le_astrometryStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.le_domeStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.label_110.setText(_translate("MainWindow", "Status"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 
