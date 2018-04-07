@@ -28,7 +28,7 @@ import pythoncom
 
 class MaximDL:
     logger = logging.getLogger(__name__)
-    TIMEOUT = 5
+    TIMEOUT_STOP = 5
 
     def __init__(self, main, app, data):
         self.main = main
@@ -79,7 +79,7 @@ class MaximDL:
                 self.data['CONNECTION']['CONNECT'] = 'Off'
                 self.maximCamera.LinkEnabled = False
                 timeStart = time.time()
-                while self.maximCamera.LinkEnabled and (time.time() - timeStart) < self.TIMEOUT:
+                while self.maximCamera.LinkEnabled and (time.time() - timeStart) < self.TIMEOUT_STOP:
                     time.sleep(0.1)
                 self.maximCamera = None
         except Exception as e:

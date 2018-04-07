@@ -26,9 +26,9 @@ import indi.indi_xml as indiXML
 class INDICamera:
     logger = logging.getLogger(__name__)
 
-    # timeout is 40 seconds
-    MAX_TIMEOUT = 40
-    START_CAMERA_TIMEOUT = 3
+    # timeout for getting an download is 30 seconds
+    MAX_DOWNLOAD_TIMEOUT = 30
+    START_CAMERA_TIMEOUT = 1
 
     def __init__(self, main, app, data):
         # make main sources available
@@ -163,7 +163,7 @@ class INDICamera:
         # waiting for start integrating
         self.main.cameraStatusText.emit('START')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
@@ -179,7 +179,7 @@ class INDICamera:
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
@@ -200,7 +200,7 @@ class INDICamera:
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if 'CCD_EXPOSURE' in cam:
@@ -223,7 +223,7 @@ class INDICamera:
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_TIMEOUT:
+            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
                 self.main.cameraStatusText.emit('TIMEOUT')
                 break
             if self.receivedImage:
