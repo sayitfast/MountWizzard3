@@ -100,8 +100,8 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         self.socket.error.connect(self.handleError)
         self.socket.readyRead.connect(self.handleReadyRead)
         while self.isRunning:
-            self.doCommand()
             self.doReconnect()
+            self.doCommand()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
@@ -143,10 +143,15 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
                 for key in self.COMMAND_RETURN:
                     if command.startswith(key):
                         self.numberBytesToReceive = self.COMMAND_RETURN[key]
+                        print(command, self.numberBytesToReceive)
                         break
                 if self.numberBytesToReceive == -1:
                     self.logger.error('Command >(0)< not known'.format(command))
+                elif self.numberBytesToReceive > 0:
+                    self.sendLock = True
+                    self.sendCommand(command)
                 else:
+                    self.sendLock = False
                     self.sendCommand(command)
 
     def doReconnect(self):
@@ -164,7 +169,6 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
     @PyQt5.QtCore.pyqtSlot()
     def handleConnected(self):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
-        self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.signalConnected.emit({'Command': True})
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerCommand connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
@@ -184,6 +188,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
+        print(len(self.messageString), self.numberBytesToReceive)
         while len(self.messageString) < self.numberBytesToReceive:
             self.messageString += self.socket.read(1024).decode()
         messageToProcess = self.messageString
@@ -195,7 +200,7 @@ class MountCommandRunner(PyQt5.QtCore.QObject):
         if self.isRunning:
             if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
                 self.sendLock = True
-                self.socket.write(bytes(command + '\r', encoding='ascii'))
+                print(command, 'send bytes: ', self.socket.write(bytes(command + '\r', encoding='ascii')))
                 self.socket.flush()
             else:
                 self.sendLock = False

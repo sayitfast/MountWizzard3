@@ -62,8 +62,8 @@ class Slewpoint(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            if not self.doCommand():
-                time.sleep(self.CYCLE_COMMAND)
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
@@ -128,8 +128,8 @@ class Image(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            if not self.doCommand():
-                time.sleep(self.CYCLE_COMMAND)
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
@@ -207,8 +207,8 @@ class Platesolve(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            if not self.doCommand():
-                time.sleep(self.CYCLE_COMMAND)
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
@@ -402,14 +402,13 @@ class ModelingBuild:
         messageQueue.put('Processed>{0:02d}'.format(0))
         messageQueue.put('percent0')
         messageQueue.put('timeleft--:--')
-        messageQueue.put('#BWStart Full Model\n')
         self.logger.info('modelingData: {0}'.format(modelingData))
         # start tracking
         self.app.mountCommandQueue.put(':PO#')
         self.app.mountCommandQueue.put(':AP#')
-        self.workerSlewpoint.mutexTakeNextPoint.lock()
-        self.workerSlewpoint.takeNextPoint = False
-        self.workerSlewpoint.mutexTakeNextPoint.unlock()
+        #self.workerSlewpoint.mutexTakeNextPoint.lock()
+        #self.workerSlewpoint.takeNextPoint = False
+        #self.workerSlewpoint.mutexTakeNextPoint.unlock()
         self.modelRun = True
         self.timeStart = time.time()
         # starting the necessary threads
@@ -513,6 +512,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
+        self.app.messageQueue.put('#BWStart Initial Model\n')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_initial'
         if len(self.modelAlignmentData) > 0:
@@ -572,6 +572,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
+        self.app.messageQueue.put('#BWStart Full Model\n')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
