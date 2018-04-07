@@ -202,62 +202,62 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'LoadBaseModel':
+            'LoadInitialModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadBaseModel,
-                            'Parameter': ['BASE'],
+                            'Button': self.app.ui.btn_loadInitialModel,
+                            'Parameter': ['INITIAL'],
                             'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
-            'SaveBaseModel':
+            'SaveInitialModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_saveBaseModel,
-                            'Parameter': ['BASE'],
+                            'Button': self.app.ui.btn_saveInitialModel,
+                            'Parameter': ['INITIAL'],
                             'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
-            'LoadRefinementModel':
+            'LoadFull1Model':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadRefinementModel,
-                            'Parameter': ['REFINE'],
+                            'Button': self.app.ui.btn_loadFull1Model,
+                            'Parameter': ['FULL1'],
                             'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
-            'SaveRefinementModel':
+            'SaveFull1Model':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_saveRefinementModel,
-                            'Parameter': ['REFINE'],
+                            'Button': self.app.ui.btn_saveFull1Model,
+                            'Parameter': ['FULL1'],
                             'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
-            'LoadSimpleModel':
+            'LoadFull2Model':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadSimpleModel,
-                            'Parameter': ['SIMPLE'],
+                            'Button': self.app.ui.btn_loadFull2Model,
+                            'Parameter': ['FULL2'],
                             'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
-            'SaveSimpleModel':
+            'SaveFull2Model':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_saveSimpleModel,
-                            'Parameter': ['SIMPLE'],
+                            'Button': self.app.ui.btn_saveFull2Model,
+                            'Parameter': ['FULL2'],
                             'Method': self.mountModelHandling.saveModel,
                         }
                     ]
@@ -341,12 +341,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ReloadAlignmentModel'))
         self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveBackupModel'))
         self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBackupModel'))
-        self.app.ui.btn_saveSimpleModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveSimpleModel'))
-        self.app.ui.btn_loadSimpleModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadSimpleModel'))
-        self.app.ui.btn_saveRefinementModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveRefinementModel'))
-        self.app.ui.btn_loadRefinementModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadRefinementModel'))
-        self.app.ui.btn_saveBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveBaseModel'))
-        self.app.ui.btn_loadBaseModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBaseModel'))
+        self.app.ui.btn_saveFull2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveFull2Model'))
+        self.app.ui.btn_loadFull2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFull2Model'))
+        self.app.ui.btn_saveFull1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveFull1Model'))
+        self.app.ui.btn_loadFull1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFull1Model'))
+        self.app.ui.btn_saveInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveInitialModel'))
+        self.app.ui.btn_loadInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadInitialModel'))
         self.app.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO1Model'))
         self.app.ui.btn_loadDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSO1Model'))
         self.app.ui.btn_saveDSO2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO2Model'))
@@ -572,9 +572,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             return
         while True:
             self.app.sharedMountDataLock.lockForRead()
-            condition = self.data['RMS'] > float(self.app.ui.targetRMS.value()) and not self.cancelRunTargetRMS
+            data = self.data['RMS']
             self.app.sharedMountDataLock.unlock()
-            if condition:
+            if self.cancelRunTargetRMS:
+                break
+            if data < float(self.app.ui.targetRMS.value()):
                 break
             if self.deleteWorstPoint():
                 break
@@ -607,7 +609,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             if self.data['ModelError'][i] > maxError:
                 worstPointIndex = i
                 maxError = self.data['ModelError'][i]
-        self.app.messageQueue.put('Deleting Point {0:02d}  -> Az: {1:05.1f}  Alt: {2:04.1f}  Err: {3:05.1f} ...\n'
+        self.app.messageQueue.put('Deleting worst point  {0:02d} with AZ:  {1:05.1f}  ALT:  {2:04.1f}  and error of:  {3:05.1f}\n'
                                   .format(worstPointIndex + 1,
                                           self.data['ModelAzimuth'][worstPointIndex],
                                           self.data['ModelAltitude'][worstPointIndex],
@@ -620,9 +622,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         time.sleep(0.2)
         if commandSet['reply'] == '1':
             # point could be deleted, feedback from mount ok
-            self.logger.info('Deleting Point {0} with Error: {1}'.format(worstPointIndex+1, maxError))
+            self.logger.info('Deleting worst point {0} with error of:  {1}'.format(worstPointIndex+1, maxError))
             # get new calculated alignment model from mount
-            self.app.messageQueue.put('\t Point deleted\n')
+            self.app.messageQueue.put('\tPoint deleted\n')
         else:
             self.app.messageQueue.put('#BR\tPoint could not be deleted \n')
             self.logger.warning('Point {0} could not be deleted'.format(worstPointIndex))
