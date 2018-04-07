@@ -1201,6 +1201,10 @@ class MountWizzardApp(widget.MwWidget):
         elif status == 3:
             self.ui.le_INDIStatus.setText('ConnectedState')
             self.signalChangeStylesheet.emit(self.ui.btn_INDIConnected, 'color', 'green')
+        elif status == 1:
+            self.ui.le_INDIStatus.setText('Host lookup')
+        elif status == 2:
+            self.ui.le_INDIStatus.setText('Host found')
         else:
             self.ui.le_INDIStatus.setText('Error')
         if not self.ui.checkEnableINDI.isChecked():
