@@ -406,9 +406,9 @@ class ModelingBuild:
         # start tracking
         self.app.mountCommandQueue.put(':PO#')
         self.app.mountCommandQueue.put(':AP#')
-        #self.workerSlewpoint.mutexTakeNextPoint.lock()
-        #self.workerSlewpoint.takeNextPoint = False
-        #self.workerSlewpoint.mutexTakeNextPoint.unlock()
+        self.workerSlewpoint.mutexTakeNextPoint.lock()
+        self.workerSlewpoint.takeNextPoint = False
+        self.workerSlewpoint.mutexTakeNextPoint.unlock()
         self.modelRun = True
         self.timeStart = time.time()
         # starting the necessary threads
