@@ -3934,7 +3934,7 @@ manually</string>
        <bool>false</bool>
       </property>
      </widget>
-     <widget class="QRadioButton" name="checkAutoRefractionContinous_2">
+     <widget class="QRadioButton" name="checkAutoRefractionNone">
       <property name="geometry">
        <rect>
         <x>15</x>
@@ -3958,7 +3958,7 @@ manually</string>
        <string>No update of parameters</string>
       </property>
       <property name="checked">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
      </widget>
     </widget>

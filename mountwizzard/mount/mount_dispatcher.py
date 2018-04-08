@@ -364,6 +364,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.app.ui.checkAutoRefractionContinous.setChecked(self.app.config['CheckAutoRefractionContinous'])
             if 'CheckAutoRefractionNotTracking' in self.app.config:
                 self.app.ui.checkAutoRefractionNotTracking.setChecked(self.app.config['CheckAutoRefractionNotTracking'])
+            if 'CheckAutoRefractionNone' in self.app.config:
+                self.app.ui.checkAutoRefractionNone.setChecked(self.app.config['CheckAutoRefractionNone'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -377,6 +379,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['MountMAC'] = self.app.ui.le_mountMAC.text()
         self.app.config['CheckAutoRefractionContinous'] = self.app.ui.checkAutoRefractionContinous.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
+        self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
 
     def changedMountConnectionSettings(self):
         if self.settingsChanged:
