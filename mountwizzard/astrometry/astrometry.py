@@ -210,6 +210,7 @@ class Astrometry(PyQt5.QtCore.QObject):
                 self.app.imageWindow.signalSetDecSolved.emit('not solved')
                 self.app.imageWindow.signalSetAngleSolved.emit('-')
 
+    @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):
         # get status to gui
         if not self.astrometryHandler.application['Available']:

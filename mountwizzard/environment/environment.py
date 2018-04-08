@@ -134,6 +134,7 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexIsRunning.unlock()
         self.logger.info('environment stopped')
 
+    @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):
         self.environmentHandler.getStatus()
         # get status to gui
@@ -152,6 +153,7 @@ class Environment(PyQt5.QtCore.QObject):
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
+    @PyQt5.QtCore.pyqtSlot()
     def getDataFromDevice(self):
         self.app.sharedEnvironmentDataLock.lockForRead()
         connected = self.data['Connected']

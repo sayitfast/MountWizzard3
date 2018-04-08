@@ -56,6 +56,7 @@ class Imaging(PyQt5.QtCore.QObject):
     # where to place the images
     IMAGEDIR = os.getcwd().replace('\\', '/') + '/images'
     CYCLE_COMMAND = 0.2
+    CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
         super().__init__()
@@ -152,9 +153,9 @@ class Imaging(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.cameraHandler.start()
+        self.getStatusFromDevice()
         while self.isRunning:
             if not self.doCommand():
-                self.getDeviceStatus()
                 time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.cameraHandler.stop()
@@ -218,7 +219,8 @@ class Imaging(PyQt5.QtCore.QObject):
         # if we got an image, than show it
         self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
 
-    def getDeviceStatus(self):
+    @PyQt5.QtCore.pyqtSlot()
+    def getStatusFromDevice(self):
         self.cameraHandler.getStatus()
         # get status to gui
         if not self.cameraHandler.application['Available']:
@@ -230,6 +232,9 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'green')
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def updateApplicationName(self):
         # updating camera name if possible
