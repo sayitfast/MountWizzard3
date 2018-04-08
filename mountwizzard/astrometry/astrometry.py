@@ -47,7 +47,8 @@ class Astrometry(PyQt5.QtCore.QObject):
     imageSolved = PyQt5.QtCore.pyqtSignal()
     imageDataDownloaded = PyQt5.QtCore.pyqtSignal()
 
-    CYCLE_COMMAND = 0.5
+    CYCLE_COMMAND = 0.2
+    CYCLE_STATUS = 1000
 
     def __init__(self, app, thread):
         super().__init__()
@@ -152,9 +153,9 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.astrometryHandler.start()
+        self.getStatusFromDevice()
         while self.isRunning:
             self.doCommand()
-            self.getDeviceStatus()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.astrometryHandler.stop()
@@ -203,16 +204,18 @@ class Astrometry(PyQt5.QtCore.QObject):
             if imageParams['Solved']:
                 self.app.imageWindow.signalSetRaSolved.emit(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False))
                 self.app.imageWindow.signalSetDecSolved.emit(self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False))
+                self.app.imageWindow.signalSetAngleSolved.emit(str(imageParams['Angle']))
             else:
                 self.app.imageWindow.signalSetRaSolved.emit('not solved')
                 self.app.imageWindow.signalSetDecSolved.emit('not solved')
+                self.app.imageWindow.signalSetAngleSolved.emit('-')
 
-    def getDeviceStatus(self):
-        self.astrometryHandler.getStatus()
+    def getStatusFromDevice(self):
         # get status to gui
         if not self.astrometryHandler.application['Available']:
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'gray')
         else:
+            self.astrometryHandler.getStatus()
             if self.astrometryHandler.application['Status'] == 'ERROR':
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'red')
             elif self.astrometryHandler.application['Status'] in ['OK', '']:
@@ -222,6 +225,9 @@ class Astrometry(PyQt5.QtCore.QObject):
                     self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
             else:
                 self.logger.warning('This state is undefined')
+        # loop
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def updateApplicationName(self):
         # updating solver name name if possible

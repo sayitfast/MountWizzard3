@@ -108,7 +108,6 @@ class PinPoint:
 
         try:
             # waiting for start solving
-            timeSolvingStart = time.time()
             self.main.astrometryStatusText.emit('START')
             if not self.pinpoint.AttachFITS(imageParams['Imagepath']):
                 return
@@ -116,29 +115,27 @@ class PinPoint:
             self.pinpoint.ArcsecPerPixelVert = imageParams['ScaleHint']
             self.pinpoint.RightAscension = self.pinpoint.TargetRightAscension
             self.pinpoint.Declination = self.pinpoint.TargetDeclination
-            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
 
             # loop for solve
             self.main.astrometryStatusText.emit('SOLVE')
-            self.pinpoint.Solve()
-            self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time() - timeSolvingStart))
-            self.main.imageSolved.emit()
-
+            try:
+                self.pinpoint.Solve()
+                imageParams['Solved'] = True
+            except pythoncom.com_error as e:
+                imageParams['Solved'] = False
+                imageParams['Message'] = e.excepinfo[2][:90]
+            finally:
+                pass
             # loop for get data
             self.main.astrometryStatusText.emit('GET DATA')
             self.pinpoint.DetachFITS()
-            imageParams['DecJ2000Solved'] = float(self.pinpoint.Declination)
-            imageParams['RaJ2000Solved'] = float(self.pinpoint.RightAscension)
-            imageParams['Scale'] = float(self.pinpoint.ArcsecPerPixelHoriz)
-            imageParams['Angle'] = float(self.pinpoint.RollAngle)
-            imageParams['TimeTS'] = 2.0
-            imageParams['Solved'] = True
-            imageParams['Message'] = 'OK'
-
-            # finally idle
-            self.main.imageDataDownloaded.emit()
-            self.main.astrometryStatusText.emit('IDLE')
-            self.main.astrometrySolvingTime.emit('')
+            if imageParams['Solved']:
+                imageParams['DecJ2000Solved'] = float(self.pinpoint.Declination)
+                imageParams['RaJ2000Solved'] = float(self.pinpoint.RightAscension)
+                imageParams['Scale'] = float(self.pinpoint.ArcsecPerPixelHoriz)
+                imageParams['Angle'] = float(self.pinpoint.RollAngle)
+                imageParams['TimeTS'] = 2.0
+                imageParams['Message'] = 'OK'
 
         except Exception as e:
             imageParams['Solved'] = False
@@ -146,3 +143,8 @@ class PinPoint:
             self.logger.error('PinPoint solving error -> error: {0}'.format(e))
         finally:
             pass
+
+        # finally idle
+        self.main.imageDataDownloaded.emit()
+        self.main.astrometryStatusText.emit('IDLE')
+        self.main.astrometrySolvingTime.emit('')

@@ -154,8 +154,8 @@
   <widget class="QPushButton" name="btn_solve">
    <property name="geometry">
     <rect>
-     <x>115</x>
-     <y>10</y>
+     <x>15</x>
+     <y>40</y>
      <width>86</width>
      <height>26</height>
     </rect>
@@ -619,8 +619,8 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>15</x>
-     <y>40</y>
+     <x>115</x>
+     <y>10</y>
      <width>86</width>
      <height>26</height>
     </rect>
@@ -629,7 +629,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Single exposure&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Show FITS</string>
+    <string>Load FITS</string>
    </property>
   </widget>
   <widget class="QLabel" name="label_85">
@@ -758,7 +758,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QLineEdit" name="le_RaJ2000_2">
+  <widget class="QLineEdit" name="le_AngleJ2000">
    <property name="enabled">
     <bool>false</bool>
    </property>
@@ -842,7 +842,7 @@
   <zorder>le_astrometrySolvingTime</zorder>
   <zorder>btn_cancel</zorder>
   <zorder>checkShowCrosshairs</zorder>
-  <zorder>le_RaJ2000_2</zorder>
+  <zorder>le_AngleJ2000</zorder>
   <zorder>label_87</zorder>
  </widget>
  <resources/>

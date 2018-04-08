@@ -37,6 +37,7 @@ class ImagesWindow(widget.MwWidget):
     signalShowFitsImage = PyQt5.QtCore.pyqtSignal(object)
     signalSetRaSolved = PyQt5.QtCore.pyqtSignal(str)
     signalSetDecSolved = PyQt5.QtCore.pyqtSignal(str)
+    signalSetAngleSolved = PyQt5.QtCore.pyqtSignal(str)
 
     def __init__(self, app):
         super(ImagesWindow, self).__init__()
@@ -85,6 +86,7 @@ class ImagesWindow(widget.MwWidget):
         self.signalShowFitsImage.connect(self.showFitsImage)
         self.signalSetRaSolved.connect(self.setRaSolved)
         self.signalSetDecSolved.connect(self.setDecSolved)
+        self.signalSetAngleSolved.connect(self.setAngleSolved)
         self.ui.btn_loadFits.clicked.connect(self.loadFitsFileFrom)
 
     def initConfig(self):
@@ -133,6 +135,9 @@ class ImagesWindow(widget.MwWidget):
 
     def setDecSolved(self, text):
         self.ui.le_DecJ2000.setText(text)
+
+    def setAngleSolved(self, text):
+        self.ui.le_AngleJ2000.setText(text)
 
     def loadFitsFileFrom(self):
         value = self.selectFile(self, 'Open FITS file', '/images', 'FITS files (*.fit)', '.fit', True)
@@ -309,7 +314,7 @@ class ImagesWindow(widget.MwWidget):
         fitsHeader = fitsFileHandle[0].header
         if 'OBJCTRA' not in fitsHeader:
             fitsFileHandle.close()
-            self.app.messageQueue.put('No coordinate in FITS file')
+            self.app.messageQueue.put('#BRNo coordinate in FITS file\n')
             return
         imageParams['RaJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTRA'], ' ')
         imageParams['DecJ2000'] = self.transform.degStringToDecimal(fitsHeader['OBJCTDEC'], ' ')
@@ -330,3 +335,6 @@ class ImagesWindow(widget.MwWidget):
         if imageParams['Solved']:
             self.app.messageQueue.put('#BWSolving result: RA: {0}, DEC: {1}\n'.format(self.transform.decimalToDegree(imageParams['RaJ2000Solved'], False, False),
                                                                                       self.transform.decimalToDegree(imageParams['DecJ2000Solved'], True, False)))
+        else:
+            self.app.messageQueue.put('#BWImage could not be solved: {0}\n'.format(imageParams['Message']))
+
