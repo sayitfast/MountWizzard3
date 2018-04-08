@@ -94,7 +94,9 @@ class Dome(PyQt5.QtCore.QObject):
     def chooserDome(self):
         self.mutexChooser.lock()
         self.stop()
+        self.app.sharedDomeDataLock.lockForWrite()
         self.data['Connected'] = False
+        self.app.sharedDomeDataLock.unlock()
         if self.app.ui.pd_chooseDome.currentText().startswith('No Dome'):
             self.domeHandler = self.none
             self.logger.info('Actual dome is None')

@@ -36,7 +36,7 @@ class Environment(PyQt5.QtCore.QObject):
 
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
-    CYCLE_COMMAND = 0.5
+    CYCLE_COMMAND = 0.2
     CYCLE_STATUS = 500
     CYCLE_DATA = 1000
 
@@ -76,10 +76,9 @@ class Environment(PyQt5.QtCore.QObject):
         # load the config including pull down setup
         try:
             if platform.system() == 'Windows':
-                if platform.system() == 'Windows':
-                    if 'EnvironmentAscomDriverName' in self.app.config:
-                        self.ascom.driverName = self.app.config['EnvironmentAscomDriverName']
-                        self.app.ui.le_ascomEnvironmentDriverName.setText(self.app.config['EnvironmentAscomDriverName'])
+                if 'EnvironmentAscomDriverName' in self.app.config:
+                    self.ascom.driverName = self.app.config['EnvironmentAscomDriverName']
+                    self.app.ui.le_ascomEnvironmentDriverName.setText(self.app.config['EnvironmentAscomDriverName'])
             if 'Environment' in self.app.config:
                 self.app.ui.pd_chooseEnvironment.setCurrentIndex(int(self.app.config['Environment']))
         except Exception as e:
@@ -96,6 +95,9 @@ class Environment(PyQt5.QtCore.QObject):
     def chooserEnvironment(self):
         self.mutexChooser.lock()
         self.stop()
+        self.app.sharedEnvironmentDataLock.lockForWrite()
+        self.data['Connected'] = False
+        self.app.sharedEnvironmentDataLock.unlock()
         if self.app.ui.pd_chooseEnvironment.currentText().startswith('No Environment'):
             self.environmentHandler = self.none
             self.logger.info('Actual environment is None')
@@ -183,5 +185,6 @@ class Environment(PyQt5.QtCore.QObject):
             self.data['WindDirection'] = 0.0
             self.data['SQR'] = 0.0
             self.app.sharedEnvironmentDataLock.unlock()
+        # loop
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getDataFromDevice)
