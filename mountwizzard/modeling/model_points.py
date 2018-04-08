@@ -436,16 +436,26 @@ class ModelPoints:
         self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def generateGridPoints(self, limitByHorizonMask, doSortingPoints, numberOfRows, numberOfColumns, altitudeMin, altitudeMax):
-        self.modelPoints = list()
+        west = list()
+        east = list()
         i = 0
         for alt in range(altitudeMin, altitudeMax + 1, int((altitudeMax - altitudeMin) / (numberOfRows - 1))):
             if i % 2:
                 for az in range(365 - int(360 / numberOfColumns), 0, -int(360 / numberOfColumns)):
-                    self.modelPoints.append((az, alt))
+                    if alt > 0:
+                        if az > 180:
+                            east.insert(0, (az, alt))
+                        else:
+                            west.append((az, alt))
             else:
                 for az in range(5, 360, int(360 / numberOfColumns)):
-                    self.modelPoints.append((az, alt))
+                    if alt > 0:
+                        if az > 180:
+                            east.insert(0, (az, alt))
+                        else:
+                            west.append((az, alt))
             i += 1
+        self.modelPoints = west + east
         if limitByHorizonMask:
             self.deleteBelowHorizonLine()
         if doSortingPoints:
