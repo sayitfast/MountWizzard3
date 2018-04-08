@@ -59,6 +59,7 @@ class MountModelHandling:
 
     def clearAlign(self):
         self.app.mountCommandQueue.put(':delalig#')
+        time.sleep(1)
         self.app.workerMountDispatcher.workerMountGetAlignmentModel.getAlignmentModel()
         while self.data['ModelLoading']:
             time.sleep(0.2)
