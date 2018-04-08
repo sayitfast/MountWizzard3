@@ -43,6 +43,7 @@ class ImagesWindow(widget.MwWidget):
         super(ImagesWindow, self).__init__()
         self.app = app
         self.showStatus = False
+        self.cancel = False
         self.imagePath = ''
         self.transform = transform.Transform(self.app)
         self.sizeX = 10
@@ -59,11 +60,14 @@ class ImagesWindow(widget.MwWidget):
         self.initUI()
         self.initConfig()
 
+        # adding the matplotlib integration
         self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
         self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_axes([0., 0., 1., 1.])
         self.imageMatplotlib.axes.set_facecolor((25/256, 25/256, 25/256))
         self.imageMatplotlib.axes.set_axis_off()
+        self.setVisible(False)
 
+        # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
         self.ui.btn_solve.clicked.connect(self.solveOnce)
         self.ui.btn_colorGrey.clicked.connect(self.setColor)
@@ -77,12 +81,14 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
         self.ui.btn_cancel.clicked.connect(self.cancelAction)
         self.ui.checkShowCrosshairs.stateChanged.connect(self.setCrosshairOnOff)
-        self.setVisible(False)
+
+        # crosshairs
         self.ui.cross1.setVisible(False)
         self.ui.cross2.setVisible(False)
         self.ui.cross3.setVisible(False)
         self.ui.cross4.setVisible(False)
-        # define the signals
+
+        # define the slots for signals
         self.signalShowFitsImage.connect(self.showFitsImage)
         self.signalSetRaSolved.connect(self.setRaSolved)
         self.signalSetDecSolved.connect(self.setDecSolved)
@@ -127,6 +133,7 @@ class ImagesWindow(widget.MwWidget):
         self.show()
 
     def cancelAction(self):
+        self.cancel = True
         self.app.workerAstrometry.astrometryCancel.emit()
         self.app.workerImaging.imagingCancel.emit()
 
@@ -278,6 +285,7 @@ class ImagesWindow(widget.MwWidget):
             self.ui.cross4.setVisible(False)
 
     def exposeOnce(self):
+        self.cancel = False
         # link to cam and check if available
         if 'CONNECTION' in self.app.workerImaging.data:
             if self.app.workerImaging.data['CONNECTION']['CONNECT'] == 'Off':
@@ -292,7 +300,7 @@ class ImagesWindow(widget.MwWidget):
         imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
         self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
         self.app.workerImaging.imagingCommandQueue.put(imageParams)
-        while imageParams['Imagepath'] == '':
+        while imageParams['Imagepath'] == '' and not self.cancel:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         if not os.path.isfile(imageParams['Imagepath']):
@@ -301,6 +309,7 @@ class ImagesWindow(widget.MwWidget):
         self.signalShowFitsImage.emit(imageParams['Imagepath'])
 
     def solveOnce(self):
+        self.cancel = False
         if self.imagePath == '':
             return
         if not os.path.isfile(self.imagePath):
@@ -329,7 +338,7 @@ class ImagesWindow(widget.MwWidget):
         fitsFileHandle.close()
         self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
         self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
-        while 'Solved' not in imageParams:
+        while 'Solved' not in imageParams and not self.cancel:
             time.sleep(0.1)
             PyQt5.QtWidgets.QApplication.processEvents()
         if imageParams['Solved']:
