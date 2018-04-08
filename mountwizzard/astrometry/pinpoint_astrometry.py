@@ -123,7 +123,7 @@ class PinPoint:
                 imageParams['Solved'] = True
             except pythoncom.com_error as e:
                 imageParams['Solved'] = False
-                imageParams['Message'] = e.excepinfo[2][:90]
+                imageParams['Message'] = e.excepinfo[2][:80]
             finally:
                 pass
             # loop for get data
