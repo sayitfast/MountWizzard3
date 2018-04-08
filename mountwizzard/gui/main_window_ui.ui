@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -2738,10 +2738,10 @@
     <widget class="QPushButton" name="btn_setRefractionParameters">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>400</y>
-       <width>401</width>
-       <height>31</height>
+       <x>650</x>
+       <y>340</y>
+       <width>101</width>
+       <height>96</height>
       </rect>
      </property>
      <property name="font">
@@ -2753,7 +2753,10 @@
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Pushes the refraction temperature and pressure to mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Push Parameters to Mount manually</string>
+      <string>Push
+Parameters
+to Mount
+manually</string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -2955,7 +2958,7 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>280</y>
+       <y>270</y>
        <width>291</width>
        <height>20</height>
       </rect>
@@ -3023,7 +3026,7 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>270</y>
+       <y>260</y>
        <width>401</width>
        <height>1</height>
       </rect>
@@ -3210,7 +3213,7 @@
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>280</y>
+       <y>270</y>
        <width>61</width>
        <height>21</height>
       </rect>
@@ -3365,38 +3368,11 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkAutoRefractionContinous">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>340</y>
-       <width>191</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when camera is connected and IDLE.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>Update continously</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_86">
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>250</y>
+       <y>240</y>
        <width>201</width>
        <height>21</height>
       </rect>
@@ -3419,7 +3395,7 @@
      <property name="geometry">
       <rect>
        <x>720</x>
-       <y>280</y>
+       <y>270</y>
        <width>31</width>
        <height>21</height>
       </rect>
@@ -3853,38 +3829,11 @@
       <string>Actuality of Time Data in Mount Computer</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkAutoRefractionNotTracking">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>370</y>
-       <width>191</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when the mount is not tracking.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="layoutDirection">
-      <enum>Qt::LeftToRight</enum>
-     </property>
-     <property name="text">
-      <string>When mount is not tracking</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
     <widget class="QLabel" name="label_135">
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>310</y>
+       <y>305</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -3907,7 +3856,7 @@
      <property name="geometry">
       <rect>
        <x>350</x>
-       <y>330</y>
+       <y>325</y>
        <width>401</width>
        <height>1</height>
       </rect>
@@ -3918,6 +3867,100 @@
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
+    </widget>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>340</y>
+       <width>266</width>
+       <height>96</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Update scheme</string>
+     </property>
+     <widget class="QRadioButton" name="checkAutoRefractionContinous">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>45</y>
+        <width>226</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when camera is connected and IDLE.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>Continously with smooth filter</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="checkAutoRefractionNotTracking">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>65</y>
+        <width>241</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when the mount is not tracking.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>When mount is not in tracking state</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QRadioButton" name="checkAutoRefractionContinous_2">
+      <property name="geometry">
+       <rect>
+        <x>15</x>
+        <y>25</y>
+        <width>191</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="toolTip">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Update the refraction parameters to the mount when camera is connected and IDLE.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>No update of parameters</string>
+      </property>
+      <property name="checked">
+       <bool>false</bool>
+      </property>
+     </widget>
     </widget>
     <zorder>line_10</zorder>
     <zorder>line_76</zorder>
@@ -3971,7 +4014,6 @@
     <zorder>label_69</zorder>
     <zorder>label_78</zorder>
     <zorder>label_82</zorder>
-    <zorder>checkAutoRefractionContinous</zorder>
     <zorder>label_86</zorder>
     <zorder>btn_setRefractionCorrection</zorder>
     <zorder>label_105</zorder>
@@ -3988,8 +4030,8 @@
     <zorder>label_152</zorder>
     <zorder>le_UTCDataValid</zorder>
     <zorder>label_74</zorder>
-    <zorder>checkAutoRefractionNotTracking</zorder>
     <zorder>label_135</zorder>
+    <zorder>groupBox_3</zorder>
    </widget>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -15408,8 +15450,6 @@ Analyse File</string>
   <tabstop>le_UTCDataValid</tabstop>
   <tabstop>le_UTCDataExpirationDate</tabstop>
   <tabstop>btn_setRefractionCorrection</tabstop>
-  <tabstop>checkAutoRefractionContinous</tabstop>
-  <tabstop>checkAutoRefractionNotTracking</tabstop>
   <tabstop>btn_setRefractionParameters</tabstop>
   <tabstop>btn_generateInitialPoints</tabstop>
   <tabstop>altitudeBase</tabstop>
