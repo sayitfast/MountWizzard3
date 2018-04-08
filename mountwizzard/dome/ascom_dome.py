@@ -61,7 +61,9 @@ class AscomDome:
                 pass
         elif self.driverName == '':
             # no connection made
+            self.app.sharedDomeDataLock.lockForWrite()
             self.data['Connected'] = False
+            self.app.sharedDomeDataLock.unlock()
             self.application['Status'] = 'ERROR'
             self.logger.info('ASCOM Dome could not be started')
 

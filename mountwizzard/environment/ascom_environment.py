@@ -58,7 +58,9 @@ class AscomEnvironment:
                 pass
         elif self.driverName == '':
             # no connection made
+            self.app.sharedEnvironmentDataLock.lockForWrite()
             self.data['Connected'] = False
+            self.app.sharedEnvironmentDataLock.unlock()
             self.application['Status'] = 'ERROR'
             self.logger.info('ASCOM Environment could not be started')
 
