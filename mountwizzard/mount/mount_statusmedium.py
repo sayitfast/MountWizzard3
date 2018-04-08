@@ -152,6 +152,7 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 # if there is no tracking, than updating is good
                 self.app.sharedMountDataLock.lockForRead()
                 if 'Status' in self.data:
+                    # status 0 means tracking, and in tracking mode we do not want to update
                     if self.data['Status'] != '0':
                         doRefractionUpdate = True
                 self.app.sharedMountDataLock.unlock()

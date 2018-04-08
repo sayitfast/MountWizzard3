@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'hemisphere_window_ui.ui'
 #
-# Created by: PyQt5 UI code generator 5.10
+# Created by: PyQt5 UI code generator 5.10.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -61,7 +61,7 @@ class Ui_HemisphereDialog(object):
         self.bar_numberPointsProcessed.setObjectName("bar_numberPointsProcessed")
         self.le_numberPointsProcessed = QtWidgets.QLineEdit(HemisphereDialog)
         self.le_numberPointsProcessed.setEnabled(False)
-        self.le_numberPointsProcessed.setGeometry(QtCore.QRect(545, 75, 21, 16))
+        self.le_numberPointsProcessed.setGeometry(QtCore.QRect(540, 75, 26, 16))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
@@ -92,7 +92,7 @@ class Ui_HemisphereDialog(object):
         self.bar_numberPointsSolved.setObjectName("bar_numberPointsSolved")
         self.le_numberPointsSolved = QtWidgets.QLineEdit(HemisphereDialog)
         self.le_numberPointsSolved.setEnabled(False)
-        self.le_numberPointsSolved.setGeometry(QtCore.QRect(545, 55, 21, 16))
+        self.le_numberPointsSolved.setGeometry(QtCore.QRect(540, 55, 26, 16))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
@@ -123,7 +123,7 @@ class Ui_HemisphereDialog(object):
         self.bar_numberPointsImaged.setObjectName("bar_numberPointsImaged")
         self.le_numberPointsImaged = QtWidgets.QLineEdit(HemisphereDialog)
         self.le_numberPointsImaged.setEnabled(False)
-        self.le_numberPointsImaged.setGeometry(QtCore.QRect(545, 35, 21, 16))
+        self.le_numberPointsImaged.setGeometry(QtCore.QRect(540, 35, 26, 16))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
@@ -158,7 +158,7 @@ class Ui_HemisphereDialog(object):
         self.bar_numberPointsSlewed.setObjectName("bar_numberPointsSlewed")
         self.le_numberPointsSlewed = QtWidgets.QLineEdit(HemisphereDialog)
         self.le_numberPointsSlewed.setEnabled(False)
-        self.le_numberPointsSlewed.setGeometry(QtCore.QRect(545, 15, 21, 16))
+        self.le_numberPointsSlewed.setGeometry(QtCore.QRect(540, 15, 26, 16))
         font = QtGui.QFont()
         font.setFamily("Arial")
         font.setPointSize(8)
@@ -265,20 +265,30 @@ class Ui_HemisphereDialog(object):
         self.btn_editModelPoints.setText(_translate("HemisphereDialog", "Model Points"))
         self.btn_editHorizonMask.setText(_translate("HemisphereDialog", "Horizon Mask"))
         self.le_numberPointsProcessed.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_numberPointsProcessed.setText(_translate("HemisphereDialog", "00"))
+        self.le_numberPointsProcessed.setText(_translate("HemisphereDialog", "0"))
         self.label_81.setText(_translate("HemisphereDialog", "Program:"))
         self.le_numberPointsSolved.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_numberPointsSolved.setText(_translate("HemisphereDialog", "00"))
+        self.le_numberPointsSolved.setText(_translate("HemisphereDialog", "0"))
         self.label_28.setText(_translate("HemisphereDialog", "Solved:"))
         self.le_numberPointsImaged.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_numberPointsImaged.setText(_translate("HemisphereDialog", "00"))
+        self.le_numberPointsImaged.setText(_translate("HemisphereDialog", "0"))
         self.label_77.setText(_translate("HemisphereDialog", "Imaged:"))
         self.bar_numberPointsSlewed.setFormat(_translate("HemisphereDialog", "%p%"))
         self.le_numberPointsSlewed.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_numberPointsSlewed.setText(_translate("HemisphereDialog", "00"))
+        self.le_numberPointsSlewed.setText(_translate("HemisphereDialog", "0"))
         self.label_100.setText(_translate("HemisphereDialog", "Slewed:"))
         self.le_numberPointsToModel.setToolTip(_translate("HemisphereDialog", "<html><head/><body><p><span style=\" font-size:10pt;\">Progress in modeling.</span></p></body></html>"))
-        self.le_numberPointsToModel.setText(_translate("HemisphereDialog", "00"))
+        self.le_numberPointsToModel.setText(_translate("HemisphereDialog", "0"))
         self.label_59.setText(_translate("HemisphereDialog", "Points to Process:"))
         self.label_149.setText(_translate("HemisphereDialog", "Modeling progress"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    HemisphereDialog = QtWidgets.QWidget()
+    ui = Ui_HemisphereDialog()
+    ui.setupUi(HemisphereDialog)
+    HemisphereDialog.show()
+    sys.exit(app.exec_())
 

@@ -37,7 +37,8 @@ class Environment(PyQt5.QtCore.QObject):
     signalEnvironmentConnected = PyQt5.QtCore.pyqtSignal([int])
 
     CYCLE_COMMAND = 0.5
-    CYCLE_STATUS = 1000
+    CYCLE_STATUS = 500
+    CYCLE_DATA = 1000
 
     def __init__(self, app, thread):
         super().__init__()
@@ -58,8 +59,8 @@ class Environment(PyQt5.QtCore.QObject):
         # set handler to none
         self.environmentHandler = self.none
         # setting default for moving average filtering
-        self.movingAverageTemperature = [0] * 60
-        self.movingAveragePressure = [0] * 60
+        self.movingAverageTemperature = [0] * 30
+        self.movingAveragePressure = [0] * 30
         # connect change in environment to the subroutine of setting it up
         self.app.ui.pd_chooseEnvironment.activated.connect(self.chooserEnvironment)
 
@@ -141,7 +142,10 @@ class Environment(PyQt5.QtCore.QObject):
         elif self.environmentHandler.application['Status'] == 'ERROR':
             self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'red')
         elif self.environmentHandler.application['Status'] == 'OK':
-            if self.data['Connected'] == 'Off':
+            self.app.sharedEnvironmentDataLock.lockForRead()
+            connected = self.data['Connected']
+            self.app.sharedEnvironmentDataLock.unlock()
+            if not connected:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'green')
@@ -155,11 +159,11 @@ class Environment(PyQt5.QtCore.QObject):
         if connected:
             self.environmentHandler.getData()
             # calculating moving average of temp and pressure for refraction
+            self.app.sharedEnvironmentDataLock.lockForWrite()
             self.movingAverageTemperature.append(self.data['Temperature'])
             self.movingAverageTemperature.pop(0)
             self.movingAveragePressure.append(self.data['Pressure'])
             self.movingAveragePressure.pop(0)
-            self.app.sharedEnvironmentDataLock.lockForWrite()
             self.data['MovingAverageTemperature'] = sum(self.movingAverageTemperature) / len(self.movingAverageTemperature)
             self.data['MovingAveragePressure'] = sum(self.movingAveragePressure) / len(self.movingAveragePressure)
             self.app.sharedEnvironmentDataLock.unlock()
@@ -178,4 +182,4 @@ class Environment(PyQt5.QtCore.QObject):
             self.data['SQR'] = 0.0
             self.app.sharedEnvironmentDataLock.unlock()
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDataFromDevice)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getDataFromDevice)
