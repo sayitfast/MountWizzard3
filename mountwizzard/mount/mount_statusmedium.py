@@ -141,6 +141,8 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
             doRefractionUpdate = False
             pressure = 950
             temperature = 10
+            if self.app.ui.checkAutoRefractionNone.isChecked():
+                doRefractionUpdate = False
             if self.app.ui.checkAutoRefractionContinous.isChecked():
                 doRefractionUpdate = True
                 self.app.sharedEnvironmentDataLock.lockForRead()
