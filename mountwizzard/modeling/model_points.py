@@ -275,7 +275,7 @@ class ModelPoints:
         finally:
             if fileHandle:
                 fileHandle.close()
-            return msg
+        return msg
 
     def isAboveHorizonLine(self, point):
         x = range(0, 361)
@@ -345,7 +345,7 @@ class ModelPoints:
                     az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                     if alt > 0:
                         if az > 180:
-                            east.append((az, alt))
+                            east.insert(0, (az, alt))
                         else:
                             west.append((az, alt))
             else:
@@ -353,7 +353,7 @@ class ModelPoints:
                     az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                     if alt > 0:
                         if az > 180:
-                            east.append((az, alt))
+                            east.insert(0, (az, alt))
                         else:
                             west.append((az, alt))
             i += 1
@@ -380,7 +380,7 @@ class ModelPoints:
                     az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                     if alt > 0:
                         if az > 180:
-                            east.append((az, alt))
+                            east.insert(0, (az, alt))
                         else:
                             west.append((az, alt))
             else:
@@ -388,7 +388,7 @@ class ModelPoints:
                     az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                     if alt > 0:
                         if az > 180:
-                            east.append((az, alt))
+                            east.insert(0, (az, alt))
                         else:
                             west.append((az, alt))
             i += 1
@@ -415,7 +415,7 @@ class ModelPoints:
                     az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                     if alt > 0:
                         if az > 180:
-                            east.append((az, alt))
+                            east.insert(0, (az, alt))
                         else:
                             west.append((az, alt))
             else:
@@ -423,7 +423,7 @@ class ModelPoints:
                     az, alt = self.transform.topocentricToAzAlt(ha / 10, dec)
                     if alt > 0:
                         if az > 180:
-                            east.append((az, alt))
+                            east.insert(0, (az, alt))
                         else:
                             west.append((az, alt))
             i += 1
