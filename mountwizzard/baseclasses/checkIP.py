@@ -20,6 +20,7 @@
 import logging
 import re
 import ipaddress
+import socket
 from baseclasses import widget
 
 
@@ -88,3 +89,11 @@ class CheckIP(widget.MwWidget):
             ui.style().polish(ui)
             mac = ":".join(["%s" % (mac[i:i + 2]) for i in range(0, 12, 2)])
         return valid, mac
+
+    def checkIPAvailable(self, hostIP, hostPort):
+        try:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            result = sock.connect_ex((hostIP, hostPort))
+            sock.close()
+        except socket.error:
+            self.logger.error('Error checking host {0}:{1}, error: {2}'.format(hostIP, hostPort, e))

@@ -74,6 +74,10 @@ class MountWizzardApp(widget.MwWidget):
     sharedDomeDataLock = PyQt5.QtCore.QReadWriteLock()
     sharedINDIDataLock = PyQt5.QtCore.QReadWriteLock()
 
+    CYCLE_MAIN_LOOP = 200
+    CYCLE_HEALTH_STATE = 10000
+
+
     def __init__(self):
         super().__init__()
 
@@ -204,6 +208,8 @@ class MountWizzardApp(widget.MwWidget):
         self.setLoggingLevel()
         # starting loop for cyclic data queues to gui from threads
         self.mainLoop()
+        # start hearbeat for checking health state of app in logfile
+        self.healthState()
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -1288,9 +1294,13 @@ class MountWizzardApp(widget.MwWidget):
         # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
-        PyQt5.QtWidgets.QApplication.processEvents()
         if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(200, self.mainLoop)
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
+
+    def healthState(self):
+        if self.isRunning:
+            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_HEALTH_STATE, self.healthState)
+
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):
@@ -1338,7 +1348,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # defining build no
-    BUILD_NO = '3.0 alpha 20'
+    BUILD_NO = '3.0 alpha 21'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
