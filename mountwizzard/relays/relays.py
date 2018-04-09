@@ -22,7 +22,7 @@ import time
 import PyQt5
 import requests
 import urllib
-from baseclasses import checkParamIP
+from baseclasses import checkIP
 
 
 class Relays:
@@ -35,7 +35,7 @@ class Relays:
         self.password = ''
         self.relayIP = ''
         self.connected = False
-        self.checkIP = checkParamIP.CheckIP()
+        self.checkIP = checkIP.CheckIP()
         self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
         self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
         self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))

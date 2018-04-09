@@ -20,8 +20,7 @@
 import logging
 import PyQt5
 import time
-from baseclasses import checkParamIP
-
+from baseclasses import checkIP
 
 class Remote(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
@@ -41,7 +40,7 @@ class Remote(PyQt5.QtCore.QObject):
 
         self.app = app
         self.thread = thread
-        self.checkIP = checkParamIP.CheckIP()
+        self.checkIP = checkIP.CheckIP()
         self.settingsChanged = False
         self.data = dict()
         self.data['RemotePort'] = 0

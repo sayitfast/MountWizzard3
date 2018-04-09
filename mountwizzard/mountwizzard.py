@@ -18,6 +18,7 @@
 #
 ###########################################################
 import os
+import psutil
 import platform
 import sys
 import datetime
@@ -1298,6 +1299,11 @@ class MountWizzardApp(widget.MwWidget):
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def healthState(self):
+        process = psutil.Process(os.getpid())
+        self.logger.error('Health state: memory: {0}, threads: {1}, handles: {2}'
+                         .format(process.memory_info().rss,
+                         process.num_threads(),
+                         process.num_handles()))
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_HEALTH_STATE, self.healthState)
 

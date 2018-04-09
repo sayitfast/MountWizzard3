@@ -25,7 +25,7 @@ from requests_toolbelt import MultipartEncoder
 import json
 import collections
 
-from baseclasses import checkParamIP
+from baseclasses import checkIP
 
 
 class AstrometryClient:
@@ -65,7 +65,7 @@ class AstrometryClient:
         self.cancel = False
         self.mutexCancel = PyQt5.QtCore.QMutex()
 
-        self.checkIP = checkParamIP.CheckIP()
+        self.checkIP = checkIP.CheckIP()
         self.settingsChanged = False
         self.timeoutMax = 60
         self.urlLogin = ''

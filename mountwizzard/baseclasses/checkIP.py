@@ -93,7 +93,7 @@ class CheckIP(widget.MwWidget):
     def checkIPAvailable(self, hostIP, hostPort):
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = sock.connect_ex((hostIP, hostPort))
+            result = sock.connect((hostIP, hostPort))
             sock.close()
         except socket.error:
             self.logger.error('Error checking host {0}:{1}, error: {2}'.format(hostIP, hostPort, e))

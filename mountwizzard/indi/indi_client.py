@@ -26,7 +26,7 @@ import PyQt5
 from PyQt5 import QtCore, QtNetwork, QtWidgets
 import indi.indi_xml as indiXML
 import astropy.io.fits as pyfits
-from baseclasses import checkParamIP
+from baseclasses import checkIP
 
 
 class INDIClient(PyQt5.QtCore.QObject):
@@ -70,7 +70,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.isRunning = False
         self.mutexIPChange = PyQt5.QtCore.QMutex()
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.checkIP = checkParamIP.CheckIP()
+        self.checkIP = checkIP.CheckIP()
         self.socket = None
         self.newDeviceQueue = queue.Queue()
         self.settingsChanged = False
