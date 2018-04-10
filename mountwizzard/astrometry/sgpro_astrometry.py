@@ -24,6 +24,7 @@ import time
 import PyQt5
 # packages for handling web interface to SGPro
 import requests
+from baseclasses import checkIP
 
 
 class SGPro:
@@ -48,6 +49,7 @@ class SGPro:
         self.data = data
         self.cancel = False
         self.mutexCancel = PyQt5.QtCore.QMutex()
+        self.checkIP = checkIP.CheckIP()
 
         self.application = dict()
         self.application['Available'] = False
@@ -72,17 +74,21 @@ class SGPro:
         pass
 
     def getStatus(self):
-        suc, state, message = self.SgGetDeviceStatus('PlateSolver')
-        if suc:
-            self.application['Status'] = 'OK'
-            if state in self.ASTROMETRY_STATUS:
-                self.data['Status'] = self.ASTROMETRY_STATUS[state]
-                if self.ASTROMETRY_STATUS[state] == 'DISCONNECTED':
-                    self.data['CONNECTION']['CONNECT'] = 'Off'
+        if self.checkIP.checkIPAvailable(host, port):
+            suc, state, message = self.SgGetDeviceStatus('PlateSolver')
+            if suc:
+                self.application['Status'] = 'OK'
+                if state in self.ASTROMETRY_STATUS:
+                    self.data['Status'] = self.ASTROMETRY_STATUS[state]
+                    if self.ASTROMETRY_STATUS[state] == 'DISCONNECTED':
+                        self.data['CONNECTION']['CONNECT'] = 'Off'
+                    else:
+                        self.data['CONNECTION']['CONNECT'] = 'On'
                 else:
-                    self.data['CONNECTION']['CONNECT'] = 'On'
+                    self.logger.error('Unknown solver status: {0}'.format(state))
             else:
-                self.logger.error('Unknown solver status: {0}'.format(state))
+                self.application['Status'] = 'ERROR'
+                self.data['CONNECTION']['CONNECT'] = 'Off'
         else:
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'

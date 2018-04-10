@@ -91,9 +91,18 @@ class CheckIP(widget.MwWidget):
         return valid, mac
 
     def checkIPAvailable(self, hostIP, hostPort):
+        returnValue = False
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = sock.connect((hostIP, hostPort))
-            sock.close()
-        except socket.error:
+            sock.settimeout(1)
+            result = sock.connect_ex((hostIP, hostPort))
+            if result == 0:
+                returnValue = True
+            else:
+                returnValue = False
+        except Exception as e:
+            print(e)
             self.logger.error('Error checking host {0}:{1}, error: {2}'.format(hostIP, hostPort, e))
+        finally:
+            sock.close()
+        return returnValue

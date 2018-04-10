@@ -72,16 +72,20 @@ class SGPro:
         pass
 
     def getStatus(self):
-        suc, state, message = self.SgGetDeviceStatus('Camera')
-        if suc:
-            self.application['Status'] = 'OK'
-            if state in self.CAMERA_STATUS:
-                if self.CAMERA_STATUS[state] == 'DISCONNECTED':
-                    self.data['CONNECTION']['CONNECT'] = 'Off'
+        if self.checkIP.checkIPAvailable(host, port):
+            suc, state, message = self.SgGetDeviceStatus('Camera')
+            if suc:
+                self.application['Status'] = 'OK'
+                if state in self.CAMERA_STATUS:
+                    if self.CAMERA_STATUS[state] == 'DISCONNECTED':
+                        self.data['CONNECTION']['CONNECT'] = 'Off'
+                    else:
+                        self.data['CONNECTION']['CONNECT'] = 'On'
                 else:
-                    self.data['CONNECTION']['CONNECT'] = 'On'
+                    self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
             else:
-                self.logger.error('Unknown camera status: {0}, message: {1}'.format(state, message))
+                self.application['Status'] = 'ERROR'
+                self.data['CONNECTION']['CONNECT'] = 'Off'
         else:
             self.application['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'

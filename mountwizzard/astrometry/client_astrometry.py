@@ -22,10 +22,9 @@ import time
 import PyQt5
 import requests
 from requests_toolbelt import MultipartEncoder
+from baseclasses import checkIP
 import json
 import collections
-
-from baseclasses import checkIP
 
 
 class AstrometryClient:
@@ -57,6 +56,8 @@ class AstrometryClient:
         'Name': 'ASTROMETRY.NET',
         'Status': ''
     }
+
+    HOST_NOVA = 'nova.astrometry.net'
 
     def __init__(self, main, app, data):
         self.main = main
@@ -164,29 +165,18 @@ class AstrometryClient:
     def getStatus(self):
         if self.urlAPI == '':
             return
-        try:
-            result = requests.post(self.urlAPI)
-            # todo: still not the right checking if available.
-            if result.status_code in [200, 403, 404]:
-                self.application['Available'] = True
-                self.application['Status'] = 'OK'
-                self.data['CONNECTION']['CONNECT'] = 'On'
-            else:
-                self.application['Available'] = True
-                self.data['Status'] = 'ERROR'
-                self.data['CONNECTION']['CONNECT'] = 'Off'
-        except requests.exceptions.ConnectionError:
-            self.logger.error('Connection to {0} not possible, connection refused')
-            self.application['Available'] = False
+        if self.app.ui.rb_useOnlineSolver.isChecked():
+            hostIP = self.HOST_NOVA
+            hostPort = 80
+        else:
+            hostIP = self.application['ServerIP']
+            hostPort = self.application['ServerPort']
+        if self.checkIP.checkIPAvailable(hostIP, hostPort):
+            self.application['Status'] = 'OK'
+            self.data['CONNECTION']['CONNECT'] = 'On'
+        else:
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
-        except Exception as e:
-            self.logger.error('Connection to {0} not possible, error: {1}'.format(self.urlAPI, e))
-            self.application['Available'] = False
-            self.data['Status'] = 'ERROR'
-            self.data['CONNECTION']['CONNECT'] = 'Off'
-        finally:
-            pass
 
     def solveImage(self, imageParams):
         self.mutexCancel.lock()

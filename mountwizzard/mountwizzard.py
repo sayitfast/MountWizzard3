@@ -209,7 +209,7 @@ class MountWizzardApp(widget.MwWidget):
         self.setLoggingLevel()
         # starting loop for cyclic data queues to gui from threads
         self.mainLoop()
-        # start hearbeat for checking health state of app in logfile
+        # start heartbeat for checking health state of app in logfile
         self.healthState()
 
     def mappingFunctions(self):
@@ -689,52 +689,29 @@ class MountWizzardApp(widget.MwWidget):
         self.isRunning = False
         filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
         self.saveConfigData(filepath)
-        self.workerAstrometry.astrometryCancel.emit()
-        self.workerImaging.imagingCancel.emit()
-        if self.workerEnvironment.isRunning:
-            self.workerEnvironment.stop()
-        if self.workerDome.isRunning:
-            self.workerDome.stop()
-        if platform.system() == 'Windows':
-            if self.workerAutomation.isRunning:
-                self.workerAutomation.stop()
-        if self.workerRemote.isRunning:
-            self.workerRemote.stop()
-        if self.workerImaging.isRunning:
-            self.workerImaging.stop()
-        if self.workerAstrometry.isRunning:
-            self.workerAstrometry.stop()
-        if self.workerModelingDispatcher.isRunning:
-            self.workerModelingDispatcher.stop()
-        if self.workerMountDispatcher.isRunning:
-            self.workerMountDispatcher.stop()
-        if self.workerINDI.isRunning:
-            self.workerINDI.stop()
-        PyQt5.QtCore.QCoreApplication.quit()
+        self.quit()
 
     def quit(self):
+        self.workerAstrometry.astrometryCancel.emit()
+        self.workerImaging.imagingCancel.emit()
         self.isRunning = False
-        self.workerAstrometry.astrometryCancel.emit()
-        self.workerImaging.imagingCancel.emit()
-        self.workerAstrometry.astrometryCancel.emit()
-        self.workerImaging.imagingCancel.emit()
-        if self.workerEnvironment.isRunning:
-            self.workerEnvironment.stop()
-        if self.workerDome.isRunning:
-            self.workerDome.stop()
         if platform.system() == 'Windows':
             if self.workerAutomation.isRunning:
                 self.workerAutomation.stop()
         if self.workerRemote.isRunning:
             self.workerRemote.stop()
-        if self.workerImaging.isRunning:
-            self.workerImaging.stop()
+        if self.workerEnvironment.isRunning:
+            self.workerEnvironment.stop()
+        if self.workerDome.isRunning:
+            self.workerDome.stop()
         if self.workerAstrometry.isRunning:
             self.workerAstrometry.stop()
-        if self.workerModelingDispatcher.isRunning:
-            self.workerModelingDispatcher.stop()
+        if self.workerImaging.isRunning:
+            self.workerImaging.stop()
         if self.workerMountDispatcher.isRunning:
             self.workerMountDispatcher.stop()
+        if self.workerModelingDispatcher.isRunning:
+            self.workerModelingDispatcher.stop()
         if self.workerINDI.isRunning:
             self.workerINDI.stop()
         PyQt5.QtCore.QCoreApplication.quit()
@@ -800,8 +777,8 @@ class MountWizzardApp(widget.MwWidget):
         try:
             key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
             for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
-                name = EnumKey(key, i)                                                                                      # get registry names of applications
-                subkey = OpenKey(key, name)                                                                                 # open subkeys of applications
+                nameKey = EnumKey(key, i)                                                                                      # get registry names of applications
+                subkey = OpenKey(key, nameKey)                                                                                 # open subkeys of applications
                 for j in range(0, QueryInfoKey(subkey)[1]):                                                                 # run through all subkeys
                     values = EnumValue(subkey, j)
                     if values[0] == 'DisplayName':
@@ -1300,13 +1277,11 @@ class MountWizzardApp(widget.MwWidget):
 
     def healthState(self):
         process = psutil.Process(os.getpid())
-        self.logger.error('Health state: memory: {0}, threads: {1}, handles: {2}'
-                         .format(process.memory_info().rss,
-                         process.num_threads(),
-                         process.num_handles()))
+        self.logger.error('Health state: memory: {0}, threads: {1}'
+                          .format(process.memory_info().rss,
+                                  process.num_threads()))
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLE_HEALTH_STATE, self.healthState)
-
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):
