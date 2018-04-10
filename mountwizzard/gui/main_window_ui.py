@@ -5556,7 +5556,7 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(1)
+        self.mainTabWidget.setCurrentIndex(0)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -6217,10 +6217,10 @@ class Ui_MainWindow(object):
         self.label_200.setText(_translate("MainWindow", "Mount IP Direct Connection"))
         self.label_mountIP_2.setText(_translate("MainWindow", "IP Address"))
         self.label_mountIP_5.setText(_translate("MainWindow", "Port Number"))
-        self.le_INDIStatus.setToolTip(_translate("MainWindow", "<html><head/><body><p>IP address of relay switch</p></body></html>"))
+        self.le_INDIStatus.setToolTip(_translate("MainWindow", "<html><head/><body><p>Gives an indication if connection to indi server is established</p></body></html>"))
         self.label_146.setText(_translate("MainWindow", "INDI Status"))
         self.label_198.setText(_translate("MainWindow", "CCD"))
-        self.le_INDIEnvironment.setToolTip(_translate("MainWindow", "<html><head/><body><p>IP address of relay switch</p></body></html>"))
+        self.le_INDIEnvironment.setToolTip(_translate("MainWindow", "<html><head/><body><p>Shows the driver name of Environment device</p></body></html>"))
         self.checkEnableINDI.setToolTip(_translate("MainWindow", "<html><head/><body><p>Enable / disable the INDI subsystem.</p></body></html>"))
         self.checkEnableINDI.setText(_translate("MainWindow", "Enable INDI Client running"))
         self.le_INDIServerPort.setToolTip(_translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:400;\">Port address of INDI server</span></p></body></html>"))
@@ -6230,12 +6230,12 @@ class Ui_MainWindow(object):
         self.le_INDIServerIP.setText(_translate("MainWindow", "127.0.0.1"))
         self.label_199.setText(_translate("MainWindow", "Environment"))
         self.label_259.setText(_translate("MainWindow", "Configuration of INDI Subsystem"))
-        self.le_INDICCD.setToolTip(_translate("MainWindow", "<html><head/><body><p>IP address of relay switch</p></body></html>"))
+        self.le_INDICCD.setToolTip(_translate("MainWindow", "<html><head/><body><p>Shows the driver name of CCD device</p></body></html>"))
         self.label_mountIP_3.setText(_translate("MainWindow", "IP / Port"))
         self.checkEnableRelay.setToolTip(_translate("MainWindow", "<html><head/><body><p>Enable / disable relay functions.</p></body></html>"))
         self.checkEnableRelay.setText(_translate("MainWindow", "Enable Relais Box"))
         self.label_211.setText(_translate("MainWindow", "Dome"))
-        self.le_INDIDome.setToolTip(_translate("MainWindow", "<html><head/><body><p>IP address of relay switch</p></body></html>"))
+        self.le_INDIDome.setToolTip(_translate("MainWindow", "<html><head/><body><p>Shows the name of the Dome device</p></body></html>"))
         self.label_260.setText(_translate("MainWindow", "Configuration of astrometry.net solver"))
         self.groupBox.setTitle(_translate("MainWindow", "Choose Solver"))
         self.rb_useLocalSolver.setToolTip(_translate("MainWindow", "<html><head/><body><p>Choose local solver</p></body></html>"))
@@ -6450,4 +6450,14 @@ class Ui_MainWindow(object):
         self.le_astrometryStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.le_domeStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.label_110.setText(_translate("MainWindow", "Status"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 

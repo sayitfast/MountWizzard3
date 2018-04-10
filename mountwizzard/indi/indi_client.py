@@ -278,6 +278,8 @@ class INDIClient(PyQt5.QtCore.QObject):
     def handleReceived(self, message):
         # central dispatcher for data coming from INDI devices. I makes the whole status and data evaluation and fits the
         # data to mountwizzard
+        if 'device' not in message.attr:
+            return
         device = message.attr['device']
         # receiving all definitions for vectors in indi and building them up in self.data['Device']
         if isinstance(message, indiXML.DefBLOBVector):
