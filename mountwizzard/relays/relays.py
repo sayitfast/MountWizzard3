@@ -174,6 +174,7 @@ class Relays:
     def enableDisableRelay(self):
         if self.app.ui.checkEnableRelay.isChecked():
             self.connected = self.checkAppStatus()
+            self.requestStatus()
             self.app.ui.mainTabWidget.setTabEnabled(7, True)
             self.app.messageQueue.put('Relay enabled\n')
         else:
@@ -188,26 +189,11 @@ class Relays:
     def checkAppStatus(self):
         connected = False
         if self.relayIP:
-            try:
-                urllib.request.urlopen('http://' + self.relayIP, None, 2)
-                self.geturl('http://' + self.relayIP)
+            if self.checkIP.checkIPAvailable(self.relayIP, 80):
                 connected = True
-            except urllib.error.HTTPError as e:
-                if e.code == 401:
-                    self.logger.info('Relaybox present under ip: {0}'.format(self.relayIP))
-                    connected = True
-                else:
-                    self.logger.error('Connection error: {0}'.format(e))
-            except urllib.request.URLError:
-                self.logger.warning('There is no relaybox present under ip: {0}'.format(self.relayIP))
-            except Exception as e:
-                self.logger.error('Connection error: {0}'.format(e))
-            finally:
-                if connected:
-                    self.requestStatus()
-                return connected
         else:
             self.logger.debug('There is no ip given for relaybox')
+        return connected
 
     def setStatus(self, response):
         lines = response.splitlines()
@@ -287,50 +273,53 @@ class Relays:
             self.app.ui.btn_relay8.style().polish(self.app.ui.btn_relay8)
 
     def runRelay(self, relayNumber):
-        if relayNumber == 1:
-            if self.app.ui.relay1Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 2:
-            if self.app.ui.relay2Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 3:
-            if self.app.ui.relay3Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 4:
-            if self.app.ui.relay4Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 5:
-            if self.app.ui.relay5Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 6:
-            if self.app.ui.relay6Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 7:
-            if self.app.ui.relay7Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
-        if relayNumber == 8:
-            if self.app.ui.relay8Function.currentIndex() == 0:
-                self.switch(relayNumber)
-            else:
-                self.pulse(relayNumber)
+        self.checkAppStatus()
+        if self.connected:
+            if relayNumber == 1:
+                if self.app.ui.relay1Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 2:
+                if self.app.ui.relay2Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 3:
+                if self.app.ui.relay3Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 4:
+                if self.app.ui.relay4Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 5:
+                if self.app.ui.relay5Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 6:
+                if self.app.ui.relay6Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 7:
+                if self.app.ui.relay7Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
+            if relayNumber == 8:
+                if self.app.ui.relay8Function.currentIndex() == 0:
+                    self.switch(relayNumber)
+                else:
+                    self.pulse(relayNumber)
 
     def geturl(self, url):
-        result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
-        return result
+        if self.connected:
+            result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
+            return result
 
     def pulse(self, relayNumber):
         try:
@@ -353,19 +342,21 @@ class Relays:
             pass
 
     def requestStatus(self):
-        try:
-            result = self.geturl('http://' + self.relayIP + '/status.xml')
-            self.setStatus(result.content.decode())
-        except Exception as e:
-            self.logger.error('Status error {0}'.format(e))
-        finally:
-            pass
+        if self.connected:
+            try:
+                result = self.geturl('http://' + self.relayIP + '/status.xml')
+                self.setStatus(result.content.decode())
+            except Exception as e:
+                self.logger.error('Status error {0}'.format(e))
+            finally:
+                pass
 
     def switchAllOff(self):
-        try:
-            self.geturl('http://' + self.relayIP + '/FFE000')
-            self.requestStatus()
-        except Exception as e:
-            self.logger.error('Switch all error {0}'.format(e))
-        finally:
-            pass
+        if self.connected:
+            try:
+                self.geturl('http://' + self.relayIP + '/FFE000')
+                self.requestStatus()
+            except Exception as e:
+                self.logger.error('Switch all error {0}'.format(e))
+            finally:
+                pass
