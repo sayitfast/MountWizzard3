@@ -94,7 +94,7 @@ class CheckIP(widget.MwWidget):
         returnValue = False
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
+            sock.settimeout(2)
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             result = sock.connect_ex((hostIP, hostPort))
             if result == 0:
@@ -102,7 +102,7 @@ class CheckIP(widget.MwWidget):
             else:
                 returnValue = False
         except Exception as e:
-            print(e)
+            print('Error checking host {0}:{1}, error: {2}'.format(hostIP, hostPort, e))
             self.logger.error('Error checking host {0}:{1}, error: {2}'.format(hostIP, hostPort, e))
         finally:
             sock.close()
