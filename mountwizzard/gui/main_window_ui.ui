@@ -10500,9 +10500,9 @@ Analyse File</string>
       <widget class="QLineEdit" name="le_mountIP">
        <property name="geometry">
         <rect>
-         <x>165</x>
+         <x>100</x>
          <y>40</y>
-         <width>186</width>
+         <width>251</width>
          <height>21</height>
         </rect>
        </property>
@@ -10943,6 +10943,9 @@ Analyse File</string>
          <bold>false</bold>
         </font>
        </property>
+       <property name="cursor">
+        <cursorShape>SizeHorCursor</cursorShape>
+       </property>
        <property name="mouseTracking">
         <bool>false</bool>
        </property>
@@ -11366,7 +11369,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>105</y>
+          <y>110</y>
           <width>221</width>
           <height>21</height>
          </rect>
@@ -11390,7 +11393,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>75</x>
-          <y>160</y>
+          <y>165</y>
           <width>161</width>
           <height>21</height>
          </rect>
@@ -11432,7 +11435,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>160</y>
+          <y>165</y>
           <width>51</width>
           <height>21</height>
          </rect>
@@ -11450,7 +11453,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>245</x>
-          <y>160</y>
+          <y>165</y>
           <width>56</width>
           <height>21</height>
          </rect>
@@ -11468,7 +11471,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>300</x>
-          <y>160</y>
+          <y>165</y>
           <width>31</width>
           <height>21</height>
          </rect>
@@ -11606,7 +11609,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>75</x>
-          <y>135</y>
+          <y>140</y>
           <width>191</width>
           <height>21</height>
          </rect>
@@ -11648,7 +11651,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>15</x>
-          <y>135</y>
+          <y>140</y>
           <width>51</width>
           <height>21</height>
          </rect>
@@ -11666,7 +11669,7 @@ Analyse File</string>
         <property name="geometry">
          <rect>
           <x>280</x>
-          <y>135</y>
+          <y>140</y>
           <width>51</width>
           <height>21</height>
          </rect>
@@ -11990,9 +11993,9 @@ Analyse File</string>
       <widget class="QLineEdit" name="le_relayIP">
        <property name="geometry">
         <rect>
-         <x>550</x>
+         <x>485</x>
          <y>70</y>
-         <width>186</width>
+         <width>251</width>
          <height>21</height>
         </rect>
        </property>
