@@ -51,13 +51,11 @@ class AstrometryClient:
         'ServerIP': '192.168.2.161',
         'ServerPort': 3499,
         'Connected': False,
-        'APIKey': '',
         'Available': True,
         'Name': 'ASTROMETRY.NET',
         'Status': ''
     }
 
-    HOST_NOVA = 'nova.astrometry.net'
     TIMEOUT_REQUESTS = 3
 
     def __init__(self, main, app, data):
@@ -72,11 +70,16 @@ class AstrometryClient:
         self.timeoutMax = 60
         self.urlLogin = ''
         self.urlAPI = ''
+        self.key = ''
 
-        self.app.ui.le_AstrometryServerIP.textChanged.connect(self.setIP)
-        self.app.ui.le_AstrometryServerIP.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.le_AstrometryServerPort.textChanged.connect(self.setPort)
-        self.app.ui.le_AstrometryServerPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        #self.app.ui.le_AstrometryHostLocal.textChanged.connect(self.setIP)
+        self.app.ui.le_AstrometryHostLocal.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        #self.app.ui.le_AstrometryPortLocal.textChanged.connect(self.setPort)
+        self.app.ui.le_AstrometryPortLocal.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        #self.app.ui.le_AstrometryHostOnline.textChanged.connect(self.setIP)
+        self.app.ui.le_AstrometryHostOnline.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        #self.app.ui.le_AstrometryPortOnline.textChanged.connect(self.setPort)
+        self.app.ui.le_AstrometryPortOnline.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.rb_useOnlineSolver.clicked.connect(self.setAstrometryNet)
         self.app.ui.rb_useLocalSolver.clicked.connect(self.setAstrometryNet)
 
@@ -90,29 +93,34 @@ class AstrometryClient:
                 self.app.ui.le_timeoutOnline.setText(self.app.config['OnlineSolverTimeout'])
             if 'LocalSolverTimeout' in self.app.config:
                 self.app.ui.le_timeoutLocal.setText(self.app.config['LocalSolverTimeout'])
-            if 'AstrometryServerPort' in self.app.config:
-                self.app.ui.le_AstrometryServerPort.setText(self.app.config['AstrometryServerPort'])
-            if 'AstrometryServerIP' in self.app.config:
-                self.app.ui.le_AstrometryServerIP.setText(self.app.config['AstrometryServerIP'])
-            if 'AstrometryServerAPIKey' in self.app.config:
-                self.app.ui.le_AstrometryServerAPIKey.setText(self.app.config['AstrometryServerAPIKey'])
+            if 'AstrometryPortLocal' in self.app.config:
+                self.app.ui.le_AstrometryPortLocal.setText(self.app.config['AstrometryPortLocal'])
+            if 'AstrometryHostLocal' in self.app.config:
+                self.app.ui.le_AstrometryHostLocal.setText(self.app.config['AstrometryHostLocal'])
+            if 'AstrometryAPIKeyLocal' in self.app.config:
+                self.app.ui.le_AstrometryAPIKeyLocal.setText(self.app.config['AstrometryAPIKeyLocal'])
+            if 'AstrometryPortOnline' in self.app.config:
+                self.app.ui.le_AstrometryPortOnline.setText(self.app.config['AstrometryPortOnline'])
+            if 'AstrometryHostOnline' in self.app.config:
+                self.app.ui.le_AstrometryHostOnline.setText(self.app.config['AstrometryHostOnline'])
+            if 'AstrometryAPIKeyOnline' in self.app.config:
+                self.app.ui.le_AstrometryAPIKeyOnline.setText(self.app.config['AstrometryAPIKeyOnline'])
             if 'AstrometryDownsample' in self.app.config:
                 self.app.ui.astrometryDownsampling.setValue(self.app.config['AstrometryDownsample'])
         except Exception as e:
             self.logger.error('Item in config.cfg for astrometry client could not be initialized, error:{0}'.format(e))
         finally:
             pass
-        self.setIP()
-        self.setPort()
-        self.urlAPI = 'http://{0}:{1}/api'.format(self.application['ServerIP'], self.application['ServerPort'])
-
         # setting changes in gui on false, because the set of the config changed them already
         self.setAstrometryNet()
 
     def storeConfig(self):
-        self.app.config['AstrometryServerPort'] = self.app.ui.le_AstrometryServerPort.text()
-        self.app.config['AstrometryServerIP'] = self.app.ui.le_AstrometryServerIP.text()
-        self.app.config['AstrometryServerAPIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
+        self.app.config['AstrometryPortLocal'] = self.app.ui.le_AstrometryPortLocal.text()
+        self.app.config['AstrometryHostLocal'] = self.app.ui.le_AstrometryHostLocal.text()
+        self.app.config['AstrometryAPIKeyLocal'] = self.app.ui.le_AstrometryAPIKeyLocal.text()
+        self.app.config['AstrometryPortOnline'] = self.app.ui.le_AstrometryPortOnline.text()
+        self.app.config['AstrometryHostOnline'] = self.app.ui.le_AstrometryHostOnline.text()
+        self.app.config['AstrometryAPIKeyOnline'] = self.app.ui.le_AstrometryAPIKeyOnline.text()
         self.app.config['CheckUseOnlineSolver'] = self.app.ui.rb_useOnlineSolver.isChecked()
         self.app.config['CheckUseLocalSolver'] = self.app.ui.rb_useLocalSolver.isChecked()
         self.app.config['OnlineSolverTimeout'] = self.app.ui.le_timeoutOnline.text()
@@ -140,14 +148,15 @@ class AstrometryClient:
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.settingsChanged = False
             if self.app.ui.rb_useOnlineSolver.isChecked():
-                self.urlAPI = 'http://nova.astrometry.net/api'
-                self.urlLogin = 'http://nova.astrometry.net/api/login'
-                self.urlLogin = ''
+                self.urlAPI = 'http://' + self.app.ui.le_AstrometryHostOnline.text() + ':' + self.app.ui.le_AstrometryPortOnline.text() + '/api'
+                self.urlLogin = 'http://' + self.app.ui.le_AstrometryHostOnline.text() + ':' + self.app.ui.le_AstrometryPortOnline.text() + '/api/login'
+                self.key = self.app.ui.le_AstrometryAPIKeyOnline.text()
                 self.application['Name'] = 'Online'
                 self.timeoutMax = float(self.app.ui.le_timeoutOnline.text())
             else:
-                self.urlAPI = 'http://{0}:{1}/api'.format(self.application['ServerIP'], self.application['ServerPort'])
-                self.urlLogin = ''
+                self.urlAPI = 'http://' + self.app.ui.le_AstrometryHostLocal.text() + ':' + self.app.ui.le_AstrometryPortLocal.text() + '/api'
+                self.urlLogin = 'http://' + self.app.ui.le_AstrometryHostLocal.text() + ':' + self.app.ui.le_AstrometryPortLocal.text() + '/api/login'
+                self.key = self.app.ui.le_AstrometryAPIKeyLocal.text()
                 self.application['Name'] = 'Local'
                 self.timeoutMax = float(self.app.ui.le_timeoutLocal.text())
             self.app.messageQueue.put('Setting IP address for Astrometry client: {0}\n'.format(self.urlAPI))
@@ -168,11 +177,11 @@ class AstrometryClient:
         if self.urlAPI == '':
             return
         if self.app.ui.rb_useOnlineSolver.isChecked():
-            hostIP = self.HOST_NOVA
-            hostPort = 80
+            hostIP = self.app.ui.le_AstrometryHostOnline.text()
+            hostPort = int(float(self.app.ui.le_AstrometryPortOnline.text()))
         else:
-            hostIP = self.application['ServerIP']
-            hostPort = self.application['ServerPort']
+            hostIP = self.app.ui.le_AstrometryHostLocal.text()
+            hostPort = int(float(self.app.ui.le_AstrometryPortLocal.text()))
         if self.checkIP.checkIPAvailable(hostIP, hostPort):
             self.application['Status'] = 'OK'
             self.data['CONNECTION']['CONNECT'] = 'On'
@@ -198,14 +207,14 @@ class AstrometryClient:
         headers = dict()
         imageParams['Message'] = ''
 
+        print(self.urlAPI, self.urlLogin, self.key)
         self.main.astrometryStatusText.emit('START')
         # check if we have the online solver running
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-        if self.urlLogin != '':
+        if self.key != '':
             # we have to login with the api key for the online solver to get the session key
-            self.application['APIKey'] = self.app.ui.le_AstrometryServerAPIKey.text()
             try:
-                response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.application['APIKey']})}, headers={}, timeout=self.TIMEOUT_REQUESTS)
+                response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.key})}, headers={}, timeout=self.TIMEOUT_REQUESTS)
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem setting api key, error: {0}, result: {1}, response: {2}'.format(e, result, response))
