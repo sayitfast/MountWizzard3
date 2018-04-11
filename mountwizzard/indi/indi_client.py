@@ -81,7 +81,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.domeDevice = ''
         self.telescopeDevice = ''
         # signal slot
-        self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
+        #self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
@@ -115,9 +115,9 @@ class INDIClient(PyQt5.QtCore.QObject):
             if self.isRunning:
                 self.mutexIPChange.lock()
                 self.stop()
-                valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-                if valid:
-                    self.data['ServerIP'] = value
+                #valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+                #if valid:
+                self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
                 valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
                 if valid:
                     self.data['ServerPort'] = value
@@ -125,9 +125,9 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.mutexIPChange.unlock()
             else:
                 self.mutexIPChange.lock()
-                valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-                if valid:
-                    self.data['ServerIP'] = value
+                #valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
+                #if valid:
+                self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
                 valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
                 if valid:
                     self.data['ServerPort'] = value

@@ -167,9 +167,9 @@ class Relays:
         self.app.config['CheckEnableRelay'] = self.app.ui.checkEnableRelay.isChecked()
 
     def setIP(self):
-        valid, value = self.checkIP.checkIP(self.app.ui.le_relayIP)
-        if valid:
-            self.relayIP = value
+        #valid, value = self.checkIP.checkIP(self.app.ui.le_relayIP)
+        #if valid:
+        self.relayIP = self.app.ui.le_relayIP.text()
 
     def enableDisableRelay(self):
         if self.app.ui.checkEnableRelay.isChecked():

@@ -331,7 +331,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 }
         }
         # signal slot
-        self.app.ui.le_mountIP.textChanged.connect(self.setIP)
+        # self.app.ui.le_mountIP.textChanged.connect(self.setIP)
         self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
         self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))
@@ -394,9 +394,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.workerMountStatusRunnerOnce.stop()
                 self.workerMountGetAlignmentModel.stop()
                 self.workerMountCommandRunner.stop()
-                valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-                if valid:
-                    self.data['MountIP'] = value
+                #valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+                #if valid:
+                self.data['MountIP'] = self.app.ui.le_mountIP.text()
                 valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
                 if valid:
                     self.data['MountMAC'] = value
@@ -408,9 +408,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.threadMountStatusRunnerMedium.start()
                 self.threadMountStatusRunnerFast.start()
             else:
-                valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-                if valid:
-                    self.data['MountIP'] = value
+                #valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
+                #if valid:
+                self.data['MountIP'] = self.app.ui.le_mountIP.text()
                 valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
                 if valid:
                     self.data['MountMAC'] = value
