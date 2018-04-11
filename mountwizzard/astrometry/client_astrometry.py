@@ -141,6 +141,7 @@ class AstrometryClient:
             if self.app.ui.rb_useOnlineSolver.isChecked():
                 self.urlAPI = 'http://nova.astrometry.net/api'
                 self.urlLogin = 'http://nova.astrometry.net/api/login'
+                self.urlLogin = ''
                 self.application['Name'] = 'Online'
                 self.timeoutMax = float(self.app.ui.le_timeoutOnline.text())
             else:

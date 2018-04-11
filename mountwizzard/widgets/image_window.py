@@ -164,7 +164,12 @@ class ImagesWindow(widget.MwWidget):
         self.signalSetDecSolved.emit('')
         self.imagePath = filename
         self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
-        hdulist = pyfits.open(filename)
+        try:
+            hdulist = pyfits.open(filename)
+        except Exception as e:
+            self.logger.error('File {0} could not be loaded, error: {1}'.format(self.imagePath, e))
+        finally:
+            return
         self.image = hdulist[0].data
         self.sizeY, self.sizeX = self.image.shape
         self.setStrech()
