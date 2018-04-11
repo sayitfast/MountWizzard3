@@ -478,7 +478,7 @@ class MwWidget(QWidget):
 
     def __init__(self):
         # noinspection PyArgumentList
-        super(MwWidget, self).__init__()
+        super().__init__()
         self.palette = QPalette()
         self.bundle_dir = ''
         self.showStatus = False

@@ -168,8 +168,9 @@ class ImagesWindow(widget.MwWidget):
             hdulist = pyfits.open(filename)
         except Exception as e:
             self.logger.error('File {0} could not be loaded, error: {1}'.format(self.imagePath, e))
-        finally:
             return
+        finally:
+            pass
         self.image = hdulist[0].data
         self.sizeY, self.sizeX = self.image.shape
         self.setStrech()

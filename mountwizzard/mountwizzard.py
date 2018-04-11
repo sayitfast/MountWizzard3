@@ -78,7 +78,6 @@ class MountWizzardApp(widget.MwWidget):
     CYCLE_MAIN_LOOP = 200
     CYCLE_HEALTH_STATE = 10000
 
-
     def __init__(self):
         super().__init__()
 
@@ -692,9 +691,9 @@ class MountWizzardApp(widget.MwWidget):
         self.quit()
 
     def quit(self):
+        self.isRunning = False
         self.workerAstrometry.astrometryCancel.emit()
         self.workerImaging.imagingCancel.emit()
-        self.isRunning = False
         if platform.system() == 'Windows':
             if self.workerAutomation.isRunning:
                 self.workerAutomation.stop()
