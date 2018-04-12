@@ -81,9 +81,7 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.domeDevice = ''
         self.telescopeDevice = ''
         # signal slot
-        #self.app.ui.le_INDIServerIP.textChanged.connect(self.setIP)
         self.app.ui.le_INDIServerIP.editingFinished.connect(self.changedINDIClientConnectionSettings)
-        self.app.ui.le_INDIServerPort.textChanged.connect(self.setPort)
         self.app.ui.le_INDIServerPort.editingFinished.connect(self.changedINDIClientConnectionSettings)
         self.app.ui.checkEnableINDI.stateChanged.connect(self.enableDisableINDI)
 
@@ -115,36 +113,16 @@ class INDIClient(PyQt5.QtCore.QObject):
             if self.isRunning:
                 self.mutexIPChange.lock()
                 self.stop()
-                #valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-                #if valid:
                 self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
-                valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-                if valid:
-                    self.data['ServerPort'] = value
+                self.data['ServerPort'] = self.app.ui.le_INDIServerPort.text()
                 self.thread.start()
                 self.mutexIPChange.unlock()
             else:
                 self.mutexIPChange.lock()
-                #valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-                #if valid:
                 self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
-                valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-                if valid:
-                    self.data['ServerPort'] = value
+                self.data['ServerPort'] = self.app.ui.le_INDIServerPort.text()
                 self.mutexIPChange.unlock()
             self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
-
-    def setPort(self):
-        valid, value = self.checkIP.checkPort(self.app.ui.le_INDIServerPort)
-        self.app.sharedINDIDataLock.lockForRead()
-        self.settingsChanged = (self.data['ServerPort'] != value)
-        self.app.sharedINDIDataLock.unlock()
-
-    def setIP(self):
-        valid, value = self.checkIP.checkIP(self.app.ui.le_INDIServerIP)
-        self.app.sharedINDIDataLock.lockForRead()
-        self.settingsChanged = (self.data['ServerIP'] != value)
-        self.app.sharedINDIDataLock.unlock()
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():

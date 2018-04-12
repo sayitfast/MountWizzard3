@@ -333,7 +333,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         # signal slot
         # self.app.ui.le_mountIP.textChanged.connect(self.setIP)
         self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
-        self.app.ui.le_mountMAC.textChanged.connect(self.setMAC)
+        self.app.ui.le_mountMAC.editingFinished.connect(self.setMAC)
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
@@ -394,12 +394,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.workerMountStatusRunnerOnce.stop()
                 self.workerMountGetAlignmentModel.stop()
                 self.workerMountCommandRunner.stop()
-                #valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-                #if valid:
+                self.app.sharedMountDataLock.lockForWrite()
                 self.data['MountIP'] = self.app.ui.le_mountIP.text()
-                valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-                if valid:
-                    self.data['MountMAC'] = value
+                self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
+                self.app.sharedMountDataLock.unlock()
                 # and restarting for using new parameters
                 self.threadMountCommandRunner.start()
                 self.threadMountGetAlignmentModel.start()
@@ -408,25 +406,17 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 self.threadMountStatusRunnerMedium.start()
                 self.threadMountStatusRunnerFast.start()
             else:
-                #valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-                #if valid:
+                self.app.sharedMountDataLock.lockForWrite()
                 self.data['MountIP'] = self.app.ui.le_mountIP.text()
-                valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-                if valid:
-                    self.data['MountMAC'] = value
+                self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
+                self.app.sharedMountDataLock.unlock()
             self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
             self.mutexIPChange.unlock()
 
-    def setIP(self):
-        valid, value = self.checkIP.checkIP(self.app.ui.le_mountIP)
-        self.app.sharedMountDataLock.lockForRead()
-        self.settingsChanged = (self.data['MountIP'] != value)
-        self.app.sharedMountDataLock.unlock()
-
     def setMAC(self):
         valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-        self.app.sharedMountDataLock.lockForRead()
-        self.settingsChanged = (self.data['MountMAC'] != value)
+        self.app.sharedMountDataLock.lockForWrite()
+        self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
         self.app.sharedMountDataLock.unlock()
 
     def run(self):
