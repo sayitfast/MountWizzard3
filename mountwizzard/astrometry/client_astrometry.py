@@ -70,8 +70,8 @@ class AstrometryClient:
         self.urlAPI = ''
         self.key = ''
 
-        self.app.ui.le_AstrometryHostLocal.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
-        self.app.ui.le_AstrometryPortLocal.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.le_AstrometryHost.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.le_AstrometryPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
 
     def initConfig(self):
         try:
@@ -96,7 +96,7 @@ class AstrometryClient:
         self.app.config['AstrometryPortOnline'] = self.app.ui.le_AstrometryPort.text()
         self.app.config['AstrometryHostOnline'] = self.app.ui.le_AstrometryHost.text()
         self.app.config['AstrometryAPIKeyOnline'] = self.app.ui.le_AstrometryAPIKey.text()
-        self.app.config['AstrometryTimeout'] = self.app.ui.le_AstrometryTimeout.text()
+        self.app.config['AstrometryTimeout'] = self.app.ui.le_astrometryTimeout.text()
         self.app.config['AstrometryDownsample'] = self.app.ui.astrometryDownsampling.value()
 
     def start(self):
