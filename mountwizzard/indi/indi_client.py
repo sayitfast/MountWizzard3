@@ -114,13 +114,13 @@ class INDIClient(PyQt5.QtCore.QObject):
                 self.mutexIPChange.lock()
                 self.stop()
                 self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
-                self.data['ServerPort'] = self.app.ui.le_INDIServerPort.text()
+                self.data['ServerPort'] = int(self.app.ui.le_INDIServerPort.text())
                 self.thread.start()
                 self.mutexIPChange.unlock()
             else:
                 self.mutexIPChange.lock()
                 self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
-                self.data['ServerPort'] = self.app.ui.le_INDIServerPort.text()
+                self.data['ServerPort'] = int(self.app.ui.le_INDIServerPort.text())
                 self.mutexIPChange.unlock()
             self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
 

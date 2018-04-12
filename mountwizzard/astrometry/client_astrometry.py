@@ -56,8 +56,6 @@ class AstrometryClient:
         self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.checkIP = checkIP.CheckIP()
-        self.settingsChanged = False
-        self.timeoutMax = 60
 
         self.application = {
             'AstrometryHost': '192.168.2.161',
@@ -65,6 +63,7 @@ class AstrometryClient:
             'URLLogin': '',
             'URLAPI': '',
             'APIKey': '',
+            'TimeoutMax': 60,
             'Connected': False,
             'Available': True,
             'Name': 'ASTROMETRY.NET',
@@ -78,12 +77,10 @@ class AstrometryClient:
         try:
             if 'AstrometryTimeout' in self.app.config:
                 self.app.ui.le_astrometryTimeout.setText(self.app.config['AstrometryTimeout'])
-            if 'AstrometryHost' in self.app.csonfig:
+            if 'AstrometryHost' in self.app.config:
                 self.app.ui.le_AstrometryHost.setText(self.app.config['AstrometryHost'])
-                self.application['AstrometryHost'] = self.app.config['AstrometryHost']
             if 'AstrometryPort' in self.app.config:
                 self.app.ui.le_AstrometryPort.setText(self.app.config['AstrometryPort'])
-                self.application['AstrometryPort'] = self.app.config['AstrometryPort']
             if 'AstrometryAPIKey' in self.app.config:
                 self.app.ui.le_AstrometryAPIKey.setText(self.app.config['AstrometryAPIKey'])
             if 'AstrometryDownsample' in self.app.config:
@@ -92,8 +89,7 @@ class AstrometryClient:
             self.logger.error('Item in config.cfg for astrometry client could not be initialized, error:{0}'.format(e))
         finally:
             pass
-        # setting changes in gui on false, because the set of the config changed them already
-        self.setAstrometryNet()
+        self.changedAstrometryClientConnectionSettings()
 
     def storeConfig(self):
         self.app.config['AstrometryPort'] = self.app.ui.le_AstrometryPort.text()
@@ -108,29 +104,24 @@ class AstrometryClient:
     def stop(self):
         pass
 
-    def setAstrometryNet(self):
-        self.settingsChanged = True
-        self.changedAstrometryClientConnectionSettings()
-
     def setCancelAstrometry(self):
         self.mutexCancel.lock()
         self.cancel = True
         self.mutexCancel.unlock()
 
     def changedAstrometryClientConnectionSettings(self):
-        if self.settingsChanged:
-            self.data['Status'] = 'ERROR'
-            self.data['CONNECTION']['CONNECT'] = 'Off'
-            self.settingsChanged = False
-            host = self.app.ui.le_AstrometryHost.text()
-            port = self.app.ui.le_AstrometryPort.text()
-            self.application['AstrometryHost'] = host
-            self.application['AstrometryPort'] = port
-            self.application['URLAPI'] = 'http://' + host + ':' + port + '/api'
-            self.application['URLLogin'] = 'http://' + host + ':' + port + '/api/login'
-            self.application['APIKey'] = self.app.ui.le_AstrometryAPIKey.text()
-            self.application['Name'] = 'Astrometry'
-            self.timeoutMax = float(self.app.ui.le_astrometryTimeout.text())
+        self.data['Status'] = 'ERROR'
+        self.data['CONNECTION']['CONNECT'] = 'Off'
+        host = self.app.ui.le_AstrometryHost.text()
+        port = self.app.ui.le_AstrometryPort.text()
+        self.application['AstrometryHost'] = host
+        self.application['AstrometryPort'] = int(port)
+        self.application['URLAPI'] = 'http://' + host + ':' + port + '/api'
+        self.application['URLLogin'] = 'http://' + host + ':' + port + '/api/login'
+        self.application['APIKey'] = self.app.ui.le_AstrometryAPIKey.text()
+        self.application['Name'] = 'Astrometry'
+        self.application['TimeoutMax'] = float(self.app.ui.le_astrometryTimeout.text())
+        self.app.messageQueue.put('Setting IP address for astrometry to: {0}:{1}\n'.format(self.application['AstrometryHost'], self.application['AstrometryPort']))
 
     def getStatus(self):
         if self.application['URLAPI'] == '':
@@ -258,7 +249,7 @@ class AstrometryClient:
                 if jobs[0] is not None:
                     jobID = jobs[0]
                     break
-            if time.time()-timeSolvingStart > self.timeoutMax:
+            if time.time()-timeSolvingStart > self.application['TimeoutMax']:
                 # timeout after timeoutMax seconds
                 errorState = True
                 imageParams['Message'] = 'Timeout'
@@ -287,7 +278,7 @@ class AstrometryClient:
             stat = result['status']
             if stat == 'success':
                 break
-            if time.time()-timeSolvingStart > self.timeoutMax:
+            if time.time()-timeSolvingStart > self.application['TimeoutMax']:
                 # timeout after timeoutMax seconds
                 errorState = True
                 imageParams['Message'] = 'Timeout'
