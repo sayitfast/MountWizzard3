@@ -45,6 +45,7 @@ class Transform:
         self.siteLon = self.degStringToDecimal(lon)
         self.siteHeight = float(height)
 
+    @PyQt5.QtCore.pyqtSlot()
     def setJulianDate(self, jd):
         self.julianDate = jd
 

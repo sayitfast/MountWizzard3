@@ -206,7 +206,8 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             else:
                                 self.data['TelescopePierSide'] = 'EAST'
                             self.app.workerMountDispatcher.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
-                            self.app.signalJulianDate.emit(self.data['JulianDate'])
+                            # todo: check if it makes sense to use the julian dat from the mount for calculations
+                            # self.app.signalJulianDate.emit(self.data['JulianDate'])
                         else:
                             self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(value))
                     except Exception as e:
