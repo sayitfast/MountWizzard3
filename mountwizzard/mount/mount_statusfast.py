@@ -27,7 +27,7 @@ from astrometry import transform
 class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    CYCLE_STATUS_FAST = 400
+    CYCLE_STATUS_FAST = 500
     CYCLE_COMMAND = 0.2
 
     def __init__(self, app, thread, data, signalConnected):
