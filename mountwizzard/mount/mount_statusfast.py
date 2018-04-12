@@ -184,8 +184,8 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             if value[6] in ['1', '98', '99']:
                                 # only emit one time !
                                 if not self.audioDone:
-                                    self.app.signalAudio.emit('Stop')
-                                    self.app.messageQueue.put('#BR\tMOUNT STOPPED - WARNING !!!\n')
+                                    self.app.signalAudio.emit('MountAlert')
+                                    self.app.messageQueue.put('#BRMount STOPPED - WARNING !!!\n')
                                 self.audioDone = True
                             else:
                                 self.audioDone = False
@@ -206,7 +206,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                             else:
                                 self.data['TelescopePierSide'] = 'EAST'
                             self.app.workerMountDispatcher.signalMountAzAltPointer.emit(self.data['Az'], self.data['Alt'])
-                            # self.app.signalJulianDate.emit(self.data['JulianDate'])
+                            self.app.signalJulianDate.emit(self.data['JulianDate'])
                         else:
                             self.logger.warning('Ginfo command delivered wrong number of arguments: {0}'.format(value))
                     except Exception as e:

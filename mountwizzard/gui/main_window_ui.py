@@ -4079,7 +4079,7 @@ class Ui_MainWindow(object):
         self.line_48.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_48.setObjectName("line_48")
         self.label_mountIP_2 = QtWidgets.QLabel(self.tab_14)
-        self.label_mountIP_2.setGeometry(QtCore.QRect(405, 70, 161, 21))
+        self.label_mountIP_2.setGeometry(QtCore.QRect(405, 70, 71, 21))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.label_mountIP_2.setFont(font)
@@ -4134,7 +4134,7 @@ class Ui_MainWindow(object):
         self.label_197.setFont(font)
         self.label_197.setObjectName("label_197")
         self.le_relayIP = QtWidgets.QLineEdit(self.tab_14)
-        self.le_relayIP.setGeometry(QtCore.QRect(465, 70, 271, 21))
+        self.le_relayIP.setGeometry(QtCore.QRect(485, 70, 251, 21))
         font = QtGui.QFont()
         font.setFamily("Courier")
         font.setPointSize(10)
@@ -5522,8 +5522,8 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(8)
-        self.settingsTabWidget.setCurrentIndex(2)
+        self.mainTabWidget.setCurrentIndex(0)
+        self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
         MainWindow.setTabOrder(self.btn_mountBoot, self.btn_mountShutdown)
@@ -6401,4 +6401,14 @@ class Ui_MainWindow(object):
         self.le_astrometryStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.le_domeStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.label_110.setText(_translate("MainWindow", "Status"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 

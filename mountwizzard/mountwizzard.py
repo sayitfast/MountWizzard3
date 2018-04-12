@@ -690,7 +690,6 @@ class MountWizzardApp(widget.MwWidget):
         self.saveConfigData(filepath)
 
     def saveConfigQuit(self):
-        self.isRunning = False
         filepath = os.getcwd() + '/config/' + self.ui.le_configName.text() + '.cfg'
         self.saveConfigData(filepath)
         self.quit()
@@ -1279,6 +1278,7 @@ class MountWizzardApp(widget.MwWidget):
         self.logger.error('Health state: memory: {0}, threads: {1}'
                           .format(process.memory_info().rss,
                                   process.num_threads()))
+
 
 class MyApp(PyQt5.QtWidgets.QApplication):
 
