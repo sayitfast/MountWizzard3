@@ -154,7 +154,7 @@ class AstrometryClient:
         self.main.astrometryStatusText.emit('START')
         # check if we have the online solver running
         self.main.astrometrySolvingTime.emit('{0:02.0f}'.format(time.time()-timeSolvingStart))
-        if self.key != '':
+        if self.application['APIKey'] != '':
             # we have to login with the api key for the online solver to get the session key
             try:
                 response = requests.post(self.application['URLLogin'],
