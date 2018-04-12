@@ -95,7 +95,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
         self.checkIP = checkIP.CheckIP()
-        self.settingsChanged = False
 
         # getting all threads setup
         # commands sending thread
@@ -331,9 +330,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                 }
         }
         # signal slot
-        # self.app.ui.le_mountIP.textChanged.connect(self.setIP)
         self.app.ui.le_mountIP.editingFinished.connect(self.changedMountConnectionSettings)
-        self.app.ui.le_mountMAC.editingFinished.connect(self.setMAC)
+        self.app.ui.le_mountMAC.editingFinished.connect(self.changedMountConnectionSettings)
         self.app.ui.btn_setRefractionParameters.clicked.connect(lambda: self.commandDispatcherQueue.put('SetRefractionParameter'))
         self.app.ui.btn_runTargetRMSAlignment.clicked.connect(lambda: self.commandDispatcherQueue.put('RunTargetRMSAlignment'))
         self.app.ui.btn_deleteWorstPoint.clicked.connect(lambda: self.commandDispatcherQueue.put('DeleteWorstPoint'))
@@ -371,7 +369,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         finally:
             pass
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = True
         self.changedMountConnectionSettings()
 
     def storeConfig(self):
@@ -382,42 +379,34 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
 
     def changedMountConnectionSettings(self):
-        if self.settingsChanged:
-            self.settingsChanged = False
-            self.mutexIPChange.lock()
-            # stopping all interaction
-            if self.isRunning:
-                # stopping thread for chang of parameters
-                self.workerMountStatusRunnerFast.stop()
-                self.workerMountStatusRunnerMedium.stop()
-                self.workerMountStatusRunnerSlow.stop()
-                self.workerMountStatusRunnerOnce.stop()
-                self.workerMountGetAlignmentModel.stop()
-                self.workerMountCommandRunner.stop()
-                self.app.sharedMountDataLock.lockForWrite()
-                self.data['MountIP'] = self.app.ui.le_mountIP.text()
-                self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
-                self.app.sharedMountDataLock.unlock()
-                # and restarting for using new parameters
-                self.threadMountCommandRunner.start()
-                self.threadMountGetAlignmentModel.start()
-                self.threadMountStatusRunnerOnce.start()
-                self.threadMountStatusRunnerSlow.start()
-                self.threadMountStatusRunnerMedium.start()
-                self.threadMountStatusRunnerFast.start()
-            else:
-                self.app.sharedMountDataLock.lockForWrite()
-                self.data['MountIP'] = self.app.ui.le_mountIP.text()
-                self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
-                self.app.sharedMountDataLock.unlock()
-            self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
-            self.mutexIPChange.unlock()
-
-    def setMAC(self):
-        valid, value = self.checkIP.checkMAC(self.app.ui.le_mountMAC)
-        self.app.sharedMountDataLock.lockForWrite()
-        self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
-        self.app.sharedMountDataLock.unlock()
+        self.mutexIPChange.lock()
+        # stopping all interaction
+        if self.isRunning:
+            # stopping thread for chang of parameters
+            self.workerMountStatusRunnerFast.stop()
+            self.workerMountStatusRunnerMedium.stop()
+            self.workerMountStatusRunnerSlow.stop()
+            self.workerMountStatusRunnerOnce.stop()
+            self.workerMountGetAlignmentModel.stop()
+            self.workerMountCommandRunner.stop()
+            self.app.sharedMountDataLock.lockForWrite()
+            self.data['MountIP'] = self.app.ui.le_mountIP.text()
+            self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
+            self.app.sharedMountDataLock.unlock()
+            # and restarting for using new parameters
+            self.threadMountCommandRunner.start()
+            self.threadMountGetAlignmentModel.start()
+            self.threadMountStatusRunnerOnce.start()
+            self.threadMountStatusRunnerSlow.start()
+            self.threadMountStatusRunnerMedium.start()
+            self.threadMountStatusRunnerFast.start()
+        else:
+            self.app.sharedMountDataLock.lockForWrite()
+            self.data['MountIP'] = self.app.ui.le_mountIP.text()
+            self.data['MountMAC'] = self.app.ui.le_mountMAC.text()
+            self.app.sharedMountDataLock.unlock()
+        self.app.messageQueue.put('Setting IP address for mount to: {0}\n'.format(self.data['MountIP']))
+        self.mutexIPChange.unlock()
 
     def run(self):
         self.logger.info('mount dispatcher started')
