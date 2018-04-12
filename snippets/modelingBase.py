@@ -83,7 +83,7 @@ class ModelingBase:
         time.sleep(4)
 
     def setupRunningParameters(self):
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
+        settlingTime = int(self.app.ui.settlingTime.value())
         directory = time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())
         return settlingTime, directory
 

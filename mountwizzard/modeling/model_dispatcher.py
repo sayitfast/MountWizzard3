@@ -99,9 +99,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Button': self.app.ui.btn_generateDSOPoints,
                             'Method': self.modelingRunner.modelPoints.generateDSOPoints,
                             'Parameter': ['self.app.ui.checkSortPoints.isChecked()',
-                                          'int(float(self.app.ui.numberHoursDSO.value()))',
-                                          'int(float(self.app.ui.numberPointsDSO.value()))',
-                                          'int(float(self.app.ui.numberHoursPreview.value()))'
+                                          'int(self.app.ui.numberHoursDSO.value())',
+                                          'int(self.app.ui.numberPointsDSO.value())',
+                                          'int(self.app.ui.numberHoursPreview.value())'
                                           ]
                         }
                     ]
@@ -172,10 +172,10 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Method': self.modelingRunner.modelPoints.generateGridPoints,
                             'Parameter': ['self.app.ui.checkDeletePointsHorizonMask.isChecked()',
                                           'self.app.ui.checkSortPoints.isChecked()',
-                                          'int(float(self.app.ui.numberGridPointsRow.value()))',
-                                          'int(float(self.app.ui.numberGridPointsCol.value()))',
-                                          'int(float(self.app.ui.altitudeMin.value()))',
-                                          'int(float(self.app.ui.altitudeMax.value()))']
+                                          'int(self.app.ui.numberGridPointsRow.value())',
+                                          'int(self.app.ui.numberGridPointsCol.value())',
+                                          'int(self.app.ui.altitudeMin.value())',
+                                          'int(self.app.ui.altitudeMax.value())']
                         }
                     ]
                 },
@@ -187,7 +187,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
                             'Method': self.modelingRunner.modelPoints.generateInitialPoints,
                             'Parameter': ['float(self.app.ui.azimuthBase.value())',
                                           'float(self.app.ui.altitudeBase.value())',
-                                          'int(float(self.app.ui.numberBase.value()))']
+                                          'int(self.app.ui.numberBase.value())']
                         }
                     ]
                 },

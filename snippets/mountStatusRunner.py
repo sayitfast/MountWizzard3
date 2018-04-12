@@ -102,9 +102,9 @@ class MountStatusRunner(PyQt5.QtCore.QObject):
             if self.app.workerModelingDispatcher.modelingRunner.imagingApps.imagingWorkerAppHandler.data['CameraStatus'] in ['READY - IDLE', 'DOWNLOADING']:
                 self.setRefractionParam()
         self.parent.data['SlewRate'] = self.mountIpDirect.sendCommand(':GMs#')
-        self.parent.data['TimeToFlip'] = int(float(self.mountIpDirect.sendCommand(':Gmte#')))
-        self.parent.data['MeridianLimitTrack'] = int(float(self.mountIpDirect.sendCommand(':Glmt#')))
-        self.parent.data['MeridianLimitSlew'] = int(float(self.mountIpDirect.sendCommand(':Glms#')))
+        self.parent.data['TimeToFlip'] = int(self.mountIpDirect.sendCommand(':Gmte#'))
+        self.parent.data['MeridianLimitTrack'] = int(self.mountIpDirect.sendCommand(':Glmt#'))
+        self.parent.data['MeridianLimitSlew'] = int(self.mountIpDirect.sendCommand(':Glms#'))
         self.parent.data['TimeToMeridian'] = int(self.parent.data['TimeToFlip'] - self.parent.data['MeridianLimitTrack'] / 360 * 24 * 60)
         self.parent.signalMountTrackPreview.emit()
         if self.isRunning:
