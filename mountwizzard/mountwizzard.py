@@ -81,7 +81,6 @@ class MountWizzardApp(widget.MwWidget):
     def __init__(self):
         super().__init__()
 
-        self.isRunning = True
         self.config = {}
         self.setObjectName("Main")
 
@@ -207,9 +206,15 @@ class MountWizzardApp(widget.MwWidget):
         # setting loglevel
         self.setLoggingLevel()
         # starting loop for cyclic data queues to gui from threads
-        self.mainLoop()
+        self.mainLoopTimer = PyQt5.QtCore.QTimer(self)
+        self.mainLoopTimer.setSingleShot(False)
+        self.mainLoopTimer.timeout.connect(self.mainLoop)
+        self.mainLoopTimer.start(self.CYCLE_MAIN_LOOP)
         # start heartbeat for checking health state of app in logfile
-        self.healthState()
+        self.healthStateTimer = PyQt5.QtCore.QTimer(self)
+        self.healthStateTimer.setSingleShot(False)
+        self.healthStateTimer.timeout.connect(self.healthState)
+        self.healthStateTimer.start(self.CYCLE_HEALTH_STATE)
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -691,7 +696,7 @@ class MountWizzardApp(widget.MwWidget):
         self.quit()
 
     def quit(self):
-        self.isRunning = False
+        self.mainLoopTimer.stop()
         self.workerAstrometry.astrometryCancel.emit()
         self.workerImaging.imagingCancel.emit()
         if platform.system() == 'Windows':
@@ -1206,6 +1211,7 @@ class MountWizzardApp(widget.MwWidget):
     def setAstrometrySolvingTime(self, status):
         self.imageWindow.ui.le_astrometrySolvingTime.setText(status)
 
+    @PyQt5.QtCore.pyqtSlot()
     def mainLoop(self):
         self.fillMountData()
         self.fillEnvironmentData()
@@ -1267,17 +1273,12 @@ class MountWizzardApp(widget.MwWidget):
         # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_MAIN_LOOP, self.mainLoop)
 
     def healthState(self):
         process = psutil.Process(os.getpid())
         self.logger.error('Health state: memory: {0}, threads: {1}'
                           .format(process.memory_info().rss,
                                   process.num_threads()))
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_HEALTH_STATE, self.healthState)
-
 
 class MyApp(PyQt5.QtWidgets.QApplication):
 
