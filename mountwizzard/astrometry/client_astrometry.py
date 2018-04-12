@@ -21,7 +21,7 @@ import logging
 import time
 import PyQt5
 import requests
-from requests_toolbelt import MultipartEncoder
+from requests_toolbelt.multipart import encoder
 from baseclasses import checkIP
 import json
 import collections
@@ -133,6 +133,9 @@ class AstrometryClient:
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
 
+    def callbackUpload(self, monitor):
+        self.main.astrometrySolvingTime.emit('{0:3d}%'.format(int(monitor.bytes_read / monitor.len * 100)))
+
     def solveImage(self, imageParams):
         self.mutexCancel.lock()
         self.cancel = False
@@ -200,12 +203,13 @@ class AstrometryClient:
             fields = collections.OrderedDict()
             fields['request-json'] = json.dumps(data)
             fields['file'] = (imageParams['Imagepath'], open(imageParams['Imagepath'], 'rb'), 'application/octet-stream')
-            m = MultipartEncoder(fields)
+            encodedMultipart = encoder.MultipartEncoder(fields)
+            monitorMultipart = encoder.MultipartEncoderMonitor(encodedMultipart, self.callbackUpload)
             try:
                 result = ''
                 response = requests.post(self.application['URLAPI'] + '/upload',
-                                         data=m,
-                                         headers={'Content-Type': m.content_type})
+                                         data=monitorMultipart,
+                                         headers={'Content-Type': monitorMultipart.content_type})
                 result = json.loads(response.text)
                 stat = result['status']
             except Exception as e:

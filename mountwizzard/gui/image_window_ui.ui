@@ -329,9 +329,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>500</x>
+     <x>490</x>
      <y>30</y>
-     <width>26</width>
+     <width>36</width>
      <height>21</height>
     </rect>
    </property>
@@ -371,7 +371,7 @@
   <widget class="QLabel" name="label_83">
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>405</x>
      <y>55</y>
      <width>81</width>
      <height>21</height>
@@ -389,7 +389,7 @@
   <widget class="QLabel" name="label_84">
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>405</x>
      <y>10</y>
      <width>81</width>
      <height>21</height>
@@ -410,7 +410,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>405</x>
      <y>75</y>
      <width>81</width>
      <height>21</height>
@@ -452,7 +452,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>410</x>
+     <x>405</x>
      <y>30</y>
      <width>81</width>
      <height>21</height>
@@ -674,9 +674,9 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>500</x>
+     <x>490</x>
      <y>75</y>
-     <width>26</width>
+     <width>36</width>
      <height>21</height>
     </rect>
    </property>
@@ -737,7 +737,7 @@
   <widget class="QCheckBox" name="checkShowCrosshairs">
    <property name="geometry">
     <rect>
-     <x>315</x>
+     <x>310</x>
      <y>75</y>
      <width>86</width>
      <height>20</height>
