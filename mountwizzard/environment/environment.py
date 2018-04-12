@@ -46,6 +46,14 @@ class Environment(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexChooser = PyQt5.QtCore.QMutex()
 
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getDataFromDevice)
+
         self.app = app
         self.thread = thread
         self.data = {
@@ -120,11 +128,13 @@ class Environment(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.environmentHandler.start()
-        self.getStatusFromDevice()
-        self.getDataFromDevice()
+        self.statusTimer.start(self.CYCLE_STATUS)
+        self.dataTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.dataTimer.stop()
+        self.statusTimer.stop()
         self.environmentHandler.stop()
 
     def stop(self):
@@ -152,8 +162,6 @@ class Environment(PyQt5.QtCore.QObject):
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_environmentConnected, 'color', 'green')
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     @PyQt5.QtCore.pyqtSlot()
     def getDataFromDevice(self):
@@ -185,6 +193,3 @@ class Environment(PyQt5.QtCore.QObject):
             self.data['WindDirection'] = 0.0
             self.data['SQR'] = 0.0
             self.app.sharedEnvironmentDataLock.unlock()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_DATA, self.getDataFromDevice)

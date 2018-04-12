@@ -38,6 +38,10 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.thread = thread
         self.signalConnected = signalConnected
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        # timers
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getStatusFast)
         self.isRunning = False
         self.socket = None
         self.sendLock = False
@@ -59,6 +63,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
+        self.dataTimer.start(self.CYCLE_STATUS_FAST)
         while self.isRunning:
             self.doCommand()
             self.doReconnect()
@@ -68,6 +73,7 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
             self.socket.abort()
         else:
             self.socket.disconnectFromHost()
+        self.dataTimer.stop()
         self.socket.hostFound.disconnect(self.handleHostFound)
         self.socket.connected.disconnect(self.handleConnected)
         self.socket.stateChanged.disconnect(self.handleStateChanged)
@@ -109,7 +115,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.signalConnected.emit({'Fast': True})
-        self.getStatusFast()
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerFast connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()

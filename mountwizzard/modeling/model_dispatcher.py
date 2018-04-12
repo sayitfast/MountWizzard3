@@ -300,8 +300,8 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         while self.isRunning:
-            if not self.doCommand():
-                time.sleep(self.CYCLE_COMMAND)
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):

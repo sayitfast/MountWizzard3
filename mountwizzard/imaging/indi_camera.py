@@ -28,7 +28,7 @@ class INDICamera:
 
     # timeout for getting an download is 30 seconds
     MAX_DOWNLOAD_TIMEOUT = 30
-    START_CAMERA_TIMEOUT = 1
+    START_CAMERA_TIMEOUT = 3
 
     def __init__(self, main, app, data):
         # make main sources available

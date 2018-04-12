@@ -38,6 +38,10 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.data = data
         self.signalConnected = signalConnected
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        # timers
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getStatusMedium)
         self.isRunning = False
         self.socket = None
         self.sendLock = False
@@ -58,11 +62,13 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
+        self.dataTimer.start(self.CYCLE_STATUS_MEDIUM)
         while self.isRunning:
             self.doCommand()
             self.doReconnect()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.dataTimer.stop()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -108,7 +114,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.signalConnected.emit({'Medium': True})
-        self.getStatusMedium()
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerMedium connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
@@ -171,9 +176,6 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                     else:
                         self.app.mountCommandQueue.put(':SRTMP-{0:3.1f}#'.format(-temperature))
             self.sendCommandQueue.put(':GMs#:Gmte#:Glmt#:Glms#:GRTMP#:GRPRS#')
-
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_MEDIUM, self.getStatusMedium)
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):

@@ -46,6 +46,14 @@ class Dome(PyQt5.QtCore.QObject):
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexChooser = PyQt5.QtCore.QMutex()
 
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getDataFromDevice)
+
         self.app = app
         self.thread = thread
         self.data = {
@@ -119,12 +127,14 @@ class Dome(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.domeHandler.start()
-        self.getStatusFromDevice()
-        self.getDataFromDevice()
+        self.statusTimer.start(self.CYCLE_STATUS)
+        self.dataTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             self.doCommand()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.dataTimer.stop()
+        self.statusTimer.stop()
         self.domeHandler.stop()
 
     def stop(self):
@@ -157,9 +167,6 @@ class Dome(PyQt5.QtCore.QObject):
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_domeConnected, 'color', 'green')
             self.app.sharedDomeDataLock.unlock()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     @PyQt5.QtCore.pyqtSlot()
     def getDataFromDevice(self):
@@ -179,6 +186,3 @@ class Dome(PyQt5.QtCore.QObject):
         if 'Azimuth' in self.data:
             self.signalDomePointer.emit(self.data['Azimuth'], self.data['Connected'])
         self.app.sharedDomeDataLock.unlock()
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getDataFromDevice)

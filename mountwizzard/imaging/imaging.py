@@ -69,6 +69,11 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.mutexData = PyQt5.QtCore.QMutex()
 
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        
         # class data
         self.data = dict()
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
@@ -153,11 +158,12 @@ class Imaging(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.cameraHandler.start()
-        self.getStatusFromDevice()
+        self.statusTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             if not self.doCommand():
                 time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.statusTimer.stop()
         self.cameraHandler.stop()
 
     def stop(self):
@@ -232,9 +238,6 @@ class Imaging(PyQt5.QtCore.QObject):
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'yellow')
             else:
                 self.app.signalChangeStylesheet.emit(self.app.ui.btn_cameraConnected, 'color', 'green')
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def updateApplicationName(self):
         # updating camera name if possible

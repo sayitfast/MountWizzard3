@@ -60,6 +60,10 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.astrometryCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.transform = transform.Transform(self.app)
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
 
         # class data
         self.data = dict()
@@ -153,11 +157,12 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.astrometryHandler.start()
-        self.getStatusFromDevice()
+        self.statusTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             self.doCommand()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.statusTimer.stop()
         self.astrometryHandler.stop()
 
     def stop(self):
@@ -226,9 +231,6 @@ class Astrometry(PyQt5.QtCore.QObject):
                     self.app.signalChangeStylesheet.emit(self.app.ui.btn_astrometryConnected, 'color', 'green')
             else:
                 self.logger.warning('This state is undefined')
-        # loop
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS, self.getStatusFromDevice)
 
     def updateApplicationName(self):
         # updating solver name name if possible

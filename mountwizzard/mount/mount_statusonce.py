@@ -28,6 +28,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_COMMAND = 0.2
+    CYCLE_STATUS_ONCE = 500
 
     def __init__(self, app, thread, data, signalConnected):
         super().__init__()
@@ -37,6 +38,10 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.data = data
         self.signalConnected = signalConnected
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        # timers
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getStatusOnce)
         self.isRunning = False
         self.socket = None
         self.sendLock = False
@@ -57,11 +62,13 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
+        self.dataTimer.start(self.CYCLE_STATUS_ONCE)
         while self.isRunning:
             self.doCommand()
             self.doReconnect()
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
+        self.dataTimer.stop()
         if self.socket.state() != PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.socket.abort()
         else:
@@ -107,7 +114,6 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.LowDelayOption, 1)
         self.socket.setSocketOption(PyQt5.QtNetwork.QAbstractSocket.KeepAliveOption, 1)
         self.signalConnected.emit({'Once': True})
-        self.getStatusOnce()
         self.app.sharedMountDataLock.lockForRead()
         self.logger.info('Mount RunnerOnce connected at {0}:{1}'.format(self.data['MountIP'], self.data['MountPort']))
         self.app.sharedMountDataLock.unlock()
@@ -135,9 +141,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
     def getStatusOnce(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.sendCommandQueue.put(':U2#:Gev#:Gg#:Gt#:GVD#:GVN#:GVP#:GVT#:GVZ#')
-        else:
-            if self.isRunning:
-                PyQt5.QtCore.QTimer.singleShot(self.CYCLE_COMMAND, self.getStatusOnce)
+            self.dataTimer.stop()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
