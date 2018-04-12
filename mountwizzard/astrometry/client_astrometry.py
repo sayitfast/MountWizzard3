@@ -48,8 +48,11 @@ class AstrometryClient:
                  }
 
     application = {
-        'ServerIP': '192.168.2.161',
-        'ServerPort': 3499,
+        'AstrometryHost': '192.168.2.161',
+        'AstrometryPort': 3499,
+        'URLLogin': '',
+        'URLAPI' : '',
+        'APIKey' : '',
         'Connected': False,
         'Available': True,
         'Name': 'ASTROMETRY.NET',
@@ -66,9 +69,6 @@ class AstrometryClient:
         self.checkIP = checkIP.CheckIP()
         self.settingsChanged = False
         self.timeoutMax = 60
-        self.urlLogin = ''
-        self.urlAPI = ''
-        self.key = ''
 
         self.app.ui.le_AstrometryHost.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
@@ -93,9 +93,9 @@ class AstrometryClient:
         self.setAstrometryNet()
 
     def storeConfig(self):
-        self.app.config['AstrometryPortOnline'] = self.app.ui.le_AstrometryPort.text()
-        self.app.config['AstrometryHostOnline'] = self.app.ui.le_AstrometryHost.text()
-        self.app.config['AstrometryAPIKeyOnline'] = self.app.ui.le_AstrometryAPIKey.text()
+        self.app.config['AstrometryPort'] = self.app.ui.le_AstrometryPort.text()
+        self.app.config['AstrometryHost'] = self.app.ui.le_AstrometryHost.text()
+        self.app.config['AstrometryAPIKey'] = self.app.ui.le_AstrometryAPIKey.text()
         self.app.config['AstrometryTimeout'] = self.app.ui.le_astrometryTimeout.text()
         self.app.config['AstrometryDownsample'] = self.app.ui.astrometryDownsampling.value()
 
@@ -119,18 +119,16 @@ class AstrometryClient:
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.settingsChanged = False
-            self.urlAPI = 'http://' + self.app.ui.le_AstrometryHost.text() + ':' + self.app.ui.le_AstrometryPort.text() + '/api'
-            self.urlLogin = 'http://' + self.app.ui.le_AstrometryHost.text() + ':' + self.app.ui.le_AstrometryPort.text() + '/api/login'
-            self.key = self.app.ui.le_AstrometryAPIKey.text()
-            self.application['Name'] = 'Online'
+            self.application['URLAPI'] = 'http://' + self.app.ui.le_AstrometryHost.text() + ':' + self.app.ui.le_AstrometryPort.text() + '/api'
+            self.application['URLLogin'] = 'http://' + self.app.ui.le_AstrometryHost.text() + ':' + self.app.ui.le_AstrometryPort.text() + '/api/login'
+            self.application['APIKey'] = self.app.ui.le_AstrometryAPIKey.text()
+            self.application['Name'] = 'Astrometry'
             self.timeoutMax = float(self.app.ui.le_astrometryTimeout.text())
 
     def getStatus(self):
-        if self.urlAPI == '':
+        if self.application['URLAPI'] == '':
             return
-        hostIP = self.app.ui.le_AstrometryHost.text()
-        hostPort = int(float(self.app.ui.le_AstrometryPort.text()))
-        if self.checkIP.checkIPAvailable(hostIP, hostPort):
+        if self.checkIP.checkIPAvailable(self.application['AstrometryHost'], self.application['AstrometryPort']):
             self.application['Status'] = 'OK'
             self.data['CONNECTION']['CONNECT'] = 'On'
         else:
