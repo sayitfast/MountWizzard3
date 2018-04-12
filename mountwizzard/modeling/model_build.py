@@ -502,7 +502,7 @@ class ModelingBuild:
         else:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
-        modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
+        modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
         # simulation only works with indi
         if self.app.workerINDI.telescopeDevice != '':
             modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
@@ -562,7 +562,7 @@ class ModelingBuild:
         else:
             domeIsConnected = False
         modelingData['DomeIsConnected'] = domeIsConnected
-        modelingData['SettlingTime'] = int(float(self.app.ui.settlingTime.value()))
+        modelingData['SettlingTime'] = int(self.app.ui.settlingTime.value())
         # simulation only works with indi
         if self.app.workerINDI.telescopeDevice != '':
             modelingData['Simulation'] = self.app.ui.checkSimulation.isChecked()
@@ -590,7 +590,7 @@ class ModelingBuild:
     def runCheckModel(self):
         if not self.checkModelingAvailable():
             return
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
+        settlingTime = int(self.app.ui.settlingTime.value())
         points = self.modelPoints.BasePoints + self.modelPoints.RefinementPoints
         if len(points) > 0:
             simulation = self.app.ui.checkSimulation.isChecked()
@@ -607,9 +607,9 @@ class ModelingBuild:
     def runTimeChangeModel(self):
         if not self.checkModelingAvailable():
             return
-        settlingTime = int(float(self.app.ui.settlingTime.value()))
+        settlingTime = int(self.app.ui.settlingTime.value())
         points = []
-        for i in range(0, int(float(self.app.ui.numberRunsTimeChange.value()))):
+        for i in range(0, int(self.app.ui.numberRunsTimeChange.value())):
             points.append((int(self.app.ui.azimuthTimeChange.value()), int(self.app.ui.altitudeTimeChange.value()),
                            PyQt5.QtWidgets.QGraphicsTextItem(''), True))
         simulation = self.app.ui.checkSimulation.isChecked()
@@ -625,12 +625,12 @@ class ModelingBuild:
     def runHystereseModel(self):
         if not self.checkModelingAvailable():
             return
-        waitingTime = int(float(self.app.ui.settlingTime.value()))
-        alt1 = int(float(self.app.ui.altitudeHysterese1.value()))
-        alt2 = int(float(self.app.ui.altitudeHysterese2.value()))
-        az1 = int(float(self.app.ui.azimuthHysterese1.value()))
-        az2 = int(float(self.app.ui.azimuthHysterese2.value()))
-        numberRunsHysterese = int(float(self.app.ui.numberRunsHysterese.value()))
+        waitingTime = int(self.app.ui.settlingTime.value())
+        alt1 = int(self.app.ui.altitudeHysterese1.value())
+        alt2 = int(self.app.ui.altitudeHysterese2.value())
+        az1 = int(self.app.ui.azimuthHysterese1.value())
+        az2 = int(self.app.ui.azimuthHysterese2.value())
+        numberRunsHysterese = int(self.app.ui.numberRunsHysterese.value())
         points = []
         for i in range(0, numberRunsHysterese):
             points.append((az1, alt1, PyQt5.QtWidgets.QGraphicsTextItem(''), True))

@@ -815,22 +815,18 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
             return
         addressComputer = host[0].split('.')
-        addressMount = self.ui.le_mountIP.text().split('.')
+        addressMount = socket.gethostbyname(self.ui.le_mountIP.text()).split('.')
         if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
             self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
             self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
             return
-        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(True))
-        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
-        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
+        self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
         PyQt5.QtWidgets.QApplication.processEvents()
         send_magic_packet(self.ui.le_mountMAC.text().strip())
         time.sleep(1)
         self.messageQueue.put('Send WOL and boot mount\n')
         self.logger.debug('Send WOL packet and boot Mount')
-        self.ui.btn_mountBoot.setProperty('running', PyQt5.QtCore.QVariant(False))
-        self.ui.btn_mountBoot.style().unpolish(self.ui.btn_mountBoot)
-        self.ui.btn_mountBoot.style().polish(self.ui.btn_mountBoot)
+        self.changeStylesheet(self.ui.btn_mountBoot, 'running', False)
 
     def setHorizonLimitHigh(self):
         _text = self.ui.le_horizonLimitHigh.text()

@@ -167,7 +167,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                 self.data['FW'] = 0
             valueList = messageToProcess.strip('#').split('#')
             # now the first part of the command cluster
-            numberStars = int(float(valueList[0]))
+            numberStars = int(valueList[0])
             self.data['NumberAlignmentStars'] = numberStars
             self.data['Number'] = numberStars
             del valueList[0]
@@ -210,7 +210,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
                     else:
                         self.data['AltitudeKnobs'] = 0
                     if a8 != 'E':
-                        self.data['Terms'] = int(float(a8))
+                        self.data['Terms'] = int(a8)
                     else:
                         self.data['Terms'] = 0
                     if a9 != 'E':

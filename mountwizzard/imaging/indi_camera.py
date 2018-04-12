@@ -113,8 +113,8 @@ class INDICamera:
         self.cancel = False
         self.mutexCancel.unlock()
 
-        binning = int(float(imageParams['Binning']))
-        exposure = int(float(imageParams['Exposure']))
+        binning = int(imageParams['Binning'])
+        exposure = int(imageParams['Exposure'])
         filename = imageParams['File']
         path = imageParams['BaseDirImages']
         imagePath = path + '/' + filename

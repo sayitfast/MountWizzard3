@@ -191,19 +191,19 @@ class Imaging(PyQt5.QtCore.QObject):
         imageParams['BaseDirImages'] = self.IMAGEDIR + '/' + imageParams['Directory']
         if not os.path.isdir(imageParams['BaseDirImages']):
             os.makedirs(imageParams['BaseDirImages'])
-        imageParams['Binning'] = int(float(self.app.ui.cameraBin.value()))
-        imageParams['Exposure'] = int(float(self.app.ui.cameraExposure.value()))
-        imageParams['Iso'] = int(float(self.app.ui.isoSetting.value()))
+        imageParams['Binning'] = int(self.app.ui.cameraBin.value())
+        imageParams['Exposure'] = int(self.app.ui.cameraExposure.value())
+        imageParams['Iso'] = int(self.app.ui.isoSetting.value())
         if self.app.ui.checkDoSubframe.isChecked():
             scaleSubframe = self.app.ui.scaleSubframe.value() / 100
-            imageParams['SizeX'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']) * scaleSubframe)
-            imageParams['SizeY'] = int(float(self.data['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe)
+            imageParams['SizeX'] = int(self.data['CCD_INFO']['CCD_MAX_X']) * scaleSubframe
+            imageParams['SizeY'] = int(self.data['CCD_INFO']['CCD_MAX_Y']) * scaleSubframe
             imageParams['OffX'] = int((float(self.data['CCD_INFO']['CCD_MAX_X']) - imageParams['SizeX']) / 2)
             imageParams['OffY'] = int((float(self.data['CCD_INFO']['CCD_MAX_Y']) - imageParams['SizeY']) / 2)
             imageParams['CanSubframe'] = True
         else:
-            imageParams['SizeX'] = int(float(self.data['CCD_INFO']['CCD_MAX_X']))
-            imageParams['SizeY'] = int(float(self.data['CCD_INFO']['CCD_MAX_Y']))
+            imageParams['SizeX'] = int(self.data['CCD_INFO']['CCD_MAX_X'])
+            imageParams['SizeY'] = int(self.data['CCD_INFO']['CCD_MAX_Y'])
             imageParams['OffX'] = 0
             imageParams['OffY'] = 0
             imageParams['CanSubframe'] = False

@@ -200,11 +200,11 @@ class MountStatusRunnerMedium(PyQt5.QtCore.QObject):
                 if len(valueList[0]) > 0:
                     self.data['SlewRate'] = valueList[0]
                 if len(valueList[1]) > 0:
-                    self.data['TimeToFlip'] = int(float(valueList[1]))
+                    self.data['TimeToFlip'] = int(valueList[1])
                 if len(valueList[2]) > 0:
-                    self.data['MeridianLimitTrack'] = int(float(valueList[2]))
+                    self.data['MeridianLimitTrack'] = int(valueList[2])
                 if len(valueList[3]) > 0:
-                    self.data['MeridianLimitSlew'] = int(float(valueList[3]))
+                    self.data['MeridianLimitSlew'] = int(valueList[3])
                 self.data['TimeToMeridian'] = int(self.data['TimeToFlip'] - self.data['MeridianLimitTrack'] / 360 * 24 * 60)
                 if len(valueList[4]) > 0:
                     self.data['RefractionTemperature'] = valueList[4]
