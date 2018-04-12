@@ -38,18 +38,15 @@ class Transform:
         self.julianDate = 2458096.5
         # connect data transfer
         self.app.signalMountSiteData.connect(self.setSiteData)
-        # todo: check use of mount julian date
-        # self.app.signalJulianDate.connect(self.setJulianDate)
+        self.app.signalJulianDate.connect(self.setJulianDate)
 
     def setSiteData(self, lat, lon, height):
         self.siteLat = self.degStringToDecimal(lat)
         self.siteLon = self.degStringToDecimal(lon)
         self.siteHeight = float(height)
 
-    # todo: check use of mount julian date
-    # @PyQt5.QtCore.pyqtSlot(float)
-    # def setJulianDate(self, jd):
-    #     self.julianDate = jd
+    def setJulianDate(self, jd):
+        self.julianDate = jd
 
     def topocentricToAzAlt(self, ra, dec):
         self.mutexTopocentric.lock()
