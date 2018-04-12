@@ -145,8 +145,6 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
     def getStatusFast(self):
         if self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState:
             self.sendCommandQueue.put(':U2#:GS#:Ginfo#:')
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLE_STATUS_FAST, self.getStatusFast)
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):
