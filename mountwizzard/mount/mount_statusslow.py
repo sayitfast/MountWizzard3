@@ -38,10 +38,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.data = data
         self.signalConnected = signalConnected
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        # timers
-        self.dataTimer = PyQt5.QtCore.QTimer(self)
-        self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatusSlow)
+        self.dataTimer = None
         self.isRunning = False
         self.socket = None
         self.sendLock = False
@@ -62,6 +59,10 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
+        # timers
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getStatusSlow)
         self.dataTimer.start(self.CYCLE_STATUS_SLOW)
         while self.isRunning:
             self.doCommand()

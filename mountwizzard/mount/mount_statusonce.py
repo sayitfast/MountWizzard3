@@ -38,10 +38,7 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.data = data
         self.signalConnected = signalConnected
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        # timers
-        self.dataTimer = PyQt5.QtCore.QTimer(self)
-        self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getStatusOnce)
+        self.dataTimer = None
         self.isRunning = False
         self.socket = None
         self.sendLock = False
@@ -62,6 +59,10 @@ class MountStatusRunnerOnce(PyQt5.QtCore.QObject):
         self.socket.disconnected.connect(self.handleDisconnect)
         self.socket.readyRead.connect(self.handleReadyRead)
         self.socket.error.connect(self.handleError)
+        # timers
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getStatusOnce)
         self.dataTimer.start(self.CYCLE_STATUS_ONCE)
         while self.isRunning:
             self.doCommand()

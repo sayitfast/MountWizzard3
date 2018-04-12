@@ -60,10 +60,7 @@ class Astrometry(PyQt5.QtCore.QObject):
         self.astrometryCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.transform = transform.Transform(self.app)
-        # timers
-        self.statusTimer = PyQt5.QtCore.QTimer(self)
-        self.statusTimer.setSingleShot(False)
-        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.statusTimer = None
 
         # class data
         self.data = dict()
@@ -157,6 +154,10 @@ class Astrometry(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.astrometryHandler.start()
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             self.doCommand()

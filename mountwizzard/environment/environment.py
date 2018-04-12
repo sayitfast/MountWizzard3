@@ -45,14 +45,8 @@ class Environment(PyQt5.QtCore.QObject):
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
         self.mutexChooser = PyQt5.QtCore.QMutex()
-
-        # timers
-        self.statusTimer = PyQt5.QtCore.QTimer(self)
-        self.statusTimer.setSingleShot(False)
-        self.statusTimer.timeout.connect(self.getStatusFromDevice)
-        self.dataTimer = PyQt5.QtCore.QTimer(self)
-        self.dataTimer.setSingleShot(False)
-        self.dataTimer.timeout.connect(self.getDataFromDevice)
+        self.dataTimer = None
+        self.statusTimer = None
 
         self.app = app
         self.thread = thread
@@ -128,6 +122,13 @@ class Environment(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.environmentHandler.start()
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.dataTimer = PyQt5.QtCore.QTimer(self)
+        self.dataTimer.setSingleShot(False)
+        self.dataTimer.timeout.connect(self.getDataFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
         self.dataTimer.start(self.CYCLE_STATUS)
         while self.isRunning:

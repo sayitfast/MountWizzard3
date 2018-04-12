@@ -68,11 +68,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.imagingCommandQueue = queue.Queue()
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.mutexData = PyQt5.QtCore.QMutex()
-
-        # timers
-        self.statusTimer = PyQt5.QtCore.QTimer(self)
-        self.statusTimer.setSingleShot(False)
-        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.statusTimer = None
         
         # class data
         self.data = dict()
@@ -158,6 +154,10 @@ class Imaging(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.cameraHandler.start()
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             if not self.doCommand():
