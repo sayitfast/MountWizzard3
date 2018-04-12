@@ -159,10 +159,13 @@ class AstrometryClient:
         if self.key != '':
             # we have to login with the api key for the online solver to get the session key
             try:
-                response = requests.post(self.urlLogin, data={'request-json': json.dumps({"apikey": self.key})}, headers={})
+                response = requests.post(self.application['URLLogin'],
+                                         data={'request-json': json.dumps({"apikey": self.application['APIKey']})},
+                                         headers={})
                 result = json.loads(response.text)
             except Exception as e:
-                self.logger.error('Problem setting api key, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                self.logger.error('Problem setting api key, error: {0}, result: {1}, response: {2}'
+                                  .format(e, result, response))
                 imageParams['Message'] = 'Login with api key failed'
                 errorState = True
             finally:
@@ -202,7 +205,9 @@ class AstrometryClient:
             m = MultipartEncoder(fields)
             try:
                 result = ''
-                response = requests.post(self.urlAPI + '/upload', data=m, headers={'Content-Type': m.content_type})
+                response = requests.post(self.application['URLAPI'] + '/upload',
+                                         data=m,
+                                         headers={'Content-Type': m.content_type})
                 result = json.loads(response.text)
                 stat = result['status']
             except Exception as e:
@@ -228,10 +233,14 @@ class AstrometryClient:
             headers = {}
             try:
                 result = ''
-                response = requests.post(self.urlAPI + '/submissions/{0}'.format(submissionID), data=data, headers=headers)
+                response = requests.post(self.application['URLAPI'] + '/submissions/{0}'
+                                         .format(submissionID),
+                                         data=data,
+                                         headers=headers)
                 result = json.loads(response.text)
             except Exception as e:
-                self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'.format(e, result, response))
+                self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'
+                                  .format(e, result, response))
                 errorState = True
                 imageParams['Message'] = 'Error submissions'
                 break
@@ -257,7 +266,10 @@ class AstrometryClient:
             headers = {}
             try:
                 result = ''
-                response = requests.post(self.urlAPI + '/jobs/{0}'.format(jobID), data=data, headers=headers)
+                response = requests.post(self.application['URLAPI'] + '/jobs/{0}'
+                                         .format(jobID),
+                                         data=data,
+                                         headers=headers)
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem jobs, error: {0}, result: {1}, response: {2}'.format(e, result, response))
@@ -283,7 +295,10 @@ class AstrometryClient:
         if not errorState:
             try:
                 result = ''
-                response = requests.post(self.urlAPI + '/jobs/{0}/calibration'.format(jobID), data=data, headers=headers)
+                response = requests.post(self.application['URLAPI'] + '/jobs/{0}/calibration'
+                                         .format(jobID),
+                                         data=data,
+                                         headers=headers)
                 result = json.loads(response.text)
                 imageParams['Solved'] = True
                 imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
