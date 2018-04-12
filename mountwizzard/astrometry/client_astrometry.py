@@ -47,28 +47,29 @@ class AstrometryClient:
                  'parity': 2
                  }
 
-    application = {
-        'AstrometryHost': '192.168.2.161',
-        'AstrometryPort': 3499,
-        'URLLogin': '',
-        'URLAPI' : '',
-        'APIKey' : '',
-        'Connected': False,
-        'Available': True,
-        'Name': 'ASTROMETRY.NET',
-        'Status': ''
-    }
-
     def __init__(self, main, app, data):
         self.main = main
         self.app = app
         self.data = data
+        self.application = dict()
         self.cancel = False
         self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.checkIP = checkIP.CheckIP()
         self.settingsChanged = False
         self.timeoutMax = 60
+
+        self.application = {
+            'AstrometryHost': '192.168.2.161',
+            'AstrometryPort': 3499,
+            'URLLogin': '',
+            'URLAPI': '',
+            'APIKey': '',
+            'Connected': False,
+            'Available': True,
+            'Name': 'ASTROMETRY.NET',
+            'Status': ''
+        }
 
         self.app.ui.le_AstrometryHost.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
@@ -79,8 +80,10 @@ class AstrometryClient:
                 self.app.ui.le_astrometryTimeout.setText(self.app.config['AstrometryTimeout'])
             if 'AstrometryHost' in self.app.csonfig:
                 self.app.ui.le_AstrometryHost.setText(self.app.config['AstrometryHost'])
+                self.application['AstrometryHost'] = self.app.config['AstrometryHost']
             if 'AstrometryPort' in self.app.config:
                 self.app.ui.le_AstrometryPort.setText(self.app.config['AstrometryPort'])
+                self.application['AstrometryPort'] = self.app.config['AstrometryPort']
             if 'AstrometryAPIKey' in self.app.config:
                 self.app.ui.le_AstrometryAPIKey.setText(self.app.config['AstrometryAPIKey'])
             if 'AstrometryDownsample' in self.app.config:
@@ -119,8 +122,12 @@ class AstrometryClient:
             self.data['Status'] = 'ERROR'
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.settingsChanged = False
-            self.application['URLAPI'] = 'http://' + self.app.ui.le_AstrometryHost.text() + ':' + self.app.ui.le_AstrometryPort.text() + '/api'
-            self.application['URLLogin'] = 'http://' + self.app.ui.le_AstrometryHost.text() + ':' + self.app.ui.le_AstrometryPort.text() + '/api/login'
+            host = self.app.ui.le_AstrometryHost.text()
+            port = self.app.ui.le_AstrometryPort.text()
+            self.application['AstrometryHost'] = host
+            self.application['AstrometryPort'] = port
+            self.application['URLAPI'] = 'http://' + host + ':' + port + '/api'
+            self.application['URLLogin'] = 'http://' + host + ':' + port + '/api/login'
             self.application['APIKey'] = self.app.ui.le_AstrometryAPIKey.text()
             self.application['Name'] = 'Astrometry'
             self.timeoutMax = float(self.app.ui.le_astrometryTimeout.text())
