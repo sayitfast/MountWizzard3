@@ -106,9 +106,6 @@ class Remote(PyQt5.QtCore.QObject):
                 self.stop()
 
     def run(self):
-        if not self.tcpServer.listen(PyQt5.QtNetwork.QHostAddress(self.data['RemoteIP']), self.data['RemotePort']):
-            self.logger.warning('port {0} is already in use'.format(self.data['RemotePort']))
-            return
         # a running thread is shown with variable isRunning = True. This thread should hav it's own event loop
         self.logger.info('remote started')
         self.mutexIsRunning.lock()
@@ -116,8 +113,14 @@ class Remote(PyQt5.QtCore.QObject):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.tcpServer = PyQt5.QtNetwork.QTcpServer(self)
-        self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
-        self.tcpServer.newConnection.connect(self.addConnection)
+        if not self.tcpServer.listen(PyQt5.QtNetwork.QHostAddress(self.data['RemoteIP']), self.data['RemotePort']):
+            self.logger.warning('port {0} is already in use'.format(self.data['RemotePort']))
+            self.mutexIsRunning.lock()
+            self.isRunning = False
+            self.mutexIsRunning.unlock()
+        else:
+            self.logger.info('MountWizzard started listening on port {0}'.format(self.data['RemotePort']))
+            self.tcpServer.newConnection.connect(self.addConnection)
         while self.isRunning:
             time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()

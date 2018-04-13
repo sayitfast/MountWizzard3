@@ -2,9 +2,9 @@
 
 #### Application for use in 10micron Mount environment
 Supports SGPro, TheSkyX, Stickstation, MBox, UniHedron SQR, OpenWeather and some more ASCOM parts
-(C) Michael Würtenberger 2016, 2017
+(C) Michael Würtenberger 2016, 2017, 2018
 
-#### Version release: 2.4, test version actual 2.7.1 beta
+#### Version release: open, test version actual 3.0alpha22
 
 [Link to the extended documentation and handbook of MountWizzard](./docu/home.md)
 
@@ -34,23 +34,6 @@ by calling the ASCOM chooser for dome an in the selection window upcoming just p
 driver.
 
 ### There were some videos for installation and first use out:
-The Application could be found under /dist on github.
-
-Installation of MountWizzard: https://www.youtube.com/watch?v=GX0H6ddq0KM
-
-Update to new version: https://www.youtube.com/watch?v=KduOp2mn0N8
-
-Make a new mount model: https://www.youtube.com/watch?v=nCQLErKP-yo
-
-Imaging with SGPro: https://www.youtube.com/watch?v=9mA4qxPaE-8
-
-Make model along DSO path: https://www.youtube.com/watch?v=KhVvuXzNezE
-
-Direct Mount Connection via IP: https://youtu.be/JmdhXn4ZDlE
-
-Download Orbital Elements and UTC Data for mount update: https://youtu.be/U4dty-PMXLo
-
-Another First Use Video: https://youtu.be/JMAfZoq8rBI
 
 If you have any hints / bugs / feature requests, please let me know. Right location is 10micron forum under
 the software section: http://www.10micron.eu/forum/viewforum.php?f=18&sid=ae4c89d5d18adb85c3e9d32c26fba2f4

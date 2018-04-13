@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>8</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -9813,7 +9813,7 @@ Analyse File</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>6</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -10521,7 +10521,7 @@ Analyse File</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of mount, &lt;/span&gt;ip address only, no host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of mount, ip address and host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -10998,7 +10998,7 @@ Analyse File</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server, &lt;/span&gt;ip address only, no host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of INDI server, ip address and host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -11467,7 +11467,7 @@ Analyse File</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of relay switch, &lt;/span&gt;ip address only, no host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of relay switch, ip address and host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -11730,7 +11730,7 @@ Analyse File</string>
         <bool>false</bool>
        </property>
        <property name="toolTip">
-        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:400;&quot;&gt;IP address of INDI server, ip address only, no host names!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;IP address of INDI server, ip address and host names!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
        <property name="layoutDirection">
         <enum>Qt::RightToLeft</enum>
@@ -15303,8 +15303,8 @@ Analyse File</string>
   <tabstop>btn_mountShutdown</tabstop>
   <tabstop>btn_loadFrom</tabstop>
   <tabstop>btn_saveConfigQuit</tabstop>
-  <tabstop>btn_saveConfigAs</tabstop>
   <tabstop>btn_saveConfig</tabstop>
+  <tabstop>btn_saveConfigAs</tabstop>
   <tabstop>le_slewRate</tabstop>
   <tabstop>le_telescopeDualTrack</tabstop>
   <tabstop>btn_setDualTracking</tabstop>
@@ -15332,16 +15332,53 @@ Analyse File</string>
   <tabstop>le_UTCDataValid</tabstop>
   <tabstop>le_UTCDataExpirationDate</tabstop>
   <tabstop>btn_setRefractionCorrection</tabstop>
+  <tabstop>checkAutoRefractionNone</tabstop>
+  <tabstop>checkAutoRefractionContinous</tabstop>
+  <tabstop>checkAutoRefractionNotTracking</tabstop>
   <tabstop>btn_setRefractionParameters</tabstop>
+  <tabstop>cameraExposure</tabstop>
+  <tabstop>cameraBin</tabstop>
+  <tabstop>checkDoSubframe</tabstop>
+  <tabstop>scaleSubframe</tabstop>
+  <tabstop>checkFastDownload</tabstop>
+  <tabstop>isoSetting</tabstop>
+  <tabstop>settlingTime</tabstop>
+  <tabstop>checkKeepImages</tabstop>
+  <tabstop>pixelSize</tabstop>
+  <tabstop>focalLength</tabstop>
+  <tabstop>astrometryDownsampling</tabstop>
+  <tabstop>btn_openHemisphereWindow</tabstop>
+  <tabstop>btn_openImageWindow</tabstop>
+  <tabstop>btn_openAnalyseWindow</tabstop>
+  <tabstop>btn_runBatchModel</tabstop>
+  <tabstop>btn_loadHorizonMask</tabstop>
+  <tabstop>btn_saveHorizonMask</tabstop>
+  <tabstop>btn_saveHorizonMaskAs</tabstop>
+  <tabstop>checkUseFileHorizonLine</tabstop>
+  <tabstop>checkUseMinimumHorizonLine</tabstop>
+  <tabstop>altitudeMinimumHorizon</tabstop>
+  <tabstop>checkDeletePointsHorizonMask</tabstop>
+  <tabstop>checkSortPoints</tabstop>
+  <tabstop>btn_loadAnalyseData</tabstop>
+  <tabstop>btn_showInitialModelPoints</tabstop>
+  <tabstop>btn_loadInitialModelPoints</tabstop>
+  <tabstop>btn_saveInitialModelPoints</tabstop>
+  <tabstop>btn_saveInitialModelPointsAs</tabstop>
   <tabstop>btn_generateInitialPoints</tabstop>
   <tabstop>altitudeBase</tabstop>
   <tabstop>azimuthBase</tabstop>
+  <tabstop>numberBase</tabstop>
   <tabstop>btn_runInitialModel</tabstop>
   <tabstop>btn_cancelInitialModel</tabstop>
+  <tabstop>btn_plateSolveSync</tabstop>
+  <tabstop>btn_showFullModelPoints</tabstop>
+  <tabstop>btn_loadFullModelPoints</tabstop>
+  <tabstop>btn_saveFullModelPoints</tabstop>
+  <tabstop>btn_saveFullModelPointsAs</tabstop>
   <tabstop>btn_generateGridPoints</tabstop>
   <tabstop>numberGridPointsRow</tabstop>
-  <tabstop>altitudeMin</tabstop>
   <tabstop>numberGridPointsCol</tabstop>
+  <tabstop>altitudeMin</tabstop>
   <tabstop>altitudeMax</tabstop>
   <tabstop>btn_generateMaxPoints</tabstop>
   <tabstop>btn_generateNormalPoints</tabstop>
@@ -15353,10 +15390,11 @@ Analyse File</string>
   <tabstop>btn_runFullModel</tabstop>
   <tabstop>btn_cancelFullModel</tabstop>
   <tabstop>btn_deleteWorstPoint</tabstop>
+  <tabstop>btn_reloadAlignmentModel</tabstop>
   <tabstop>btn_runTargetRMSAlignment</tabstop>
+  <tabstop>targetRMS</tabstop>
   <tabstop>btn_cancelRunTargetRMSAlignment</tabstop>
   <tabstop>btn_clearModel</tabstop>
-  <tabstop>targetRMS</tabstop>
   <tabstop>btn_saveBackupModel</tabstop>
   <tabstop>btn_loadBackupModel</tabstop>
   <tabstop>btn_saveInitialModel</tabstop>
@@ -15390,25 +15428,48 @@ Analyse File</string>
   <tabstop>btn_relay6</tabstop>
   <tabstop>btn_relay7</tabstop>
   <tabstop>btn_relay8</tabstop>
-  <tabstop>settingsTabWidget</tabstop>
-  <tabstop>checkSimulation</tabstop>
-  <tabstop>pd_chooseImaging</tabstop>
-  <tabstop>pd_chooseEnvironment</tabstop>
-  <tabstop>pd_chooseDome</tabstop>
-  <tabstop>btn_setupAscomDomeDriver</tabstop>
-  <tabstop>le_ascomDomeDriverName</tabstop>
-  <tabstop>btn_setupAscomEnvironmentDriver</tabstop>
-  <tabstop>le_ascomEnvironmentDriverName</tabstop>
   <tabstop>le_mountIP</tabstop>
   <tabstop>le_mountMAC</tabstop>
-  <tabstop>checkEnableRemoteAccess</tabstop>
-  <tabstop>le_remotePort</tabstop>
   <tabstop>checkEnableINDI</tabstop>
   <tabstop>le_INDIServerIP</tabstop>
   <tabstop>le_INDIServerPort</tabstop>
   <tabstop>le_INDIStatus</tabstop>
   <tabstop>le_INDICCD</tabstop>
   <tabstop>le_INDIEnvironment</tabstop>
+  <tabstop>le_INDIDome</tabstop>
+  <tabstop>le_AstrometryHost</tabstop>
+  <tabstop>le_AstrometryPort</tabstop>
+  <tabstop>le_AstrometryAPIKey</tabstop>
+  <tabstop>le_astrometryTimeout</tabstop>
+  <tabstop>checkEnableRelay</tabstop>
+  <tabstop>le_relayIP</tabstop>
+  <tabstop>le_relayUsername</tabstop>
+  <tabstop>le_relayPassword</tabstop>
+  <tabstop>checkEnableRemoteAccess</tabstop>
+  <tabstop>le_remotePort</tabstop>
+  <tabstop>pd_chooseImaging</tabstop>
+  <tabstop>pd_chooseAstrometry</tabstop>
+  <tabstop>pd_chooseEnvironment</tabstop>
+  <tabstop>pd_chooseDome</tabstop>
+  <tabstop>btn_setupAscomDomeDriver</tabstop>
+  <tabstop>btn_setupAscomEnvironmentDriver</tabstop>
+  <tabstop>btn_selectCatalogue</tabstop>
+  <tabstop>btn_downloadEarthrotation</tabstop>
+  <tabstop>btn_downloadSpacestations</tabstop>
+  <tabstop>btn_downloadSatbrighest</tabstop>
+  <tabstop>btn_downloadComets</tabstop>
+  <tabstop>btn_downloadAsteroidsMPC5000</tabstop>
+  <tabstop>btn_downloadAsteroidsNEA</tabstop>
+  <tabstop>btn_downloadAsteroidsPHA</tabstop>
+  <tabstop>btn_downloadAsteroidsTNO</tabstop>
+  <tabstop>btn_downloadAll</tabstop>
+  <tabstop>checkEarthrotation</tabstop>
+  <tabstop>checkTLE</tabstop>
+  <tabstop>checkComets</tabstop>
+  <tabstop>checkAsteroids</tabstop>
+  <tabstop>checkFilterMPC</tabstop>
+  <tabstop>le_filterExpressionMPC</tabstop>
+  <tabstop>btn_uploadMount</tabstop>
   <tabstop>le_parkPos1Text</tabstop>
   <tabstop>le_azParkPos1</tabstop>
   <tabstop>le_altParkPos1</tabstop>
@@ -15427,28 +15488,46 @@ Analyse File</string>
   <tabstop>le_parkPos6Text</tabstop>
   <tabstop>le_azParkPos6</tabstop>
   <tabstop>le_altParkPos6</tabstop>
-  <tabstop>btn_downloadEarthrotation</tabstop>
-  <tabstop>btn_downloadSpacestations</tabstop>
-  <tabstop>btn_downloadSatbrighest</tabstop>
-  <tabstop>btn_downloadComets</tabstop>
-  <tabstop>btn_downloadAsteroidsMPC5000</tabstop>
-  <tabstop>btn_downloadAsteroidsNEA</tabstop>
-  <tabstop>btn_downloadAsteroidsPHA</tabstop>
-  <tabstop>btn_downloadAsteroidsTNO</tabstop>
-  <tabstop>btn_downloadAll</tabstop>
-  <tabstop>checkEarthrotation</tabstop>
-  <tabstop>checkTLE</tabstop>
-  <tabstop>checkComets</tabstop>
-  <tabstop>checkAsteroids</tabstop>
-  <tabstop>checkFilterMPC</tabstop>
-  <tabstop>le_filterExpressionMPC</tabstop>
-  <tabstop>btn_uploadMount</tabstop>
-  <tabstop>mainTabWidget</tabstop>
-  <tabstop>btn_driverMountConnected</tabstop>
-  <tabstop>btn_domeConnected</tabstop>
+  <tabstop>relay1Text</tabstop>
+  <tabstop>relay1Function</tabstop>
+  <tabstop>relay2Text</tabstop>
+  <tabstop>relay2Function</tabstop>
+  <tabstop>relay3Text</tabstop>
+  <tabstop>relay3Function</tabstop>
+  <tabstop>relay4Text</tabstop>
+  <tabstop>relay4Function</tabstop>
+  <tabstop>relay5Text</tabstop>
+  <tabstop>relay5Function</tabstop>
+  <tabstop>relay6Text</tabstop>
+  <tabstop>relay6Function</tabstop>
+  <tabstop>relay7Text</tabstop>
+  <tabstop>relay7Function</tabstop>
+  <tabstop>relay8Text</tabstop>
+  <tabstop>relay8Function</tabstop>
+  <tabstop>soundMountSlewFinished</tabstop>
+  <tabstop>soundDomeSlewFinished</tabstop>
+  <tabstop>soundMountAlert</tabstop>
+  <tabstop>soundModelingFinished</tabstop>
+  <tabstop>loglevelDebug</tabstop>
+  <tabstop>loglevelInfo</tabstop>
+  <tabstop>loglevelWarning</tabstop>
+  <tabstop>loglevelError</tabstop>
+  <tabstop>checkSimulation</tabstop>
+  <tabstop>btn_INDIConnected</tabstop>
+  <tabstop>le_pinpointCatalogue</tabstop>
   <tabstop>btn_cameraConnected</tabstop>
-  <tabstop>btn_astrometryConnected</tabstop>
   <tabstop>btn_environmentConnected</tabstop>
+  <tabstop>le_modelFullPointsFileName</tabstop>
+  <tabstop>btn_driverMountConnected</tabstop>
+  <tabstop>le_ascomEnvironmentDriverName</tabstop>
+  <tabstop>le_modelInitialPointsFileName</tabstop>
+  <tabstop>btn_astrometryConnected</tabstop>
+  <tabstop>settingsTabWidget</tabstop>
+  <tabstop>btn_domeConnected</tabstop>
+  <tabstop>le_horizonPointsFileName</tabstop>
+  <tabstop>le_analyseFileName</tabstop>
+  <tabstop>le_ascomDomeDriverName</tabstop>
+  <tabstop>mainTabWidget</tabstop>
  </tabstops>
  <resources/>
  <connections/>
