@@ -18,7 +18,6 @@
 #
 ###########################################################
 import os
-import psutil
 import platform
 import sys
 import datetime
@@ -78,7 +77,6 @@ class MountWizzardApp(widget.MwWidget):
     sharedINDIDataLock = PyQt5.QtCore.QReadWriteLock()
 
     CYCLE_MAIN_LOOP = 200
-    CYCLE_HEALTH_STATE = 10000
 
     def __init__(self):
         super().__init__()
@@ -216,11 +214,6 @@ class MountWizzardApp(widget.MwWidget):
         self.mainLoopTimer.setSingleShot(False)
         self.mainLoopTimer.timeout.connect(self.mainLoop)
         self.mainLoopTimer.start(self.CYCLE_MAIN_LOOP)
-        # start heartbeat for checking health state of app in logfile
-        self.healthStateTimer = PyQt5.QtCore.QTimer(self)
-        self.healthStateTimer.setSingleShot(False)
-        self.healthStateTimer.timeout.connect(self.healthState)
-        self.healthStateTimer.start(self.CYCLE_HEALTH_STATE)
 
     def mappingFunctions(self):
         self.workerMountDispatcher.signalMountShowAlignmentModel.connect(lambda: self.showModelErrorPolar(self.modelWidget))
@@ -1282,12 +1275,6 @@ class MountWizzardApp(widget.MwWidget):
         # update application name in pull-down menu
         self.workerImaging.updateApplicationName()
         self.workerAstrometry.updateApplicationName()
-
-    def healthState(self):
-        process = psutil.Process(os.getpid())
-        self.logger.error('Health state: memory: {0}, threads: {1}'
-                          .format(process.memory_info().rss,
-                                  process.num_threads()))
 
 
 class MyApp(PyQt5.QtWidgets.QApplication):
