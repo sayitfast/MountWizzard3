@@ -32,9 +32,10 @@ if platform.system() == 'Windows':
     from winreg import *
 from queue import Queue
 import PyQt5
-from PyQt5 import QtMultimedia
+import PyQt5.QtMultimedia
 import matplotlib
 matplotlib.use('Qt5Agg')
+import matplotlib.pyplot
 from baseclasses import widget
 from widgets import hemisphere_window
 from widgets import image_window
@@ -54,6 +55,7 @@ from astrometry import astrometry
 if platform.system() == 'Windows':
     from automation import automation
 from wakeonlan import send_magic_packet
+from icons import resources
 
 
 class MountWizzardApp(widget.MwWidget):
@@ -423,6 +425,8 @@ class MountWizzardApp(widget.MwWidget):
             self.workerModelingDispatcher.stop()
         if self.workerINDI.isRunning:
             self.workerINDI.stop()
+        if self.workerRelay.isRunning:
+            self.workerRelay.stop()
 
         # update the configuration
         if 'ConfigName' in self.config:
@@ -444,8 +448,10 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow.initConfig()
         self.analyseWindow.initConfig()
         self.messageWindow.initConfig()
-        self.relays.initConfig()
+        self.workerRelay.initConfig()
 
+        if self.ui.checkEnableRelay.isChecked():
+            self.threadRelay.start()
         if self.ui.checkEnableINDI.isChecked():
             self.threadINDI.start()
         if self.ui.checkEnableRemoteAccess.isChecked():
@@ -677,7 +683,7 @@ class MountWizzardApp(widget.MwWidget):
         self.imageWindow.storeConfig()
         self.analyseWindow.storeConfig()
         self.messageWindow.storeConfig()
-        self.relays.storeConfig()
+        self.workerRelay.storeConfig()
         self.workerINDI.storeConfig()
 
     def loadConfigData(self):
