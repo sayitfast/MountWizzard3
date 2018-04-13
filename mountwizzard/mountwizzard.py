@@ -165,7 +165,7 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
         # threading for relay handling shutdown
         self.threadRelay = PyQt5.QtCore.QThread()
-        self.workerRelay = remote.Remote(self, self.threadRelay)
+        self.workerRelay = relays.Relays(self, self.threadRelay)
         self.threadRelay.setObjectName("Remote")
         self.workerRelay.moveToThread(self.threadRelay)
         self.threadRelay.started.connect(self.workerRelay.run)

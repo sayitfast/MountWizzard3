@@ -73,7 +73,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.checkIP = checkIP.CheckIP()
         self.socket = None
         self.newDeviceQueue = queue.Queue()
-        self.settingsChanged = False
         self.imagePath = ''
         self.messageString = ''
         self.cameraDevice = ''
@@ -98,7 +97,6 @@ class INDIClient(PyQt5.QtCore.QObject):
         finally:
             pass
         # setting changes in gui on false, because the set of the config changed them already
-        self.settingsChanged = True
         self.changedINDIClientConnectionSettings()
         self.enableDisableINDI()
 
@@ -108,21 +106,19 @@ class INDIClient(PyQt5.QtCore.QObject):
         self.app.config['CheckEnableINDI'] = self.app.ui.checkEnableINDI.isChecked()
 
     def changedINDIClientConnectionSettings(self):
-        if self.settingsChanged:
-            self.settingsChanged = False
-            if self.isRunning:
-                self.mutexIPChange.lock()
-                self.stop()
-                self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
-                self.data['ServerPort'] = int(self.app.ui.le_INDIServerPort.text())
-                self.thread.start()
-                self.mutexIPChange.unlock()
-            else:
-                self.mutexIPChange.lock()
-                self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
-                self.data['ServerPort'] = int(self.app.ui.le_INDIServerPort.text())
-                self.mutexIPChange.unlock()
-            self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
+        if self.isRunning:
+            self.mutexIPChange.lock()
+            self.stop()
+            self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
+            self.data['ServerPort'] = int(self.app.ui.le_INDIServerPort.text())
+            self.thread.start()
+            self.mutexIPChange.unlock()
+        else:
+            self.mutexIPChange.lock()
+            self.data['ServerIP'] = self.app.ui.le_INDIServerIP.text()
+            self.data['ServerPort'] = int(self.app.ui.le_INDIServerPort.text())
+            self.mutexIPChange.unlock()
+        self.app.messageQueue.put('Setting IP address for INDI to: {0}:{1}\n'.format(self.data['ServerIP'], self.data['ServerPort']))
 
     def enableDisableINDI(self):
         if self.app.ui.checkEnableINDI.isChecked():

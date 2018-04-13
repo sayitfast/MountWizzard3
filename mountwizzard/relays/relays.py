@@ -29,7 +29,7 @@ class Relays(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     CYCLE_COMMAND = 0.2
-    CYCLE_STATUS = 1000
+    CYCLE_STATUS = 500
 
     def __init__(self, app, thread):
         super().__init__()
@@ -39,7 +39,7 @@ class Relays(PyQt5.QtCore.QObject):
         self.statusTimer = None
         self.relayCommandQueue = queue.Queue()
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.mutexIPChanged = PyQt5.QtCore.QMutex()
+        self.mutexIPChange = PyQt5.QtCore.QMutex()
 
         self.stat = [False, False, False, False, False, False, False, False, False]
         self.username = ''
@@ -47,14 +47,14 @@ class Relays(PyQt5.QtCore.QObject):
         self.relayIP = ''
         self.connected = False
         self.checkIP = checkIP.CheckIP()
-        self.app.ui.btn_relay1.clicked.connect(lambda: self.runRelay(1))
-        self.app.ui.btn_relay2.clicked.connect(lambda: self.runRelay(2))
-        self.app.ui.btn_relay3.clicked.connect(lambda: self.runRelay(3))
-        self.app.ui.btn_relay4.clicked.connect(lambda: self.runRelay(4))
-        self.app.ui.btn_relay5.clicked.connect(lambda: self.runRelay(5))
-        self.app.ui.btn_relay6.clicked.connect(lambda: self.runRelay(6))
-        self.app.ui.btn_relay7.clicked.connect(lambda: self.runRelay(7))
-        self.app.ui.btn_relay8.clicked.connect(lambda: self.runRelay(8))
+        self.app.ui.btn_relay1.clicked.connect(lambda: self.relayCommandQueue.put(1))
+        self.app.ui.btn_relay2.clicked.connect(lambda: self.relayCommandQueue.put(2))
+        self.app.ui.btn_relay3.clicked.connect(lambda: self.relayCommandQueue.put(3))
+        self.app.ui.btn_relay4.clicked.connect(lambda: self.relayCommandQueue.put(4))
+        self.app.ui.btn_relay5.clicked.connect(lambda: self.relayCommandQueue.put(5))
+        self.app.ui.btn_relay6.clicked.connect(lambda: self.relayCommandQueue.put(6))
+        self.app.ui.btn_relay7.clicked.connect(lambda: self.relayCommandQueue.put(7))
+        self.app.ui.btn_relay8.clicked.connect(lambda: self.relayCommandQueue.put(8))
         # signal slot
         self.app.ui.relay1Text.textEdited.connect(lambda: self.app.ui.btn_relay1.setText(self.app.ui.relay1Text.text()))
         self.app.ui.relay2Text.textEdited.connect(lambda: self.app.ui.btn_relay2.setText(self.app.ui.relay2Text.text()))
@@ -64,7 +64,7 @@ class Relays(PyQt5.QtCore.QObject):
         self.app.ui.relay6Text.textEdited.connect(lambda: self.app.ui.btn_relay6.setText(self.app.ui.relay6Text.text()))
         self.app.ui.relay7Text.textEdited.connect(lambda: self.app.ui.btn_relay7.setText(self.app.ui.relay7Text.text()))
         self.app.ui.relay8Text.textEdited.connect(lambda: self.app.ui.btn_relay8.setText(self.app.ui.relay8Text.text()))
-        self.app.ui.le_relayIP.textChanged.connect(self.setIP)
+        self.app.ui.le_relayIP.editingFinished.connect(self.changedRelayClientConnectionSettings)
         self.app.ui.checkEnableRelay.stateChanged.connect(self.enableDisableRelay)
 
     def initConfig(self):
@@ -143,6 +143,7 @@ class Relays(PyQt5.QtCore.QObject):
                 self.app.ui.btn_relay8.setText(self.app.config['Relay8Text'])
             if 'RelayIP' in self.app.config:
                 self.app.ui.le_relayIP.setText(self.app.config['RelayIP'])
+                self.relayIP = self.app.config['RelayIP']
             if 'RelayUsername' in self.app.config:
                 self.app.ui.le_relayUsername.setText(self.app.config['RelayUsername'])
             if 'RelayPassword' in self.app.config:
@@ -153,7 +154,8 @@ class Relays(PyQt5.QtCore.QObject):
             self.logger.error('Item in config.cfg for relay could not be initialized, error:{0}'.format(e))
         finally:
             pass
-        self.setIP()
+        self.changedRelayClientConnectionSettings()
+        self.enableDisableRelay()
 
     def storeConfig(self):
         self.app.config['RelayIP'] = self.relayIP
@@ -177,8 +179,18 @@ class Relays(PyQt5.QtCore.QObject):
         self.app.config['RelayPassword'] = self.app.ui.le_relayPassword.text()
         self.app.config['CheckEnableRelay'] = self.app.ui.checkEnableRelay.isChecked()
 
-    def setIP(self):
-        self.relayIP = self.app.ui.le_relayIP.text()
+    def changedRelayClientConnectionSettings(self):
+        if self.isRunning:
+            self.mutexIPChange.lock()
+            self.stop()
+            self.relayIP = self.app.ui.le_relayIP.text()
+            self.thread.start()
+            self.mutexIPChange.unlock()
+        else:
+            self.mutexIPChange.lock()
+            self.relayIP = self.app.ui.le_relayIP.text()
+            self.mutexIPChange.unlock()
+        self.app.messageQueue.put('Setting IP address for relay to: {0}\n'.format(self.relayIP))
 
     def enableDisableRelay(self):
         if self.app.ui.checkEnableRelay.isChecked():
@@ -193,7 +205,6 @@ class Relays(PyQt5.QtCore.QObject):
             self.app.ui.mainTabWidget.setTabEnabled(7, False)
             self.app.messageQueue.put('Relay disabled\n')
             self.logger.info('Relay is disabled')
-
         self.app.ui.mainTabWidget.style().unpolish(self.app.ui.mainTabWidget)
         self.app.ui.mainTabWidget.style().polish(self.app.ui.mainTabWidget)
 
@@ -206,7 +217,7 @@ class Relays(PyQt5.QtCore.QObject):
         # timers
         self.statusTimer = PyQt5.QtCore.QTimer(self)
         self.statusTimer.setSingleShot(False)
-        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.statusTimer.timeout.connect(self.getStatus)
         self.statusTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
             self.doCommand()
@@ -225,22 +236,22 @@ class Relays(PyQt5.QtCore.QObject):
         self.logger.info('relay stopped')
 
     def doCommand(self):
-        if not self.imagingCommandQueue.empty():
-            imageParams = self.imagingCommandQueue.get()
-            self.captureImage(imageParams)
+        if not self.relayCommandQueue.empty():
+            value = self.relayCommandQueue.get()
+            self.runRelay(value)
 
     @PyQt5.QtCore.pyqtSlot()
-    def checkAppStatus(self):
-        connected = False
-        if self.relayIP:
-            if self.checkIP.checkIPAvailable(self.relayIP, 80):
-                connected = True
-        else:
-            self.logger.debug('There is no ip given for relaybox')
-        return connected
+    def getStatus(self):
+        if self.checkIP.checkIPAvailable(self.relayIP, 80):
+            try:
+                result = self.geturl('http://' + self.relayIP + '/status.xml')
+                self.setStatusGUI(result.content.decode())
+            except Exception as e:
+                self.logger.error('Status error {0}'.format(e))
+            finally:
+                pass
 
-    @PyQt5.QtCore.pyqtSlot()
-    def setStatus(self, response):
+    def setStatusGUI(self, response):
         lines = response.splitlines()
         if lines[0] == '<response>':
             self.stat[1] = (lines[2][8] == '1')
@@ -317,9 +328,12 @@ class Relays(PyQt5.QtCore.QObject):
             self.app.ui.btn_relay8.style().unpolish(self.app.ui.btn_relay8)
             self.app.ui.btn_relay8.style().polish(self.app.ui.btn_relay8)
 
+    def geturl(self, url):
+        result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
+        return result
+
     def runRelay(self, relayNumber):
-        self.checkAppStatus()
-        if self.connected:
+        if self.checkIP.checkIPAvailable(self.relayIP, 80):
             if relayNumber == 1:
                 if self.app.ui.relay1Function.currentIndex() == 0:
                     self.switch(relayNumber)
@@ -361,17 +375,11 @@ class Relays(PyQt5.QtCore.QObject):
                 else:
                     self.pulse(relayNumber)
 
-    def geturl(self, url):
-        if self.connected:
-            result = requests.get(url, auth=requests.auth.HTTPBasicAuth(self.app.ui.le_relayUsername.text(), self.app.ui.le_relayPassword.text()))
-            return result
-
     def pulse(self, relayNumber):
         try:
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}01'.format(relayNumber))
             time.sleep(1)
             self.geturl('http://' + self.relayIP + '/FF0{0:1d}00'.format(relayNumber))
-            self.requestStatus()
         except Exception as e:
             self.logger.error('Relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
@@ -380,28 +388,7 @@ class Relays(PyQt5.QtCore.QObject):
     def switch(self, relayNumber):
         try:
             self.geturl('http://' + self.relayIP + '/relays.cgi?relay={0:1d}'.format(relayNumber))
-            self.requestStatus()
         except Exception as e:
             self.logger.error('Relay:{0}, error:{1}'.format(relayNumber, e))
         finally:
             pass
-
-    def requestStatus(self):
-        if self.connected:
-            try:
-                result = self.geturl('http://' + self.relayIP + '/status.xml')
-                self.setStatus(result.content.decode())
-            except Exception as e:
-                self.logger.error('Status error {0}'.format(e))
-            finally:
-                pass
-
-    def switchAllOff(self):
-        if self.connected:
-            try:
-                self.geturl('http://' + self.relayIP + '/FFE000')
-                self.requestStatus()
-            except Exception as e:
-                self.logger.error('Switch all error {0}'.format(e))
-            finally:
-                pass
