@@ -262,7 +262,7 @@ class Relays(PyQt5.QtCore.QObject):
             self.stat[6] = (lines[7][8] == '1')
             self.stat[7] = (lines[8][8] == '1')
             self.stat[8] = (lines[9][8] == '1')
-            self.logger.info('status: {0}'.format(self.stat))
+            self.logger.debug('status: {0}'.format(self.stat))
         if self.stat[1]:
             self.app.ui.btn_relay1.setProperty('running', True)
             self.app.ui.btn_relay1.style().unpolish(self.app.ui.btn_relay1)
