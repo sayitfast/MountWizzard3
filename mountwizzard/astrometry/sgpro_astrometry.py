@@ -73,7 +73,7 @@ class SGPro:
         pass
 
     def getStatus(self):
-        if self.checkIP.checkIPAvailable(host, port):
+        if self.checkIP.checkIPAvailable(self.host, self.port):
             suc, state, message = self.SgGetDeviceStatus('PlateSolver')
             if suc:
                 self.application['Status'] = 'OK'

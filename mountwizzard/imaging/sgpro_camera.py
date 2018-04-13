@@ -23,6 +23,7 @@ import platform
 import time
 import PyQt5
 import requests
+from baseclasses import checkIP
 
 
 class SGPro:
@@ -46,6 +47,7 @@ class SGPro:
         self.app = app
         self.data = data
         self.cancel = False
+        self.checkIP = checkIP.CheckIP()
         self.mutexCancel = PyQt5.QtCore.QMutex()
 
         self.application = dict()
@@ -71,7 +73,7 @@ class SGPro:
         pass
 
     def getStatus(self):
-        if self.checkIP.checkIPAvailable(host, port):
+        if self.checkIP.checkIPAvailable(self.host, self.port):
             suc, state, message = self.SgGetDeviceStatus('Camera')
             if suc:
                 self.application['Status'] = 'OK'
