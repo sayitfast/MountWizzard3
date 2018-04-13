@@ -182,12 +182,14 @@ class Relays(PyQt5.QtCore.QObject):
 
     def enableDisableRelay(self):
         if self.app.ui.checkEnableRelay.isChecked():
-            self.connected = self.checkAppStatus()
-            self.requestStatus()
+            if not self.isRunning:
+                self.thread.start()
             self.app.ui.mainTabWidget.setTabEnabled(7, True)
             self.app.messageQueue.put('Relay enabled\n')
         else:
             self.connected = False
+            if self.isRunning:
+                self.stop()
             self.app.ui.mainTabWidget.setTabEnabled(7, False)
             self.app.messageQueue.put('Relay disabled\n')
             self.logger.info('Relay is disabled')
