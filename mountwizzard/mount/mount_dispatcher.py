@@ -421,8 +421,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountStatusRunnerMedium.start()
         self.threadMountStatusRunnerFast.start()
         while self.isRunning:
-            if not self.doCommand():
-                time.sleep(self.CYCLE_COMMAND)
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
 
     def stop(self):
@@ -445,9 +445,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
-            return True
-        else:
-            return False
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

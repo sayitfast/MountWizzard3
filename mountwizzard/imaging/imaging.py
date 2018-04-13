@@ -154,8 +154,8 @@ class Imaging(PyQt5.QtCore.QObject):
         self.statusTimer.timeout.connect(self.getStatusFromDevice)
         self.statusTimer.start(self.CYCLE_STATUS)
         while self.isRunning:
-            if not self.doCommand():
-                time.sleep(self.CYCLE_COMMAND)
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
             PyQt5.QtWidgets.QApplication.processEvents()
         self.statusTimer.stop()
         self.cameraHandler.stop()
@@ -173,9 +173,6 @@ class Imaging(PyQt5.QtCore.QObject):
         if not self.imagingCommandQueue.empty():
             imageParams = self.imagingCommandQueue.get()
             self.captureImage(imageParams)
-            return True
-        else:
-            return False
 
     def captureImage(self, imageParams):
         imageParams['Imagepath'] = ''

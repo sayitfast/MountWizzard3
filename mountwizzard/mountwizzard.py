@@ -119,8 +119,6 @@ class MountWizzardApp(widget.MwWidget):
         self.checkASCOM()
 
         # instantiating all subclasses and connecting thread signals
-        # relay class
-        self.relays = relays.Relays(self)
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
         self.workerMountDispatcher = mount_dispatcher.MountDispatcher(self, self.threadMountDispatcher)
@@ -163,6 +161,12 @@ class MountWizzardApp(widget.MwWidget):
         self.workerRemote.moveToThread(self.threadRemote)
         self.threadRemote.started.connect(self.workerRemote.run)
         self.workerRemote.signalRemoteShutdown.connect(self.saveConfigQuit)
+        # threading for relay handling shutdown
+        self.threadRelay = PyQt5.QtCore.QThread()
+        self.workerRelay = remote.Remote(self, self.threadRelay)
+        self.threadRelay.setObjectName("Remote")
+        self.workerRelay.moveToThread(self.threadRelay)
+        self.threadRelay.started.connect(self.workerRelay.run)
         # threading for imaging apps
         self.threadImaging = PyQt5.QtCore.QThread()
         self.workerImaging = imaging.Imaging(self, self.threadImaging)

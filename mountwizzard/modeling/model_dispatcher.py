@@ -316,9 +316,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         if not self.commandDispatcherQueue.empty():
             command = self.commandDispatcherQueue.get()
             self.commandDispatcher(command)
-            return True
-        else:
-            return False
 
     def commandDispatcher(self, command):
         # if we have a command in dispatcher

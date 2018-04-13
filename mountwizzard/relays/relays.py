@@ -20,15 +20,27 @@
 import logging
 import time
 import PyQt5
+import queue
 import requests
 from baseclasses import checkIP
 
 
-class Relays:
+class Relays(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
-    def __init__(self, app):
+    CYCLE_COMMAND = 0.2
+    CYCLE_STATUS = 1000
+
+    def __init__(self, app, thread):
+        super().__init__()
+        self.isRunning = False
         self.app = app
+        self.thread = thread
+        self.statusTimer = None
+        self.relayCommandQueue = queue.Queue()
+        self.mutexIsRunning = PyQt5.QtCore.QMutex()
+        self.mutexIPChanged = PyQt5.QtCore.QMutex()
+
         self.stat = [False, False, False, False, False, False, False, False, False]
         self.username = ''
         self.password = ''
@@ -183,6 +195,39 @@ class Relays:
         self.app.ui.mainTabWidget.style().unpolish(self.app.ui.mainTabWidget)
         self.app.ui.mainTabWidget.style().polish(self.app.ui.mainTabWidget)
 
+    def run(self):
+        self.logger.info('relay started')
+        self.mutexIsRunning.lock()
+        if not self.isRunning:
+            self.isRunning = True
+        self.mutexIsRunning.unlock()
+        # timers
+        self.statusTimer = PyQt5.QtCore.QTimer(self)
+        self.statusTimer.setSingleShot(False)
+        self.statusTimer.timeout.connect(self.getStatusFromDevice)
+        self.statusTimer.start(self.CYCLE_STATUS)
+        while self.isRunning:
+            self.doCommand()
+            time.sleep(self.CYCLE_COMMAND)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        self.statusTimer.stop()
+
+    def stop(self):
+        self.mutexIsRunning.lock()
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
+        self.mutexIsRunning.unlock()
+        # when the worker thread finished, it emit the finished signal to the parent to clean up
+        self.logger.info('relay stopped')
+
+    def doCommand(self):
+        if not self.imagingCommandQueue.empty():
+            imageParams = self.imagingCommandQueue.get()
+            self.captureImage(imageParams)
+
+    @PyQt5.QtCore.pyqtSlot()
     def checkAppStatus(self):
         connected = False
         if self.relayIP:
@@ -192,6 +237,7 @@ class Relays:
             self.logger.debug('There is no ip given for relaybox')
         return connected
 
+    @PyQt5.QtCore.pyqtSlot()
     def setStatus(self, response):
         lines = response.splitlines()
         if lines[0] == '<response>':
