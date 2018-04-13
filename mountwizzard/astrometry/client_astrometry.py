@@ -72,6 +72,7 @@ class AstrometryClient:
 
         self.app.ui.le_AstrometryHost.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
         self.app.ui.le_AstrometryPort.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
+        self.app.ui.le_AstrometryAPIKey.editingFinished.connect(self.changedAstrometryClientConnectionSettings)
 
     def initConfig(self):
         try:
@@ -174,7 +175,7 @@ class AstrometryClient:
             if not errorState:
                 if 'status' in result:
                     if result['status'] == 'error':
-                        self.app.messageQueue.put('\nGet session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
+                        self.app.messageQueue.put('Get session key for ASTROMETRY.NET failed because: {0}\n'.format(result['errormessage']))
                         self.logger.error('Get session key failed because: {0}'.format(result['errormessage']))
                         errorState = True
                     elif result['status'] == 'success':

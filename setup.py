@@ -32,7 +32,6 @@ setup(
         'requests==2.18.4',
         'astropy==2.0.2',
         'numpy==1.14.0',
-        'psutil==5.4.3',
         'requests_toolbelt==0.8.0'
     ]
     + (['pypiwin32==220'] if "Windows" == platform.system() else [])
