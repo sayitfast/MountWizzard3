@@ -22,8 +22,6 @@ import platform
 import time
 import PyQt5
 if platform.system() == 'Windows':
-    from win32com.client.dynamic import Dispatch
-    import pythoncom
     from dome import ascom_dome
 from dome import indi_dome
 from dome import none_dome

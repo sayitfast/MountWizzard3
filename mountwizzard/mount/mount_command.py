@@ -20,8 +20,6 @@
 import logging
 import PyQt5
 import time
-import copy
-import threading
 
 
 class MountCommandRunner(PyQt5.QtCore.QObject):

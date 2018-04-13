@@ -18,9 +18,6 @@
 #
 ###########################################################
 import PyQt5
-import logging
-import time
-
 
 class NoneCamera:
 

@@ -23,10 +23,8 @@ import numpy
 from analyse import analysedata
 from baseclasses import widget
 from gui import analyse_window_ui
-# matplotlib
 import matplotlib
 matplotlib.use('Qt5Agg')
-from matplotlib import pyplot as plt
 
 
 class AnalyseWindow(widget.MwWidget):

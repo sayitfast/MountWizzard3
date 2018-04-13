@@ -23,8 +23,6 @@ import PyQt5
 import time
 # if we are on windows, we have ascom
 if platform.system() == 'Windows':
-    from win32com.client.dynamic import Dispatch
-    import pythoncom
     from environment import ascom_environment
 # else we have the others
 from environment import indi_environment

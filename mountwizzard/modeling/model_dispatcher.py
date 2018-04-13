@@ -21,7 +21,6 @@ import logging
 import time
 import PyQt5
 import queue
-# workers
 from modeling import model_build
 
 

@@ -18,7 +18,6 @@
 #
 ###########################################################
 import logging
-import re
 import socket
 from baseclasses import widget
 

@@ -21,15 +21,9 @@ import logging
 import os
 import time
 import platform
-import datetime
-import math
-import random
-import shutil
-import sys
 import PyQt5
 import queue
 from astrometry import transform
-import astropy.io.fits as pyfits
 from imaging import none_camera
 from imaging import indi_camera
 if platform.system() == 'Windows':

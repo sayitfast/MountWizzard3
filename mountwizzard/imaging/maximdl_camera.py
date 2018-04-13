@@ -21,7 +21,6 @@ import logging
 import time
 import PyQt5
 import platform
-# import .NET / COM Handling
 from win32com.client.dynamic import Dispatch
 import pythoncom
 

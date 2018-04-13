@@ -17,15 +17,12 @@
 # Licence APL2.0
 #
 ###########################################################
-import copy
 import logging
 import PyQt5
-from PyQt5.QtWidgets import *
 from baseclasses import widget
 from astrometry import transform
 import numpy
 import matplotlib
-import itertools
 import bisect
 from gui import hemisphere_window_ui
 

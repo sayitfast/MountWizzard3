@@ -11,7 +11,6 @@
 # Licence APL2.0
 #
 ############################################################
-# standard solutions
 import json
 import math
 import os

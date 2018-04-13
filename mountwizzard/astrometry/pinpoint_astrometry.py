@@ -14,8 +14,6 @@
 import PyQt5
 import platform
 import logging
-import time
-import astropy.io.fits as pyfits
 from win32com.client.dynamic import Dispatch
 import pythoncom
 

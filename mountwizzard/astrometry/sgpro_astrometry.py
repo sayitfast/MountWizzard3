@@ -22,7 +22,6 @@ import logging
 import platform
 import time
 import PyQt5
-# packages for handling web interface to SGPro
 import requests
 from baseclasses import checkIP
 

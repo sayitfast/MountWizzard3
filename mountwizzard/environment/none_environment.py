@@ -17,7 +17,6 @@
 # Licence APL2.0
 #
 ###########################################################
-import logging
 
 
 class NoneEnvironment:

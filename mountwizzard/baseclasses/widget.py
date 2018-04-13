@@ -27,7 +27,6 @@ import PyQt5
 import matplotlib
 matplotlib.use('Qt5Agg')
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from icons import resources
 
 
 class MwWidget(QWidget):

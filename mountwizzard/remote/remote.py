@@ -22,6 +22,7 @@ import PyQt5
 import time
 from baseclasses import checkIP
 
+
 class Remote(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
