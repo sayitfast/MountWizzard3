@@ -158,7 +158,7 @@ class Relays(PyQt5.QtCore.QObject):
         self.enableDisableRelay()
 
     def storeConfig(self):
-        self.app.config['RelayIP'] = self.relayIP
+        self.app.config['RelayIP'] = self.app.ui.le_relayIP.text()
         self.app.config['Relay1Function'] = self.app.ui.relay1Function.currentIndex()
         self.app.config['Relay2Function'] = self.app.ui.relay2Function.currentIndex()
         self.app.config['Relay3Function'] = self.app.ui.relay3Function.currentIndex()

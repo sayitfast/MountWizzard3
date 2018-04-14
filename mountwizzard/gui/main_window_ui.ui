@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>8</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -9813,7 +9813,7 @@ Analyse File</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>6</number>
+      <number>0</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -10617,7 +10617,7 @@ Analyse File</string>
         <string>3456</string>
        </property>
        <property name="maxLength">
-        <number>32767</number>
+        <number>5</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -10783,7 +10783,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>195</y>
+         <y>190</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -10825,7 +10825,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>195</y>
+         <y>190</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -10843,7 +10843,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>220</y>
+         <y>215</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -10864,7 +10864,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>245</y>
+         <y>240</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -10965,7 +10965,7 @@ Analyse File</string>
         <string>12345</string>
        </property>
        <property name="maxLength">
-        <number>32767</number>
+        <number>5</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -11020,7 +11020,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>245</y>
+         <y>240</y>
          <width>81</width>
          <height>21</height>
         </rect>
@@ -11061,7 +11061,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>220</y>
+         <y>215</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -11142,7 +11142,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>270</y>
+         <y>265</y>
          <width>71</width>
          <height>21</height>
         </rect>
@@ -11163,7 +11163,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>270</y>
+         <y>265</y>
          <width>251</width>
          <height>21</height>
         </rect>
@@ -11205,7 +11205,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>310</y>
+         <y>305</y>
          <width>281</width>
          <height>21</height>
         </rect>
@@ -11225,7 +11225,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>20</x>
-         <y>330</y>
+         <y>325</y>
          <width>331</width>
          <height>1</height>
         </rect>
@@ -11509,7 +11509,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>365</y>
+         <y>360</y>
          <width>161</width>
          <height>21</height>
         </rect>
@@ -11551,7 +11551,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>270</x>
-         <y>365</y>
+         <y>360</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -11569,7 +11569,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>25</x>
-         <y>340</y>
+         <y>335</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -11587,7 +11587,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>295</x>
-         <y>340</y>
+         <y>335</y>
          <width>16</width>
          <height>21</height>
         </rect>
@@ -11605,7 +11605,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>320</x>
-         <y>365</y>
+         <y>360</y>
          <width>31</width>
          <height>21</height>
         </rect>
@@ -11647,7 +11647,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>305</x>
-         <y>340</y>
+         <y>335</y>
          <width>46</width>
          <height>21</height>
         </rect>
@@ -11679,7 +11679,7 @@ Analyse File</string>
         <string>80</string>
        </property>
        <property name="maxLength">
-        <number>32767</number>
+        <number>5</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -11692,7 +11692,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>25</x>
-         <y>365</y>
+         <y>360</y>
          <width>51</width>
          <height>21</height>
         </rect>
@@ -11710,7 +11710,7 @@ Analyse File</string>
        <property name="geometry">
         <rect>
          <x>100</x>
-         <y>340</y>
+         <y>335</y>
          <width>191</width>
          <height>21</height>
         </rect>
@@ -11739,7 +11739,7 @@ Analyse File</string>
         <string>127.0.0.1</string>
        </property>
        <property name="maxLength">
-        <number>25</number>
+        <number>50</number>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
