@@ -320,8 +320,9 @@ class ImagesWindow(widget.MwWidget):
             return
         if not os.path.isfile(self.imagePath):
             return
-        self.ui.le_RaJ2000.setText('')
-        self.ui.le_DecJ2000.setText('')
+        self.signalSetRaSolved.emit('')
+        self.signalSetDecSolved.emit('')
+        self.signalSetAngleSolved.emit('')
 
         imageParams = dict()
         imageParams['Imagepath'] = self.imagePath
