@@ -796,8 +796,8 @@ class MountWizzardApp(widget.MwWidget):
                     CloseKey(subkey)
                     break
                 else:
-                    CloseKey(subkey)                                                                                        # closing the subkey for later usage
-            CloseKey(key)                                                                                                   # closing main key for later usage
+                    CloseKey(subkey)
+            CloseKey(key)
             if not appInstalled:
                 appInstallPath = ''
                 appName = ''
@@ -821,12 +821,15 @@ class MountWizzardApp(widget.MwWidget):
             self.messageQueue.put('Cannot send WOL because there are multiple computer IP addresses configured\n')
             self.logger.debug('Cannot send WOL because there are multiple computer IP addresses configured')
             return
-        addressComputer = host[0].split('.')
-        addressMount = socket.gethostbyname(self.ui.le_mountIP.text()).split('.')
-        if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
-            self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
-            self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
-            return
+        if len(host) == 0:
+            self.messageQueue.put('Cannot cannot check subnet configuration WOL might not work\n')
+        else:
+            addressComputer = host[0].split('.')
+            addressMount = socket.gethostbyname(self.ui.le_mountIP.text()).split('.')
+            if addressComputer[0] != addressMount[0] or addressComputer[1] != addressMount[1] or addressComputer[2] != addressMount[2]:
+                self.messageQueue.put('Cannot send WOL because computer and mount are not in the same subnet\n')
+                self.logger.debug('Cannot send WOL because computer and mount are not in the same subnet')
+                return
         self.changeStylesheet(self.ui.btn_mountBoot, 'running', True)
         PyQt5.QtWidgets.QApplication.processEvents()
         send_magic_packet(self.ui.le_mountMAC.text().strip())
@@ -1322,7 +1325,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # defining build no
-    BUILD_NO = '3.0 alpha 23'
+    BUILD_NO = '3.0 beta 1'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
