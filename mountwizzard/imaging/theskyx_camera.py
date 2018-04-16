@@ -26,83 +26,54 @@ import time
 import PyQt5
 
 
-class TheSkyX(PyQt5.QtCore.QObject):
+class TheSkyX:
     logger = logging.getLogger(__name__)
-    cameraStatusText = PyQt5.QtCore.pyqtSignal(str)
-    solverStatusText = PyQt5.QtCore.pyqtSignal(str)
-    cameraExposureTime = PyQt5.QtCore.pyqtSignal(str)
 
-    CYCLESTATUS = 200
-    CYCLEPROPS = 3000
+    host = '127.0.0.1'
+    port = 3040
 
     CAMERASTATUS = {'Not Connected': 'DISCONNECTED', 'Downloading Light': 'DOWNLOAD', 'Exposure complete': 'IDLE', 'Ready': 'IDLE', 'Exposing Light': 'INTEGRATING'}
 
-    def __init__(self, app, thread, commandQueue):
-        super().__init__()
+    def __init__(self, main, app, data):
+        # make main sources available
+        self.main = main
         self.app = app
-        self.thread = thread
+        self.data = data
+        self.cancel = False
+        self.checkIP = checkIP.CheckIP()
+        self.mutexCancel = PyQt5.QtCore.QMutex()
+
         self.commandQueue = commandQueue
         self.isRunning = False
         self.mutexIsRunning = PyQt5.QtCore.QMutex()
-        self.data = {'Camera': {}, 'Solver': {}}
-        self.data['Camera']['AppAvailable'] = True
-        self.data['Camera']['AppName'] = 'None'
-        self.data['Camera']['AppInstallPath'] = 'None'
-        self.data['Solver']['AppAvailable'] = True
-        self.data['Solver']['AppName'] = 'None'
-        self.data['Solver']['AppInstallPath'] = 'None'
-        self.data['Camera']['Status'] = '---'
-        self.data['Camera']['CONNECTION'] = {'CONNECT': 'Off'}
-        self.data['Solver']['Status'] = '---'
-        self.data['Solver']['CONNECTION'] = {'CONNECT': 'Off'}
 
-        self.host = '127.0.0.1'
-        self.port = 3040
+        self.application = dict()
+        self.application['Available'] = False
+        self.application['Name'] = ''
+        self.application['InstallPath'] = ''
+        self.application['Status'] = ''
+        self.application['Runtime'] = 'TheSkyX.exe'
+
         self.responseSuccess = '|No error. Error = 0.'
-        self.appExe = 'TheSkyX.exe'
-        if platform.system() == 'Windows':
-            self.data['Camera']['AppAvailable'], self.data['Camera']['AppName'], self.data['Camera']['AppInstallPath'] = self.app.checkRegistrationKeys('TheSkyX')
-        else:
-            self.data['Camera']['AppAvailable'] = True
-            self.data['Camera']['AppName'] = 'TheSkyX'
-            self.data['Camera']['AppInstallPath'] = ''
-        if self.data['Camera']['AppAvailable']:
-            self.app.messageQueue.put('Found: {0}\n'.format(self.data['Camera']['AppName']))
-            self.logger.info('Name: {0}, Path: {1}'.format(self.data['Camera']['AppName'], self.data['Camera']['AppInstallPath']))
-        else:
-            self.logger.info('Application TheSkyX not found on computer')
-        self.data['Solver']['AppAvailable'] = self.data['Camera']['AppAvailable']
-        self.data['Solver']['AppName'] = self.data['Camera']['AppName']
-        self.data['Solver']['AppInstallPath'] = self.data['Camera']['AppInstallPath']
 
-    def run(self):
-        # a running thread is shown with variable isRunning = True. This thread should have it's own event loop.
-        self.mutexIsRunning.lock()
-        if not self.isRunning:
-            self.isRunning = True
-        self.mutexIsRunning.unlock()
-        self.setStatus()
-        self.setCameraProps()
-        while self.isRunning:
-            if not self.commandQueue.empty():
-                command = self.commandQueue.get()
-                if command['Command'] == 'GetImage':
-                    command['ImageParams'] = self.getImage(command['ImageParams'])
-                elif command['Command'] == 'SolveImage':
-                    command['ImageParams'] = self.solveImage(command['ImageParams'])
-            time.sleep(0.2)
-            PyQt5.QtWidgets.QApplication.processEvents()
+        if platform.system() == 'Windows':
+            # sgpro only supported on local machine
+            self.application['Available'], self.application['Name'], self.application['InstallPath'] = self.app.checkRegistrationKeys('Sequence Generator')
+            if self.application['Available']:
+                self.app.messageQueue.put('Found Imaging: {0}\n'.format(self.application['Name']))
+                self.logger.info('Name: {0}, Path: {1}'.format(self.application['Name'], self.application['InstallPath']))
+            else:
+                self.logger.info('Application TheSkyX not found on computer')
+
+    def start(self):
+        pass
 
     def stop(self):
-        self.mutexIsRunning.lock()
-        self.isRunning = False
-        self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
+        pass
 
-    def setStatus(self):
+    def getStatus(self):
+        captureResponse = {}
         try:
-            captureResponse = {}
             command = '/* Java Script */'
             command += 'var Out = "";'
             command += 'ccdsoftCamera.Asynchronous=0;'
@@ -161,10 +132,7 @@ class TheSkyX(PyQt5.QtCore.QObject):
         else:
             self.app.workerModelingDispatcher.signalStatusSolver.emit(0)
 
-        if self.isRunning:
-            PyQt5.QtCore.QTimer.singleShot(self.CYCLESTATUS, self.setStatus)
-
-    def setCameraProps(self):
+    def getCameraProps(self):
         if 'CONNECTION' in self.data['Camera']:
             if self.data['Camera']['CONNECTION']['CONNECT'] == 'On':
                 # TODO: Get the chance to implement subframe on / off if a camera doesn't support this
@@ -196,35 +164,6 @@ class TheSkyX(PyQt5.QtCore.QObject):
         if self.isRunning:
             PyQt5.QtCore.QTimer.singleShot(self.CYCLEPROPS, self.setCameraProps)
 
-    def connectCamera(self):
-        if self.isRunning:
-            tsxSocket = None
-            try:
-                tsxSocket = socket.socket()
-                tsxSocket.connect((self.host, self.port))
-                command = '/* Java Script */ '
-                command += 'ccdsoftCamera.Connect();'
-            except Exception as e:
-                self.logger.error('error: {0}'.format(e))
-            finally:
-                if tsxSocket:
-                    tsxSocket.close()
-
-    def disconnectCamera(self):
-        if self.isRunning:
-            tsxSocket = None
-            try:
-                tsxSocket = socket.socket()
-                tsxSocket.connect((self.host, self.port))
-                command = '/* Java Script */ '
-                command += 'ccdsoftCamera.Disconnect();'
-                self.sendCommand(command)
-            except Exception as e:
-                self.logger.error('error: {0}'.format(e))
-            finally:
-                if tsxSocket:
-                    tsxSocket.close()
-
     def sendCommand(self, command):
         try:
             tsxSocket = socket.socket()
@@ -243,46 +182,6 @@ class TheSkyX(PyQt5.QtCore.QObject):
         finally:
             # noinspection PyUnboundLocalVariable
             tsxSocket.close()
-
-    def solveImage(self, imageParams):
-        if imageParams['Blind']:
-            self.logger.warning('Blind mode is not supported. TheSkyX allows to switch to All Sky Image Link by scripting. Please, enable All Sky Image Link manually in TheSkyX')
-
-        try:
-            command = '/* Java Script */'
-            command += 'ccdsoftCamera.Asynchronous=0;'
-            command += 'ImageLink.pathToFITS="' + str(imageParams['ImagePath']).replace('\\', '/') + '";'
-            if imageParams['ScaleHint']:
-                command += 'ImageLink.unknownScale=0;'
-                command += 'ImageLink.scale=' + str(imageParams['ScaleHint']) + ';'
-            else:
-                command += 'ImageLink.unknownScale=1;'
-                command += 'ImageLink.scale=2;'
-            command += 'ImageLink.execute();'
-            command += 'Out=String(\'{"succeeded":"\'+ImageLinkResults.succeeded+\'","imageCenterRAJ2000":"\'+ImageLinkResults.imageCenterRAJ2000+\'","imageCenterDecJ2000":"\'+ImageLinkResults.imageCenterDecJ2000+\'","imageScale":"\'+ImageLinkResults.imageScale+\'","imagePositionAngle":"\'+ImageLinkResults.imagePositionAngle+\'"}\');'
-
-            startTime = timeit.default_timer()
-            success, response = self.sendCommand(command)
-            solveTime = timeit.default_timer() - startTime
-
-            if success:
-                captureResponse = json.loads(response)
-                if captureResponse['succeeded'] == '1':
-                    imageParams['RaJ2000Solved'] = float(captureResponse['imageCenterRAJ2000'])
-                    imageParams['DecJ2000Solved'] = float(captureResponse['imageCenterDecJ2000'])
-                    imageParams['Scale'] = float(captureResponse['imageScale'])
-                    imageParams['Angle'] = float(captureResponse['imagePositionAngle'])
-                    imageParams['TimeTS'] = solveTime
-                    imageParams['Message'] = 'Solved'
-                else:
-                    imageParams['Message'] = 'Unsolved'
-            else:
-                imageParams['Message'] = 'Request failed'
-        except Exception as e:
-            self.logger.error('error: {0}'.format(e))
-            imageParams['Message'] = 'Request failed'
-        finally:
-            return imageParams
 
     def getImage(self, imageParams):
         # TODO: how is TSX dealing with ISO settings for DSLR?
@@ -337,3 +236,31 @@ class TheSkyX(PyQt5.QtCore.QObject):
         finally:
             return imageParams
 
+    def connectCamera(self):
+        if self.isRunning:
+            tsxSocket = None
+            try:
+                tsxSocket = socket.socket()
+                tsxSocket.connect((self.host, self.port))
+                command = '/* Java Script */ '
+                command += 'ccdsoftCamera.Connect();'
+            except Exception as e:
+                self.logger.error('error: {0}'.format(e))
+            finally:
+                if tsxSocket:
+                    tsxSocket.close()
+
+    def disconnectCamera(self):
+        if self.isRunning:
+            tsxSocket = None
+            try:
+                tsxSocket = socket.socket()
+                tsxSocket.connect((self.host, self.port))
+                command = '/* Java Script */ '
+                command += 'ccdsoftCamera.Disconnect();'
+                self.sendCommand(command)
+            except Exception as e:
+                self.logger.error('error: {0}'.format(e))
+            finally:
+                if tsxSocket:
+                    tsxSocket.close()
