@@ -21,6 +21,7 @@ import logging
 import copy
 import shutil
 import time
+import datetime
 import math
 import PyQt5
 import indi.indi_xml as indiXML
@@ -510,6 +511,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
+        timeStart = time.time()
         self.app.messageQueue.put('#BWStart Initial Model\n')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         messageQueue.put('#BWModel processed')
@@ -527,7 +529,7 @@ class ModelingBuild:
             self.app.signalAudio.emit('ModelingFinished')
             messageQueue.put('#BGModel finished with errors')
         else:
-            messageQueue.put('#BRModel finished with success')
+            messageQueue.put('#BRInitial Model finished with success, runtime: {0}'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -574,6 +576,7 @@ class ModelingBuild:
         self.app.workerImaging.cameraHandler.cancel = False
         self.app.workerAstrometry.astrometryHandler.cancel = False
         self.cancel = False
+        timeStart = time.time()
         self.app.messageQueue.put('#BWStart Full Model\n')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         messageQueue.put('#BWModel processed')
@@ -591,7 +594,7 @@ class ModelingBuild:
             self.app.signalAudio.emit('ModelingFinished')
             messageQueue.put('#BGModel finished with errors')
         else:
-            messageQueue.put('#BRModel finished with success')
+            messageQueue.put('#BRFull Model finished with success, runtime: {0}'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():
