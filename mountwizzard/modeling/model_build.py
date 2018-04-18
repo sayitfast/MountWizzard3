@@ -458,7 +458,6 @@ class ModelingBuild:
         if 'KeepImages' and 'BaseDirImages' in modelingData:
             if not modelingData['KeepImages']:
                 shutil.rmtree(modelingData['BaseDirImages'], ignore_errors=True)
-        messageQueue.put('#BWModel finished. Number of processed points: {0:3d}\n'.format(modelingData['NumberPoints']))
         # turn list of dicts to dict of lists
         if len(results) > 0:
             changedResults = dict(zip(results[0], zip(*[d.values() for d in results])))
@@ -513,6 +512,7 @@ class ModelingBuild:
         self.cancel = False
         self.app.messageQueue.put('#BWStart Initial Model\n')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        messageQueue.put('#BWModel processed')
         name = modelingData['Directory'] + '_initial'
         if len(self.modelAlignmentData) > 0:
             self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
@@ -524,7 +524,7 @@ class ModelingBuild:
             self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.signalAudio.emit('ModelingFinished')
+            self.app.signalAudio.emit('#BWModelingFinished')
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -573,6 +573,7 @@ class ModelingBuild:
         self.cancel = False
         self.app.messageQueue.put('#BWStart Full Model\n')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
+        messageQueue.put('#BWModel processed')
         name = modelingData['Directory'] + '_full'
         if len(self.modelAlignmentData) > 0:
             self.app.workerMountDispatcher.programBatchData(self.modelAlignmentData)
@@ -584,7 +585,7 @@ class ModelingBuild:
             self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.signalAudio.emit('ModelingFinished')
+            self.app.signalAudio.emit('#BWModelingFinished')
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():
