@@ -414,6 +414,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         if not self.isRunning:
             self.isRunning = True
         self.mutexIsRunning.unlock()
+        # fill alignment model chart
+        self.signalMountShowAlignmentModel.emit()
         self.threadMountCommandRunner.start()
         self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
