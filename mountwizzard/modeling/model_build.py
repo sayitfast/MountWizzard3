@@ -524,7 +524,10 @@ class ModelingBuild:
             self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.signalAudio.emit('#BWModelingFinished')
+            self.app.signalAudio.emit('ModelingFinished')
+            messageQueue.put('#BGModel finished with errors')
+        else:
+            messageQueue.put('#BRModel finished with success')
 
     def runFullModel(self):
         modelingData = {'Directory': time.strftime("%Y-%m-%d-%H-%M-%S", time.gmtime())}
@@ -585,7 +588,10 @@ class ModelingBuild:
             self.app.signalSetAnalyseFilename.emit(name)
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
-            self.app.signalAudio.emit('#BWModelingFinished')
+            self.app.signalAudio.emit('ModelingFinished')
+            messageQueue.put('#BGModel finished with errors')
+        else:
+            messageQueue.put('#BRModel finished with success')
 
     def runCheckModel(self):
         if not self.checkModelingAvailable():
