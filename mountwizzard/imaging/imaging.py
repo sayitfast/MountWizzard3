@@ -63,7 +63,7 @@ class Imaging(PyQt5.QtCore.QObject):
         self.mutexChooser = PyQt5.QtCore.QMutex()
         self.mutexData = PyQt5.QtCore.QMutex()
         self.statusTimer = None
-        
+
         # class data
         self.data = dict()
         self.data['CONNECTION'] = {'CONNECT': 'Off'}
@@ -213,8 +213,22 @@ class Imaging(PyQt5.QtCore.QObject):
         else:
             imageParams['Speed'] = 'Normal'
         self.cameraHandler.getImage(imageParams)
-        # if we got an image, than show it
-        self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
+        # if we got an image, than we work with it
+        if imageParams['Imagepath'] != '':
+            # add the coordinates to the image of the telescope if not present
+            fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
+            fitsHeader = fitsFileHandle[0].header
+            if 'OBJCTRA' not in fitsHeader:
+                self.app.sharedMountDataLock.lockForRead()
+                fitsHeader['OBJCTRA'] = self.transform.decimalToDegree(self.app.workerMountDispatcher.data['RaJ2000'], False, True, ' ')
+                fitsHeader['OBJCTDEC'] = self.transform.decimalToDegree(self.app.workerMountDispatcher.data['DecJ2000'], True, True, ' ')
+                self.app.sharedMountDataLock.unlock()
+            fitsFileHandle.flush()
+            fitsFileHandle.close()
+            # show it
+            self.app.imageWindow.signalShowFitsImage.emit(imageParams['Imagepath'])
+        else:
+            pass
 
     @PyQt5.QtCore.pyqtSlot()
     def getStatusFromDevice(self):
