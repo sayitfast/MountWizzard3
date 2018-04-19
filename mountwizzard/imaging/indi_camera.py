@@ -157,14 +157,10 @@ class INDICamera:
         self.mutexReceived.lock()
         self.receivedImage = False
         self.mutexReceived.unlock()
-        timeStart = time.time()
 
         # waiting for start integrating
         self.main.cameraStatusText.emit('START')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
-                self.main.cameraStatusText.emit('TIMEOUT')
-                break
             if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
                 if cam['CONNECTION']['CONNECT'] == 'On':
                     if cam['CCD_EXPOSURE']['state'] in ['Busy']:
@@ -178,9 +174,6 @@ class INDICamera:
         # loop for integrating
         self.main.cameraStatusText.emit('INTEGRATE')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
-                self.main.cameraStatusText.emit('TIMEOUT')
-                break
             if 'CONNECTION' and 'CCD_EXPOSURE' in cam:
                 if cam['CONNECTION']['CONNECT'] == 'On':
                     if not float(cam['CCD_EXPOSURE']['CCD_EXPOSURE_VALUE']):
@@ -199,9 +192,6 @@ class INDICamera:
         self.main.imageIntegrated.emit()
         self.main.cameraStatusText.emit('DOWNLOAD')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
-                self.main.cameraStatusText.emit('TIMEOUT')
-                break
             if 'CCD_EXPOSURE' in cam:
                 if cam['CONNECTION']['CONNECT'] == 'On':
                     if cam['CCD_EXPOSURE']['state'] in ['Ok', 'Idle']:
@@ -222,9 +212,6 @@ class INDICamera:
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
         while not self.cancel:
-            if time.time() - timeStart > self.MAX_DOWNLOAD_TIMEOUT:
-                self.main.cameraStatusText.emit('TIMEOUT')
-                break
             if self.receivedImage:
                 break
             time.sleep(0.1)

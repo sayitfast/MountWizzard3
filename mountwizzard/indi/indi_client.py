@@ -164,10 +164,12 @@ class INDIClient(PyQt5.QtCore.QObject):
     def stop(self):
         # if I leave the loop, I close the connection to remote host
         self.mutexIsRunning.lock()
-        self.isRunning = False
+        if self.isRunning:
+            self.isRunning = False
+            self.thread.quit()
+            self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.thread.quit()
-        self.thread.wait()
+        self.logger.info('indi client stopped')
 
     def doCommand(self):
         self.app.sharedINDIDataLock.lockForRead()

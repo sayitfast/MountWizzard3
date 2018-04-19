@@ -23,6 +23,7 @@ import time
 import platform
 import PyQt5
 import queue
+import astropy.io.fits as pyfits
 from astrometry import transform
 from imaging import none_camera
 from imaging import indi_camera
