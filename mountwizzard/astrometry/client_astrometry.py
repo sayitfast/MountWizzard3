@@ -236,10 +236,10 @@ class AstrometryClient:
             headers = {}
             try:
                 result = ''
-                response = requests.post(self.application['URLAPI'] + '/submissions/{0}'
-                                         .format(submissionID),
-                                         data=data,
-                                         headers=headers)
+                response = requests.get(self.application['URLAPI'] + '/submissions/{0}'
+                                        .format(submissionID),
+                                        data=data,
+                                        headers=headers)
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'
@@ -269,10 +269,10 @@ class AstrometryClient:
             headers = {}
             try:
                 result = ''
-                response = requests.post(self.application['URLAPI'] + '/jobs/{0}'
-                                         .format(jobID),
-                                         data=data,
-                                         headers=headers)
+                response = requests.get(self.application['URLAPI'] + '/jobs/{0}'
+                                        .format(jobID),
+                                        data=data,
+                                        headers=headers)
                 result = json.loads(response.text)
             except Exception as e:
                 self.logger.error('Problem jobs, error: {0}, result: {1}, response: {2}'.format(e, result, response))
@@ -298,10 +298,10 @@ class AstrometryClient:
         if not errorState:
             try:
                 result = ''
-                response = requests.post(self.application['URLAPI'] + '/jobs/{0}/calibration'
-                                         .format(jobID),
-                                         data=data,
-                                         headers=headers)
+                response = requests.get(self.application['URLAPI'] + '/jobs/{0}/calibration'
+                                        .format(jobID),
+                                        data=data,
+                                        headers=headers)
                 result = json.loads(response.text)
                 imageParams['Solved'] = True
                 imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
