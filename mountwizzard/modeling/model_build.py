@@ -592,6 +592,14 @@ class ModelingBuild:
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
+            '''
+            command = {'worker': {'Button': self.app.ui.btn_saveBackupModel,
+                                  'Parameter': ['BACKUP'],
+                                  'Method': self.mountModelHandling.saveModel
+                                  }
+                       }
+            self.app.workerMountDispatcher.commandDispatcherQueue.put()
+            '''
             messageQueue.put('#BGModel finished with errors')
         else:
             messageQueue.put('#BRFull Model finished with success, runtime: {0}'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))
