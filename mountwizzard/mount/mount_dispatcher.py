@@ -221,42 +221,42 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                         }
                     ]
                 },
-            'LoadFull1Model':
+            'LoadFullModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadFull1Model,
-                            'Parameter': ['FULL1'],
+                            'Button': self.app.ui.btn_loadFullModel,
+                            'Parameter': ['FULL'],
                             'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
-            'SaveFull1Model':
+            'SaveFullModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_saveFull1Model,
-                            'Parameter': ['FULL1'],
+                            'Button': self.app.ui.btn_saveFullModel,
+                            'Parameter': ['FULL'],
                             'Method': self.mountModelHandling.saveModel,
                         }
                     ]
                 },
-            'LoadFull2Model':
+            'LoadDSOModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_loadFull2Model,
-                            'Parameter': ['FULL2'],
+                            'Button': self.app.ui.btn_loadDSOModel,
+                            'Parameter': ['DSO'],
                             'Method': self.mountModelHandling.loadModel,
                         }
                     ]
                 },
-            'SaveFull2Model':
+            'SaveDSOModel':
                 {
                     'Worker': [
                         {
-                            'Button': self.app.ui.btn_saveFull2Model,
-                            'Parameter': ['FULL2'],
+                            'Button': self.app.ui.btn_saveDSOModel,
+                            'Parameter': ['DSO'],
                             'Method': self.mountModelHandling.saveModel,
                         }
                     ]
@@ -339,10 +339,10 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_reloadAlignmentModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ReloadAlignmentModel'))
         self.app.ui.btn_saveBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveBackupModel'))
         self.app.ui.btn_loadBackupModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadBackupModel'))
-        self.app.ui.btn_saveFull2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveFull2Model'))
-        self.app.ui.btn_loadFull2Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFull2Model'))
-        self.app.ui.btn_saveFull1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveFull1Model'))
-        self.app.ui.btn_loadFull1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFull1Model'))
+        self.app.ui.btn_saveFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveFullModel'))
+        self.app.ui.btn_loadFullModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadFullModel'))
+        self.app.ui.btn_saveDSOModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSOModel'))
+        self.app.ui.btn_loadDSOModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadDSOModel'))
         self.app.ui.btn_saveInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveInitialModel'))
         self.app.ui.btn_loadInitialModel.clicked.connect(lambda: self.commandDispatcherQueue.put('LoadInitialModel'))
         self.app.ui.btn_saveDSO1Model.clicked.connect(lambda: self.commandDispatcherQueue.put('SaveDSO1Model'))

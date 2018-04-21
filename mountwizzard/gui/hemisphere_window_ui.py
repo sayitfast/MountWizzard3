@@ -282,13 +282,3 @@ class Ui_HemisphereDialog(object):
         self.label_59.setText(_translate("HemisphereDialog", "Points to Process:"))
         self.label_149.setText(_translate("HemisphereDialog", "Modeling progress"))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    HemisphereDialog = QtWidgets.QWidget()
-    ui = Ui_HemisphereDialog()
-    ui.setupUi(HemisphereDialog)
-    HemisphereDialog.show()
-    sys.exit(app.exec_())
-

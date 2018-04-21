@@ -513,6 +513,7 @@ class ModelingBuild:
         self.cancel = False
         timeStart = time.time()
         self.app.messageQueue.put('#BWStart Initial Model\n')
+        self.app.workerMountDispatcher.mountModelHandling.saveModel('BACKUP')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         self.app.messageQueue.put('#BWModel processed\n')
         name = modelingData['Directory'] + '_initial'
@@ -527,6 +528,7 @@ class ModelingBuild:
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
+            self.app.workerMountDispatcher.mountModelHandling.saveModel('INITIAL')
             self.app.messageQueue.put('#BGModel finished with errors\n')
         else:
             self.app.messageQueue.put('#BRInitial Model finished with success, runtime: {0}\n'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))
@@ -578,6 +580,7 @@ class ModelingBuild:
         self.cancel = False
         timeStart = time.time()
         self.app.messageQueue.put('#BWStart Full Model\n')
+        self.app.workerMountDispatcher.mountModelHandling.saveModel('BACKUP')
         self.modelAlignmentData = self.runModelCore(self.app.messageQueue, self.modelPoints.modelPoints, modelingData)
         self.app.messageQueue.put('#BWModel processed\n')
         name = modelingData['Directory'] + '_full'
@@ -592,14 +595,7 @@ class ModelingBuild:
             if self.app.analyseWindow.showStatus:
                 self.app.ui.btn_openAnalyseWindow.clicked.emit()
             self.app.signalAudio.emit('ModelingFinished')
-            '''
-            command = {'worker': {'Button': self.app.ui.btn_saveBackupModel,
-                                  'Parameter': ['BACKUP'],
-                                  'Method': self.mountModelHandling.saveModel
-                                  }
-                       }
-            self.app.workerMountDispatcher.commandDispatcherQueue.put()
-            '''
+            self.app.workerMountDispatcher.mountModelHandling.saveModel('FULL')
             self.app.messageQueue.put('#BGModel finished with errors\n')
         else:
             self.app.messageQueue.put('#BRFull Model finished with success, runtime: {0}\n'.format(str(datetime.timedelta(seconds=(timeStart - time.time())))))

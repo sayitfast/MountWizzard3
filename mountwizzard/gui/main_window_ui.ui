@@ -7955,7 +7955,7 @@ Analyse File</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadFull2Model">
+    <widget class="QPushButton" name="btn_loadDSOModel">
      <property name="geometry">
       <rect>
        <x>670</x>
@@ -7971,7 +7971,7 @@ Analyse File</string>
       <string>Load</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_saveFull2Model">
+    <widget class="QPushButton" name="btn_saveDSOModel">
      <property name="geometry">
       <rect>
        <x>460</x>
@@ -8160,7 +8160,7 @@ Analyse File</string>
       </font>
      </property>
      <property name="text">
-      <string>FULL 2</string>
+      <string>DSO 0</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -8278,7 +8278,7 @@ Analyse File</string>
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_saveFull1Model">
+    <widget class="QPushButton" name="btn_saveFullModel">
      <property name="geometry">
       <rect>
        <x>460</x>
@@ -8312,13 +8312,13 @@ Analyse File</string>
       </font>
      </property>
      <property name="text">
-      <string>FULL 1</string>
+      <string>FULL</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_loadFull1Model">
+    <widget class="QPushButton" name="btn_loadFullModel">
      <property name="geometry">
       <rect>
        <x>670</x>
@@ -8616,8 +8616,8 @@ Analyse File</string>
     <zorder>targetRMS</zorder>
     <zorder>btn_saveBackupModel</zorder>
     <zorder>btn_loadBackupModel</zorder>
-    <zorder>btn_loadFull2Model</zorder>
-    <zorder>btn_saveFull2Model</zorder>
+    <zorder>btn_loadDSOModel</zorder>
+    <zorder>btn_saveDSOModel</zorder>
     <zorder>btn_deleteWorstPoint</zorder>
     <zorder>label_124</zorder>
     <zorder>label_125</zorder>
@@ -8632,9 +8632,9 @@ Analyse File</string>
     <zorder>btn_loadDSO2Model</zorder>
     <zorder>label_129</zorder>
     <zorder>label_130</zorder>
-    <zorder>btn_saveFull1Model</zorder>
+    <zorder>btn_saveFullModel</zorder>
     <zorder>label_133</zorder>
-    <zorder>btn_loadFull1Model</zorder>
+    <zorder>btn_loadFullModel</zorder>
     <zorder>line_46</zorder>
     <zorder>model</zorder>
     <zorder>btn_cancelRunTargetRMSAlignment</zorder>
@@ -15399,10 +15399,10 @@ Analyse File</string>
   <tabstop>btn_loadBackupModel</tabstop>
   <tabstop>btn_saveInitialModel</tabstop>
   <tabstop>btn_loadInitialModel</tabstop>
-  <tabstop>btn_saveFull1Model</tabstop>
-  <tabstop>btn_loadFull1Model</tabstop>
-  <tabstop>btn_saveFull2Model</tabstop>
-  <tabstop>btn_loadFull2Model</tabstop>
+  <tabstop>btn_saveFullModel</tabstop>
+  <tabstop>btn_loadFullModel</tabstop>
+  <tabstop>btn_saveDSOModel</tabstop>
+  <tabstop>btn_loadDSOModel</tabstop>
   <tabstop>btn_saveDSO1Model</tabstop>
   <tabstop>btn_loadDSO1Model</tabstop>
   <tabstop>btn_saveDSO2Model</tabstop>
