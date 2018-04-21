@@ -215,7 +215,7 @@ class Imaging(PyQt5.QtCore.QObject):
             imageParams['Speed'] = 'Normal'
         self.cameraHandler.getImage(imageParams)
         # if we got an image, than we work with it
-        if imageParams['Imagepath'] != '':
+        if imageParams['Imagepath'] != '' and os.path.isfile(imageParams['Imagepath']):
             # add the coordinates to the image of the telescope if not present
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
             fitsHeader = fitsFileHandle[0].header
