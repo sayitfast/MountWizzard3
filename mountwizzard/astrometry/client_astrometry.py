@@ -295,7 +295,7 @@ class AstrometryClient:
         self.main.imageSolved.emit()
         self.main.astrometryStatusText.emit('GET DATA')
         # now get the solving data and results
-        if not errorState:
+        if not self.cancel and not errorState:
             try:
                 result = ''
                 response = requests.get(self.application['URLAPI'] + '/jobs/{0}/calibration'
