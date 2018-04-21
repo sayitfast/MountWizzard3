@@ -775,18 +775,18 @@ class MountWizzardApp(widget.MwWidget):
 
     def checkRegistrationKeys(self, appSearchName):
         if platform.machine().endswith('64'):
-            regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                # regpath for 64 bit windows
+            regPath = 'SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall'
         else:
-            regPath = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'                                             # regpath for 32 bit windows
+            regPath = 'SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall'
         appInstallPath = ''
         appInstalled = False
         appName = ''
         try:
-            key = OpenKey(HKEY_LOCAL_MACHINE, regPath)                                                                      # open registry
-            for i in range(0, QueryInfoKey(key)[0]):                                                                        # run through all registry application
-                nameKey = EnumKey(key, i)                                                                                      # get registry names of applications
-                subkey = OpenKey(key, nameKey)                                                                                 # open subkeys of applications
-                for j in range(0, QueryInfoKey(subkey)[1]):                                                                 # run through all subkeys
+            key = OpenKey(HKEY_LOCAL_MACHINE, regPath)
+            for i in range(0, QueryInfoKey(key)[0]):
+                nameKey = EnumKey(key, i)
+                subkey = OpenKey(key, nameKey)
+                for j in range(0, QueryInfoKey(subkey)[1]):
                     values = EnumValue(subkey, j)
                     if values[0] == 'DisplayName':
                         appName = values[1]
@@ -1326,7 +1326,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # defining build no
-    BUILD_NO = '3.0 beta 1'
+    BUILD_NO = '3.0 alpha 24'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))
