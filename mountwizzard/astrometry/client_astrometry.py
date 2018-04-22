@@ -283,6 +283,9 @@ class AstrometryClient:
             stat = result['status']
             if stat == 'success':
                 break
+            if stat == 'failure':
+                errorState = True
+                break
             if time.time()-timeSolvingStart > self.application['TimeoutMax']:
                 # timeout after timeoutMax seconds
                 errorState = True
