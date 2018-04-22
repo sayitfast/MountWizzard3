@@ -21,6 +21,7 @@ import logging
 import os
 import time
 import numpy
+import copy
 import PyQt5
 import astropy.io.fits as pyfits
 from astropy.visualization import MinMaxInterval, ImageNormalize, AsymmetricPercentileInterval, PowerStretch
@@ -165,13 +166,15 @@ class ImagesWindow(widget.MwWidget):
         self.imagePath = filename
         self.ui.le_imageFile.setText(os.path.basename(self.imagePath))
         try:
-            hdulist = pyfits.open(filename)
+            fitsFileHandle = pyfits.open(filename)
         except Exception as e:
+            fitsFileHandle.close()
             self.logger.error('File {0} could not be loaded, error: {1}'.format(self.imagePath, e))
             return
         finally:
             pass
-        self.image = hdulist[0].data
+        self.image = copy.copy(fitsFileHandle[0].data)
+        fitsFileHandle.close()
         self.sizeY, self.sizeX = self.image.shape
         self.setStrech()
         self.setZoom()

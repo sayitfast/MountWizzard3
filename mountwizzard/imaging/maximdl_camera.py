@@ -103,6 +103,8 @@ class MaximDL:
                     else:
                         self.logger.error('Unknown camera status: {0}'.format(status))
                         self.application['Status'] = 'ERROR'
+                else:
+                    self.maximCamera.LinkEnabled = True
             except Exception as e:
                 self.stop()
             finally:
@@ -183,7 +185,8 @@ class MaximDL:
         while not self.cancel:
             imageParams['Imagepath'] = imageParams['BaseDirImages'] + '/' + imageParams['File']
             self.maximCamera.SaveImage(imageParams['Imagepath'])
-            time.sleep(0.1)
+            self.maximCamera.Quit()
+            time.sleep(0.3)
             break
 
         # finally idle
