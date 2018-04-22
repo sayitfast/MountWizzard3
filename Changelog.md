@@ -11,8 +11,3 @@
 - Image Window: image calculations to separat thread (threadpool)
 
 3.0 todo
-
-star = astropy.coordinates.SkyCoord.from_name('M51')
-topo = star.transform_to(astropy.coordinates.AltAz(location=location, obstime=otime))
-otime = astropy.time.Time('2018-04-19 21:00')
-location = astropy.coordinates.EarthLocation(lat='49', lon='11')

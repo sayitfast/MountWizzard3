@@ -30,7 +30,7 @@ setup(
         'matplotlib==2.1.2',
         'wakeonlan>=1.0.0',
         'requests==2.18.4',
-        'astropy==2.0.2',
+        'astropy>=3.0.0',
         'numpy==1.14.0',
         'requests_toolbelt==0.8.0'
     ]

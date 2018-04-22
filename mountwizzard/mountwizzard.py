@@ -1382,6 +1382,13 @@ if __name__ == "__main__":
     mountApp = MountWizzardApp()
     mountApp.show()
 
+    #import astropy.coordinates
+    #star = astropy.coordinates.SkyCoord(ra=202.469575, dec=47.1952583, unit='deg')
+    #starTime = astropy.time.Time('2018-04-19 21:00')
+    #location = astropy.coordinates.EarthLocation(lat='49', lon='11')
+    #topo = star.transform_to(astropy.coordinates.AltAz(location=location, obstime=starTime))
+    #print(topo)
+
     # end of splash screen
     splash.finish(mountApp)
     sys.exit(app.exec_())

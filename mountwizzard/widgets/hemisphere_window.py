@@ -188,8 +188,22 @@ class HemisphereWindow(widget.MwWidget):
         self.drawCanvas()
 
     def onMouse(self, event):
-        if event.inaxes is None or self.ui.btn_editNone.isChecked():
+        if event.inaxes is None:
             return
+        if self.ui.btn_editNone.isChecked():
+            # double click makes slew to target
+            if event.button == 1 and event.dblclick:
+                azimuth = int(event.xdata)
+                altitude = int(event.ydata)
+                question = 'Do you want to slew the mount to:\n\nAzimuth:\t{0}°\nAltitude:\t{1}°'.format(azimuth, altitude)
+                value = self.messageQuestion(self, 'Hemisphere direct slew', question)
+                if value == PyQt5.QtWidgets.QMessageBox.Ok:
+                    self.app.mountCommandQueue.put(':PO#')
+                    self.app.mountCommandQueue.put(':Sz{0:03d}*00#'.format(azimuth))
+                    self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(altitude))
+                    self.app.mountCommandQueue.put(':MA#')
+            else:
+                return
         ind = None
         indlow = None
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
@@ -274,6 +288,7 @@ class HemisphereWindow(widget.MwWidget):
         self.annotate = list()
         self.hemisphereMatplotlibMoving.axes.cla()
         # set face color transparent
+        self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlibMoving.axes.set_facecolor((0, 0, 0, 0))
         self.hemisphereMatplotlibMoving.axes.set_xlim(0, 360)
         self.hemisphereMatplotlibMoving.axes.set_ylim(0, 90)
