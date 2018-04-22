@@ -241,6 +241,7 @@ class AstrometryClient:
                                         data=data,
                                         headers=headers)
                 result = json.loads(response.text)
+                self.logger.info('Result submissions: {0}'.format(result))
             except Exception as e:
                 self.logger.error('Problem submissions, error: {0}, result: {1}, response: {2}'
                                   .format(e, result, response))
@@ -274,6 +275,7 @@ class AstrometryClient:
                                         data=data,
                                         headers=headers)
                 result = json.loads(response.text)
+                self.logger.info('Result jobs: {0}'.format(result))
             except Exception as e:
                 self.logger.error('Problem jobs, error: {0}, result: {1}, response: {2}'.format(e, result, response))
                 errorState = True
@@ -306,6 +308,7 @@ class AstrometryClient:
                                         data=data,
                                         headers=headers)
                 result = json.loads(response.text)
+                self.logger.info('Result calibration: {0}'.format(result))
                 imageParams['Solved'] = True
                 imageParams['RaJ2000Solved'] = result['ra'] * 24 / 360
                 imageParams['DecJ2000Solved'] = result['dec']
