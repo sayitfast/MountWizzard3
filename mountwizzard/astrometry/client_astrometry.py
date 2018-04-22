@@ -213,6 +213,7 @@ class AstrometryClient:
                                          headers={'Content-Type': monitorMultipart.content_type})
                 result = json.loads(response.text)
                 stat = result['status']
+                self.logger.info('Result upload: {0}'.format(result))
             except Exception as e:
                 self.logger.error('Problem upload, error: {0}, result: {1}, response: {2}'.format(e, result, response))
                 errorState = True
