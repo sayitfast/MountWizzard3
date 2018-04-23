@@ -985,9 +985,12 @@ class MountWizzardApp(widget.MwWidget):
         self.workerMountDispatcher.programBatchData(data)
 
     def cancelFullModel(self):
+        # cancle only works if modelin gis running. otherwise recoloring button after stop won't happen
         if self.workerModelingDispatcher.modelingRunner.modelRun:
+            # color button
             self.changeStylesheet(self.ui.btn_cancelFullModel, 'cancel', True)
             self.logger.info('User canceled modeling')
+            # send signal to cancel model run
             self.workerModelingDispatcher.signalCancel.emit()
 
     def cancelInitialModel(self):
@@ -1007,7 +1010,7 @@ class MountWizzardApp(widget.MwWidget):
             self.ui.btn_cancelRunTargetRMSAlignment.setProperty('cancel', True)
             self.ui.btn_cancelRunTargetRMSAlignment.style().unpolish(self.ui.btn_cancelRunTargetRMSAlignment)
             self.ui.btn_cancelRunTargetRMSAlignment.style().polish(self.ui.btn_cancelRunTargetRMSAlignment)
-            self.workerMountDispatcher.cancelRunTargetRMS = True
+            self.workerMountDispatcher.signalCancelRunTargetRMS.emit()
 
     def setAnalyseFilename(self, filename):
         self.ui.le_analyseFileName.setText(filename)
