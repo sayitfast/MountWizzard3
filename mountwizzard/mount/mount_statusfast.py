@@ -186,6 +186,8 @@ class MountStatusRunnerFast(PyQt5.QtCore.QObject):
                                 if not self.audioDone:
                                     self.app.signalAudio.emit('MountAlert')
                                     self.app.messageQueue.put('#BRMount STOPPED - WARNING !!!\n')
+                                    # stop any modeling
+                                    self.app.workerModelingDispatcher.modelingRunner.signalCancel.emit()
                                 self.audioDone = True
                             else:
                                 self.audioDone = False

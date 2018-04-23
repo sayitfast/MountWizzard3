@@ -988,19 +988,19 @@ class MountWizzardApp(widget.MwWidget):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
             self.changeStylesheet(self.ui.btn_cancelFullModel, 'cancel', True)
             self.logger.info('User canceled modeling')
-            self.workerModelingDispatcher.modelingRunner.cancel = True
+            self.workerModelingDispatcher.modelingRunner.signalCancel.emit()
 
     def cancelInitialModel(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
             self.changeStylesheet(self.ui.btn_cancelInitialModel, 'cancel', True)
             self.logger.info('User canceled modeling')
-            self.workerModelingDispatcher.modelingRunner.cancel = True
+            self.workerModelingDispatcher.modelingRunner.signalCancel.emit()
 
     def cancelAnalyseModeling(self):
         if self.workerModelingDispatcher.modelingRunner.modelRun:
             self.changeStylesheet(self.ui.btn_cancelAnalyseModel, 'cancel', True)
             self.logger.info('User canceled analyse modeling')
-            self.workerModelingDispatcher.modelingRunner.cancel = True
+            self.workerModelingDispatcher.modelingRunner.signalCancel.emit()
 
     def cancelRunTargetRMSFunction(self):
         if self.workerMountDispatcher.runTargetRMS:
