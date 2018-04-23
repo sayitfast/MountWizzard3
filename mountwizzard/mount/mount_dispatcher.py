@@ -29,6 +29,7 @@ from mount import mount_statusslow
 from mount import mount_statusonce
 from mount import mount_getalignmodel
 from mount import mount_modelhandling
+from mount import align_stars
 from analyse import analysedata
 from baseclasses import checkIP
 from astrometry import transform
@@ -95,6 +96,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.mountModelHandling = mount_modelhandling.MountModelHandling(self.app, self.data)
         self.analyse = analysedata.Analyse(self.app)
         self.transform = transform.Transform(self.app)
+        self.alignmentStars = align_stars.AlignStars(self.app)
         self.checkIP = checkIP.CheckIP()
 
         # getting all threads setup

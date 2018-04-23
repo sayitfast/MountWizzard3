@@ -21,6 +21,8 @@ import logging
 import PyQt5
 from baseclasses import widget
 from astrometry import transform
+import astropy
+import astropy.coordinates
 import numpy
 import matplotlib
 import bisect
@@ -305,7 +307,19 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_xlim(0, 360)
         self.hemisphereMatplotlibStar.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibStar.axes.set_axis_off()
-        self.hemisphereMatplotlibStar.axes.plot(180, 60, 'o', markersize=20, color='#FFFFFF')
+        star = self.app.workerMountDispatcher.alignmentStars.star
+        for name in star:
+            ra = star[name][0]
+            dec = star[name][1]
+            starCoordinates = astropy.coordinates.SkyCoord(ra=ra, dec=dec, unit='deg')
+            starTime = astropy.time.Time('2018-04-23 22:00')
+            location = astropy.coordinates.EarthLocation(lat='49', lon='11')
+            topo = starCoordinates.transform_to(astropy.coordinates.AltAz(location=location, obstime=starTime))
+            az = topo.az.to_value()
+            alt = topo.alt.to_value()
+            if alt > 0:
+                self.hemisphereMatplotlibStar.axes.plot(az, alt, 'o', markersize=5, color='#FFFFFF')
+                self.hemisphereMatplotlibStar.axes.annotate(name, xy=(az + 2, alt - 2), color='#FFFFFF')
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
