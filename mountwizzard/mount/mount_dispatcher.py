@@ -45,6 +45,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedGetAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedProgAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
+    signalCancelRunTargetRMS = PyQt5.QtCore.pyqtSignal()
 
     # signals for data transfer to other threads
     signalMountAzAltPointer = PyQt5.QtCore.pyqtSignal(float, float)
@@ -352,6 +353,8 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.ui.btn_mountShutdown.clicked.connect(lambda: self.commandDispatcherQueue.put('Shutdown'))
         self.app.ui.btn_clearModel.clicked.connect(lambda: self.commandDispatcherQueue.put('ClearAlign'))
 
+        self.signalCancelRunTargetRMS.connect(self.setCancelRunTargetRMS)
+
     def initConfig(self):
         try:
             if 'MountIP' in self.app.config:
@@ -377,6 +380,9 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.app.config['CheckAutoRefractionContinous'] = self.app.ui.checkAutoRefractionContinous.isChecked()
         self.app.config['CheckAutoRefractionNotTracking'] = self.app.ui.checkAutoRefractionNotTracking.isChecked()
         self.app.config['CheckAutoRefractionNone'] = self.app.ui.checkAutoRefractionNone.isChecked()
+
+    def setCancelRunTargetRMS(self):
+        self.cancelRunTargetRMS = True
 
     def changedMountConnectionSettings(self):
         self.mutexIPChange.lock()

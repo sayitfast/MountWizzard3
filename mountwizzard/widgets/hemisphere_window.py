@@ -54,22 +54,34 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.setupUi(self)
         self.initUI()
         self.initConfig()
+
         # setup the plot styles
         self.hemisphereMatplotlib = widget.IntegrateMatplotlib(self.ui.hemisphere)
         # making background looking transparent
         self.hemisphereMatplotlib.fig.patch.set_facecolor('none')
         background = self.hemisphereMatplotlib.fig.canvas.parentWidget()
-        background.setStyleSheet("background-color: transparent;")
+        background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlib.axes = self.hemisphereMatplotlib.fig.add_subplot(111)
         self.hemisphereMatplotlib.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+
         # for the fast moving parts
         self.hemisphereMatplotlibMoving = widget.IntegrateMatplotlib(self.ui.hemisphereMoving)
         # making background looking transparent
         self.hemisphereMatplotlibMoving.fig.patch.set_facecolor('none')
         background = self.hemisphereMatplotlibMoving.fig.canvas.parentWidget()
-        background.setStyleSheet("background-color: transparent;")
+        background.setStyleSheet('background-color: transparent;')
         self.hemisphereMatplotlibMoving.axes = self.hemisphereMatplotlibMoving.fig.add_subplot(111)
         self.hemisphereMatplotlibMoving.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+
+        # for the stars in background
+        self.hemisphereMatplotlibStar = widget.IntegrateMatplotlib(self.ui.hemisphereStar)
+        # making background looking transparent
+        self.hemisphereMatplotlibStar.fig.patch.set_facecolor('none')
+        background = self.hemisphereMatplotlibStar.fig.canvas.parentWidget()
+        background.setStyleSheet('background-color: transparent;')
+        self.hemisphereMatplotlibStar.axes = self.hemisphereMatplotlibStar.fig.add_subplot(111)
+        self.hemisphereMatplotlibStar.fig.subplots_adjust(left=0.075, right=0.925, bottom=0.075, top=0.925)
+
         # signal connections
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
@@ -286,14 +298,22 @@ class HemisphereWindow(widget.MwWidget):
         for i in range(0, len(self.annotate)):
             self.annotate[i].remove()
         self.annotate = list()
+        # star plane
+        self.hemisphereMatplotlibStar.axes.cla()
+        self.hemisphereMatplotlibStar.fig.canvas.mpl_connect('button_press_event', self.onMouse)
+        self.hemisphereMatplotlibStar.axes.set_facecolor((0, 0, 0, 0))
+        self.hemisphereMatplotlibStar.axes.set_xlim(0, 360)
+        self.hemisphereMatplotlibStar.axes.set_ylim(0, 90)
+        self.hemisphereMatplotlibStar.axes.set_axis_off()
+        self.hemisphereMatplotlibStar.axes.plot(180, 60, 'o', markersize=20, color='#FFFFFF')
+        # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
-        # set face color transparent
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlibMoving.axes.set_facecolor((0, 0, 0, 0))
         self.hemisphereMatplotlibMoving.axes.set_xlim(0, 360)
         self.hemisphereMatplotlibMoving.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibMoving.axes.set_axis_off()
-
+        # fixed points and horizon plane
         self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlib.axes.cla()
         self.hemisphereMatplotlib.axes.spines['bottom'].set_color('#2090C0')

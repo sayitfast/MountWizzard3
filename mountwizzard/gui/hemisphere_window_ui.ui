@@ -625,6 +625,25 @@ Model Points</string>
    <property name="styleSheet">
     <string notr="true"/>
    </property>
+   <widget class="QWidget" name="hemisphereStar" native="true">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>771</width>
+      <height>516</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
   </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>btn_deletePoints</zorder>

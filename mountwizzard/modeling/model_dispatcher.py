@@ -29,7 +29,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
 
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
     signalCancel = PyQt5.QtCore.pyqtSignal()
-    signalCancelRunTargetRMS = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_COMMAND = 0.2
 
@@ -44,7 +43,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.modelingRunner = model_build.ModelingBuild(self.app)
         # signal for stopping modeling
         self.signalCancel.connect(self.modelingRunner.setCancel)
-        self.signalCancelRunTargetRMS.connect(self.setCancelRunTargetRMS)
 
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
@@ -297,9 +295,6 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.app.config['NumberHoursDSO'] = self.app.ui.numberHoursDSO.value()
         # and calling the underlying classes as well
         self.modelingRunner.storeConfig()
-
-    def setCancelRunTargetRMS(self):
-        self.cancelRunTargetRMS = True
 
     def run(self):
         self.logger.info('model dispatcher started')
