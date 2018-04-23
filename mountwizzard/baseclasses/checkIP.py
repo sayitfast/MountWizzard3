@@ -39,9 +39,10 @@ class CheckIP(widget.MwWidget):
                 returnValue = True
             else:
                 returnValue = False
+        except socket.gaierror:
+            self.logger.info('Host address could not be resolved: host {0}:{1}, error: {2}'.format(Host, Port, e))
         except Exception as e:
             self.logger.error('Error checking host {0}:{1}, error: {2}'.format(Host, Port, e))
         finally:
             sock.close()
-            sock = None
         return returnValue
