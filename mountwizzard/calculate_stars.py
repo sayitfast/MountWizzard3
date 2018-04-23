@@ -64,10 +64,9 @@ star['Zeta Herculis'] = None
 star['Zeta Persei'] = None
 # star['Zuben el Genubi'] = None
 
-for name in star:
-    star[name] = astropy.coordinates.SkyCoord.from_name(name)
-    print(name)
-
 with open('stars.dat', 'w') as outfile:
-    outfile.write("star['{0}'] = ({1}, {2})\n".format(name, star[name].ra.to_value(), star[name].dec.to_value()))
+    for name in star:
+        star[name] = astropy.coordinates.SkyCoord.from_name(name)
+        print(name)
+        outfile.write("star['{0}'] = ({1}, {2})\n".format(name, star[name].ra.to_value(), star[name].dec.to_value()))
 
