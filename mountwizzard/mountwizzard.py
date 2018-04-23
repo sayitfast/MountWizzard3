@@ -730,10 +730,8 @@ class MountWizzardApp(widget.MwWidget):
                 os.makedirs(os.getcwd() + '/config')
             with open('config/config.cfg', 'w') as outfile:
                 json.dump(self.config, outfile)
-            outfile.close()
             with open(filepath, 'w') as outfile:
                 json.dump(self.config, outfile)
-            outfile.close()
             self.messageQueue.put('Configuration saved.\n')
         except Exception as e:
             self.messageQueue.put('#BRConfig.cfg could not be saved !\n')
@@ -1385,13 +1383,78 @@ if __name__ == "__main__":
     mountApp = MountWizzardApp()
     mountApp.show()
 
-    #import astropy.coordinates
+    import astropy.coordinates
     #star = astropy.coordinates.SkyCoord(ra=202.469575, dec=47.1952583, unit='deg')
     #starTime = astropy.time.Time('2018-04-19 21:00')
     #location = astropy.coordinates.EarthLocation(lat='49', lon='11')
     #topo = star.transform_to(astropy.coordinates.AltAz(location=location, obstime=starTime))
     #print(topo)
+    star = dict()
+    star['Albireo'] = None
+    star['Aldebaran'] = None
+    star['Alderamin'] = None
+    star['Algenib'] = None
+    star['Alkaid'] = None
+    star['AlphaCam'] = None
+    star['AlphaFornacis'] = None
+    star['AlphaLyrics'] = None
+    star['Alphard'] = None
+    star['Alpheratz'] = None
+    star['Altair'] = None
+    star['AlulaBorealis'] = None
+    star['Antares'] = None
+    star['Arcturus'] = None
+    star['BetaAqr'] = None
+    star['Betelgeuse'] = None
+    star['Capella'] = None
+    star['Caph'] = None
+    star['Castor'] = None
+    star['CorCaroli'] = None
+    star['Deneb'] = None
+    star['Denebola'] = None
+    star['Diphda'] = None
+    star['Dubhe'] = None
+    star['Eltanin'] = None
+    star['Enif'] = None
+    star['GammaCas'] = None
+    star['Gemma'] = None
+    star['GienahGhurab'] = None
+    star['Hamal'] = None
+    star['Kochab'] = None
+    star['LambdaAqr'] = None
+    star['Mankar'] = None
+    star['Menkent'] = None
+    star['Mirach'] = None
+    star['Mirfak'] = None
+    star['Muscida'] = None
+    star['NuOphiuchi'] = None
+    star['OmegaCap'] = None
+    star['PiHerculis'] = None
+    star['Polaris'] = None
+    star['Pollux'] = None
+    star['Procyon'] = None
+    star['RasAlhague'] = None
+    star['Regulus'] = None
+    star['RhoPuppis'] = None
+    star['Rigel'] = None
+    star['Scheat'] = None
+    star['Sirius'] = None
+    star['Spica'] = None
+    star['Unukalhai'] = None
+    star['Vega'] = None
+    star['Vindemiatrix'] = None
+    star['Zaurak'] = None
+    star['ZetaHerculis'] = None
+    star['ZetaPersei'] = None
+    star['ZubenElGenubi'] = None
 
-    # end of splash screen
+    for name in star:
+        star[name] = astropy.coordinates.SkyCoord.from_name(name)
+        print(star[name])
+
+    with open('stars.dat', 'w') as outfile:
+        json.dump(star, outfile)
+
+# end of splash screen
     splash.finish(mountApp)
     sys.exit(app.exec_())
