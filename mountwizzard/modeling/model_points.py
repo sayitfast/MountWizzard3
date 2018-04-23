@@ -214,7 +214,6 @@ class ModelPoints:
         westSide = sorted(westSide, key=operator.itemgetter(1))
         eastSide = sorted(eastSide, key=operator.itemgetter(1))
         self.modelPoints = westSide + eastSide
-        self.app.workerModelingDispatcher.signalModelPointsRedraw.emit()
 
     def loadHorizonPoints(self, horizonPointsFileName, horizonByFile, horizonByAltitude, altitudeMinimumHorizon):
         self.horizonPoints = []
