@@ -268,8 +268,6 @@ class Platesolve(PyQt5.QtCore.QObject):
 class ModelingBuild:
     logger = logging.getLogger(__name__)
 
-    signalCancel = PyQt5.QtCore.pyqtSignal()
-
     def __init__(self, app):
         # make environment available to class
         self.app = app
@@ -312,7 +310,6 @@ class ModelingBuild:
         # signal slot
         self.app.workerMountDispatcher.signalSlewFinished.connect(self.setMountSlewFinished)
         self.app.workerDome.signalSlewFinished.connect(self.setDomeSlewFinished)
-        self.signalCancel.connect(self.setCancel)
 
     def initConfig(self):
         self.modelPoints.initConfig()

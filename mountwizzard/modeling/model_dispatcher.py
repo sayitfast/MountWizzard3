@@ -28,6 +28,7 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
     logger = logging.getLogger(__name__)
 
     signalModelPointsRedraw = PyQt5.QtCore.pyqtSignal()
+    signalCancel = PyQt5.QtCore.pyqtSignal()
 
     CYCLE_COMMAND = 0.2
 
@@ -40,6 +41,9 @@ class ModelingDispatcher(PyQt5.QtCore.QObject):
         self.thread = thread
         self.commandDispatcherQueue = queue.Queue()
         self.modelingRunner = model_build.ModelingBuild(self.app)
+        # signal for stopping modeling
+        self.signalCancel.connect(self.modelingRunner.setCancel)
+
         # definitions for the command dispatcher. this enables spawning commands from outside into the current thread for running
         self.commandDispatch = {
             'RunInitialModel':
