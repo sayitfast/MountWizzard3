@@ -172,7 +172,7 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.app.sharedMountDataLock.unlock()
         for name in self.alignmentStars.stars:
             self.app.sharedMountDataLock.lockForWrite()
-            self.data['starsTopo'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0], self.alignmentStars.stars[name][1], 1))
+            self.data['starsTopo'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0] * 24 / 360, self.alignmentStars.stars[name][1], 1))
             self.app.sharedMountDataLock.unlock()
         self.app.workerMountDispatcher.signalAlignmentStars.emit()
 

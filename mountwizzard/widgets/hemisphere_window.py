@@ -246,6 +246,7 @@ class HemisphereWindow(widget.MwWidget):
                 ind = self.get_ind_under_point(event, 2, stars)
                 if ind:
                     name = self.app.workerMountDispatcher.data['starsNames'][ind]
+                    # RA in degrees ICRS
                     RaJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][0]
                     DecJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][1]
                     question = 'Do you want to polar align to:\n\n{0}\nRA:\t{1:3.3f}\nDEC:\t{2:3.3f}'.format(name, RaJ2000, DecJ2000)
@@ -253,13 +254,14 @@ class HemisphereWindow(widget.MwWidget):
                     if value == PyQt5.QtWidgets.QMessageBox.Ok:
                         # transform to JNOW, RAJ2000 comes in degrees, need to be hours
                         RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
+                        print(RaJNow, DecJNow)
                         RA = self.transform.decimalToDegreeMountSr(RaJNow)
                         DEC = self.transform.decimalToDegreeMountSd(DecJNow)
-                        print('RA: ', RA, '   DEC: ', DEC)
+                        print(name, '   RA: ', RA, '   DEC: ', DEC)
                         self.app.mountCommandQueue.put(':PO#')
-                        #self.app.mountCommandQueue.put(RA)
-                        #self.app.mountCommandQueue.put(DEC)
-                        #self.app.mountCommandQueue.put(':MS#')
+                        self.app.mountCommandQueue.put(RA)
+                        self.app.mountCommandQueue.put(DEC)
+                        self.app.mountCommandQueue.put(':MS#')
             else:
                 return
 

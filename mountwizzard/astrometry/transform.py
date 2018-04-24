@@ -118,7 +118,6 @@ class Transform:
 
     @staticmethod
     def decimalToDegreeMountSr(value):
-        value = value * 360 / 24
         degree = int(value)
         minute = int((value - degree) * 60)
         second = int(((value - degree) * 60 - minute) * 60)
@@ -154,7 +153,7 @@ class Transform:
         date2 = 0
 
         if transform == 1:  # J2000 to Topo Az /Alt
-            ra = (ra + 24) % 24                                                                                             # mount has hours
+            ra = ra % 24
             aob, zob, hob, dob, rob, eo = self.ERFA.atco13(ra * self.ERFA.D2PI / 24,
                                                            dec * self.ERFA.D2PI / 360,
                                                            0.0,
