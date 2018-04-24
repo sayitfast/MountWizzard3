@@ -96,7 +96,8 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
-        self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
+        self.ui.checkShowAlignmentStars.stateChanged.connect(self.setShowAlignmentStars)
+        self.ui.checkPolarAlignment.stateChanged.connect(self.setPolarAlignModus)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False
@@ -125,6 +126,7 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.hemisphereStar.setVisible(self.app.config['CheckShowAlignmentStars'])
             if 'CheckPolarAlignment' in self.app.config:
                 self.ui.checkPolarAlignment.setChecked(self.app.config['CheckPolarAlignment'])
+                self.setPolarAlignModus()
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -191,7 +193,6 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
 
     def updateAlignmentStars(self):
-
         stars = self.app.workerMountDispatcher.data['stars']
         starnames = self.app.workerMountDispatcher.data['starnames']
         self.starsAlignment.set_data([i[0] for i in stars], [i[1] for i in stars])
@@ -209,13 +210,11 @@ class HemisphereWindow(widget.MwWidget):
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#00A000')
             self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
-
         elif self.ui.btn_editModelPoints.isChecked():
             self.maskPlotMarker.set_marker('None')
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#FF00FF')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
-
         elif self.ui.btn_editHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
             self.pointsPlotBig.set_color('#00A000')
@@ -225,12 +224,28 @@ class HemisphereWindow(widget.MwWidget):
             pass
         self.drawCanvas()
 
+    def setPolarAlignModus(self):
+        if self.ui.checkPolarAlignment.isChecked():
+            self.ui.hemisphere.stackUnder(self.ui.hemisphereStar)
+            self.ui.hemisphereMoving.stackUnder(self.ui.hemisphereStar)
+        else:
+            self.ui.hemisphereStar.stackUnder(self.ui.hemisphereMoving)
+
+    def doPolarAlign(self, ind):
+        print(ind)
+        print(self.app.workerMountDispatcher.data['starnames'][ind])
+
     def onMouse(self, event):
         if event.inaxes is None:
             return
+        ind = None
+        indlow = None
+        stars = self.app.workerMountDispatcher.data['stars']
+        points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
+        horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
         if self.ui.btn_editNone.isChecked():
             # double click makes slew to target
-            if event.button == 1 and event.dblclick:
+            if event.button == 1 and event.dblclick and not self.ui.checkPolarAlignment.isChecked():
                 azimuth = int(event.xdata)
                 altitude = int(event.ydata)
                 question = 'Do you want to slew the mount to:\n\nAzimuth:\t{0}°\nAltitude:\t{1}°'.format(azimuth, altitude)
@@ -240,12 +255,11 @@ class HemisphereWindow(widget.MwWidget):
                     self.app.mountCommandQueue.put(':Sz{0:03d}*00#'.format(azimuth))
                     self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(altitude))
                     self.app.mountCommandQueue.put(':MA#')
+            elif event.button == 1 and event.dblclick and self.ui.checkPolarAlignment.isChecked():
+                ind = self.get_ind_under_point(event, 2, stars)
+                self.doPolarAlign(ind)
             else:
                 return
-        ind = None
-        indlow = None
-        points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
-        horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
 
         # first do the model points
         if self.ui.btn_editModelPoints.isChecked():
@@ -334,10 +348,9 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_axis_off()
         stars = self.app.workerMountDispatcher.data['stars']
         starnames = self.app.workerMountDispatcher.data['starnames']
-        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in stars], [i[1] for i in stars], '*', markersize=7, color='#808080')
+        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in stars], [i[1] for i in stars], '*', markersize=7, color='#F0F000')
         for i in range(0, len(stars)):
             self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starnames[i], xy=(stars[i][0] + self.offx, stars[i][1] + self.offy), color='#808080', fontsize=12))
-
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
@@ -347,8 +360,8 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibMoving.axes.set_axis_off()
 
         # fixed points and horizon plane
-        self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlib.axes.cla()
+        self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlib.axes.spines['bottom'].set_color('#2090C0')
         self.hemisphereMatplotlib.axes.spines['top'].set_color('#2090C0')
         self.hemisphereMatplotlib.axes.spines['left'].set_color('#2090C0')
@@ -393,8 +406,8 @@ class HemisphereWindow(widget.MwWidget):
         self.pointsPlotCross, = self.hemisphereMatplotlib.axes.plot([], [], 'X', color='#FF00FF', zorder=5, markersize=9)
         # now to the second widget on top of the first one
         # adding the pointer of mount to hemisphereMoving plot
-        self.pointerAzAlt1,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False, picker='None')
-        self.pointerAzAlt2,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False, picker='None')
+        self.pointerAzAlt1,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False)
+        self.pointerAzAlt2,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=10, markeredgewidth=1, fillstyle='none', visible=False)
         # adding pointer of dome if dome is present
         self.pointerDome1 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#40404080', lw=3, fill=True, visible=False, picker='None')
         self.pointerDome2 = matplotlib.patches.Rectangle((165, 1), 30, 88, zorder=-30, color='#80808080', lw=3, fill=False, visible=False, picker='None')
