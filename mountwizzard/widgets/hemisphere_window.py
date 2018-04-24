@@ -311,8 +311,8 @@ class HemisphereWindow(widget.MwWidget):
         for name in star:
             az, alt = self.transform.transformERFA(star[name][0], star[name][1], 1)
             if alt > 0:
-                self.hemisphereMatplotlibStar.axes.plot(az, alt, 'o', markersize=5, color='#FFFFFF')
-                self.hemisphereMatplotlibStar.axes.annotate(name, xy=(az + 2, alt - 2), color='#FFFFFF')
+                self.hemisphereMatplotlibStar.axes.plot(az, alt, '*', markersize=7, color='#FFFFFF')
+                self.hemisphereMatplotlibStar.axes.annotate(name, xy=(az + 2, alt + 1), color='#FFFFFF', fontsize=12)
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
