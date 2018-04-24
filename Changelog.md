@@ -9,6 +9,5 @@
 
 3.1 todo
 - check TSX
-- show best polar alignment star (south, closed to eclipse)
 
 3.0 todo

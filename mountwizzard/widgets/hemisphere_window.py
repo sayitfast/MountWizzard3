@@ -339,7 +339,7 @@ class HemisphereWindow(widget.MwWidget):
         starnames = self.app.workerMountDispatcher.data['starnames']
         self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in stars], [i[1] for i in stars], '*', markersize=7, color='#F0F000')
         for i in range(0, len(stars)):
-            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starnames[i], xy=(stars[i][0] + self.offx, stars[i][1] + self.offy), color='#808080', fontsize=12))
+            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starnames[i], xy=(stars[i][0] + self.offx, stars[i][1] + self.offy), color='#808080', fontsize=12, clip_on=True))
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
