@@ -79,6 +79,7 @@ class HemisphereWindow(widget.MwWidget):
 
         # for the stars in background
         self.hemisphereMatplotlibStar = widget.IntegrateMatplotlib(self.ui.hemisphereStar)
+        self.ui.hemisphereStar.setVisible(False)
         # making background looking transparent
         self.hemisphereMatplotlibStar.fig.patch.set_facecolor('none')
         background = self.hemisphereMatplotlibStar.fig.canvas.parentWidget()
@@ -95,6 +96,7 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
+        self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False
@@ -118,6 +120,11 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.btn_editModelPoints.setChecked(self.app.config['CheckEditModelPoints'])
             if 'CheckEditHorizonMask' in self.app.config:
                 self.ui.btn_editHorizonMask.setChecked(self.app.config['CheckEditHorizonMask'])
+            if 'CheckShowAlignmentStars' in self.app.config:
+                self.ui.checkShowAlignmentStars.setChecked(self.app.config['CheckShowAlignmentStars'])
+                self.ui.hemisphereStar.setVisible(self.app.config['CheckShowAlignmentStars'])
+            if 'CheckPolarAlignment' in self.app.config:
+                self.ui.checkPolarAlignment.setChecked(self.app.config['CheckPolarAlignment'])
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -130,6 +137,8 @@ class HemisphereWindow(widget.MwWidget):
         self.app.config['CheckEditNone'] = self.ui.btn_editNone.isChecked()
         self.app.config['CheckEditModelPoints'] = self.ui.btn_editModelPoints.isChecked()
         self.app.config['CheckEditHorizonMask'] = self.ui.btn_editHorizonMask.isChecked()
+        self.app.config['CheckShowAlignmentStars'] = self.ui.checkShowAlignmentStars.isChecked()
+        self.app.config['CheckPolarAlignment'] = self.ui.checkPolarAlignment.isChecked()
 
     def showWindow(self):
         self.showStatus = True
@@ -178,7 +187,11 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerDome2.set_xy((az - 15, 1))
             self.drawCanvasMoving()
 
+    def setShowAlignmentStars(self):
+        self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
+
     def updateAlignmentStars(self):
+
         stars = self.app.workerMountDispatcher.data['stars']
         starnames = self.app.workerMountDispatcher.data['starnames']
         self.starsAlignment.set_data([i[0] for i in stars], [i[1] for i in stars])

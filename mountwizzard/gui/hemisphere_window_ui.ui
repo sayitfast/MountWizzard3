@@ -43,7 +43,7 @@
      <x>20</x>
      <y>15</y>
      <width>111</width>
-     <height>36</height>
+     <height>31</height>
     </rect>
    </property>
    <property name="font">
@@ -55,8 +55,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delete all points on coordinate window including Base / Model&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Clear
-Model Points</string>
+    <string>Clear Points</string>
    </property>
   </widget>
   <widget class="QLabel" name="hemisphereBackground">
@@ -78,10 +77,10 @@ Model Points</string>
   <widget class="QGroupBox" name="groupBox_2">
    <property name="geometry">
     <rect>
-     <x>145</x>
+     <x>160</x>
      <y>15</y>
      <width>161</width>
-     <height>76</height>
+     <height>81</height>
     </rect>
    </property>
    <property name="title">
@@ -148,9 +147,9 @@ Model Points</string>
   <widget class="QProgressBar" name="bar_numberPointsProcessed">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>585</x>
      <y>75</y>
-     <width>201</width>
+     <width>186</width>
      <height>16</height>
     </rect>
    </property>
@@ -170,7 +169,7 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>555</x>
      <y>75</y>
      <width>26</width>
      <height>16</height>
@@ -212,7 +211,7 @@ Model Points</string>
   <widget class="QLabel" name="label_81">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>495</x>
      <y>75</y>
      <width>66</width>
      <height>16</height>
@@ -233,9 +232,9 @@ Model Points</string>
   <widget class="QProgressBar" name="bar_numberPointsSolved">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>585</x>
      <y>55</y>
-     <width>201</width>
+     <width>186</width>
      <height>16</height>
     </rect>
    </property>
@@ -255,7 +254,7 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>555</x>
      <y>55</y>
      <width>26</width>
      <height>16</height>
@@ -297,7 +296,7 @@ Model Points</string>
   <widget class="QLabel" name="label_28">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>495</x>
      <y>55</y>
      <width>66</width>
      <height>16</height>
@@ -318,9 +317,9 @@ Model Points</string>
   <widget class="QProgressBar" name="bar_numberPointsImaged">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>585</x>
      <y>35</y>
-     <width>201</width>
+     <width>186</width>
      <height>16</height>
     </rect>
    </property>
@@ -340,7 +339,7 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>555</x>
      <y>35</y>
      <width>26</width>
      <height>16</height>
@@ -382,7 +381,7 @@ Model Points</string>
   <widget class="QLabel" name="label_77">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>495</x>
      <y>35</y>
      <width>66</width>
      <height>16</height>
@@ -403,9 +402,9 @@ Model Points</string>
   <widget class="QProgressBar" name="bar_numberPointsSlewed">
    <property name="geometry">
     <rect>
-     <x>570</x>
+     <x>585</x>
      <y>15</y>
-     <width>201</width>
+     <width>186</width>
      <height>16</height>
     </rect>
    </property>
@@ -440,7 +439,7 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>540</x>
+     <x>555</x>
      <y>15</y>
      <width>26</width>
      <height>16</height>
@@ -482,7 +481,7 @@ Model Points</string>
   <widget class="QLabel" name="label_100">
    <property name="geometry">
     <rect>
-     <x>480</x>
+     <x>495</x>
      <y>15</y>
      <width>66</width>
      <height>16</height>
@@ -506,7 +505,7 @@ Model Points</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>445</x>
      <y>35</y>
      <width>26</width>
      <height>16</height>
@@ -548,7 +547,7 @@ Model Points</string>
   <widget class="QLabel" name="label_59">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>335</x>
      <y>35</y>
      <width>111</width>
      <height>16</height>
@@ -569,7 +568,7 @@ Model Points</string>
   <widget class="QLabel" name="label_149">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>335</x>
      <y>10</y>
      <width>126</width>
      <height>21</height>
@@ -589,7 +588,7 @@ Model Points</string>
   <widget class="Line" name="line_78">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>335</x>
      <y>30</y>
      <width>136</width>
      <height>1</height>
@@ -645,6 +644,42 @@ Model Points</string>
     </property>
    </widget>
   </widget>
+  <widget class="QCheckBox" name="checkPolarAlignment">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>55</y>
+     <width>111</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>PolarAlign</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="checkShowAlignmentStars">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>75</y>
+     <width>121</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Show Align Stars</string>
+   </property>
+  </widget>
   <zorder>hemisphereBackground</zorder>
   <zorder>btn_deletePoints</zorder>
   <zorder>groupBox_2</zorder>
@@ -666,6 +701,8 @@ Model Points</string>
   <zorder>line_78</zorder>
   <zorder>hemisphere</zorder>
   <zorder>hemisphereMoving</zorder>
+  <zorder>checkPolarAlignment</zorder>
+  <zorder>checkShowAlignmentStars</zorder>
  </widget>
  <resources/>
  <connections/>
