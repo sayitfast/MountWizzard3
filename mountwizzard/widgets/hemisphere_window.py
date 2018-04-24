@@ -397,7 +397,7 @@ class HemisphereWindow(widget.MwWidget):
         # model points
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         # draw points in two colors
-        self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, color='#00A000', picker='None')
+        self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, fillstyle='none', color='#00A000', picker='None')
         self.pointsPlotSmall,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=3, color='#E0E000', picker='None')
         if self.ui.btn_editModelPoints.isChecked():
             self.pointsPlotBig.set_color('#FF00FF')
