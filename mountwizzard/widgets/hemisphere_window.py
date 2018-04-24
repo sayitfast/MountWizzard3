@@ -254,10 +254,8 @@ class HemisphereWindow(widget.MwWidget):
                     if value == PyQt5.QtWidgets.QMessageBox.Ok:
                         # transform to JNOW, RAJ2000 comes in degrees, need to be hours
                         RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
-                        print(RaJNow, DecJNow)
                         RA = self.transform.decimalToDegreeMountSr(RaJNow)
                         DEC = self.transform.decimalToDegreeMountSd(DecJNow)
-                        print(name, '   RA: ', RA, '   DEC: ', DEC)
                         self.app.mountCommandQueue.put(':PO#')
                         self.app.mountCommandQueue.put(RA)
                         self.app.mountCommandQueue.put(DEC)
