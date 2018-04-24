@@ -22,6 +22,7 @@ import PyQt5
 import time
 from queue import Queue
 from astrometry import transform
+from mount import align_stars
 
 
 class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
@@ -45,6 +46,17 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.messageString = ''
         self.sendCommandQueue = Queue()
         self.transform = transform.Transform(self.app)
+        self.alignmentStars = align_stars.AlignStars(self.app)
+
+        self.app.sharedMountDataLock.lockForWrite()
+        self.data['stars'] = list()
+        self.data['starnames'] = list()
+        self.app.sharedMountDataLock.unlock()
+        for name in self.alignmentStars.stars:
+            self.app.sharedMountDataLock.lockForWrite()
+            self.data['stars'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0], self.alignmentStars.stars[name][1], 1))
+            self.data['starnames'].append(name)
+            self.app.sharedMountDataLock.unlock()
 
     def run(self):
         self.logger.info('mount slow started')
@@ -151,6 +163,17 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
             self.app.sharedMountDataLock.unlock()
+
+        self.app.sharedMountDataLock.lockForWrite()
+        self.data['stars'] = list()
+        self.data['starnames'] = list()
+        self.app.sharedMountDataLock.unlock()
+        for name in self.alignmentStars.stars:
+            self.app.sharedMountDataLock.lockForWrite()
+            self.data['stars'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0], self.alignmentStars.stars[name][1], 1))
+            self.data['starnames'].append(name)
+            self.app.sharedMountDataLock.unlock()
+        self.app.workerMountDispatcher.signalAlignmentStars.emit()
 
     @PyQt5.QtCore.pyqtSlot()
     def handleReadyRead(self):

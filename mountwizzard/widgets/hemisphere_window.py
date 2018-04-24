@@ -47,11 +47,13 @@ class HemisphereWindow(widget.MwWidget):
         self.pointsPlotBig = None
         self.pointsPlotSmall = None
         self.pointsPlotCross = None
+        self.starsAlignment = None
+        self.starsAnnotate = list()
         self.maskPlotFill = None
         self.maskPlotMarker = None
         self.annotate = list()
-        self.offx = 0
-        self.offy = 0
+        self.offx = 1
+        self.offy = 1
         self.ui = hemisphere_window_ui.Ui_HemisphereDialog()
         self.ui.setupUi(self)
         self.initUI()
@@ -86,6 +88,7 @@ class HemisphereWindow(widget.MwWidget):
 
         # signal connections
         self.app.workerMountDispatcher.signalMountAzAltPointer.connect(self.setAzAltPointer)
+        self.app.workerMountDispatcher.signalAlignmentStars.connect(self.updateAlignmentStars)
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
@@ -175,6 +178,14 @@ class HemisphereWindow(widget.MwWidget):
             self.pointerDome2.set_xy((az - 15, 1))
             self.drawCanvasMoving()
 
+    def updateAlignmentStars(self):
+        stars = self.app.workerMountDispatcher.data['stars']
+        starnames = self.app.workerMountDispatcher.data['starnames']
+        self.starsAlignment.set_data([i[0] for i in stars], [i[1] for i in stars])
+        for i in range(0, len(starnames)):
+            self.starsAnnotate[i].set_position((stars[i][0] + self.offx, stars[i][1] + self.offy))
+        self.hemisphereMatplotlibStar.fig.canvas.draw()
+
     def plotImagedPoint(self, az, alt):
         self.pointsPlotCross.set_data(numpy.append(az, self.pointsPlotCross.get_xdata()), numpy.append(alt, self.pointsPlotCross.get_ydata()))
         self.drawCanvas()
@@ -240,7 +251,7 @@ class HemisphereWindow(widget.MwWidget):
             points.append((event.xdata, event.ydata))
             if self.app.ui.checkSortPoints.isChecked():
                 self.app.workerModelingDispatcher.modelingRunner.modelPoints.sortPoints()
-            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('', xy=(event.xdata - self.offx, event.ydata - self.offy), color='#E0E0E0'))
+            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('', xy=(event.xdata + self.offx, event.ydata + self.offy), color='#E0E0E0'))
             self.pointsPlotBig.set_data([i[0] for i in points], [i[1] for i in points])
             self.pointsPlotSmall.set_data([i[0] for i in points], [i[1] for i in points])
         if self.ui.btn_editModelPoints.isChecked():
@@ -300,6 +311,7 @@ class HemisphereWindow(widget.MwWidget):
         for i in range(0, len(self.annotate)):
             self.annotate[i].remove()
         self.annotate = list()
+        self.starsAnnotate = list()
         # star plane
         self.hemisphereMatplotlibStar.axes.cla()
         self.hemisphereMatplotlibStar.fig.canvas.mpl_connect('button_press_event', self.onMouse)
@@ -307,12 +319,12 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_xlim(0, 360)
         self.hemisphereMatplotlibStar.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibStar.axes.set_axis_off()
-        star = self.app.workerMountDispatcher.alignmentStars.star
-        for name in star:
-            az, alt = self.transform.transformERFA(star[name][0], star[name][1], 1)
-            if alt > 0:
-                self.hemisphereMatplotlibStar.axes.plot(az, alt, '*', markersize=7, color='#FFFFFF')
-                self.hemisphereMatplotlibStar.axes.annotate(name, xy=(az + 2, alt + 1), color='#FFFFFF', fontsize=12)
+        stars = self.app.workerMountDispatcher.data['stars']
+        starnames = self.app.workerMountDispatcher.data['starnames']
+        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in stars], [i[1] for i in stars], '*', markersize=7, color='#808080')
+        for i in range(0, len(stars)):
+            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starnames[i], xy=(stars[i][0] + self.offx, stars[i][1] + self.offy), color='#808080', fontsize=12))
+
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
@@ -320,6 +332,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibMoving.axes.set_xlim(0, 360)
         self.hemisphereMatplotlibMoving.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibMoving.axes.set_axis_off()
+
         # fixed points and horizon plane
         self.hemisphereMatplotlib.fig.canvas.mpl_connect('button_press_event', self.onMouse)
         self.hemisphereMatplotlib.axes.cla()
@@ -354,8 +367,6 @@ class HemisphereWindow(widget.MwWidget):
             self.maskPlotMarker.set_marker('o')
             self.maskPlotMarker.set_color('#FF00FF')
         # model points
-        self.offx = -2
-        self.offy = 2
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         # draw points in two colors
         self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, color='#00A000', picker='None')
@@ -364,7 +375,7 @@ class HemisphereWindow(widget.MwWidget):
             self.pointsPlotBig.set_color('#FF00FF')
         # add text to points
         for i in range(0, len(points)):
-            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] - self.offx, points[i][1] - self.offy), color='#E0E0E0', picker='None'))
+            self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] + self.offx, points[i][1] + self.offy), color='#E0E0E0', picker='None'))
         # add crosses, if modeling was done to recap when opening the window
         self.pointsPlotCross, = self.hemisphereMatplotlib.axes.plot([], [], 'X', color='#FF00FF', zorder=5, markersize=9)
         # now to the second widget on top of the first one
