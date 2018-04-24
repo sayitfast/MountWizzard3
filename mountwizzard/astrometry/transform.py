@@ -136,8 +136,8 @@ class Transform:
         degree = int(value)
         minute = int((value - degree) * 60)
         second = int(((value - degree) * 60 - minute) * 60)
-        second_dec = int((((value - degree) * 60 - minute) * 60 - second) * 100)
-        returnValue = '{0}{1:02d}*{2:02d}:{3:02d}.{4:02d}'.format(sign, degree, minute, second, second_dec)
+        second_dec = int((((value - degree) * 60 - minute) * 60 - second) * 10)
+        returnValue = '{0}{1:02d}*{2:02d}:{3:02d}.{4:01d}'.format(sign, degree, minute, second, second_dec)
         return returnValue
 
     def transformERFA(self, ra, dec, transform=1):

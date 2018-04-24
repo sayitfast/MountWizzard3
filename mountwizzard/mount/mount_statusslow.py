@@ -49,13 +49,15 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
         self.alignmentStars = align_stars.AlignStars(self.app)
 
         self.app.sharedMountDataLock.lockForWrite()
-        self.data['stars'] = list()
-        self.data['starnames'] = list()
+        self.data['starsTopo'] = list()
+        self.data['starsNames'] = list()
+        self.data['starsICRS'] = list()
         self.app.sharedMountDataLock.unlock()
         for name in self.alignmentStars.stars:
             self.app.sharedMountDataLock.lockForWrite()
-            self.data['stars'].append((0, 0))
-            self.data['starnames'].append(name)
+            self.data['starsTopo'].append((0, 0))
+            self.data['starsNames'].append(name)
+            self.data['starsICRS'].append(self.alignmentStars.stars[name])
             self.app.sharedMountDataLock.unlock()
 
     def run(self):
@@ -164,15 +166,13 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
             self.app.sharedMountDataLock.unlock()
-
+        # update topo data for alignment stars
         self.app.sharedMountDataLock.lockForWrite()
-        self.data['stars'] = list()
-        self.data['starnames'] = list()
+        self.data['starsTopo'] = list()
         self.app.sharedMountDataLock.unlock()
         for name in self.alignmentStars.stars:
             self.app.sharedMountDataLock.lockForWrite()
-            self.data['stars'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0], self.alignmentStars.stars[name][1], 1))
-            self.data['starnames'].append(name)
+            self.data['starsTopo'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0], self.alignmentStars.stars[name][1], 1))
             self.app.sharedMountDataLock.unlock()
         self.app.workerMountDispatcher.signalAlignmentStars.emit()
 

@@ -191,11 +191,11 @@ class HemisphereWindow(widget.MwWidget):
 
     def updateAlignmentStars(self):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
-        stars = self.app.workerMountDispatcher.data['stars']
-        starnames = self.app.workerMountDispatcher.data['starnames']
-        self.starsAlignment.set_data([i[0] for i in stars], [i[1] for i in stars])
-        for i in range(0, len(starnames)):
-            self.starsAnnotate[i].set_position((stars[i][0] + self.offx, stars[i][1] + self.offy))
+        starsTopo = self.app.workerMountDispatcher.data['starsTopo']
+        starsNames = self.app.workerMountDispatcher.data['starsNames']
+        self.starsAlignment.set_data([i[0] for i in starsTopo], [i[1] for i in starsTopo])
+        for i in range(0, len(starsNames)):
+            self.starsAnnotate[i].set_position((starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy))
         self.hemisphereMatplotlibStar.fig.canvas.draw()
 
     def plotImagedPoint(self, az, alt):
@@ -227,7 +227,7 @@ class HemisphereWindow(widget.MwWidget):
             return
         ind = None
         indlow = None
-        stars = self.app.workerMountDispatcher.data['stars']
+        stars = self.app.workerMountDispatcher.data['starsTopo']
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
         if self.ui.btn_editNone.isChecked():
@@ -244,21 +244,21 @@ class HemisphereWindow(widget.MwWidget):
                     self.app.mountCommandQueue.put(':MA#')
             elif event.button == 1 and event.dblclick and self.ui.checkPolarAlignment.isChecked():
                 ind = self.get_ind_under_point(event, 2, stars)
-                name = self.app.workerMountDispatcher.data['starnames'][ind]
-                RaJ2000 = self.app.workerMountDispatcher.data['stars'][ind][0]
-                DecJ2000 = self.app.workerMountDispatcher.data['stars'][ind][1]
-                question = 'Do you want to polar align to:\n\n{0}\nRA:\t{1:3.3f}\nDEC:\t{2:3.3f}'.format(name, RaJ2000, DecJ2000)
-                value = self.messageQuestion(self, 'Polar Align Routine', question)
-                if value == PyQt5.QtWidgets.QMessageBox.Ok:
-                    # transform to JNOW, RAJ2000 comes in degrees, need to be hours
-                    RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
-                    RA = self.transform.decimalToDegreeMountSr(RaJNow)
-                    DEC = self.transform.decimalToDegreeMountSd(DecJNow)
-                    print(RA, DEC)
-                    #self.app.mountCommandQueue.put(':PO#')
-                    #self.app.mountCommandQueue.put(':Sr{0:03d}*00#'.format(RaJNow))
-                    #self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(DecJNow))
-                    #self.app.mountCommandQueue.put(':MA#')
+                if ind:
+                    name = self.app.workerMountDispatcher.data['starsNames'][ind]
+                    RaJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][0]
+                    DecJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][1]
+                    question = 'Do you want to polar align to:\n\n{0}\nRA:\t{1:3.3f}\nDEC:\t{2:3.3f}'.format(name, RaJ2000, DecJ2000)
+                    value = self.messageQuestion(self, 'Polar Align Routine', question)
+                    if value == PyQt5.QtWidgets.QMessageBox.Ok:
+                        # transform to JNOW, RAJ2000 comes in degrees, need to be hours
+                        RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
+                        RA = self.transform.decimalToDegreeMountSr(RaJNow)
+                        DEC = self.transform.decimalToDegreeMountSd(DecJNow)
+                        self.app.mountCommandQueue.put(':PO#')
+                        self.app.mountCommandQueue.put(':{0}#'.format(RA))
+                        self.app.mountCommandQueue.put(':{0}#'.format(DEC))
+                        self.app.mountCommandQueue.put(':MS#')
             else:
                 return
 
@@ -347,11 +347,11 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_xlim(0, 360)
         self.hemisphereMatplotlibStar.axes.set_ylim(0, 90)
         self.hemisphereMatplotlibStar.axes.set_axis_off()
-        stars = self.app.workerMountDispatcher.data['stars']
-        starnames = self.app.workerMountDispatcher.data['starnames']
-        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in stars], [i[1] for i in stars], '*', markersize=7, color='#F0F000')
-        for i in range(0, len(stars)):
-            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starnames[i], xy=(stars[i][0] + self.offx, stars[i][1] + self.offy), color='#808080', fontsize=12, clip_on=True))
+        starsTopo = self.app.workerMountDispatcher.data['starsTopo']
+        starsNames = self.app.workerMountDispatcher.data['starsNames']
+        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=7, color='#F0F000')
+        for i in range(0, len(starsTopo)):
+            self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starsNames[i], xy=(starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy), color='#808080', fontsize=12, clip_on=True))
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
