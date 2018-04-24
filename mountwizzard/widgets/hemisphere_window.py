@@ -96,7 +96,7 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
-        self.ui.checkShowAlignmentStars.stateChanged.connect(self.setShowAlignmentStars)
+        self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False
@@ -122,7 +122,6 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.btn_editHorizonMask.setChecked(self.app.config['CheckEditHorizonMask'])
             if 'CheckShowAlignmentStars' in self.app.config:
                 self.ui.checkShowAlignmentStars.setChecked(self.app.config['CheckShowAlignmentStars'])
-                self.ui.hemisphereStar.setVisible(self.app.config['CheckShowAlignmentStars'])
             if 'CheckPolarAlignment' in self.app.config:
                 self.ui.checkPolarAlignment.setChecked(self.app.config['CheckPolarAlignment'])
         except Exception as e:
@@ -191,6 +190,7 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
 
     def updateAlignmentStars(self):
+        self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
         stars = self.app.workerMountDispatcher.data['stars']
         starnames = self.app.workerMountDispatcher.data['starnames']
         self.starsAlignment.set_data([i[0] for i in stars], [i[1] for i in stars])
@@ -244,9 +244,21 @@ class HemisphereWindow(widget.MwWidget):
                     self.app.mountCommandQueue.put(':MA#')
             elif event.button == 1 and event.dblclick and self.ui.checkPolarAlignment.isChecked():
                 ind = self.get_ind_under_point(event, 2, stars)
-                self.app.workerMountDispatcher.data['starnames'][ind]
-                question = 'Do you want to polar align to:\n\n{0}'.format(self.app.workerMountDispatcher.data['starnames'][ind])
+                name = self.app.workerMountDispatcher.data['starnames'][ind]
+                RaJ2000 = self.app.workerMountDispatcher.data['stars'][ind][0]
+                DecJ2000 = self.app.workerMountDispatcher.data['stars'][ind][1]
+                question = 'Do you want to polar align to:\n\n{0}\nRA:\t{1:3.3f}\nDEC:\t{2:3.3f}'.format(name, RaJ2000, DecJ2000)
                 value = self.messageQuestion(self, 'Polar Align Routine', question)
+                if value == PyQt5.QtWidgets.QMessageBox.Ok:
+                    # transform to JNOW, RAJ2000 comes in degrees, need to be hours
+                    RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
+                    RA = self.transform.decimalToDegreeMountSr(RaJNow)
+                    DEC = self.transform.decimalToDegreeMountSd(DecJNow)
+                    print(RA, DEC)
+                    #self.app.mountCommandQueue.put(':PO#')
+                    #self.app.mountCommandQueue.put(':Sr{0:03d}*00#'.format(RaJNow))
+                    #self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(DecJNow))
+                    #self.app.mountCommandQueue.put(':MA#')
             else:
                 return
 

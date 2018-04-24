@@ -116,6 +116,30 @@ class Transform:
             returnValue = '{0:02d}{4}{1:02d}{4}{2:02d}{3}'.format(hour, minute, second, second_dec, spl)
         return returnValue
 
+    @staticmethod
+    def decimalToDegreeMountSr(value):
+        value = value * 360 / 24
+        degree = int(value)
+        minute = int((value - degree) * 60)
+        second = int(((value - degree) * 60 - minute) * 60)
+        second_dec = int((((value - degree) * 60 - minute) * 60 - second) * 100)
+        returnValue = '{0:02d}:{1:02d}:{2:02d}.{3:02d}'.format(degree, minute, second, second_dec)
+        return returnValue
+
+    @staticmethod
+    def decimalToDegreeMountSd(value):
+        if value >= 0:
+            sign = '+'
+        else:
+            sign = '-'
+        value = abs(value)
+        degree = int(value)
+        minute = int((value - degree) * 60)
+        second = int(((value - degree) * 60 - minute) * 60)
+        second_dec = int((((value - degree) * 60 - minute) * 60 - second) * 100)
+        returnValue = '{0}{1:02d}*{2:02d}:{3:02d}.{4:02d}'.format(sign, degree, minute, second, second_dec)
+        return returnValue
+
     def transformERFA(self, ra, dec, transform=1):
         self.mutexERFA.lock()
         ts = datetime.datetime.utcnow()
@@ -130,7 +154,7 @@ class Transform:
         date2 = 0
 
         if transform == 1:  # J2000 to Topo Az /Alt
-            ra = ra % 24                                                                                                    # mount has hours
+            ra = (ra + 24) % 24                                                                                             # mount has hours
             aob, zob, hob, dob, rob, eo = self.ERFA.atco13(ra * self.ERFA.D2PI / 24,
                                                            dec * self.ERFA.D2PI / 360,
                                                            0.0,
