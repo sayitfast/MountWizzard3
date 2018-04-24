@@ -97,7 +97,6 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
         self.ui.checkShowAlignmentStars.stateChanged.connect(self.setShowAlignmentStars)
-        self.ui.checkPolarAlignment.stateChanged.connect(self.setPolarAlignModus)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
         self.showStatus = False
@@ -126,7 +125,6 @@ class HemisphereWindow(widget.MwWidget):
                 self.ui.hemisphereStar.setVisible(self.app.config['CheckShowAlignmentStars'])
             if 'CheckPolarAlignment' in self.app.config:
                 self.ui.checkPolarAlignment.setChecked(self.app.config['CheckPolarAlignment'])
-                self.setPolarAlignModus()
         except Exception as e:
             self.logger.error('item in config.cfg not be initialize, error:{0}'.format(e))
         finally:
@@ -224,17 +222,6 @@ class HemisphereWindow(widget.MwWidget):
             pass
         self.drawCanvas()
 
-    def setPolarAlignModus(self):
-        if self.ui.checkPolarAlignment.isChecked():
-            self.ui.hemisphere.stackUnder(self.ui.hemisphereStar)
-            self.ui.hemisphereMoving.stackUnder(self.ui.hemisphereStar)
-        else:
-            self.ui.hemisphereStar.stackUnder(self.ui.hemisphereMoving)
-
-    def doPolarAlign(self, ind):
-        print(ind)
-        print(self.app.workerMountDispatcher.data['starnames'][ind])
-
     def onMouse(self, event):
         if event.inaxes is None:
             return
@@ -257,7 +244,9 @@ class HemisphereWindow(widget.MwWidget):
                     self.app.mountCommandQueue.put(':MA#')
             elif event.button == 1 and event.dblclick and self.ui.checkPolarAlignment.isChecked():
                 ind = self.get_ind_under_point(event, 2, stars)
-                self.doPolarAlign(ind)
+                self.app.workerMountDispatcher.data['starnames'][ind]
+                question = 'Do you want to polar align to:\n\n{0}'.format(self.app.workerMountDispatcher.data['starnames'][ind])
+                value = self.messageQuestion(self, 'Polar Align Routine', question)
             else:
                 return
 
