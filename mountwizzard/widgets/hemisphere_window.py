@@ -255,10 +255,11 @@ class HemisphereWindow(widget.MwWidget):
                         RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
                         RA = self.transform.decimalToDegreeMountSr(RaJNow)
                         DEC = self.transform.decimalToDegreeMountSd(DecJNow)
+                        print('RA: ', RA, '   DEC: ', DEC)
                         self.app.mountCommandQueue.put(':PO#')
-                        self.app.mountCommandQueue.put(':{0}#'.format(RA))
-                        self.app.mountCommandQueue.put(':{0}#'.format(DEC))
-                        self.app.mountCommandQueue.put(':MS#')
+                        #self.app.mountCommandQueue.put(RA)
+                        #self.app.mountCommandQueue.put(DEC)
+                        #self.app.mountCommandQueue.put(':MS#')
             else:
                 return
 
