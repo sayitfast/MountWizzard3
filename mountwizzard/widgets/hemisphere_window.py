@@ -309,14 +309,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_axis_off()
         star = self.app.workerMountDispatcher.alignmentStars.star
         for name in star:
-            ra = star[name][0]
-            dec = star[name][1]
-            starCoordinates = astropy.coordinates.SkyCoord(ra=ra, dec=dec, unit='deg')
-            starTime = astropy.time.Time('2018-04-23 22:00')
-            location = astropy.coordinates.EarthLocation(lat='49', lon='11')
-            topo = starCoordinates.transform_to(astropy.coordinates.AltAz(location=location, obstime=starTime))
-            az = topo.az.to_value()
-            alt = topo.alt.to_value()
+            az, alt = self.transform.transformERFA(star[name][0], star[name][1], 1)
             if alt > 0:
                 self.hemisphereMatplotlibStar.axes.plot(az, alt, 'o', markersize=5, color='#FFFFFF')
                 self.hemisphereMatplotlibStar.axes.annotate(name, xy=(az + 2, alt - 2), color='#FFFFFF')

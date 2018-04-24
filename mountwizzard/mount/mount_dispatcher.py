@@ -74,13 +74,13 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     data = {
         'SiteLatitude': '49:00:00',
-        'SiteLongitude': '01:00:00',
+        'SiteLongitude': '11:38:00',
         'SiteHeight': '1',
         'MountIP': '',
         'MountMAC': '',
         'MountPort': 3490,
         'LocalSiderealTime': '',
-        'JulianDate': '2458096.5',
+        'JulianDate': '2458233.0',
         'FW': 21501
     }
 

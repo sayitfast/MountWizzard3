@@ -33,9 +33,9 @@ class Transform:
         self.mutexERFA = PyQt5.QtCore.QMutex()
         self.mutexTopocentric = PyQt5.QtCore.QMutex()
         self.siteLat = 49
-        self.siteLon = -11
+        self.siteLon = 11.75
         self.siteHeight = 0
-        self.julianDate = 2458096.5
+        self.julianDate = 2458233.33333
         # connect data transfer
         self.app.signalMountSiteData.connect(self.setSiteData)
         self.app.signalJulianDate.connect(self.setJulianDate)
