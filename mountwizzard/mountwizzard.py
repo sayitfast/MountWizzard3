@@ -357,6 +357,7 @@ class MountWizzardApp(widget.MwWidget):
         widget.draw()
 
     def checkPlatformDependableMenus(self):
+        self.ui.mainTabWidget.removeTab(8)
         if platform.system() != 'Windows':
             # you have to remove the higher number first to keep the ordering number (otherwise everything is already shifted)
             self.ui.settingsTabWidget.removeTab(3)

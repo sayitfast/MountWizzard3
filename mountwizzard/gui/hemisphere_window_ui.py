@@ -54,6 +54,7 @@ class Ui_HemisphereDialog(object):
         self.btn_editHorizonMask.setFont(font)
         self.btn_editHorizonMask.setObjectName("btn_editHorizonMask")
         self.checkPolarAlignment = QtWidgets.QRadioButton(self.groupBox_2)
+        self.checkPolarAlignment.setEnabled(False)
         self.checkPolarAlignment.setGeometry(QtCore.QRect(10, 75, 136, 21))
         font = QtGui.QFont()
         font.setPointSize(10)

@@ -96,6 +96,7 @@ class HemisphereWindow(widget.MwWidget):
         self.ui.btn_editNone.clicked.connect(self.setEditModus)
         self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
         self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
+        self.ui.checkPolarAlignment.clicked.connect(self.setEditModus)
         self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
         # from start on invisible
@@ -218,6 +219,11 @@ class HemisphereWindow(widget.MwWidget):
             self.pointsPlotBig.set_color('#00A000')
             self.maskPlotMarker.set_color('#FF00FF')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
+        elif self.ui.checkPolarAlignment.isChecked():
+            self.maskPlotMarker.set_marker('None')
+            self.maskPlotMarker.set_color('#006000')
+            self.pointsPlotBig.set_color('#00A000')
+            self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
         else:
             pass
         self.drawCanvas()
@@ -232,7 +238,7 @@ class HemisphereWindow(widget.MwWidget):
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
         if self.ui.btn_editNone.isChecked():
             # double click makes slew to target
-            if event.button == 1 and event.dblclick and not self.ui.checkPolarAlignment.isChecked():
+            if event.button == 1 and event.dblclick:
                 azimuth = int(event.xdata)
                 altitude = int(event.ydata)
                 question = 'Do you want to slew the mount to:\n\nAzimuth:\t{0}°\nAltitude:\t{1}°'.format(azimuth, altitude)
@@ -242,14 +248,17 @@ class HemisphereWindow(widget.MwWidget):
                     self.app.mountCommandQueue.put(':Sz{0:03d}*00#'.format(azimuth))
                     self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(altitude))
                     self.app.mountCommandQueue.put(':MA#')
-            elif event.button == 1 and event.dblclick and self.ui.checkPolarAlignment.isChecked():
+
+        elif self.ui.checkPolarAlignment.isChecked():
+            if event.button == 1 and event.dblclick:
+                print('got event')
                 ind = self.get_ind_under_point(event, 2, stars)
                 if ind:
                     name = self.app.workerMountDispatcher.data['starsNames'][ind]
                     # RA in degrees ICRS
                     RaJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][0]
                     DecJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][1]
-                    question = 'Do you want to polar align to:\n\n{0}\nRA:\t{1:3.3f}\nDEC:\t{2:3.3f}'.format(name, RaJ2000, DecJ2000)
+                    question = 'Do you want to slew to\npolar align star:\n\n{0}'.format(name)
                     value = self.messageQuestion(self, 'Polar Align Routine', question)
                     if value == PyQt5.QtWidgets.QMessageBox.Ok:
                         # transform to JNOW, RAJ2000 comes in degrees, need to be hours
@@ -260,8 +269,9 @@ class HemisphereWindow(widget.MwWidget):
                         self.app.mountCommandQueue.put(RA)
                         self.app.mountCommandQueue.put(DEC)
                         self.app.mountCommandQueue.put(':MS#')
-            else:
-                return
+
+        else:
+            return
 
         # first do the model points
         if self.ui.btn_editModelPoints.isChecked():
