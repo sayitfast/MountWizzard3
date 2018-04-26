@@ -6481,13 +6481,3 @@ class Ui_MainWindow(object):
         self.le_domeStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.label_110.setText(_translate("MainWindow", "Status"))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QWidget()
-    ui = Ui_MainWindow()
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-    sys.exit(app.exec_())
-
