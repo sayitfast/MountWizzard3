@@ -23,7 +23,7 @@ import PyQt5
 
 class MWStyles:
 
-    COLOR_ASTRO = PyQt5.QtGui.QColor(32, 144, 192)  # blue astro color
+    COLOR_ASTRO = PyQt5.QtGui.QColor(32, 144, 192)
     COLOR_BLUE = PyQt5.QtGui.QColor(0, 0, 255)
     COLOR_YELLOW = PyQt5.QtGui.QColor(192, 192, 0)
     COLOR_GREEN = PyQt5.QtGui.QColor(0, 255, 0)
@@ -43,6 +43,11 @@ class MWStyles:
     }
     QWidget[large='true'] {
         font-size: 36pt;
+    }
+    QGroupBox{
+        font-family: Arial;
+        font-style: normal;
+        font-size: 10pt;
     } 
     """
     NON_MAC_STYLE = """
@@ -55,6 +60,11 @@ class MWStyles:
     QWidget[large='true'] {
         font-size: 28pt;
     } 
+    QGroupBox{
+        font-family: Arial;
+        font-style: normal;
+        font-size: 8pt;
+    }     
     """
     BASIC_STYLE = """
     QToolTip {
@@ -141,29 +151,14 @@ class MWStyles:
         border-style: outset;
         border-radius: 3px;
         border-color: #404040;
+        margin-top: 6px;
     }
     QGroupBox::title {
+        left: 5px;
         subcontrol-origin: margin;
         subcontrol-position: top left; /* position at the top center */
-        background-color: #202020;
-        border-width: 1px;
-        border-style: outset;
-        border-radius: 3px;
-        border-color: #404040;
-        padding: 2px 2px 2px 2px;
         color: #C0C0C0;
-    }
-    QGroupBox::indicator {
-        border-width: 1px;
-        border-color: #404040;
-        background-color: #101010;
-        border-style: outset;
-        border-radius: 2px;
-        width: 13px;
-        height: 13px;
-    }
-    QGroupBox::indicator:checked {
-        background-color: rgb(32, 144, 192);
+        background-color: #181818;
     }
     QRadioButton {
         color: #C0C0C0;

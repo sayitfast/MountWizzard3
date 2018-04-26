@@ -1231,7 +1231,10 @@ class MountWizzardApp(widget.MwWidget):
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
             elif text.startswith('ToModel>'):
-                self.hemisphereWindow.ui.le_numberPointsToModel.setText(text[8:])
+                self.hemisphereWindow.ui.le_numberPointsToProcess1.setText(text[8:])
+                self.hemisphereWindow.ui.le_numberPointsToProcess2.setText(text[8:])
+                self.hemisphereWindow.ui.le_numberPointsToProcess3.setText(text[8:])
+                self.hemisphereWindow.ui.le_numberPointsToProcess4.setText(text[8:])
             elif text.startswith('Slewed>'):
                 self.hemisphereWindow.ui.le_numberPointsSlewed.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
