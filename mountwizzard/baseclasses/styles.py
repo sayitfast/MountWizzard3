@@ -164,6 +164,10 @@ class MWStyles:
         color: #C0C0C0;
         background-color: transparent;
     }
+    QRadioButton:disabled {
+        color: #404040;
+        background-color: transparent;
+    }
     QRadioButton::indicator {
         border-width: 1px;
         border-color: #404040;
