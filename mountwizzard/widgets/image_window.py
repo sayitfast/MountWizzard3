@@ -164,15 +164,18 @@ class ImagesWindow(widget.MwWidget):
         # fixed points and horizon plane
         self.ui.image.stackUnder(self.ui.imageMarker)
         self.imageMatplotlibMarker.axes.cla()
-        self.imageMatplotlibMarker.axes.set_xlim(0, 100)
-        self.imageMatplotlibMarker.axes.set_ylim(0, 100)
+        self.imageMatplotlibMarker.axes.set_xlim(0, 400)
+        self.imageMatplotlibMarker.axes.set_ylim(0, 400)
         self.imageMatplotlibMarker.axes.grid(True, color='#404040', ls='dotted')
+        self.imageMatplotlibMarker.axes.spines['bottom'].set_color((0, 0, 0, 0))
+        self.imageMatplotlibMarker.axes.spines['top'].set_color((0, 0, 0, 0))
+        self.imageMatplotlibMarker.axes.spines['left'].set_color((0, 0, 0, 0))
+        self.imageMatplotlibMarker.axes.spines['right'].set_color((0, 0, 0, 0))
         self.imageMatplotlibMarker.axes.set_facecolor((0, 0, 0, 0))
-        self.imageMatplotlibMarker.axes.set_xticks(numpy.arange(0, 101, 10))
-        self.imageMatplotlibMarker.axes.set_yticks(numpy.arange(0, 101, 10))
-        self.imageMatplotlibMarker.axes.plot(50, 50, zorder=10, color='#606060', marker='o', markersize=25, markeredgewidth=2, fillstyle='none')
-        self.imageMatplotlibMarker.axes.plot(50, 50, zorder=10, color='#606060', marker='o', markersize=10, markeredgewidth=1, fillstyle='none')
-
+        self.imageMatplotlibMarker.axes.set_xticks(numpy.arange(20, 381, 40))
+        self.imageMatplotlibMarker.axes.set_yticks(numpy.arange(20, 381, 40))
+        self.imageMatplotlibMarker.axes.plot(200, 200, zorder=10, color='#606060', marker='o', markersize=25, markeredgewidth=2, fillstyle='none')
+        self.imageMatplotlibMarker.axes.plot(200, 200, zorder=10, color='#606060', marker='o', markersize=10, markeredgewidth=1, fillstyle='none')
         self.imageMatplotlibMarker.fig.canvas.draw()
 
     def showFitsImage(self, filename):
@@ -240,7 +243,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechMid(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(25, 99.995)
+        interval = AsymmetricPercentileInterval(25, 99.95)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
@@ -251,7 +254,7 @@ class ImagesWindow(widget.MwWidget):
 
     def strechHigh(self):
         # Create interval object
-        interval = AsymmetricPercentileInterval(1, 99.995)
+        interval = AsymmetricPercentileInterval(1, 99.9)
         vmin, vmax = interval.get_limits(self.image)
         # Create an ImageNormalize object using a LogStrech object
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
