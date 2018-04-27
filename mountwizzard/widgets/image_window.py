@@ -166,7 +166,7 @@ class ImagesWindow(widget.MwWidget):
         self.imageMatplotlibMarker.axes.cla()
         self.imageMatplotlibMarker.axes.set_xlim(0, 400)
         self.imageMatplotlibMarker.axes.set_ylim(0, 400)
-        self.imageMatplotlibMarker.axes.grid(True, color='#404040', ls='dotted')
+        self.imageMatplotlibMarker.axes.grid(True, color='#606060', ls='dotted')
         self.imageMatplotlibMarker.axes.spines['bottom'].set_color((0, 0, 0, 0))
         self.imageMatplotlibMarker.axes.spines['top'].set_color((0, 0, 0, 0))
         self.imageMatplotlibMarker.axes.spines['left'].set_color((0, 0, 0, 0))
