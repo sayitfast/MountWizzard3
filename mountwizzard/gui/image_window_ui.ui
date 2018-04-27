@@ -24,12 +24,25 @@
      <x>5</x>
      <y>115</y>
      <width>781</width>
-     <height>526</height>
+     <height>521</height>
     </rect>
    </property>
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
+   <widget class="QWidget" name="imageMarker" native="true">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>781</width>
+      <height>521</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+   </widget>
   </widget>
   <widget class="QPushButton" name="btn_expose">
    <property name="geometry">

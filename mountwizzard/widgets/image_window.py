@@ -63,10 +63,25 @@ class ImagesWindow(widget.MwWidget):
 
         # adding the matplotlib integration
         self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
-        self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_axes([0., 0., 1., 1.])
-        self.imageMatplotlib.axes.set_facecolor((25/256, 100/256, 25/256))
+        # making background looking transparent
+        self.imageMatplotlib.fig.patch.set_facecolor('none')
+        background = self.imageMatplotlib.fig.canvas.parentWidget()
+        background.setStyleSheet('background-color: transparent;')
+        self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_subplot(111)
         self.imageMatplotlib.axes.set_axis_off()
-        self.setVisible(False)
+        self.imageMatplotlib.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+        #self.setVisible(False)
+
+        # for the fast moving parts
+        self.imageMatplotlibMarker = widget.IntegrateMatplotlib(self.ui.imageMarker)
+        # making background looking transparent
+        self.imageMatplotlibMarker.fig.patch.set_facecolor('none')
+        background = self.imageMatplotlibMarker.fig.canvas.parentWidget()
+        background.setStyleSheet('background-color: transparent;')
+        self.imageMatplotlibMarker.axes = self.imageMatplotlibMarker.fig.add_subplot(111)
+        self.imageMatplotlibMarker.axes.set_axis_off()
+        self.imageMatplotlibMarker.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
+
 
         # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
