@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -2739,9 +2739,9 @@
      <property name="geometry">
       <rect>
        <x>650</x>
-       <y>340</y>
+       <y>345</y>
        <width>101</width>
-       <height>96</height>
+       <height>91</height>
       </rect>
      </property>
      <property name="font">

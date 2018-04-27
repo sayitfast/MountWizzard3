@@ -1005,7 +1005,7 @@ class Ui_MainWindow(object):
         self.label_67.setWordWrap(False)
         self.label_67.setObjectName("label_67")
         self.btn_setRefractionParameters = QtWidgets.QPushButton(self.tab_4)
-        self.btn_setRefractionParameters.setGeometry(QtCore.QRect(650, 340, 101, 96))
+        self.btn_setRefractionParameters.setGeometry(QtCore.QRect(650, 345, 101, 91))
         font = QtGui.QFont()
         font.setPointSize(10)
         self.btn_setRefractionParameters.setFont(font)
@@ -5522,7 +5522,7 @@ class Ui_MainWindow(object):
         self.line_32.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(0)
+        self.mainTabWidget.setCurrentIndex(1)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)
@@ -6480,4 +6480,14 @@ class Ui_MainWindow(object):
         self.le_astrometryStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.le_domeStatusText.setToolTip(_translate("MainWindow", "Status feedback from mount "))
         self.label_110.setText(_translate("MainWindow", "Status"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QWidget()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
 

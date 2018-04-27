@@ -64,7 +64,7 @@ class ImagesWindow(widget.MwWidget):
         # adding the matplotlib integration
         self.imageMatplotlib = widget.IntegrateMatplotlib(self.ui.image)
         self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_axes([0., 0., 1., 1.])
-        self.imageMatplotlib.axes.set_facecolor((25/256, 25/256, 25/256))
+        self.imageMatplotlib.axes.set_facecolor((25/256, 100/256, 25/256))
         self.imageMatplotlib.axes.set_axis_off()
         self.setVisible(False)
 
@@ -82,12 +82,6 @@ class ImagesWindow(widget.MwWidget):
         self.ui.btn_strechHigh.clicked.connect(self.setStrech)
         self.ui.btn_cancel.clicked.connect(self.cancelAction)
         self.ui.checkShowCrosshairs.stateChanged.connect(self.setCrosshairOnOff)
-
-        # crosshairs
-        self.ui.cross1.setVisible(False)
-        self.ui.cross2.setVisible(False)
-        self.ui.cross3.setVisible(False)
-        self.ui.cross4.setVisible(False)
 
         # define the slots for signals
         self.signalShowFitsImage.connect(self.showFitsImage)
@@ -283,15 +277,9 @@ class ImagesWindow(widget.MwWidget):
 
     def setCrosshairOnOff(self):
         if self.ui.checkShowCrosshairs.isChecked():
-            self.ui.cross1.setVisible(True)
-            self.ui.cross2.setVisible(True)
-            self.ui.cross3.setVisible(True)
-            self.ui.cross4.setVisible(True)
+            pass
         else:
-            self.ui.cross1.setVisible(False)
-            self.ui.cross2.setVisible(False)
-            self.ui.cross3.setVisible(False)
-            self.ui.cross4.setVisible(False)
+            pass
 
     def exposeOnce(self):
         self.cancel = False
