@@ -319,13 +319,3 @@ class Ui_ImageDialog(object):
         self.checkShowCrosshairs.setToolTip(_translate("ImageDialog", "Use Highspeed download of CCD camera if availabe"))
         self.checkShowCrosshairs.setText(_translate("ImageDialog", "Show crosshairs"))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ImageDialog = QtWidgets.QWidget()
-    ui = Ui_ImageDialog()
-    ui.setupUi(ImageDialog)
-    ImageDialog.show()
-    sys.exit(app.exec_())
-

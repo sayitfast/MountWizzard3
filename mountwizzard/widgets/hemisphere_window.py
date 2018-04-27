@@ -260,7 +260,7 @@ class HemisphereWindow(widget.MwWidget):
                     DecJ2000 = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['starsICRS'][ind][1], ' ')
                     # correct for proper motion
                     jd_2000 = 2451544.5
-                    jd_delta = self.app.workerMountDispatcher.data['JulianDate'] - jd_2000
+                    jd_delta = float(self.app.workerMountDispatcher.data['JulianDate']) - jd_2000
                     jd_year_delta = jd_delta / 365.25
                     RaJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][2] / 3600000
                     DecJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][3] / 3600000

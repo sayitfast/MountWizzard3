@@ -145,7 +145,7 @@
    </widget>
    <widget class="QRadioButton" name="checkPolarAlignment">
     <property name="enabled">
-     <bool>false</bool>
+     <bool>true</bool>
     </property>
     <property name="geometry">
      <rect>
