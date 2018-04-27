@@ -256,13 +256,19 @@ class HemisphereWindow(widget.MwWidget):
                 if ind:
                     name = self.app.workerMountDispatcher.data['starsNames'][ind]
                     # RA in degrees ICRS
-                    RaJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][0]
-                    DecJ2000 = self.app.workerMountDispatcher.data['starsICRS'][ind][1]
+                    RaJ2000 = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['starsICRS'][ind][0], ' ')
+                    DecJ2000 = self.transform.degStringToDecimal(self.app.workerMountDispatcher.data['starsICRS'][ind][1], ' ')
+                    # correct for proper motion
+                    jd_2000 = 2451544.5
+                    jd_delta = self.app.workerMountDispatcher.data['JulianDate'] - jd_2000
+                    jd_year_delta = jd_delta / 365.25
+                    RaJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][2] / 3600000
+                    DecJ2000 += jd_year_delta * self.app.workerMountDispatcher.data['starsICRS'][ind][3] / 3600000
                     question = 'Do you want to slew to\npolar align star:\n\n{0}'.format(name)
                     value = self.messageQuestion(self, 'Polar Align Routine', question)
                     if value == PyQt5.QtWidgets.QMessageBox.Ok:
                         # transform to JNOW, RAJ2000 comes in degrees, need to be hours
-                        RaJNow, DecJNow = self.transform.transformERFA(RaJ2000 * 24 / 360, DecJ2000, 3)
+                        RaJNow, DecJNow = self.transform.transformERFA(RaJ2000, DecJ2000, 3)
                         RA = self.transform.decimalToDegreeMountSr(RaJNow)
                         DEC = self.transform.decimalToDegreeMountSd(DecJNow)
                         self.app.mountCommandQueue.put(':PO#')

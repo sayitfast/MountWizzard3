@@ -166,13 +166,16 @@ class MountStatusRunnerSlow(PyQt5.QtCore.QObject):
             else:
                 self.sendCommandQueue.put(':U2#:GTMP1#:GREF#:Guaf#:Gdat#:Gh#:Go#:GDUTV#')
             self.app.sharedMountDataLock.unlock()
+
         # update topo data for alignment stars
         self.app.sharedMountDataLock.lockForWrite()
         self.data['starsTopo'] = list()
         self.app.sharedMountDataLock.unlock()
         for name in self.alignmentStars.stars:
             self.app.sharedMountDataLock.lockForWrite()
-            self.data['starsTopo'].append(self.transform.transformERFA(self.alignmentStars.stars[name][0] * 24 / 360, self.alignmentStars.stars[name][1], 1))
+            ra = self.transform.degStringToDecimal(self.alignmentStars.stars[name][0], ' ')
+            dec = self.transform.degStringToDecimal(self.alignmentStars.stars[name][1], ' ')
+            self.data['starsTopo'].append(self.transform.transformERFA(ra, dec, 1))
             self.app.sharedMountDataLock.unlock()
         self.app.workerMountDispatcher.signalAlignmentStars.emit()
 
