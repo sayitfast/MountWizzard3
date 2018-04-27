@@ -47,18 +47,19 @@ class ImagesWindow(widget.MwWidget):
         self.cancel = False
         self.imagePath = ''
         self.transform = transform.Transform(self.app)
+        self.ui = image_window_ui.Ui_ImageDialog()
+        self.ui.setupUi(self)
+        self.initUI()
         self.sizeX = 10
         self.sizeY = 10
         self.imageVmin = 1
         self.imageVmax = 65535
         self.image = numpy.random.randint(low=5, high=100, size=(20, 20))
         self.cmapColor = 'gray'
-        self.ui = image_window_ui.Ui_ImageDialog()
-        self.ui.setupUi(self)
         self.ui.btn_strechLow.setChecked(True)
         self.ui.btn_size100.setChecked(True)
         self.ui.btn_colorGrey.setChecked(True)
-        self.initUI()
+
         self.initConfig()
 
         # adding the matplotlib integration
@@ -70,18 +71,14 @@ class ImagesWindow(widget.MwWidget):
         self.imageMatplotlib.axes = self.imageMatplotlib.fig.add_subplot(111)
         self.imageMatplotlib.axes.set_axis_off()
         self.imageMatplotlib.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-        #self.setVisible(False)
 
-        # for the fast moving parts
         self.imageMatplotlibMarker = widget.IntegrateMatplotlib(self.ui.imageMarker)
         # making background looking transparent
         self.imageMatplotlibMarker.fig.patch.set_facecolor('none')
         background = self.imageMatplotlibMarker.fig.canvas.parentWidget()
         background.setStyleSheet('background-color: transparent;')
         self.imageMatplotlibMarker.axes = self.imageMatplotlibMarker.fig.add_subplot(111)
-        self.imageMatplotlibMarker.axes.set_axis_off()
         self.imageMatplotlibMarker.fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
-
 
         # slots for gui elements
         self.ui.btn_expose.clicked.connect(self.exposeOnce)
@@ -124,11 +121,11 @@ class ImagesWindow(widget.MwWidget):
                     self.showFitsImage(self.imagePath)
             if 'CheckShowCrosshairs' in self.app.config:
                 self.ui.checkShowCrosshairs.setChecked(self.app.config['CheckShowCrosshairs'])
-
         except Exception as e:
             self.logger.error('Item in config.cfg not be initialized for image window, error:{0}'.format(e))
         finally:
             pass
+        self.setCrosshairOnOff()
 
     def storeConfig(self):
         self.app.config['ImagePopupWindowPositionX'] = self.pos().x()
@@ -163,6 +160,21 @@ class ImagesWindow(widget.MwWidget):
         else:
             self.logger.warning('No Fits file file selected')
 
+    def drawMarkers(self):
+        # fixed points and horizon plane
+        self.ui.image.stackUnder(self.ui.imageMarker)
+        self.imageMatplotlibMarker.axes.cla()
+        self.imageMatplotlibMarker.axes.set_xlim(0, 100)
+        self.imageMatplotlibMarker.axes.set_ylim(0, 100)
+        self.imageMatplotlibMarker.axes.grid(True, color='#404040', ls='dotted')
+        self.imageMatplotlibMarker.axes.set_facecolor((0, 0, 0, 0))
+        self.imageMatplotlibMarker.axes.set_xticks(numpy.arange(0, 101, 10))
+        self.imageMatplotlibMarker.axes.set_yticks(numpy.arange(0, 101, 10))
+        self.imageMatplotlibMarker.axes.plot(50, 50, zorder=10, color='#606060', marker='o', markersize=25, markeredgewidth=2, fillstyle='none')
+        self.imageMatplotlibMarker.axes.plot(50, 50, zorder=10, color='#606060', marker='o', markersize=10, markeredgewidth=1, fillstyle='none')
+
+        self.imageMatplotlibMarker.fig.canvas.draw()
+
     def showFitsImage(self, filename):
         # fits file ahs to be there
         if not os.path.isfile(filename):
@@ -187,6 +199,7 @@ class ImagesWindow(widget.MwWidget):
         self.sizeY, self.sizeX = self.image.shape
         self.setStrech()
         self.setZoom()
+        self.drawMarkers()
 
     def setColor(self):
         if self.ui.btn_colorCool.isChecked():
@@ -222,7 +235,8 @@ class ImagesWindow(widget.MwWidget):
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
         # Display the image
         self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
-        self.imageMatplotlib.draw()
+        self.imageMatplotlib.fig.canvas.draw()
+        #self.imageMatplotlib.draw()
 
     def strechMid(self):
         # Create interval object
@@ -232,7 +246,8 @@ class ImagesWindow(widget.MwWidget):
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
         # Display the image
         self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
-        self.imageMatplotlib.draw()
+        self.imageMatplotlib.fig.canvas.draw()
+        #self.imageMatplotlib.draw()
 
     def strechHigh(self):
         # Create interval object
@@ -242,7 +257,8 @@ class ImagesWindow(widget.MwWidget):
         norm = ImageNormalize(vmin=vmin, vmax=vmax, stretch=PowerStretch(1))
         # Display the image
         self.imageMatplotlib.axes.imshow(self.image, cmap=self.cmapColor, norm=norm)
-        self.imageMatplotlib.draw()
+        self.imageMatplotlib.fig.canvas.draw()
+        #self.imageMatplotlib.draw()
 
     def setZoom(self):
         if self.ui.btn_size25.isChecked():
@@ -260,7 +276,8 @@ class ImagesWindow(widget.MwWidget):
             maxy = miny + int(self.sizeY / 4)
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageMatplotlib.draw()
+            self.imageMatplotlib.fig.canvas.draw()
+            # self.imageMatplotlib.draw()
 
     def zoom50(self):
         if self.sizeX:
@@ -270,7 +287,8 @@ class ImagesWindow(widget.MwWidget):
             maxy = miny + int(self.sizeY / 2)
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageMatplotlib.draw()
+            self.imageMatplotlib.fig.canvas.draw()
+            # self.imageMatplotlib.draw()
 
     def zoom100(self):
         if self.sizeX:
@@ -280,7 +298,8 @@ class ImagesWindow(widget.MwWidget):
             maxy = self.sizeY
             self.imageMatplotlib.axes.set_xlim(xmin=minx, xmax=maxx)
             self.imageMatplotlib.axes.set_ylim(ymin=miny, ymax=maxy)
-            self.imageMatplotlib.draw()
+            self.imageMatplotlib.fig.canvas.draw()
+            # self.imageMatplotlib.draw()
 
     def disableExposures(self):
         self.ui.btn_expose.setEnabled(False)
@@ -292,9 +311,9 @@ class ImagesWindow(widget.MwWidget):
 
     def setCrosshairOnOff(self):
         if self.ui.checkShowCrosshairs.isChecked():
-            pass
+            self.ui.imageMarker.setVisible(True)
         else:
-            pass
+            self.ui.imageMarker.setVisible(False)
 
     def exposeOnce(self):
         self.cancel = False

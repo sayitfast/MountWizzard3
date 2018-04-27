@@ -46,7 +46,6 @@ class HemisphereWindow(widget.MwWidget):
         self.pointerTrack = None
         self.pointsPlotBig = None
         self.pointsPlotSmall = None
-        self.pointsPlotCross = None
         self.starsAlignment = None
         self.starsAnnotate = list()
         self.maskPlotFill = None
@@ -420,8 +419,6 @@ class HemisphereWindow(widget.MwWidget):
         # add text to points
         for i in range(0, len(points)):
             self.annotate.append(self.hemisphereMatplotlib.axes.annotate('{0:2d}'.format(i+1), xy=(points[i][0] + self.offx, points[i][1] + self.offy), color='#E0E0E0', picker='None'))
-        # add crosses, if modeling was done to recap when opening the window
-        self.pointsPlotCross, = self.hemisphereMatplotlib.axes.plot([], [], 'X', color='#FF00FF', zorder=5, markersize=9)
         # now to the second widget on top of the first one
         # adding the pointer of mount to hemisphereMoving plot
         self.pointerAzAlt1,  = self.hemisphereMatplotlibMoving.axes.plot(180, 45, zorder=10, color='#FF00FF', marker='o', markersize=25, markeredgewidth=3, fillstyle='none', visible=False)

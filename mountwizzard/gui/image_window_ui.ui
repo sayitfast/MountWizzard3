@@ -30,19 +30,6 @@
    <property name="autoFillBackground">
     <bool>true</bool>
    </property>
-   <widget class="QWidget" name="imageMarker" native="true">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>781</width>
-      <height>521</height>
-     </rect>
-    </property>
-    <property name="autoFillBackground">
-     <bool>true</bool>
-    </property>
-   </widget>
   </widget>
   <widget class="QPushButton" name="btn_expose">
    <property name="geometry">
@@ -772,6 +759,19 @@
     <bool>false</bool>
    </property>
   </widget>
+  <widget class="QWidget" name="imageMarker" native="true">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>170</y>
+     <width>401</width>
+     <height>401</height>
+    </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+  </widget>
   <zorder>imageBackground</zorder>
   <zorder>image</zorder>
   <zorder>btn_expose</zorder>
@@ -796,6 +796,7 @@
   <zorder>le_imageFile</zorder>
   <zorder>btn_exposeCont</zorder>
   <zorder>checkShowCrosshairs</zorder>
+  <zorder>imageMarker</zorder>
  </widget>
  <resources/>
  <connections/>
