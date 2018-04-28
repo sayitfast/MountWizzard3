@@ -22,7 +22,6 @@ import PyQt5
 from baseclasses import widget
 from astrometry import transform
 import astropy
-import astropy.coordinates
 import numpy
 import matplotlib
 import bisect
@@ -92,9 +91,9 @@ class HemisphereWindow(widget.MwWidget):
         self.app.workerModelingDispatcher.signalModelPointsRedraw.connect(self.drawHemisphere)
         self.ui.btn_deletePoints.clicked.connect(lambda: self.app.workerModelingDispatcher.commandDispatcher('DeletePoints'))
         self.app.workerDome.signalDomePointer.connect(self.setDomePointer)
-        self.ui.btn_editNone.clicked.connect(self.setEditModus)
-        self.ui.btn_editModelPoints.clicked.connect(self.setEditModus)
-        self.ui.btn_editHorizonMask.clicked.connect(self.setEditModus)
+        self.ui.checkEditNone.clicked.connect(self.setEditModus)
+        self.ui.checkEditModelPoints.clicked.connect(self.setEditModus)
+        self.ui.checkEditHorizonMask.clicked.connect(self.setEditModus)
         self.ui.checkPolarAlignment.clicked.connect(self.setEditModus)
         self.ui.checkShowAlignmentStars.clicked.connect(self.setShowAlignmentStars)
         self.app.workerModelingDispatcher.modelingRunner.workerSlewpoint.signalPointImaged.connect(self.plotImagedPoint)
@@ -115,11 +114,11 @@ class HemisphereWindow(widget.MwWidget):
             if 'HemisphereWindowShowStatus' in self.app.config:
                 self.showStatus = self.app.config['HemisphereWindowShowStatus']
             if 'CheckEditNone' in self.app.config:
-                self.ui.btn_editNone.setChecked(self.app.config['CheckEditNone'])
+                self.ui.checkEditNone.setChecked(self.app.config['CheckEditNone'])
             if 'CheckEditModelPoints' in self.app.config:
-                self.ui.btn_editModelPoints.setChecked(self.app.config['CheckEditModelPoints'])
+                self.ui.checkEditModelPoints.setChecked(self.app.config['CheckEditModelPoints'])
             if 'CheckEditHorizonMask' in self.app.config:
-                self.ui.btn_editHorizonMask.setChecked(self.app.config['CheckEditHorizonMask'])
+                self.ui.checkEditHorizonMask.setChecked(self.app.config['CheckEditHorizonMask'])
             if 'CheckShowAlignmentStars' in self.app.config:
                 self.ui.checkShowAlignmentStars.setChecked(self.app.config['CheckShowAlignmentStars'])
             if 'CheckPolarAlignment' in self.app.config:
@@ -133,9 +132,9 @@ class HemisphereWindow(widget.MwWidget):
         self.app.config['HemisphereWindowPositionX'] = self.pos().x()
         self.app.config['HemisphereWindowPositionY'] = self.pos().y()
         self.app.config['HemisphereWindowShowStatus'] = self.showStatus
-        self.app.config['CheckEditNone'] = self.ui.btn_editNone.isChecked()
-        self.app.config['CheckEditModelPoints'] = self.ui.btn_editModelPoints.isChecked()
-        self.app.config['CheckEditHorizonMask'] = self.ui.btn_editHorizonMask.isChecked()
+        self.app.config['CheckEditNone'] = self.ui.checkEditNone.isChecked()
+        self.app.config['CheckEditModelPoints'] = self.ui.checkEditModelPoints.isChecked()
+        self.app.config['CheckEditHorizonMask'] = self.ui.checkEditHorizonMask.isChecked()
         self.app.config['CheckShowAlignmentStars'] = self.ui.checkShowAlignmentStars.isChecked()
         self.app.config['CheckPolarAlignment'] = self.ui.checkPolarAlignment.isChecked()
 
@@ -159,6 +158,8 @@ class HemisphereWindow(widget.MwWidget):
             self.logger.warning('Performance issue in drawing')
             return
         self.hemisphereMatplotlib.fig.canvas.draw()
+        if self.ui.checkShowAlignmentStars.isChecked():
+            self.hemisphereMatplotlibStar.fig.canvas.draw()
         self.mutexDrawCanvas.unlock()
         PyQt5.QtWidgets.QApplication.processEvents()
 
@@ -188,6 +189,14 @@ class HemisphereWindow(widget.MwWidget):
 
     def setShowAlignmentStars(self):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
+        if self.ui.checkShowAlignmentStars.isChecked():
+            self.ui.checkPolarAlignment.setDisabled(False)
+        else:
+            self.ui.checkPolarAlignment.setDisabled(True)
+            if self.ui.checkPolarAlignment.isChecked():
+                self.ui.checkPolarAlignment.setChecked(False)
+                self.ui.checkEditNone.setChecked(True)
+        self.setEditModus()
 
     def updateAlignmentStars(self):
         self.ui.hemisphereStar.setVisible(self.ui.checkShowAlignmentStars.isChecked())
@@ -203,25 +212,33 @@ class HemisphereWindow(widget.MwWidget):
         self.drawCanvas()
 
     def setEditModus(self):
-        if self.ui.btn_editNone.isChecked():
+        if self.ui.checkEditNone.isChecked():
             self.maskPlotMarker.set_marker('None')
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#00A000')
+            self.starsAlignment.set_color('#C0C000')
+            self.starsAlignment.set_markersize(6)
             self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
-        elif self.ui.btn_editModelPoints.isChecked():
+        elif self.ui.checkEditModelPoints.isChecked():
             self.maskPlotMarker.set_marker('None')
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#FF00FF')
+            self.starsAlignment.set_color('#C0C000')
+            self.starsAlignment.set_markersize(6)
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
-        elif self.ui.btn_editHorizonMask.isChecked():
+        elif self.ui.checkEditHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
             self.pointsPlotBig.set_color('#00A000')
+            self.starsAlignment.set_color('#C0C000')
+            self.starsAlignment.set_markersize(6)
             self.maskPlotMarker.set_color('#FF00FF')
             self.ui.hemisphereMoving.stackUnder(self.ui.hemisphere)
         elif self.ui.checkPolarAlignment.isChecked():
             self.maskPlotMarker.set_marker('None')
             self.maskPlotMarker.set_color('#006000')
             self.pointsPlotBig.set_color('#00A000')
+            self.starsAlignment.set_color('#FFFF00')
+            self.starsAlignment.set_markersize(10)
             self.ui.hemisphere.stackUnder(self.ui.hemisphereMoving)
         else:
             pass
@@ -365,7 +382,7 @@ class HemisphereWindow(widget.MwWidget):
         self.hemisphereMatplotlibStar.axes.set_axis_off()
         starsTopo = self.app.workerMountDispatcher.data['starsTopo']
         starsNames = self.app.workerMountDispatcher.data['starsNames']
-        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=7, color='#F0F000')
+        self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=6, color='#C0C000')
         for i in range(0, len(starsTopo)):
             self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starsNames[i], xy=(starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy), color='#808080', fontsize=12, clip_on=True))
         # moving widget plane
@@ -406,7 +423,7 @@ class HemisphereWindow(widget.MwWidget):
         y.append(0)
         self.maskPlotFill,  = self.hemisphereMatplotlib.axes.fill(x, y, color='#002000', zorder=-20)
         self.maskPlotMarker,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in horizon], [i[1] for i in horizon], color='#006000', zorder=-20, lw=3, picker='None')
-        if self.ui.btn_editHorizonMask.isChecked():
+        if self.ui.checkEditHorizonMask.isChecked():
             self.maskPlotMarker.set_marker('o')
             self.maskPlotMarker.set_color('#FF00FF')
         # model points
@@ -414,7 +431,7 @@ class HemisphereWindow(widget.MwWidget):
         # draw points in two colors
         self.pointsPlotBig,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=9, fillstyle='none', color='#00A000', picker='None')
         self.pointsPlotSmall,  = self.hemisphereMatplotlib.axes.plot([i[0] for i in points], [i[1] for i in points], 'o', markersize=3, color='#E0E000', picker='None')
-        if self.ui.btn_editModelPoints.isChecked():
+        if self.ui.checkEditModelPoints.isChecked():
             self.pointsPlotBig.set_color('#FF00FF')
         # add text to points
         for i in range(0, len(points)):

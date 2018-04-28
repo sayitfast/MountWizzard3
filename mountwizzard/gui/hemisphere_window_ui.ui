@@ -86,7 +86,7 @@
    <property name="title">
     <string>Operation mode</string>
    </property>
-   <widget class="QRadioButton" name="btn_editNone">
+   <widget class="QRadioButton" name="checkEditNone">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -107,7 +107,7 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QRadioButton" name="btn_editModelPoints">
+   <widget class="QRadioButton" name="checkEditModelPoints">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -125,7 +125,7 @@
      <string>Edit Model Points</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="btn_editHorizonMask">
+   <widget class="QRadioButton" name="checkEditHorizonMask">
     <property name="geometry">
      <rect>
       <x>10</x>
