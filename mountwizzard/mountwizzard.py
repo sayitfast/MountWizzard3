@@ -1240,10 +1240,7 @@ class MountWizzardApp(widget.MwWidget):
             if text == 'delete':
                 self.messageWindow.ui.messages.clear()
             elif text.startswith('ToModel>'):
-                self.hemisphereWindow.ui.le_numberPointsToProcess1.setText(text[8:])
-                self.hemisphereWindow.ui.le_numberPointsToProcess2.setText(text[8:])
-                self.hemisphereWindow.ui.le_numberPointsToProcess3.setText(text[8:])
-                self.hemisphereWindow.ui.le_numberPointsToProcess4.setText(text[8:])
+                self.hemisphereWindow.ui.le_numberPointsToProcess.setText(text[8:])
             elif text.startswith('Slewed>'):
                 self.hemisphereWindow.ui.le_numberPointsSlewed.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
@@ -1256,10 +1253,6 @@ class MountWizzardApp(widget.MwWidget):
                 self.hemisphereWindow.ui.le_numberPointsSolved.setText(text[7:])
                 if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
                     self.hemisphereWindow.ui.bar_numberPointsSolved.setValue(1000 * float(text[7:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
-            elif text.startswith('Processed>'):
-                self.hemisphereWindow.ui.le_numberPointsProcessed.setText(text[10:])
-                if float(self.hemisphereWindow.ui.le_numberPointsToModel.text()) != 0:
-                    self.hemisphereWindow.ui.bar_numberPointsProcessed.setValue(1000 * float(text[10:]) / float(self.hemisphereWindow.ui.le_numberPointsToModel.text()))
             elif text.startswith('percent'):
                 self.ui.bar_modelingStatusPercent.setValue(int(1000 * float(text[7:])))
             elif text.startswith('timeleft'):

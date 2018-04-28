@@ -237,7 +237,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>40</y>
       <width>66</width>
       <height>16</height>
      </rect>
@@ -261,7 +261,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>40</y>
+      <y>60</y>
       <width>26</width>
       <height>16</height>
      </rect>
@@ -299,30 +299,11 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QProgressBar" name="bar_numberPointsProcessed">
-    <property name="geometry">
-     <rect>
-      <x>145</x>
-      <y>80</y>
-      <width>201</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="maximum">
-     <number>1000</number>
-    </property>
-    <property name="value">
-     <number>1</number>
-    </property>
-    <property name="textVisible">
-     <bool>false</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="label_77">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>40</y>
+      <y>60</y>
       <width>66</width>
       <height>16</height>
      </rect>
@@ -342,9 +323,9 @@
    <widget class="QProgressBar" name="bar_numberPointsImaged">
     <property name="geometry">
      <rect>
-      <x>145</x>
-      <y>40</y>
-      <width>201</width>
+      <x>105</x>
+      <y>60</y>
+      <width>241</width>
       <height>16</height>
      </rect>
     </property>
@@ -358,75 +339,12 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_81">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>80</y>
-      <width>66</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-     </font>
-    </property>
-    <property name="text">
-     <string>Program:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_numberPointsProcessed">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>70</x>
-      <y>80</y>
-      <width>26</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>8</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::RightToLeft</enum>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="bar_numberPointsSlewed">
     <property name="geometry">
      <rect>
-      <x>145</x>
-      <y>20</y>
-      <width>201</width>
+      <x>105</x>
+      <y>40</y>
+      <width>241</width>
       <height>16</height>
      </rect>
     </property>
@@ -462,7 +380,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>20</y>
+      <y>40</y>
       <width>26</width>
       <height>16</height>
      </rect>
@@ -507,7 +425,7 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>60</y>
+      <y>80</y>
       <width>26</width>
       <height>16</height>
      </rect>
@@ -548,9 +466,9 @@
    <widget class="QProgressBar" name="bar_numberPointsSolved">
     <property name="geometry">
      <rect>
-      <x>145</x>
-      <y>60</y>
-      <width>201</width>
+      <x>105</x>
+      <y>80</y>
+      <width>241</width>
       <height>16</height>
      </rect>
     </property>
@@ -568,7 +486,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>60</y>
+      <y>80</y>
       <width>66</width>
       <height>16</height>
      </rect>
@@ -582,13 +500,13 @@
      <string>Solved:</string>
     </property>
    </widget>
-   <widget class="QLineEdit" name="le_numberPointsToProcess1">
+   <widget class="QLineEdit" name="le_numberPointsToProcess">
     <property name="enabled">
      <bool>false</bool>
     </property>
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>125</x>
       <y>20</y>
       <width>26</width>
       <height>16</height>
@@ -627,223 +545,22 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="le_numberPointsToProcess2">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
+   <widget class="QLabel" name="label_29">
     <property name="geometry">
      <rect>
-      <x>110</x>
-      <y>40</y>
-      <width>26</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>8</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::RightToLeft</enum>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_numberPointsToProcess3">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>60</y>
-      <width>26</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>8</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::RightToLeft</enum>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="le_numberPointsToProcess4">
-    <property name="enabled">
-     <bool>false</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>80</y>
-      <width>26</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Arial</family>
-      <pointsize>8</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="mouseTracking">
-     <bool>false</bool>
-    </property>
-    <property name="focusPolicy">
-     <enum>Qt::NoFocus</enum>
-    </property>
-    <property name="acceptDrops">
-     <bool>false</bool>
-    </property>
-    <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Progress in modeling.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
-    <property name="layoutDirection">
-     <enum>Qt::RightToLeft</enum>
-    </property>
-    <property name="text">
-     <string>0</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_78">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
+      <x>10</x>
       <y>20</y>
-      <width>16</width>
+      <width>121</width>
       <height>16</height>
      </rect>
     </property>
     <property name="font">
      <font>
-      <family>MS Shell Dlg 2</family>
       <pointsize>10</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
      </font>
     </property>
     <property name="text">
-     <string>/</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_79">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>40</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>/</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_80">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>60</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>/</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_82">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>80</y>
-      <width>16</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>MS Shell Dlg 2</family>
-      <pointsize>10</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>/</string>
+     <string>Points to process:</string>
     </property>
    </widget>
   </widget>
