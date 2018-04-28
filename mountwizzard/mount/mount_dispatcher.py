@@ -528,6 +528,11 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def programBatchData(self, data):
         self.app.messageQueue.put('#BWProgramming alignment model data\n')
+        self.workerMountSetAlignmentModel.setAlignmentModel(data)
+        self.app.messageQueue.put('#BWProgrammed alignment model \n')
+
+    def programBatchData_old(self, data):
+        self.app.messageQueue.put('#BWProgramming alignment model data\n')
         commandSet = {'command': ':newalig#', 'reply': ''}
         self.app.mountCommandQueue.put(commandSet)
         for i in range(0, len(data['Index'])):

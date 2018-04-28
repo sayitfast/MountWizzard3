@@ -131,7 +131,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         if self.data['FW'] < 20815:
             return
         # writing new model
-        self.numberAlignmentPoints = len(data)
+        self.numberAlignmentPoints = len(data['Index'])
         command = ':newalig#'
         for i in range(0, self.numberAlignmentPoints):
             command += ':newalpt{0},{1},{2},{3},{4},{5}#'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
@@ -149,14 +149,16 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         while self.socket.bytesAvailable():
             self.messageString += self.socket.read(4000).decode()
 
-        if self.messageString.count('#') != self.numberAlignmentPoints:
-            if self.messageString.count('#') > self.numberAlignmentPoints:
-                # error. there should be no more !
-                pass
+        if self.messageString.count('#') != (self.numberAlignmentPoints + 1):
+            if self.messageString.count('#') > (self.numberAlignmentPoints + 1):
+                self.logger.error('Receiving data got error:{0}'.format(self.messageString))
+                messageToProcess = self.messageString
+                self.messageString = ''
             else:
                 # go on receiving data
                 return
         else:
+            messageToProcess = self.messageString
             self.messageString = ''
         # now we got all information about the model write run
         valueList = messageToProcess.strip('#').split('#')
@@ -166,8 +168,8 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
             self.logger.error('Parsing SetAlignmentModel wrong numbers: value:{0}, points:{1}, values:{2}'.format(len(valueList), self.numberAlignmentPoints, valueList))
         # now parsing the result
         try:
-            for i in range(0, len(valueList)):
-                pass
+            if valueList[0] != 'V':
+                self.logger.error('Programming alignment model failed')
         except Exception as e:
             self.logger.error('Parsing SetAlignmentModel got error:{0}, values:{1}'.format(e, valueList))
         finally:

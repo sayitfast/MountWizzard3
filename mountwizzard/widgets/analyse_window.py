@@ -182,7 +182,8 @@ class AnalyseWindow(widget.MwWidget):
         self.data = self.analyse.loadData(filename)
         return True
 
-    def setStyle(self, axes):
+    @staticmethod
+    def setStyle(axes):
         if 'bottom' in axes.spines:
             axes.spines['bottom'].set_color('#2090C0')
             axes.spines['top'].set_color('#2090C0')

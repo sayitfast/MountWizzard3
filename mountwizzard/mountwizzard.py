@@ -51,6 +51,7 @@ from indi import indi_client
 from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
+from analyse import analysedata
 if platform.system() == 'Windows':
     from automation import automation
 from wakeonlan import send_magic_packet
@@ -117,6 +118,9 @@ class MountWizzardApp(widget.MwWidget):
 
         # get ascom state
         self.checkASCOM()
+
+        # access to analyse methods
+        self.analyseData = analysedata.Analyse(self)
 
         # instantiating all subclasses and connecting thread signals
         # mount class
@@ -969,7 +973,7 @@ class MountWizzardApp(widget.MwWidget):
         if value == '':
             self.logger.warning('No file selected')
             return
-        nameDataFile = value
+        nameDataFile = os.path.basename(value)
         self.logger.info('Modeling from {0}'.format(nameDataFile))
         data = self.analyseData.loadData(nameDataFile)
         if not('RaJNow' in data and 'DecJNow' in data):
