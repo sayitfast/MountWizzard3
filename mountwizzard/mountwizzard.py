@@ -357,11 +357,15 @@ class MountWizzardApp(widget.MwWidget):
         widget.draw()
 
     def checkPlatformDependableMenus(self):
-        self.ui.mainTabWidget.removeTab(8)
+        # get index of analyse data:
+        index = self.ui.mainTabWidget.indexOf(self.ui.mainTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Analyse'))
+        self.ui.mainTabWidget.removeTab(index)
         if platform.system() != 'Windows':
-            # you have to remove the higher number first to keep the ordering number (otherwise everything is already shifted)
-            self.ui.settingsTabWidget.removeTab(3)
-            self.ui.settingsTabWidget.removeTab(1)
+            # get index of ASCOM data:
+            index = self.ui.settingsTabWidget.indexOf(self.ui.settingsTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'ASCOM'))
+            self.ui.settingsTabWidget.removeTab(index)
+            index = self.ui.settingsTabWidget.indexOf(self.ui.settingsTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Upload'))
+            self.ui.settingsTabWidget.removeTab(index)
 
     def setLoggingLevel(self):
         if self.ui.loglevelDebug.isChecked():
@@ -1331,7 +1335,7 @@ if __name__ == "__main__":
     app.processEvents()
 
     # defining build no
-    BUILD_NO = '3.0 alpha 26'
+    BUILD_NO = '3.0 alpha 27'
 
     warnings.filterwarnings("ignore")
     name = 'mount.{0}.log'.format(datetime.datetime.now().strftime("%Y-%m-%d"))

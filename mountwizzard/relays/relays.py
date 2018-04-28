@@ -193,16 +193,18 @@ class Relays(PyQt5.QtCore.QObject):
         self.app.messageQueue.put('Setting IP address for relay to: {0}\n'.format(self.relayIP))
 
     def enableDisableRelay(self):
+        # get relay tab index:
+        index = self.app.ui.mainTabWidget.indexOf(self.app.ui.mainTabWidget.findChild(PyQt5.QtWidgets.QWidget, 'Relay'))
         if self.app.ui.checkEnableRelay.isChecked():
             if not self.isRunning:
                 self.thread.start()
-            self.app.ui.mainTabWidget.setTabEnabled(6, True)
+            self.app.ui.mainTabWidget.setTabEnabled(index, True)
             self.app.messageQueue.put('Relay enabled\n')
         else:
             self.connected = False
             if self.isRunning:
                 self.stop()
-            self.app.ui.mainTabWidget.setTabEnabled(6, False)
+            self.app.ui.mainTabWidget.setTabEnabled(index, False)
             self.app.messageQueue.put('Relay disabled\n')
             self.logger.info('Relay is disabled')
         self.app.ui.mainTabWidget.style().unpolish(self.app.ui.mainTabWidget)

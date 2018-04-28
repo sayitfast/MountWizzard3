@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>7</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -8647,7 +8647,7 @@ Analyse File</string>
     <zorder>label_209</zorder>
     <zorder>btn_reloadAlignmentModel</zorder>
    </widget>
-   <widget class="QWidget" name="tab_9">
+   <widget class="QWidget" name="Relay">
     <attribute name="title">
      <string>Relay</string>
     </attribute>
@@ -8881,7 +8881,7 @@ Analyse File</string>
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <property name="elideMode">
       <enum>Qt::ElideLeft</enum>
@@ -9132,7 +9132,7 @@ Analyse File</string>
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_20">
+     <widget class="QWidget" name="ASCOM">
       <attribute name="title">
        <string>ASCOM / Win32 Drivers</string>
       </attribute>
@@ -10817,7 +10817,7 @@ Analyse File</string>
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="tab_7">
+     <widget class="QWidget" name="Uploads">
       <attribute name="title">
        <string>Uploads</string>
       </attribute>
@@ -13757,7 +13757,7 @@ Analyse File</string>
      </widget>
     </widget>
    </widget>
-   <widget class="QWidget" name="tab_5">
+   <widget class="QWidget" name="Analyse">
     <attribute name="title">
      <string>Analyse Tests</string>
     </attribute>
