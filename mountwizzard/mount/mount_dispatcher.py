@@ -528,8 +528,17 @@ class MountDispatcher(PyQt5.QtCore.QThread):
 
     def programBatchData(self, data):
         self.app.messageQueue.put('#BWProgramming alignment model data\n')
+        self.workerMountSetAlignmentModel.result = None
         self.workerMountSetAlignmentModel.setAlignmentModel(data)
-        self.app.messageQueue.put('#BWProgrammed alignment model \n')
+        while self.workerMountSetAlignmentModel.result is None:
+            time.sleep(0.1)
+            PyQt5.QtWidgets.QApplication.processEvents()
+        if self.workerMountSetAlignmentModel.result:
+            self.logger.info('Model successful finished!')
+            self.app.messageQueue.put('#BWProgrammed alignment model with {0} points\n'.format(len(data['Index'])))
+        else:
+            self.logger.warning('Model could not be calculated with current data!')
+            self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
 
     def programBatchData_old(self, data):
         self.app.messageQueue.put('#BWProgramming alignment model data\n')

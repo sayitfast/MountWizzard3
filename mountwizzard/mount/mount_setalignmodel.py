@@ -35,6 +35,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
         self.connected = False
         self.socket = None
         self.sendLock = False
+        self.result = None
         self.messageString = ''
         self.numberAlignmentPoints = 0
         self.sendCommandQueue = Queue()
@@ -168,6 +169,7 @@ class MountSetAlignmentModel(PyQt5.QtCore.QObject):
             self.logger.error('Parsing SetAlignmentModel wrong numbers: value:{0}, points:{1}, values:{2}'.format(len(valueList), self.numberAlignmentPoints, valueList))
         # now parsing the result
         try:
+            self.result = (valueList[0] == 'V')
             if valueList[0] != 'V':
                 self.logger.error('Programming alignment model failed')
         except Exception as e:
