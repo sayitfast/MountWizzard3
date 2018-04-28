@@ -540,38 +540,6 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('Model could not be calculated with current data!')
             self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
 
-    def programBatchData_old(self, data):
-        self.app.messageQueue.put('#BWProgramming alignment model data\n')
-        commandSet = {'command': ':newalig#', 'reply': ''}
-        self.app.mountCommandQueue.put(commandSet)
-        for i in range(0, len(data['Index'])):
-            self.app.sharedMountDataLock.lockForRead()
-            command = ':newalpt{0},{1},{2},{3},{4},{5}#'.format(self.transform.decimalToDegree(data['RaJNow'][i], False, True),
-                                                                self.transform.decimalToDegree(data['DecJNow'][i], True, False),
-                                                                data['Pierside'][i],
-                                                                self.transform.decimalToDegree(data['RaJNowSolved'][i], False, True),
-                                                                self.transform.decimalToDegree(data['DecJNowSolved'][i], True, False),
-                                                                self.transform.decimalToDegree(data['LocalSiderealTimeFloat'][i], False, True))
-            self.app.sharedMountDataLock.unlock()
-            commandSet = {'command': command, 'reply': ''}
-            self.app.mountCommandQueue.put(commandSet)
-            while len(commandSet['reply']) == 0:
-                time.sleep(0.1)
-            if commandSet['reply'] == 'E':
-                self.app.messageQueue.put('Point {0:02d} could not be added\n'.format(i + 1))
-            else:
-                self.app.messageQueue.put('Processed>{0:02d}'.format(i + 1))
-        commandSet = {'command': ':endalig#', 'reply': ''}
-        self.app.mountCommandQueue.put(commandSet)
-        while len(commandSet['reply']) == 0:
-            time.sleep(0.1)
-        if commandSet['reply'] == 'V':
-            self.logger.info('Model successful finished!')
-            self.app.messageQueue.put('#BWProgrammed alignment model with {0} points\n'.format(len(data['Index'])))
-        else:
-            self.logger.warning('Model could not be calculated with current data!')
-            self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
-
     def runTargetRMSAlignment(self):
         self.runTargetRMS = True
         self.cancelRunTargetRMS = False

@@ -990,7 +990,6 @@ class MountWizzardApp(widget.MwWidget):
             return
         self.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
         self.workerMountDispatcher.programBatchData(data)
-        time.sleep(1)
         self.workerMountDispatcher.commandDispatcherQueue.put('ReloadAlignmentModel')
 
     def cancelFullModel(self):
