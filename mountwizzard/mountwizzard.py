@@ -316,7 +316,7 @@ class MountWizzardApp(widget.MwWidget):
         self.widgetIcon(self.ui.btn_cancelAnalyseModel, ':/stop.ico')
         # the icon picture in gui
         pixmap = PyQt5.QtGui.QPixmap(':/mw.ico')
-        pixmap = pixmap.scaled(64, 64)
+        pixmap = pixmap.scaled(90, 90)
         self.ui.mainicon.setPixmap(pixmap)
         pixmap = PyQt5.QtGui.QPixmap(':/azimuth1.png')
         self.ui.picAZ.setPixmap(pixmap)

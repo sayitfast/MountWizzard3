@@ -75,7 +75,7 @@
     <rect>
      <x>20</x>
      <y>40</y>
-     <width>236</width>
+     <width>221</width>
      <height>21</height>
     </rect>
    </property>
@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>4</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -6545,7 +6545,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>145</y>
+       <y>155</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6561,7 +6561,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>115</y>
+       <y>125</y>
        <width>171</width>
        <height>21</height>
       </rect>
@@ -6581,7 +6581,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>185</y>
+       <y>195</y>
        <width>101</width>
        <height>26</height>
       </rect>
@@ -6599,7 +6599,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>185</y>
+       <y>195</y>
        <width>91</width>
        <height>26</height>
       </rect>
@@ -6617,7 +6617,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>135</x>
-       <y>290</y>
+       <y>310</y>
        <width>111</width>
        <height>31</height>
       </rect>
@@ -6633,7 +6633,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>290</y>
+       <y>310</y>
        <width>116</width>
        <height>31</height>
       </rect>
@@ -6649,7 +6649,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>185</y>
+       <y>195</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6703,7 +6703,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>185</y>
+       <y>195</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6741,7 +6741,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>50</y>
+       <y>175</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6756,8 +6756,8 @@ manually</string>
     <widget class="Line" name="line_26">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>360</y>
+       <x>400</x>
+       <y>40</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6773,7 +6773,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>90</y>
+       <y>215</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6792,7 +6792,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>135</y>
+       <y>145</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6807,8 +6807,8 @@ manually</string>
     <widget class="QPushButton" name="btn_generateDSOPoints">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>370</y>
+       <x>400</x>
+       <y>50</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -6846,7 +6846,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>280</y>
+       <y>300</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -6861,8 +6861,8 @@ manually</string>
     <widget class="QDoubleSpinBox" name="numberHoursDSO">
      <property name="geometry">
       <rect>
-       <x>60</x>
-       <y>410</y>
+       <x>450</x>
+       <y>90</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6899,8 +6899,8 @@ manually</string>
     <widget class="QLabel" name="label_181">
      <property name="geometry">
       <rect>
-       <x>20</x>
-       <y>410</y>
+       <x>410</x>
+       <y>90</y>
        <width>41</width>
        <height>26</height>
       </rect>
@@ -6917,8 +6917,8 @@ manually</string>
     <widget class="QLabel" name="label_188">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>410</y>
+       <x>520</x>
+       <y>90</y>
        <width>41</width>
        <height>26</height>
       </rect>
@@ -6935,8 +6935,8 @@ manually</string>
     <widget class="QDoubleSpinBox" name="numberPointsDSO">
      <property name="geometry">
       <rect>
-       <x>170</x>
-       <y>410</y>
+       <x>560</x>
+       <y>90</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -6973,8 +6973,8 @@ manually</string>
     <widget class="QLabel" name="label_189">
      <property name="geometry">
       <rect>
-       <x>240</x>
-       <y>410</y>
+       <x>630</x>
+       <y>90</y>
        <width>61</width>
        <height>26</height>
       </rect>
@@ -6991,8 +6991,8 @@ manually</string>
     <widget class="QDoubleSpinBox" name="numberHoursPreview">
      <property name="geometry">
       <rect>
-       <x>300</x>
-       <y>410</y>
+       <x>690</x>
+       <y>90</y>
        <width>41</width>
        <height>26</height>
       </rect>
@@ -7030,7 +7030,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>190</x>
-       <y>215</y>
+       <y>225</y>
        <width>101</width>
        <height>26</height>
       </rect>
@@ -7048,7 +7048,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>215</y>
+       <y>225</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7086,7 +7086,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>110</x>
-       <y>215</y>
+       <y>225</y>
        <width>51</width>
        <height>26</height>
       </rect>
@@ -7124,7 +7124,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>215</y>
+       <y>225</y>
        <width>91</width>
        <height>26</height>
       </rect>
@@ -7142,7 +7142,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>185</y>
+       <y>195</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7166,7 +7166,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>340</x>
-       <y>220</y>
+       <y>230</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7190,7 +7190,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>185</y>
+       <y>195</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7214,7 +7214,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>160</x>
-       <y>220</y>
+       <y>230</y>
        <width>21</width>
        <height>20</height>
       </rect>
@@ -7238,7 +7238,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>255</x>
-       <y>290</y>
+       <y>310</y>
        <width>106</width>
        <height>31</height>
       </rect>
@@ -7253,8 +7253,8 @@ manually</string>
     <widget class="QLabel" name="label_204">
      <property name="geometry">
       <rect>
-       <x>350</x>
-       <y>410</y>
+       <x>740</x>
+       <y>90</y>
        <width>16</width>
        <height>21</height>
       </rect>
@@ -7272,7 +7272,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>40</y>
+       <y>165</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7288,7 +7288,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>20</y>
+       <y>145</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -7308,7 +7308,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>260</y>
+       <y>280</y>
        <width>311</width>
        <height>21</height>
       </rect>
@@ -7327,8 +7327,8 @@ manually</string>
     <widget class="QLabel" name="label_136">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>340</y>
+       <x>400</x>
+       <y>20</y>
        <width>311</width>
        <height>21</height>
       </rect>
@@ -7509,7 +7509,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>175</y>
+       <y>370</y>
        <width>41</width>
        <height>21</height>
       </rect>
@@ -7551,7 +7551,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>405</x>
-       <y>175</y>
+       <y>370</y>
        <width>111</width>
        <height>21</height>
       </rect>
@@ -7572,9 +7572,9 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>205</y>
+       <y>400</y>
        <width>351</width>
-       <height>23</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="maximum">
@@ -7603,8 +7603,8 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>570</x>
-       <y>175</y>
-       <width>116</width>
+       <y>370</y>
+       <width>46</width>
        <height>21</height>
       </rect>
      </property>
@@ -7617,14 +7617,14 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Minutes : Seconds</string>
+      <string>MM:SS</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_216">
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>145</y>
+       <y>340</y>
        <width>121</width>
        <height>21</height>
       </rect>
@@ -7644,7 +7644,7 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>400</x>
-       <y>165</y>
+       <y>360</y>
        <width>351</width>
        <height>1</height>
       </rect>
@@ -7662,8 +7662,8 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>395</x>
-       <y>290</y>
+       <x>10</x>
+       <y>400</y>
        <width>351</width>
        <height>31</height>
       </rect>
@@ -7672,7 +7672,43 @@ manually</string>
       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run model making from a data file stored as analyse file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
-      <string>Program model from file</string>
+      <string>Choose file and program model</string>
+     </property>
+    </widget>
+    <widget class="Line" name="line_39">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>390</y>
+       <width>351</width>
+       <height>1</height>
+      </rect>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_205">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>370</y>
+       <width>151</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Build model from data</string>
      </property>
     </widget>
     <zorder>line_42</zorder>
@@ -7724,6 +7760,8 @@ manually</string>
     <zorder>label_216</zorder>
     <zorder>line_45</zorder>
     <zorder>btn_runBatchModel</zorder>
+    <zorder>line_39</zorder>
+    <zorder>label_205</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
@@ -14602,9 +14640,9 @@ manually</string>
   <widget class="QPushButton" name="btn_saveConfig">
    <property name="geometry">
     <rect>
-     <x>585</x>
+     <x>590</x>
      <y>95</y>
-     <width>91</width>
+     <width>86</width>
      <height>26</height>
     </rect>
    </property>
@@ -14629,7 +14667,7 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>345</x>
+     <x>325</x>
      <y>65</y>
      <width>81</width>
      <height>26</height>
@@ -14653,9 +14691,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>245</x>
      <y>65</y>
-     <width>81</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -14679,7 +14717,7 @@ manually</string>
     <rect>
      <x>20</x>
      <y>65</y>
-     <width>71</width>
+     <width>66</width>
      <height>26</height>
     </rect>
    </property>
@@ -14704,9 +14742,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>175</x>
+     <x>165</x>
      <y>65</y>
-     <width>81</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -14727,7 +14765,7 @@ manually</string>
     <rect>
      <x>20</x>
      <y>95</y>
-     <width>106</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14752,7 +14790,7 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>410</x>
      <y>65</y>
      <width>81</width>
      <height>26</height>
@@ -14773,9 +14811,9 @@ manually</string>
   <widget class="QPushButton" name="btn_loadFrom">
    <property name="geometry">
     <rect>
-     <x>585</x>
+     <x>590</x>
      <y>65</y>
-     <width>91</width>
+     <width>86</width>
      <height>26</height>
     </rect>
    </property>
@@ -14824,9 +14862,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>585</x>
+     <x>590</x>
      <y>40</y>
-     <width>186</width>
+     <width>181</width>
      <height>21</height>
     </rect>
    </property>
@@ -14863,10 +14901,10 @@ manually</string>
   <widget class="QLabel" name="mainicon">
    <property name="geometry">
     <rect>
-     <x>515</x>
-     <y>50</y>
-     <width>65</width>
-     <height>65</height>
+     <x>495</x>
+     <y>30</y>
+     <width>91</width>
+     <height>91</height>
     </rect>
    </property>
    <property name="text">
@@ -14879,7 +14917,7 @@ manually</string>
   <widget class="QLabel" name="label_102">
    <property name="geometry">
     <rect>
-     <x>585</x>
+     <x>590</x>
      <y>15</y>
      <width>51</width>
      <height>21</height>
@@ -14899,9 +14937,9 @@ manually</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>400</x>
      <y>95</y>
-     <width>81</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14920,9 +14958,9 @@ manually</string>
   <widget class="QPushButton" name="btn_mountBoot">
    <property name="geometry">
     <rect>
-     <x>345</x>
+     <x>305</x>
      <y>95</y>
-     <width>81</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -14960,9 +14998,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>95</x>
+     <x>90</x>
      <y>65</y>
-     <width>76</width>
+     <width>71</width>
      <height>26</height>
     </rect>
    </property>
@@ -14984,7 +15022,7 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>345</x>
+     <x>325</x>
      <y>40</y>
      <width>81</width>
      <height>21</height>
@@ -15026,7 +15064,7 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>430</x>
+     <x>410</x>
      <y>40</y>
      <width>81</width>
      <height>21</height>
@@ -15068,9 +15106,9 @@ manually</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>245</x>
      <y>40</y>
-     <width>81</width>
+     <width>76</width>
      <height>21</height>
     </rect>
    </property>
@@ -15107,9 +15145,9 @@ manually</string>
   <widget class="Line" name="line_30">
    <property name="geometry">
     <rect>
-     <x>585</x>
+     <x>590</x>
      <y>35</y>
-     <width>186</width>
+     <width>181</width>
      <height>1</height>
     </rect>
    </property>
@@ -15145,7 +15183,7 @@ manually</string>
     <rect>
      <x>20</x>
      <y>35</y>
-     <width>491</width>
+     <width>471</width>
      <height>1</height>
     </rect>
    </property>
@@ -15159,9 +15197,9 @@ manually</string>
   <widget class="QPushButton" name="btn_openHemisphereWindow">
    <property name="geometry">
     <rect>
-     <x>130</x>
+     <x>115</x>
      <y>95</y>
-     <width>106</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
@@ -15178,15 +15216,15 @@ manually</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Hemisphere</string>
+    <string>Hemisph.</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_openImageWindow">
    <property name="geometry">
     <rect>
-     <x>240</x>
+     <x>210</x>
      <y>95</y>
-     <width>101</width>
+     <width>91</width>
      <height>26</height>
     </rect>
    </property>
