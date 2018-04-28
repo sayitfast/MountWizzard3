@@ -143,7 +143,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideMiddle</enum>
@@ -4035,7 +4035,7 @@ manually</string>
    </widget>
    <widget class="QWidget" name="tab">
     <attribute name="title">
-     <string>Config Model</string>
+     <string>Config Model Build</string>
     </attribute>
     <widget class="QCheckBox" name="checkSortPoints">
      <property name="geometry">
@@ -4058,60 +4058,6 @@ manually</string>
       <string>Auto sort points East / West</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="btn_openImageWindow">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>140</y>
-       <width>151</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the image window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Open
-Image
-Window</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_openHemisphereWindow">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>50</y>
-       <width>151</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the hemisphere window, where you can see all model points, the horizon mask and the modeling progress&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>Open
-Hemisphere
-Window</string>
-     </property>
-    </widget>
     <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
      <property name="geometry">
       <rect>
@@ -4131,28 +4077,6 @@ Window</string>
      </property>
      <property name="text">
       <string>Auto delete points below horizon</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_39">
-     <property name="geometry">
-      <rect>
-       <x>300</x>
-       <y>10</y>
-       <width>21</width>
-       <height>431</height>
-      </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="lineWidth">
-      <number>2</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
      </property>
     </widget>
     <widget class="QLabel" name="label_122">
@@ -4798,7 +4722,7 @@ Window</string>
     <widget class="Line" name="line_41">
      <property name="geometry">
       <rect>
-       <x>490</x>
+       <x>370</x>
        <y>10</y>
        <width>21</width>
        <height>431</height>
@@ -4815,47 +4739,6 @@ Window</string>
      </property>
      <property name="orientation">
       <enum>Qt::Vertical</enum>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_205">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>20</y>
-       <width>121</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="text">
-      <string>Window handling</string>
-     </property>
-    </widget>
-    <widget class="Line" name="line_67">
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>40</y>
-       <width>151</width>
-       <height>1</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>10</pointsize>
-      </font>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
     <widget class="QPushButton" name="btn_saveHorizonMaskAs">
@@ -4939,10 +4822,10 @@ Window</string>
     <widget class="QPushButton" name="btn_openAnalyseWindow">
      <property name="geometry">
       <rect>
-       <x>330</x>
-       <y>230</y>
+       <x>520</x>
+       <y>375</y>
        <width>151</width>
-       <height>71</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -4952,8 +4835,7 @@ Window</string>
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Open
-AnalyseWindow</string>
+      <string>Open Analyse Window</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_99">
@@ -5053,26 +4935,6 @@ AnalyseWindow</string>
      </property>
      <property name="text">
       <string>Load</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="btn_runBatchModel">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="geometry">
-      <rect>
-       <x>330</x>
-       <y>320</y>
-       <width>151</width>
-       <height>71</height>
-      </rect>
-     </property>
-     <property name="toolTip">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run model making from a data file stored as analyse file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="text">
-      <string>Make Model from
-Analyse File</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_166">
@@ -7791,6 +7653,25 @@ Analyse File</string>
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
+    <widget class="QPushButton" name="btn_runBatchModel">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>395</x>
+       <y>290</y>
+       <width>351</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Run model making from a data file stored as analyse file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="text">
+      <string>Program model from file</string>
+     </property>
+    </widget>
     <zorder>line_42</zorder>
     <zorder>line_28</zorder>
     <zorder>line_34</zorder>
@@ -7839,6 +7720,7 @@ Analyse File</string>
     <zorder>label_29</zorder>
     <zorder>label_216</zorder>
     <zorder>line_45</zorder>
+    <zorder>btn_runBatchModel</zorder>
    </widget>
    <widget class="QWidget" name="tab_8">
     <attribute name="title">
@@ -14842,7 +14724,7 @@ Analyse File</string>
     <rect>
      <x>20</x>
      <y>95</y>
-     <width>141</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -14858,7 +14740,7 @@ Analyse File</string>
     <string notr="true"/>
    </property>
    <property name="text">
-    <string>Show Messages</string>
+    <string>Message</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_astrometryConnected">
@@ -15014,9 +14896,9 @@ Analyse File</string>
   <widget class="QPushButton" name="btn_mountShutdown">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>210</x>
      <y>95</y>
-     <width>146</width>
+     <width>76</width>
      <height>26</height>
     </rect>
    </property>
@@ -15029,15 +14911,15 @@ Analyse File</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Send shutdown command to the mount.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Shutdown Mount</string>
+    <string>Shutdown</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_mountBoot">
    <property name="geometry">
     <rect>
-     <x>165</x>
+     <x>125</x>
      <y>95</y>
-     <width>141</width>
+     <width>81</width>
      <height>26</height>
     </rect>
    </property>
@@ -15050,7 +14932,7 @@ Analyse File</string>
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If the mount is connected via ethernet and is in the same subnet, from firmware 2.15.8 on the mount could be started by sending a WOL packet to the moutn computer.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>Boot Mount (WOL)</string>
+    <string>Boot (WOL)</string>
    </property>
   </widget>
   <widget class="QLabel" name="mainBackground">
@@ -15271,6 +15153,56 @@ Analyse File</string>
     <enum>Qt::Horizontal</enum>
    </property>
   </widget>
+  <widget class="QPushButton" name="btn_openHemisphereWindow">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>95</y>
+     <width>81</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the hemisphere window, where you can see all model points, the horizon mask and the modeling progress&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Hemisphere</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_openImageWindow">
+   <property name="geometry">
+    <rect>
+     <x>375</x>
+     <y>95</y>
+     <width>81</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Arial</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Opens the image window&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string>Image</string>
+   </property>
+  </widget>
   <zorder>mainBackground</zorder>
   <zorder>le_mountStatus</zorder>
   <zorder>mainTabWidget</zorder>
@@ -15296,6 +15228,8 @@ Analyse File</string>
   <zorder>line_30</zorder>
   <zorder>label_110</zorder>
   <zorder>line_32</zorder>
+  <zorder>btn_openHemisphereWindow</zorder>
+  <zorder>btn_openImageWindow</zorder>
  </widget>
  <tabstops>
   <tabstop>btn_openMessageWindow</tabstop>
@@ -15347,10 +15281,7 @@ Analyse File</string>
   <tabstop>pixelSize</tabstop>
   <tabstop>focalLength</tabstop>
   <tabstop>astrometryDownsampling</tabstop>
-  <tabstop>btn_openHemisphereWindow</tabstop>
-  <tabstop>btn_openImageWindow</tabstop>
   <tabstop>btn_openAnalyseWindow</tabstop>
-  <tabstop>btn_runBatchModel</tabstop>
   <tabstop>btn_loadHorizonMask</tabstop>
   <tabstop>btn_saveHorizonMask</tabstop>
   <tabstop>btn_saveHorizonMaskAs</tabstop>
