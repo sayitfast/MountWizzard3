@@ -149,6 +149,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
                             'Slow': False,
                             'Once': False,
                             'GetAlign': False,
+                            'SetAlign': False,
                             'Command': False}
         self.cancelRunTargetRMS = False
         self.runTargetRMS = False
@@ -526,7 +527,20 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.logger.warning('error in sync mount modeling')
             return False
 
-    def programBatchData(self, data):
+    def programBatchData(self, nameDataFile):
+        data = self.analyseData.loadData(nameDataFile)
+        if not('RaJNow' in data and 'DecJNow' in data):
+            self.logger.warning('RaJNow or DecJNow not in data file')
+            self.messageQueue.put('Mount coordinates missing\n')
+            return
+        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
+            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
+            self.messageQueue.put('Solved data missing\n')
+            return
+        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
+            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
+            self.messageQueue.put('Time and Pierside missing\n')
+            return
         self.app.messageQueue.put('#BWProgramming alignment model data\n')
         self.workerMountSetAlignmentModel.result = None
         self.workerMountSetAlignmentModel.setAlignmentModel(data)
@@ -539,6 +553,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         else:
             self.logger.warning('Model could not be calculated with current data!')
             self.app.messageQueue.put('#BRProgramming alignment model finished with errors\n')
+        self.commandDispatcherQueue.put('ReloadAlignmentModel')
 
     def runTargetRMSAlignment(self):
         self.runTargetRMS = True

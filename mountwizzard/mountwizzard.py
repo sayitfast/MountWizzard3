@@ -51,7 +51,6 @@ from indi import indi_client
 from astrometry import transform
 from imaging import imaging
 from astrometry import astrometry
-from analyse import analysedata
 if platform.system() == 'Windows':
     from automation import automation
 from wakeonlan import send_magic_packet
@@ -119,9 +118,6 @@ class MountWizzardApp(widget.MwWidget):
         # get ascom state
         self.checkASCOM()
 
-        # access to analyse methods
-        self.analyseData = analysedata.Analyse(self)
-
         # instantiating all subclasses and connecting thread signals
         # mount class
         self.threadMountDispatcher = PyQt5.QtCore.QThread()
@@ -131,6 +127,7 @@ class MountWizzardApp(widget.MwWidget):
         self.threadMountDispatcher.started.connect(self.workerMountDispatcher.run)
         self.workerMountDispatcher.signalMountConnectedCommand.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedGetAlign.connect(self.setMountStatus)
+        self.workerMountDispatcher.signalMountConnectedSetAlign.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedOnce.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedSlow.connect(self.setMountStatus)
         self.workerMountDispatcher.signalMountConnectedMedium.connect(self.setMountStatus)
@@ -975,22 +972,7 @@ class MountWizzardApp(widget.MwWidget):
             return
         nameDataFile = os.path.basename(value)
         self.logger.info('Modeling from {0}'.format(nameDataFile))
-        data = self.analyseData.loadData(nameDataFile)
-        if not('RaJNow' in data and 'DecJNow' in data):
-            self.logger.warning('RaJNow or DecJNow not in data file')
-            self.messageQueue.put('Mount coordinates missing\n')
-            return
-        if not('RaJNowSolved' in data and 'DecJNowSolved' in data):
-            self.logger.warning('RaJNowSolved or DecJNowSolved not in data file')
-            self.messageQueue.put('Solved data missing\n')
-            return
-        if not('Pierside' in data and 'LocalSiderealTimeFloat' in data):
-            self.logger.warning('Pierside and LocalSiderealTimeFloat not in data file')
-            self.messageQueue.put('Time and Pierside missing\n')
-            return
-        self.messageQueue.put('ToModel>{0:02d}'.format(len(data['Index'])))
-        self.workerMountDispatcher.programBatchData(data)
-        self.workerMountDispatcher.commandDispatcherQueue.put('ReloadAlignmentModel')
+        self.workerMountDispatcher.programBatchData(nameDataFile)
 
     def cancelFullModel(self):
         # cancel only works if modeling gis running. otherwise recoloring button after stop won't happen
@@ -1073,7 +1055,7 @@ class MountWizzardApp(widget.MwWidget):
                 stat += 1
         if stat == 0:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: red; color: black;}')
-        elif stat == (len(self.workerMountDispatcher.mountStatus) - 1):
+        elif stat == len(self.workerMountDispatcher.mountStatus):
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: green; color:black;}')
         else:
             self.ui.btn_driverMountConnected.setStyleSheet('QPushButton {background-color: yellow; color: black;}')
