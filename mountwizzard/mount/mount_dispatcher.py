@@ -528,7 +528,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             return False
 
     def programBatchData(self, nameDataFile):
-        data = self.analyseData.loadData(nameDataFile)
+        data = self.analyse.loadData(nameDataFile)
         if not('RaJNow' in data and 'DecJNow' in data):
             self.logger.warning('RaJNow or DecJNow not in data file')
             self.messageQueue.put('Mount coordinates missing\n')
