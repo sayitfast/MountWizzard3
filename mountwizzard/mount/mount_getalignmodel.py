@@ -45,7 +45,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
         self.transform = transform.Transform(self.app)
 
     def run(self):
-        self.logger.info('mount align started')
+        self.logger.info('mount get align started')
         self.mutexIsRunning.lock()
         if not self.isRunning:
             self.isRunning = True
@@ -81,7 +81,7 @@ class MountGetAlignmentModel(PyQt5.QtCore.QObject):
             self.thread.quit()
             self.thread.wait()
         self.mutexIsRunning.unlock()
-        self.logger.info('mount align stopped')
+        self.logger.info('mount get align stopped')
 
     def doCommand(self):
         if not self.sendCommandQueue.empty() and (self.socket.state() == PyQt5.QtNetwork.QAbstractSocket.ConnectedState):

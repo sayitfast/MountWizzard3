@@ -28,6 +28,7 @@ from mount import mount_statusmedium
 from mount import mount_statusslow
 from mount import mount_statusonce
 from mount import mount_getalignmodel
+from mount import mount_setalignmodel
 from mount import mount_modelhandling
 from analyse import analysedata
 from baseclasses import checkIP
@@ -43,6 +44,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
     signalMountConnectedMedium = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedFast = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedGetAlign = PyQt5.QtCore.pyqtSignal(dict)
+    signalMountConnectedSetAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedProgAlign = PyQt5.QtCore.pyqtSignal(dict)
     signalMountConnectedCommand = PyQt5.QtCore.pyqtSignal(dict)
     signalCancelRunTargetRMS = PyQt5.QtCore.pyqtSignal()
@@ -135,6 +137,12 @@ class MountDispatcher(PyQt5.QtCore.QThread):
         self.threadMountGetAlignmentModel.setObjectName("MountGetAlignmentModel")
         self.workerMountGetAlignmentModel.moveToThread(self.threadMountGetAlignmentModel)
         self.threadMountGetAlignmentModel.started.connect(self.workerMountGetAlignmentModel.run)
+        # set alignment model
+        self.threadMountSetAlignmentModel = PyQt5.QtCore.QThread()
+        self.workerMountSetAlignmentModel = mount_setalignmodel.MountSetAlignmentModel(self.app, self.threadMountSetAlignmentModel, self.data, self.signalMountConnectedSetAlign)
+        self.threadMountSetAlignmentModel.setObjectName("MountSetAlignmentModel")
+        self.workerMountSetAlignmentModel.moveToThread(self.threadMountSetAlignmentModel)
+        self.threadMountSetAlignmentModel.started.connect(self.workerMountSetAlignmentModel.run)
 
         self.mountStatus = {'Fast': False,
                             'Medium': False,
@@ -395,6 +403,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.workerMountStatusRunnerSlow.stop()
             self.workerMountStatusRunnerOnce.stop()
             self.workerMountGetAlignmentModel.stop()
+            self.workerMountSetAlignmentModel.stop()
             self.workerMountCommandRunner.stop()
             self.app.sharedMountDataLock.lockForWrite()
             self.data['MountIP'] = self.app.ui.le_mountIP.text()
@@ -402,6 +411,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.app.sharedMountDataLock.unlock()
             # and restarting for using new parameters
             self.threadMountCommandRunner.start()
+            self.threadMountSetAlignmentModel.start()
             self.threadMountGetAlignmentModel.start()
             self.threadMountStatusRunnerOnce.start()
             self.threadMountStatusRunnerSlow.start()
@@ -422,6 +432,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.isRunning = True
         self.mutexIsRunning.unlock()
         self.threadMountCommandRunner.start()
+        self.threadMountSetAlignmentModel.start()
         self.threadMountGetAlignmentModel.start()
         self.threadMountStatusRunnerOnce.start()
         self.threadMountStatusRunnerSlow.start()
@@ -441,6 +452,7 @@ class MountDispatcher(PyQt5.QtCore.QThread):
             self.workerMountStatusRunnerSlow.stop()
             self.workerMountStatusRunnerOnce.stop()
             self.workerMountGetAlignmentModel.stop()
+            self.workerMountSetAlignmentModel.stop()
             self.workerMountCommandRunner.stop()
             self.thread.quit()
             self.thread.wait()
