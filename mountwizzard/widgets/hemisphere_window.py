@@ -252,7 +252,7 @@ class HemisphereWindow(widget.MwWidget):
         stars = self.app.workerMountDispatcher.data['starsTopo']
         points = self.app.workerModelingDispatcher.modelingRunner.modelPoints.modelPoints
         horizon = self.app.workerModelingDispatcher.modelingRunner.modelPoints.horizonPoints
-        if self.ui.btn_editNone.isChecked():
+        if self.ui.checkEditNone.isChecked():
             # double click makes slew to target
             if event.button == 1 and event.dblclick:
                 azimuth = int(event.xdata)
@@ -296,32 +296,32 @@ class HemisphereWindow(widget.MwWidget):
             return
 
         # first do the model points
-        if self.ui.btn_editModelPoints.isChecked():
+        if self.ui.checkEditModelPoints.isChecked():
             ind = self.get_ind_under_point(event, 2, points)
-        if self.ui.btn_editHorizonMask.isChecked():
+        if self.ui.checkEditHorizonMask.isChecked():
             ind = self.get_ind_under_point(event, 2, horizon)
             indlow = self.get_two_ind_under_point_in_x(event, horizon)
-        if event.button == 3 and ind is not None and self.ui.btn_editModelPoints.isChecked():
+        if event.button == 3 and ind is not None and self.ui.checkEditModelPoints.isChecked():
             if len(points) > 0:
                 del(points[ind])
                 self.annotate[ind].remove()
                 del(self.annotate[ind])
             self.pointsPlotBig.set_data([i[0] for i in points], [i[1] for i in points])
             self.pointsPlotSmall.set_data([i[0] for i in points], [i[1] for i in points])
-        if event.button == 1 and ind is None and self.ui.btn_editModelPoints.isChecked():
+        if event.button == 1 and ind is None and self.ui.checkEditModelPoints.isChecked():
             points.append((event.xdata, event.ydata))
             if self.app.ui.checkSortPoints.isChecked():
                 self.app.workerModelingDispatcher.modelingRunner.modelPoints.sortPoints()
             self.annotate.append(self.hemisphereMatplotlib.axes.annotate('', xy=(event.xdata + self.offx, event.ydata + self.offy), color='#E0E0E0'))
             self.pointsPlotBig.set_data([i[0] for i in points], [i[1] for i in points])
             self.pointsPlotSmall.set_data([i[0] for i in points], [i[1] for i in points])
-        if self.ui.btn_editModelPoints.isChecked():
+        if self.ui.checkEditModelPoints.isChecked():
             for i in range(0, len(points)):
                 self.annotate[i].set_text('{0:2d}'.format(i + 1))
             self.app.messageQueue.put('ToModel>{0:02d}'.format(len(points)))
 
         # now do the horizon mask
-        if event.button == 3 and ind is not None and self.ui.btn_editHorizonMask.isChecked():
+        if event.button == 3 and ind is not None and self.ui.checkEditHorizonMask.isChecked():
             # delete a point
             if len(horizon) > 2:
                 del(horizon[ind])
@@ -334,7 +334,7 @@ class HemisphereWindow(widget.MwWidget):
             y.insert(0, 0)
             y.append(0)
             self.maskPlotFill.set_xy(numpy.column_stack((x, y)))
-        if event.button == 1 and ind is None and self.ui.btn_editHorizonMask.isChecked():
+        if event.button == 1 and ind is None and self.ui.checkEditHorizonMask.isChecked():
             if indlow is not None:
                 horizon.insert(indlow + 1, (event.xdata, event.ydata))
             self.maskPlotMarker.set_data([i[0] for i in horizon], [i[1] for i in horizon])
