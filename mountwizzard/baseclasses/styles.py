@@ -370,7 +370,8 @@ class MWStyles:
     }
     /* needed for MAC OSX */
     QTabWidget:tab-bar {
-        left: 0;}
+        alignment: center;
+    }
     QTabBar::tab {
         background-color: #202020;
         color: #C0C0C0;
