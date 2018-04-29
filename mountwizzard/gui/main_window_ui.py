@@ -1765,7 +1765,7 @@ class Ui_MainWindow(object):
         self.btn_saveHorizonMask.setStyleSheet("")
         self.btn_saveHorizonMask.setObjectName("btn_saveHorizonMask")
         self.btn_openAnalyseWindow = QtWidgets.QPushButton(self.tab)
-        self.btn_openAnalyseWindow.setGeometry(QtCore.QRect(520, 375, 151, 21))
+        self.btn_openAnalyseWindow.setGeometry(QtCore.QRect(520, 375, 226, 31))
         self.btn_openAnalyseWindow.setStyleSheet("")
         self.btn_openAnalyseWindow.setObjectName("btn_openAnalyseWindow")
         self.label_99 = QtWidgets.QLabel(self.tab)
@@ -5518,7 +5518,7 @@ class Ui_MainWindow(object):
         self.btn_openImageWindow.raise_()
 
         self.retranslateUi(MainWindow)
-        self.mainTabWidget.setCurrentIndex(4)
+        self.mainTabWidget.setCurrentIndex(2)
         self.settingsTabWidget.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.btn_openMessageWindow, self.btn_mountBoot)

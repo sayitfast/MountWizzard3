@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>4</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -4827,8 +4827,8 @@ manually</string>
       <rect>
        <x>520</x>
        <y>375</y>
-       <width>151</width>
-       <height>21</height>
+       <width>226</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="toolTip">

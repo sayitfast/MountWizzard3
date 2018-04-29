@@ -1,33 +1,8 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
-    <file>application_remove.ico</file>
-    <file>arrow-down.ico</file>
-    <file>arrow-up.ico</file>
-    <file>calculator_accept.ico</file>
-    <file>calculator_add.ico</file>
-    <file>chart.ico</file>
-    <file>checkmark.ico</file>
-    <file>computer_accept.ico</file>
-    <file>computer_remove.ico</file>
-    <file>database_down.ico</file>
-    <file>database_up.ico</file>
-    <file>eject.ico</file>
-    <file>favorite_add.ico</file>
-    <file>floppy_disc.ico</file>
-    <file>floppy_disc_add.ico</file>
-    <file>image.ico</file>
-    <file>mw.ico</file>
-    <file>note_accept.ico</file>
-    <file>play.ico</file>
-    <file>process.ico</file>
-    <file>process_add.ico</file>
-    <file>processes.ico</file>
-    <file>stop.ico</file>
     <file>altitude1.png</file>
     <file>azimuth1.png</file>
     <file>mw3_splash.ico</file>
-    <file>mount1.ico</file>
-    <file>mount2.ico</file>
     <file>beep.wav</file>
     <file>alert.wav</file>
     <file>alarm.wav</file>
