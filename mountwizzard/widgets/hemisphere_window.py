@@ -265,7 +265,7 @@ class HemisphereWindow(widget.MwWidget):
                     self.app.mountCommandQueue.put(':Sa+{0:02d}*00#'.format(altitude))
                     self.app.mountCommandQueue.put(':MA#')
 
-        elif self.ui.checkPolarAlignment.isChecked():
+        if self.ui.checkPolarAlignment.isChecked():
             if event.button == 1 and event.dblclick:
                 print('got event')
                 ind = self.get_ind_under_point(event, 2, stars)
@@ -291,9 +291,6 @@ class HemisphereWindow(widget.MwWidget):
                         self.app.mountCommandQueue.put(RA)
                         self.app.mountCommandQueue.put(DEC)
                         self.app.mountCommandQueue.put(':MS#')
-
-        else:
-            return
 
         # first do the model points
         if self.ui.checkEditModelPoints.isChecked():
@@ -385,6 +382,7 @@ class HemisphereWindow(widget.MwWidget):
         self.starsAlignment,  = self.hemisphereMatplotlibStar.axes.plot([i[0] for i in starsTopo], [i[1] for i in starsTopo], '*', markersize=6, color='#C0C000')
         for i in range(0, len(starsTopo)):
             self.starsAnnotate.append(self.hemisphereMatplotlibStar.axes.annotate(starsNames[i], xy=(starsTopo[i][0] + self.offx, starsTopo[i][1] + self.offy), color='#808080', fontsize=12, clip_on=True))
+
         # moving widget plane
         self.hemisphereMatplotlibMoving.axes.cla()
         self.hemisphereMatplotlibMoving.fig.canvas.mpl_connect('button_press_event', self.onMouse)
