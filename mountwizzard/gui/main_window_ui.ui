@@ -146,7 +146,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideRight</enum>
@@ -4043,8 +4043,8 @@ manually</string>
     <widget class="QCheckBox" name="checkSortPoints">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>250</y>
+       <x>420</x>
+       <y>260</y>
        <width>211</width>
        <height>20</height>
       </rect>
@@ -4064,8 +4064,8 @@ manually</string>
     <widget class="QCheckBox" name="checkDeletePointsHorizonMask">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>220</y>
+       <x>420</x>
+       <y>230</y>
        <width>211</width>
        <height>20</height>
       </rect>
@@ -4085,10 +4085,10 @@ manually</string>
     <widget class="QLabel" name="label_122">
      <property name="geometry">
       <rect>
-       <x>700</x>
-       <y>170</y>
+       <x>665</x>
+       <y>180</y>
        <width>21</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4109,8 +4109,8 @@ manually</string>
     <widget class="QCheckBox" name="checkUseMinimumHorizonLine">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>145</y>
+       <x>420</x>
+       <y>155</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4133,8 +4133,8 @@ manually</string>
     <widget class="QCheckBox" name="checkUseFileHorizonLine">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>115</y>
+       <x>420</x>
+       <y>125</y>
        <width>211</width>
        <height>21</height>
       </rect>
@@ -4160,7 +4160,7 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>410</x>
        <y>50</y>
        <width>231</width>
        <height>21</height>
@@ -4196,9 +4196,9 @@ manually</string>
     <widget class="Line" name="line_58">
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>410</x>
        <y>40</y>
-       <width>231</width>
+       <width>336</width>
        <height>1</height>
       </rect>
      </property>
@@ -4217,10 +4217,10 @@ manually</string>
     <widget class="QLabel" name="label_201">
      <property name="geometry">
       <rect>
-       <x>530</x>
-       <y>170</y>
-       <width>111</width>
-       <height>31</height>
+       <x>470</x>
+       <y>180</y>
+       <width>146</width>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4229,13 +4229,13 @@ manually</string>
       </font>
      </property>
      <property name="text">
-      <string>Altitude minimum</string>
+      <string>Set altitude minimum to</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_194">
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>410</x>
        <y>20</y>
        <width>121</width>
        <height>21</height>
@@ -4255,10 +4255,10 @@ manually</string>
     <widget class="QDoubleSpinBox" name="altitudeMinimumHorizon">
      <property name="geometry">
       <rect>
-       <x>650</x>
-       <y>170</y>
+       <x>615</x>
+       <y>180</y>
        <width>51</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4385,9 +4385,9 @@ manually</string>
     <widget class="QCheckBox" name="checkFastDownload">
      <property name="geometry">
       <rect>
-       <x>40</x>
+       <x>20</x>
        <y>155</y>
-       <width>171</width>
+       <width>291</width>
        <height>20</height>
       </rect>
      </property>
@@ -4400,7 +4400,7 @@ manually</string>
       <string>Use Highspeed download of CCD camera if availabe</string>
      </property>
      <property name="text">
-      <string>Use Fast Download Mode</string>
+      <string>Use fast download mode if camera supports it</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -4491,7 +4491,7 @@ manually</string>
       <rect>
        <x>20</x>
        <y>255</y>
-       <width>206</width>
+       <width>231</width>
        <height>21</height>
       </rect>
      </property>
@@ -4507,7 +4507,7 @@ manually</string>
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Keep Images from modeling</string>
+      <string>Keep images from model building</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -4518,7 +4518,7 @@ manually</string>
       <rect>
        <x>20</x>
        <y>40</y>
-       <width>241</width>
+       <width>331</width>
        <height>1</height>
       </rect>
      </property>
@@ -4750,10 +4750,10 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>680</x>
+       <x>570</x>
        <y>80</y>
        <width>71</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4774,10 +4774,10 @@ manually</string>
     <widget class="QPushButton" name="btn_loadHorizonMask">
      <property name="geometry">
       <rect>
-       <x>520</x>
+       <x>410</x>
        <y>80</y>
        <width>71</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4801,10 +4801,10 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>490</x>
        <y>80</y>
        <width>71</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -4826,9 +4826,9 @@ manually</string>
      <property name="geometry">
       <rect>
        <x>520</x>
-       <y>375</y>
+       <y>370</y>
        <width>226</width>
-       <height>31</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="toolTip">
@@ -4844,8 +4844,8 @@ manually</string>
     <widget class="QLabel" name="label_99">
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>290</y>
+       <x>410</x>
+       <y>310</y>
        <width>191</width>
        <height>21</height>
       </rect>
@@ -4864,9 +4864,9 @@ manually</string>
     <widget class="Line" name="line_29">
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>310</y>
-       <width>226</width>
+       <x>410</x>
+       <y>330</y>
+       <width>336</width>
        <height>1</height>
       </rect>
      </property>
@@ -4883,8 +4883,8 @@ manually</string>
      </property>
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>320</y>
+       <x>410</x>
+       <y>340</y>
        <width>226</width>
        <height>21</height>
       </rect>
@@ -4919,10 +4919,10 @@ manually</string>
     <widget class="QPushButton" name="btn_loadAnalyseData">
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>350</y>
+       <x>410</x>
+       <y>370</y>
        <width>71</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -5106,7 +5106,7 @@ manually</string>
       <rect>
        <x>20</x>
        <y>330</y>
-       <width>241</width>
+       <width>331</width>
        <height>1</height>
       </rect>
      </property>
@@ -6330,7 +6330,7 @@ manually</string>
        <x>10</x>
        <y>80</y>
        <width>61</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6357,7 +6357,7 @@ manually</string>
        <x>150</x>
        <y>80</y>
        <width>61</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6384,7 +6384,7 @@ manually</string>
        <x>220</x>
        <y>80</y>
        <width>61</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -6467,7 +6467,7 @@ manually</string>
        <x>80</x>
        <y>80</y>
        <width>61</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7409,7 +7409,7 @@ manually</string>
        <x>10</x>
        <y>80</y>
        <width>81</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7436,7 +7436,7 @@ manually</string>
        <x>190</x>
        <y>80</y>
        <width>81</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7463,7 +7463,7 @@ manually</string>
        <x>280</x>
        <y>80</y>
        <width>81</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
@@ -7487,7 +7487,7 @@ manually</string>
        <x>100</x>
        <y>80</y>
        <width>81</width>
-       <height>21</height>
+       <height>26</height>
       </rect>
      </property>
      <property name="font">
