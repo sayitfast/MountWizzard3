@@ -746,7 +746,7 @@ class MountWizzardApp(widget.MwWidget):
             return
 
     def loadConfigDataFrom(self):
-        value = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)', '.cfg', True)
+        value, ext = self.selectFile(self, 'Open config file', '/config', 'Config files (*.cfg)', True)
         if value != '':
             self.ui.le_configName.setText(os.path.basename(value))
             try:
@@ -761,7 +761,7 @@ class MountWizzardApp(widget.MwWidget):
             self.logger.warning('no config file selected')
 
     def saveConfigAs(self):
-        value = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)', '.cfg', False)
+        value, ext = self.selectFile(self, 'Save config file', '/config', 'Config files (*.cfg)', False)
         if value != '':
             self.ui.le_configName.setText(os.path.basename(value))
             self.saveConfigData(value + '.cfg')
@@ -813,7 +813,7 @@ class MountWizzardApp(widget.MwWidget):
             return appInstalled, appName, appInstallPath
 
     def selectAnalyseFileName(self):
-        value = self.selectFile(self, 'Open analyse file', '/analysedata', 'Analyse files (*.dat)', '.dat', True)
+        value, ext = self.selectFile(self, 'Open analyse file', '/analysedata', 'Analyse files (*.dat)', True)
         if value != '':
             self.ui.le_analyseFileName.setText(os.path.basename(value))
             self.analyseWindow.showWindow()

@@ -68,7 +68,7 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
             self.setStyleSheet(self.NON_MAC_STYLE + self.BASIC_STYLE)
 
     @staticmethod
-    def selectFile(window, title, folder, filterSet, extension, openFile=True):
+    def selectFile(window, title, folder, filterSet, openFile=True):
         dlg = PyQt5.QtWidgets.QFileDialog()
         dlg.setWindowIcon(PyQt5.QtGui.QIcon(':/mw.ico'))
         dlg.setStyleSheet('background-color: rgb(32,32,32); color: rgb(192,192,192)')
@@ -82,14 +82,15 @@ class MwWidget(PyQt5.QtWidgets.QWidget, styles.MWStyles):
         dw = window.width()
         dh = window.height()
         dlg.setGeometry(px, py + ph - dh, dw, dh)
+        ext = ''
         if openFile:
             value = dlg.getOpenFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         else:
             value = dlg.getSaveFileName(dlg, title, os.getcwd() + folder, filterSet, options=PyQt5.QtWidgets.QFileDialog.DontUseNativeDialog)
         name = value[0]
-        if len(name) > 0 and name.endswith(extension):
-            name = name[:-len(extension)]
-        return name
+        if len(name) > 0:
+            name, ext = os.path.splitext(name)
+        return name, ext
 
     @staticmethod
     def selectDir(window, title, folder):

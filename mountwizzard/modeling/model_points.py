@@ -85,7 +85,7 @@ class ModelPoints:
         self.saveHorizonPoints(filepath)
 
     def saveHorizonMaskAs(self):
-        value = self.app.selectFile(self.app, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        value, ext = self.app.selectFile(self.app, 'Save horizon mask points file', '/config', 'Model point files (*.txt)', False)
         if value != '':
             self.app.ui.le_horizonPointsFileName.setText(os.path.basename(value))
             self.saveHorizonPoints(value)
@@ -93,7 +93,7 @@ class ModelPoints:
             self.logger.warning('No model points file selected')
 
     def selectHorizonPointsFileName(self):
-        value = self.app.selectFile(self.app, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)', '.txt', True)
+        value, ext = self.app.selectFile(self.app, 'Open horizon mask file', '/config', 'Horizon mask files (*.txt)', True)
         if value != '':
             self.app.ui.le_horizonPointsFileName.setText(os.path.basename(value))
             self.app.hemisphereWindow.selectHorizonPointsMode()
@@ -124,7 +124,7 @@ class ModelPoints:
         self.saveModelPoints(filepath)
 
     def saveInitialModelPointsAs(self):
-        value = self.app.selectFile(self.app, 'Save initial model points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        value, ext = self.app.selectFile(self.app, 'Save initial model points file', '/config', 'Model point files (*.txt)', False)
         if value != '':
             self.app.ui.le_modelInitialPointsFileName.setText(os.path.basename(value))
             self.saveModelPoints(value)
@@ -132,7 +132,7 @@ class ModelPoints:
             self.logger.warning('No model points file selected')
 
     def selectInitialModelPointsFileName(self):
-        value = self.app.selectFile(self.app, 'Open initial model points file', '/config', 'Model points files (*.txt)', '.txt', True)
+        value, ext = self.app.selectFile(self.app, 'Open initial model points file', '/config', 'Model points files (*.txt)', True)
         if value != '':
             value = os.path.basename(value)
             self.app.ui.le_modelInitialPointsFileName.setText(value)
@@ -145,7 +145,7 @@ class ModelPoints:
         self.saveModelPoints(filepath)
 
     def saveFullModelPointsAs(self):
-        value = self.app.selectFile(self.app, 'Save full model points file', '/config', 'Model point files (*.txt)', '.txt', False)
+        value, ext = self.app.selectFile(self.app, 'Save full model points file', '/config', 'Model point files (*.txt)', False)
         if value != '':
             self.app.ui.le_modelFullPointsFileName.setText(os.path.basename(value))
             self.saveModelPoints(value)
@@ -153,7 +153,7 @@ class ModelPoints:
             self.logger.warning('No model points file selected')
 
     def selectFullModelPointsFileName(self):
-        value = self.app.selectFile(self.app, 'Open full model points file', '/config', 'Model points files (*.txt)', '.txt', True)
+        value, ext = self.app.selectFile(self.app, 'Open full model points file', '/config', 'Model points files (*.txt)', True)
         if value != '':
             value = os.path.basename(value)
             self.app.ui.le_modelFullPointsFileName.setText(value)

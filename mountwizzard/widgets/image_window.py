@@ -154,9 +154,9 @@ class ImagesWindow(widget.MwWidget):
         self.ui.le_AngleJ2000.setText(text)
 
     def loadFitsFileFrom(self):
-        value = self.selectFile(self, 'Open FITS file', '/images', 'FITS files (*.fit)', '.fit', True)
+        value, ext = self.selectFile(self, 'Open FITS file', '/images', 'FITS files (*.fit*)', True)
         if value != '':
-            self.signalShowFitsImage.emit(value + '.fit')
+            self.signalShowFitsImage.emit(value + ext)
         else:
             self.logger.warning('No Fits file file selected')
 
