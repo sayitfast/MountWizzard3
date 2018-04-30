@@ -363,7 +363,6 @@ class ImagesWindow(widget.MwWidget):
             self.signalSetRaSolved.emit('')
             self.signalSetDecSolved.emit('')
             self.signalSetAngleSolved.emit('')
-
             imageParams = dict()
             imageParams['Imagepath'] = self.imagePath
             fitsFileHandle = pyfits.open(imageParams['Imagepath'], mode='update')
