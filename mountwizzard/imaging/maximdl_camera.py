@@ -43,6 +43,7 @@ class MaximDL:
         self.application['Status'] = ''
         self.application['Runtime'] = 'MaxIm_DL.exe'
         self.maximCamera = None
+        self.maximApplication = None
 
         if platform.system() == 'Windows':
             # sgpro only supported on local machine
@@ -57,6 +58,7 @@ class MaximDL:
         pythoncom.CoInitialize()
         try:
             self.maximCamera = Dispatch('MaxIm.CCDCamera')
+            self.maximApplication = Dispatch('MaxIm.Application')
             self.maximCamera.LinkEnabled = True
             # test if link established
             if self.maximCamera.LinkEnabled:
@@ -81,12 +83,14 @@ class MaximDL:
                 while self.maximCamera.LinkEnabled and (time.time() - timeStart) < self.TIMEOUT_STOP:
                     time.sleep(0.1)
                 self.maximCamera = None
+                self.maximApplication = None
         except Exception as e:
             self.logger.error('Could not stop maxim, error: {0}'.format(e))
             self.application['Status'] = 'ERROR'
         finally:
             self.data['CONNECTION']['CONNECT'] = 'Off'
             self.maximCamera = None
+            self.maximApplication = None
             pythoncom.CoUninitialize()
 
     def getStatus(self):
@@ -186,7 +190,8 @@ class MaximDL:
         while not self.cancel:
             path = imageParams['BaseDirImages'] + '/' + imageParams['File']
             self.maximCamera.SaveImage(path)
-            self.maximCamera.Quit()
+            # closes any open image view without notice
+            self.maximApplication.CloseAll()
             break
 
         # finally idle
