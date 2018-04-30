@@ -186,10 +186,9 @@ class MaximDL:
         # Loop for saving
         self.main.imageDownloaded.emit()
         self.main.cameraStatusText.emit('SAVING')
-        path = ''
         while not self.cancel:
-            path = imageParams['BaseDirImages'] + '/' + imageParams['File']
-            self.maximCamera.SaveImage(path)
+            imageParams['Imagepath'] = imageParams['BaseDirImages'] + '/' + imageParams['File']
+            self.maximCamera.SaveImage(imageParams['Imagepath'])
             # closes any open image view without notice
             self.maximApplication.CloseAll()
             break
@@ -198,5 +197,4 @@ class MaximDL:
         self.main.imageSaved.emit()
         self.main.cameraStatusText.emit('IDLE')
         self.main.cameraExposureTime.emit('')
-        imageParams['Imagepath'] = path
         self.data['Imaging'] = False

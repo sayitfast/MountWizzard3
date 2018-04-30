@@ -46,6 +46,8 @@ class ImagesWindow(widget.MwWidget):
         self.showStatus = False
         self.cancel = False
         self.imagePath = ''
+        self.imageReady = False
+        self.solveReady = False
         self.transform = transform.Transform(self.app)
         self.ui = image_window_ui.Ui_ImageDialog()
         self.ui.setupUi(self)
@@ -102,6 +104,8 @@ class ImagesWindow(widget.MwWidget):
         self.signalSetDecSolved.connect(self.setDecSolved)
         self.signalSetAngleSolved.connect(self.setAngleSolved)
         self.ui.btn_loadFits.clicked.connect(self.loadFitsFileFrom)
+        self.app.workerImaging.imageSaved.connect(self.setImageReady)
+        self.app.workerAstrometry.imageDataDownloaded.connect(self.setSolveReady)
 
     def initConfig(self):
         try:
@@ -153,6 +157,12 @@ class ImagesWindow(widget.MwWidget):
 
     def setAngleSolved(self, text):
         self.ui.le_AngleJ2000.setText(text)
+
+    def setImageReady(self):
+        self.imageReady = True
+
+    def setSolveReady(self):
+        self.solveReady = True
 
     def loadFitsFileFrom(self):
         value, ext = self.selectFile(self, 'Open FITS file', '/images', 'FITS files (*.fit*)', True)
@@ -330,8 +340,9 @@ class ImagesWindow(widget.MwWidget):
             imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
             imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
             self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
+            self.imageReady = False
             self.app.workerImaging.imagingCommandQueue.put(imageParams)
-            while imageParams['Imagepath'] == '' and not self.cancel:
+            while not self.imageReady and not self.cancel:
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
             if not os.path.isfile(imageParams['Imagepath']):
@@ -373,8 +384,9 @@ class ImagesWindow(widget.MwWidget):
             fitsFileHandle.flush()
             fitsFileHandle.close()
             self.app.messageQueue.put('#BWSolving Image: {0}\n'.format(imageParams['Imagepath']))
+            self.solveReady = False
             self.app.workerAstrometry.astrometryCommandQueue.put(imageParams)
-            while 'Solved' not in imageParams and not self.cancel:
+            while not self.solveReady and not self.cancel:
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
             if 'Solved' in imageParams:
@@ -405,8 +417,9 @@ class ImagesWindow(widget.MwWidget):
             imageParams['Directory'] = time.strftime('%Y-%m-%d', time.gmtime())
             imageParams['File'] = self.BASENAME + time.strftime('%H-%M-%S', time.gmtime()) + '.fit'
             self.app.messageQueue.put('#BWExposing Image: {0} for {1} seconds\n'.format(imageParams['File'], imageParams['Exposure']))
+            self.imageReady = False
             self.app.workerImaging.imagingCommandQueue.put(imageParams)
-            while imageParams['Imagepath'] == '' and not self.cancel:
+            while not self.imageReady and not self.cancel:
                 time.sleep(0.1)
                 PyQt5.QtWidgets.QApplication.processEvents()
             if not os.path.isfile(imageParams['Imagepath']):
