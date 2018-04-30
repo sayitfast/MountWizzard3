@@ -288,7 +288,7 @@ class AstrometryClient:
                 imageParams['Message'] = 'Error jobs'
             finally:
                 pass
-            if 'stat' in result:
+            if 'status' in result:
                 stat = result['status']
             else:
                 self.logger.error('Problem jobs, status not found, result: {0}, response: {1}'.format(result, response))
